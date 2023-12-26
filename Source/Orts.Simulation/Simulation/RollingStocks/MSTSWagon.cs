@@ -3889,6 +3889,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (loco.DoorSwitch[loco.LocoStation] == 1)
                 {
+                    Simulator.DoorSwitchDoorLocked = true;
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
@@ -3933,9 +3934,15 @@ namespace Orts.Simulation.RollingStocks
                     var mstsWagon = car as MSTSWagon;
                     if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.AutomaticDoors || mstsWagon.FreightDoors))
                     {
+                        if (Simulator.DoorSwitchEnable)
+                        {                            
+                            Simulator.DoorSwitchDoorLocked = false;                            
+                            return;
+                        }
+
                         if (DoorsCycle == 0)
                             DoorLeftOpen = !DoorLeftOpen;
-                        DoorsCycle = 1;
+                        DoorsCycle = 1;                        
 
                         //if (car != this && mstsWagon != null)
                         //{
@@ -3982,6 +3989,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (loco.DoorSwitch[loco.LocoStation] == 1)
                 {
+                    Simulator.DoorSwitchDoorLocked = true;
                     foreach (var car in Train.Cars)
                     {                        
                         var mstsWagon = car as MSTSWagon;                        
@@ -4026,6 +4034,12 @@ namespace Orts.Simulation.RollingStocks
                     var mstsWagon = car as MSTSWagon;
                     if (mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.AutomaticDoors || mstsWagon.FreightDoors))
                     {
+                        if (Simulator.DoorSwitchEnable)
+                        {
+                            Simulator.DoorSwitchDoorLocked = false;
+                            return;
+                        }
+
                         if (DoorsCycle == 0)
                             DoorRightOpen = !DoorRightOpen;
                         DoorsCycle = 1;

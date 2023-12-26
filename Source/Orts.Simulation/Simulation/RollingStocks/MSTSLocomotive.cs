@@ -3522,6 +3522,7 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult10
                     + PowerReductionResult11
                     + PowerReductionResult12
+                    + PowerReductionResult13
                     )
                     PowerReduction += 1 * elapsedClockSeconds;
 
@@ -3538,6 +3539,7 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult10
                     + PowerReductionResult11
                     + PowerReductionResult12
+                    + PowerReductionResult13
                     )
                     PowerReduction -= 1 * elapsedClockSeconds;
 
@@ -3550,11 +3552,28 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult11 = 1;
                 else
                 if (PowerReductionResult11 == 1 && LocalThrottlePercent == 0)
-                    PowerReductionResult11 = 0;
-                                
+                    PowerReductionResult11 = 0;                                                
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
+        }
+
+        // Icik
+        public void DoorSwitchLogic()
+        {
+            if (IsLeadLocomotive())
+            {
+                if (DoorSwitchEnable)
+                {
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        car.PowerReductionResult13 = DoorSwitch[LocoStation] == 1 ? 0 : 1;
+                    }
+                    Simulator.DoorSwitchEnable = true;
+                }
+                else
+                    Simulator.DoorSwitchEnable = false;
+            }
         }
 
         // Icik
@@ -6084,8 +6103,9 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 CabRadioOnOff();
-                CheckMUWheelSlip(elapsedClockSeconds);                
-                
+                CheckMUWheelSlip(elapsedClockSeconds);
+                DoorSwitchLogic();
+
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;                                               

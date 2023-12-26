@@ -16870,7 +16870,25 @@ namespace Orts.Simulation.Physics
             if (train.Simulator.Paused)
                 return;
             
-            MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive; 
+            MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
+            bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
+            
+            if (Simulator.DoorSwitchEnable)
+            {
+                if (!Simulator.DoorSwitchDoorLocked)
+                {
+                    Simulator.DoorSwitchDoorLocked = true;
+                    switch (loco.DoorSwitch[loco.LocoStation])
+                    {
+                        case 0:                            
+                            Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
+                            break;
+                        case 2:
+                            Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                            break;
+                    }
+                }
+            }
 
             if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)
             {
@@ -16880,7 +16898,7 @@ namespace Orts.Simulation.Physics
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var wagon = (train.Cars[i] as MSTSWagon);                
-                if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors)
+                if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked)
                         return;             
             }            
 
@@ -16909,9 +16927,7 @@ namespace Orts.Simulation.Physics
                     numOfWagons++;
                 }
             }
-            Random rnd = new Random();
-
-            bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
+            Random rnd = new Random();            
 
             if (!exitTimesCalculated)
             {                
@@ -17011,15 +17027,15 @@ namespace Orts.Simulation.Physics
                         {
                             if (pax.WagonName == Cars[i].CarID)
                             {
-                                if (!platformSide && !wagon.DoorLeftOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                if (!platformSide && !wagon.DoorLeftOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                 {
                                     train.ToggleDoorsPeople(false, true, wagon);
                                 }
-                                if (platformSide && !wagon.DoorRightOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                if (platformSide && !wagon.DoorRightOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                 {
                                     train.ToggleDoorsPeople(true, true, wagon);
                                 }
-                                if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && wagon.PassengerCapacity > 0)
                                     continue;
                                 if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen && wagon.PassengerCapacity > 0)
                                     continue;
@@ -17122,15 +17138,15 @@ namespace Orts.Simulation.Physics
                                 {
                                     if (pax.WagonName == Cars[i].CarID)
                                     {
-                                        if (!platformSide && !loco.DoorLeftOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                        if (!platformSide && !loco.DoorLeftOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                         {
                                             train.ToggleDoorsPeople(false, true, wagon);
                                         }
-                                        if (platformSide && !loco.DoorRightOpen && !loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                        if (platformSide && !loco.DoorRightOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                         {
                                             train.ToggleDoorsPeople(true, true, wagon);
                                         }
-                                        if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors && wagon.PassengerCapacity > 0)
+                                        if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && wagon.PassengerCapacity > 0)
                                             continue;
                                         wagon.PassengerList.Add(pax);
                                         pax.Boarded = true;
@@ -17185,7 +17201,7 @@ namespace Orts.Simulation.Physics
                         wagon.TimeToCloseDoor++;
                     }
 
-                    if (closeDoor && !haveCentralDoors && wagon.TimeToCloseDoor == wagon.TimeToCloseDoorGenerate)
+                    if (closeDoor && (!haveCentralDoors || !Simulator.DoorSwitchDoorLocked) && wagon.TimeToCloseDoor == wagon.TimeToCloseDoorGenerate)
                     {
                         train.ToggleDoorsPeople(true, false, wagon);
                         train.ToggleDoorsPeople(false, false, wagon);

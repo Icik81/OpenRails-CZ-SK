@@ -1092,7 +1092,7 @@ namespace Orts.Simulation
                 if (loco != null)
                 {
                     // Automatické centrální dveře
-                    if (!maydepart && arrived && loco.CentralHandlingDoors && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
                         && (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0))
                     {                        
                         DisplayColor = Color.Yellow;
@@ -1147,7 +1147,7 @@ namespace Orts.Simulation
                         {
                             // check if passenger on board - if not, do not allow depart
                             if (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0
-                                || (!MyPlayerTrain.PeopleWantToEntry && MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors))
+                                || (!MyPlayerTrain.PeopleWantToEntry && MyPlayerTrain.TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
                             {
                                 if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && !MyPlayerTrain.PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
@@ -1157,8 +1157,8 @@ namespace Orts.Simulation
                                 return;
                             }
                             else
-                            if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && !loco.CentralHandlingDoors)
-                                || (!MyPlayerTrain.PeopleWantToEntry && loco.CentralHandlingDoors))
+                            if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked))
+                                || (!MyPlayerTrain.PeopleWantToEntry && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked))
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
@@ -1251,7 +1251,7 @@ namespace Orts.Simulation
                             }
                         }
                         // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
-                        if (maydepart && !loco.CentralHandlingDoors && BoardingCompleted)
+                        if (maydepart && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && BoardingCompleted)
                         {
                             MyPlayerTrain.ToggleDoors(true, false);
                             MyPlayerTrain.ToggleDoors(false, false);

@@ -239,6 +239,8 @@ namespace Orts.Simulation
         public bool ControlUnitInTrain;
         public bool ControlUnitIsLead;
         public bool MainResZero;
+        public bool DoorSwitchEnable;
+        public bool DoorSwitchDoorLocked = true;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
