@@ -68,7 +68,7 @@ namespace Orts.Viewer3D.Popups
             if (State == DisplayState.Trains) State = DisplayState.Cars;
             else if (State == DisplayState.Cars) State = DisplayState.Trains;
         }
-
+                        
         public override void PrepareFrame(RenderFrame frame, ORTS.Common.ElapsedTime elapsedTime, bool updateFull)
         {
             if (updateFull)
@@ -76,7 +76,7 @@ namespace Orts.Viewer3D.Popups
                 var labels = Labels;
                 var newLabels = new Dictionary<TrainCar, LabelPrimitive>(labels.Count);
                 var cars = Owner.Viewer.World.Trains.Cars;
-                var cameraLocation = Owner.Viewer.Camera.CameraWorldLocation;
+                var cameraLocation = Owner.Viewer.Camera.CameraWorldLocation;                
                 foreach (var car in cars.Keys)
                 {
                     // Calculates distance between camera and platform label.
@@ -87,33 +87,8 @@ namespace Orts.Viewer3D.Popups
                         {
                             Color FillColor = Color.Black;
                             float ColorTrain = car.Train != null ? car.Train.Number : 1;
-                            if (ColorTrain > 10 && ColorTrain < 21) ColorTrain = ColorTrain - 10;
-                            else 
-                                if (ColorTrain > 20 && ColorTrain < 31) ColorTrain = ColorTrain - 20;
-                            else
-                                if (ColorTrain > 30 && ColorTrain < 41) ColorTrain = ColorTrain - 30;
-                            else
-                                if (ColorTrain > 40 && ColorTrain < 51) ColorTrain = ColorTrain - 40;                            
-                            else
-                                if (ColorTrain > 50 && ColorTrain < 61) ColorTrain = ColorTrain - 50;
-                            else
-                                if (ColorTrain > 60 && ColorTrain < 71) ColorTrain = ColorTrain - 60;
-                            else
-                                if (ColorTrain > 70 && ColorTrain < 81) ColorTrain = ColorTrain - 70;
-                            else
-                                if (ColorTrain > 80 && ColorTrain < 91) ColorTrain = ColorTrain - 80;
-                            else
-                                if (ColorTrain > 90 && ColorTrain < 101) ColorTrain = ColorTrain - 90;
-                            else
-                                if (ColorTrain > 100 && ColorTrain < 111) ColorTrain = ColorTrain - 100;
-                            else
-                                if (ColorTrain > 110 && ColorTrain < 121) ColorTrain = ColorTrain - 110;
-                            else
-                                if (ColorTrain > 120 && ColorTrain < 131) ColorTrain = ColorTrain - 120;
-                            else
-                                if (ColorTrain > 130 && ColorTrain < 141) ColorTrain = ColorTrain - 130;
-                            else
-                                if (ColorTrain > 140 && ColorTrain < 151) ColorTrain = ColorTrain - 140;
+
+                            ColorTrain = ColorTrain % 10;                            
 
                             switch (ColorTrain)
                             {
@@ -127,8 +102,7 @@ namespace Orts.Viewer3D.Popups
                                 case 7: FillColor = Color.Pink; break;
                                 case 8: FillColor = Color.Purple; break;
                                 case 9: FillColor = Color.Tomato; break;
-                                case 10: FillColor = Color.Violet; break;
-                            }
+                            }                            
 
                             if (labels.ContainsKey(car))
                                 newLabels[car] = labels[car];
