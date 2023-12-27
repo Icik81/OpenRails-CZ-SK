@@ -7945,9 +7945,10 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             TrackSanderSandConsumptionLpS = MathHelper.Clamp(TrackSanderSandConsumptionLpS, 0.025f, 0.05f);
             if (Sander)  // If sander is on adjust parameters
-            {
+            {                
+                if (!LocoSanderOn)
+                    SignalEvent(Event.SanderOn);
                 LocoSanderOn = true;
-                SignalEvent(Event.SanderOn);
                 if (CurrentTrackSandBoxCapacityL > 0.0) // if sand still in sandbox then sanding is available
                 {
                     // Calculate consumption of sand, and drop in sand box level
