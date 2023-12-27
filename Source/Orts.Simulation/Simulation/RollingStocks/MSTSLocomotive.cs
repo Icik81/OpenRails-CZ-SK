@@ -15256,16 +15256,16 @@ namespace Orts.Simulation.RollingStocks
                             if (HS198ControllerThrottleValue > 27f)
                             {
                                 // Pokud bude proud nižší jak 300A, skočí na 27.stupeň
-                                if (HS198ControllerPositionName[LocoStation] == "J" && PowerCurrent1 < 300f)
-                                {                                    
-                                    while (HS198ControllerThrottleValue != 27f)
-                                    {
-                                        HS198ControllerThrottleValue--;
-                                        HS198ControllerCheckThrottleChange();
-                                    }
-                                    preHS198ControllerThrottleValue = HS198ControllerThrottleValue;                                    
-                                }
-                                else
+                                //if (HS198ControllerPositionName[LocoStation] == "J" && PowerCurrent1 < 300f)
+                                //{                                    
+                                //    while (HS198ControllerThrottleValue != 27f)
+                                //    {
+                                //        HS198ControllerThrottleValue--;
+                                //        HS198ControllerCheckThrottleChange();
+                                //    }
+                                //    preHS198ControllerThrottleValue = HS198ControllerThrottleValue;                                    
+                                //}
+                                //else
                                 {
                                     HS198ControllerThrottleValue--;
                                     HS198ControllerCheckThrottleChange();
