@@ -1231,11 +1231,11 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = false;
             }
             // Spustí inicializační trigger zvuku volnoběhu
-            if (Simulator.GameTime < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+            if (LocoSetUpTimer < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 SignalEvent(Event.InitMotorIdle);
 
             // Při vypnutí baterií motor vypne
-            if (Simulator.GameTime > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
+            if (LocoSetUpTimer > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
 
             // Kompatibilita se standardními směrovými pákami OR/MSTS
             if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction == Direction.N)

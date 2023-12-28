@@ -225,7 +225,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public override void Update(float elapsedClockSeconds)
         {
-            if (elapsedClockSeconds == 0)
+            if (elapsedClockSeconds == 0 || Locomotive.Simulator.GameSpeed > 1)
                 return;
 
             if (Locomotive.SwitchingVoltageMode == 1 && Locomotive.LocoSwitchACDC)

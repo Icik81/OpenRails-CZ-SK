@@ -455,7 +455,7 @@ namespace Orts.Simulation.RollingStocks
 
         protected void UnderVoltageProtection(float elapsedClockSeconds)
         {
-            if (Simulator.Paused)
+            if (Simulator.Paused || Simulator.GameSpeed > 1)
                 return;
             TramRailUnit = LocomotivePowerVoltage == 600 ? true: false;            
             // Tramvaje 600V DC
@@ -872,7 +872,7 @@ namespace Orts.Simulation.RollingStocks
                     DontRaisePanto = false;
 
                 // Blokování pantografu u jednosystémových lokomotiv při vypnutém HV
-                if (!MultiSystemEngine && ((IsLeadLocomotive() || PowerUnitWithControl) || Simulator.GameTime > 1))
+                if (!MultiSystemEngine && ((IsLeadLocomotive() || PowerUnitWithControl) || LocoSetUpTimer > 1))
                 {
                     // Definice default provozního napájení lokomotivy
                     if (LocomotivePowerVoltage == 0) LocomotivePowerVoltage = RouteVoltageV; //Default pro lokomotivy bez udání napětí
@@ -1455,7 +1455,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik            
         EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
-            if (Simulator.GameTime > 1f)
+            if (LocoSetUpTimer > 1)
             {
                 VoltageIndicate(elapsedClockSeconds);
                 UnderVoltageProtection(elapsedClockSeconds);

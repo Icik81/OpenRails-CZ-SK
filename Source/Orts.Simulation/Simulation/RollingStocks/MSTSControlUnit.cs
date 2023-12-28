@@ -127,7 +127,7 @@ namespace Orts.Simulation.RollingStocks
                 // Kontrola zapojeného kabelu MU
                 if ((car.PowerUnitWithControl && !car.AcceptCableSignals) || !AcceptCableSignals)
                 {
-                    if (Simulator.GameTime > 0.1f)
+                    if (LocoSetUpTimer > 0.1f)
                         MUCableOk = false;
                 }                
 

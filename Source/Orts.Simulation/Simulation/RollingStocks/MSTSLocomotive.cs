@@ -730,7 +730,8 @@ namespace Orts.Simulation.RollingStocks
         protected bool PreviousHorn2 = false;
         public bool Horn12 = false;
         protected bool PreviousHorn12 = false;
-        public bool LocoLastCabSelect;        
+        public bool LocoLastCabSelect;
+        public float LocoSetUpTimer;
 
 
         // Jindrich
@@ -4108,7 +4109,7 @@ namespace Orts.Simulation.RollingStocks
                             car.HasPassengerCapacity = true;
 
                         // Defaulty
-                        if (!car.WagonHasTemperature && Simulator.GameTime > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
+                        if (!car.WagonHasTemperature && LocoSetUpTimer > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                         {
                             if (car.WagonType == WagonTypes.Engine)
                             {
@@ -5986,6 +5987,8 @@ namespace Orts.Simulation.RollingStocks
             // Icik            
             SetCarLightsPowerOn();
             CarFrameUpdate(elapsedClockSeconds);
+            // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
+            LocoSetUpTimer = LocoSetUpTimer < 5.0f && !Simulator.Paused && Simulator.GameSpeed == 1 ? LocoSetUpTimer + elapsedClockSeconds : 5.0f;
 
             if (IsLeadLocomotive())
             {
@@ -11410,7 +11413,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph3Switch[LocoStation] == 1)
                     BreakPowerButton_Activated = false;
 
-                if ((Pantograph3CanOn || HV4Enable) && Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && Simulator.GameTime > 1)
+                if ((Pantograph3CanOn || HV4Enable) && Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
                 {
                     PantoStatus = Pantograph3Switch[LocoStation];
                     int p1 = 1; int p2 = 2;
@@ -11616,7 +11619,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph4Switch[LocoStation] == 0)
                     BreakPowerButton_Activated = false;
 
-                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && Simulator.GameTime > 1)
+                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
                 {
                     PantoStatus = Pantograph4Switch[LocoStation];
                     int p1 = 1; int p2 = 2;
@@ -11790,7 +11793,7 @@ namespace Orts.Simulation.RollingStocks
                 if (BreakPowerButton_Activated && Pantograph5Switch[LocoStation] == 0)
                     BreakPowerButton_Activated = false;
 
-                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && Simulator.GameTime > 1)
+                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
                 {
                     PantoStatus = Pantograph5Switch[LocoStation];
                     int p1 = 1; int p2 = 2;
@@ -12800,7 +12803,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 0;
                     this.CarPowerKey = false;
                 }
-                if (PowerKeyPosition[LocoStation] == 2 && Simulator.GameTime > 1f)
+                if (PowerKeyPosition[LocoStation] == 2 && LocoSetUpTimer > 1f)
                 {
                     DieselDirectionControllerInOut = true;
                     DieselDirectionController_In = true;
@@ -12888,7 +12891,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 0;
                     this.CarPowerKey = false;
                 }
-                if (PowerKeyPosition[LocoStation] == 2 && Simulator.GameTime > 1f)
+                if (PowerKeyPosition[LocoStation] == 2 && LocoSetUpTimer > 1f)
                 {
                     DieselDirectionControllerInOut = true;
                     DieselDirectionController_In = true;
