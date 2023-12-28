@@ -273,6 +273,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 
         public bool Sander { set;  get; }
 
+        public float GameSpeed { set;  get; }
+
         /// <summary>
         /// Read/Write adhesion conditions parameter
         /// Should be set within the range of 0.3 to 1.2 but there is no restriction
@@ -442,7 +444,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             get
             {
-                if (AxleForceN == 0 && BrakeRetardForceN == 0)
+                if ((AxleForceN == 0 && BrakeRetardForceN == 0) || GameSpeed > 1)
                 {
                     return 0.0f; // Assume slip will not occur if no braking force or motive force are applied to the axle - To be confirmed???
                 }
