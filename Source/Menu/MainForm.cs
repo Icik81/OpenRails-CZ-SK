@@ -567,14 +567,14 @@ namespace ORTS
                             string version = File.ReadAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
                             if (string.IsNullOrEmpty(version)) version = "0";
                             cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                            string verRemote = ws.GetPowerSuplyStationVersion(SelectedRoute.ToString());
+                            string verRemote = "0";
                             if (verRemote == version)
                             {
                                 sw.Close();
                                 return;
                             }
 
-                            DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, version);
+                            DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, "0");
                             int currentRow = 0;
 
                             File.Delete(SelectedRoute.Path + "\\PowerSupplyStations.xml");
