@@ -193,7 +193,7 @@ namespace ORTS
                     new KeyedComboBoxItem(6, catalog.GetString("Storm")),
                     new KeyedComboBoxItem(7, catalog.GetString("Dynamic")),
                 };
-                
+
                 comboBoxWeather.Items.AddRange(WeathersAdv);
 
                 comboBoxStartSeason.Items.AddRange(Seasons);
@@ -645,10 +645,7 @@ namespace ORTS
                             if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml") && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini"))
                                 File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
                             FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
-                            if (!fileInfo.Exists)
-                            {
-                                File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", "0");
-                            }
+                            File.WriteAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini", "0");
                             string version = File.ReadAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
                             if (string.IsNullOrEmpty(version)) version = "0";
                             cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
@@ -662,11 +659,9 @@ namespace ORTS
                             DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, version);
                             int currentRow = 0;
 
-                            if (!File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
-                            {
-                                WebClient webClient = new WebClient();
-                                webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                            }
+                            WebClient webClient = new WebClient();
+                            webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+
                             XmlDocument doc = new XmlDocument();
                             doc.Load(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
 
@@ -812,7 +807,7 @@ namespace ORTS
         {
             UpdateExploreActivity();
         }
-        
+
         // Icik
         void comboBoxWeather_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -866,7 +861,7 @@ namespace ORTS
         void comboBoxTimetableWeatherFile_SelectedIndexChanged(object sender, EventArgs e)
         {
             UpdateTimetableWeatherSet();
-        }        
+        }
         #endregion
 
         #region Multiplayer
@@ -1238,7 +1233,7 @@ namespace ORTS
             exploreActivity.Path = SelectedPath;
             exploreActivity.StartTime = SelectedStartTime;
             exploreActivity.Season = (Orts.Formats.Msts.SeasonType)SelectedStartSeason;
-            exploreActivity.Weather = (Orts.Formats.Msts.WeatherType)SelectedStartWeather;            
+            exploreActivity.Weather = (Orts.Formats.Msts.WeatherType)SelectedStartWeather;
         }
         #endregion
 
@@ -1286,7 +1281,8 @@ namespace ORTS
                         consists.Add(cs);
 
                     }
-                    catch (Exception ex) {
+                    catch (Exception ex)
+                    {
                         lblConsists.Visible = true;
                         lblConsists.Text = ex.Message;
                         lblConsists.Refresh();
@@ -1416,7 +1412,7 @@ namespace ORTS
                 comboBoxDifficulty.SelectedIndex = 3;
                 comboBoxDuration.Items.Clear();
                 comboBoxDuration.Items.Add("");
-                comboBoxDuration.SelectedIndex = 0;                
+                comboBoxDuration.SelectedIndex = 0;
                 comboBoxWeather.SelectedIndex = Settings.WeatherAdv;
             }
             else
@@ -1429,14 +1425,14 @@ namespace ORTS
                 comboBoxDifficulty.SelectedIndex = (int)SelectedActivity.Difficulty;
                 comboBoxDuration.Items.Clear();
                 comboBoxDuration.Items.Add(SelectedActivity.Duration.FormattedDurationTime());
-                comboBoxDuration.SelectedIndex = 0;                
+                comboBoxDuration.SelectedIndex = 0;
             }
         }
 
         // Icik
         void UpdateWeatherAdv()
-        {            
-            Settings.WeatherAdv = comboBoxWeather.SelectedIndex;            
+        {
+            Settings.WeatherAdv = comboBoxWeather.SelectedIndex;
         }
         void UpdateSeason()
         {
@@ -1491,7 +1487,7 @@ namespace ORTS
 
         void ShowTimetableWeatherSet()
         {
-            comboBoxTimetableWeatherFile.Items.Clear();            
+            comboBoxTimetableWeatherFile.Items.Clear();
             foreach (var weatherFile in TimetableWeatherFileSet)
             {
                 comboBoxTimetableWeatherFile.Items.Add(weatherFile);
@@ -1502,7 +1498,7 @@ namespace ORTS
         void UpdateTimetableWeatherSet()
         {
             SelectedTimetableSet.WeatherFile = SelectedWeatherFile.GetFullName();
-        }        
+        }
         #endregion
 
         #region Timetable list

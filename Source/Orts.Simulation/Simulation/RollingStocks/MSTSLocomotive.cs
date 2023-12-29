@@ -2765,8 +2765,11 @@ namespace Orts.Simulation.RollingStocks
             return (rad / Math.PI * 180.0);
         }
 
+        bool powerMarkesReaded = false;
         public void SetUpVoltageChangeMarkers()
         {
+            if (powerMarkesReaded)
+                return;
             try
             {
                 Simulator.voltageChangeMarkers.Clear();
@@ -2791,26 +2794,33 @@ namespace Orts.Simulation.RollingStocks
                                     id = int.Parse(nodeId.InnerText);
                                 if (nodeId.Name == "Longitude")
                                 {
-                                    try
+                                    bool success = false;
+                                    success = double.TryParse(nodeId.InnerText, out nextNodeLon);
+                                    if (!success)
                                     {
-                                        nextNodeLon = double.Parse(nodeId.InnerText);
+                                        success = double.TryParse(nodeId.InnerText.Replace(".", ","), out nextNodeLon);
                                     }
-                                    catch
+                                    if (!success)
                                     {
-                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                        success = double.TryParse(nodeId.InnerText.Replace(",", "."), out nextNodeLon);
                                     }
-
+                                    if (!success)
+                                        throw new ArgumentException("While reading voltage markers xml content, error occured: value is not number: " + nodeId.InnerText);
                                 }
                                 if (nodeId.Name == "Latitude")
                                 {
-                                    try
+                                    bool success = false;
+                                    success = double.TryParse(nodeId.InnerText, out nextNodeLat);
+                                    if (!success)
                                     {
-                                        nextNodeLat = double.Parse(nodeId.InnerText);
+                                        success = double.TryParse(nodeId.InnerText.Replace(".", ","), out nextNodeLat);
                                     }
-                                    catch
+                                    if (!success)
                                     {
-                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                        success = double.TryParse(nodeId.InnerText.Replace(",", "."), out nextNodeLat);
                                     }
+                                    if (!success)
+                                        throw new ArgumentException("While reading voltage markers xml content, error occured: value is not number: " + nodeId.InnerText);
                                 }
                                 if (nodeId.Name == "Voltage")
                                     nextNodeVoltage = int.Parse(nodeId.InnerText);
@@ -2824,8 +2834,9 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+                powerMarkesReaded = true;
             }
-            catch { }
+            catch (Exception we) { string err = we.Message; }
         }
 
         public void SetUpPowerSupplyStations()
