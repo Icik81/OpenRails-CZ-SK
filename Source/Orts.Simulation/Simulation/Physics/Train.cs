@@ -16878,14 +16878,29 @@ namespace Orts.Simulation.Physics
                 if (!Simulator.DoorSwitchDoorLocked)
                 {
                     Simulator.DoorSwitchDoorLocked = true;
-                    switch (loco.DoorSwitch[loco.LocoStation])
+                    if (loco.Flipped)
                     {
-                        case 0:                            
-                            Simulator.DoorSwitchDoorLocked = platformSide ? true : false;                            
-                            break;                        
-                        case 2:
-                            Simulator.DoorSwitchDoorLocked = platformSide ? false : true;                            
-                            break;
+                        switch (loco.DoorSwitch[loco.LocoStation])
+                        {
+                            case 2:
+                                Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
+                                break;
+                            case 0:
+                                Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        switch (loco.DoorSwitch[loco.LocoStation])
+                        {
+                            case 0:
+                                Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
+                                break;
+                            case 2:
+                                Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                                break;
+                        }
                     }
                 }
             }
