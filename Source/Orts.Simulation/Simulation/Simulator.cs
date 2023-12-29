@@ -242,6 +242,9 @@ namespace Orts.Simulation
         public bool DoorSwitchEnable;
         public bool DoorSwitchDoorLocked = true;
         public bool DoorSwitchPaxRequest;
+        public bool DoorSwitchDoorUnLockedSignal;
+        public bool DoorSwitchDoorOpened;
+        public bool DoorSwitchDoorWasOpened;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -3568,14 +3568,38 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                     {
-                        car.PowerReductionResult13 = Simulator.DoorSwitchDoorLocked ? 0 : 1;
+                        car.PowerReductionResult13 = Simulator.DoorSwitchDoorLocked && DoorSwitchTime == 0 ? 0 : 1;
                     }
-                    Simulator.DoorSwitchEnable = true;
+                    Simulator.DoorSwitchEnable = true;                                                                
+                    Simulator.DoorSwitchPaxRequest = false;
+
+                    switch (DoorSwitch[LocoStation])
+                    {
+                        case 0:
+                            Simulator.DoorSwitchDoorUnLockedSignal = true;
+                            break;
+                        case 1:
+                            Simulator.DoorSwitchDoorUnLockedSignal = false;
+                            break;
+                        case 2:
+                            Simulator.DoorSwitchDoorUnLockedSignal = true;
+                            break;
+                    }
+
+                    Simulator.DoorSwitchDoorOpened = false;
+                    foreach (TrainCar car in Train.Cars)
+                    {                        
+                        if (car.BrakeSystem.DoorsOpen)
+                        {
+                            Simulator.DoorSwitchDoorOpened = true;
+                            Simulator.DoorSwitchDoorWasOpened = true;
+                            break;
+                        }
+                    }
+
                 }
                 else
-                    Simulator.DoorSwitchEnable = false;                                
-                
-                Simulator.DoorSwitchPaxRequest = false;
+                    Simulator.DoorSwitchEnable = false;
             }
         }
 
@@ -16788,6 +16812,8 @@ namespace Orts.Simulation.RollingStocks
         public float FakeOilPressure;
         float preControllerVolts;
         float ControllerVoltsDetectorTimer;
+        float DoorSwitchTimer;
+        public float DoorSwitchTime = 0;
         public virtual float GetDataOf(CabViewControl cvc)
         {                                    
             CheckBlankDisplay(cvc);
@@ -18852,8 +18878,38 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DOORSWITCH_UNLOCKSIGNAL:
-                    {
-                        data = Simulator.DoorSwitchDoorLocked ? 0 : 1;
+                    {                        
+                        data = Simulator.Paused ? 0 : 1;
+                        if (Simulator.DoorSwitchDoorLocked || Simulator.DoorSwitchDoorUnLockedSignal)
+                        {
+                            if (!Simulator.DoorSwitchDoorOpened && Simulator.DoorSwitchDoorUnLockedSignal)
+                            {
+                                DoorSwitchTime = 0;
+                                data = 1;
+                            }
+                            else
+                            if (Simulator.DoorSwitchDoorOpened)
+                            {
+                                DoorSwitchTime = 2.0f;
+                                data = 1;                                
+                            }
+                            else
+                            if (Simulator.DoorSwitchDoorWasOpened && !Simulator.DoorSwitchDoorUnLockedSignal)
+                            {
+                                DoorSwitchTime = 2.0f;
+                                Simulator.DoorSwitchDoorWasOpened = false;
+                            }
+                            else
+                            {
+                                DoorSwitchTimer += elapsedTime;
+                                if (DoorSwitchTimer >= DoorSwitchTime)
+                                {
+                                    DoorSwitchTimer = 0;
+                                    DoorSwitchTime = 0;
+                                    data = Simulator.DoorSwitchDoorLocked ? 0 : 1;
+                                }
+                            }
+                        }                                               
                         break;
                     }
                 case CABViewControlTypes.LAP_BUTTON:

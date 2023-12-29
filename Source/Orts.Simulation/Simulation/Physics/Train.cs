@@ -16881,10 +16881,10 @@ namespace Orts.Simulation.Physics
                     switch (loco.DoorSwitch[loco.LocoStation])
                     {
                         case 0:                            
-                            Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
-                            break;
+                            Simulator.DoorSwitchDoorLocked = platformSide ? true : false;                            
+                            break;                        
                         case 2:
-                            Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                            Simulator.DoorSwitchDoorLocked = platformSide ? false : true;                            
                             break;
                     }
                 }
