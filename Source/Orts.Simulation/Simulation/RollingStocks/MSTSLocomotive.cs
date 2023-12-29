@@ -6012,7 +6012,9 @@ namespace Orts.Simulation.RollingStocks
 
             // Icik            
             SetCarLightsPowerOn();
-            CarFrameUpdate(elapsedClockSeconds);
+            CarFrameUpdate(elapsedClockSeconds);            
+            VentilationSwitch(elapsedClockSeconds);
+            VentilationDR(elapsedClockSeconds);
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             LocoSetUpTimer = LocoSetUpTimer < 5.0f && !Simulator.Paused && Simulator.GameSpeed == 1 ? LocoSetUpTimer + elapsedClockSeconds : 5.0f;
 
@@ -6097,9 +6099,7 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
                 HS198AutoDriveSpeedSelector(elapsedClockSeconds);
-                AxleCounterDisplay(elapsedClockSeconds);
-                VentilationSwitch(elapsedClockSeconds);
-                VentilationDR(elapsedClockSeconds);
+                AxleCounterDisplay(elapsedClockSeconds);                
                 CommandCylinder(elapsedClockSeconds);                
                 TogglePantograph3Switch();
                 TogglePantograph4Switch();
@@ -16053,12 +16053,6 @@ namespace Orts.Simulation.RollingStocks
         }
         public void VentilationSwitch(float elapsedClocSeconds)
         {
-            if (!IsLeadLocomotive())
-                return;
-
-            if (!VentilationSwitchEnable)
-                return;
-
             if (VentilationIsOn)
             {
                 VentilationIsOffTimer = 0;
@@ -16074,56 +16068,81 @@ namespace Orts.Simulation.RollingStocks
                     TMCoolingIsOn = VentilationIsOn;
             }
 
-            switch (VentilationSwitchPosition[LocoStation])
+            if (IsPlayerTrain)
             {
-                case 0:
-                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
-                    if (Simulator.StepControllerValue == 0)
-                    {
-                        VentilationIsOn = false;
-                        VentilationTimer = 0;
-                    }
-                    break;
-                case 1:
-                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
-                    break;
-                case 2:
-                    VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
-                    if (StationIsActivated[LocoStation])
-                        VentilationIsOn = true;
-                    VentilationTimer = 0;
-                    break;
-            }
-            if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
-            {
-                preVentilationSwitchPosition[LocoStation] = VentilationSwitchPosition[LocoStation];
-                SignalEvent(Event.VentilationSwitch);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
-            }
-
-            //if (VentilationIsOn)
-            //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor jede!"));
-
-            // Režim automatiky ventilátoru
-            if (VentilationSwitchPosition[LocoStation] == 1)
-            {
-                if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                switch (VentilationSwitchPosition[LocoStation])
                 {
-                    VentilationIsOn = true;                    
-                }
-                else
-                {
-                    if (VentilationIsOn && MirelRSControllerEnable && !HS198ControllerEnable)
-                    {
-                        VentilationTimer += elapsedClocSeconds;
-                        if (VentilationTimer > 20f)
+                    case 0:
+                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
+                        if (Simulator.StepControllerValue == 0)
                         {
                             VentilationIsOn = false;
                             VentilationTimer = 0;
                         }
+                        break;
+                    case 1:
+                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
+                        break;
+                    case 2:
+                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
+                        if (StationIsActivated[LocoStation])
+                            VentilationIsOn = true;
+                        VentilationTimer = 0;
+                        break;
+                }
+                if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
+                {
+                    preVentilationSwitchPosition[LocoStation] = VentilationSwitchPosition[LocoStation];
+                    SignalEvent(Event.VentilationSwitch);
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
+                }
+
+                //if (VentilationIsOn)
+                //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor jede!"));
+
+                // Režim automatiky ventilátoru
+                if (VentilationSwitchPosition[LocoStation] == 1)
+                {
+                    if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                    {
+                        VentilationIsOn = true;
+                    }
+                    else
+                    {
+                        if (VentilationIsOn && MirelRSControllerEnable && !HS198ControllerEnable)
+                        {
+                            VentilationTimer += elapsedClocSeconds;
+                            if (VentilationTimer > 20f)
+                            {
+                                VentilationIsOn = false;
+                                VentilationTimer = 0;
+                            }
+                        }
                     }
                 }
             }
+            else
+            {
+                // AI lokomotivy
+                if (AbsSpeedMpS > 0.01f)
+                {
+                    VentilationIsOn = true;
+                }
+                else
+                    VentilationIsOn = false;
+
+                if (TMCoolingIsOn && !TMCoolingIsActivated)
+                {
+                    TMCoolingIsActivated = true;
+                    SignalEvent(Event.TMCoolingOn);
+                }
+                if (!TMCoolingIsOn && TMCoolingIsActivated)
+                {
+                    TMCoolingIsActivated = false;
+                    SignalEvent(Event.TMCoolingOff);
+                }
+            }
+
             if (VentilationIsOn && !PowerOn)
             {
                 VentilationIsOn = false;
@@ -16140,12 +16159,6 @@ namespace Orts.Simulation.RollingStocks
         public float VentilationDRIsOffTimer;
         public void VentilationDR(float elapsedClocSeconds)
         {
-            if (!IsLeadLocomotive())
-                return;
-
-            if (!MirelRSControllerEnable && !HS198ControllerEnable)
-                return;
-
             if (VentilationDRIsOn)
             {
                 VentilationDRIsOffTimer = 0;
@@ -16159,23 +16172,47 @@ namespace Orts.Simulation.RollingStocks
                 VentilationDRIsOffTimer += elapsedClocSeconds;
                 if (VentilationDRIsOffTimer > 0.5f)
                     DRCoolingIsOn = VentilationDRIsOn;
-            }            
+            }
 
             //if (VentilationDRIsOn)
             //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor DR jede!"));
 
-            if (PowerCurrent1 > 0 || BrakeCurrent1 > 0)
+            if (IsPlayerTrain)
             {
-                VentilationDRIsOn = true;
+                if (PowerCurrent1 > 0 || BrakeCurrent1 > 0)
+                {
+                    VentilationDRIsOn = true;
+                }
+                else
+                    VentilationDRIsOn = false;
+
+                if (VentilationDRIsOn && (MirelRSNoVentilationDR || HS198NoVentilationDR))
+                {
+                    VentilationDRIsOn = false;
+                }
             }
             else
-                VentilationDRIsOn = false;
-
-            if (VentilationDRIsOn && (MirelRSNoVentilationDR || HS198NoVentilationDR))
             {
-                VentilationDRIsOn = false;
+                // AI lokomotivy
+                if (AbsSpeedMpS > 0.01f)
+                {
+                    VentilationDRIsOn = true;
+                }
+                else
+                    VentilationDRIsOn = false;
+
+                if (DRCoolingIsOn && !DRCoolingIsActivated)
+                {
+                    DRCoolingIsActivated = true;
+                    SignalEvent(Event.DRCoolingOn);
+                }
+                if (!DRCoolingIsOn && DRCoolingIsActivated)
+                {
+                    DRCoolingIsActivated = false;
+                    SignalEvent(Event.DRCoolingOff);
+                }
             }
-                
+            
             if (VentilationDRIsOn && !PowerOn)
             {
                 VentilationDRIsOn = false;

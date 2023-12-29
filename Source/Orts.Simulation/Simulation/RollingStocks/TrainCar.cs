@@ -445,7 +445,7 @@ namespace Orts.Simulation.RollingStocks
         // Temperature in deg Celcius
         static float[] WorldTemperatureWinter = new float[]
         {
-            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, 1.1f, 0.2f, -5.7f
+            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, 0.1f, -0.2f, -5.7f
          };
 
         static float[] WorldTemperatureAutumn = new float[]
