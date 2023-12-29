@@ -16848,7 +16848,7 @@ namespace Orts.Simulation.Physics
                     wagon.NoPaxsMode = true;
                 }
             }
-            PeopleWantToLeaveCount = exitPaxList.Count;
+            PeopleWantToLeaveCount = exitPaxList.Count;                       
         }
 
         public void CheckPaxToEntry(Train train)
@@ -16862,7 +16862,7 @@ namespace Orts.Simulation.Physics
                     PeopleWantToEntry = true;
                     ActualPassengerCountAtStation++; 
                 }
-            }
+            }            
         }
 
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)

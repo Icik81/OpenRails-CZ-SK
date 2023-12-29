@@ -3568,12 +3568,14 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                     {
-                        car.PowerReductionResult13 = DoorSwitch[LocoStation] == 1 ? 0 : 1;
+                        car.PowerReductionResult13 = Simulator.DoorSwitchDoorLocked ? 0 : 1;
                     }
                     Simulator.DoorSwitchEnable = true;
                 }
                 else
-                    Simulator.DoorSwitchEnable = false;
+                    Simulator.DoorSwitchEnable = false;                                
+                
+                Simulator.DoorSwitchPaxRequest = false;
             }
         }
 
@@ -18842,6 +18844,16 @@ namespace Orts.Simulation.RollingStocks
                     {
                         DoorSwitchEnable = true;
                         data = DoorSwitch[LocoStation];                        
+                        break;
+                    }
+                case CABViewControlTypes.DOORSWITCH_PAXREQUEST:
+                    {                        
+                        data = Simulator.DoorSwitchPaxRequest ? 1 : 0;
+                        break;
+                    }
+                case CABViewControlTypes.DOORSWITCH_UNLOCKSIGNAL:
+                    {
+                        data = Simulator.DoorSwitchDoorLocked ? 0 : 1;
                         break;
                     }
                 case CABViewControlTypes.LAP_BUTTON:

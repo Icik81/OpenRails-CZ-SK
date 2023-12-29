@@ -3434,6 +3434,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV4PANTOUP:
                 case CABViewControlTypes.HV4VOLTAGESETUP:
                 case CABViewControlTypes.DOORSWITCH:
+                case CABViewControlTypes.DOORSWITCH_PAXREQUEST:
+                case CABViewControlTypes.DOORSWITCH_UNLOCKSIGNAL:
                 case CABViewControlTypes.POWER_OFFCLOSINGON:
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                 case CABViewControlTypes.LAP_BUTTON:

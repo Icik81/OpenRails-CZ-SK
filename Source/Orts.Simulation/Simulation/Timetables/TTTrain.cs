@@ -10378,6 +10378,7 @@ namespace Orts.Simulation.Timetables
                         {
                             DisplayColor = Color.Yellow;
                             DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
+                            Simulator.DoorSwitchPaxRequest = true;
                             return;
                         }
 
