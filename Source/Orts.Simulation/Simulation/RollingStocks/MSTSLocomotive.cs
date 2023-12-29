@@ -7369,7 +7369,8 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
                 LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model                               
+                if (!Simulator.Paused)
+                    LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model                               
                 WheelSpeedDirectionMarker = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
 
                 if (extendedPhysics == null)
@@ -7397,7 +7398,7 @@ namespace Orts.Simulation.RollingStocks
                     SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
                 else
-                {
+                {                    
                     // MotiveForceN je počítán v EP
                     if (elapsedClockSeconds > 0)
                     {
