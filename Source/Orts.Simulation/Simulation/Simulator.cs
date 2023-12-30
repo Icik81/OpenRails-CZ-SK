@@ -245,6 +245,7 @@ namespace Orts.Simulation
         public bool DoorSwitchDoorUnLockedSignal;
         public bool DoorSwitchDoorOpened;
         public bool DoorSwitchDoorWasOpened;
+        public double OldClockTime;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -631,6 +632,7 @@ namespace Orts.Simulation
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
             TrainPowerKey = inf.ReadBoolean();            
+            OldClockTime = inf.ReadDouble();
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -670,7 +672,8 @@ namespace Orts.Simulation
             // Icik
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
-            outf.Write(TrainPowerKey);            
+            outf.Write(TrainPowerKey);
+            outf.Write(OldClockTime);
 
             outf.Write(ClockTime);
             outf.Write((int)Season);
