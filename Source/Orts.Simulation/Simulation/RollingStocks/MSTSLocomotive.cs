@@ -6027,7 +6027,8 @@ namespace Orts.Simulation.RollingStocks
             VentilationSwitch(elapsedClockSeconds);
             VentilationDR(elapsedClockSeconds);
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
-            LocoSetUpTimer = LocoSetUpTimer < 5.0f && !Simulator.Paused && Simulator.GameSpeed == 1 ? LocoSetUpTimer + elapsedClockSeconds : 5.0f;
+            if (!Simulator.Paused && Simulator.GameSpeed == 1)
+                LocoSetUpTimer = LocoSetUpTimer < 5.0f ? LocoSetUpTimer + elapsedClockSeconds : 5.0f;
 
             if (IsLeadLocomotive())
             {
