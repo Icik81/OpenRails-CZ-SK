@@ -10411,28 +10411,17 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     car.PowerUnit = false;
                                     car.ControlUnit = true;
+                                    car.AcceptCableSignals = true;
                                 }
                                 else
                                 {
                                     car.PowerUnitWithControl = true;
                                     car.ControlUnit = false;
                                     car.PowerUnit = true;
-                                }
-                            }
-                        }
-                        
-                        if (ControlUnit)
-                        {
-                            AcceptCableSignals = true;
-                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
-                            {
-                                if (car.PowerUnit)
-                                {
                                     car.AcceptCableSignals = true;
-                                    break;
                                 }
                             }
-                        }
+                        }                                                
                     }
                 }
             }
