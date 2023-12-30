@@ -998,7 +998,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
 
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                            if (PowerSupply.PantographVoltageV > 1)
+                            if (PowerSupply.PantographVoltageV > 1 && LocoSetUpTimer > 2)
                             {
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                 {
@@ -1044,7 +1044,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
 
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
-                            if (PowerSupply.PantographVoltageV > 1)
+                            if (PowerSupply.PantographVoltageV > 1 && LocoSetUpTimer > 2)
                             {
                                 if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                 {
@@ -1259,7 +1259,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                         //Shodí HV při poklesu napětí v troleji a nastaveném výkonu a EDB(podpěťová ochrana)
-                        if (PowerSupply.PantographVoltageV > 1)
+                        if (PowerSupply.PantographVoltageV > 1 && LocoSetUpTimer > 2)
                         {
                             if ((PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
                                 || (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalDynamicBrakePercent > 0))
@@ -1318,7 +1318,7 @@ namespace Orts.Simulation.RollingStocks
                                     HVOff = true;
                             }
 
-                        if (PowerSupply.PantographVoltageV > 1)
+                        if (PowerSupply.PantographVoltageV > 1 && LocoSetUpTimer > 2)
                         {
                             // Shodí HV při poklesu napětí v troleji a nastaveném výkonu (podpěťová ochrana)
                             if (PowerSupply.PantographVoltageV < PantographCriticalVoltage && LocalThrottlePercent > 0)
