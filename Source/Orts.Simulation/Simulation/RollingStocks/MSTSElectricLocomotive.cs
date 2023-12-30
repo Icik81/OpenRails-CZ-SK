@@ -922,7 +922,7 @@ namespace Orts.Simulation.RollingStocks
                                 PantographFaultByVoltageChange = true;
                             }
                             else
-                            if (PantographVoltageV < 0.5f * LocomotivePowerVoltage)
+                            if (PantographVoltageV < 0.5f * LocomotivePowerVoltage && LocoSetUpTimer > 2)
                             {
                                 HVOff = true;
                                 PantographFaultByVoltageChange = true;
@@ -1455,11 +1455,8 @@ namespace Orts.Simulation.RollingStocks
         // Icik            
         EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
-            if (LocoSetUpTimer > 1)
-            {
-                VoltageIndicate(elapsedClockSeconds);
-                UnderVoltageProtection(elapsedClockSeconds);
-            }
+            VoltageIndicate(elapsedClockSeconds);
+            UnderVoltageProtection(elapsedClockSeconds);
 
             if (IsPlayerTrain)
             {
@@ -1624,13 +1621,13 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)                        
                 PantographDown = false;
-            else
+            
             if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
                 PantographDown = true;
 
             if (!PantographDown && !VoltageIndicateTestCompleted && RouteVoltageV > 1)
                 TimerVoltageIndicateTest += elapsedSeconds;
-            else
+            
             if (PantographDown)
                 TimerVoltageIndicateTest = 0;
 
