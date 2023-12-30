@@ -1097,7 +1097,7 @@ namespace Orts.Simulation
                     {                        
                         DisplayColor = Color.Yellow;
                         DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
-                        Simulator.DoorSwitchPaxRequest = true;
+                        Simulator.DoorSwitchPaxRequest = true;                       
                         return;
                     } 
 

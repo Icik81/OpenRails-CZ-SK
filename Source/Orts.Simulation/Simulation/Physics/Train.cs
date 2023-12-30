@@ -16872,8 +16872,17 @@ namespace Orts.Simulation.Physics
             
             MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
             bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
-            bool LeftPlatformSide = train.StationStops[0].PlatformItem.PlatformSide[0];
-            bool RightPlatformSide = train.StationStops[0].PlatformItem.PlatformSide[1];
+
+            StationStop thisStation = StationStops[0];
+            bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+            if (frontIsFront)
+            {
+                LeftPlatformSide = !LeftPlatformSide;
+                RightPlatformSide = !RightPlatformSide;
+            }
 
             if (Simulator.DoorSwitchEnable)
             {
