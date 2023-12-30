@@ -16872,7 +16872,9 @@ namespace Orts.Simulation.Physics
             
             MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
             bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
-            
+            bool LeftPlatformSide = train.StationStops[0].PlatformItem.PlatformSide[0];
+            bool RightPlatformSide = train.StationStops[0].PlatformItem.PlatformSide[1];
+
             if (Simulator.DoorSwitchEnable)
             {
                 if (!Simulator.DoorSwitchDoorLocked)
@@ -16883,10 +16885,10 @@ namespace Orts.Simulation.Physics
                         switch (loco.DoorSwitch[loco.LocoStation])
                         {
                             case 2:
-                                Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
+                                Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
                                 break;
                             case 0:
-                                Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                                Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
                                 break;
                         }
                     }
@@ -16895,10 +16897,10 @@ namespace Orts.Simulation.Physics
                         switch (loco.DoorSwitch[loco.LocoStation])
                         {
                             case 0:
-                                Simulator.DoorSwitchDoorLocked = platformSide ? true : false;
+                                Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
                                 break;
                             case 2:
-                                Simulator.DoorSwitchDoorLocked = platformSide ? false : true;
+                                Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
                                 break;
                         }
                     }
