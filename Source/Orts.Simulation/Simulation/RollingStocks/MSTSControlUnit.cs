@@ -137,9 +137,16 @@ namespace Orts.Simulation.RollingStocks
                     Battery = MUCableOk && (car as MSTSLocomotive).Battery ? true : false;
                 }
 
+                if (wasRestored && Battery)
+                {
+                    SplashScreen = false;
+                }
+
                 #region LocoReadyToGo
                 if (LocoReadyToGo && BrakeSystem.IsAirFull)
                 {
+                    SplashScreen = false;
+
                     if (CompressorCombined)
                         CompressorSwitch[LocoStation] = 2;
                     if (CompressorCombined2)

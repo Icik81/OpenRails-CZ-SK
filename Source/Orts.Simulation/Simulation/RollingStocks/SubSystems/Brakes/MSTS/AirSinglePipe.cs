@@ -743,6 +743,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                 }
 
+                if (loco.ControlUnit)
+                {
+                    loco.LapActive[2] = true;
+                }
+
                 if (!loco.IsLeadLocomotive() && !loco.Battery && loco.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                 {
                     loco.LapActive[1] = true;
