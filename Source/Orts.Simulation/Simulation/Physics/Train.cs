@@ -16893,26 +16893,56 @@ namespace Orts.Simulation.Physics
                     Simulator.DoorSwitchDoorLocked = true;
                     if (loco.Flipped)
                     {
-                        switch (loco.DoorSwitch[loco.LocoStation])
+                        if (ReverseAtStation)
                         {
-                            case 2:
-                                Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                break;
-                            case 0:
-                                Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                break;
+                            switch (loco.DoorSwitch[loco.LocoStation])
+                            {
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (loco.DoorSwitch[loco.LocoStation])
+                            {
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
+                            }
                         }
                     }
                     else
                     {
-                        switch (loco.DoorSwitch[loco.LocoStation])
+                        if (ReverseAtStation)
                         {
-                            case 0:
-                                Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                break;
-                            case 2:
-                                Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                break;
+                            switch (loco.DoorSwitch[loco.LocoStation])
+                            {
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
+                            }
+                        }
+                        else
+                        {
+                            switch (loco.DoorSwitch[loco.LocoStation])
+                            {
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
+                            }
                         }
                     }
                 }
