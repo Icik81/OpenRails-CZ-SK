@@ -6681,19 +6681,24 @@ namespace Orts.Simulation.RollingStocks
 
             TrainBrakeController.Update(elapsedClockSeconds);
             if (TrainBrakeController != null)
-            {
+            {                
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
+                    if (MultiPositionController != null && (MultiPositionController.controllerPosition == ControllerPosition.Drive || MultiPositionController.controllerPosition == ControllerPosition.ThrottleDecrease))
+                        goto TrainBrakeInfoSkip;
                     Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Increase, GetTrainBrakeStatusSimple());
                 }
                 if (TrainBrakeController.UpdateValue < 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
+                    if (MultiPositionController != null && (MultiPositionController.controllerPosition == ControllerPosition.Drive || MultiPositionController.controllerPosition == ControllerPosition.ThrottleIncrease))
+                        goto TrainBrakeInfoSkip;
                     Simulator.Confirmer.Update(CabControl.TrainBrake, CabSetting.Decrease, GetTrainBrakeStatusSimple());
                 }
             }
 
+            TrainBrakeInfoSkip:
             if (EngineBrakeController != null)
             {
                 EngineBrakeController.Update(elapsedClockSeconds);
@@ -16071,52 +16076,55 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain)
             {
-                switch (VentilationSwitchPosition[LocoStation])
+                if (VentilationSwitchEnable)
                 {
-                    case 0:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
-                        if (Simulator.StepControllerValue == 0)
-                        {
-                            VentilationIsOn = false;
-                            VentilationTimer = 0;
-                        }
-                        break;
-                    case 1:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
-                        break;
-                    case 2:
-                        VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
-                        if (StationIsActivated[LocoStation])
-                            VentilationIsOn = true;
-                        VentilationTimer = 0;
-                        break;
-                }
-                if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
-                {
-                    preVentilationSwitchPosition[LocoStation] = VentilationSwitchPosition[LocoStation];
-                    SignalEvent(Event.VentilationSwitch);
-                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
-                }
-
-                //if (VentilationIsOn)
-                //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor jede!"));
-
-                // Režim automatiky ventilátoru
-                if (VentilationSwitchPosition[LocoStation] == 1)
-                {
-                    if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                    switch (VentilationSwitchPosition[LocoStation])
                     {
-                        VentilationIsOn = true;
-                    }
-                    else
-                    {
-                        if (VentilationIsOn && MirelRSControllerEnable && !HS198ControllerEnable)
-                        {
-                            VentilationTimer += elapsedClocSeconds;
-                            if (VentilationTimer > 20f)
+                        case 0:
+                            VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Off"); // nearetované
+                            if (Simulator.StepControllerValue == 0)
                             {
                                 VentilationIsOn = false;
                                 VentilationTimer = 0;
+                            }
+                            break;
+                        case 1:
+                            VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("Auto");
+                            break;
+                        case 2:
+                            VentilationSwitchPositionName[LocoStation] = Simulator.Catalog.GetString("On");
+                            if (StationIsActivated[LocoStation])
+                                VentilationIsOn = true;
+                            VentilationTimer = 0;
+                            break;
+                    }
+                    if (preVentilationSwitchPosition[LocoStation] != VentilationSwitchPosition[LocoStation])
+                    {
+                        preVentilationSwitchPosition[LocoStation] = VentilationSwitchPosition[LocoStation];
+                        SignalEvent(Event.VentilationSwitch);
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Ventilator") + ": " + VentilationSwitchPositionName[LocoStation]);
+                    }
+
+                    //if (VentilationIsOn)
+                    //    Simulator.Confirmer.Warning(Simulator.Catalog.GetString("Ventilátor jede!"));
+
+                    // Režim automatiky ventilátoru
+                    if (VentilationSwitchPosition[LocoStation] == 1)
+                    {
+                        if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) || BrakeCurrent1 > 0)
+                        {
+                            VentilationIsOn = true;
+                        }
+                        else
+                        {
+                            if (VentilationIsOn && MirelRSControllerEnable && !HS198ControllerEnable)
+                            {
+                                VentilationTimer += elapsedClocSeconds;
+                                if (VentilationTimer > 20f)
+                                {
+                                    VentilationIsOn = false;
+                                    VentilationTimer = 0;
+                                }
                             }
                         }
                     }
