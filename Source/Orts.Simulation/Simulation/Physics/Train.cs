@@ -16687,9 +16687,9 @@ namespace Orts.Simulation.Physics
                     }
                     
                     Random paxRand = new Random();
-                    if (MaxPaxCapacity > train.Cars.Count * 100f)
+                    if (MaxPaxCapacity > train.Cars.Count * 80f)
                     {
-                        MaxPaxCapacity = paxRand.Next((int)(train.Cars.Count * 40f), (int)(train.Cars.Count * 100f));
+                        MaxPaxCapacity = paxRand.Next((int)(train.Cars.Count * 20f), (int)(train.Cars.Count * 80f));
                     }
                     
                     float trainOccupancyPercent = paxRand.Next(25, 100);
@@ -16698,16 +16698,9 @@ namespace Orts.Simulation.Physics
                     int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
-                        float remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count) + ss.PlatformItem.NumPassengersWaiting;
+                        float remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count);
                         float byPlatform = ss.PlatformItem.Length / 25.0f;
-                        remainingPax += (int)Math.Round(byPlatform, 0);
-                        float length = ss.PlatformItem.Length;
-                        if (length < 150f)
-                        {
-                            length = (int)Math.Round(ss.PlatformItem.Length / 5.0f, 0);
-                            if (remainingPax > (int)length)
-                                remainingPax = (int)length;
-                        }
+                        remainingPax += (int)Math.Round(byPlatform, 0);                        
                                                                                                                                                                                                                                                 
                         if (Simulator.ClockTime / 3600f > 22.0f)
                             remainingPax *= 0.25f;                        
