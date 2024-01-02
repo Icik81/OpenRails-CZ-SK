@@ -1158,14 +1158,23 @@ namespace Orts.Viewer3D
 
                 if ((PlayerLocomotive as MSTSLocomotive).TwoCab)
                 {
-                    if (Math.Abs(PlayerLocomotive.SpeedMpS) == 0.0f && FreeRoamCameraList.Count > 0 && Camera == FreeRoamCamera)  // Pokud bude lokomotiva stát a hráč z loko vystoupí
+                    if (Math.Abs(PlayerLocomotive.SpeedMpS) == 0.0f && FreeRoamCameraList.Count > 0 && Camera == FreeRoamCamera) // Pokud bude lokomotiva stát a hráč z loko vystoupí
                     {
                         new ChangeCabCommand(Log);
                         return;
-                    }
-
+                    }                    
                     if (PlayerLocomotive is MSTSElectricLocomotive)
                     {
+                        if ((PlayerLocomotive as MSTSLocomotive).LocomotiveTypeNumber == 193
+                        || (PlayerLocomotive as MSTSLocomotive).LocomotiveTypeNumber == 383)  // Pokud bude lokomotiva bezpečně průchozí
+                        {
+                            if (Math.Abs(PlayerLocomotive.SpeedMpS) < 1.0f / 3.6f)  // Pod 1 km/h lze přejít mezi stanovišti
+                            {
+                                new ChangeCabCommand(Log);
+                                return;
+                            }
+                        }
+
                         if ((PlayerLocomotive as MSTSLocomotive).PowerOn)  // Elektriky pod napětím neumožní přejít mezi stanovišti, pokud jedou
                         {
                             Simulator.Confirmer.Information(Viewer.Catalog.GetString("To change stations, secure the engine room without voltage."));
