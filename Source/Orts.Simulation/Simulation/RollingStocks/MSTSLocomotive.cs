@@ -6382,7 +6382,18 @@ namespace Orts.Simulation.RollingStocks
                 if (CruiseControl != null && (TrainBrakeController.TCSEmergencyBraking || TrainBrakeController.TCSFullServiceBraking))
                 CruiseControl.WasBraking = true;
 
-            UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+            if (LocoType != LocoTypes.Vectron)
+                UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
+
+            if (LocoType == LocoTypes.Vectron)
+            {
+                if (CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                {
+                    float tempTractiveForceN = (CruiseControl.controllerVolts * MaxForceN / 100);
+                    if (tempTractiveForceN < TractiveForceN)
+                        TractiveForceN = tempTractiveForceN;
+                }
+            }
 
             if (IsPlayerTrain)
             {
