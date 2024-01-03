@@ -1851,6 +1851,7 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterConsumptionPerHour = copy.DieselHeaterConsumptionPerHour;
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;
             GenSoundOff = copy.GenSoundOff;
+            WagonName = copy.WagonName;
 
             if (copy.IntakePointList != null)
             {

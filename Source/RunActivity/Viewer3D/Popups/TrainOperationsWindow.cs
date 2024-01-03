@@ -36,8 +36,10 @@ namespace Orts.Viewer3D.Popups
         int LastPlayerTrainCars;
         bool LastPlayerLocomotiveFlippedState;
 
+        const int TextBoxHeight = 30;
+
         public TrainOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 37, Window.DecorationSize.Y + CarListPadding + owner.TextFontDefault.Height * 2, Viewer.Catalog.GetString("Train Operations"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + CarListPadding + owner.TextFontDefault.Height * TextBoxHeight, Viewer.Catalog.GetString("Train Operations"))
         {
         }
 
@@ -52,29 +54,26 @@ namespace Orts.Viewer3D.Popups
         protected override ControlLayout Layout(ControlLayout layout)
         {
             var textHeight = Owner.TextFontDefault.Height;
-
-            var hbox = base.Layout(layout).AddLayoutHorizontal();
-            var scrollbox = hbox.AddLayoutScrollboxHorizontal(hbox.RemainingHeight);
+            var hbox = base.Layout(layout).AddLayoutVertical();
+            var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
             if (PlayerTrain != null)
             {
                 int carPosition = 0;
                 foreach (var car in PlayerTrain.Cars)
                 {
-                    var carLabel = new TrainOperationsLabel(textHeight * 6, textHeight, Owner.Viewer, car, carPosition, LabelAlignment.Center);
-                    carLabel.Click += new Action<Control, Point>(carLabel_Click);
-
-                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;
-
-                    // Icik
-                    //if (car.BrakesStuck || ((car is MSTSLocomotive) && (car as MSTSLocomotive).PowerReduction > 0)) carLabel.Color = Color.Red;
+                    var carLabel = new TrainOperationsLabel(textHeight * 20, textHeight, Owner.Viewer, car, carPosition, LabelAlignment.Center);
+                    carLabel.Click += new Action<Control, Point>(carLabel_Click);                    
+                                        
                     car.BrakeCarStatus();
                     if (car.BrakesStuck || (car.BrakeSystem.CarHasProblemWithBrake)) carLabel.Color = Color.Red;
                     //if (car.SelectedCar) carLabel.Color = Color.Yellow;
-                    Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;
+                    if (car == PlayerTrain.LeadLocomotive) carLabel.Color = Color.Green;
+
+                    Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
-                        scrollbox.Add(new TrainOperationsCoupler(0, 0, textHeight, Owner.Viewer, car, carPosition));
+                        scrollbox.Add(new TrainOperationsCoupler((int)(20 * 20 / 2 - 10), 0, textHeight, Owner.Viewer, car, carPosition));
                     carPosition++;
                 }
             }
@@ -148,7 +147,22 @@ namespace Orts.Viewer3D.Popups
         {
             Viewer = viewer;
             CarPosition = carPosition;
-            Text = car.CarID;
+
+            if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName == null)
+                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
+                else
+                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
+            }
+            else
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName == null)
+                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
+                else
+                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
+            }
+
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
 
             // Icik
