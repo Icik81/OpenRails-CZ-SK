@@ -1007,14 +1007,22 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Locomotive.Direction == Direction.Forward && (ElectricMotors[0].Id == 0 || ElectricMotors[0].Id == 1))
                     {
-                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10)
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 15)
+                        {
+                            ForceN = 0;
+                        }
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 30 && ElectricMotors[0].Id == 0)
                         {
                             ForceN = 0;
                         }
                     }
                     if (Locomotive.Direction == Direction.Reverse && (ElectricMotors[0].Id == 2 || ElectricMotors[0].Id == 3))
                     {
-                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10)
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 15)
+                        {
+                            ForceN = 0;
+                        }
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 30 && ElectricMotors[0].Id == 3)
                         {
                             ForceN = 0;
                         }
@@ -1025,13 +1033,13 @@ namespace Orts.Simulation.RollingStocks
             if (usingControllerVolts)
             {
                 ForceFilter.Add(ForceN);
-                if (ForceFilter.Count >= 60)
+                if (ForceFilter.Count >= 120)
                 {
                     ForceFilter.RemoveAt(0);
                     ForceNFiltered = ForceFilter.Average();
                 }
                 ForceFilterMotor.Add(ForceN);
-                if (ForceFilterMotor.Count >= 20)
+                if (ForceFilterMotor.Count >= 40)
                 {
                     ForceFilterMotor.RemoveAt(0);
                     ForceNFilteredMotor = ForceFilterMotor.Average();
@@ -1140,7 +1148,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
-                if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10 && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
+                if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 15 && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
                 {
                     if (Locomotive.Direction == Direction.Forward && (Motor.Id == 0 || Motor.Id == 1))
                     {
@@ -1148,6 +1156,19 @@ namespace Orts.Simulation.RollingStocks
                         return;
                     }
                     if (Locomotive.Direction == Direction.Reverse && (Motor.Id == 2 || Motor.Id == 3))
+                    {
+                        Motor.RotorCurrent = Motor.StatorCurrent = 0;
+                        return;
+                    }
+                }
+                if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 30 && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
+                {
+                    if (Locomotive.Direction == Direction.Forward && Motor.Id == 0)
+                    {
+                        Motor.RotorCurrent = Motor.StatorCurrent = 0;
+                        return;
+                    }
+                    if (Locomotive.Direction == Direction.Reverse && Motor.Id == 3)
                     {
                         Motor.RotorCurrent = Motor.StatorCurrent = 0;
                         return;
