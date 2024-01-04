@@ -1001,6 +1001,27 @@ namespace Orts.Simulation.RollingStocks
                     reducedForceN = 0;
             }            
 
+            if (Locomotive.LocoType == LocoTypes.Vectron)
+            {
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
+                {
+                    if (Locomotive.Direction == Direction.Forward && (ElectricMotors[0].Id == 0 || ElectricMotors[0].Id == 1))
+                    {
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10)
+                        {
+                            ForceN = 0;
+                        }
+                    }
+                    if (Locomotive.Direction == Direction.Reverse && (ElectricMotors[0].Id == 2 || ElectricMotors[0].Id == 3))
+                    {
+                        if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10)
+                        {
+                            ForceN = 0;
+                        }
+                    }
+                }
+            }
+
             if (usingControllerVolts)
             {
                 ForceFilter.Add(ForceN);
@@ -1119,6 +1140,19 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
+                if (Locomotive.CruiseControl.controllerVolts > 0 && Locomotive.CruiseControl.controllerVolts < 10 && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
+                {
+                    if (Locomotive.Direction == Direction.Forward && (Motor.Id == 0 || Motor.Id == 1))
+                    {
+                        Motor.RotorCurrent = Motor.StatorCurrent = 0;
+                        return;
+                    }
+                    if (Locomotive.Direction == Direction.Reverse && (Motor.Id == 2 || Motor.Id == 3))
+                    {
+                        Motor.RotorCurrent = Motor.StatorCurrent = 0;
+                        return;
+                    }
+                }
                 if (Disabled && EnablingCurrentTime <= 0)
                 {
                     Random rand = new Random(DateTime.Now.Millisecond + Motor.Id);
