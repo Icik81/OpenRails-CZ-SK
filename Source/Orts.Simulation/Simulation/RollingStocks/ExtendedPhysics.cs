@@ -1033,7 +1033,7 @@ namespace Orts.Simulation.RollingStocks
             if (usingControllerVolts)
             {
                 ForceFilter.Add(ForceN);
-                if (ForceFilter.Count >= 120)
+                if (ForceFilter.Count >= 80)
                 {
                     ForceFilter.RemoveAt(0);
                     ForceNFiltered = ForceFilter.Average();
