@@ -80,6 +80,7 @@ namespace Orts.Simulation.AIs
 
         // Icik
         public bool DontStopABSWP;
+        public float EfficiencyServis;
 
         public enum AI_MOVEMENT_STATE
         {
@@ -155,6 +156,8 @@ namespace Orts.Simulation.AIs
             TrainType = TRAINTYPE.AI_NOTSTARTED;
             StartTime = ServiceDefinition.Time;
             Efficiency = efficiency;
+            EfficiencyServis = efficiency;
+
             if (Simulator.Settings.ActRandomizationLevel > 0 && Simulator.ActivityRun != null) // randomize efficiency
             {
                 RandomizeEfficiency(ref Efficiency);
@@ -649,6 +652,17 @@ namespace Orts.Simulation.AIs
 
         public void AIUpdate(float elapsedClockSeconds, double clockTime, bool preUpdate)
         {
+            // Icik
+            // Udržuje rychlost servisu na jeho maximální rychlosti
+            if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
+            {
+                if (Math.Abs((Cars[0] as MSTSWagon).SpeedMpS) > (Cars[0] as MSTSWagon).MaxSpeedServis)
+                {
+                    (Cars[0] as MSTSWagon).SpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS / Math.Abs((Cars[0] as MSTSWagon).SpeedMpS) * (Cars[0] as MSTSWagon).MaxSpeedServis;
+                    LastSpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS;
+                }
+            }
+
 #if DEBUG_CHECKTRAIN
             if (!CheckTrain)
             {
@@ -823,7 +837,7 @@ namespace Orts.Simulation.AIs
                             {                                
                                 if (TrainCanGoOn)
                                     MovementState = AI_MOVEMENT_STATE.ACCELERATING;                                
-                            }
+                            }                            
                         }
                     }
                     break;
@@ -859,6 +873,14 @@ namespace Orts.Simulation.AIs
                     break;
                 case AI_MOVEMENT_STATE.RUNNING:
                     UpdateRunningState(elapsedClockSeconds);
+
+                    // Icik            
+                    if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
+                    {
+                        if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE && DistanceToEndNodeAuthorityM[0] < 0)
+                            RemoveTrain();
+                    }
+
                     break;
                 case AI_MOVEMENT_STATE.STOPPED_EXISTING:
                     UpdateStoppedState(elapsedClockSeconds);
@@ -878,7 +900,7 @@ namespace Orts.Simulation.AIs
                         {
                             Simulator.AIRequestSignal = true;
                         }                        
-                    }
+                    }                    
 
                     break;
 
@@ -4344,7 +4366,7 @@ namespace Orts.Simulation.AIs
             else
             {
                 ProcessEndOfPathReached(ref returnValue, presentTime);
-            }
+            }            
 
             return (returnValue);
         }
@@ -4394,6 +4416,15 @@ namespace Orts.Simulation.AIs
                         MovementState = AI_MOVEMENT_STATE.FROZEN;
                     }
                 }
+            }
+
+            // Icik            
+            if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
+            {
+                if (DistanceToEndNodeAuthorityM[0] < 0)
+                    removeIt = true;
+                else
+                    removeIt = false;
             }
 
             if (removeIt)

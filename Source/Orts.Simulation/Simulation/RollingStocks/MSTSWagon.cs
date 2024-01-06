@@ -39,6 +39,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
+using Orts.Simulation.AIs;
 using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
@@ -941,6 +942,7 @@ namespace Orts.Simulation.RollingStocks
 
         // Dynamicky nastavuje Davisovi konstanty A, B, C pro různé podvozky v závislosti na aktuální váze vozu
         public float preMassKG;
+        public float MaxSpeedServis;
         private void ORTSDavisSetUp()
         {
             if (MainShapeFileName.ToLower().Contains("servis"))
@@ -950,10 +952,12 @@ namespace Orts.Simulation.RollingStocks
                 InitialMassKG = MassKG = 1000f;
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
                 if (loco != null && Simulator.Settings.MSTSCompatibilityMode)
-                {                    
+                {
+                    var AITrain = Train as AITrain; 
                     loco.PowerReduction = 0;
-                    float SpeedCoef = Train.AllowedMaxSpeedMpS / loco.AbsSpeedMpS;
-                    loco.SpeedMpS = Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && loco.AbsSpeedMpS < Train.AllowedMaxSpeedMpS ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;
+                    MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS * AITrain.EfficiencyServis;
+                    float SpeedCoef = MaxSpeedServis / Math.Abs(loco.SpeedMpS);                    
+                    loco.SpeedMpS = loco.Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && Math.Abs(loco.SpeedMpS) < MaxSpeedServis ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;                                         
                 }
                 return;
             }
