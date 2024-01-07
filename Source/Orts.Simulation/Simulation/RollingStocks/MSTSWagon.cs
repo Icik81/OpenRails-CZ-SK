@@ -949,15 +949,15 @@ namespace Orts.Simulation.RollingStocks
             {
                 var loco = this as MSTSLocomotive;
                 WagonIsServis = true;
-                InitialMassKG = MassKG = 1000f;
+                //InitialMassKG = MassKG = 1000f;
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
                 if (loco != null && Simulator.Settings.MSTSCompatibilityMode)
                 {
                     var AITrain = Train as AITrain; 
                     loco.PowerReduction = 0;
-                    MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS * AITrain.EfficiencyServis;
+                    MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS /** AITrain.EfficiencyServis*/;
                     float SpeedCoef = MaxSpeedServis / Math.Abs(loco.SpeedMpS);                    
-                    loco.SpeedMpS = loco.Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && Math.Abs(loco.SpeedMpS) < MaxSpeedServis ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;                                         
+                    //loco.SpeedMpS = loco.Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && Math.Abs(loco.SpeedMpS) < MaxSpeedServis ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;                                         
                 }
                 return;
             }
