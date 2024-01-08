@@ -7414,7 +7414,7 @@ namespace Orts.Simulation.RollingStocks
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
-                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                 
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                                 
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
                 LocomotiveAxle.FrictionN = DrvWheelWeightKg / 10f;
                 LocomotiveAxle.Sander = Sander;

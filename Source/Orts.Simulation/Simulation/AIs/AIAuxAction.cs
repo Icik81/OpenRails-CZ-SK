@@ -2626,7 +2626,7 @@ namespace Orts.Simulation.AIs
             float[] distancesM = ((AIAuxActionsRef)ActionRef).CalculateDistancesToNextAction(thisTrain, SpeedMpS, reschedule);
             if (distancesM[0] < thisTrain.DistanceTravelledM && !((AIActSigDelegateRef)ActionRef).IsAbsolute) // trigger point
             {
-                if (thisTrain.SpeedMpS > 0f)
+                if (thisTrain.SpeedMpS > 0.1f) // Icik - původně 0.0
                 {
                     if (thisTrain is AITrain && thisTrain.TrainType != Train.TRAINTYPE.AI_PLAYERDRIVEN)
                     {

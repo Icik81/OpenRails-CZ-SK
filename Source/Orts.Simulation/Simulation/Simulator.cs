@@ -1986,10 +1986,12 @@ namespace Orts.Simulation
             if (i == train.Cars.Count - 1)
             {
                 // Icik
-                TryToCouple = true;
+                if (train.IsActualPlayerTrain)
+                    TryToCouple = true;
                 return;  // can't uncouple behind last car
             }
-            CouplingAction = true;
+            if (train.IsActualPlayerTrain)
+                CouplingAction = true;
             ++i;
 
             TrainCar lead = train.LeadLocomotive;
