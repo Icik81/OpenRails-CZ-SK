@@ -12088,18 +12088,8 @@ namespace Orts.Simulation.RollingStocks
             if (!canContinue) // || WaitingForLvzConfirmation)
             {
                 //                return;
-            }
+            }            
 
-            if (SwitchingVoltageMode == 0)
-            {
-                SwitchingVoltageMode_OffDC = true;
-                SwitchingVoltageMode_OffAC = false;
-            }
-            if (SwitchingVoltageMode == 2)
-            {
-                SwitchingVoltageMode_OffDC = false;
-                SwitchingVoltageMode_OffAC = true;
-            }
             continuingTimeChangingSystem += elapsedSeconds;
 
             PantoBlocked = false;
@@ -12109,7 +12099,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 PantoBlocked = true;
                 HVOff = true;
-                SystemAnnunciator = 3;
+                SystemAnnunciator = 3;                
                 return;
             }
             if ((SelectedPowerSystem == PowerSystem.CZ25kV
@@ -12118,7 +12108,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 PantoBlocked = true;
                 HVOff = true;
-                SystemAnnunciator = 3;
+                SystemAnnunciator = 3;                
                 return;
             }
             if ((SelectedPowerSystem == PowerSystem.CZ3kV
@@ -12127,7 +12117,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 PantoBlocked = true;
                 HVOff = true;
-                SystemAnnunciator = 3;
+                SystemAnnunciator = 3;                
                 return;
             }
             HVOff = false;
@@ -12204,17 +12194,7 @@ namespace Orts.Simulation.RollingStocks
                 ChangingPowerSystem = false;
                 timeChangingPowerSystem = 0;
                 continuingTimeChangingSystem = 0;
-                pantoCommandSent = false;
-                if (SwitchingVoltageMode == 0)
-                {
-                    SwitchingVoltageMode_OffDC = true;
-                    SwitchingVoltageMode_OffAC = false;
-                }
-                if (SwitchingVoltageMode == 2)
-                {
-                    SwitchingVoltageMode_OffDC = false;
-                    SwitchingVoltageMode_OffAC = true;
-                }
+                pantoCommandSent = false;                
                 HVOff = false;
                 InverterTest = 2;
             }

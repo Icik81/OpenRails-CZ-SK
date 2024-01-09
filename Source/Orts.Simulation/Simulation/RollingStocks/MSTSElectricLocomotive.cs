@@ -663,11 +663,12 @@ namespace Orts.Simulation.RollingStocks
             if (RouteVoltageV == 15000)
                 volts += 1000; // max 16kV poblíž napaječky
 
+
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
             {
                 // Pro nenaladěné modely se zapsaným MultiSystemEngine
-                if (MultiSystemEngine && !HV2Enable && !HV3Enable && !HV4Enable && !HV5Enable)
+                if (MultiSystemEngine && LocoType != LocoTypes.Vectron && !HV2Enable && !HV3Enable && !HV4Enable && !HV5Enable)
                 {
                     switch (RouteVoltageV)
                     {
@@ -1105,33 +1106,79 @@ namespace Orts.Simulation.RollingStocks
                                         }
                                     }
                                 }
-                        }                        
+                        }
+                        BreakPowerButton = false;
+                    }
+
+                    // Loco Vectron shazuje pantografy, pokud není očekávané napětí
+                    if (LocoType == LocoTypes.Vectron)
+                    {
+                        if (SelectedPowerSystem == PowerSystem.AT15kV
+                            || SelectedPowerSystem == PowerSystem.DE15kV)
+                        {
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                        }
+                        if (SelectedPowerSystem == PowerSystem.CZ25kV
+                            || SelectedPowerSystem == PowerSystem.SK25kV)
+                        {
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                        }
+                        if (SelectedPowerSystem == PowerSystem.CZ3kV
+                            || SelectedPowerSystem == PowerSystem.SK3kV)
+                        {
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                        }
+
+                        if ((Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                        {
+                            if (!Loco15kV && RouteVoltageV == 15000)
+                            {
+                                BreakPowerButton = true;
+                            }
+                            
+                            if (Loco15kV && RouteVoltageV != 15000)
+                            {
+                                BreakPowerButton = true;
+                            }
+                            
+                            if (SwitchingVoltageMode_OffAC && RouteVoltageV != 15000 && RouteVoltageV != 25000)                                
+                            {                                 
+                                BreakPowerButton = true;
+                            }
+
+                            if (SwitchingVoltageMode_OffDC && RouteVoltageV != 3000)
+                            {
+                                BreakPowerButton = true;
+                            }                                                       
+                        }
                     }
 
                     // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (15kV)                    
-                    if (Loco15kV && RouteVoltageV == 25000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                    if (Loco15kV && RouteVoltageV != 15000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                     {
                         HVOff = true;
                         PantographFaultByVoltageChange = true;
                     }
 
-                    // Nastavení AC 15kV při zapnutém HV a pantografy nahoře přejede do úseku 25kV - shodí HV
-                    if (Loco15kV && CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 25000
+                    // Nastavení AC 15kV při zapnutém HV a pantografy nahoře přejede do úseku ne 15kV - shodí HV
+                    if (Loco15kV && CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV != 15000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
                     {
                         HVOff = true;
                         PantographFaultByVoltageChange = true;
                     }
 
-                    // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (25kV)
+                    // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (25kV nebo 3kV)
                     if (!Loco15kV && RouteVoltageV == 15000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        HVOff = true;
+                        HVOff = true;                    
 
-                    // Nastavení AC 25kV při zapnutém HV a pantografy nahoře přejede do úseku 15kV - shodí HV
-                    if (!Loco15kV && CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 15000
+                    // Nastavení AC 25kV nebo DC 3kV při zapnutém HV a pantografy nahoře přejede do úseku 15kV - shodí HV
+                    if (!Loco15kV && CircuitBreakerOn && RouteVoltageV == 15000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))                    
-                        HVOff = true;                        
-                    
+                        HVOff = true;                                            
 
                     // Nedovolí zapnout HV, pokud není napětí v drátech 
                     if (RouteVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
@@ -1139,6 +1186,14 @@ namespace Orts.Simulation.RollingStocks
 
                     // Nastavení AC při zapnutém HV a pantografy nahoře přejede do úseku 3kV - shodí HV
                     if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
+                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    {
+                        HVOff = true;
+                        PantographFaultByVoltageChange = true;
+                    }
+
+                    // Nastavení DC při zapnutém HV a pantografy nahoře přejede do úseku 15kV nebo 25kV - shodí HV
+                    if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV > 3000
                         && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
                     {
                         HVOff = true;
@@ -1161,16 +1216,7 @@ namespace Orts.Simulation.RollingStocks
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
                         }
-                    }
-
-                    // Nastavení DC při zapnutém HV a pantografy nahoře přejede do úseku 15kV nebo 25kV - shodí HV
-                    if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV > 3000
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
-                    {
-                        HVOff = true;
-                        PantographFaultByVoltageChange = true;
-                    }
-
+                    }                    
 
                     if (LocoSwitchACDC
                         && (SwitchingVoltageMode == 1)
@@ -2099,7 +2145,7 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("I_PantographCurrent " + I_PantographCurrent));
 
                 // Penalizace za zvednutí sběrače na špatném napěťovém systému
-                if (PantographFaultByVoltageChange)
+                if (PantographFaultByVoltageChange && LocoType != LocoTypes.Vectron)
                 {
                     PantographVoltageV = PowerSupply.PantographVoltageV;
                     int FaultByPlayerPenaltyTimeInfo = 30 - (int)FaultByPlayerPenaltyTime;
