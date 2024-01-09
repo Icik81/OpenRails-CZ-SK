@@ -1547,6 +1547,7 @@ namespace Orts.Simulation
 
             // Icik
             if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;
+            if (conFileName.Contains("MC")) Settings.ManualCoupling = true; // Ruční svěšování
 
 
 #if ACTIVITY_EDITOR
@@ -1728,6 +1729,7 @@ namespace Orts.Simulation
 
             // Icik
             if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;
+            if (conFileName.Contains("MC")) Settings.ManualCoupling = true; // Ruční svěšování
 
             return train;
         }
