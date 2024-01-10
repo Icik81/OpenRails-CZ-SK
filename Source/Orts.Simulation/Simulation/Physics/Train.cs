@@ -1678,6 +1678,14 @@ namespace Orts.Simulation.Physics
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
             // Icik
+            if (IsPlayerDriven)
+            {
+                if (Simulator.conFileName != null)
+                {
+                    if (Simulator.conFileName.Contains("MC")) Simulator.Settings.ManualCoupling = true; // Ruční svěšování
+                }
+            }
+
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode)
             {

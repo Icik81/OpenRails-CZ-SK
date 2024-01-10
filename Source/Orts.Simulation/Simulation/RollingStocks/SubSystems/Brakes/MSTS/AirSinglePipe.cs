@@ -583,7 +583,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
         public override void Initialize(bool handbrakeOn, float maxPressurePSI, float fullServPressurePSI, bool immediateRelease)
-        {                        
+        {            
             Car.Train.EqualReservoirPressurePSIorInHg = maxPressurePSI = maxPressurePSI0 = 5.0f * 14.50377f;
             if (StartOn)
             {
@@ -592,15 +592,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (Car.Train.Simulator.conFileName != null)
                     {
-                        if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;
-                        if (Car.Train.Simulator.conFileName.Contains("MC")) Car.Train.Simulator.Settings.ManualCoupling = true; // Ruční svěšování
+                        if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;                        
                     }
                     if (!Car.Train.Simulator.Settings.AirEmpty)
                         PowerForWagon = true;
                 }
                 if (!Car.Train.IsPlayerDriven && Car as MSTSLocomotive != null)
                     (Car as MSTSLocomotive).SetAIAction(Car.Train.Simulator.OneSecondLoop);
-            }
+            }            
 
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
@@ -760,7 +759,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         }
 
         public override void Update(float elapsedClockSeconds)
-        {
+        {            
             // Ochrana proti NaN
             if (float.IsNaN(BrakeLine1PressurePSI))
             {

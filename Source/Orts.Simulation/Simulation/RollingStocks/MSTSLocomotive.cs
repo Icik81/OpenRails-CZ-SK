@@ -11397,22 +11397,23 @@ namespace Orts.Simulation.RollingStocks
             {
                 PantographOnPressedTime = 0;
                 PantographOffPressedTime = 0;
-            }
-
-            if (PantographOnPressedTime > 1.5f)
-                PantographOnPressedTest = false;
-            if (PantographOffPressedTime > 1.5f)
-                PantographOffPressedTest = false;
+            }            
 
             if (PantographOnPressedTest)
                 PantographOnPressedTime += elapsedClockSeconds;
             if (PantographOffPressedTest)
                 PantographOffPressedTime += elapsedClockSeconds;
 
-            if (PantographOnPressedTime > 0.9f && PantographOnPressedTime < 1.1f) // 1s na podržení polohy pro zvednutí panto
+            if (PantographOnPressedTime > 1.0f) // 1s na podržení polohy pro zvednutí panto
                 Pantograph3CanOn = true;
-            if (PantographOffPressedTime > 0.4f && PantographOffPressedTime < 0.6f) // 0.5s na podržení polohy pro složení panto
+            if (PantographOffPressedTime > 0.5f) // 0.5s na podržení polohy pro složení panto
                 Pantograph3CanOn = true;
+
+            if (Pantograph3CanOn)
+            {
+                PantographOnPressedTest = false;
+                PantographOffPressedTest = false;
+            }
         }
 
         public void TogglePantograph3SwitchUp()
@@ -16104,7 +16105,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) 
                             || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) 
                             || BrakeCurrent1 > 0 
-                            || (MirelRSControllerEnable && MirelRSControllerPositionName[LocoStation] == "B"))
+                            )
                         {
                             VentilationIsOn = true;
                         }

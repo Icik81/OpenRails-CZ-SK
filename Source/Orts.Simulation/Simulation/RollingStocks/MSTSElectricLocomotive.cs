@@ -1137,25 +1137,33 @@ namespace Orts.Simulation.RollingStocks
                             if (!Loco15kV && RouteVoltageV == 15000)
                             {
                                 BreakPowerButton = true;
+                                PantoCommandDown = true;
+                                SignalEvent(Event.Failure);
                             }
                             
                             if (Loco15kV && RouteVoltageV != 15000)
                             {
                                 BreakPowerButton = true;
+                                PantoCommandDown = true;
+                                SignalEvent(Event.Failure);
                             }
                             
                             if (SwitchingVoltageMode_OffAC && RouteVoltageV != 15000 && RouteVoltageV != 25000)                                
                             {                                 
                                 BreakPowerButton = true;
+                                PantoCommandDown = true;
+                                SignalEvent(Event.Failure);
                             }
 
                             if (SwitchingVoltageMode_OffDC && RouteVoltageV != 3000)
                             {
                                 BreakPowerButton = true;
+                                PantoCommandDown = true;
+                                SignalEvent(Event.Failure);
                             }                                                       
                         }
                     }
-
+                    
                     // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (15kV)                    
                     if (Loco15kV && RouteVoltageV != 15000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                     {
@@ -1215,7 +1223,7 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
                                 HVOff = true;
                             TRouteVoltageV_1 = 0;
-                        }
+                        }                        
                     }                    
 
                     if (LocoSwitchACDC

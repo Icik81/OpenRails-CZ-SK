@@ -1546,8 +1546,7 @@ namespace Orts.Simulation
             if (conFileName.Contains("tilted")) train.IsTilting = true;
 
             // Icik
-            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;
-            if (conFileName.Contains("MC")) Settings.ManualCoupling = true; // Ruční svěšování
+            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;            
 
 
 #if ACTIVITY_EDITOR
@@ -1728,8 +1727,7 @@ namespace Orts.Simulation
             if (conFileName.Contains("tilted")) train.IsTilting = true;
 
             // Icik
-            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;
-            if (conFileName.Contains("MC")) Settings.ManualCoupling = true; // Ruční svěšování
+            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;            
 
             return train;
         }
