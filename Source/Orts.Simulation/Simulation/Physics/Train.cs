@@ -1683,7 +1683,11 @@ namespace Orts.Simulation.Physics
                 if (Simulator.conFileName != null)
                 {
                     if (Simulator.conFileName.Contains("MC")) Simulator.Settings.ManualCoupling = true; // Ruční svěšování
+                    Simulator.ManualCouplingOverride = true;
                 }
+
+                if (Simulator.ManualCouplingOverride)
+                    Simulator.Settings.ManualCoupling = true;
             }
 
             // MSTS kompatibility mód

@@ -246,6 +246,7 @@ namespace Orts.Simulation
         public bool DoorSwitchDoorOpened;
         public bool DoorSwitchDoorWasOpened;
         public double OldClockTime;
+        public bool ManualCouplingOverride;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -633,6 +634,7 @@ namespace Orts.Simulation
             ControllerVoltsLocoHelper = inf.ReadSingle();
             TrainPowerKey = inf.ReadBoolean();            
             OldClockTime = inf.ReadDouble();
+            ManualCouplingOverride = inf.ReadBoolean();
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -674,6 +676,7 @@ namespace Orts.Simulation
             outf.Write(ControllerVoltsLocoHelper);
             outf.Write(TrainPowerKey);
             outf.Write(OldClockTime);
+            outf.Write(ManualCouplingOverride);
 
             outf.Write(ClockTime);
             outf.Write((int)Season);
