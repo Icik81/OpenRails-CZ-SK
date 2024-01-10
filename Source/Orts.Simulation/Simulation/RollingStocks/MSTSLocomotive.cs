@@ -16038,6 +16038,8 @@ namespace Orts.Simulation.RollingStocks
         public float VentilationTimer;
         public float VentilationIsOnTimer;
         public float VentilationIsOffTimer;
+        bool VentilationEDBStart;
+        bool VentilationEDBStartCycle;
         public void ToggleVentilationUp()
         {
             if (VentilationSwitchPosition[LocoStation] < 2)
@@ -16102,10 +16104,23 @@ namespace Orts.Simulation.RollingStocks
                     // Režim automatiky ventilátoru
                     if (VentilationSwitchPosition[LocoStation] == 1)
                     {
+                        if (MirelRSControllerEnable)
+                        {
+                            if (!VentilationEDBStartCycle && !VentilationEDBStart && MirelRSControllerPositionName[LocoStation] == "B" && AbsSpeedMpS > 25.0f / 3.6f)
+                            {
+                                VentilationEDBStart = true;
+                                VentilationEDBStartCycle = true;
+                            }
+                            if (MirelRSControllerPositionName[LocoStation] == "0")
+                            {
+                                VentilationEDBStartCycle = false;
+                            }
+                        }
+
                         if ((PowerOn && MirelRSControllerThrottleValue > 1 && MirelRSControllerEnable) 
                             || (PowerOn && HS198ControllerThrottleValue > 0 && HS198ControllerEnable) 
-                            || BrakeCurrent1 > 0 
-                            )
+                            || BrakeCurrent1 > 0
+                            || VentilationEDBStart)                            
                         {
                             VentilationIsOn = true;
                         }
@@ -16121,6 +16136,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                         }
+                        VentilationEDBStart = false;
                     }
                 }
             }
