@@ -4009,7 +4009,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
-        public int HeatingIsOnLocoCount;
+        public int HeatingIsOnLocoCount;        
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             Train.HeatingIsOn = false;
@@ -4022,6 +4022,11 @@ namespace Orts.Simulation.RollingStocks
             
             foreach (TrainCar car in Train.Cars)
             {
+                if (Train.TrainHeatingStartOn && !Simulator.Settings.AirEmpty)
+                {
+                    car.CarHasHeatingReady = true;
+                }
+
                 if (car is MSTSLocomotive)
                 {
                     if ((car.CabHeating_OffOn[(car as MSTSLocomotive).LocoStation] || car.LocoHelperOn) && AuxPowerOn)
@@ -4057,7 +4062,8 @@ namespace Orts.Simulation.RollingStocks
                         Train.HeatedCarAttached = true;
                     }
                 }
-            }            
+            }
+            Train.TrainHeatingStartOn = false;
 
             // Spustí zvuk topení v kabině při inicializaci loko
             if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn)
@@ -4211,7 +4217,7 @@ namespace Orts.Simulation.RollingStocks
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
 
                             // Zapne jednotky topení/klimy 
-                            if (!Simulator.Settings.AirEmpty)
+                            if (!car.WagonHasTemperature && car.CarHasHeatingReady)
                             {
                                 car.BrakeSystem.HeatingIsOn = true;
                                 car.BrakeSystem.HeatingMenu = 0;
@@ -4258,7 +4264,7 @@ namespace Orts.Simulation.RollingStocks
                             car.CarOutsideTempC0 = MathHelper.Clamp(car.CarOutsideTempC0, 5, 50);
 
                             // Natopené vozy, oživená loko
-                            if (car.BrakeSystem.IsAirFull && !car.WagonHasTemperature)
+                            if (car.CarHasHeatingReady && !car.WagonHasTemperature)
                             {
                                 if (Simulator.Season == SeasonType.Summer)
                                     car.WagonTemperature = Simulator.Random.Next(24, 29);
@@ -4835,9 +4841,18 @@ namespace Orts.Simulation.RollingStocks
         bool CarIsWaitingAtStation;
         public float AISeasonWaitTimeOff;
         public void SetAIAction(float elapsedClockSeconds)
-        {
+        {            
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
             {
+                // Pokud je AI lokomotiva nahozená, má nahozené topení i topení ve vozech
+                if (this.PowerOn)
+                {
+                    foreach (TrainCar car in (Train as AITrain).Cars)
+                    {
+                        car.CarHasHeatingReady = true;
+                    }
+                }
+
                 // Čas v sekundách, kdy AI vypne napájení
                 if (AISeasonWaitTimeOff == 0)
                 {
