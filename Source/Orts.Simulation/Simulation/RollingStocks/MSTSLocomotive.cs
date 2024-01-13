@@ -6429,7 +6429,7 @@ namespace Orts.Simulation.RollingStocks
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
 
             // Icik            
-            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals))
+            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || TractionBlocked)
                 TractiveForceN = 0;
 
             MotiveForceN = TractiveForceN;            
@@ -17283,10 +17283,9 @@ namespace Orts.Simulation.RollingStocks
                         }
                         maxForce = (maxForce / MaxForceN) * 100;
                     }
-                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);
-                    if (!PowerOn) data = 0;
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);                    
                     break;
-                case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
+                case CABViewControlTypes.REQUESTED_MOTOR_FORCE:                    
                     data = 0.0f;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                     {

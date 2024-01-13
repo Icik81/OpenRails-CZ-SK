@@ -479,10 +479,13 @@ namespace Orts.Simulation.RollingStocks
                 // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači                
                 if (!Locomotive.PowerOn)
                 {
-                    Locomotive.DynamicBrakePercent = 0;
-                    Locomotive.DynamicBrakeForceN = 0;
-                    Locomotive.DynamicBrakeIntervention = -1;                    
-                    Locomotive.ControllerVolts = 0;
+                    if (Locomotive.ControllerVolts >= 0)
+                    {
+                        Locomotive.DynamicBrakePercent = 0;
+                        Locomotive.DynamicBrakeForceN = 0;
+                        Locomotive.DynamicBrakeIntervention = -1;
+                        Locomotive.ControllerVolts = 0;
+                    }
                     Locomotive.TractionBlocked = true;
                 }
                 if (GeneratoricModeBlocked)
@@ -490,7 +493,7 @@ namespace Orts.Simulation.RollingStocks
                     Locomotive.DynamicBrakeForceN = 0;
                 }
                 // Funkce EDB při generátorickém režimu Vectrona
-                if (GeneratoricModeActive && !GeneratoricModeDisabled)
+                if (GeneratoricModeActive && !GeneratoricModeDisabled && Locomotive.ForceHandleValue >= 0)
                 {
                     if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
                     {                        
@@ -900,7 +903,7 @@ namespace Orts.Simulation.RollingStocks
             }
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && !Locomotive.PowerOn && (Locomotive.DynamicBrakeForceN / totalMotors) > ((Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors))
             {
-                if (!Locomotive.extendedPhysics.GeneratoricModeDisabled) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;                
+                if (!Locomotive.extendedPhysics.GeneratoricModeDisabled && Locomotive.ForceHandleValue >= 0) maxForceN = ForceN = (Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000) / totalMotors;                
                 Locomotive.extendedPhysics.GeneratoricModeActive = true;
             }
             else
