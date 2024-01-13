@@ -481,31 +481,37 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Locomotive.ControllerVolts >= 0)
                     {
-                        Locomotive.DynamicBrakePercent = 0;
-                        Locomotive.DynamicBrakeForceN = 0;
-                        Locomotive.DynamicBrakeIntervention = -1;
                         Locomotive.ControllerVolts = 0;
                     }
-                    Locomotive.TractionBlocked = true;
+                    Locomotive.TractionBlocked = true;                                     
                 }
+                else
+                {
+                    FakeDynamicBrakePercent = 0;
+                }
+                
                 if (GeneratoricModeBlocked)
                 {                    
-                    Locomotive.DynamicBrakeForceN = 0;
+                    Locomotive.DynamicBrakeForceN = 0;                    
                 }
                 // Funkce EDB při generátorickém režimu Vectrona
                 if (GeneratoricModeActive && !GeneratoricModeDisabled && Locomotive.ForceHandleValue >= 0)
                 {
+                    if (Math.Abs(FakeDynamicBrakePercent) > 10f)
+                        FakeDynamicBrakePercent = 0;
+
                     if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
                     {                        
-                        if (Math.Abs(Locomotive.DriveForceN) > 1.05f * 4000f)
+                        if (Math.Abs(Locomotive.DriveForceN) > 1.05f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
                         {
                             FakeDynamicBrakePercent -= 0.1f;
                         }
-                        if (Math.Abs(Locomotive.DriveForceN) < 0.95f * 4000f)
+                        if (Math.Abs(Locomotive.DriveForceN) < 0.95f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
                         {
                             FakeDynamicBrakePercent += 0.1f;
                         }                                                
-                        Locomotive.DynamicBrakePercent = FakeDynamicBrakePercent;                        
+                        Locomotive.DynamicBrakePercent = FakeDynamicBrakePercent;
+                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
                     }
                 }
             }
