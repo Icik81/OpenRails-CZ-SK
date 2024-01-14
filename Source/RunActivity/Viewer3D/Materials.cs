@@ -976,7 +976,7 @@ namespace Orts.Viewer3D
             graphicsDevice.SamplerStates[0] = GetShadowTextureAddressMode();
 
             if (NightTexture != null && NightTexture != SharedMaterialManager.MissingTexture && (((Options & SceneryMaterialOptions.UndergroundTexture) != 0 &&
-                (Viewer.MaterialManager.sunDirection.Y < -0.085f || Viewer.Camera.IsUnderground)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
+                (Viewer.MaterialManager.sunDirection.Y < -0.085f || Viewer.Camera.IsUnderground || Viewer.Simulator.PlayerCarIsInTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
             {
                 shader.ImageTexture = NightTexture;
                 shader.ImageTextureIsNight = true;
@@ -1040,7 +1040,7 @@ namespace Orts.Viewer3D
         {
             var timeOffset = ((float)KeyLengthRemainder()) / 5000f; // TODO for later use for pseudorandom texture switch time
             if (NightTexture != null && NightTexture != SharedMaterialManager.MissingTexture && (((Options & SceneryMaterialOptions.UndergroundTexture) != 0 &&
-                (Viewer.MaterialManager.sunDirection.Y < -0.085f || Viewer.Camera.IsUnderground)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
+                (Viewer.MaterialManager.sunDirection.Y < -0.085f || Viewer.Camera.IsUnderground || Viewer.Simulator.PlayerCarIsInTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
                 return NightTexture;
 
             return Texture;
