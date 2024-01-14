@@ -6429,7 +6429,7 @@ namespace Orts.Simulation.RollingStocks
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
 
             // Icik            
-            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || TractionBlocked)
+            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || (LocoType == LocoTypes.Vectron && TractionBlocked))
                 TractiveForceN = 0;
 
             MotiveForceN = TractiveForceN;            
