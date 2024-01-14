@@ -114,6 +114,8 @@ namespace Orts.Simulation.Physics
         public bool AIRequestSignal;
         public bool TrainIsPassengerTrain;
         public bool TrainHeatingStartOn = true;
+        public float PlayerTrainBrakePercent = 0;
+        public bool PlayerTrainBrakePercentChange;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

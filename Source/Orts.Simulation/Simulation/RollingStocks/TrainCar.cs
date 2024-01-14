@@ -407,6 +407,7 @@ namespace Orts.Simulation.RollingStocks
         public string WagonName;
         public float SlipSpeedDiference;
         public bool CarHasHeatingReady;
+        public bool CarHasBrakePipeConnected;
 
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
@@ -886,9 +887,9 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        // Icik
+        // Icik                
         public virtual void BrakeMassKG()
-        {
+        {                        
             if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.CarHasMechanicStuckBrake_1)
             {
                 BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG / 3;

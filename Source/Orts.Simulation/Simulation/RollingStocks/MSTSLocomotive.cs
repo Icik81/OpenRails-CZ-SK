@@ -3044,7 +3044,96 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        // Icik
+        // Icik        
+        float prePlayerTrainBrakePercent = 0;
+        public virtual void TrainBrakePercent()
+        {
+            if (!IsLeadLocomotive() || Simulator.GameTimeCyklus10 < 10)
+                return;
+            int CarPosition = 0;
+            float CarBrakeMass = 0;
+            bool CarDisconnected = false;
+            bool NextCarDisconnected = false;
+            foreach (var car in Train.Cars)
+            {
+                car.CarHasBrakePipeConnected = false;
+            }
+            foreach (var car in Train.Cars)
+            {                
+                car.CarHasBrakePipeConnected = false;
+                // První vůz
+                if (CarPosition == 0)
+                {
+                    if (car.BrakeSystem.AngleCockBOpen)
+                    {
+                        car.CarHasBrakePipeConnected = true;
+                    }
+                    else
+                        NextCarDisconnected = true;
+                }
+                else
+                // Poslední vůz
+                if (CarPosition == Train.Cars.Count - 1)
+                {
+                    if (car.BrakeSystem.FrontBrakeHoseConnected && car.BrakeSystem.AngleCockAOpen)
+                    {
+                        car.CarHasBrakePipeConnected = true;
+                    }
+                    if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
+                    {
+                        car.CarHasBrakePipeConnected = false;
+                        CarDisconnected = true;
+                    }
+                }
+                else
+                {
+                    // Vložený vůz                    
+                    if (car.BrakeSystem.FrontBrakeHoseConnected && car.BrakeSystem.AngleCockAOpen)
+                    {
+                        car.CarHasBrakePipeConnected = true;
+                    }
+
+                    if (!car.BrakeSystem.FrontBrakeHoseConnected)
+                    {
+                        car.CarHasBrakePipeConnected = false;
+                        CarDisconnected = true;
+                        NextCarDisconnected = true;
+                    }
+
+                    if (car.BrakeSystem.FrontBrakeHoseConnected && !car.BrakeSystem.AngleCockAOpen)
+                    {
+                        car.CarHasBrakePipeConnected = false;
+                        CarDisconnected = true;
+                        NextCarDisconnected = true;
+                    }
+                    if (car.BrakeSystem.FrontBrakeHoseConnected && !car.BrakeSystem.AngleCockBOpen)
+                    {
+                        car.CarHasBrakePipeConnected = true;
+                        NextCarDisconnected = true;
+                    }
+                }                
+
+                if (!car.BrakeSystem.BrakeCarDeactivate && !CarDisconnected)
+                {
+                    CarBrakeMass += car.BrakeSystem.BrakeMassKG;
+                }
+
+                if (CarDisconnected || NextCarDisconnected)
+                {
+                    break;
+                }
+
+                CarPosition++;
+            }
+            Train.PlayerTrainBrakePercent = CarBrakeMass / Train.MassKg * 100f;
+             
+            if (prePlayerTrainBrakePercent != Train.PlayerTrainBrakePercent)
+            {
+                prePlayerTrainBrakePercent = Train.PlayerTrainBrakePercent;
+                Train.PlayerTrainBrakePercentChange = true;
+            }            
+        }
+
         public void PlayerSwitchToRearCab()
         {
             if (IsLeadLocomotive())
@@ -6160,6 +6249,7 @@ namespace Orts.Simulation.RollingStocks
                 CabRadioOnOff();
                 CheckMUWheelSlip(elapsedClockSeconds);
                 DoorSwitchLogic();
+                TrainBrakePercent();
 
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)

@@ -20,6 +20,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Simulation;
+using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using ORTS.Common;
@@ -524,8 +525,10 @@ namespace Orts.Viewer3D.Popups
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Brake Off"));
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateText = Viewer.Catalog.GetString("off");
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivate = true;
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivate = true;                
             }
+
+            Viewer.PlayerTrain.PlayerTrainBrakePercentChange = true;
         }
 
         void buttonLeftDoor_Click(Control arg1, Point arg2)
