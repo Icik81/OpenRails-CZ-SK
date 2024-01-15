@@ -463,6 +463,13 @@ namespace Orts.Simulation.AIs
 
             if (validPosition)
             {
+                // Icik
+                if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSLocomotive).LocomotiveName.ToLower().Contains("servis"))
+                {
+                    MaxAccelMpSS = 0.05f;  
+                    MaxDecelMpSS = 0.05f;
+                }
+                else
                 if (IsFreight)
                 {
                     MaxAccelMpSS = MaxAccelMpSSF;  // set freigth accel and decel
@@ -492,7 +499,6 @@ namespace Orts.Simulation.AIs
                             MaxDecelMpSS = 2f * MaxDecelMpSSP;
                         }
                     }
-
                 }
 
                 BuildWaitingPointList(activityClearingDistanceM);
