@@ -736,8 +736,7 @@ namespace Orts.Simulation.RollingStocks
                         overridenControllerVolts = 0;
                 }
             }
-            LocomotiveAxle.DampingNs = Mass;
-            LocomotiveAxle.FrictionN = Mass * 10;
+
             LocomotiveAxle.SlipWarningTresholdPercent = Locomotive.SlipWarningThresholdPercent;
             LocomotiveAxle.AdhesionK = Locomotive.AdhesionK;
             LocomotiveAxle.CurtiusKnifflerA = Locomotive.Curtius_KnifflerA;
