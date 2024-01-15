@@ -7519,9 +7519,7 @@ namespace Orts.Simulation.RollingStocks
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
-                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                                 
-                LocomotiveAxle.DampingNs = MassKG / 1000.0f;
-                LocomotiveAxle.FrictionN = WheelSlip ? DrvWheelWeightKg / LocoNumDrvAxles : DrvWheelWeightKg / 100f;
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                                                                 
                 LocomotiveAxle.Sander = Sander;
                 LocomotiveAxle.GameSpeed = Simulator.GameSpeed;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
