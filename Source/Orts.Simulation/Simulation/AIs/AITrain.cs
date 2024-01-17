@@ -463,13 +463,6 @@ namespace Orts.Simulation.AIs
 
             if (validPosition)
             {
-                // Icik
-                if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSLocomotive).LocomotiveName.ToLower().Contains("servis"))
-                {
-                    MaxAccelMpSS = 0.05f;  
-                    MaxDecelMpSS = 0.05f;
-                }
-                else
                 if (IsFreight)
                 {
                     MaxAccelMpSS = MaxAccelMpSSF;  // set freigth accel and decel
@@ -667,7 +660,9 @@ namespace Orts.Simulation.AIs
                     (Cars[0] as MSTSWagon).SpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS / Math.Abs((Cars[0] as MSTSWagon).SpeedMpS) * (Cars[0] as MSTSWagon).MaxSpeedServis;
                     LastSpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS;
                 }
-            }
+                MaxAccelMpSS = 0.5f;
+                MaxDecelMpSS = 0.5f;
+            }            
 
 #if DEBUG_CHECKTRAIN
             if (!CheckTrain)
@@ -789,7 +784,26 @@ namespace Orts.Simulation.AIs
             if (CheckTrain)
             {
                 File.AppendAllText(@"C:\temp\checktrain.txt", "Switch MovementState : " + MovementState + "\n");
-            }            
+            }
+
+            // Icik            
+            if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
+            {
+                if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
+                {
+                    float DistanceToEOR = nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM;
+
+                    if (MovementState == AI_MOVEMENT_STATE.BRAKING && DistanceToEOR > 0.2f * DistanceToEOR)
+                    {
+                        MovementState = AI_MOVEMENT_STATE.RUNNING;
+                    }
+
+                    if (DistanceToEOR < 0)
+                    {
+                        RemoveTrain();
+                    }
+                }
+            }
 
             switch (MovementState)
             {
@@ -879,14 +893,6 @@ namespace Orts.Simulation.AIs
                     break;
                 case AI_MOVEMENT_STATE.RUNNING:
                     UpdateRunningState(elapsedClockSeconds);
-
-                    // Icik            
-                    if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
-                    {
-                        if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE && DistanceToEndNodeAuthorityM[0] < 0)
-                            RemoveTrain();
-                    }
-
                     break;
                 case AI_MOVEMENT_STATE.STOPPED_EXISTING:
                     UpdateStoppedState(elapsedClockSeconds);
@@ -4392,6 +4398,12 @@ namespace Orts.Simulation.AIs
             var distanceThreshold = PreUpdate ? 5.0f : 2.0f;
             var distanceToNextSignal = DistanceToSignal.HasValue ? DistanceToSignal.Value : 0.1f;
 
+            // Icik            
+            if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
+            {
+                return;
+            }
+
             if (Simulator.TimetableMode) removeIt = true;
             else if (TrainType == TRAINTYPE.AI_PLAYERHOSTING || Simulator.OriginalPlayerTrain == this /*TrainType == TRAINTYPE.PLAYER*/) removeIt = false;
             else if (TCRoute.TCRouteSubpaths.Count == 1 || TCRoute.activeSubpath != TCRoute.TCRouteSubpaths.Count - 1) removeIt = true;
@@ -4422,16 +4434,7 @@ namespace Orts.Simulation.AIs
                         MovementState = AI_MOVEMENT_STATE.FROZEN;
                     }
                 }
-            }
-
-            // Icik            
-            if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
-            {
-                if (DistanceToEndNodeAuthorityM[0] < 0)
-                    removeIt = true;
-                else
-                    removeIt = false;
-            }
+            }            
 
             if (removeIt)
             {
