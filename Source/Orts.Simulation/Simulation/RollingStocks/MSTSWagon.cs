@@ -949,7 +949,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 var loco = this as MSTSLocomotive;
                 WagonIsServis = true;
-                //InitialMassKG = MassKG = 1000f;
+                InitialMassKG = MassKG = 1000f;
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
                 if (loco != null && Simulator.Settings.MSTSCompatibilityMode)
                 {
