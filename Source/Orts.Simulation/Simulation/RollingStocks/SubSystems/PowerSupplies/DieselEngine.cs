@@ -615,6 +615,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             WaterCoolingPlatesDownS = copy.WaterCoolingPlatesDownS;
             OilCoolingPlatesUpS = copy.OilCoolingPlatesUpS;
             OilCoolingPlatesDownS = copy.OilCoolingPlatesDownS;
+            CoolingFlowBase = copy.CoolingFlowBase;
 
             if (copy.GearBox != null)
             {
@@ -980,6 +981,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float WaterCoolingPlatesDownS;
         public float OilCoolingPlatesUpS;
         public float OilCoolingPlatesDownS;
+        public float CoolingFlowBase;
 
         /// <summary>
         /// Load of the engine
@@ -1126,6 +1128,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "watercoolingplatesdown": WaterCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesup": OilCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesdown": OilCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
+                    case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
 
                     default:
                         end = true;
@@ -2042,10 +2045,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
             if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
                 locomotive.DieselLocoTempReady = false;
-
-
+            
             // Průtok čerpadla zvyšuje chlazení při vyšších otáčkách
-            CoolingFlow = 1;
+            CoolingFlow = CoolingFlowBase;
+            if (CoolingFlow == 0) CoolingFlow = 1;
             if (RealRPM > IdleRPM && RealRPM <= IdleRPM * 2.0f)
                 CoolingFlow *= RealRPM / IdleRPM;
             else
