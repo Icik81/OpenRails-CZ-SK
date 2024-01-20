@@ -2048,13 +2048,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             
             //CoolingFlowBase = 2.0f;
             // Průtok čerpadla zvyšuje chlazení při vyšších otáčkách
-            if (CoolingFlowBase == 0) CoolingFlowBase = 1.0f;            
+            if (CoolingFlowBase == 0) CoolingFlowBase = 2.0f;            
             CoolingFlow = 0.1f;
             if (RealRPM > IdleRPM && RealRPM <= IdleRPM * 2.0f)
-                CoolingFlow *= 10f * ((RealRPM / IdleRPM - 1.0f) * CoolingFlowBase * 10f);
+                CoolingFlow = (RealRPM / IdleRPM - 1.0f) * CoolingFlowBase * 10f;
             else
             if (RealRPM > IdleRPM)
                 CoolingFlow = CoolingFlowBase * 10f;
+
+            float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -10f , 10f);
 
             // Voda
             // Teplotu zvyšují otáčky a zátěž motoru
@@ -2062,7 +2064,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.05f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
                 RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) / DieselWaterTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselWaterTemperatureDeg))
@@ -2070,8 +2072,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RealDieselWaterTemperatureDeg = FakeDieselWaterTemperatureDeg;
             }
             // Teplota okolí koriguje teplotu motoru
-            // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
-            float RealDieselWaterTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * (RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0) * CoolingFlow / DieselWaterTempTimeConstantSec, 0, 100);
+            // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny            
+            float RealDieselWaterTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * CarOutsideTempDelta * CoolingFlow / DieselWaterTempTimeConstantSec, 0, 100);
             RealDieselWaterTemperatureDeg -= RealDieselWaterTemperatureDegDelta;
 
             // Olej
@@ -2080,7 +2082,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (DieselIdleOilTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.05f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) / DieselOilTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselOilTemperatureDeg))
@@ -2089,7 +2091,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
-            float RealDieselOilTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * (RealDieselOilTemperatureDeg - locomotive.CarOutsideTempC0) * CoolingFlow / (DieselOilTempTimeConstantSec * 2), 0, 100);
+            float RealDieselOilTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * CarOutsideTempDelta * CoolingFlow / (DieselOilTempTimeConstantSec * 2), 0, 100);
             RealDieselOilTemperatureDeg -= RealDieselOilTemperatureDegDelta;
 
             // Poškození a vypnutí motoru
