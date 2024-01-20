@@ -1128,7 +1128,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "watercoolingplatesdown": WaterCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesup": OilCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesdown": OilCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
-                    case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
+                    case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = 10f * MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
 
                     default:
                         end = true;
@@ -2046,14 +2046,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
                 locomotive.DieselLocoTempReady = false;
             
+            //CoolingFlowBase = 2.0f;
             // Průtok čerpadla zvyšuje chlazení při vyšších otáčkách
-            CoolingFlow = CoolingFlowBase;
-            if (CoolingFlow == 0) CoolingFlow = 1;
+            if (CoolingFlowBase == 0) CoolingFlowBase = 1.0f;            
+            CoolingFlow = 0.1f;
             if (RealRPM > IdleRPM && RealRPM <= IdleRPM * 2.0f)
-                CoolingFlow *= RealRPM / IdleRPM;
+                CoolingFlow *= 10f * ((RealRPM / IdleRPM - 1.0f) * CoolingFlowBase * 10f);
             else
             if (RealRPM > IdleRPM)
-                CoolingFlow *= 2.0f;
+                CoolingFlow = CoolingFlowBase * 10f;
 
             // Voda
             // Teplotu zvyšují otáčky a zátěž motoru
@@ -2061,7 +2062,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.05f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
                 RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) / DieselWaterTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselWaterTemperatureDeg))
@@ -2079,7 +2080,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 if (DieselIdleOilTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.01f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.05f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) / DieselOilTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselOilTemperatureDeg))
