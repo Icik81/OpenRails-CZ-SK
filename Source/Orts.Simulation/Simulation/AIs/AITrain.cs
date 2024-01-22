@@ -660,8 +660,8 @@ namespace Orts.Simulation.AIs
                     (Cars[0] as MSTSWagon).SpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS / Math.Abs((Cars[0] as MSTSWagon).SpeedMpS) * (Cars[0] as MSTSWagon).MaxSpeedServis;
                     LastSpeedMpS = (Cars[0] as MSTSWagon).SpeedMpS;
                 }
-                MaxAccelMpSS = 0.5f;
-                MaxDecelMpSS = 0.5f;
+                MaxAccelMpSS = 0.25f;
+                MaxDecelMpSS = 0.25f;
             }            
 
 #if DEBUG_CHECKTRAIN

@@ -247,7 +247,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonLocoChange_Click(Control arg1, Point arg2)
         {
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).CarIsPlayerLoco || Viewer.PlayerTrain.SpeedMpS != 0.0f)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).CarIsPlayerLoco || Math.Abs(Viewer.PlayerTrain.SpeedMpS) < 0.01f)
                 return;
             Viewer.Simulator.PlayerLocomotiveChange = true;
             Viewer.Simulator.LeadLocomotiveIndex = CarPosition;            
