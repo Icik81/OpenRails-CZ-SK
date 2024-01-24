@@ -591,8 +591,9 @@ namespace Orts.Simulation.RollingStocks
                         TotalMaxForceN *= 1.017f;
                 }
             }
+            
             wasRestored = false;
-            AverageAxleSpeedMpS /= NumAxles;
+            AverageAxleSpeedMpS /= NumAxles;            
             if (UseControllerVolts)
             {
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
@@ -977,6 +978,9 @@ namespace Orts.Simulation.RollingStocks
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
             LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;            
+
+            if (WheelSpeedMpS == 0)
+                Locomotive.extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS;
 
             if (Locomotive.CruiseControl != null)
             {
