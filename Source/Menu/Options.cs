@@ -207,6 +207,8 @@ namespace ORTS
             NightSignalLightGlowTrackBar_Scroll(null, null);
             trackBarSoundTrainDepart.Value = Settings.TrainDepartSound;
             trackBarSoundTrainDepart_Scroll(null, null);
+            ShadowtrackBar.Value = Settings.ShadowSettings;
+            trackBarShadowSettings_Scroll(null, null);
             // Simulation tab
 
             //checkSimpleControlsPhysics.Checked = Settings.SimpleControlPhysics;
@@ -500,7 +502,8 @@ namespace ORTS
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;
             Settings.NightBrightness = NightBrightnessTrackBar.Value;
             Settings.DaySignalLightGlowSize = DaySignalLightGlowTrackBar.Value;
-            Settings.NightSignalLightGlowSize = NightSignalLightGlowTrackBar.Value;            
+            Settings.NightSignalLightGlowSize = NightSignalLightGlowTrackBar.Value;
+            Settings.ShadowSettings = ShadowtrackBar.Value;
 
             // Simulation tab
             //Settings.SimpleControlPhysics = checkSimpleControlsPhysics.Checked;
@@ -1046,6 +1049,18 @@ namespace ORTS
                 labelSoundTrainDepart2.Text = catalog.GetStringFmt("OR CZ/SK");
             if (trackBarSoundTrainDepart.Value == 2)
                 labelSoundTrainDepart2.Text = catalog.GetStringFmt("No sound");
+        }
+
+        private void trackBarShadowSettings_Scroll(object sender, EventArgs e)
+        {
+            if (ShadowtrackBar.Value == 0)
+                ShadowLabel2.Text = catalog.GetStringFmt("Low");
+            if (ShadowtrackBar.Value == 1)
+                ShadowLabel2.Text = catalog.GetStringFmt("Medium");
+            if (ShadowtrackBar.Value == 2)
+                ShadowLabel2.Text = catalog.GetStringFmt("High");
+            if (ShadowtrackBar.Value == 3)
+                ShadowLabel2.Text = catalog.GetStringFmt("Ultra");
         }
 
         private void checkBoxMSTSCompatibilityMode_CheckedChanged(object sender, EventArgs e)

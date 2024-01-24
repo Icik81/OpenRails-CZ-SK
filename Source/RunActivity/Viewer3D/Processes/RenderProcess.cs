@@ -173,18 +173,54 @@ namespace Orts.Viewer3D.Processes
 
             DisplaySize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            if (Game.Settings.ShadowMapDistance == 0)
-                Game.Settings.ShadowMapDistance = Game.Settings.ViewingDistance / 2;
-
+            // Icik
+            if (Game.Settings.DynamicShadows)
+            {
+                switch (Game.Settings.ShadowSettings)
+                {
+                    // Nízké
+                    case 0:
+                        {
+                            Game.Settings.ShadowMapCount = 4;
+                            Game.Settings.ShadowMapDistance = 500;                            
+                            Game.Settings.ShadowMapBlur = true;
+                            Game.Settings.ShadowMapResolution = 2048;
+                        }
+                        break;
+                    // Střední
+                    case 1:
+                        {
+                            Game.Settings.ShadowMapCount = 4;
+                            Game.Settings.ShadowMapDistance = 500;                            
+                            Game.Settings.ShadowMapBlur = true;
+                            Game.Settings.ShadowMapResolution = 4096;
+                        }
+                        break;
+                    // Vysoké
+                    case 2:
+                        {
+                            Game.Settings.ShadowMapCount = 4;
+                            Game.Settings.ShadowMapDistance = 500;                            
+                            Game.Settings.ShadowMapBlur = true;
+                            Game.Settings.ShadowMapResolution = 8192;
+                        }
+                        break;
+                    // Ultra
+                    case 3:
+                        {
+                            Game.Settings.ShadowMapCount = 4;
+                            Game.Settings.ShadowMapDistance = 500;                            
+                            Game.Settings.ShadowMapBlur = true;
+                            Game.Settings.ShadowMapResolution = 12288;
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                ShadowMapCount = 0;
+            }
             ShadowMapCount = Game.Settings.ShadowMapCount;
-            if (!Game.Settings.DynamicShadows || ShadowMapCount < 0)
-                ShadowMapCount = 0;
-            else if (ShadowMapCount < 0)
-                ShadowMapCount = 0;
-            else if (ShadowMapCount > ShadowMapCountMaximum)
-                ShadowMapCount = ShadowMapCountMaximum;
-            if (ShadowMapCount < 1)
-                Game.Settings.DynamicShadows = false;
 
             ShadowMapDistance = new int[ShadowMapCount];
             ShadowMapDiameter = new int[ShadowMapCount];
@@ -245,13 +281,16 @@ namespace Orts.Viewer3D.Processes
                 var center = length / Vector3.Dot(cornerCenter, Vector3.UnitZ);
                 var diameter = 2 * (float)Math.Sqrt(height2 * height2 + width2 * width2 + (C - center) * (C - center));
 
-                ShadowMapDistance[shadowMapIndex] = (int)center;
-                ShadowMapDiameter[shadowMapIndex] = (int)diameter;
-                ShadowMapLimit[shadowMapIndex] = C;
+                // Icik
+                float StandShadowCoef = 2.0f; 
+                ShadowMapDistance[shadowMapIndex] = (int)(center * StandShadowCoef);
+                ShadowMapDiameter[shadowMapIndex] = (int)(diameter * StandShadowCoef);
+                ShadowMapLimit[shadowMapIndex] = C * StandShadowCoef;  
                 LastC = C;
             }
             ShadowMapLocationsNighTimeSet = false;
         }
+        // Icik
         void InitializeShadowMapLocationsNighTime()
         {
             var ratio = (float)DisplaySize.X / DisplaySize.Y;
@@ -284,9 +323,11 @@ namespace Orts.Viewer3D.Processes
                 var center = length / Vector3.Dot(cornerCenter, Vector3.UnitZ);
                 var diameter = 2 * (float)Math.Sqrt(height2 * height2 + width2 * width2 + (C - center) * (C - center));
 
-                ShadowMapDistance[shadowMapIndex] = (int)center;
-                ShadowMapDiameter[shadowMapIndex] = (int)diameter;
-                ShadowMapLimit[shadowMapIndex] = C;
+                // Icik
+                float StandShadowCoef = 2.0f;
+                ShadowMapDistance[shadowMapIndex] = (int)(center * StandShadowCoef);
+                ShadowMapDiameter[shadowMapIndex] = (int)(diameter * StandShadowCoef);
+                ShadowMapLimit[shadowMapIndex] = C * StandShadowCoef;
                 LastC = C;
             }
             ShadowMapLocationsNighTimeSet = true;

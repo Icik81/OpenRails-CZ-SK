@@ -270,6 +270,8 @@ namespace ORTS.Settings
         public int DaySignalLightGlowSize { get; set; }
         [Default(10)]
         public int NightSignalLightGlowSize { get; set; }
+        [Default(1)]
+        public int ShadowSettings { get; set; }
 
         // Simulation settings:
 
