@@ -90,7 +90,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
 
         protected float frictionN;
 
-        public float FrictionN { set { frictionN = Math.Abs(value); } get { return frictionN; } }
+        public float FrictionN 
+        { 
+            set
+            {
+                frictionN = Math.Abs(value);
+                if (ExtendedPhysics)
+                {
+                    if (IsWheelSlip)
+                        frictionN *= 10;
+                }
+            }
+            get { return frictionN; } }
 
         /// <summary>
         /// Read/Write flag to enable/disable stability correction.
@@ -272,7 +283,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         public float AdhesionEfficiencyKoef { set; get; }
 
         public bool Sander { set;  get; }
-
+        public bool ExtendedPhysics { set; get; }
         public float GameSpeed { set;  get; }
 
         /// <summary>

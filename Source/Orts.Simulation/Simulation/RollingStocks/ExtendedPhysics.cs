@@ -148,7 +148,7 @@ namespace Orts.Simulation.RollingStocks
                         if (main.Name.ToLower() == "timesystemenablesnormalseconds")
                             TimeSystemEnablesNormalSeconds = float.Parse(innerText);
 
-                            if (main.Name.ToLower() == "undercarriage")
+                        if (main.Name.ToLower() == "undercarriage")
                         {
                             Undercarriage undercarriage = new Undercarriage();
                             foreach (XmlNode undercarriageNode in main.ChildNodes)
@@ -295,8 +295,8 @@ namespace Orts.Simulation.RollingStocks
         public bool GeneratoricModeBlocked = false;
         public float GeneratorConsumptionKn = 0;
 
-        protected float myAverageAxleSpeedMps = 0;
-
+        protected float myAverageAxleSpeedMps = 0;        
+        
         public float SlipSpeedPercent
         {
             get
@@ -350,15 +350,8 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
-                if (Locomotive.LocomotiveAxle.AxleForceN == 0 && Locomotive.BrakeRetardForceN == 0)
-                {
-                    return 0f; 
-                }
-                else
-                {
-                    float SlipSpeedMpS = (((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) || Locomotive.BrakeRetardForceN > 0) ? Math.Abs(Locomotive.LocomotiveAxle.AxleSpeedMpS) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarker) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
-                    return SlipSpeedMpS;
-                }
+                float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) ? Math.Abs(Locomotive.AxleSpeedMpSEP) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarkerEP) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
+                return SlipSpeedMpS;
             }
         }
 
@@ -374,6 +367,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         float FakeDynamicBrakePercent;
+        public float AxleForceNSum;
         public void Update(float elapsedClockSeconds)
         {
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
@@ -474,7 +468,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Locomotive.DynamicBrakePercent = 1f;
                     Locomotive.TractionBlocked = true;
-                }
+                }                
 
                 // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači                
                 if (!Locomotive.PowerOn)
@@ -550,6 +544,7 @@ namespace Orts.Simulation.RollingStocks
             AverageAxleSpeedMpS = 0;
             TotalForceN = 0;
             TotalMaxForceN = 0;
+            AxleForceNSum = 0;
             foreach (Undercarriage uc in Undercarriages)
             {
                 uc.StatorsCurrent = 0;
@@ -577,23 +572,27 @@ namespace Orts.Simulation.RollingStocks
                         speedDiff = 0;
                     foreach (ElectricMotor em in ea.ElectricMotors)
                     {
-                        ea.GetCorrectedMass(this);
+                        ea.GetCorrectedMass(this);                        
                         ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts - speedDiff, UseControllerVolts);
                         TotalCurrent += em.RotorCurrent;
                         StarorsCurrent += em.StatorCurrent;
                         RotorsCurrent += em.RotorCurrent;
                         uc.StatorsCurrent += em.StatorCurrent;
                         uc.RotorsCurrent += em.RotorCurrent;
-                    }
+                    }                    
                     TotalForceN += ea.ForceN;
                     TotalMaxForceN += ea.maxForceN;
                     if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         TotalMaxForceN *= 1.017f;
-                }
+                }                
             }
-            
+
+            // Tažná síla
+            Locomotive.AxleForceN = AxleForceNSum;
+
             wasRestored = false;
-            AverageAxleSpeedMpS /= NumAxles;            
+            AverageAxleSpeedMpS /= NumAxles;
+
             if (UseControllerVolts)
             {
                 Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalForceN;
@@ -719,7 +718,7 @@ namespace Orts.Simulation.RollingStocks
         int i = 0;
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
-        {
+        {            
             if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.TractionBlocked && Locomotive.GetCombinedHandleValue(true) == 50)
                 Locomotive.TractionBlocked = false;
             if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive() && Locomotive.PowerOn)
@@ -856,15 +855,7 @@ namespace Orts.Simulation.RollingStocks
             if (ElectricMotors[0].Disabled && maxForceN > 0)
                 maxForceN = 0;
             if (Locomotive.SystemAnnunciator > 0 && maxForceN > 0)
-                maxForceN = 0;
-            
-            LocomotiveAxle.InertiaKgm2 = 10000;
-            LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
-
-            if (Locomotive.AdhesionEfficiencyKoef == 0) Locomotive.AdhesionEfficiencyKoef = 1.00f;
-            LocomotiveAxle.AdhesionEfficiencyKoef = Locomotive.AdhesionEfficiencyKoef;
-
-            LocomotiveAxle.BrakeRetardForceN = Locomotive.BrakeRetardForceN;            
+                maxForceN = 0;                       
 
             if (!usingControllerVolts)
                 ForceN = maxForceN;
@@ -960,6 +951,12 @@ namespace Orts.Simulation.RollingStocks
                     ForceN = prevForceN;
                 if (ForceN > prevForceN && Locomotive.ControllerVolts < 0)
                     ForceN = prevForceN;
+                
+                if (ForceN > 0 && Locomotive.ControllerVolts < 0)
+                {
+                    ForceN = 0;
+                    maxForceN = 0;
+                }
             }
 
             // Trakční síla se pro EP u dieselů počítá v MSTSLocomotive 
@@ -967,20 +964,37 @@ namespace Orts.Simulation.RollingStocks
             {
                 ForceN = Locomotive.DriveForceN / totalMotors;
                 LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS;
+                Locomotive.WheelSpeedDirectionMarkerEP = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
             }
             else
             {
                 LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
-            }
+                Locomotive.WheelSpeedDirectionMarkerEP = Locomotive.SpeedMpS == 0 ? 1.0f : Locomotive.SpeedMpS / Math.Abs(Locomotive.SpeedMpS);
 
+                if (Locomotive.ControllerVolts > 0 && Locomotive.DriveForceN > 0 && Locomotive.SpeedMpS < 0 && Math.Abs(Locomotive.GravityForceN) < Locomotive.DriveForceN)
+                {
+                    Locomotive.WheelSpeedDirectionMarkerEP *= -1; 
+                }
+                if (Locomotive.ControllerVolts > 0 && Locomotive.DriveForceN < 0 && Locomotive.SpeedMpS > 0 && Math.Abs(Locomotive.GravityForceN) < Locomotive.DriveForceN)
+                {
+                    Locomotive.WheelSpeedDirectionMarkerEP *= -1;
+                }
+            }            
+
+            LocomotiveAxle.InertiaKgm2 = 10000;
+            LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
+            if (Locomotive.AdhesionEfficiencyKoef == 0) Locomotive.AdhesionEfficiencyKoef = 1.00f;
+            LocomotiveAxle.AdhesionEfficiencyKoef = Locomotive.AdhesionEfficiencyKoef;
+            LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model            
+            LocomotiveAxle.BrakeRetardForceN = Locomotive.BrakeRetardForceN / (Locomotive.MassKG / Locomotive.DrvWheelWeightKg) / totalMotors;
+            LocomotiveAxle.DampingNs = Mass;
+            LocomotiveAxle.FrictionN = Mass * 10f;
             LocomotiveAxle.AxleWeightN = 9.81f * Mass * 1000f;   //will be computed each time considering the tilting
-            LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels            
-            LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model
-            LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model
-            WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;            
-
-            if (WheelSpeedMpS == 0)
-                Locomotive.extendedPhysics.AverageAxleSpeedMpS = WheelSpeedMpS;
+            LocomotiveAxle.DriveForceN = ForceN;  //Total force applied to wheels                                                
+            LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model                                    
+            Locomotive.AxleSpeedMpSEP = LocomotiveAxle.AxleSpeedMpS;
+            WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
+            Locomotive.extendedPhysics.AxleForceNSum += LocomotiveAxle.AxleForceN;
 
             if (Locomotive.CruiseControl != null)
             {

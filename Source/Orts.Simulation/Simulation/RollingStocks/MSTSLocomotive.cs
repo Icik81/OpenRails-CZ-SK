@@ -7527,6 +7527,9 @@ namespace Orts.Simulation.RollingStocks
         /// the weather handleing is different and Curtius-Kniffler curves are considered as a static limit
         /// </summary>        
         public float WheelSpeedDirectionMarker;
+        public float WheelSpeedDirectionMarkerEP;
+        public float AxleSpeedMpSEP;
+        public float AxleForceN;
         public void AdvancedAdhesion(float elapsedClockSeconds)
         {
 
@@ -7581,19 +7584,24 @@ namespace Orts.Simulation.RollingStocks
                     DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
+                
+                LocomotiveAxle.DampingNs = MassKG / 1000.0f;
+                LocomotiveAxle.FrictionN = MassKG / 100.0f;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                                                                 
                 LocomotiveAxle.Sander = Sander;
+                LocomotiveAxle.ExtendedPhysics = extendedPhysics != null ? true : false;
                 LocomotiveAxle.GameSpeed = Simulator.GameSpeed;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
-                LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model
-                if (!Simulator.Paused)
-                    LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model                               
-                WheelSpeedDirectionMarker = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
+                LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model                                                            
 
                 if (extendedPhysics == null)
                 {
+                    if (!Simulator.Paused)
+                        LocomotiveAxle.Update(elapsedClockSeconds);         //Main updater of the axle model   
+                    AxleForceN = LocomotiveAxle.AxleForceN;
+                    WheelSpeedDirectionMarker = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
                     MotiveForceN = LocomotiveAxle.AxleForceN;
                     if (elapsedClockSeconds > 0)
                     {
@@ -7603,28 +7611,15 @@ namespace Orts.Simulation.RollingStocks
                     WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                     SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - LocomotiveAxle.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
-                else
-                if (!extendedPhysics.UseControllerVolts)
+                else                
                 {
-                    if (!(this is MSTSDieselLocomotive))
-                        MotiveForceN = LocomotiveAxle.AxleForceN;
-                    if (elapsedClockSeconds > 0)
-                    {
-                        WheelSlip = extendedPhysics.IsWheelSlip;
-                        WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
-                    }
-                    WheelSpeedMpS = ((extendedPhysics.FastestAxleSpeedMpS < Math.Abs(LocomotiveAxle.TrainSpeedMpS) || BrakeRetardForceN > 0) ? Math.Abs(LocomotiveAxle.AxleSpeedMpS) : extendedPhysics.FastestAxleSpeedMpS) * WheelSpeedDirectionMarker;
-                    SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
-                }
-                else
-                {                    
                     // MotiveForceN je počítán v EP
                     if (elapsedClockSeconds > 0)
                     {
                         WheelSlip = extendedPhysics.IsWheelSlip;
                         WheelSlipWarning = extendedPhysics.IsWheelSlipWarning;
                     }
-                    WheelSpeedMpS = ((extendedPhysics.FastestAxleSpeedMpS < Math.Abs(LocomotiveAxle.TrainSpeedMpS) || BrakeRetardForceN > 0) ? Math.Abs(LocomotiveAxle.AxleSpeedMpS) : extendedPhysics.FastestAxleSpeedMpS) * WheelSpeedDirectionMarker;
+                    WheelSpeedMpS = (extendedPhysics.FastestAxleSpeedMpS < Math.Abs(LocomotiveAxle.TrainSpeedMpS) ? Math.Abs(AxleSpeedMpSEP) : extendedPhysics.FastestAxleSpeedMpS) * WheelSpeedDirectionMarkerEP;
                     SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
 
