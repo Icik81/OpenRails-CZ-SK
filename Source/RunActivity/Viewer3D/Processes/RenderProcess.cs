@@ -178,8 +178,17 @@ namespace Orts.Viewer3D.Processes
             {
                 switch (Game.Settings.ShadowSettings)
                 {
-                    // Nízké
+                    // Nejnižší
                     case 0:
+                        {
+                            Game.Settings.ShadowMapCount = 4;
+                            Game.Settings.ShadowMapDistance = 500;
+                            Game.Settings.ShadowMapBlur = true;
+                            Game.Settings.ShadowMapResolution = 1024;
+                        }
+                        break;
+                    // Nízké
+                    case 1:
                         {
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            
@@ -188,7 +197,7 @@ namespace Orts.Viewer3D.Processes
                         }
                         break;
                     // Střední
-                    case 1:
+                    case 2:
                         {
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            
@@ -197,7 +206,7 @@ namespace Orts.Viewer3D.Processes
                         }
                         break;
                     // Vysoké
-                    case 2:
+                    case 3:
                         {
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            
@@ -206,7 +215,7 @@ namespace Orts.Viewer3D.Processes
                         }
                         break;
                     // Ultra
-                    case 3:
+                    case 4:
                         {
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            

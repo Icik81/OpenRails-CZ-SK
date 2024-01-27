@@ -1054,12 +1054,14 @@ namespace ORTS
         private void trackBarShadowSettings_Scroll(object sender, EventArgs e)
         {
             if (ShadowtrackBar.Value == 0)
-                ShadowLabel2.Text = catalog.GetStringFmt("Low");
+                ShadowLabel2.Text = catalog.GetStringFmt("Lowest");
             if (ShadowtrackBar.Value == 1)
-                ShadowLabel2.Text = catalog.GetStringFmt("Medium");
+                ShadowLabel2.Text = catalog.GetStringFmt("Low");
             if (ShadowtrackBar.Value == 2)
-                ShadowLabel2.Text = catalog.GetStringFmt("High");
+                ShadowLabel2.Text = catalog.GetStringFmt("Medium");
             if (ShadowtrackBar.Value == 3)
+                ShadowLabel2.Text = catalog.GetStringFmt("High");
+            if (ShadowtrackBar.Value == 4)
                 ShadowLabel2.Text = catalog.GetStringFmt("Ultra");
         }
 

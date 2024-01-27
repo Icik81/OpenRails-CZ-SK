@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-01-24 17:03:56+0100\n"
-"PO-Revision-Date: 2024-01-24 17:03:56+0100\n"
+"POT-Creation-Date: 2024-01-27 13:16:34+0100\n"
+"PO-Revision-Date: 2024-01-27 13:16:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -125,7 +125,7 @@ msgid "Easy"
 msgstr ""
 
 #: ../../Menu/MainForm.cs:173
-#: ../../Menu/Options.cs:1050
+#: ../../Menu/Options.cs:1052
 msgid "Medium"
 msgstr ""
 
@@ -709,14 +709,18 @@ msgid "No sound"
 msgstr ""
 
 #: ../../Menu/Options.cs:1048
+msgid "Lowest"
+msgstr ""
+
+#: ../../Menu/Options.cs:1050
 msgid "Low"
 msgstr ""
 
-#: ../../Menu/Options.cs:1052
+#: ../../Menu/Options.cs:1054
 msgid "High"
 msgstr ""
 
-#: ../../Menu/Options.cs:1054
+#: ../../Menu/Options.cs:1056
 msgid "Ultra"
 msgstr ""
 

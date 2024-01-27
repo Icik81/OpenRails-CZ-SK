@@ -947,7 +947,7 @@
             this.ShadowtrackBar.LargeChange = 1;
             this.ShadowtrackBar.Location = new System.Drawing.Point(303, 271);
             this.ShadowtrackBar.Margin = new System.Windows.Forms.Padding(6, 3, 6, 3);
-            this.ShadowtrackBar.Maximum = 3;
+            this.ShadowtrackBar.Maximum = 4;
             this.ShadowtrackBar.Name = "ShadowtrackBar";
             this.ShadowtrackBar.Size = new System.Drawing.Size(292, 26);
             this.ShadowtrackBar.TabIndex = 33;

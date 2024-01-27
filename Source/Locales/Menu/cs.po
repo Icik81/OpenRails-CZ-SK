@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-01-24 17:03:56+0100\n"
-"PO-Revision-Date: 2024-01-24 17:06+0100\n"
+"POT-Creation-Date: 2024-01-27 13:16:34+0100\n"
+"PO-Revision-Date: 2024-01-27 13:17+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -124,7 +124,7 @@ msgstr "Déšť"
 msgid "Easy"
 msgstr "Jednoduché"
 
-#: ../../Menu/MainForm.cs:173 ../../Menu/Options.cs:1050
+#: ../../Menu/MainForm.cs:173 ../../Menu/Options.cs:1052
 msgid "Medium"
 msgstr "Střední"
 
@@ -715,14 +715,18 @@ msgid "No sound"
 msgstr "Žádný zvuk"
 
 #: ../../Menu/Options.cs:1048
+msgid "Lowest"
+msgstr "Nejnižší"
+
+#: ../../Menu/Options.cs:1050
 msgid "Low"
 msgstr "Nízké"
 
-#: ../../Menu/Options.cs:1052
+#: ../../Menu/Options.cs:1054
 msgid "High"
 msgstr "Vysoké"
 
-#: ../../Menu/Options.cs:1054
+#: ../../Menu/Options.cs:1056
 msgid "Ultra"
 msgstr "Ultra"
 
