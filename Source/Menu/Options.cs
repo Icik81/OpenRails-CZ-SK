@@ -669,7 +669,7 @@ namespace ORTS
             switch ((UserSettings.AntiAliasingMethod)trackAntiAliasing.Value)
             {
                 case UserSettings.AntiAliasingMethod.None:
-                    method = "Disabled";
+                    method = catalog.GetString("Disabled");
                     break;
                 case UserSettings.AntiAliasingMethod.MSAA2x:
                     method = "2x MSAA";
