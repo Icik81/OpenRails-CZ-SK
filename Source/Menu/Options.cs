@@ -170,9 +170,10 @@ namespace ORTS
             numericSoundVolumePercent.Value = Settings.SoundVolumePercent;
             numericSoundDetailLevel.Value = Settings.SoundDetailLevel;
             numericExternalSoundPassThruPercent.Value = Settings.ExternalSoundPassThruPercent;
-
             // Icik
-            GenSoundcheckBox.Checked = Settings.GenSound;            
+            GenSoundcheckBox.Checked = Settings.GenSound;
+            trackBarSoundTrainDepart.Value = Settings.TrainDepartSound;
+            trackBarSoundTrainDepart_Scroll(null, null);
 
             // Video tab
             checkDynamicShadows.Checked = Settings.DynamicShadows;
@@ -196,7 +197,6 @@ namespace ORTS
             trackAntiAliasing.Value = Settings.AntiAliasing == 0 ? 1 : Settings.AntiAliasing;
             trackAntiAliasing_ValueChanged(null, null);
             checkDoubleWire.Checked = Settings.DoubleWire;
-
             // Icik
             CabView_MSTSOR.Checked = Settings.CabView_MSTSOR;
             NightBrightnessTrackBar.Value = Settings.NightBrightness;
@@ -204,9 +204,7 @@ namespace ORTS
             DaySignalLightGlowTrackBar.Value = Settings.DaySignalLightGlowSize;
             DaySignalLightGlowTrackBar_Scroll(null, null);
             NightSignalLightGlowTrackBar.Value = Settings.NightSignalLightGlowSize;
-            NightSignalLightGlowTrackBar_Scroll(null, null);
-            trackBarSoundTrainDepart.Value = Settings.TrainDepartSound;
-            trackBarSoundTrainDepart_Scroll(null, null);
+            NightSignalLightGlowTrackBar_Scroll(null, null);            
             ShadowtrackBar.Value = Settings.ShadowSettings;
             trackBarShadowSettings_Scroll(null, null);
             // Simulation tab
