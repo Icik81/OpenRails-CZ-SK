@@ -544,7 +544,7 @@ namespace Orts.Simulation.RollingStocks
             AverageAxleSpeedMpS = 0;
             TotalForceN = 0;
             TotalMaxForceN = 0;
-            AxleForceNSum = 0;
+            AxleForceNSum = 0;            
             foreach (Undercarriage uc in Undercarriages)
             {
                 uc.StatorsCurrent = 0;
@@ -995,6 +995,11 @@ namespace Orts.Simulation.RollingStocks
             Locomotive.AxleSpeedMpSEP = LocomotiveAxle.AxleSpeedMpS;
             WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
             Locomotive.extendedPhysics.AxleForceNSum += LocomotiveAxle.AxleForceN;
+
+            Locomotive.AbsWheelSpeed1MpS = Math.Abs(Locomotive.extendedPhysics.Undercarriages[0].Axles[0].WheelSpeedMpS);
+            Locomotive.AbsWheelSpeed2MpS = Math.Abs(Locomotive.extendedPhysics.Undercarriages[0].Axles[1].WheelSpeedMpS);
+            Locomotive.AbsWheelSpeed3MpS = Math.Abs(Locomotive.extendedPhysics.Undercarriages[1].Axles[0].WheelSpeedMpS);
+            Locomotive.AbsWheelSpeed4MpS = Math.Abs(Locomotive.extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS);
 
             if (Locomotive.CruiseControl != null)
             {

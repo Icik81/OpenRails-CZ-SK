@@ -205,7 +205,7 @@ namespace Orts.Formats.Msts
         public enum Controls
         {
             None, DistanceControlled, SpeedControlled,
-            WheelSpeedControlled, WheelSpeedACControlled, WheelSpeedDCControlled,
+            WheelSpeedControlled, WheelSpeedACControlled, WheelSpeedDCControlled, WheelSpeed1Controlled, WheelSpeed2Controlled, WheelSpeed3Controlled, WheelSpeed4Controlled,
             SlipSpeedControlled,
             VibrationControlled,
             Variable1Controlled, Variable1ACControlled, Variable1DCControlled,
@@ -250,6 +250,10 @@ namespace Orts.Formats.Msts
                 case "wheelspeedcontrolled": Control = Controls.WheelSpeedControlled; break;
                 case "wheelspeedaccontrolled": Control = Controls.WheelSpeedACControlled; break;
                 case "wheelspeeddccontrolled": Control = Controls.WheelSpeedDCControlled; break;
+                case "wheelspeed1controlled": Control = Controls.WheelSpeed1Controlled; break;
+                case "wheelspeed2controlled": Control = Controls.WheelSpeed2Controlled; break;
+                case "wheelspeed3controlled": Control = Controls.WheelSpeed3Controlled; break;
+                case "wheelspeed4controlled": Control = Controls.WheelSpeed4Controlled; break;
                 case "slipspeedcontrolled": Control = Controls.SlipSpeedControlled; break;
                 case "vibrationcontrolled": Control = Controls.VibrationControlled; break;
                 case "variable1controlled": Control = Controls.Variable1Controlled; break;
@@ -408,6 +412,10 @@ namespace Orts.Formats.Msts
             WheelSpeed_Inc_Past, WheelSpeed_Dec_Past, WheelSpeed_Equals_To, WheelSpeed_NEquals_To,
             WheelSpeedAC_Inc_Past, WheelSpeedAC_Dec_Past, WheelSpeedAC_Equals_To, WheelSpeedAC_NEquals_To,
             WheelSpeedDC_Inc_Past, WheelSpeedDC_Dec_Past, WheelSpeedDC_Equals_To, WheelSpeedDC_NEquals_To,
+            WheelSpeed1_Inc_Past, WheelSpeed1_Dec_Past, WheelSpeed1_Equals_To, WheelSpeed1_NEquals_To,
+            WheelSpeed2_Inc_Past, WheelSpeed2_Dec_Past, WheelSpeed2_Equals_To, WheelSpeed2_NEquals_To,
+            WheelSpeed3_Inc_Past, WheelSpeed3_Dec_Past, WheelSpeed3_Equals_To, WheelSpeed3_NEquals_To,
+            WheelSpeed4_Inc_Past, WheelSpeed4_Dec_Past, WheelSpeed4_Equals_To, WheelSpeed4_NEquals_To,
             SlipSpeed_Inc_Past, SlipSpeed_Dec_Past, SlipSpeed_Equals_To, SlipSpeed_NEquals_To,
             Vibration_Inc_Past, Vibration_Dec_Past, Vibration_Equals_To, Vibration_NEquals_To,
             Distance_Inc_Past, Distance_Dec_Past, Distance_Equals_To, Distance_NEquals_To,
@@ -461,6 +469,22 @@ namespace Orts.Formats.Msts
                 case "wheelspeeddc_dec_past": Event = Events.WheelSpeedDC_Dec_Past; break;
                 case "wheelspeeddc_equals_to": Event = Events.WheelSpeedDC_Equals_To; break;
                 case "wheelspeeddc_nequals_to": Event = Events.WheelSpeedDC_NEquals_To; break;
+                case "wheelspeed1_inc_past": Event = Events.WheelSpeed1_Inc_Past; break;
+                case "wheelspeed1_dec_past": Event = Events.WheelSpeed1_Dec_Past; break;
+                case "wheelspeed1_equals_to": Event = Events.WheelSpeed1_Equals_To; break;
+                case "wheelspeed1_nequals_to": Event = Events.WheelSpeed1_NEquals_To; break;
+                case "wheelspeed2_inc_past": Event = Events.WheelSpeed2_Inc_Past; break;
+                case "wheelspeed2_dec_past": Event = Events.WheelSpeed2_Dec_Past; break;
+                case "wheelspeed2_equals_to": Event = Events.WheelSpeed2_Equals_To; break;
+                case "wheelspeed2_nequals_to": Event = Events.WheelSpeed2_NEquals_To; break;
+                case "wheelspeed3_inc_past": Event = Events.WheelSpeed3_Inc_Past; break;
+                case "wheelspeed3_dec_past": Event = Events.WheelSpeed3_Dec_Past; break;
+                case "wheelspeed3_equals_to": Event = Events.WheelSpeed3_Equals_To; break;
+                case "wheelspeed3_nequals_to": Event = Events.WheelSpeed3_NEquals_To; break;
+                case "wheelspeed4_inc_past": Event = Events.WheelSpeed4_Inc_Past; break;
+                case "wheelspeed4_dec_past": Event = Events.WheelSpeed4_Dec_Past; break;
+                case "wheelspeed4_equals_to": Event = Events.WheelSpeed4_Equals_To; break;
+                case "wheelspeed4_nequals_to": Event = Events.WheelSpeed4_NEquals_To; break;
                 case "slipspeed_inc_past": Event = Events.SlipSpeed_Inc_Past; break;
                 case "slipspeed_dec_past": Event = Events.SlipSpeed_Dec_Past; break;
                 case "slipspeed_equals_to": Event = Events.SlipSpeed_Equals_To; break;
