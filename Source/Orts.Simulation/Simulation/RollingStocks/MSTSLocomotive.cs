@@ -586,6 +586,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AIPantoDown;
         public bool Pantograph5Enable = false;
         public bool Pantograph4Enable = false;
+        public bool Pantograph4NCEnable = false;
         public bool Pantograph3Enable = false;
         public float LastStatePantograph3;
         public bool Pantograph3SwitchFullDown;
@@ -6282,10 +6283,14 @@ namespace Orts.Simulation.RollingStocks
                 TogglePantograph3Switch();
                 TogglePantograph4Switch();
                 TogglePantograph5Switch();
+                TogglePantograph4NCSwitch();
                 ToggleHV2Switch();
                 ToggleHV3Switch();
                 ToggleHV4Switch();
-                ToggleHV5Switch();
+                ToggleHV5Switch();                
+                TogglePantoActivationSwitch();
+                ToggleVoltageSelectionSwitch();
+                ToggleHV3NASwitch();
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();
@@ -11153,6 +11158,196 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+
+        public bool PantoActivationEnable;
+        public int[] PantoActivationSwitch = new int[3];
+        public int[] LastStatePantoActivation = new int[3];
+        public void TogglePantoActivationSwitchUp()
+        {
+            if (PantoActivationEnable)
+            {
+                if (PantoActivationSwitch[LocoStation] < 3)
+                    PantoActivationSwitch[LocoStation]++;
+                if (PantoActivationSwitch[LocoStation] < 3)
+                {
+                    TogglePantoActivationSwitch();
+                }
+                PantoActivationSwitch[LocoStation] = MathHelper.Clamp(PantoActivationSwitch[LocoStation], 0, 2);
+            }
+        }
+        public void TogglePantoActivationSwitchDown()
+        {
+            if (PantoActivationEnable)
+            {
+                if (PantoActivationSwitch[LocoStation] > 0)
+                    PantoActivationSwitch[LocoStation]--;
+                if (PantoActivationSwitch[LocoStation] > -1)
+                {
+                    TogglePantoActivationSwitch();
+                }
+                PantoActivationSwitch[LocoStation] = MathHelper.Clamp(PantoActivationSwitch[LocoStation], 0, 2);
+            }
+        }
+
+        public void TogglePantoActivationSwitch()
+        {            
+            if (!IsLeadLocomotive())
+                return;
+            if (PantoActivationEnable)
+            {                
+                if (Battery && StationIsActivated[LocoStation])
+                {
+                    switch (PantoActivationSwitch[LocoStation])
+                    {
+                        case 0:// Panto aktivovat
+                            //Simulator.Confirmer.Information("Switch 0");
+                            Pantograph4NCActivated = true;
+                            break;
+                        case 1: // střed
+                                //Simulator.Confirmer.Information("Switch 1");
+                            break;
+                        case 2: // Panto deaktivovat                            
+                            //Simulator.Confirmer.Information("Switch 2");
+                            Pantograph4NCActivated = false;
+                            break;
+                    }
+                }
+                if (LastStatePantoActivation[LocoStation] != PantoActivationSwitch[LocoStation])
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+                
+                LastStatePantoActivation[LocoStation] = PantoActivationSwitch[LocoStation];
+            }
+        }
+
+        public bool VoltageSelectionEnable;
+        public int[] VoltageSelectionSwitch = new int[3];
+        public int[] LastStateVoltageSelection = new int[3];
+        public void ToggleVoltageSelectionSwitchUp()
+        {
+            if (VoltageSelectionEnable)
+            {
+                if (VoltageSelectionSwitch[LocoStation] < 3)
+                    VoltageSelectionSwitch[LocoStation]++;
+                if (VoltageSelectionSwitch[LocoStation] < 3)
+                {
+                    ToggleVoltageSelectionSwitch();
+                }
+                VoltageSelectionSwitch[LocoStation] = MathHelper.Clamp(VoltageSelectionSwitch[LocoStation], 0, 2);
+            }
+        }
+        public void ToggleVoltageSelectionSwitchDown()
+        {
+            if (VoltageSelectionEnable)
+            {
+                if (VoltageSelectionSwitch[LocoStation] > 0)
+                    VoltageSelectionSwitch[LocoStation]--;
+                if (VoltageSelectionSwitch[LocoStation] > -1)
+                {
+                    ToggleVoltageSelectionSwitch();
+                }
+                VoltageSelectionSwitch[LocoStation] = MathHelper.Clamp(VoltageSelectionSwitch[LocoStation], 0, 2);
+            }
+        }
+
+        public void ToggleVoltageSelectionSwitch()
+        {
+            if (!IsLeadLocomotive())
+                return;
+            if (VoltageSelectionEnable)
+            {
+                if (Battery && StationIsActivated[LocoStation])
+                {
+                    switch (VoltageSelectionSwitch[LocoStation])
+                    {
+                        case 0:// 3 kV
+                            //Simulator.Confirmer.Information("Switch 0");                        
+                            SwitchingVoltageMode = 0;
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;                                                                                                    
+                        case 1: // 0
+                            //Simulator.Confirmer.Information("Switch 1");
+                            SwitchingVoltageMode = 1;
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 2: // 25 kV
+                            //Simulator.Confirmer.Information("Switch 2");
+                            SwitchingVoltageMode = 2;
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                            break;
+                    }
+                }
+                if (LastStateVoltageSelection[LocoStation] != VoltageSelectionSwitch[LocoStation])
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+
+                LastStateVoltageSelection[LocoStation] = VoltageSelectionSwitch[LocoStation];
+            }
+        }
+
+        public bool HV3NAEnable;
+        public int[] HV3NASwitch = new int[3];
+        public int[] LastStateHV3NA = new int[3];
+        public void ToggleHV3NASwitchUp()
+        {
+            if (HV3NAEnable)
+            {
+                if (HV3NASwitch[LocoStation] < 3)
+                    HV3NASwitch[LocoStation]++;
+                if (HV3NASwitch[LocoStation] < 3)
+                {
+                    ToggleHV3NASwitch();
+                }
+                HV3NASwitch[LocoStation] = MathHelper.Clamp(HV3NASwitch[LocoStation], 0, 2);
+            }
+        }
+        public void ToggleHV3NASwitchDown()
+        {
+            if (HV3NAEnable)
+            {
+                if (HV3NASwitch[LocoStation] > 0)
+                    HV3NASwitch[LocoStation]--;
+                if (HV3NASwitch[LocoStation] > -1)
+                {
+                    ToggleHV3NASwitch();
+                }
+                HV3NASwitch[LocoStation] = MathHelper.Clamp(HV3NASwitch[LocoStation], 0, 2);
+            }
+        }
+
+        public void ToggleHV3NASwitch()
+        {
+            if (!IsLeadLocomotive())
+                return;
+            if (HV3NAEnable)
+            {
+                if (Battery && StationIsActivated[LocoStation])
+                {
+                    switch (HV3NASwitch[LocoStation])
+                    {
+                        case 0:// HV aktivovat
+                            //Simulator.Confirmer.Information("Switch 0");
+                            if (!CircuitBreakerOn)
+                                HVOn = true;
+                            break;
+                        case 1: // střed
+                                //Simulator.Confirmer.Information("Switch 1");
+                            break;
+                        case 2: // HV deaktivovat                            
+                            //Simulator.Confirmer.Information("Switch 2");
+                            if (CircuitBreakerOn)
+                                HVOff = true;
+                            break;
+                    }
+                }
+                if (LastStateHV3NA[LocoStation] != HV3NASwitch[LocoStation])
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače                
+
+                LastStateHV3NA[LocoStation] = HV3NASwitch[LocoStation];
+            }
+        }
+
         public void ToggleHV2SwitchUp()
         {
             if (HV2Enable)
@@ -11829,6 +12024,179 @@ namespace Orts.Simulation.RollingStocks
                         {
                             case 0:
                                 {
+                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                    }
+                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 1:
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 2:
+                                {
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                            case 3:
+                                {
+                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                    {
+                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
+                                        {
+                                            if (car.AcceptMUSignals)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
+                                            }
+                                        }
+                                }
+                                break;
+                        }
+                    }
+                    PrePantoStatus[LocoStation] = Pantograph4Switch[LocoStation];
+                }
+            }
+        }
+
+        public void TogglePantograph4NCSwitchUp()
+        {
+            if (Pantograph4NCEnable)
+            {
+                if (Pantograph4Switch[LocoStation] < 3)
+                    Pantograph4Switch[LocoStation]++;                
+                SignalEvent(Event.PantographToggle);
+            }
+        }
+        public void TogglePantograph4NCSwitchDown()
+        {
+            if (Pantograph4NCEnable)
+            {
+                if (Pantograph4Switch[LocoStation] > 0)
+                    Pantograph4Switch[LocoStation]--;                
+                SignalEvent(Event.PantographToggle);
+            }
+        }
+        public bool Pantograph4NCActivated;
+        public void TogglePantograph4NCSwitch()
+        {
+            if (Pantograph4NCEnable)
+            {
+                // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
+                if (BreakPowerButton)
+                    BreakPowerButton_Activated = true;
+                if (BreakPowerButton_Activated && Pantograph4Switch[LocoStation] == 0)
+                    BreakPowerButton_Activated = false;
+
+                if (Pantograph4NCActivated && Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
+                {
+                    PantoStatus = Pantograph4Switch[LocoStation];
+                    int p1 = 1; int p2 = 2;
+                    string ps1 = "PANTO1"; string ps2 = "PANTO2";
+                    if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
+                    if (PantoStatus != PrePantoStatus[LocoStation])
+                    {
+                        switch (Pantograph4Switch[LocoStation])
+                        {
+                            case 0:
+                                {
+                                    if (CircuitBreakerOn)
+                                    {
+                                        HVOff = true;
+                                    }
+
                                     if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
                                     {
                                         SignalEvent(PowerSupplyEvent.LowerPantograph, p1);

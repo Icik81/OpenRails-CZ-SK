@@ -316,6 +316,12 @@
         [GetString("Control_CZSK Axle Counter Restricted speed zone active button")] ControlAxleCounterRestrictedSpeedZoneActive,
         [GetString("Control_CZSK Horn 2")] ControlHorn2,
         [GetString("Control_CZSK Horn 1 + 2")] ControlHorn12,
+        [GetString("Control_CZSK Panto Activation +")] ControlPantoActivationSwitchUp,
+        [GetString("Control_CZSK Panto Activation -")] ControlPantoActivationSwitchDown,
+        [GetString("Control_CZSK Voltage Selection +")] ControlVoltageSelectionSwitchUp,
+        [GetString("Control_CZSK Voltage Selection -")] ControlVoltageSelectionSwitchDown,
+        [GetString("Control_CZSK HV3NA +")] ControlHV3NASwitchUp,
+        [GetString("Control_CZSK HV3NA -")] ControlHV3NASwitchDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

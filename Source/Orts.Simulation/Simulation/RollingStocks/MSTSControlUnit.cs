@@ -469,6 +469,12 @@ namespace Orts.Simulation.RollingStocks
                             data = Pantograph4Switch[LocoStation];
                             break;
                         }
+                    case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
+                        {
+                            Pantograph4NCEnable = true;
+                            data = Pantograph4Switch[LocoStation];
+                            break;
+                        }
 
                     case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                         {
@@ -494,6 +500,24 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         }
 
+                    case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
+                        {
+                            PantoActivationEnable = true;
+                            data = PantoActivationSwitch[LocoStation];                            
+                            break;
+                        }
+                    case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
+                        {
+                            VoltageSelectionEnable = true;
+                            data = VoltageSelectionSwitch[LocoStation];
+                            break;
+                        }
+                    case CABViewControlTypes.HV3NA_SWITCH:
+                        {
+                            HV3NAEnable = true;
+                            data = HV3NASwitch[LocoStation];                            
+                            break;
+                        }
                     case CABViewControlTypes.HV2:
                         {
                             HV2Enable = true;

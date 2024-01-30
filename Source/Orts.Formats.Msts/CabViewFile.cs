@@ -408,6 +408,7 @@ namespace Orts.Formats.Msts
         HV5_DISPLAY,
         PANTOGRAPH_3_SWITCH,
         PANTOGRAPH_4_SWITCH,
+        PANTOGRAPH_4NC_SWITCH,
         PANTOGRAPH_5_SWITCH,
         COMPRESSOR_START,
         COMPRESSOR_COMBINED,
@@ -514,6 +515,9 @@ namespace Orts.Formats.Msts
         AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON,
         HORN2,
         HORN12,
+        PANTO_ACTIVATION_SWITCH,
+        VOLTAGE_SELECTION_SWITCH,
+        HV3NA_SWITCH,
 
         // ORTS
         ORTS_SCREEN_SELECT,

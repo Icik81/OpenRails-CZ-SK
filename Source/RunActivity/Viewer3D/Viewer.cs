@@ -676,6 +676,12 @@ namespace Orts.Viewer3D
             ToggleAxleCounterRestrictedSpeedZoneActiveCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             Horn2Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
             Horn12Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantoActivationSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            TogglePantoActivationSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleVoltageSelectionSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleVoltageSelectionSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV3NASwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHV3NASwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

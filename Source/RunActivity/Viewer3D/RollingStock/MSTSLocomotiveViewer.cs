@@ -387,6 +387,12 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive, new Action[] { Noop, () => new ToggleAxleCounterRestrictedSpeedZoneActiveCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHorn2, new Action[] { () => new Horn2Command(Viewer.Log, false), () => new Horn2Command(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlHorn12, new Action[] { () => new Horn12Command(Viewer.Log, false), () => new Horn12Command(Viewer.Log, true) });
+            UserInputCommands.Add(UserCommand.ControlPantoActivationSwitchUp, new Action[] { Noop, () => new TogglePantoActivationSwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPantoActivationSwitchDown, new Action[] { Noop, () => new TogglePantoActivationSwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlVoltageSelectionSwitchUp, new Action[] { Noop, () => new ToggleVoltageSelectionSwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlVoltageSelectionSwitchDown, new Action[] { Noop, () => new ToggleVoltageSelectionSwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHV3NASwitchUp, new Action[] { Noop, () => new ToggleHV3NASwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHV3NASwitchDown, new Action[] { Noop, () => new ToggleHV3NASwitchDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -425,6 +431,31 @@ namespace Orts.Viewer3D.RollingStock
         {
             // Icik
             DoublePressedKeyTest();
+
+            // Ovládání Panto Activation nearetované pozice
+            if (Locomotive.PantoActivationEnable)
+            {                
+                if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlPantoActivationSwitchUp))
+                {
+                    Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;             
+                }
+                if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlPantoActivationSwitchDown))
+                {
+                    Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;
+                }
+            }
+            // Ovládání HV3NA nearetované pozice
+            if (Locomotive.HV3NAEnable)
+            {
+                if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlHV3NASwitchUp))
+                {
+                    Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
+                }
+                if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlHV3NASwitchDown))
+                {
+                    Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
+                }
+            }
 
             // Ovládání HV2 nearetované pozice
             if (Locomotive.HV2Enable)
@@ -3383,7 +3414,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BATTERY:
                 case CABViewControlTypes.ORTS_POWERKEY:
 
-                // Icik
+                // Icik                
                 case CABViewControlTypes.HV2:
                 case CABViewControlTypes.HV2BUTTON:
                 case CABViewControlTypes.HV3:
@@ -3392,6 +3423,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5_DISPLAY:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
@@ -3494,6 +3526,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
                 case CABViewControlTypes.HORN2:
                 case CABViewControlTypes.HORN12:
+                case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
+                case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
+                case CABViewControlTypes.HV3NA_SWITCH:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3923,11 +3958,77 @@ namespace Orts.Viewer3D.RollingStock
                          != ChangedValue(Locomotive.GetCabFlipped() ? (Locomotive.DoorLeftOpen ? 1 : 0) : Locomotive.DoorRightOpen ? 1 : 0)) new ToggleDoorsRightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_MIRRORS:
                     if ((Locomotive.MirrorOpen ? 1 : 0) != ChangedValue(Locomotive.MirrorOpen ? 1 : 0)) new ToggleMirrorsCommand(Viewer.Log); break;
-
+                case CABViewControlTypes.ODOMETER_DISPLAY_START:
+                    {
+                        Locomotive.OdometerDistancePassed = (int)Locomotive.DistanceM;
+                        Locomotive.OdometerDisplayActive = true;
+                        break;
+                    }
 
                 // Icik
                 case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
-                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;                       
+                    
+                case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
+                    {
+                        // Ovládání nearetované pozice                        
+                        if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;                            
+                        }
+                        if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;
+                        }
+
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new TogglePantoActivationSwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new TogglePantoActivationSwitchDownCommand(Viewer.Log);
+                        }
+                        break;
+                    }
+
+                case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
+                    {
+                        // Ovládání aretované pozice                                                
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleVoltageSelectionSwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleVoltageSelectionSwitchDownCommand(Viewer.Log);
+                        }
+                        break;
+                    }
+
+                case CABViewControlTypes.HV3NA_SWITCH:
+                    {
+                        // Ovládání nearetované pozice                        
+                        if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
+                        }
+                        if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
+                        }
+
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV3NASwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleHV3NASwitchDownCommand(Viewer.Log);
+                        }
+                        break;
+                    }
+
                 case CABViewControlTypes.HV2:
                     {
                         // Ovládání HV nearetované pozice
@@ -3947,6 +4048,7 @@ namespace Orts.Viewer3D.RollingStock
                         }
                         break;
                     }
+
                 case CABViewControlTypes.HV2BUTTON:
                     {
                         // Ovládání HV nearetované pozice
@@ -3966,12 +4068,7 @@ namespace Orts.Viewer3D.RollingStock
                         }
                         break;
                     }
-                case CABViewControlTypes.ODOMETER_DISPLAY_START:
-                    {
-                        Locomotive.OdometerDistancePassed = (int)Locomotive.DistanceM;
-                        Locomotive.OdometerDisplayActive = true;
-                        break;
-                    }
+
                 case CABViewControlTypes.HV3:
                     {
                         // Ovládání HV nearetované pozice
@@ -4128,6 +4225,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPHS_4:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
+                case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new TogglePantograph4SwitchUpCommand(Viewer.Log);
