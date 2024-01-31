@@ -58,8 +58,7 @@ namespace Orts.Simulation.RollingStocks
     {
         public ScriptedElectricPowerSupply PowerSupply;
 
-        // Icik        
-        public bool PantographDown = true;
+        // Icik                
         public double PantographCriticalVoltage;
         //public float VoltageSprung = 1.0f;
         public float TimeCriticalVoltage = 0;
@@ -1630,12 +1629,18 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         Pantograph3Switch[LocoStation] = 2;
-                        Pantograph4Switch[LocoStation] = 1;
+                        Pantograph4Switch[LocoStation] = 1;                        
                         Pantograph5Switch[LocoStation] = 1;
                         if (RouteVoltageV == 3000)
+                        {
                             HV5Switch[LocoStation] = 1;
+                            VoltageSelectionSwitch[LocoStation] = 0;
+                        }
                         if (RouteVoltageV > 3000)
+                        {
                             HV5Switch[LocoStation] = 3;
+                            VoltageSelectionSwitch[LocoStation] = 2;
+                        }
 
                         if (PantographVoltageV > PantographCriticalVoltage)
                             HVOn = true;
@@ -1738,6 +1743,10 @@ namespace Orts.Simulation.RollingStocks
                         HV5Switch[LocoStation] = 1;
                     if (RouteVoltageV > 3000)
                         HV5Switch[LocoStation] = 3;
+                }
+                if (Pantograph4NCEnable)
+                {
+                    Pantograph4Switch[LocoStation] = 1;                    
                 }
                 if (Pantograph5Enable)
                 {
@@ -2882,7 +2891,18 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
                     {
                         PantoActivationEnable = true;
-                        data = PantoActivationSwitch[LocoStation];
+                        switch (PantoActivationSwitch[LocoStation])
+                        {
+                            case 0:
+                                data = 2;
+                                break;
+                            case 1:
+                                data = 1;
+                                break;
+                            case 2:
+                                data = 0;
+                                break;
+                        }                                                
                         break;
                     }
                 case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
@@ -2893,8 +2913,19 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.HV3NA_SWITCH:
                     {
-                        HV3NAEnable = true;
-                        data = HV3NASwitch[LocoStation];
+                        HV3NAEnable = true;                        
+                        switch (HV3NASwitch[LocoStation])
+                        {
+                            case 0:
+                                data = 2;
+                                break;
+                            case 1:
+                                data = 1;
+                                break;
+                            case 2:
+                                data = 0;
+                                break;
+                        }
                         break;
                     }
                 case CABViewControlTypes.HV2:

@@ -439,7 +439,7 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;             
                 }
-                if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlPantoActivationSwitchDown))
+                if (Locomotive.PantoActivationSwitch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlPantoActivationSwitchDown))
                 {
                     Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;
                 }
@@ -451,7 +451,7 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
                 }
-                if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 2 && UserInput.IsReleased(UserCommand.ControlHV3NASwitchDown))
+                if (Locomotive.HV3NASwitch[Locomotive.LocoStation] == 0 && UserInput.IsReleased(UserCommand.ControlHV3NASwitchDown))
                 {
                     Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
                 }
@@ -3422,8 +3422,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5:
                 case CABViewControlTypes.HV5_DISPLAY:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
-                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:
-                case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
+                case CABViewControlTypes.PANTOGRAPH_4_SWITCH:                
                 case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
@@ -3526,6 +3525,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
                 case CABViewControlTypes.HORN2:
                 case CABViewControlTypes.HORN12:
+                case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
                 case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
                 case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
                 case CABViewControlTypes.HV3NA_SWITCH:
@@ -3981,13 +3981,15 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.PantoActivationSwitch[Locomotive.LocoStation] = 1;
                         }
 
-                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new TogglePantoActivationSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new TogglePantoActivationSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
                         }
                         break;
                     }
@@ -3995,13 +3997,15 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
                     {
                         // Ovládání aretované pozice                                                
-                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleVoltageSelectionSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleVoltageSelectionSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
                         }
                         break;
                     }
@@ -4018,13 +4022,15 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HV3NASwitch[Locomotive.LocoStation] = 1;
                         }
 
-                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV3NASwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        if (!IsChanged && ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleHV3NASwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
                         }
                         break;
                     }

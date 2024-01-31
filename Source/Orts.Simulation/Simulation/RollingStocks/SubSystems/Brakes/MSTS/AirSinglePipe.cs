@@ -1879,9 +1879,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
-        
+
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
-        {            
+        {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
@@ -1891,8 +1891,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
             //{
-                brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
-                BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
+            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
+            BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
             //}
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
@@ -2048,7 +2048,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Spočítá celkovou netěsnost vlaku 
                 train.TotalTrainTrainPipeLeakRate += (car as MSTSWagon).TrainPipeLeakRatePSIpS;
-                
+
                 // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity                
                 if (car is MSTSLocomotive)
                     (car as MSTSLocomotive).MainResPressurePSI = MathHelper.Clamp((car as MSTSLocomotive).MainResPressurePSI, 0, (car as MSTSLocomotive).MaxMainResPressurePSI + 1.0f * 14.50377f);
@@ -2063,15 +2063,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity            
             //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
             //{
-                if (lead != null)
-                {
-                    lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 3.0f * 14.50377f, 7.0f * 14.50377f);
-                    lead.TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
-                    lead.TrainBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ApplyRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
-                    lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);
-                    lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
-                    lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
-                }
+            if (lead != null)
+            {
+                lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 3.0f * 14.50377f, 7.0f * 14.50377f);
+                lead.TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
+                lead.TrainBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.ApplyRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
+                lead.TrainBrakeController.EmergencyRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.EmergencyRatePSIpS, 3.0f * 14.50377f, 4.0f * 14.50377f);
+                lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
+                lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
+            }
             //}
 
             for (int i = 0; i < nSteps; i++)
@@ -2093,7 +2093,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 lead.ThrottleController.SetPercent(0);
                         }
                     }
-                    
+
                     // Výchozí hodnota pro nízkotlaké přebití je 5.4 barů, pokud není definována v sekci engine
                     if (lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI == 0) lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI = 5.4f * 14.50377f;
 
@@ -2143,7 +2143,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.OverChargeActivated = false;
 
                     // Vyrovnává maximální tlak s tlakem v potrubí    
-                    if (lead.BrakeSystem.BrakeControllerLap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;                    
+                    if (lead.BrakeSystem.BrakeControllerLap) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;
 
                     // Změna rychlosti plnění vzduchojemu při švihu
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
@@ -2165,8 +2165,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS / 20 * elapsedClockSeconds / 12; // Zpomalí 
 
                         // Vectron zavádí přebití 5.2bar při odbrždění
-                        if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated)                        
-                            lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;                                                    
+                        if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated)
+                            lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;
                         else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
 
@@ -2180,7 +2180,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (!lead.BrakeSystem.BrakeControllerLap)
                     {
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
-                        
+
                         // Zavádí automatické nízkotlaké přebití pokud je povoleno
                         if (lead.BrakeSystem.AutoOverchargePressure || lead.BrakeSystem.OverChargeRunning)
                         {
@@ -2344,9 +2344,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 lead.TwoPipesConnectionLocoCount = 0;
 
             for (int i = 0; i < train.Cars.Count; i++)
-            {                
+            {
                 BrakeSystem brakeSystem = train.Cars[i].BrakeSystem;
-                
+
                 if (!brakeSystem.TwoPipesConnection)
                     TrainTwoPipesConnectionBreak = true;
 
@@ -2364,7 +2364,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (continuousToExclusive > i)
                         continuousToExclusive = i;
                     continue;
-                }                
+                }
 
                 // Sčítá hlavní jímky pro napojení na napájecí potrubí                
                 if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
@@ -2377,7 +2377,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         sumv += eng.MainResVolumeM3;
                         sumpv += eng.MainResVolumeM3 * eng.MainResPressurePSI;
                         if (eng.MainResVolumeM3 == 0) eng.Simulator.MainResZero = true;
-                    }                    
+                    }
                 }
 
                 // Testuje propojení napájecích hadic mezi vozy s tlakovými jímkami
@@ -2400,9 +2400,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             MUCableLocoCount++;
 
                             if (lead != null && brakeSystem.TwoPipesConnection && eng is MSTSElectricLocomotive)
-                                lead.TwoPipesConnectionLocoCount++;                                                        
+                                lead.TwoPipesConnectionLocoCount++;
                         }
-                    }                    
+                    }
                 }
             }
             if (sumv > 0)
@@ -2415,7 +2415,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 if (!TrainTwoPipesConnectionBreak) lead.TwoPipesConnectionLocoCount = 0;
                 for (int i = 0; i < train.Cars.Count; i++)
-                {                    
+                {
                     if (!TrainTwoPipesConnectionBreak && train.Cars[i] is MSTSElectricLocomotive)
                         lead.TwoPipesConnectionLocoCount++;
 
@@ -2438,7 +2438,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-           
+
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
             // Spouštění kompresoru na obsazených nebo propojených lokomotivách
@@ -2446,7 +2446,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
                 train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
-                
+
                 if (loco != null)
                 {
                     if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
@@ -2455,7 +2455,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
                         if (!LocoTwoPipesConnectionBreak && !loco.Simulator.MainResZero)
-                        {                            
+                        {
                             if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
                             {
                                 (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 5f * elapsedClockSeconds;
@@ -2483,7 +2483,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             //        lead.AuxResPressurePSI += 10f * elapsedClockSeconds;
                             //    }
                             //}
-                        }                        
+                        }
                     }
 
                     // *** Manipulace s dveřmi ***
@@ -2579,6 +2579,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (loco is MSTSElectricLocomotive)
                     {
+                        // Lokomotivy 361
+                        if (loco.LocomotiveTypeNumber == 361)
+                        {
+                            loco.AuxCompressor = true;
+                            loco.Compressor_I = true;
+                            loco.Compressor_II = true;
+                            if (loco.AutoCompressor)
+                            {
+                                loco.AuxCompressorMode_OffOn = true;                                
+                            }
+                            else
+                            {
+                                loco.AuxCompressorMode_OffOn = false;                                
+                            }
+                            if (loco.CircuitBreakerOn)
+                            {
+                                loco.CompressorMode_OffAuto[loco.LocoStation] = true;
+                                loco.CompressorMode2_OffAuto[loco.LocoStation] = true;
+                            }
+                            else
+                            {
+                                loco.CompressorMode_OffAuto[loco.LocoStation] = false;
+                                loco.CompressorMode2_OffAuto[loco.LocoStation] = false;
+                            }
+                        }
+
                         // Zpoždění náběhu kompresoru
                         if (loco.Compressor_I || !loco.Compressor_II)
                         {
@@ -2659,7 +2685,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     // Automatický restart pomocného kompresoru, pokud je zadáno
                     bool AuxResRestart = false;
-                    if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;
+                    if (loco.AuxCompressorRestartPressurePSI != 0) AuxResRestart = true;                    
 
                     if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
                         && loco.Battery && (loco.PowerKey || loco.AuxCompressorNoActiveStation)
