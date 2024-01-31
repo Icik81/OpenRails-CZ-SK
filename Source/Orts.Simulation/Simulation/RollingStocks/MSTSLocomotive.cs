@@ -2071,6 +2071,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(LocoLastCabSelect);
             outf.Write(VoltageSelectionSwitch[1]);
             outf.Write(VoltageSelectionSwitch[2]);
+            outf.Write(PantoActivationSwitch[1]);
+            outf.Write(PantoActivationSwitch[2]);
+            outf.Write(HV3NASwitch[1]);
+            outf.Write(HV3NASwitch[2]);
             #endregion
 
             base.Save(outf);
@@ -2317,6 +2321,10 @@ namespace Orts.Simulation.RollingStocks
             LocoLastCabSelect = inf.ReadBoolean();
             VoltageSelectionSwitch[1] = inf.ReadInt32();
             VoltageSelectionSwitch[2] = inf.ReadInt32();
+            PantoActivationSwitch[1] = inf.ReadInt32();
+            PantoActivationSwitch[2] = inf.ReadInt32();
+            HV3NASwitch[1] = inf.ReadInt32();
+            HV3NASwitch[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -11296,7 +11304,7 @@ namespace Orts.Simulation.RollingStocks
                 { 
                     VoltageSelectionSwitch[LocoStation]++;                                
                     ToggleVoltageSelectionSwitch();
-                    SignalEvent(Event.ToggleUpA); // Zvuk přepínače 
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače 
                 }
                 VoltageSelectionSwitch[LocoStation] = MathHelper.Clamp(VoltageSelectionSwitch[LocoStation], 0, 2);
             }
@@ -11309,7 +11317,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     VoltageSelectionSwitch[LocoStation]--;                
                     ToggleVoltageSelectionSwitch();
-                    SignalEvent(Event.ToggleDownA); // Zvuk přepínače 
+                    SignalEvent(Event.PantographToggle); // Zvuk přepínače 
                 }
                 VoltageSelectionSwitch[LocoStation] = MathHelper.Clamp(VoltageSelectionSwitch[LocoStation], 0, 2);
             }
