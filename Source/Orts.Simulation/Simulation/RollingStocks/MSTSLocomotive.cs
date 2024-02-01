@@ -2880,7 +2880,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     try
                                     {
-                                        nextNodeLon = double.Parse(nodeId.InnerText);
+                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
                                     catch
                                     {
@@ -2892,7 +2892,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     try
                                     {
-                                        nextNodeLat = double.Parse(nodeId.InnerText);
+                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
                                     catch
                                     {
