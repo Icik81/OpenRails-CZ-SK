@@ -2910,7 +2910,7 @@ namespace Orts.Simulation.RollingStocks
                         VoltageSelectionEnable = true;
                         data = VoltageSelectionSwitch[LocoStation];
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.HV3NA_SWITCH:
                     {
                         HV3NAEnable = true;                        
@@ -2926,6 +2926,11 @@ namespace Orts.Simulation.RollingStocks
                                 data = 0;
                                 break;
                         }
+                        break;
+                    }
+                case CABViewControlTypes.PANTOGRAPH_4NC_PANTOPROTECT:
+                    {                        
+                        data = Pantograph4NCPantoProtectMessage;
                         break;
                     }
                 case CABViewControlTypes.HV2:

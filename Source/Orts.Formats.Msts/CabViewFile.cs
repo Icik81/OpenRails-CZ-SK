@@ -518,6 +518,7 @@ namespace Orts.Formats.Msts
         PANTO_ACTIVATION_SWITCH,
         VOLTAGE_SELECTION_SWITCH,
         HV3NA_SWITCH,
+        PANTOGRAPH_4NC_PANTOPROTECT,
 
         // ORTS
         ORTS_SCREEN_SELECT,

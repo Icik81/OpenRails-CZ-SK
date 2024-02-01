@@ -12247,6 +12247,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
         public bool Pantograph4NCActivated;
+        public int Pantograph4NCPantoProtectMessage;
         public void TogglePantograph4NCSwitch()
         {
             if (Pantograph4NCEnable)
@@ -12257,11 +12258,37 @@ namespace Orts.Simulation.RollingStocks
                 else
                     BreakPowerButton_Activated = false;
 
-                if (Pantograph4Switch[LocoStation] != 0)                
-                    AutoCompressor = true;                
-                else                
+                if (Pantograph4Switch[LocoStation] != 0)
+                    AutoCompressor = true;
+                else
                     AutoCompressor = false;
-                
+
+                #region Ochrany
+                // 2 sběrače
+                Pantograph4NCPantoProtectMessage = 0;
+                if ((Pantographs[1].State == PantographState.Up || Pantographs[1].State == PantographState.Lowering) && (Pantographs[2].State == PantographState.Up || Pantographs[2].State == PantographState.Lowering))
+                {
+                    if (AbsSpeedMpS > 40f / 3.6f)
+                    {
+                        Pantograph4NCPantoProtectMessage = 1; 
+                    }
+                    if (AbsSpeedMpS > 50f / 3.6f)
+                    {
+                        Pantograph4NCPantoProtectMessage = 2;
+                        // Stažení předního pantografu
+                        int p1 = 1; int p2 = 2;
+                        string ps1 = "PANTO1"; string ps2 = "PANTO2";
+                        if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
+                        if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                        {
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                            if (MPManager.IsMultiPlayer())
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                        }
+                    }
+                }                
+                #endregion Ochrany
+
                 if ((Pantograph4NCActivated || Pantograph4Switch[LocoStation] == 0) && (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1))
                 {
                     Pantograph4NCActivated = false;
