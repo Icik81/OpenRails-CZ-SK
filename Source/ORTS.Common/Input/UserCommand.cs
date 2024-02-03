@@ -322,6 +322,10 @@
         [GetString("Control_CZSK Voltage Selection -")] ControlVoltageSelectionSwitchDown,
         [GetString("Control_CZSK HV3NA +")] ControlHV3NASwitchUp,
         [GetString("Control_CZSK HV3NA -")] ControlHV3NASwitchDown,
+        [GetString("Control_CZSK Switch5Light +")] ControlSwitch5LightUp,
+        [GetString("Control_CZSK Switch5Light -")] ControlSwitch5LightDown,
+        [GetString("Control_CZSK Switch6Light +")] ControlSwitch6LightUp,
+        [GetString("Control_CZSK Switch6Light -")] ControlSwitch6LightDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

@@ -522,6 +522,8 @@ namespace Orts.Formats.Msts
         PANTOGRAPH_4NC_PANTOCHECKACTION,
         HV3NA_HVCHECKACTION,
         HEATING_CHECKACTION,
+        SWITCH5_LIGHT,
+        SWITCH6_LIGHT,
 
         // ORTS
         ORTS_SCREEN_SELECT,

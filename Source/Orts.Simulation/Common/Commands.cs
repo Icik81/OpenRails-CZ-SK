@@ -1113,7 +1113,70 @@ namespace Orts.Common
             Receiver.ToggleHeadLightsDown();
         }
     }
+    [Serializable()]
+    public sealed class Switch5LightUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
 
+        public Switch5LightUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitch5LightsUp();
+        }
+    }
+    [Serializable()]
+    public sealed class Switch5LightDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public Switch5LightDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitch5LightsDown();
+        }
+    }
+    [Serializable()]
+    public sealed class Switch6LightUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public Switch6LightUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitch6LightsUp();
+        }
+    }
+    [Serializable()]
+    public sealed class Switch6LightDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public Switch6LightDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitch6LightsDown();
+        }
+    }
     [Serializable()]
     public sealed class WipersCommand : BooleanCommand
     {

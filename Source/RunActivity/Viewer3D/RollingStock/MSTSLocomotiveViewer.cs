@@ -393,6 +393,10 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlVoltageSelectionSwitchDown, new Action[] { Noop, () => new ToggleVoltageSelectionSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV3NASwitchUp, new Action[] { Noop, () => new ToggleHV3NASwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHV3NASwitchDown, new Action[] { Noop, () => new ToggleHV3NASwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitch5LightUp, new Action[] { Noop, () => new Switch5LightUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitch5LightDown, new Action[] { Noop, () => new Switch5LightDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitch6LightUp, new Action[] { Noop, () => new Switch6LightUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitch6LightDown, new Action[] { Noop, () => new Switch6LightDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -431,7 +435,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             // Icik
             DoublePressedKeyTest();
-
+            
             // Ovládání Panto Activation nearetované pozice
             if (Locomotive.PantoActivationEnable)
             {                
@@ -3533,6 +3537,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPH_4NC_PANTOCHECKACTION:
                 case CABViewControlTypes.HV3NA_HVCHECKACTION:
                 case CABViewControlTypes.HEATING_CHECKACTION:
+                case CABViewControlTypes.SWITCH5_LIGHT:
+                case CABViewControlTypes.SWITCH6_LIGHT:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -3971,8 +3977,34 @@ namespace Orts.Viewer3D.RollingStock
 
                 // Icik
                 case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
-                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;                       
-                    
+                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
+
+                case CABViewControlTypes.SWITCH5_LIGHT:
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new Switch5LightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new Switch5LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
+                case CABViewControlTypes.SWITCH6_LIGHT:
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new Switch6LightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new Switch6LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
                 case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
                     {
                         // Ovládání nearetované pozice                        

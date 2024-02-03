@@ -624,6 +624,11 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlVoltageSelectionSwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Alt | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlHV3NASwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlHV3NASwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlSwitch5LightUp] = new UserCommandKeyInput(0x24, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlSwitch5LightDown] = new UserCommandKeyInput(0x24, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlSwitch6LightUp] = new UserCommandKeyInput(0x25, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlSwitch6LightDown] = new UserCommandKeyInput(0x25, KeyModifiers.Shift | KeyModifiers.Control);
+            
         }
         #endregion
 

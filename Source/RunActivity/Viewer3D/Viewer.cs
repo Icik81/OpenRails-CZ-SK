@@ -682,6 +682,10 @@ namespace Orts.Viewer3D
             ToggleVoltageSelectionSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3NASwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleHV3NASwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            Switch5LightUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            Switch5LightDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            Switch6LightUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            Switch6LightDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()
