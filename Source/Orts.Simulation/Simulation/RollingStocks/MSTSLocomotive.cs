@@ -735,6 +735,7 @@ namespace Orts.Simulation.RollingStocks
         public float LocoSetUpTimer;
         public bool PantographDown = true;
         public bool AutoCompressor;
+        public bool ForceBreakPower;
 
 
         // Jindrich

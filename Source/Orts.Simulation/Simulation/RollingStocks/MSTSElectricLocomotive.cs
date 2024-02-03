@@ -1081,7 +1081,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Stisknutí hříbku pro přerušení napájení, vypne HV a shodí sběrače
-                    if (BreakPowerButton || !Battery)
+                    if (BreakPowerButton || !Battery || ForceBreakPower)
                     {
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
@@ -1105,13 +1105,14 @@ namespace Orts.Simulation.RollingStocks
                                         }
                                     }
                                 }
-                        }
-                        BreakPowerButton = false;
+                        }                        
                     }
                   
                     // Loco Vectron shazuje pantografy, pokud není očekávané napětí
                     if (LocoType == LocoTypes.Vectron)
-                    {
+                    {                        
+                        ForceBreakPower = false;
+
                         if (SelectedPowerSystem == PowerSystem.AT15kV
                             || SelectedPowerSystem == PowerSystem.DE15kV)
                         {
@@ -1144,28 +1145,28 @@ namespace Orts.Simulation.RollingStocks
                             else
                             if (!Loco15kV && RouteVoltageV == 15000)
                             {
-                                BreakPowerButton = true;
+                                ForceBreakPower = true;
                                 PantoCommandDown = true;
                                 SignalEvent(Event.Failure);
                             }
                             else
                             if (Loco15kV && RouteVoltageV != 15000)
                             {
-                                BreakPowerButton = true;
+                                ForceBreakPower = true;
                                 PantoCommandDown = true;
                                 SignalEvent(Event.Failure);
                             }
                             else
                             if (SwitchingVoltageMode_OffAC && RouteVoltageV != 15000 && RouteVoltageV != 25000)                                
-                            {                                 
-                                BreakPowerButton = true;
+                            {
+                                ForceBreakPower = true;
                                 PantoCommandDown = true;
                                 SignalEvent(Event.Failure);
                             }
                             else
                             if (SwitchingVoltageMode_OffDC && RouteVoltageV != 3000)
                             {
-                                BreakPowerButton = true;
+                                ForceBreakPower = true;
                                 PantoCommandDown = true;
                                 SignalEvent(Event.Failure);
                             }                                                       
