@@ -738,8 +738,8 @@ namespace Orts.Simulation.RollingStocks
         public bool ForceBreakPower;
         public int[] Switch5LightPosition = new int[3];
         public int[] Switch6LightPosition = new int[3];
-        public bool Switch5LightEnable = true;
-        public bool Switch6LightEnable = true;
+        public bool Switch5LightEnable;
+        public bool Switch6LightEnable;
 
         // Jindrich
         public bool IsActive = false;
