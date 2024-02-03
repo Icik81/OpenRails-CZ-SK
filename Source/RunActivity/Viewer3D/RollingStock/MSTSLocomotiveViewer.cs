@@ -3530,6 +3530,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
                 case CABViewControlTypes.HV3NA_SWITCH:
                 case CABViewControlTypes.PANTOGRAPH_4NC_PANTOPROTECT:
+                case CABViewControlTypes.PANTOGRAPH_4NC_PANTOCHECKACTION:
+                case CABViewControlTypes.HV3NA_HVCHECKACTION:
+                case CABViewControlTypes.HEATING_CHECKACTION:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

@@ -4230,7 +4230,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            Train.TrainHeatingStartOn = false;
+            Train.TrainHeatingStartOn = false;            
 
             // Spustí zvuk topení v kabině při inicializaci loko
             if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn)
@@ -4252,7 +4252,7 @@ namespace Orts.Simulation.RollingStocks
                 if (HeatingMaxCurrentA == 0)
                     HeatingMaxCurrentA = 130; // Default 130A
 
-                if ((Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || (Train.CarSteamHeatOn && (this is MSTSSteamLocomotive)))
+                if ((!Heating_OverTimeRequest && Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || (Train.CarSteamHeatOn && (this is MSTSSteamLocomotive)))
                     HeatingIsOn = true;
                 if (((!Heating_OffOn[LocoStation] && StationIsActivated[LocoStation]) || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
                 {
@@ -11385,18 +11385,111 @@ namespace Orts.Simulation.RollingStocks
                 HV3NASwitch[LocoStation] = MathHelper.Clamp(HV3NASwitch[LocoStation], 0, 2);
             }
         }
+
+        bool HV3NA_Request;
+        float HV3NARequestTimer;
+        public int HV3NACheckAction;        
+        float HV3NACheckTimer1;
+        float HV3NACheckTimer2;
+        bool Heating_Request;
+        bool Heating_OverTimeRequest;
+        float HeatingRequestTimer;
+        public int HeatingCheckAction;
+        float HeatingCheckTimer1;
+        float HeatingCheckTimer2;
         public void ToggleHV3NASwitch()
         {
             if (!IsLeadLocomotive())
                 return;
             if (HV3NAEnable)
             {
+                #region Kontrolka HV
+                // Kontrolka
+                // Kontrolka bude blikat
+                HV3NACheckAction = 0;
+                if (HV3NA_Request)
+                {
+                    HV3NACheckAction = 1;
+                    HV3NACheckTimer1 += elapsedTime;
+                    if (HV3NACheckTimer1 > 0.5f)
+                    {
+                        HV3NACheckAction = 0;
+                        HV3NACheckTimer2 += elapsedTime;
+                        if (HV3NACheckTimer2 > 0.5f)
+                        {
+                            HV3NACheckTimer1 = 0;
+                            HV3NACheckTimer2 = 0;
+                        }
+                    }
+                    HV3NARequestTimer += elapsedTime;
+                    if (HV3NARequestTimer > 20.0f) // Požadavek pro zapnutí HV trvá max 20s
+                    {
+                        HV3NA_Request = false;
+                        HV3NARequestTimer = 0;
+                    }
+                    if (!CircuitBreakerOn && !PantographDown && VoltageSelectionSwitch[LocoStation] != 1)
+                        HVOn = true;
+                }                
+                // Kontrolka svítí trvale
+                if (CircuitBreakerOn)
+                {
+                    HV3NACheckAction = 1;
+                    HV3NA_Request = false;
+                }
+                #endregion Kontrolka sběračů
+
+                #region Kontrolka vytápění vlaku
+                // Kontrolka
+                // Kontrolka bude blikat
+                HeatingCheckAction = 0;
+                if (Heating_OverTimeRequest && !Heating_OffOn[1] && !Heating_OffOn[2])
+                {
+                    Heating_OverTimeRequest = false;
+                }                
+                if (!Heating_OverTimeRequest && Battery && StationIsActivated[LocoStation] && (Heating_OffOn[1] || Heating_OffOn[2]))
+                {
+                    Heating_Request = true;
+                }
+                if (!Battery || (!StationIsActivated[1] && !StationIsActivated[2]) || (!Heating_OffOn[1] && !Heating_OffOn[2]))
+                {
+                    Heating_Request = false;
+                }
+                if (Heating_Request && !PowerOn)
+                {
+                    HeatingCheckAction = 1;
+                    HeatingCheckTimer1 += elapsedTime;
+                    if (HeatingCheckTimer1 > 0.5f)
+                    {
+                        HeatingCheckAction = 0;
+                        HeatingCheckTimer2 += elapsedTime;
+                        if (HeatingCheckTimer2 > 0.5f)
+                        {
+                            HeatingCheckTimer1 = 0;
+                            HeatingCheckTimer2 = 0;
+                        }
+                    }
+                    HeatingRequestTimer += elapsedTime;
+                    if (HeatingRequestTimer > 20.0f) // Požadavek pro zapnutí vytápění trvá max 20s
+                    {
+                        Heating_Request = false;
+                        Heating_OverTimeRequest = true;
+                        HeatingRequestTimer = 0;
+                    }
+                }
+                // Kontrolka svítí trvale
+                if (Heating_Request && PowerOn)
+                {
+                    HeatingCheckAction = 1;                    
+                }
+                #endregion Kontrolka vytápění vlaku
+
                 switch (HV3NASwitch[LocoStation])
                 {
                     case 0: // HV deaktivovat                            
                         //Simulator.Confirmer.Information("Switch 2");
                         if (Battery && StationIsActivated[LocoStation])
                         {
+                            HV3NA_Request = false;
                             if (CircuitBreakerOn)
                                 HVOff = true;
                         }
@@ -11410,10 +11503,10 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 2:// HV aktivovat
                         //Simulator.Confirmer.Information("Switch 0");
-                        if (Battery && StationIsActivated[LocoStation] && !PantographDown && VoltageSelectionSwitch[LocoStation] != 1)
+                        if (Battery && StationIsActivated[LocoStation])
                         {
-                            if (!CircuitBreakerOn)
-                                HVOn = true;
+                            HV3NA_Request = true;
+                            HV3NARequestTimer = 0;                            
                         }
                         break;
                 }                             
@@ -12248,6 +12341,9 @@ namespace Orts.Simulation.RollingStocks
         }
         public bool Pantograph4NCActivated;
         public int Pantograph4NCPantoProtectMessage;
+        public int Pantograph4NCPantoCheckAction;
+        float PantoCheckTimer1;
+        float PantoCheckTimer2;
         public void TogglePantograph4NCSwitch()
         {
             if (Pantograph4NCEnable)
@@ -12261,7 +12357,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Pantograph4Switch[LocoStation] != 0)
                     AutoCompressor = true;
                 else
-                    AutoCompressor = false;
+                    AutoCompressor = false;                
 
                 #region Ochrany
                 // 2 sběrače
@@ -12286,16 +12382,43 @@ namespace Orts.Simulation.RollingStocks
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
                         }
                     }
-                }                
+                }
                 #endregion Ochrany
 
-                if ((Pantograph4NCActivated || Pantograph4Switch[LocoStation] == 0) && (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1))
-                {
-                    Pantograph4NCActivated = false;
+                Pantograph4NCPantoCheckAction = 0; // Zhasnutá kontrolka
+                if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
+                {                   
                     PantoStatus = Pantograph4Switch[LocoStation];
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
+
+                    #region Kontrolka sběračů
+                    // Kontrolka
+                    // Kontrolka bude blikat
+                    if (Pantographs[p1].State == PantographState.Lowering || Pantographs[p1].State == PantographState.Raising || Pantographs[p2].State == PantographState.Lowering || Pantographs[p2].State == PantographState.Raising)                            
+                    {
+                        Pantograph4NCPantoCheckAction = 1; 
+                        PantoCheckTimer1 += elapsedTime;
+                        if (PantoCheckTimer1 > 0.5f)
+                        {
+                            Pantograph4NCPantoCheckAction = 0;
+                            PantoCheckTimer2 += elapsedTime;
+                            if (PantoCheckTimer2 > 0.5f)
+                            {
+                                PantoCheckTimer1 = 0;
+                                PantoCheckTimer2 = 0;
+                            }
+                        }
+                    }
+                    else
+                    // Kontrolka svítí trvale
+                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p2].State == PantographState.Up)
+                    {
+                        Pantograph4NCPantoCheckAction = 1;
+                    }
+                    #endregion Kontrolka sběračů
+
                     switch (Pantograph4Switch[LocoStation])
                     {
                         case 0:
@@ -12334,12 +12457,15 @@ namespace Orts.Simulation.RollingStocks
                             }
                             break;
                         case 1:
-                            {                                
-                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                            {
+                                if (Pantograph4NCActivated)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
                                 }
                                 if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
                                 {
@@ -12353,7 +12479,10 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                            if (Pantograph4NCActivated)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                            }
                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
                                             if (MPManager.IsMultiPlayer())
                                             {
@@ -12365,33 +12494,36 @@ namespace Orts.Simulation.RollingStocks
                             }
                             break;
                         case 2:
-                            {                                
-                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
+                            {
+                                if (Pantograph4NCActivated)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                }
-                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
-                                {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                }
-
-                                if (AcceptMUSignals)
-                                    foreach (TrainCar car in Train.Cars)
+                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
                                     {
-                                        if (car.AcceptMUSignals)
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                    }
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
+
+                                    if (AcceptMUSignals)
+                                        foreach (TrainCar car in Train.Cars)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph);
-                                            if (MPManager.IsMultiPlayer())
+                                            if (car.AcceptMUSignals)
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (MPManager.IsMultiPlayer())
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                                }
                                             }
                                         }
-                                    }
+                                }
                             }
                             break;
                         case 3:
@@ -12402,11 +12534,14 @@ namespace Orts.Simulation.RollingStocks
                                     if (MPManager.IsMultiPlayer())
                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                 }
-                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                if (Pantograph4NCActivated)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                    {
+                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                        if (MPManager.IsMultiPlayer())
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                    }
                                 }
 
                                 if (AcceptMUSignals)
@@ -12415,7 +12550,10 @@ namespace Orts.Simulation.RollingStocks
                                         if (car.AcceptMUSignals)
                                         {
                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                            if (Pantograph4NCActivated)
+                                            {
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                            }
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -12428,6 +12566,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     PrePantoStatus[LocoStation] = Pantograph4Switch[LocoStation];
                 }
+                Pantograph4NCActivated = false;
             }
         }
 

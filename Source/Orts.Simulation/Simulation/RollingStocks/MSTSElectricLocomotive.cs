@@ -2933,6 +2933,21 @@ namespace Orts.Simulation.RollingStocks
                         data = Pantograph4NCPantoProtectMessage;
                         break;
                     }
+                case CABViewControlTypes.PANTOGRAPH_4NC_PANTOCHECKACTION:
+                    {
+                        data = Pantograph4NCPantoCheckAction;
+                        break;
+                    }
+                case CABViewControlTypes.HV3NA_HVCHECKACTION:
+                    {
+                        data = HV3NACheckAction;
+                        break;
+                    }
+                case CABViewControlTypes.HEATING_CHECKACTION:
+                    {
+                        data = HeatingCheckAction;
+                        break;
+                    }
                 case CABViewControlTypes.HV2:
                     {
                         HV2Enable = true;
