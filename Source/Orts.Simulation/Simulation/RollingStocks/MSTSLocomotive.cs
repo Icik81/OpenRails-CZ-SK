@@ -14313,6 +14313,7 @@ namespace Orts.Simulation.RollingStocks
         
         public void ToggleSwitch5LightsUp()
         {
+            if (!Switch5LightEnable) return;
             if (Switch5LightPosition[LocoStation] < 4)
             {
                 Switch5LightPosition[LocoStation]++;
@@ -14322,6 +14323,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch5LightsDown()
         {
+            if (!Switch5LightEnable) return;
             if (Switch5LightPosition[LocoStation] > 0)
             {
                 Switch5LightPosition[LocoStation]--;
@@ -14330,7 +14332,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
         public void Switch5Lights()
-        {
+        {            
             switch (Switch5LightPosition[LocoStation])
             {
                 case 0:                    
@@ -14352,6 +14354,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch6LightsUp()
         {
+            if (!Switch6LightEnable) return;
             if (Switch6LightPosition[LocoStation] < 5)
             {
                 Switch6LightPosition[LocoStation]++;
@@ -14361,6 +14364,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch6LightsDown()
         {
+            if (!Switch6LightEnable) return;
             if (Switch6LightPosition[LocoStation] > 0)
             {
                 Switch6LightPosition[LocoStation]--;
