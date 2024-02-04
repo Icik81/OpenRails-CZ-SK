@@ -13972,89 +13972,94 @@ namespace Orts.Simulation.RollingStocks
                             Switch6LightPosition[LocoStation] = 4;
                         }
                     }
-                }                
-
-                switch (Switch5LightPosition[1])
-                {
-                    case 0: LightRearLR = true; LightRearRR = false; break;
-                    case 1: LightRearLR = true; LightRearRR = true; break;
-                    case 2: LightRearLR = false; LightRearRR = false; break;
-                    case 3: LightRearLW = true; LightRearRW = false; break;
-                    case 4: LightRearLW = true; LightRearRW = true; break;
                 }
-                switch (Switch6LightPosition[1])
+                if (LocoStation == 1)
                 {
-                    case 0: LightFrontLR = false; LightFrontRR = true; break;
-                    case 1: LightFrontLR = true; LightFrontRR = true; break;
-                    case 2: LightFrontLR = false; LightFrontRR = false; break;
-                    case 3:
-                        {
-                            if (HeadLightPosition[1] == 1)
+                    switch (Switch5LightPosition[1])
+                    {
+                        case 0: LightRearLR = true; LightRearRR = false; break;
+                        case 1: LightRearLR = true; LightRearRR = true; break;
+                        case 2: LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false; break;
+                        case 3: LightRearLW = true; LightRearRW = false; break;
+                        case 4: LightRearLW = true; LightRearRW = true; break;
+                    }
+                    switch (Switch6LightPosition[1])
+                    {
+                        case 0: LightFrontLR = false; LightFrontRR = true; break;
+                        case 1: LightFrontLR = true; LightFrontRR = true; break;
+                        case 2: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
+                        case 3:
                             {
-                                HeadLightPosition[1] = 0; Headlight[1] = 0;
+                                if (HeadLightPosition[1] == 1)
+                                {
+                                    HeadLightPosition[1] = 0; Headlight[1] = 0;
+                                }
+                                LightFrontLW = false; LightFrontRW = true;
                             }
-                            LightFrontLW = false; LightFrontRW = true;
-                        }
-                        break;
-                    case 4:
-                        {
-                            if (HeadLightPosition[1] == 0)
+                            break;
+                        case 4:
                             {
-                                HeadLightPosition[1] = 1; Headlight[1] = 7;
+                                if (HeadLightPosition[1] == 0)
+                                {
+                                    HeadLightPosition[1] = 1; Headlight[1] = 7;
+                                }
+                                LightFrontLW = true; LightFrontRW = true;
                             }
-                            LightFrontLW = true; LightFrontRW = true; 
-                        }
-                        break;
-                    case 5:
-                        {
-                            if (HeadLightPosition[1] == 1)
+                            break;
+                        case 5:
                             {
-                                HeadLightPosition[1] = 0; Headlight[1] = 0;
+                                if (HeadLightPosition[1] == 1)
+                                {
+                                    HeadLightPosition[1] = 0; Headlight[1] = 0;
+                                }
+                                LightFrontLW = true; LightFrontRW = true;
                             }
-                            LightFrontLW = true; LightFrontRW = true;
-                        }
-                        break;
+                            break;
+                    }
                 }
-                switch (Switch5LightPosition[2])
+                if (LocoStation == 2)
                 {
-                    case 0: LightFrontLR = true; LightFrontRR = false; break;
-                    case 1: LightFrontLR = true; LightFrontRR = true; break;
-                    case 2: LightFrontLR = false; LightFrontRR = false; break;
-                    case 3: LightFrontLW = true; LightFrontRW = false; break;
-                    case 4: LightFrontLW = true; LightFrontRW = true; break;
-                }
-                switch (Switch6LightPosition[2])
-                {
-                    case 0: LightRearLR = false; LightRearRR = true; break;
-                    case 1: LightRearLR = true; LightRearRR = true; break;
-                    case 2:
-                        {
-                            if (HeadLightPosition[2] == 1)
+                    switch (Switch5LightPosition[2])
+                    {
+                        case 0: LightFrontLR = true; LightFrontRR = false; break;
+                        case 1: LightFrontLR = true; LightFrontRR = true; break;
+                        case 2: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
+                        case 3: LightFrontLW = true; LightFrontRW = false; break;
+                        case 4: LightFrontLW = true; LightFrontRW = true; break;
+                    }
+                    switch (Switch6LightPosition[2])
+                    {
+                        case 0: LightRearLR = false; LightRearRR = true; break;
+                        case 1: LightRearLR = true; LightRearRR = true; break;
+                        case 2:
                             {
-                                HeadLightPosition[2] = 0; Headlight[2] = 0;
+                                if (HeadLightPosition[2] == 1)
+                                {
+                                    HeadLightPosition[2] = 0; Headlight[2] = 0;
+                                }
+                                LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
                             }
-                            LightRearLR = false; LightRearRR = false;
-                        }
-                        break;
-                    case 3: LightRearLW = false; LightRearRW = true; break;
-                    case 4:
-                        {
-                            if (HeadLightPosition[2] == 0)
+                            break;
+                        case 3: LightRearLW = false; LightRearRW = true; break;
+                        case 4:
                             {
-                                HeadLightPosition[2] = 1; Headlight[2] = 7;
+                                if (HeadLightPosition[2] == 0)
+                                {
+                                    HeadLightPosition[2] = 1; Headlight[2] = 7;
+                                }
+                                LightRearLW = true; LightRearRW = true;
                             }
-                            LightRearLW = true; LightRearRW = true; 
-                        }
-                        break;
-                    case 5:
-                        {                            
-                            if (HeadLightPosition[2] == 1)
+                            break;
+                        case 5:
                             {
-                                HeadLightPosition[2] = 0; Headlight[2] = 0;
+                                if (HeadLightPosition[2] == 1)
+                                {
+                                    HeadLightPosition[2] = 0; Headlight[2] = 0;
+                                }
+                                LightRearLW = true; LightRearRW = true;
                             }
-                            LightRearLW = true; LightRearRW = true;
-                        }
-                        break;
+                            break;
+                    }
                 }
             }
             else

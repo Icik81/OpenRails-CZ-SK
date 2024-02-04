@@ -3980,12 +3980,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
 
                 case CABViewControlTypes.SWITCH5_LIGHT:
-                    if (ChangedValue(0) > 0 && !IsChanged)
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch5LightUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new Switch5LightDownCommand(Viewer.Log);
                         IsChanged = true;
@@ -3993,12 +3993,12 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.SWITCH6_LIGHT:
-                    if (ChangedValue(0) > 0 && !IsChanged)
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch6LightUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new Switch6LightDownCommand(Viewer.Log);
                         IsChanged = true;
