@@ -2419,10 +2419,19 @@ namespace Orts.Viewer3D
             }
         }
 
+        bool CabViewRestored;
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             var speedFactor = 500;  // Gives a fairly smart response.
-            var speed = speedFactor * elapsedTime.RealSeconds; // Independent of framerate
+            var speed = speedFactor * elapsedTime.RealSeconds; // Independent of framerate            
+
+            // Icik
+            if (Viewer.Simulator.GameWasRestored && !CabViewRestored)
+            {
+                Reset();
+                Viewer.AdjustCabHeight(Viewer.DisplaySize.X, Viewer.DisplaySize.Y);
+                CabViewRestored = true;
+            }
 
             if (UserInput.IsPressed(UserCommand.CameraPanLeft))
                 ShiftView(+1);

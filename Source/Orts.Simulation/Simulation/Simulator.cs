@@ -247,6 +247,7 @@ namespace Orts.Simulation
         public bool DoorSwitchDoorWasOpened;
         public double OldClockTime;
         public bool ManualCouplingOverride;
+        public bool GameWasRestored;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -630,6 +631,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            GameWasRestored = true;
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
             TrainPowerKey = inf.ReadBoolean();            
