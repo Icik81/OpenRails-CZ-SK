@@ -11417,6 +11417,8 @@ namespace Orts.Simulation.RollingStocks
 
         bool HV3NA_Request;
         float HV3NARequestTimer;
+        public bool HV3NA_RequestMissed;
+        float HV3NARequestMissedTimer;
         public int HV3NACheckAction;        
         float HV3NACheckTimer1;
         float HV3NACheckTimer2;
@@ -11455,10 +11457,23 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HV3NA_Request = false;
                         HV3NARequestTimer = 0;
+                        HV3NA_RequestMissed = true;
                     }
                     if (!CircuitBreakerOn && !PantographDown && VoltageSelectionSwitch[LocoStation] != 1)
                         HVOn = true;
-                }                
+                }  
+                
+                // Zobrazí symbol o selhání sepnutí HV
+                if (HV3NA_RequestMissed)
+                {
+                    HV3NARequestMissedTimer += elapsedTime;
+                    if (HV3NARequestMissedTimer > 2.0f)
+                    {
+                        HV3NARequestMissedTimer = 0;
+                        HV3NA_RequestMissed = false;
+                    }
+                }
+
                 // Kontrolka svítí trvale
                 if (CircuitBreakerOn)
                 {
@@ -12373,6 +12388,7 @@ namespace Orts.Simulation.RollingStocks
         public int Pantograph4NCPantoCheckAction;
         float PantoCheckTimer1;
         float PantoCheckTimer2;
+        public int Pantograph4NCState;
         public void TogglePantograph4NCSwitch()
         {
             if (Pantograph4NCEnable)
@@ -12451,7 +12467,12 @@ namespace Orts.Simulation.RollingStocks
                     switch (Pantograph4Switch[LocoStation])
                     {
                         case 0:
-                            {                                
+                            {
+                                if (Pantographs[p1].State != PantographState.Up && Pantographs[p2].State != PantographState.Up)
+                                {
+                                    Pantograph4NCState = 0;
+                                }
+
                                 if (CircuitBreakerOn)
                                 {
                                     HVOff = true;
@@ -12487,6 +12508,11 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case 1:
                             {
+                                if (Pantographs[p1].State == PantographState.Up && Pantographs[p2].State != PantographState.Up)
+                                {
+                                    Pantograph4NCState = 1;
+                                }
+
                                 if (Pantograph4NCActivated)
                                 {
                                     if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
@@ -12524,6 +12550,11 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         case 2:
                             {
+                                if (Pantographs[p1].State == PantographState.Up && Pantographs[p2].State == PantographState.Up)
+                                {
+                                    Pantograph4NCState = 2;
+                                }
+
                                 if (Pantograph4NCActivated)
                                 {
                                     if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
@@ -12556,7 +12587,12 @@ namespace Orts.Simulation.RollingStocks
                             }
                             break;
                         case 3:
-                            {                                
+                            {
+                                if (Pantographs[p1].State != PantographState.Up && Pantographs[p2].State == PantographState.Up)
+                                {
+                                    Pantograph4NCState = 3;
+                                }
+
                                 if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
                                 {
                                     SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
@@ -17860,6 +17896,7 @@ namespace Orts.Simulation.RollingStocks
         float ControllerVoltsDetectorTimer;
         float DoorSwitchTimer;
         public float DoorSwitchTime = 0;
+        int preDataPressureBrake_State;
         public virtual float GetDataOf(CabViewControl cvc)
         {                                    
             CheckBlankDisplay(cvc);
@@ -20474,6 +20511,52 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Switch6LightEnable = true;
                         data = Switch6LightPosition[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.EDB_STATE:
+                    {                        
+                        data = 0;
+                        if (BrakeCurrent1 > 0)
+                            data = 1;
+                        break;
+                    }
+                case CABViewControlTypes.HEATING_CHECKACTION:
+                    {
+                        data = HeatingCheckAction;
+                        break;
+                    }
+                case CABViewControlTypes.PRESSUREBRAKE_STATE:
+                    {
+                        data = preDataPressureBrake_State;
+                        if (BrakeSystem.GetCylPressurePSI() < 0.3f * 14.50377f)
+                        {
+                            data = 0;
+                        }
+                        if (BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
+                        {
+                            if (AbsSpeedMpS < 0.01f)
+                            {
+                                data = 1;
+                            }
+                            else                            
+                            {
+                                data = 2;
+                            }
+                            preDataPressureBrake_State = (int)data;
+                        }
+                        break;
+                    }                
+                case CABViewControlTypes.DIRECTION_STATE:
+                    {
+                        data = 0;
+                        if (Direction == Direction.Forward)
+                        {
+                            data = 2;
+                        }
+                        if (Direction == Direction.Reverse)
+                        {
+                            data = 1;
+                        }
                         break;
                     }
 

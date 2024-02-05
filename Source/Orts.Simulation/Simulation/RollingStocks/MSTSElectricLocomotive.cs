@@ -2943,10 +2943,78 @@ namespace Orts.Simulation.RollingStocks
                     {
                         data = HV3NACheckAction;
                         break;
-                    }
-                case CABViewControlTypes.HEATING_CHECKACTION:
+                    }                
+                case CABViewControlTypes.HV3NA_STATE:
                     {
-                        data = HeatingCheckAction;
+                        data = 0;
+                        if (CircuitBreakerOn)
+                        {
+                            switch (RouteVoltageV)
+                            {
+                                case 3000: data = 1; break;
+                                case 25000: data = 2; break;
+                            }
+                        }
+                        else
+                        {
+                            if (HV3NA_RequestMissed)
+                            {
+                                data = 3;
+                            }
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.HEATING_STATE:
+                    {
+                        data = 1;
+                        if (HeatingIsOn)
+                        {
+                            switch (RouteVoltageV)
+                            {
+                                case 3000: data = 0; break;
+                                case 25000: data = 2; break;
+                            }
+                        }                        
+                        break;
+                    }
+                case CABViewControlTypes.TRACTIONBRAKE_STATE:
+                    {
+                        data = 0;
+                        if (CircuitBreakerOn && BrakeCurrent1 == 0)
+                        {
+                            data = 2;
+                        }
+                        if (!CircuitBreakerOn || BrakeCurrent1 > 0)
+                        {
+                            data = 1;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.VOLTAGEFILTER_STATE:
+                    {
+                        data = 0;
+                        if (!PantographDown)
+                        {
+                            if (PantographVoltageV > 0.95f * RouteVoltageV)
+                            {
+                                data = 3;
+                            }
+                            else
+                            if (PantographVoltageV > 0.85f * RouteVoltageV)
+                            {
+                                data = 1;
+                            }
+                            else
+                            if (PantographVoltageV > 0.75f * RouteVoltageV)
+                            {
+                                data = 2;
+                            }
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.PANTOGRAPH4NC_STATE:
+                    {
+                        data = Pantograph4NCState;                        
                         break;
                     }
                 case CABViewControlTypes.HV2:

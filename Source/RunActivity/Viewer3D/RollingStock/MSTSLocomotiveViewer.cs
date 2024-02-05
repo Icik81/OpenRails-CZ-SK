@@ -3539,6 +3539,14 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HEATING_CHECKACTION:
                 case CABViewControlTypes.SWITCH5_LIGHT:
                 case CABViewControlTypes.SWITCH6_LIGHT:
+                case CABViewControlTypes.EDB_STATE:
+                case CABViewControlTypes.HV3NA_STATE:
+                case CABViewControlTypes.HEATING_STATE:
+                case CABViewControlTypes.PRESSUREBRAKE_STATE:
+                case CABViewControlTypes.TRACTIONBRAKE_STATE:
+                case CABViewControlTypes.DIRECTION_STATE:
+                case CABViewControlTypes.VOLTAGEFILTER_STATE:
+                case CABViewControlTypes.PANTOGRAPH4NC_STATE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

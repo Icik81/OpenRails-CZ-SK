@@ -524,6 +524,14 @@ namespace Orts.Formats.Msts
         HEATING_CHECKACTION,
         SWITCH5_LIGHT,
         SWITCH6_LIGHT,
+        EDB_STATE,
+        HV3NA_STATE,
+        HEATING_STATE,
+        PRESSUREBRAKE_STATE,
+        TRACTIONBRAKE_STATE,
+        DIRECTION_STATE,
+        VOLTAGEFILTER_STATE,
+        PANTOGRAPH4NC_STATE,
 
         // ORTS
         ORTS_SCREEN_SELECT,
