@@ -104,6 +104,7 @@ namespace Orts.Viewer3D
         public DerailWindow DerailWindow { get; private set; } // Escape window
         public HelperOptionsWindow HelperOptionsWindow { get; private set; } // Helper Options window
         public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
+        public BrakeModeOptionsWindow BrakeModeOptionsWindow { get; private set; } // Brake Mode Options window
 
         // Route Information
         public TileManager Tiles { get; private set; }
@@ -478,6 +479,7 @@ namespace Orts.Viewer3D
             DerailWindow = new DerailWindow(WindowManager);
             HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
             HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
+            BrakeModeOptionsWindow = new BrakeModeOptionsWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);

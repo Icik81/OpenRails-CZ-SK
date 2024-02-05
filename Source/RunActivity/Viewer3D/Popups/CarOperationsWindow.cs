@@ -41,14 +41,14 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 21 + ControlLayout.SeparatorSize * 12, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 20 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonLocoChange, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarMode, buttonBrakeCarModePL, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
+            Label ID, buttonLocoChange, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarModeOptions, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -127,25 +127,7 @@ namespace Orts.Viewer3D.Popups
                 buttonToggleBleedOffValve.Color = Color.LightGreen;
             
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonBrakeCarMode = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Brake Mode G/P/R/R+Mg") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText, LabelAlignment.Center));
-
-            // Vůz je nákladní a není možný režim R+Mg
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.WagonType == 4 && !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
-            {
-                vbox.AddHorizontalSeparator();
-                vbox.Add(buttonBrakeCarModePL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Mode Empty/Loaded") + "      " + Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL, LabelAlignment.Center));
-                buttonBrakeCarModePL.Click += new Action<Control, Point>(buttonBrakeCarModePL_Click);
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
-            }
-            // Ostatní vozy
-            else
-            {
-                vbox.AddHorizontalSeparator();
-                vbox.Add(buttonBrakeCarModePL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 4;
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AutoLoadRegulatorEquipped)
-                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
-            }
+            vbox.Add(buttonBrakeCarModeOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Brake Mode Options"), LabelAlignment.Center));            
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonBrakeCarDeactivate = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car Brake"), LabelAlignment.Center));
@@ -214,9 +196,9 @@ namespace Orts.Viewer3D.Popups
             buttonToggleAngleCockA.Click += new Action<Control, Point>(buttonToggleAngleCockA_Click);
             buttonToggleAngleCockB.Click += new Action<Control, Point>(buttonToggleAngleCockB_Click);
             buttonToggleBleedOffValve.Click += new Action<Control, Point>(buttonToggleBleedOffValve_Click);
-            buttonBrakeCarMode.Click += new Action<Control, Point>(buttonBrakeCarMode_Click);
-            buttonBrakeCarDeactivate.Click += new Action<Control, Point>(buttonBrakeCarDeactivate_Click);
+            buttonBrakeCarModeOptions.Click += new Action<Control, Point>(buttonBrakeCarModeOptions_Click);            
             buttonTwoPipesConnection.Click += new Action<Control, Point>(buttonTwoPipesConnection_Click);
+            buttonBrakeCarDeactivate.Click += new Action<Control, Point>(buttonBrakeCarDeactivate_Click);            
             buttonLeftDoor.Click += new Action<Control, Point>(buttonLeftDoor_Click);
             buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
             buttonNoPaxsMode.Click += new Action<Control, Point>(buttonNoPaxsMode_Click);
@@ -436,57 +418,10 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Bleed off valve closed"));
         }
 
-        void buttonBrakeCarMode_Click(Control arg1, Point arg2)
+        void buttonBrakeCarModeOptions_Click(Control arg1, Point arg2)
         {
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
-                return;
-
-            new BrakeCarModeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode += 1);
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode > (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.NumberBrakeCarMode - 1)
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode = 0;
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 0)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode G"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "G";
-            }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 1)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode P"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "P";
-            }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 2)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode R"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "R";
-            }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarMode == 3)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode R+Mg"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeText = "R+Mg";
-            }
-        }
-        void buttonBrakeCarModePL_Click(Control arg1, Point arg2)
-        {
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
-                return;
-
-            new BrakeCarModePLCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModePL += 1);
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModePL > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModePL = 0;
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModePL == 0)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Empty Car"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL = Viewer.Catalog.GetString("Empty");
-            }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModePL == 1)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Loaded Car"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL = Viewer.Catalog.GetString("Loaded");
-            }
-        }
+            Viewer.BrakeModeOptionsWindow.Visible = true;            
+        }        
 
         void buttonTwoPipesConnection_Click(Control arg1, Point arg2)
         {

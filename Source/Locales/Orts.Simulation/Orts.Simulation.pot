@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-03 20:19:53+0100\n"
-"PO-Revision-Date: 2024-02-03 20:19:54+0100\n"
+"POT-Creation-Date: 2024-02-05 22:08:31+0100\n"
+"PO-Revision-Date: 2024-02-05 22:08:32+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -583,7 +583,7 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:339
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:340
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:341
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16709
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16754
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3770
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3790
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:309
@@ -623,7 +623,7 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:232
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:832
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3253
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3321
 msgid "Circuit breaker"
 msgstr ""
 
@@ -1004,8 +1004,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:846
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:819
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:824
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3264
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3268
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3332
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3336
 msgid "Battery"
 msgstr ""
 
@@ -1016,9 +1016,9 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:829
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:835
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:840
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3273
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3278
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3282
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3341
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3346
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3350
 msgid "PowerKey"
 msgstr ""
 
@@ -1162,7 +1162,7 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:314
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:315
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17024
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17069
 msgid "Auto"
 msgstr ""
 
@@ -1381,15 +1381,15 @@ msgctxt "Horn 1+2"
 msgid "sound"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2205
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2207
 msgid "Train can't be suspended with speed not equal 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2326
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2328
 msgid "To return to static train speed must be = 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:959
+#: ../../Orts.Simulation/Simulation/Simulator.cs:961
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:4635
 #, csharp-format
 msgid ""
@@ -1579,7 +1579,7 @@ msgid "Train stopped due to problems with other train: train {0} , reason: {1}"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:799
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3223
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3291
 msgid "Pantographs"
 msgstr ""
 
@@ -1587,14 +1587,14 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:861
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:820
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:836
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3265
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3279
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3301
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3333
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3347
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3369
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10499
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10503
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10507
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13356
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17027
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13392
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17072
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6179
 msgid "On"
 msgstr ""
@@ -1603,12 +1603,12 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:865
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:825
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:841
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3269
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3283
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3303
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3337
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3351
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3371
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:10495
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13358
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17016
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13394
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17061
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6179
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:257
 msgid "Off"
@@ -1616,19 +1616,19 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:856
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:830
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3274
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3342
 msgid "No Powerkey"
 msgstr ""
 
 #. Context: PowerSupply
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:836
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3257
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3325
 msgctxt "PowerSupply"
 msgid "Power"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:846
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3308
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3376
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:392
 msgid "Engine"
 msgstr ""
@@ -1645,15 +1645,15 @@ msgid "Control"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:877
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3328
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3396
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6214
 msgid "StHeat:"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:878
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:888
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3329
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3339
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3397
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3407
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6215
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6223
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6601
@@ -1662,42 +1662,42 @@ msgid "Press"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:880
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3331
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3399
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6217
 msgid "StTemp"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:882
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3333
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3401
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6219
 msgid "StUse"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:885
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3336
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3404
 msgid "WaterLvl"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:887
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3338
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3406
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6222
 msgid "Last:"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:890
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3341
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3409
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6225
 msgid "Temp"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:892
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3343
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3411
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6227
 msgid "OutTemp"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:894
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3345
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3413
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6229
 msgid "NetHt"
 msgstr ""
@@ -1740,17 +1740,17 @@ msgstr ""
 msgid "Power line condition overridden."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3294
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3296
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3362
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3364
 msgid "OK"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3294
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3296
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3362
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3364
 msgid "NOT OK"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3316
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:3384
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8172
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:8186
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:396
@@ -1898,248 +1898,248 @@ msgstr ""
 msgid "MU"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13356
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13358
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13392
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13394
 msgid "Disabling EDB: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13649
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13731
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13786
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13685
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13767
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13822
 msgid "Position Forward"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13650
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13652
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13730
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13785
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13686
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13688
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13766
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13821
 msgid "Position D"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13651
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13728
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13784
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13687
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13764
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13820
 msgid "Position 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13653
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13729
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13783
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13689
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13765
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13819
 msgid "Position Backward"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13804
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13813
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13840
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13849
 msgid "Directional lever retracted"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13822
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13858
 msgid "Directional lever extended"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13859
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13895
 msgid "World Object reloaded!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13866
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:13902
 msgid "Cab Object reloaded!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14295
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14469
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14516
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14338
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14514
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14561
 msgid "Left red light"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14298
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14337
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14468
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14515
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14341
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14382
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14513
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14560
 msgid "Both red lights"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14301
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14340
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14370
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14417
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14466
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14513
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14344
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14385
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14415
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14462
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14511
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14558
 msgid "Lights off"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14304
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14373
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14420
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14347
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14418
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14465
 msgid "Left white light"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14307
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14349
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14372
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14419
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14350
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14394
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14417
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14464
 msgid "Both white lights"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14334
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14467
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14514
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14379
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14512
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14559
 msgid "Right red light"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14343
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14371
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14418
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14388
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14416
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14463
 msgid "Right white light"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14346
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14391
 msgid "Both white + center lights"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14813
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14858
 msgid "Season heating switched to Summer!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14816
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:14861
 msgid "Season heating switched to Winter!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15022
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15024
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15027
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15028
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15029
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15030
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15031
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15032
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15033
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15034
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15035
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15036
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15037
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15038
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15039
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15040
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15041
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15042
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15043
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15044
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15045
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15046
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15047
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15048
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15049
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15050
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15053
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15055
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15056
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15057
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15058
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15059
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15060
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15061
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15062
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15063
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15064
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15065
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15068
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15071
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15067
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15069
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15072
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15073
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15074
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15075
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15768
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15776
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16678
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16686
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17300
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15076
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15077
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15078
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15079
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15080
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15081
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15082
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15083
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15084
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15085
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15086
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15087
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15088
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15089
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15090
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15091
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15092
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15093
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15094
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15095
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15098
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15100
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15101
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15102
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15103
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15104
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15105
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15106
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15107
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15108
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15109
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15110
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15113
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15116
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15117
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15118
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15119
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15120
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15813
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15821
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16723
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16731
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17345
 msgid "Controller"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15212
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15912
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15257
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15957
 msgid "Reverser"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15358
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:15403
 msgid "MirelRS"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16032
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16077
 msgid "HS198"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16709
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16754
 msgid "Automatic start-up "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16811
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16856
 msgid "Automatic start-up SpeedSelector set to"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16835
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16847
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16880
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16892
 msgid "Axle count: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16858
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16903
 msgid "Axle counter mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16860
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16905
 msgid "Axle counter confirmed!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16887
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16932
 msgid "Setup"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16903
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16948
 msgid "Length of train: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16934
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16979
 msgid "-ok-"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16937
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:16982
 msgid "Remaining: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17037
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17082
 msgid "Ventilator"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17365
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17410
 msgid "Power system changed to 25kV."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17369
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17414
 msgid "Power system changed to 3kV + 15kV + 25kV."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17392
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17437
 msgid "Power system changed to 3kV."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17482
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17527
 msgid ""
 "The marker has been deleted and marked for deletion in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17552
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17597
 msgid "The power station is stored in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17610
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17655
 msgid "Set "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17610
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:17655
 msgid "V and stored in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:20517
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:20609
 msgid "Selected speed confirmed."
 msgstr ""
 

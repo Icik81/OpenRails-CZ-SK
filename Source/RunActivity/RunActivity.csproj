@@ -138,6 +138,7 @@
     <Compile Include="Viewer3D\OpenAL.cs" />
     <Compile Include="Viewer3D\ParticleEmitter.cs" />
     <Compile Include="Viewer3D\Popups\ActivityWindow.cs" />
+    <Compile Include="Viewer3D\Popups\BrakeModeOptionsWindow.cs" />
     <Compile Include="Viewer3D\Popups\HelperSpeedSelectWindow.cs" />
     <Compile Include="Viewer3D\Popups\HelperOptionsWindow.cs" />
     <Compile Include="Viewer3D\Popups\CarOperationsWindow.cs" />

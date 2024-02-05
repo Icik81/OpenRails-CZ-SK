@@ -481,6 +481,8 @@ namespace ORTS.Settings
         public int[] WindowPosition_HelperOptions { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_HelperSpeedSelect { get; set; }
+        [Default(new[] { 50, 25 })]
+        public int[] WindowPosition_BrakeModeOptions { get; set; }
 
         // Menu-game communication settings:
         [Default(false)]
