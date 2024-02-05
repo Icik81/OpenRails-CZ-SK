@@ -42,8 +42,12 @@ namespace Orts.Viewer3D.Popups
         int CarID;
         int preCarID;
         protected override ControlLayout Layout(ControlLayout layout)
-        {
-            CarID = Viewer.CarOperationsWindow.CarPosition;                        
+        {            
+            CarID = Viewer.CarOperationsWindow.CarPosition;
+            
+            if (CarID >= Viewer.PlayerTrain.Cars.Count)
+                CarID = Viewer.PlayerTrain.Cars.Count - 1;
+
             Label ID, buttonBrakeCarMode, buttonBrakeCarModeAll ,buttonBrakeCarModePL, buttonBrakeCarModePLAll, buttonClose;
             var vbox = base.Layout(layout).AddLayoutVertical();            
 
