@@ -197,7 +197,7 @@ namespace Orts.Viewer3D
                     NightBrightness = NightBrightnessValue;
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelEndM * (NightBrightnessValue / 35.0f));
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
-                }
+                }                
             }
             float FullBrightness = (float)vIn / 20.0f;
 
@@ -724,7 +724,7 @@ namespace Orts.Viewer3D
         float CabnightColorModifierValue;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
-            if (!Program.Simulator.PlayerCarIsInTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f)
+            if (!isNightTexture)
             {
                 nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue + (isDashLight ? 0.15f : 0), 1, isNightTexture ? 1 : MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
                 CabnightColorModifierValue = nightColorModifier.GetValueSingle();
@@ -732,33 +732,38 @@ namespace Orts.Viewer3D
             lightOn.SetValue(isDashLight);
 
             // Icik
-            // Zařídí tmu v kabině v tunelu
-            if (isNightTexture) return;
-            Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 35 && Program.Viewer.MaterialManager.sunDirection.Y > -0.085f)
+            // Zařídí tmu v kabině v tunelu            
+            if (Program.Simulator.TunnelLengthM > 35)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
                 {
-                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelBeginM * 0.025f);
-                    nightColorModifier.SetValue(MathHelper.Clamp(CabnightColorModifier, 0.2f, CabnightColorModifierValue));
+                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelBeginM * 0.020f);
+                    nightColorModifier.SetValue(MathHelper.Clamp(CabnightColorModifier, 0.3f, CabnightColorModifierValue));
+                    Program.Simulator.CabInDarkTunnel = false;
                 }
                 else
                 if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < 35)
                 {
-                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelEndM * 0.025f);
-                    nightColorModifier.SetValue(MathHelper.Clamp(CabnightColorModifier, 0.2f, CabnightColorModifierValue));
+                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelEndM * 0.020f);
+                    nightColorModifier.SetValue(MathHelper.Clamp(CabnightColorModifier, 0.3f, CabnightColorModifierValue));
+                    Program.Simulator.CabInDarkTunnel = false;
                 }
                 else
                 if (Program.Simulator.PlayerCarIsInTunnel)
                 {
-                    nightColorModifier.SetValue(0.2f);                    
+                    nightColorModifier.SetValue(0.2f);
                     Program.Simulator.CabInDarkTunnel = true;
                 }
             }
-            if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate)
+            if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate || isNightTexture)
             {                
                 nightColorModifier.SetValue(1.0f);
+            }
+
+            if (Program.Simulator.CabInDarkTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.035f)
+            {
+                isNightTexture = true;
             }
         }
 

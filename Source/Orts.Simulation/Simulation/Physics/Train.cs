@@ -2741,7 +2741,7 @@ namespace Orts.Simulation.Physics
 
                             if (tunnelStartOffset > 0 && tunnelStartOffset > thisSectionOffset)      // start of tunnel is in section beyond present position - cannot be in this tunnel nor any following
                             {
-                                break;
+                                //break;  // Icik - Pokud se nezakáže, blbne detekce tunelů
                             }
 
                             if (tunnelEndOffset > 0 && tunnelEndOffset < (thisSectionOffset - usedCarLength)) // beyond end of tunnel, test next
