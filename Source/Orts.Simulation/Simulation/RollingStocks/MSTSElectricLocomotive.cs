@@ -34,6 +34,7 @@ using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
+using Orts.Simulation.cz.aspone.lkpr;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
@@ -667,7 +668,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain)
             {
                 // Pro nenaladěné modely se zapsaným MultiSystemEngine
-                if (MultiSystemEngine && LocoType != LocoTypes.Vectron && !HV2Enable && !HV3Enable && !HV4Enable && !HV5Enable)
+                if (MultiSystemEngine && LocoType != LocoTypes.Vectron && !HV2Enable && !HV3Enable && !HV3NAEnable && !HV4Enable && !HV5Enable)
                 {
                     switch (RouteVoltageV)
                     {
@@ -1075,7 +1076,7 @@ namespace Orts.Simulation.RollingStocks
                 if (MultiSystemEngine)
                 {                    
                     // Pokud nebude žádný HV aktivní
-                    if (!HV5Enable && !HV3Enable && !HV2Enable && !HV4Enable)
+                    if (!HV5Enable && !HV3Enable && !HV3NAEnable && !HV2Enable && !HV4Enable)
                     {
                         LocoSwitchACDC = true;
                     }
@@ -1688,11 +1689,15 @@ namespace Orts.Simulation.RollingStocks
         float TimerVoltageIndicateTest;        
         public void VoltageIndicate(float elapsedSeconds)
         {
-            if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)                        
+            PantographUp = false;
+            if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+            {
                 PantographDown = false;
+                PantographUp = true;
+            }
             
             if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
-                PantographDown = true;
+                PantographDown = true;            
 
             if (!PantographDown && !VoltageIndicateTestCompleted && RouteVoltageV > 1)
                 TimerVoltageIndicateTest += elapsedSeconds;
@@ -2670,6 +2675,62 @@ namespace Orts.Simulation.RollingStocks
             base.SetPower(ToState);
         }
 
+        float VoltageFilterUf;
+        public int VoltageFilterUfStatus;
+        public void VOLTAGEFILTER_STATE_UP()
+        {
+            if (VoltageFilterUf < 90)
+            {
+                VoltageFilterUf += 90 * elapsedTime;
+            }
+            if (VoltageFilterUf < 30)
+            {
+                VoltageFilterUfStatus = 2;
+            }
+            else
+            if (VoltageFilterUf < 60)
+            {
+                VoltageFilterUfStatus = 1;
+            }
+            else
+            if (VoltageFilterUf < 90)
+            {
+                VoltageFilterUfStatus = 3;
+            }
+        }
+        public void VOLTAGEFILTER_STATE_DOWN()
+        {
+            if (VoltageFilterUf > 10)
+            {
+                VoltageFilterUf -= 90 * elapsedTime;
+            }
+            if (VoltageFilterUf < 30)
+            {
+                VoltageFilterUfStatus = 2;
+            }
+            else
+            if (VoltageFilterUf < 60)
+            {
+                VoltageFilterUfStatus = 1;
+            }
+            else
+            if (VoltageFilterUf < 90)
+            {
+                VoltageFilterUfStatus = 3;
+            }
+        }
+
+        float HV3NA_5SLEFTTimer;        
+        public void HV3NA_5SLEFT()
+        {
+            HV3NA_5SLEFTStatus = 0;
+            if (HV3NA_5SLEFTTimer < 5.0f)
+            {
+                HV3NA_5SLEFTTimer += elapsedTime;                
+                HV3NA_5SLEFTStatus = 3;
+            }
+        }
+
         public override float GetDataOf(CabViewControl cvc)
         {
             float data = 0;
@@ -2949,6 +3010,7 @@ namespace Orts.Simulation.RollingStocks
                         data = 0;
                         if (CircuitBreakerOn)
                         {
+                            HV3NA_5SLEFTTimer = 0.0f;
                             switch (RouteVoltageV)
                             {
                                 case 3000: data = 1; break;
@@ -2957,9 +3019,10 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            if (HV3NA_RequestMissed)
-                            {
-                                data = 3;
+                            if (HV3NA_RequestMissed || !CircuitBreakerOn)
+                            {                                 
+                                HV3NA_5SLEFT();
+                                data = HV3NA_5SLEFTStatus;
                             }
                         }
                         break;
@@ -2980,36 +3043,43 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.TRACTIONBRAKE_STATE:
                     {
                         data = 0;
-                        if (CircuitBreakerOn && BrakeCurrent1 == 0)
+                        if (Direction != Direction.N && !TractionBrakeWaitToSetup)
                         {
-                            data = 2;
-                        }
-                        if (!CircuitBreakerOn || BrakeCurrent1 > 0)
-                        {
-                            data = 1;
+                            if (CircuitBreakerOn && BrakeCurrent1 == 0)
+                            {
+                                data = 2;
+                            }
+                            if (!CircuitBreakerOn || BrakeCurrent1 > 0 || BrakeRetardForceN > 10.0f)
+                            {
+                                data = 1;
+                            }
                         }
                         break;
                     }
                 case CABViewControlTypes.VOLTAGEFILTER_STATE:
                     {
                         data = 0;
-                        if (!PantographDown)
+                        if ((!CircuitBreakerOn && PowerSupply.CircuitBreaker.State != CircuitBreakerState.Closing) || DirectionControllerChange)
                         {
-                            if (PantographVoltageV > 0.95f * RouteVoltageV)
-                            {
-                                data = 3;
-                            }
-                            else
-                            if (PantographVoltageV > 0.85f * RouteVoltageV)
-                            {
-                                data = 1;
-                            }
-                            else
-                            if (PantographVoltageV > 0.75f * RouteVoltageV)
-                            {
-                                data = 2;
-                            }
+                            VOLTAGEFILTER_STATE_DOWN();
                         }
+                        else
+                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || CircuitBreakerOn)
+                        {
+                            VOLTAGEFILTER_STATE_UP();
+                        }                        
+                        data = VoltageFilterUfStatus;
+
+                        if (!PantographUp && VoltageFilterUf < 15)
+                        {
+                            VoltageFilterUf = 0;
+                        }
+                        
+                        if (VoltageFilterUf <= 0)
+                        {
+                            data = 0;
+                        }
+
                         break;
                     }
                 case CABViewControlTypes.PANTOGRAPH4NC_STATE:

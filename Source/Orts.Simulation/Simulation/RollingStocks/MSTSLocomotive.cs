@@ -734,6 +734,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoLastCabSelect;
         public float LocoSetUpTimer;
         public bool PantographDown = true;
+        public bool PantographUp;
         public bool AutoCompressor;
         public bool ForceBreakPower;
         public int[] Switch5LightPosition = new int[3];
@@ -11153,6 +11154,9 @@ namespace Orts.Simulation.RollingStocks
         Direction preDirection;
         Direction NeedDirection;
         float DirectionTimer;
+        float TractionBrakeTimer;
+        public bool TractionBrakeWaitToSetup;
+        public bool DirectionControllerChange;
         public void DirectionControllerLogic()
         {
             if (IsLeadLocomotive())
@@ -11168,12 +11172,24 @@ namespace Orts.Simulation.RollingStocks
                     if (NeedDirection != preDirection)
                     { 
                         DirectionControllerBlocked = true;
+                        DirectionControllerChange = true;
                         DirectionTimer += elapsedTime;
                         if (DirectionTimer > 1.0f)
                         {
                             DirectionTimer = 0;
                             DirectionControllerBlocked = false;
+                            DirectionControllerChange = false;
                             preDirection = Direction = NeedDirection;
+                        }
+                    }
+                    TractionBrakeWaitToSetup = false;
+                    if (DirectionTimer > 0 || TractionBrakeTimer > 0)
+                    {
+                        TractionBrakeTimer += elapsedTime;
+                        TractionBrakeWaitToSetup = true;
+                        if (TractionBrakeTimer > 1.5f)
+                        {
+                            TractionBrakeTimer = 0;
                         }
                     }
                 }
@@ -11434,6 +11450,7 @@ namespace Orts.Simulation.RollingStocks
         public int HeatingCheckAction;
         float HeatingCheckTimer1;
         float HeatingCheckTimer2;
+        public int HV3NA_5SLEFTStatus;
         public void ToggleHV3NASwitch()
         {
             if (!IsLeadLocomotive())
@@ -11444,6 +11461,10 @@ namespace Orts.Simulation.RollingStocks
                 // Kontrolka
                 // Kontrolka bude blikat
                 HV3NACheckAction = 0;
+
+                if (HV3NA_5SLEFTStatus == 3)
+                    HV3NA_Request = false;
+
                 if (HV3NA_Request)
                 {
                     HV3NACheckAction = 1;
