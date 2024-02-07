@@ -128,8 +128,7 @@ namespace Orts.Viewer3D.Popups
                 vbox.AddHorizontalSeparator(); vbox2.AddHorizontalSeparator();
                 vbox.Add(buttonBrakeCarModePL = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "   " + Viewer.Catalog.GetString("Car Mode Empty/Loaded"), LabelAlignment.Left));
                 vbox2.Add(buttonBrakeCarModePL = new Label(vbox2.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Set") + ": " + (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL + "   ", LabelAlignment.Right));
-                buttonBrakeCarModePL.Color = Color.LightGreen;
-                buttonBrakeCarModePL.Click += new Action<Control, Point>(buttonBrakeCarModePL_Click);
+                buttonBrakeCarModePL.Color = Color.LightGreen;                
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.NumberBrakeCarMode = 2;
             }
             // Ostatní vozy
