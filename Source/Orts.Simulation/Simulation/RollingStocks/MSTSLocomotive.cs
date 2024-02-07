@@ -3139,7 +3139,10 @@ namespace Orts.Simulation.RollingStocks
 
                 if (!car.BrakeSystem.BrakeCarDeactivate && !CarDisconnected)
                 {
-                    CarBrakeMass += car.BrakeSystem.BrakeMassKG;
+                    if (car.BrakeSystem.BrakeCarMode == 0)  // Režim G započítává jen 75% brzdící váhy
+                        CarBrakeMass += 0.75f * car.BrakeSystem.BrakeMassKG;                    
+                    else
+                        CarBrakeMass += car.BrakeSystem.BrakeMassKG;
                 }
 
                 if (CarDisconnected || NextCarDisconnected)
@@ -3205,7 +3208,10 @@ namespace Orts.Simulation.RollingStocks
 
                 if (!car.BrakeSystem.BrakeCarDeactivate && !CarDisconnected)
                 {
-                    CarBrakeMass += car.BrakeSystem.BrakeMassKG;
+                    if (car.BrakeSystem.BrakeCarMode == 0)  // Režim G započítává jen 75% brzdící váhy
+                        CarBrakeMass += 0.75f * car.BrakeSystem.BrakeMassKG;
+                    else
+                        CarBrakeMass += car.BrakeSystem.BrakeMassKG;
                 }
                 
                 if (CarDisconnected || NextCarDisconnected)
