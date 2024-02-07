@@ -11460,7 +11460,10 @@ namespace Orts.Simulation.RollingStocks
                 #region Kontrolka HV
                 // Kontrolka
                 // Kontrolka bude blikat
-                HV3NACheckAction = 0;
+                HV3NACheckAction = 0;                
+
+                if (VoltageSelectionSwitch[LocoStation] == 1 && CircuitBreakerOn)                
+                    HVOff = true;                
 
                 if (HV3NA_5SLEFTStatus == 3)
                     HV3NA_Request = false;
@@ -11488,8 +11491,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (!CircuitBreakerOn && !PantographDown && VoltageSelectionSwitch[LocoStation] != 1)
                         HVOn = true;
-                }  
-                
+                }                
+
                 // Zobrazí symbol o selhání sepnutí HV
                 if (HV3NA_RequestMissed)
                 {

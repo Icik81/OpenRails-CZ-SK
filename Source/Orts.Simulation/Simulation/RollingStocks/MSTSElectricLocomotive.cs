@@ -2722,8 +2722,7 @@ namespace Orts.Simulation.RollingStocks
 
         float HV3NA_5SLEFTTimer;        
         public void HV3NA_5SLEFT()
-        {
-            HV3NA_5SLEFTStatus = 0;
+        {            
             if (HV3NA_5SLEFTTimer < 5.0f)
             {
                 HV3NA_5SLEFTTimer += elapsedTime;                
@@ -3019,7 +3018,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            if (HV3NA_RequestMissed || !CircuitBreakerOn)
+                            HV3NA_5SLEFTStatus = 0;
+                            if (HV3NA_RequestMissed || (VoltageFilterUf > 80 && !CircuitBreakerOn))
                             {                                 
                                 HV3NA_5SLEFT();
                                 data = HV3NA_5SLEFTStatus;
@@ -3083,8 +3083,8 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.PANTOGRAPH4NC_STATE:
-                    {
-                        data = Pantograph4NCState;                        
+                    {                        
+                        data = PantographUp ? Pantograph4NCState : 0;                        
                         break;
                     }
                 case CABViewControlTypes.HV2:
