@@ -3019,7 +3019,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             HV3NA_5SLEFTStatus = 0;
-                            if (HV3NA_RequestMissed || (VoltageFilterUf > 80 && !CircuitBreakerOn))
+                            if (HV3NA_RequestMissed || (VoltageFilterUf > 80 && !CircuitBreakerOn) || HV3NA_5SLEFTTimer > 0)
                             {                                 
                                 HV3NA_5SLEFT();
                                 data = HV3NA_5SLEFTStatus;
