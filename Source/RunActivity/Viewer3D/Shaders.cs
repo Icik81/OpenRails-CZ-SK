@@ -188,6 +188,7 @@ namespace Orts.Viewer3D
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelBeginM * (NightBrightnessValue / 35.0f));
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
                 }
+                else
                 if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < 35)
                 {                 
                     vIn = Program.Simulator.Settings.DayAmbientLight;
@@ -197,7 +198,13 @@ namespace Orts.Viewer3D
                     NightBrightness = NightBrightnessValue;
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelEndM * (NightBrightnessValue / 35.0f));
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
-                }                
+                }   
+                else
+                if (Program.Simulator.CabInDarkTunnel)
+                {
+                    NightBrightness = 0.05f;
+                    vIn = NightBrightnessValue;
+                }
             }
             float FullBrightness = (float)vIn / 20.0f;
 
@@ -730,7 +737,8 @@ namespace Orts.Viewer3D
             lightOn.SetValue(isDashLight);
 
             // Icik
-            // Zařídí tmu v kabině v tunelu            
+            // Zařídí tmu v kabině v tunelu
+            Program.Simulator.CabInDarkTunnel = false;
             if (Program.Simulator.TunnelLengthM > 35)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
@@ -766,7 +774,7 @@ namespace Orts.Viewer3D
             }
 
             Program.Simulator.DashLightCanActivate = false;
-            if (CabnightColorModifierValue < 0.5f || isNightTexture)
+            if (CabnightColorModifierValue < 0.55f || isNightTexture)
             {
                 Program.Simulator.DashLightCanActivate = true;
             }
