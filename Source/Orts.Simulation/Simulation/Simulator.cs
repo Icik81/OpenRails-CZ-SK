@@ -248,6 +248,7 @@ namespace Orts.Simulation
         public double OldClockTime;
         public bool ManualCouplingOverride;
         public bool GameWasRestored;
+        public bool DashLightCanActivate;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -724,11 +724,9 @@ namespace Orts.Viewer3D
         float CabnightColorModifierValue;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
-            if (!isNightTexture)
-            {
-                nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue + (isDashLight ? 0.15f : 0), 1, isNightTexture ? 1 : MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
-                CabnightColorModifierValue = nightColorModifier.GetValueSingle();
-            }
+            nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
+            CabnightColorModifierValue = nightColorModifier.GetValueSingle();
+
             lightOn.SetValue(isDashLight);
 
             // Icik
@@ -758,12 +756,19 @@ namespace Orts.Viewer3D
             }
             if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate || isNightTexture)
             {                
-                nightColorModifier.SetValue(1.0f);
+                nightColorModifier.SetValue(1.0f + (Program.Simulator.CabLightActivate ? 0.5f : 0));
             }
-
-            if (Program.Simulator.CabInDarkTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.035f)
+            
+            isNightTexture = false;
+            if (Program.Simulator.CabInDarkTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f)
             {
                 isNightTexture = true;
+            }
+
+            Program.Simulator.DashLightCanActivate = false;
+            if (CabnightColorModifierValue < 0.5f || isNightTexture)
+            {
+                Program.Simulator.DashLightCanActivate = true;
             }
         }
 
