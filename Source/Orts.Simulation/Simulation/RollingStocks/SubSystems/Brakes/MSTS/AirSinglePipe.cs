@@ -2605,6 +2605,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
+                        // Lokomotivy řízené přes kabel mají pomocný kompresor řízený také přes kabel
+                        if (loco.AcceptCableSignals && loco.IsLeadLocomotive())
+                        {
+                            foreach (TrainCar car in train.Cars)
+                            {
+                                if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).AcceptCableSignals)
+                                {
+                                    if (loco.AuxCompressorMode_OffOn)
+                                    {
+                                        (car as MSTSLocomotive).AuxCompressorMode_OffOn = true;
+                                    }
+                                    else
+                                    {
+                                        (car as MSTSLocomotive).AuxCompressorMode_OffOn = false;
+                                    }
+                                }
+                            }
+                        }
+
                         // Zpoždění náběhu kompresoru
                         if (loco.Compressor_I || !loco.Compressor_II)
                         {

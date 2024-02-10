@@ -3918,8 +3918,7 @@ namespace Orts.Simulation.RollingStocks
         public float AirTMCoolingPower;
         public bool TMCoolingIsOn;
         public float TMTempTimeConstantSec;
-        public bool TMCoolingIsActivated;
-        float RunCycle;
+        public bool TMCoolingIsActivated;        
         public void TM_Temperature(float elapsedClockSeconds)
         {
             if (MaxTMTemperatureDegC == 0) return;
@@ -3933,16 +3932,13 @@ namespace Orts.Simulation.RollingStocks
             if (AirTMCoolingPower == 0) AirTMCoolingPower = 80f;
             if (TMTempTimeConstantSec == 0) TMTempTimeConstantSec = 1500f;
 
-            if (FirstCabLoaded || (RunCycle > 0 && TMTemperature == 0))
-            {
-                RunCycle++;
+            if (TMTemperature < CarOutsideTempC0)
+            {             
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
                     TMTemperature = CarOutsideTempC0;
                 else
                     TMTemperature = IdleTMTemperatureDegC;
-                return;
-            }
-            RunCycle = 0;
+            }            
 
             // Fáze zahřívání vlivem zátěže TM
             float TMTemperatureDelta = elapsedClockSeconds * (CurrentLoadPercent * 0.01f * (MaxTMTemperatureDegC - IdleTMTemperatureDegC) + IdleTMTemperatureDegC - TMTemperature) * (CurrentLoadPercent * 0.5f) / TMTempTimeConstantSec;
@@ -3998,7 +3994,6 @@ namespace Orts.Simulation.RollingStocks
         public float AirDRCoolingPower;
         public bool DRCoolingIsOn;
         public float DRTempTimeConstantSec;
-        float DRRunCycle;
         public float DRTempCoef;
         public bool DRCoolingIsActivated;
         public void DriveResistance_Temperature(float elapsedClockSeconds)
@@ -4019,16 +4014,13 @@ namespace Orts.Simulation.RollingStocks
             if (AirDRCoolingPower == 0) AirDRCoolingPower = 80f;
             if (DRTempTimeConstantSec == 0) DRTempTimeConstantSec = 1500f;
 
-            if (FirstCabLoaded || (DRRunCycle > 0 && DRTemperature == 0))
-            {
-                DRRunCycle++;
+            if (DRTemperature < CarOutsideTempC0)
+            {                
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
                     DRTemperature = CarOutsideTempC0;
                 else
                     DRTemperature = IdleDRTemperatureDegC;
-                return;
-            }
-            DRRunCycle = 0;
+            }            
 
             // Fáze zahřívání vlivem zátěže DR
             float DRTemperatureDelta = elapsedClockSeconds * (DRTempCoef * CurrentLoadPercent * 0.01f * (MaxDRTemperatureDegC - IdleDRTemperatureDegC) + IdleDRTemperatureDegC - DRTemperature) * (CurrentLoadPercent * 0.5f) / DRTempTimeConstantSec;
