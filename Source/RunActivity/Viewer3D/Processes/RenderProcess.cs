@@ -185,6 +185,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapDistance = 500;
                             Game.Settings.ShadowMapBlur = true;
                             Game.Settings.ShadowMapResolution = 1024;
+                            StandShadowCoef = 1.0f;
                         }
                         break;
                     // Nízké
@@ -194,6 +195,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
                             Game.Settings.ShadowMapResolution = 2048;
+                            StandShadowCoef = 1.0f;
                         }
                         break;
                     // Střední
@@ -203,6 +205,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
                             Game.Settings.ShadowMapResolution = 4096;
+                            StandShadowCoef = 1.0f;
                         }
                         break;
                     // Vysoké
@@ -212,6 +215,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
                             Game.Settings.ShadowMapResolution = 8192;
+                            StandShadowCoef = 2.0f;
                         }
                         break;
                     // Ultra
@@ -221,6 +225,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
                             Game.Settings.ShadowMapResolution = 12288;
+                            StandShadowCoef = 2.0f;
                         }
                         break;
                 }
@@ -243,7 +248,8 @@ namespace Orts.Viewer3D.Processes
             CurrentFrame = new RenderFrame(Game);
             NextFrame = new RenderFrame(Game);
         }
-
+        
+        float StandShadowCoef;
         void InitializeShadowMapLocations()
         {
             var ratio = (float)DisplaySize.X / DisplaySize.Y;
@@ -290,8 +296,7 @@ namespace Orts.Viewer3D.Processes
                 var center = length / Vector3.Dot(cornerCenter, Vector3.UnitZ);
                 var diameter = 2 * (float)Math.Sqrt(height2 * height2 + width2 * width2 + (C - center) * (C - center));
 
-                // Icik
-                float StandShadowCoef = 2.0f; 
+                // Icik                 
                 ShadowMapDistance[shadowMapIndex] = (int)(center * StandShadowCoef);
                 ShadowMapDiameter[shadowMapIndex] = (int)(diameter * StandShadowCoef);
                 ShadowMapLimit[shadowMapIndex] = C * StandShadowCoef;  
@@ -333,10 +338,9 @@ namespace Orts.Viewer3D.Processes
                 var diameter = 2 * (float)Math.Sqrt(height2 * height2 + width2 * width2 + (C - center) * (C - center));
 
                 // Icik
-                float StandShadowCoef = 2.0f;
-                ShadowMapDistance[shadowMapIndex] = (int)(center * StandShadowCoef);
-                ShadowMapDiameter[shadowMapIndex] = (int)(diameter * StandShadowCoef);
-                ShadowMapLimit[shadowMapIndex] = C * StandShadowCoef;
+                ShadowMapDistance[shadowMapIndex] = (int)(center * 1.0f);
+                ShadowMapDiameter[shadowMapIndex] = (int)(diameter * 1.0f);
+                ShadowMapLimit[shadowMapIndex] = C * 1.0f;
                 LastC = C;
             }
             ShadowMapLocationsNighTimeSet = true;
