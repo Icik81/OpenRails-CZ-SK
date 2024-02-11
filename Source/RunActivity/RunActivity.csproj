@@ -236,6 +236,7 @@
     <Content Include="Content\ActivitySound\PermissionToDepart_3.wav" />
     <Content Include="Content\ActivitySound\PermissionToDepart_4.wav" />
     <Content Include="Content\ActivitySound\pistalka.wav" />
+    <Content Include="Content\ActivitySound\pistalka_1.wav" />
     <Content Include="Content\AmbientSound\birdsong1.wav" />
     <Content Include="Content\AmbientSound\ColdWind.wav" />
     <Content Include="Content\AmbientSound\crow-1.wav" />
