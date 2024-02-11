@@ -12387,10 +12387,12 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Pantograph4NCEnable)
             {
-                if (Pantograph4Switch[LocoStation] < 3)
+                if (Pantograph4Switch[LocoStation] < 4)
                 {
                     Pantograph4Switch[LocoStation]++;
                     SignalEvent(Event.PantographToggle);
+                    if (Pantograph4Switch[LocoStation] == 4)
+                        Pantograph4Switch[LocoStation] = 0;
                 }
             }
         }
@@ -12398,10 +12400,12 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Pantograph4NCEnable)
             {
-                if (Pantograph4Switch[LocoStation] > 0)
+                if (Pantograph4Switch[LocoStation] > -1)
                 {
                     Pantograph4Switch[LocoStation]--;
                     SignalEvent(Event.PantographToggle);
+                    if (Pantograph4Switch[LocoStation] == -1)
+                        Pantograph4Switch[LocoStation] = 3;
                 }
             }
         }
