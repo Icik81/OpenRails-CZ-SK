@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-05 22:08:33+0100\n"
-"PO-Revision-Date: 2024-02-05 22:08:34+0100\n"
+"POT-Creation-Date: 2024-02-11 10:49:50+0100\n"
+"PO-Revision-Date: 2024-02-11 10:49:51+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -134,31 +134,31 @@ msgstr ""
 msgid "To change stations, secure the engine room without voltage."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1285
+#: ../../RunActivity/Viewer3D/Viewer.cs:1286
 msgid "Confirmations suppressed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1287
+#: ../../RunActivity/Viewer3D/Viewer.cs:1288
 msgid "Confirmations visible"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1465
+#: ../../RunActivity/Viewer3D/Viewer.cs:1466
 msgid "Switched to player control"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1472
+#: ../../RunActivity/Viewer3D/Viewer.cs:1473
 msgid "You can't switch from manual to autopilot mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1478
+#: ../../RunActivity/Viewer3D/Viewer.cs:1479
 msgid "Switched to autopilot"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1935
+#: ../../RunActivity/Viewer3D/Viewer.cs:1936
 msgid "You are in the locomotive station "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2221
+#: ../../RunActivity/Viewer3D/Viewer.cs:2222
 msgid "Game saved"
 msgstr ""
 
@@ -167,22 +167,17 @@ msgstr ""
 msgid "Allowed speed raised to {0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1276
-#, csharp-format
-msgid "Vibrating at level {0}"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Viewer.cs:1496
+#: ../../RunActivity/Viewer3D/Viewer.cs:1497
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1500
+#: ../../RunActivity/Viewer3D/Viewer.cs:1501
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1323
+#: ../../RunActivity/Viewer3D/Viewer.cs:1324
 #, csharp-format
 msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
 msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
@@ -567,7 +562,7 @@ msgstr ""
 msgid "*** Car Brake Mode ***"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:50
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:55
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
@@ -578,84 +573,84 @@ msgstr ""
 msgid "Car ID"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:54
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:60
 msgid "Brake Mode G/P/R/R+Mg"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:54
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:117
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:61
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:130
 msgid "Set"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:60
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:135
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:68
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:149
 msgid "Setting..."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:87
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:204
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:96
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:222
 msgid "Car Mode G"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:92
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:209
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:101
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:227
 msgid "Car Mode P"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:97
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:214
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:106
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:232
 msgid "Car Mode R"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:102
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:219
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:111
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:237
 msgid "Car Mode R+Mg"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:111
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:121
 msgid "Brake Mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:111
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:163
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:121
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:179
 msgid "for all wagons"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:117
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:129
 msgid "Car Mode Empty/Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:125
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:138
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:68
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:81
 msgid "N/A"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:149
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:240
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:164
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:258
 msgid "Empty Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:150
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:241
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:165
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:259
 msgid "Empty"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:154
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:245
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:169
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:263
 msgid "Loaded Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:155
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:246
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:170
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:264
 msgid "Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:163
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:179
 msgid "Car Mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:166
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:184
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:187
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:106
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:67

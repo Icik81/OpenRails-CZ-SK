@@ -298,6 +298,8 @@ namespace ORTS.Settings
 
         [Default(false)]
         public bool ManualCoupling { get; set; }
+        [Default(true)]
+        public bool CarsVibration { get; set; }
 
         // Data logger settings:
         [Default("comma")]

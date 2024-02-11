@@ -115,7 +115,7 @@
         [GetString("Camera Jumping Trains")] CameraJumpingTrains,
         [GetString("Camera Jump Back Player")] CameraJumpBackPlayer,
         [GetString("Camera Jump See Switch")] CameraJumpSeeSwitch,
-        [GetString("Camera Vibrate")] CameraVibrate,
+        //[GetString("Camera Vibrate")] CameraVibrate,
         [GetString("Camera Scroll Right")] CameraScrollRight,
         [GetString("Camera Scroll Left")] CameraScrollLeft,
         [GetString("Camera Browse Backwards")] CameraBrowseBackwards,

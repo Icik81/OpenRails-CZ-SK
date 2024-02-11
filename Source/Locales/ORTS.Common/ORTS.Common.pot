@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-02-05 22:08:27+0100\n"
-"PO-Revision-Date: 2024-02-05 22:08:27+0100\n"
+"POT-Creation-Date: 2024-02-11 10:49:44+0100\n"
+"PO-Revision-Date: 2024-02-11 10:49:44+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -595,10 +595,6 @@ msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:117
 msgid "Camera Jump See Switch"
-msgstr ""
-
-#: ../../ORTS.Common/Input/UserCommand.cs:118
-msgid "Camera Vibrate"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:119

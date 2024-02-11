@@ -1270,13 +1270,14 @@ namespace Orts.Viewer3D
             }
             if (UserInput.IsPressed(UserCommand.CameraJumpingTrains)) RandomSelectTrain(); //hit Alt-9 key, random selected train to have 2 and 3 camera attached to
 
-            if (UserInput.IsPressed(UserCommand.CameraVibrate))
-            {
-                Program.Simulator.CarVibrating = (Program.Simulator.CarVibrating + 1) % 4;
-                Simulator.Confirmer.Message(ConfirmLevel.Information, Catalog.GetStringFmt("Vibrating at level {0}", Program.Simulator.CarVibrating));
-                Settings.CarVibratingLevel = Program.Simulator.CarVibrating;
-                Settings.Save("CarVibratingLevel");
-            }
+            // Icik
+            //if (UserInput.IsPressed(UserCommand.CameraVibrate))
+            //{
+            //    Program.Simulator.CarVibrating = (Program.Simulator.CarVibrating + 1) % 4;
+            //    Simulator.Confirmer.Message(ConfirmLevel.Information, Catalog.GetStringFmt("Vibrating at level {0}", Program.Simulator.CarVibrating));
+            //    Settings.CarVibratingLevel = Program.Simulator.CarVibrating;
+            //    Settings.Save("CarVibratingLevel");
+            //}
 
             if (UserInput.IsPressed(UserCommand.DebugToggleConfirmations))
             {

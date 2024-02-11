@@ -224,6 +224,7 @@ namespace ORTS
             checkForcedRedAtStationStops.Checked = !Settings.NoForcedRedAtStationStops;
             checkDoorsAITrains.Checked = Settings.OpenDoorsInAITrains;
             checkGenerateRandomPax.Checked = Settings.GenerateRandomPaxCount;
+            checkBoxVibration.Checked = Settings.CarsVibration;
 
             // Keyboard tab
             InitializeKeyboardSettings();
@@ -517,6 +518,7 @@ namespace ORTS
             Settings.NoForcedRedAtStationStops = !checkForcedRedAtStationStops.Checked;
             Settings.OpenDoorsInAITrains = checkDoorsAITrains.Checked;
             Settings.GenerateRandomPaxCount = checkGenerateRandomPax.Checked;
+            Settings.CarsVibration = checkBoxVibration.Checked;
 
             // Keyboard tab
             // These are edited live.

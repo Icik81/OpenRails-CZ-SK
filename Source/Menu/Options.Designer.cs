@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonOK = new System.Windows.Forms.Button();
             this.numericBrakePipeChargingRate = new System.Windows.Forms.NumericUpDown();
             this.lBrakePipeChargingRate = new System.Windows.Forms.Label();
@@ -115,6 +115,10 @@
             this.numericWorldObjectDensity = new System.Windows.Forms.NumericUpDown();
             this.checkDynamicShadows = new System.Windows.Forms.CheckBox();
             this.tabVideoAdvanced = new System.Windows.Forms.TabPage();
+            this.comboWindowSize = new System.Windows.Forms.ComboBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.checkDoubleWire = new System.Windows.Forms.CheckBox();
+            this.checkWire = new System.Windows.Forms.CheckBox();
             this.checkModelInstancing = new System.Windows.Forms.CheckBox();
             this.checkVerticalSync = new System.Windows.Forms.CheckBox();
             this.checkFastFullScreenAltTab = new System.Windows.Forms.CheckBox();
@@ -232,10 +236,7 @@
             this.ElevationText = new System.Windows.Forms.Label();
             this.pbLAA = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkDoubleWire = new System.Windows.Forms.CheckBox();
-            this.checkWire = new System.Windows.Forms.CheckBox();
-            this.comboWindowSize = new System.Windows.Forms.ComboBox();
-            this.label3 = new System.Windows.Forms.Label();
+            this.checkBoxVibration = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericBrakePipeChargingRate)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -1470,6 +1471,62 @@
             this.tabVideoAdvanced.Text = "Video Advanced";
             this.tabVideoAdvanced.UseVisualStyleBackColor = true;
             // 
+            // comboWindowSize
+            // 
+            this.comboWindowSize.FormattingEnabled = true;
+            this.comboWindowSize.Items.AddRange(new object[] {
+            "800x600",
+            "1024x768",
+            "1280x720",
+            "1280x800",
+            "1280x1024",
+            "1360x768",
+            "1366x768",
+            "1440x900",
+            "1536x864",
+            "1600x900",
+            "1680x1050",
+            "1920x1080",
+            "1920x1200",
+            "2560x1440"});
+            this.comboWindowSize.Location = new System.Drawing.Point(7, 444);
+            this.comboWindowSize.Margin = new System.Windows.Forms.Padding(4);
+            this.comboWindowSize.Name = "comboWindowSize";
+            this.comboWindowSize.Size = new System.Drawing.Size(150, 24);
+            this.comboWindowSize.TabIndex = 62;
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(165, 447);
+            this.label3.Margin = new System.Windows.Forms.Padding(4);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(315, 16);
+            this.label3.TabIndex = 63;
+            this.label3.Text = "Window size (type WIDTHxHEIGHT for custom size)";
+            // 
+            // checkDoubleWire
+            // 
+            this.checkDoubleWire.AutoSize = true;
+            this.checkDoubleWire.Location = new System.Drawing.Point(7, 160);
+            this.checkDoubleWire.Margin = new System.Windows.Forms.Padding(4);
+            this.checkDoubleWire.Name = "checkDoubleWire";
+            this.checkDoubleWire.Size = new System.Drawing.Size(168, 20);
+            this.checkDoubleWire.TabIndex = 61;
+            this.checkDoubleWire.Text = "Double overhead wires";
+            this.checkDoubleWire.UseVisualStyleBackColor = true;
+            // 
+            // checkWire
+            // 
+            this.checkWire.AutoSize = true;
+            this.checkWire.Location = new System.Drawing.Point(7, 131);
+            this.checkWire.Margin = new System.Windows.Forms.Padding(4);
+            this.checkWire.Name = "checkWire";
+            this.checkWire.Size = new System.Drawing.Size(116, 20);
+            this.checkWire.TabIndex = 60;
+            this.checkWire.Text = "Overhead wire";
+            this.checkWire.UseVisualStyleBackColor = true;
+            // 
             // checkModelInstancing
             // 
             this.checkModelInstancing.AutoSize = true;
@@ -1560,6 +1617,7 @@
             // 
             // tabPageSimulation
             // 
+            this.tabPageSimulation.Controls.Add(this.checkBoxVibration);
             this.tabPageSimulation.Controls.Add(this.label16);
             this.tabPageSimulation.Controls.Add(this.label9);
             this.tabPageSimulation.Controls.Add(this.AdhesionFactorChangeValueLabel);
@@ -2550,28 +2608,28 @@
             this.dataGridViewContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewContent.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dataGridViewContent.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
             this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.nameDataGridViewTextBoxColumn,
             this.pathDataGridViewTextBoxColumn});
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle6.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle2;
             this.dataGridViewContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewContent.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewContent.Margin = new System.Windows.Forms.Padding(4);
@@ -3018,61 +3076,16 @@
             this.pbLAA.TabIndex = 0;
             this.pbLAA.TabStop = false;
             // 
-            // checkDoubleWire
+            // checkBoxVibration
             // 
-            this.checkDoubleWire.AutoSize = true;
-            this.checkDoubleWire.Location = new System.Drawing.Point(7, 160);
-            this.checkDoubleWire.Margin = new System.Windows.Forms.Padding(4);
-            this.checkDoubleWire.Name = "checkDoubleWire";
-            this.checkDoubleWire.Size = new System.Drawing.Size(168, 20);
-            this.checkDoubleWire.TabIndex = 61;
-            this.checkDoubleWire.Text = "Double overhead wires";
-            this.checkDoubleWire.UseVisualStyleBackColor = true;
-            // 
-            // checkWire
-            // 
-            this.checkWire.AutoSize = true;
-            this.checkWire.Location = new System.Drawing.Point(7, 131);
-            this.checkWire.Margin = new System.Windows.Forms.Padding(4);
-            this.checkWire.Name = "checkWire";
-            this.checkWire.Size = new System.Drawing.Size(116, 20);
-            this.checkWire.TabIndex = 60;
-            this.checkWire.Text = "Overhead wire";
-            this.checkWire.UseVisualStyleBackColor = true;
-            // 
-            // comboWindowSize
-            // 
-            this.comboWindowSize.FormattingEnabled = true;
-            this.comboWindowSize.Items.AddRange(new object[] {
-            "800x600",
-            "1024x768",
-            "1280x720",
-            "1280x800",
-            "1280x1024",
-            "1360x768",
-            "1366x768",
-            "1440x900",
-            "1536x864",
-            "1600x900",
-            "1680x1050",
-            "1920x1080",
-            "1920x1200",
-            "2560x1440"});
-            this.comboWindowSize.Location = new System.Drawing.Point(7, 444);
-            this.comboWindowSize.Margin = new System.Windows.Forms.Padding(4);
-            this.comboWindowSize.Name = "comboWindowSize";
-            this.comboWindowSize.Size = new System.Drawing.Size(150, 24);
-            this.comboWindowSize.TabIndex = 62;
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(165, 447);
-            this.label3.Margin = new System.Windows.Forms.Padding(4);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(315, 16);
-            this.label3.TabIndex = 63;
-            this.label3.Text = "Window size (type WIDTHxHEIGHT for custom size)";
+            this.checkBoxVibration.AutoSize = true;
+            this.checkBoxVibration.Location = new System.Drawing.Point(8, 350);
+            this.checkBoxVibration.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxVibration.Name = "checkBoxVibration";
+            this.checkBoxVibration.Size = new System.Drawing.Size(111, 20);
+            this.checkBoxVibration.TabIndex = 44;
+            this.checkBoxVibration.Text = "Cars vibration";
+            this.checkBoxVibration.UseVisualStyleBackColor = true;
             // 
             // OptionsForm
             // 
@@ -3376,5 +3389,6 @@
         private System.Windows.Forms.CheckBox checkWire;
         private System.Windows.Forms.ComboBox comboWindowSize;
         private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox checkBoxVibration;
     }
 }

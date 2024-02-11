@@ -2981,6 +2981,12 @@ namespace Orts.Simulation.RollingStocks
 
             // Don't add vibrations to train cars less than 2.5 meter in length; they're unsuitable for these calculations.
             if (CarLengthM < 2.5f || (this as MSTSWagon).WagonIsServis) return;
+            
+            if (Simulator.Settings.CarsVibration)            
+                Simulator.Settings.CarVibratingLevel = 2;            
+            else
+                Simulator.Settings.CarVibratingLevel = 0;
+
             if (Simulator.Settings.CarVibratingLevel != 0)
             {
                 //var elapsedTimeS = Math.Abs(speedMpS) > 0.001f ? distanceM / speedMpS : 0;
