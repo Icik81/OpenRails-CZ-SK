@@ -2605,20 +2605,59 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
-                        // Lokomotivy řízené přes kabel mají pomocný kompresor řízený také přes kabel
+                        // Lokomotivy připojené přes kabel mají kompresory řízené přes kabel
                         if (loco.AcceptCableSignals && loco.IsLeadLocomotive())
                         {
                             foreach (TrainCar car in train.Cars)
                             {
-                                if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).AcceptCableSignals)
+                                var MasterCar = loco;
+                                var SlaveCar = car as MSTSLocomotive;
+                                if (SlaveCar != null && !SlaveCar.IsLeadLocomotive() && !SlaveCar.LocoHelperOn)
                                 {
-                                    if (loco.AuxCompressorMode_OffOn)
+                                    if (SlaveCar.AcceptCableSignals)
                                     {
-                                        (car as MSTSLocomotive).AuxCompressorMode_OffOn = true;
+                                        SlaveCar.AuxCompressorNoActiveStation = false;
+                                        if (MasterCar.AuxCompressorMode_OffOn)
+                                        {
+                                            SlaveCar.AuxCompressorNoActiveStation = true;
+                                            SlaveCar.AuxCompressorMode_OffOn = true;
+                                        }
+                                        else
+                                        {
+                                            SlaveCar.AuxCompressorMode_OffOn = false;
+                                        }
+
+                                        SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
+                                        if (SlaveCar.CircuitBreakerOn)
+                                        {
+                                            if (MasterCar.CompressorIsOn)
+                                            {
+                                                SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
+                                                SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = true;
+                                            }
+                                            else
+                                            {
+                                                SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
+                                            }
+                                            if (MasterCar.Compressor2IsOn)
+                                            {
+                                                SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
+                                                SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = true;
+                                            }
+                                            else
+                                            {
+                                                SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
+                                            }
+                                        }
                                     }
                                     else
+                                    if (!SlaveCar.AcceptCableSignals)
                                     {
-                                        (car as MSTSLocomotive).AuxCompressorMode_OffOn = false;
+                                        SlaveCar.AuxCompressorNoActiveStation = false;
+                                        SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
+                                        SlaveCar.AuxCompressorMode_OffOn = false;
+                                        SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
+                                        SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
                                     }
                                 }
                             }
@@ -2736,24 +2775,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         loco.SignalEvent(Event.Compressor2On);
 
 
-                    if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
+                    if (loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
                         || (!loco.Battery || (!loco.PowerKey && !loco.AuxCompressorNoActiveStation))
-                        || (!loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        || !loco.AuxCompressorMode_OffOn
                         && loco.AuxCompressorIsOn)
                         loco.SignalEvent(Event.AuxCompressorOff);
 
-                    if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
+                    if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
                         //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                         || (!loco.AuxPowerOn && !genModeActive)
-                        || (!loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        || (!loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.Compressor_I_HandMode[loco.LocoStation])
                         && loco.CompressorIsOn)
                         loco.SignalEvent(Event.CompressorOff);
 
 
-                    if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
+                    if ((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
                         //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
                         || (!loco.AuxPowerOn && !genModeActive)
-                        || (!loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
+                        || (!loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor_II_HandMode[loco.LocoStation])
                         && loco.Compressor2IsOn)
                         loco.SignalEvent(Event.Compressor2Off);
                 }
