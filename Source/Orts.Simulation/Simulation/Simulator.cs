@@ -249,6 +249,7 @@ namespace Orts.Simulation
         public bool ManualCouplingOverride;
         public bool GameWasRestored;
         public bool DashLightCanActivate;
+        public bool ESCKeyActivated;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -155,6 +155,12 @@ namespace Orts.Viewer3D.Popups
 
             if (updateFull)
             {
+                // Icik
+                if (Owner.Viewer.Simulator.ESCKeyActivated)
+                {
+                    CloseBox();
+                }
+
                 var act = Owner.Viewer.Simulator.ActivityRun;
                 if (act != null)
                 {
@@ -280,7 +286,7 @@ namespace Orts.Viewer3D.Popups
                     Activity.IsActivityResumed = !Owner.Viewer.Simulator.Paused;
                     Activity.IsActivityWindowOpen = Visible;
                     Activity.ReopenActivityWindow = false;
-                }
+                }                
             }
         }
 
