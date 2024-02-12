@@ -6316,7 +6316,12 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV2Switch();
                 ToggleHV3Switch();
                 ToggleHV4Switch();
-                ToggleHV5Switch();                
+                ToggleHV5Switch();
+                ToggleCompressorCombined();
+                ToggleCompressorCombined2();                
+                ToggleAuxCompressorMode_OffOn();
+                ToggleCompressorOffAutoOnSwitch();
+                ToggleCompressorOffAutoOnSwitch2();
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();

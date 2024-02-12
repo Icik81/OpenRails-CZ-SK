@@ -2610,70 +2610,77 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             foreach (TrainCar car in train.Cars)
                             {
-                                var MasterCar = loco;
-                                var SlaveCar = car as MSTSLocomotive;
-                                if (SlaveCar != null && !SlaveCar.IsLeadLocomotive() && !SlaveCar.LocoHelperOn)
+                                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed)
                                 {
-                                    if (SlaveCar.AcceptCableSignals)
+                                    var MasterCar = loco;
+                                    var SlaveCar = car as MSTSLocomotive;
+                                    if (SlaveCar != null && !SlaveCar.IsLeadLocomotive() && !SlaveCar.LocoHelperOn)
                                     {
-                                        SlaveCar.AuxCompressorNoActiveStation = false;
-                                        if (MasterCar.AuxCompressorMode_OffOn)
+                                        if (SlaveCar.AcceptCableSignals)
                                         {
-                                            SlaveCar.AuxCompressor = MasterCar.AuxCompressor;
-                                            SlaveCar.AuxCompressorNoActiveStation = true;
-                                            SlaveCar.AuxCompressorMode_OffOn = true;
+                                            SlaveCar.AuxCompressorNoActiveStation = false;
+                                            if (MasterCar.AuxCompressorMode_OffOn)
+                                            {
+                                                SlaveCar.AuxCompressor = MasterCar.AuxCompressor;
+                                                SlaveCar.AuxCompressorNoActiveStation = true;
+                                                SlaveCar.AuxCompressorMode_OffOn = true;
+                                            }
+                                            else
+                                            {
+                                                SlaveCar.AuxCompressorMode_OffOn = false;
+                                            }
+
+                                            SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
+                                            if (SlaveCar.CircuitBreakerOn)
+                                            {
+                                                if (MasterCar.CompressorIsOn)
+                                                {
+                                                    SlaveCar.Compressor_I = MasterCar.Compressor_I;
+                                                    SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
+                                                    SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = true;
+                                                    if (MasterCar.Compressor_I_HandMode[MasterCar.LocoStation])
+                                                    {
+                                                        SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
+                                                    SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
+                                                }
+                                                if (MasterCar.Compressor2IsOn)
+                                                {
+                                                    SlaveCar.Compressor_II = MasterCar.Compressor_II;
+                                                    SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
+                                                    SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = true;
+                                                    if (MasterCar.Compressor_II_HandMode[MasterCar.LocoStation])
+                                                    {
+                                                        SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = true;
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
+                                                    SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = false;
+                                                }
+                                            }
                                         }
                                         else
+                                        if (!SlaveCar.AcceptCableSignals)
                                         {
+                                            SlaveCar.AuxCompressorNoActiveStation = false;
+                                            SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
                                             SlaveCar.AuxCompressorMode_OffOn = false;
-                                        }
-
-                                        SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
-                                        if (SlaveCar.CircuitBreakerOn)
-                                        {
-                                            if (MasterCar.CompressorIsOn)
-                                            {
-                                                SlaveCar.Compressor_I = MasterCar.Compressor_I;
-                                                SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
-                                                SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = true;
-                                                if (MasterCar.Compressor_I_HandMode[MasterCar.LocoStation])
-                                                {
-                                                    SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = true;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
-                                                SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
-                                            }
-                                            if (MasterCar.Compressor2IsOn)
-                                            {
-                                                SlaveCar.Compressor_II = MasterCar.Compressor_II;
-                                                SlaveCar.StationIsActivated[SlaveCar.LocoStation] = true;
-                                                SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = true;
-                                                if (MasterCar.Compressor_II_HandMode[MasterCar.LocoStation])
-                                                {
-                                                    SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = true;
-                                                }
-                                            }
-                                            else
-                                            {
-                                                SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
-                                                SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = false;
-                                            }
+                                            SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
+                                            SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
+                                            SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
+                                            SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = false;
                                         }
                                     }
-                                    else
-                                    if (!SlaveCar.AcceptCableSignals)
-                                    {
-                                        SlaveCar.AuxCompressorNoActiveStation = false;
-                                        SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
-                                        SlaveCar.AuxCompressorMode_OffOn = false;
-                                        SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
-                                        SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
-                                        SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
-                                        SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = false;
-                                    }
+                                }
+                                else
+                                {
+                                    break;
                                 }
                             }
                         }
