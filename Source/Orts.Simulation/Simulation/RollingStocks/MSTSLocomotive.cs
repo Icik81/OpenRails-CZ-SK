@@ -10607,7 +10607,16 @@ namespace Orts.Simulation.RollingStocks
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
                         if (this.MUCableCanBeUsed)
                             if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
+                            {
                                 AcceptCableSignals = true;
+                                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                {
+                                    if (car is MSTSElectricLocomotive && (car as MSTSElectricLocomotive).MUCableCanBeUsed)
+                                        car.AcceptCableSignals = true;
+                                    else
+                                        break;
+                                }
+                            }
 
                         // Řídící vůz v soupravě                    
                         foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
