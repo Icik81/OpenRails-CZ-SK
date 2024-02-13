@@ -3079,7 +3079,7 @@ namespace Orts.Simulation.RollingStocks
         {            
             if (!IsLeadLocomotive()) return;            
 
-            if (Train.AcceptPowerSignalsChange || Simulator.GameWasRestored)
+            if (Train.AcceptPowerSignalsChange || Simulator.GameWasRestored || MasterSlaveInitiate)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3115,6 +3115,7 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             Train.AcceptPowerSignalsChange = false;
+            MasterSlaveInitiate = false;
         }
         #endregion Master & Slave
 
@@ -10601,6 +10602,7 @@ namespace Orts.Simulation.RollingStocks
         
 
         bool AllCabItemReaded;
+        bool MasterSlaveInitiate;
         public void CarFrameUpdate(float elapsedClockSeconds)
         {           
             if (AllCabItemReaded || !IsLeadLocomotive())
@@ -10655,6 +10657,7 @@ namespace Orts.Simulation.RollingStocks
 
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
                         if (this.MUCableCanBeUsed)
+                        {
                             if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                             {
                                 AcceptCableSignals = true;
@@ -10666,6 +10669,8 @@ namespace Orts.Simulation.RollingStocks
                                         break;
                                 }
                             }
+                            MasterSlaveInitiate = true;
+                        }
 
                         // Řídící vůz v soupravě                    
                         foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
