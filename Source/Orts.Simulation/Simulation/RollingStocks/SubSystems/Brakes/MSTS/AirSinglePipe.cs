@@ -2455,7 +2455,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
                         train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
 
-                        if (!LocoTwoPipesConnectionBreak && !loco.Simulator.MainResZero)
+                        if (!LocoTwoPipesConnectionBreak && !loco.Simulator.MainResZero && lead != null)
                         {
                             if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
                             {
@@ -2492,7 +2492,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         BrakeSystem MSTSWagon = train.Cars[i].BrakeSystem;
                         // Snižuje tlak v hlavní jímce kvůli spotřebě vzduchu při otevírání/zavírání dveří
-                        if (MSTSWagon.AirOK_DoorCanManipulate)
+                        if (MSTSWagon.AirOK_DoorCanManipulate && lead != null)
                         {
                             if (sumv > 0)
                                 lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
