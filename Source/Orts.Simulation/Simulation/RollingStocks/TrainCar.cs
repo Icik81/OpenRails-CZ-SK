@@ -408,7 +408,8 @@ namespace Orts.Simulation.RollingStocks
         public float SlipSpeedDiference;
         public bool CarHasHeatingReady;
         public bool CarHasBrakePipeConnected;
-
+        public bool MasterLoco;
+        public bool SlaveLoco;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

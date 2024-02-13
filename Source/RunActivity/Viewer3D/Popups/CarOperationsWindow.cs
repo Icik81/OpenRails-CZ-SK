@@ -85,11 +85,23 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
                     buttonTogglePower.Color = Color.LightGreen;
             }
-
+                        
+            string InfoMasterSlaveText = string.Empty;
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && Viewer.PlayerTrain.MasterSlaveCarsFound)
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).MasterLoco)
+                {
+                    InfoMasterSlaveText = "MASTER";
+                }
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).SlaveLoco)
+                {
+                    InfoMasterSlaveText = "SLAVE";
+                }
+            }
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU"), LabelAlignment.Center));
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
-                buttonToggleMUCable.Color = Color.LightGreen;
+            vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU") + "   " + InfoMasterSlaveText, LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)            
+                buttonToggleMUCable.Color = Color.LightGreen;            
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleMUPower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power MU"), LabelAlignment.Center));
@@ -309,6 +321,7 @@ namespace Orts.Viewer3D.Popups
                 }
                 else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
+                Viewer.PlayerTrain.AcceptPowerSignalsChange = true;
             }
             else
                 Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Cable MU command for this type of car!"));

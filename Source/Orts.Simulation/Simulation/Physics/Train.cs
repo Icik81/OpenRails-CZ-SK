@@ -116,6 +116,12 @@ namespace Orts.Simulation.Physics
         public bool TrainHeatingStartOn = true;
         public float PlayerTrainBrakePercent = 0;
         public bool PlayerTrainBrakePercentChange;
+        public bool MasterSlaveCarsFound;
+        public bool AcceptPowerSignalsChange;        
+        public int MasterCarNumber;
+        public int SlaveCarNumber;
+        public TrainCar MasterLoco;
+        public TrainCar SlaveLoco;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

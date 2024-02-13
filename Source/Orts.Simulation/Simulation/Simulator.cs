@@ -249,7 +249,8 @@ namespace Orts.Simulation
         public bool ManualCouplingOverride;
         public bool GameWasRestored;
         public bool DashLightCanActivate;
-        public bool ESCKeyActivated;
+        public bool ESCKeyActivated;        
+
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -799,8 +800,8 @@ namespace Orts.Simulation
 
             // Icik
             GameTimeCyklus10++;
-            if (GameTimeCyklus10 > 10)
-                GameTimeCyklus10 = 0;
+            if (GameTimeCyklus10 > 10)            
+                GameTimeCyklus10 = 0;                         
             OneSecondLoop = elapsedClockSeconds;            
 
             // Check if there is a request to switch to another played train

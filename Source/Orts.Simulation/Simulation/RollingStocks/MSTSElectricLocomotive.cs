@@ -35,6 +35,7 @@ using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.cz.aspone.lkpr;
+using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
@@ -1238,7 +1239,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (LocoSwitchACDC
                         && (SwitchingVoltageMode == 1)
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing))                       
                         HVOff = true;
 
                     if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && PowerOn)
@@ -1424,7 +1425,7 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             // Icik                      
-            if (HVOff)
+            if (HVOff && IsLeadLocomotive())
             {
                 HVOff = false;                
                 LocalThrottlePercent = 0;
@@ -1448,7 +1449,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (HVOn)
+            if (HVOn && IsLeadLocomotive())
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
@@ -1518,12 +1519,12 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik            
         EndAIVoltageChoice:
-            SetAIPantoDown(elapsedClockSeconds);
-            VoltageIndicate(elapsedClockSeconds);
+            SetAIPantoDown(elapsedClockSeconds);            
+            VoltageIndicate(elapsedClockSeconds);                                                
             UnderVoltageProtection(elapsedClockSeconds);
 
             if (IsPlayerTrain)
-            {
+            {                
                 if (MultiSystemEngine && LocomotivePowerVoltage == 15000) Loco15kV = true;
                 RouteVoltageVInfo = RouteVoltageV;                
                 AuxAirConsumption(elapsedClockSeconds);
@@ -1851,35 +1852,70 @@ namespace Orts.Simulation.RollingStocks
         // Komunikace po kabelu mezi spojenými jednotkami
         public void MUCableCommunication()
         {
-            if (IsLeadLocomotive())
+            if (Train.MasterSlaveCarsFound)
             {
-                Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
-                Simulator.DataBreakPowerButton = BreakPowerButton;
-                if (!MultiSystemEngine)
-                    Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
-            }
-            if (AcceptMUSignals && !IsLeadLocomotive())
-            {
-                SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
-                BreakPowerButton = Simulator.DataBreakPowerButton;
-                if (!MultiSystemEngine)
-                    LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
-                switch (SwitchingVoltageMode)
+                if (this.MasterLoco)
                 {
-                    case 0:
-                        SwitchingVoltageMode_OffDC = true;
-                        SwitchingVoltageMode_OffAC = false;
-                        break;
-                    case 1:
-                        SwitchingVoltageMode_OffDC = false;
-                        SwitchingVoltageMode_OffAC = false;
-                        break;
-                    case 2:
-                        SwitchingVoltageMode_OffDC = false;
-                        SwitchingVoltageMode_OffAC = true;
-                        break;
+                    Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
+                    Simulator.DataBreakPowerButton = BreakPowerButton;
+                    if (!MultiSystemEngine)
+                        Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
                 }
-            }            
+                if (this.SlaveLoco)
+                {
+                    SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
+                    BreakPowerButton = Simulator.DataBreakPowerButton;
+                    if (!MultiSystemEngine)
+                        LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
+                    switch (SwitchingVoltageMode)
+                    {
+                        case 0:
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 1:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 2:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                            break;
+                    }
+                }
+            }
+            else
+            {
+                if (IsLeadLocomotive())
+                {
+                    Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
+                    Simulator.DataBreakPowerButton = BreakPowerButton;
+                    if (!MultiSystemEngine)
+                        Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
+                }
+                if (AcceptMUSignals && !IsLeadLocomotive())
+                {
+                    SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
+                    BreakPowerButton = Simulator.DataBreakPowerButton;
+                    if (!MultiSystemEngine)
+                        LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
+                    switch (SwitchingVoltageMode)
+                    {
+                        case 0:
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 1:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 2:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                            break;
+                    }
+                }
+            }
         }
 
         // Icik
