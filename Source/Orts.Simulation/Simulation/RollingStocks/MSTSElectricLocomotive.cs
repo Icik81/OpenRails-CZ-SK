@@ -1425,7 +1425,7 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             // Icik                      
-            if (HVOff && IsLeadLocomotive())
+            if (HVOff)
             {
                 HVOff = false;                
                 LocalThrottlePercent = 0;
@@ -1449,7 +1449,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            if (HVOn && IsLeadLocomotive())
+            if (HVOn)
             {
                 HVOn = false;
                 SignalEvent(PowerSupplyEvent.CloseCircuitBreaker);
@@ -1984,15 +1984,47 @@ namespace Orts.Simulation.RollingStocks
                 AITimePowerRunning += elapsedClockSeconds;
 
             // Detekce změny směru AI
-            if (Direction == Direction.Reverse)
+            if (LocomotiveTypeNumber == 131)
             {
-                CurrentAIDirection = true;
-                UsingRearCab = true;
+                if (Direction == Direction.Reverse)
+                {
+                    CurrentAIDirection = true;
+                    UsingRearCab = true;
+                }
+                if (Direction == Direction.Forward)
+                {
+                    CurrentAIDirection = false;
+                    UsingRearCab = false;
+                }
             }
-            if (Direction == Direction.Forward)
+            else
             {
-                CurrentAIDirection = false;
-                UsingRearCab = false;
+                if (Flipped)
+                {
+                    if (Direction == Direction.Forward)
+                    {
+                        CurrentAIDirection = true;
+                        UsingRearCab = true;
+                    }
+                    if (Direction == Direction.Reverse)
+                    {
+                        CurrentAIDirection = false;
+                        UsingRearCab = false;
+                    }
+                }
+                else
+                {
+                    if (Direction == Direction.Reverse)
+                    {
+                        CurrentAIDirection = true;
+                        UsingRearCab = true;
+                    }
+                    if (Direction == Direction.Forward)
+                    {
+                        CurrentAIDirection = false;
+                        UsingRearCab = false;
+                    }
+                }
             }
             if (PreAIDirection != CurrentAIDirection && MassKG > 75 * 1000)
                 AIPantoChange = true;
@@ -2047,6 +2079,9 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
                 float TrainMassKg = 400 * 1000; // Vlak těžší než 400t
                 float MassKoef = 0;
+
+                if (LocomotiveTypeNumber == 131)
+                    TrainMassKg = 1000 * 1000;
 
                 if (!TrainHasMassKoef)
                 {

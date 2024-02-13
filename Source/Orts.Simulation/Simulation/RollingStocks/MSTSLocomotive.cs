@@ -6265,6 +6265,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Icik            
+            LocomotiveTypeDefinition();
             SetCarLightsPowerOn();
             CarFrameUpdate(elapsedClockSeconds);            
             VentilationSwitch(elapsedClockSeconds);
@@ -6332,8 +6333,7 @@ namespace Orts.Simulation.RollingStocks
                 // StepController odpovídá v defaultu throttle
                 if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable && !HS198ControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
-
-                LocomotiveTypeDefinition();
+                
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -10077,42 +10077,44 @@ namespace Orts.Simulation.RollingStocks
         public bool TwoCab;
         public void LocomotiveTypeDefinition()
         {
-            switch (EngineType)
-            {
-                case EngineTypes.Electric:
-                case EngineTypes.Diesel:
-                case EngineTypes.Steam:
-                    PowerUnit = true;
-                    ControlUnit = false;
-                    break;
-                case EngineTypes.Control:
-                    PowerUnit = false;
-                    ControlUnit = true;
-                    break;
-            }
-
-            Simulator.ControlUnitInTrain = false;            
-            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
-            {
-                if (car.EngineType == EngineTypes.Control)
-                {
-                    Simulator.ControlUnitInTrain = true;
-                    break;
-                }            
-            }
-            PowerUnitWithControl = false;
-            if (Simulator.ControlUnitInTrain)
+            if (IsPlayerTrain)
             {
                 switch (EngineType)
                 {
                     case EngineTypes.Electric:
                     case EngineTypes.Diesel:
                     case EngineTypes.Steam:
-                        PowerUnitWithControl = true;                        
-                        break;                    
+                        PowerUnit = true;
+                        ControlUnit = false;
+                        break;
+                    case EngineTypes.Control:
+                        PowerUnit = false;
+                        ControlUnit = true;
+                        break;
+                }
+
+                Simulator.ControlUnitInTrain = false;
+                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    if (car.EngineType == EngineTypes.Control)
+                    {
+                        Simulator.ControlUnitInTrain = true;
+                        break;
+                    }
+                }
+                PowerUnitWithControl = false;
+                if (Simulator.ControlUnitInTrain)
+                {
+                    switch (EngineType)
+                    {
+                        case EngineTypes.Electric:
+                        case EngineTypes.Diesel:
+                        case EngineTypes.Steam:
+                            PowerUnitWithControl = true;
+                            break;
+                    }
                 }
             }
-
             if (LocomotiveName == null) LocomotiveName = "";
             // Určení řady lokomotivy 
             if (LocomotiveTypeNumber == 0)
