@@ -159,6 +159,7 @@ namespace Orts.Viewer3D.Popups
                 if (Owner.Viewer.Simulator.ESCKeyActivated)
                 {
                     CloseBox();
+                    Owner.Viewer.Simulator.ESCKeyActivated = false;
                 }
 
                 var act = Owner.Viewer.Simulator.ActivityRun;
@@ -297,7 +298,7 @@ namespace Orts.Viewer3D.Popups
         void ResumeMenu()
         {
             ResumeLabel.Text = Owner.Viewer.Simulator.Paused ? Viewer.Catalog.GetString("Resume") : Viewer.Catalog.GetString("Pause");
-            CloseLabel.Text = Owner.Viewer.Simulator.Paused ? Viewer.Catalog.GetString("Resume and close box") : Viewer.Catalog.GetString("Close box");
+            CloseLabel.Text = Owner.Viewer.Simulator.Paused ? Viewer.Catalog.GetString("Resume and close box") + " (Esc)": Viewer.Catalog.GetString("Close box");
             QuitLabel.Text = Viewer.Catalog.GetString("Quit activity");
             StatusLabel.Text = Owner.Viewer.Simulator.Paused ? Viewer.Catalog.GetString("Status: Activity paused") : Viewer.Catalog.GetString("Status: Activity resumed");
             StatusLabel.Color = Owner.Viewer.Simulator.Paused ? Color.LightSalmon : Color.LightGreen;

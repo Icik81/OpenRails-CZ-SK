@@ -1049,8 +1049,7 @@ namespace Orts.Viewer3D
             }
             if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible ? true : false;
             if (!MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu))
-            {
-                Simulator.ESCKeyActivated = false;
+            {                
                 if (ActivityWindow.Visible)
                 {
                     Simulator.ESCKeyActivated = true;                   
