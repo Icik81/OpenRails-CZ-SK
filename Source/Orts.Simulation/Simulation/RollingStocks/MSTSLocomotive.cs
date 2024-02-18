@@ -7683,10 +7683,10 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Default pro nezadání hnacích náprav
-                for (int i = 1; i < 6; i++)
+                for (int i = 1; i < 7; i++)
                 {
                     if (DriveAxleNumber[i] != 0) break;                    
-                    if (i == 6) for (int j = 1; j < 6; j++) DriveAxleNumber[j] = j;                                            
+                    if (i == 6) for (int j = 1; j < 7; j++) DriveAxleNumber[j] = j;                                            
                 }
 
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
