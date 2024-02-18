@@ -741,6 +741,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] Switch6LightPosition = new int[3];
         public bool Switch5LightEnable;
         public bool Switch6LightEnable;
+        public int[] DriveAxleNumber = new int[7];
 
         // Jindrich
         public bool IsActive = false;
@@ -1460,7 +1461,16 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(stepcontrollersituation(relaydelay_3": RelayDelay[3] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
                 case "engine(stepcontrollersituation(relaydelay_4": RelayDelay[4] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
                 case "engine(stepcontrollersituation(relaydelay_5": RelayDelay[5] = stf.ReadFloatBlock(STFReader.UNITS.Time, null); break;
-
+                case "engine(driveaxlesnumbers": 
+                    stf.MustMatch("(");
+                    DriveAxleNumber[1] = stf.ReadInt(null);
+                    DriveAxleNumber[2] = stf.ReadInt(null);
+                    DriveAxleNumber[3] = stf.ReadInt(null);
+                    DriveAxleNumber[4] = stf.ReadInt(null);
+                    DriveAxleNumber[5] = stf.ReadInt(null);
+                    DriveAxleNumber[6] = stf.ReadInt(null);
+                    stf.SkipRestOfBlock();
+                    break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -7671,7 +7681,14 @@ namespace Orts.Simulation.RollingStocks
                     DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
-                
+
+                // Default pro nezadání hnacích náprav
+                for (int i = 1; i < 6; i++)
+                {
+                    if (DriveAxleNumber[i] != 0) break;                    
+                    if (i == 6) for (int j = 1; j < 6; j++) DriveAxleNumber[j] = j;                                            
+                }
+
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
                 LocomotiveAxle.FrictionN = MassKG / 100.0f;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;

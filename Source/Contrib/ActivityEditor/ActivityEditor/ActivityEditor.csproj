@@ -195,7 +195,9 @@
       <DependentUpon>TrackSegmentInterface.cs</DependentUpon>
     </Compile>
     <Compile Include="Settings.cs" />
-    <Compile Include="Wizard\ActivityDescr.cs" />
+    <Compile Include="Wizard\ActivityDescr.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="Wizard\SelectRoute.cs">
       <SubType>UserControl</SubType>
     </Compile>
