@@ -773,7 +773,7 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     // Icik
                     // Počítání rychlosti animace jednotlivých náprav 
-                    if ((Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).IsPlayerTrain)
+                    if ((Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).Train != null && (Car as MSTSLocomotive).IsPlayerTrain)
                     {
                         if ((Car as MSTSLocomotive).extendedPhysics != null)
                         {
@@ -1261,7 +1261,7 @@ namespace Orts.Viewer3D.RollingStock
                     // ActivitySound
                     if (MSTSWagon is MSTSLocomotive && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
                     {
-                        smsGenericFilePath = "..\\Content\\ActivitySound\\ActivitySound_ex.sms";
+                        smsGenericFilePath = "..\\Content\\ActivitySound\\ActivitySound.sms";
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                     }
 
