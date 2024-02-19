@@ -3808,6 +3808,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Start se vzduchem nebo bez vzduchu podle klíčového slova v názvu consistu nebo volby v menu OR
             if (lead != null && lead.BrakeSystem.StartOn)
             {
+                for (int i = 0; i < train.Cars.Count; i++)
+                {
+                    train.Cars[i].BrakeSystem.HandBrakeDeactive = true;
+                    train.Cars[i].BrakeSystem.HandBrakeActive = false;
+                }
+
                 if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
                 {
                     lead.BrakeSystem.IsAirEmpty = true;
@@ -3848,13 +3854,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             HandBrakeCarsCount = 12;
                         if (y > 60 && y <= 65)
                             HandBrakeCarsCount = 13;
-                    }
-    
-                    for (int i = 0; i < train.Cars.Count; i++)
-                    {
-                        train.Cars[i].BrakeSystem.HandBrakeDeactive = true;
-                        train.Cars[i].BrakeSystem.HandBrakeActive = false;
-                    }
+                    }                       
 
                     if (train.Cars.Count > 1 && LeadPosition > train.Cars.Count / 2f)
                     {
