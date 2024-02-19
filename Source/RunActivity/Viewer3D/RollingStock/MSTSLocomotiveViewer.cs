@@ -154,6 +154,23 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.Battery = true;
             }
 
+            var mstsControlUnit = car as MSTSControlUnit;
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsControlUnit != null && !mstsControlUnit.PowerOn)
+            {
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                this.MSTSLocomotive.LocoIsStatic = true;
+                this.MSTSLocomotive.UserPowerOff = true;
+                this.MSTSLocomotive.Battery = false;
+            }
+            // STATIC je zapnutý po nahrání uložené pozice
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsControlUnit != null && mstsControlUnit.PowerOn)
+            {
+                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                this.MSTSLocomotive.LocoIsStatic = true;
+                this.MSTSLocomotive.UserPowerOff = false;
+                this.MSTSLocomotive.Battery = true;
+            }
+
             var mstsSteamLocomotive = car as MSTSSteamLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && !mstsSteamLocomotive.PowerOn)
             {

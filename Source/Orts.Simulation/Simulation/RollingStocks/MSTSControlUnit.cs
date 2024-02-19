@@ -122,6 +122,11 @@ namespace Orts.Simulation.RollingStocks
             Battery = false;
             Simulator.ControlUnitIsLead = false;            
 
+            if (!IsPlayerTrain)
+            {
+                Battery = true;
+            }
+
             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
             {
                 // Kontrola zapojeného kabelu MU

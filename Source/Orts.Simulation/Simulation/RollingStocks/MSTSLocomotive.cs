@@ -11798,7 +11798,7 @@ namespace Orts.Simulation.RollingStocks
                         CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Neutral;
                     ARRParkingButtonOffset = 0;
                 }
-
+                
                 if (ARRParkingButtonOffset == 2 && ARRConfirmButton[LocoStation] != 1)
                 {
                     if (LocalThrottlePercent == 0)
@@ -11813,6 +11813,16 @@ namespace Orts.Simulation.RollingStocks
                     
                 if (Battery && StationIsActivated[LocoStation] && CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
                 {
+                    if (AbsSpeedMpS < 2.0f / 3.6f)
+                    {
+                        ARRParkingButtonOffset = 2;
+                    }
+
+                    if (ARRConfirmButton[LocoStation] == 1)
+                    {
+                        ARRParkingButtonOffset = 0;
+                    }
+
                     if (ARRParkingButton[LocoStation] == 1)
                     {
                         ARRConfirmButtonOffset = 0;
