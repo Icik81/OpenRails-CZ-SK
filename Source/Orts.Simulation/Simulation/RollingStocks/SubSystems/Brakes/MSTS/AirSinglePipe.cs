@@ -3811,45 +3811,71 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
                 {
                     lead.BrakeSystem.IsAirEmpty = true;
+                    int LeadPosition = 0;
+                    int CarPosition = 0;
+                    int HandBrakeCarsCount = 0;
+                    int y = train.Cars.Count - 1;
+
                     foreach (TrainCar car in train.Cars)
                     {
-                        car.BrakeSystem.IsAirEmpty = true;
-                        int x = 0;
-                        int y = train.Cars.Count - 1;
-                        if (y > 1 && y <= 10)
-                            x = 2;
-                        if (y > 10 && y <= 15)
-                            x = 3;
-                        if (y > 15 && y <= 20)
-                            x = 4;
-                        if (y > 20 && y <= 25)
-                            x = 5;
-                        if (y > 25 && y <= 30)
-                            x = 6;
-                        if (y > 30 && y <= 35)
-                            x = 7;
-                        if (y > 35 && y <= 40)
-                            x = 8;
-                        if (y > 40 && y <= 45)
-                            x = 9;
-                        if (y > 45 && y <= 50)
-                            x = 10;
-                        if (y > 50 && y <= 55)
-                            x = 11;
-                        if (y > 55 && y <= 60)
-                            x = 12;
-                        if (y > 60 && y <= 65)
-                            x = 13;
-
-                        for (int i = 1; i < x + 1; i++)
+                        car.BrakeSystem.IsAirEmpty = true;                        
+                        if (car == lead)
                         {
-                            if (car == train.Cars[i])
-                                car.BrakeSystem.HandBrakeActive = true;
+                            LeadPosition = CarPosition;                            
                         }
-                        for (int i = x + 1; i < train.Cars.Count; i++)
+                        CarPosition++;
+                        if (y > 1 && y <= 10)
+                            HandBrakeCarsCount = 2;
+                        if (y > 10 && y <= 15)
+                            HandBrakeCarsCount = 3;
+                        if (y > 15 && y <= 20)
+                            HandBrakeCarsCount = 4;
+                        if (y > 20 && y <= 25)
+                            HandBrakeCarsCount = 5;
+                        if (y > 25 && y <= 30)
+                            HandBrakeCarsCount = 6;
+                        if (y > 30 && y <= 35)
+                            HandBrakeCarsCount = 7;
+                        if (y > 35 && y <= 40)
+                            HandBrakeCarsCount = 8;
+                        if (y > 40 && y <= 45)
+                            HandBrakeCarsCount = 9;
+                        if (y > 45 && y <= 50)
+                            HandBrakeCarsCount = 10;
+                        if (y > 50 && y <= 55)
+                            HandBrakeCarsCount = 11;
+                        if (y > 55 && y <= 60)
+                            HandBrakeCarsCount = 12;
+                        if (y > 60 && y <= 65)
+                            HandBrakeCarsCount = 13;
+                    }
+    
+                    for (int i = 0; i < train.Cars.Count; i++)
+                    {
+                        train.Cars[i].BrakeSystem.HandBrakeDeactive = true;
+                        train.Cars[i].BrakeSystem.HandBrakeActive = false;
+                    }
+
+                    if (train.Cars.Count > 1 && LeadPosition > train.Cars.Count / 2f)
+                    {
+                        for (int i = 0; i < HandBrakeCarsCount; i++)
                         {
-                            if (car == train.Cars[i])
-                                car.BrakeSystem.HandBrakeDeactive = true;
+                            if (LeadPosition - i > -1)
+                            {
+                                train.Cars[LeadPosition - i].BrakeSystem.HandBrakeDeactive = false;
+                                train.Cars[LeadPosition - i].BrakeSystem.HandBrakeActive = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int i = 0; i < HandBrakeCarsCount; i++)
+                        {
+                            if (LeadPosition + i < train.Cars.Count)
+                            {
+                                train.Cars[i + LeadPosition].BrakeSystem.HandBrakeDeactive = false;
+                                train.Cars[i + LeadPosition].BrakeSystem.HandBrakeActive = true;
+                            }
                         }
                     }
                 }
