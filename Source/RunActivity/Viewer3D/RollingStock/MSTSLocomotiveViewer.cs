@@ -393,6 +393,9 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlSwitch5LightDown, new Action[] { Noop, () => new Switch5LightDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitch6LightUp, new Action[] { Noop, () => new Switch6LightUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitch6LightDown, new Action[] { Noop, () => new Switch6LightDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlToggleARRConfirmButton, new Action[] { Noop, () => new ToggleARRConfirmButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlToggleARRDriveOutButton, new Action[] { Noop, () => new ToggleARRDriveOutButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlToggleARRParkingButton, new Action[] { Noop, () => new ToggleARRParkingButtonCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -431,7 +434,68 @@ namespace Orts.Viewer3D.RollingStock
         {
             // Icik
             DoublePressedKeyTest();
-            
+
+            // Ovládání ARR CONFIRM BUTTON nearetované pozice
+            if (Locomotive.ARRConfirmButtonEnable)
+            {
+                if (UserInput.IsDown(UserCommand.ControlToggleARRConfirmButton))
+                {
+                    Locomotive.ARRConfirmButton[Locomotive.LocoStation] = 1;
+                }
+                else
+                {
+                    Locomotive.ARRConfirmButton[Locomotive.LocoStation] = 0;
+                }
+                if (UserInput.IsPressed(UserCommand.ControlToggleARRConfirmButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonPressed);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlToggleARRConfirmButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonReleased);
+                }
+            }
+            // Ovládání ARR DRIVEOUT BUTTON nearetované pozice
+            if (Locomotive.ARRDriveOutButtonEnable)
+            {
+                if (UserInput.IsDown(UserCommand.ControlToggleARRDriveOutButton))
+                {
+                    Locomotive.ARRDriveOutButton[Locomotive.LocoStation] = 1;
+                }
+                else
+                {
+                    Locomotive.ARRDriveOutButton[Locomotive.LocoStation] = 0;
+                }
+                if (UserInput.IsPressed(UserCommand.ControlToggleARRDriveOutButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonPressed);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlToggleARRDriveOutButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonReleased);
+                }
+            }
+            // Ovládání ARR PARKING BUTTON nearetované pozice
+            if (Locomotive.ARRParkingButtonEnable)
+            {
+                if (UserInput.IsDown(UserCommand.ControlToggleARRParkingButton))
+                {
+                    Locomotive.ARRParkingButton[Locomotive.LocoStation] = 1;
+                }
+                else
+                {
+                    Locomotive.ARRParkingButton[Locomotive.LocoStation] = 0;
+                }
+                if (UserInput.IsPressed(UserCommand.ControlToggleARRParkingButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonPressed);
+                }
+                if (UserInput.IsReleased(UserCommand.ControlToggleARRParkingButton))
+                {
+                    Locomotive.SignalEvent(Event.ButtonReleased);
+                }
+            }
+
             // Ovládání Panto Activation nearetované pozice
             if (Locomotive.PantoActivationEnable)
             {                
@@ -3548,6 +3612,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIRECTION_STATE:
                 case CABViewControlTypes.VOLTAGEFILTER_STATE:
                 case CABViewControlTypes.PANTOGRAPH4NC_STATE:
+                case CABViewControlTypes.ARR_CONFIRM_BUTTON:
+                case CABViewControlTypes.ARR_DRIVEOUT_BUTTON:
+                case CABViewControlTypes.ARR_PARKING_BUTTON:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4076,6 +4143,70 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             new ToggleHV3NASwitchDownCommand(Viewer.Log);
                             IsChanged = true;
+                        }
+                        break;
+                    }
+
+                case CABViewControlTypes.ARR_CONFIRM_BUTTON:
+                    {
+                        // Ovládání nearetované pozice                        
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.ARRConfirmButton[Locomotive.LocoStation] = 1;
+                        }
+                        else
+                        {
+                            Locomotive.ARRConfirmButton[Locomotive.LocoStation] = 0;
+                        }
+                        if (UserInput.IsMouseLeftButtonPressed)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonPressed);
+                        }
+                        if (UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonReleased);
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ARR_DRIVEOUT_BUTTON:
+                    {
+                        // Ovládání nearetované pozice                        
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.ARRDriveOutButton[Locomotive.LocoStation] = 1;
+                        }
+                        else
+                        {
+                            Locomotive.ARRDriveOutButton[Locomotive.LocoStation] = 0;
+                        }
+                        if (UserInput.IsMouseLeftButtonPressed)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonPressed);
+                        }
+                        if (UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonReleased);
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ARR_PARKING_BUTTON:
+                    {
+                        // Ovládání nearetované pozice                        
+                        if (UserInput.IsMouseLeftButtonDown)
+                        {
+                            Locomotive.ARRParkingButton[Locomotive.LocoStation] = 1;
+                        }
+                        else
+                        {
+                            Locomotive.ARRParkingButton[Locomotive.LocoStation] = 0;
+                        }
+                        if (UserInput.IsMouseLeftButtonPressed)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonPressed);                            
+                        }
+                        if (UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.SignalEvent(Event.ButtonReleased);
                         }
                         break;
                     }

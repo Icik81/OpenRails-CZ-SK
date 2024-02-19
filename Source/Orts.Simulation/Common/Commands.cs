@@ -2027,6 +2027,36 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleARRConfirmButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleARRConfirmButtonCommand(CommandLog log)
+            : base(log)
+        {
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleARRDriveOutButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleARRDriveOutButtonCommand(CommandLog log)
+            : base(log)
+        {
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleARRParkingButtonCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleARRParkingButtonCommand(CommandLog log)
+            : base(log)
+        {
+        }
+    }
+    [Serializable()]
     public sealed class ToggleHV2SwitchUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

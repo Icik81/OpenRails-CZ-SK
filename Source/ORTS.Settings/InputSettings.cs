@@ -628,7 +628,10 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlSwitch5LightDown] = new UserCommandKeyInput(0x24, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlSwitch6LightUp] = new UserCommandKeyInput(0x25, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSwitch6LightDown] = new UserCommandKeyInput(0x25, KeyModifiers.Shift | KeyModifiers.Control);
-            
+            Commands[(int)UserCommand.ControlToggleARRConfirmButton] = new UserCommandKeyInput(0x20, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlToggleARRDriveOutButton] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlToggleARRParkingButton] = new UserCommandKeyInput(0x1E, KeyModifiers.Control);
+
         }
         #endregion
 

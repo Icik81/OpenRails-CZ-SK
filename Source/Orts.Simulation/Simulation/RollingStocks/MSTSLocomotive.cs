@@ -6409,6 +6409,9 @@ namespace Orts.Simulation.RollingStocks
                 TogglePantoActivationSwitch();
                 ToggleVoltageSelectionSwitch();
                 ToggleHV3NASwitch();
+                ToggleARRConfirmButton();
+                ToggleARRDriveOutButton();
+                ToggleARRParkingButton();
 
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
@@ -11662,6 +11665,166 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public int[] ARRConfirmButton = new int[3];
+        public bool ARRConfirmButtonEnable;   
+        public int ARRConfirmButtonState = 0;
+        float ARRConfirmButtonTimer1;
+        float ARRConfirmButtonTimer2;
+        int ARRConfirmButtonOffset;
+        bool ARRZeroSpeed;
+        bool ARRAutoSpeed;
+        public void ToggleARRConfirmButton()
+        {
+            if (ARRConfirmButtonEnable && IsLeadLocomotive())
+            {
+                ARRConfirmButtonState = ARRConfirmButton[LocoStation] + ARRConfirmButtonOffset;
+
+                if (!Battery
+                    || !StationIsActivated[LocoStation]
+                    || (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Auto)
+                    || ARRZeroSpeed
+                    || !ARRAutoSpeed
+                    || (AbsSpeedMpS < 0.01f && ARRAutoSpeed))
+                {
+                    ARRConfirmButtonOffset = 0;
+                    ARRAutoSpeed = false;
+                    CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Neutral;
+                }
+                
+                if (Battery && StationIsActivated[LocoStation] && CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                {
+                    if (ARRConfirmButton[LocoStation] == 1)
+                    {
+                        if (AbsSpeedMpS < 0.01f)
+                        {
+                            ARRZeroSpeed = true;
+                        }
+                        if (ARRZeroSpeed)
+                        {
+                            CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Start;
+                            ARRConfirmButtonOffset = 2;
+                            ARRConfirmButtonTimer1 += elapsedTime;
+                            if (ARRConfirmButtonTimer1 > 0.5f)
+                            {
+                                ARRConfirmButtonOffset = 0;
+                                ARRConfirmButtonTimer2 += elapsedTime;
+                                if (ARRConfirmButtonTimer2 > 0.5f)
+                                {
+                                    ARRConfirmButtonTimer1 = 0;
+                                    ARRConfirmButtonTimer2 = 0;
+                                }
+                            }
+                            if (AbsSpeedMpS > 3.0f / 3.6f)  // 3 km/h pro souhlas
+                            {
+                                ARRZeroSpeed = false;
+                            }
+                        }
+                        else
+                        {
+                            CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.On;
+                            ARRConfirmButtonOffset = 2;
+                            ARRDriveOutButtonOffset = 0;
+                            ARRParkingButtonOffset = 0;
+                            ARRAutoSpeed = true;
+                        }
+                        ARRParkingButtonManualSet = false;
+                    }                    
+                }
+            }
+        }
+
+        public int[] ARRDriveOutButton = new int[3];
+        public bool ARRDriveOutButtonEnable;
+        public int ARRDriveOutButtonState = 0;
+        int ARRDriveOutButtonOffset;
+        public void ToggleARRDriveOutButton()
+        {
+            if (ARRDriveOutButtonEnable)
+            {
+                ARRDriveOutButtonState = ARRDriveOutButton[LocoStation] + ARRDriveOutButtonOffset;                
+
+                if (!Battery
+                    || !StationIsActivated[LocoStation]
+                    || (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Auto)                    
+                    )
+                {                    
+                    CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Neutral;
+                    ARRDriveOutButtonOffset = 0;
+                }
+
+                if (ARRDriveOutButtonOffset == 2)
+                {
+                    if (AbsSpeedMpS < 2.0f / 3.6f)
+                    {
+                        ARRDriveOutButtonOffset = 0;
+                        ARRParkingButtonOffset = 2;
+                        ARRParkingButtonManualSet = false;
+                    }
+                }
+
+                if (Battery && StationIsActivated[LocoStation] && CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                {
+                    if (ARRDriveOutButton[LocoStation] == 1)
+                    {
+                        ARRConfirmButtonOffset = 0;
+                        ARRDriveOutButtonOffset = 2;
+                        ARRParkingButtonOffset = 0;
+                        ARRAutoSpeed = false;
+                        CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Neutral;
+                        ARRParkingButtonManualSet = false;
+                    }
+                }
+            }
+        }
+
+        public int[] ARRParkingButton = new int[3];
+        public bool ARRParkingButtonEnable;
+        public int ARRParkingButtonState = 0;
+        int ARRParkingButtonOffset;
+        bool ARRParkingButtonManualSet;
+        public void ToggleARRParkingButton()
+        {
+            if (ARRParkingButtonEnable)
+            {
+                ARRParkingButtonState = ARRParkingButton[LocoStation] + ARRParkingButtonOffset;
+                BrakeSystem.OL3active = false;
+
+                if (!Battery
+                    || !StationIsActivated[LocoStation]
+                    || (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Auto)
+                    || ARRAutoSpeed)
+                {
+                    if (!ARRAutoSpeed)
+                        CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Neutral;
+                    ARRParkingButtonOffset = 0;
+                }
+
+                if (ARRParkingButtonOffset == 2 && ARRConfirmButton[LocoStation] != 1)
+                {
+                    if (LocalThrottlePercent == 0)
+                    {
+                        CruiseControl.SpeedSelMode[LocoStation] = SpeedSelectorMode.Parking;
+                        if (AbsSpeedMpS < 2.0f / 3.6f && ARRParkingButtonManualSet)
+                        {                            
+                           BrakeSystem.OL3active = true;
+                        }
+                    }
+                }                
+                    
+                if (Battery && StationIsActivated[LocoStation] && CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                {
+                    if (ARRParkingButton[LocoStation] == 1)
+                    {
+                        ARRConfirmButtonOffset = 0;
+                        ARRDriveOutButtonOffset = 0;
+                        ARRParkingButtonOffset = 2;
+                        ARRAutoSpeed = false;
+                        ARRParkingButtonManualSet = true;
+                    }
+                }
+            }
+        }
+
         public void ToggleHV2SwitchUp()
         {
             if (HV2Enable)
@@ -14082,7 +14245,6 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.RDSTOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker[LocoStation] ? CabSetting.On : CabSetting.Off);
         }        
-
         // Znovu načte objekty světa
         public void ToggleRefreshWorld(bool refreshWorld)
         {
@@ -20712,6 +20874,25 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
+                case CABViewControlTypes.ARR_CONFIRM_BUTTON:
+                    {
+                        ARRConfirmButtonEnable = true;                        
+                        data = ARRConfirmButtonState;
+                        break;
+                    }
+                case CABViewControlTypes.ARR_DRIVEOUT_BUTTON:
+                    {
+                        ARRDriveOutButtonEnable = true;
+                        data = ARRDriveOutButtonState;
+                        break;
+                    }
+                case CABViewControlTypes.ARR_PARKING_BUTTON:
+                    {
+                        ARRParkingButtonEnable = true;
+                        data = ARRParkingButtonState;
+                        break;
+                    }
+
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {

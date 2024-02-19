@@ -379,7 +379,9 @@ namespace Orts.Common
         ToggleDownA,
         ToggleUpNA,
         ToggleDownNA,
-        ToggleCenterNA
+        ToggleCenterNA,
+        ButtonPressed, 
+        ButtonReleased,
     }
 
     public static class Events
@@ -769,12 +771,13 @@ namespace Orts.Common
                         case 20128: return Event.Horn2Off;
                         case 20129: return Event.Coupling;
                         case 20130: return Event.CoupleImpact2;
-
                         case 20131: return Event.ToggleUpA;
                         case 20132: return Event.ToggleDownA;
                         case 20133: return Event.ToggleUpNA;
                         case 20134: return Event.ToggleDownNA;
                         case 20135: return Event.ToggleCenterNA;
+                        case 20136: return Event.ButtonPressed;
+                        case 20137: return Event.ButtonReleased;
 
                         default: return 0;
                     }

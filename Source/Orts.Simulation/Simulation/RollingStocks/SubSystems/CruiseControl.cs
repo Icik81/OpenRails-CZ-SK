@@ -365,7 +365,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator mode changed to") + " " + Simulator.Catalog.GetString(SpeedRegMode[Locomotive.LocoStation].ToString()));
         }
         public void SpeedRegulatorModeDecrease()
-        {
+        {            
             Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
             if (!Equipped) return;
             if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Manual) return;
@@ -408,6 +408,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStartIncrease()
         {
+            if (Locomotive.ARRConfirmButtonEnable || Locomotive.ARRDriveOutButtonEnable || Locomotive.ARRParkingButtonEnable)
+                return;
             if (Locomotive.LocoType == LocoTypes.Katr7507)
                 return;
             if (Locomotive.UsingForceHandle)
@@ -439,6 +441,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeStopIncrease()
         {
+            if (Locomotive.ARRConfirmButtonEnable || Locomotive.ARRDriveOutButtonEnable || Locomotive.ARRParkingButtonEnable)
+                return;
             if (Locomotive.LocoType == LocoTypes.Katr7507)
                 return;
             if (Locomotive.UsingForceHandle)
@@ -469,6 +473,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         }
         public void SpeedSelectorModeDecrease()
         {
+            if (Locomotive.ARRConfirmButtonEnable || Locomotive.ARRDriveOutButtonEnable || Locomotive.ARRParkingButtonEnable)
+                return;
             if (Locomotive.LocoType == LocoTypes.Katr7507)
                 return;
             if (Locomotive.UsingForceHandle)

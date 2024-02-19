@@ -326,6 +326,10 @@
         [GetString("Control_CZSK Switch5Light -")] ControlSwitch5LightDown,
         [GetString("Control_CZSK Switch6Light +")] ControlSwitch6LightUp,
         [GetString("Control_CZSK Switch6Light -")] ControlSwitch6LightDown,
+        [GetString("Control_CZSK ARR Confirm Button")] ControlToggleARRConfirmButton,
+        [GetString("Control_CZSK ARR DriveOut Button")] ControlToggleARRDriveOutButton,
+        [GetString("Control_CZSK ARR Parking Button")] ControlToggleARRParkingButton,
+
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

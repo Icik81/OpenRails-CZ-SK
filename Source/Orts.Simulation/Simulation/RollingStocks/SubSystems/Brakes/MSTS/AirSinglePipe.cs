@@ -3400,7 +3400,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         && lead.BrakeSystem.AutoCylPressurePSI1 < EngineBrakeCylOffset
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && AutoCylPressurePSI < lead.MainResPressurePSI)
+                        && AutoCylPressurePSI < lead.MainResPressurePSI
+                        && !lead.BrakeSystem.OL3active)
                     {
                         if (lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
                         float dp = elapsedClockSeconds * lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS * lead.BrakeSystem.EngineBrakeTresholdRate;
@@ -3461,7 +3462,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AutoCylPressurePSI < lead.MainResPressurePSI
-                        )
+                        && !lead.BrakeSystem.OL3active)
                     {
                         if (lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
                         float dp = elapsedClockSeconds * lead.BrakeSystem.BP2_EngineBrakeControllerRatePSIpS;
@@ -3523,7 +3524,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.BrakeSystem.AutoCylPressurePSI1 < train.BrakeLine3PressurePSI
                         && lead.MainResPressurePSI > 0
                         && AutoCylPressurePSI <= lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && AutoCylPressurePSI < lead.MainResPressurePSI)
+                        && AutoCylPressurePSI < lead.MainResPressurePSI
+                        && !lead.BrakeSystem.OL3active)
                     {
                         if (lead.BrakeSystem.LEKOV_EngineBrakeControllerRatePSIpS == 0) lead.BrakeSystem.LEKOV_EngineBrakeControllerRatePSIpS = lead.EngineBrakeApplyRatePSIpS;
                         float dp = elapsedClockSeconds * lead.BrakeSystem.LEKOV_EngineBrakeControllerRatePSIpS;

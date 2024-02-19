@@ -532,6 +532,9 @@ namespace Orts.Formats.Msts
         DIRECTION_STATE,
         VOLTAGEFILTER_STATE,
         PANTOGRAPH4NC_STATE,
+        ARR_CONFIRM_BUTTON,
+        ARR_DRIVEOUT_BUTTON,
+        ARR_PARKING_BUTTON,
 
         // ORTS
         ORTS_SCREEN_SELECT,
