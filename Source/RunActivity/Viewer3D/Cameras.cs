@@ -2420,17 +2420,19 @@ namespace Orts.Viewer3D
         }
 
         bool CabViewRestored;
+        string PlayerTrainName;
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             var speedFactor = 500;  // Gives a fairly smart response.
-            var speed = speedFactor * elapsedTime.RealSeconds; // Independent of framerate            
+            var speed = speedFactor * elapsedTime.RealSeconds; // Independent of framerate                        
 
             // Icik
-            if (Viewer.Simulator.GameWasRestored && !CabViewRestored)
+            if ((Viewer.Simulator.GameWasRestored && !CabViewRestored) || (Viewer.Simulator.PlayerIsInCab && PlayerTrainName != Viewer.PlayerTrain.Name))
             {
                 Reset();
                 Viewer.AdjustCabHeight(Viewer.DisplaySize.X, Viewer.DisplaySize.Y);
                 CabViewRestored = true;
+                PlayerTrainName = Viewer.PlayerTrain.Name;
             }
 
             if (UserInput.IsPressed(UserCommand.CameraPanLeft))

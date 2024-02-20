@@ -120,11 +120,17 @@ namespace Orts.Simulation.RollingStocks
             ResetControlUnitParameters();
             MUCableOk = true;
             Battery = false;
-            Simulator.ControlUnitIsLead = false;            
+            Simulator.ControlUnitIsLead = false;
 
-            if (!IsPlayerTrain)
+            // AI
+            if (!IsPlayerTrain && !Battery)
             {
                 Battery = true;
+                MUCableOk = true;
+                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    car.AcceptCableSignals = true;
+                }
             }
 
             foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
