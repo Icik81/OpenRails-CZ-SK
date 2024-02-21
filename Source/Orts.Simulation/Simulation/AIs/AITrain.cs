@@ -904,6 +904,13 @@ namespace Orts.Simulation.AIs
                     }
 
                     // Icik
+                    AtStation = IsAtPlatform();
+                    if (AtStation)
+                    {
+                        UpdateStationState(elapsedClockSeconds, presentTime);
+                    }
+
+                    // Icik
                     if (Simulator.Settings.MSTSCompatibilityMode)
                     {
                         if (MovementState == AI_MOVEMENT_STATE.HANDLE_ACTION
