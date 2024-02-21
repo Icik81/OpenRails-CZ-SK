@@ -13503,6 +13503,8 @@ namespace Orts.Simulation.Physics
 
         public bool IsAtPlatform()
         {
+            if (StationStops.Count < 1) return false;
+
             // build list of occupied section
             bool atStation = false;
             int frontIndex = PresentPosition[0].RouteListIndex;

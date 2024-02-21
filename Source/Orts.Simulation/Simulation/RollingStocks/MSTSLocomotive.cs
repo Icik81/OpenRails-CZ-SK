@@ -5364,7 +5364,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive())
             {
                 Simulator.ThrottleLocoHelper = LocalThrottlePercent;
-                Simulator.DynamicBrakeLocoHelper = LocalDynamicBrakePercent;
+                Simulator.DynamicBrakeLocoHelper = 0; // Postrk nebrzdí EDB
                 Simulator.ControllerVoltsLocoHelper = ControllerVolts;
                 if (MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                 {
