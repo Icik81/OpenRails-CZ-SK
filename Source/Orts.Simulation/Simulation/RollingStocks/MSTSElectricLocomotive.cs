@@ -2219,7 +2219,7 @@ namespace Orts.Simulation.RollingStocks
         // Penalizace hráče
         protected void FaultByPlayer(float elapsedClockSeconds)
         {
-            if ((IsLeadLocomotive() || PowerUnit))
+            if ((IsLeadLocomotive() || PowerUnit) && !LocoHelperOn)
             {
                 // Sestřelení HV při těžkém rozjezdu na jeden sběrač
                 float I_PantographCurrent = PowerCurrent1;

@@ -5101,29 +5101,35 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 CarIsWaiting = false;
-                if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
-                    || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
-                    || (this as MSTSLocomotive).LocoIsStatic)
+                if (this.LocoSetUpTimer > 1.0f)
                 {
-                    if (this.BrakeSystem.PowerForWagon == true)
+                    if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
+                        || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
+                        || (this as MSTSLocomotive).LocoIsStatic)
                     {
-                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        if (this.BrakeSystem.PowerForWagon == true)
                         {
-                            car.BrakeSystem.PowerForWagon = false;
-                            PowerOn = false;
-                            Battery = false;
+                            foreach (TrainCar car in (Train as AITrain).Cars)
+                            {
+                                car.BrakeSystem.PowerForWagon = false;
+                                PowerOn = false;
+                                Battery = false;
+                            }
                         }
                     }
-                }
-                else
-                {
-                    if (this.BrakeSystem.PowerForWagon == false)
+                    else
+                    if (((this as MSTSElectricLocomotive) != null && !(this as MSTSElectricLocomotive).AIPantoDownStop)
+                        || ((this as MSTSDieselLocomotive) != null && !(this as MSTSDieselLocomotive).AIMotorStop)
+                        )
                     {
-                        foreach (TrainCar car in (Train as AITrain).Cars)
+                        if (this.BrakeSystem.PowerForWagon == false)
                         {
-                            car.BrakeSystem.PowerForWagon = true;
-                            PowerOn = true;
-                            Battery = true;
+                            foreach (TrainCar car in (Train as AITrain).Cars)
+                            {
+                                car.BrakeSystem.PowerForWagon = true;
+                                PowerOn = true;
+                                Battery = true;
+                            }
                         }
                     }
                 }
