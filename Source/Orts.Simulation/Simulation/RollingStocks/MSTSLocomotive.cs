@@ -5662,6 +5662,7 @@ namespace Orts.Simulation.RollingStocks
                 Train.ControllerVolts = LocalThrottlePercent / 10f;
                 StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);                
                 ForceHandleValue = LocalThrottlePercent;
+                TractionBlocked = false;
 
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
