@@ -6409,7 +6409,7 @@ namespace Orts.Simulation.RollingStocks
                 CheckMUWheelSlip(elapsedClockSeconds);
                 DoorSwitchLogic();
                 TrainBrakePercent();
-                MasterSlave();
+                MasterSlave();               
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -6424,6 +6424,7 @@ namespace Orts.Simulation.RollingStocks
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;
                 Simulator.GameWasRestored = false;
+                ChangeTrainActive();
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -10574,6 +10575,23 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+        string LastTrainName;
+        public bool ChangeTrainActivated;
+        public void ChangeTrainActive()
+        {
+            ChangeTrainActivated = false;
+            if (LastTrainName != Train.Name)
+            {
+                ChangeTrainActivated = true;
+                LastTrainName = Train.Name;
+
+                if (BrakeSystem is AirSinglePipe)
+                {
+                    (BrakeSystem as AirSinglePipe).TrainBrakePositionSet();
+                }
+            }
+        }
+
         public void ToggleHeadLightsUp()
         {
             if (HeadLightPosition[LocoStation] < 3)
