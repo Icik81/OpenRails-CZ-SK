@@ -338,7 +338,10 @@ namespace Orts.Simulation.RollingStocks
                 if (Train == null)
                     return 0;
 
-                return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
+                // Icik
+                Train.TrainDistanceTravelledM += Math.Abs(Train.SpeedMpS) * elapsedTime;
+                //return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
+                return OdometerCountingForwards ? Train.TrainDistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.TrainDistanceTravelledM;
             }
         }
 
@@ -5658,11 +5661,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
-                Train.ControllerVolts = LocalThrottlePercent / 10f;
-                StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);                
+                LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);                
+                StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
+                ControllerVolts = LocalThrottlePercent / 10f;
                 ForceHandleValue = LocalThrottlePercent;
-                TractionBlocked = false;
+                TractionBlocked = false;                
 
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
@@ -6179,12 +6182,14 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                             if (IsLeadLocomotive())
-                                extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                            {                                
+                                if (AcceptCableSignals)
+                                    Train.ControllerVolts = ControllerVolts;
+                                else
+                                    Train.ControllerVolts = 0;
+                            }
                             if (!IsLeadLocomotive())
-                            {
-                                // Postrk
-                                if (LocoHelperOn && !HelperLocoPush)
-                                    ControllerVolts = Train.ControllerVolts;
+                            {                                
                                 if (!LocoHelperOn)
                                 // Dvojčlen
                                 {

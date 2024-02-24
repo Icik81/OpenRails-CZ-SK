@@ -416,12 +416,9 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            // Icik
-            if (!Locomotive.IsLeadLocomotive() && Locomotive.PowerOn && (Locomotive.LocoHelperOn || (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.AcceptCableSignals)) && Locomotive.AcceptPowerSignals)
-                Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.Train.ControllerVolts;
-            
             if (!Locomotive.IsPlayerTrain)
                 return;
+
             else if (Locomotive.PowerOn && !controlUnitChecked) // do this only once
             {
                 controlUnitChecked = true;
@@ -452,6 +449,8 @@ namespace Orts.Simulation.RollingStocks
 
             if (Locomotive.LocoType == LocoTypes.Vectron)
             {
+                OverridenControllerVolts = Locomotive.ControllerVolts;
+
                 if (Locomotive.ForceHandleValue == 0)
                 {
                     Locomotive.ControllerVolts = 0;

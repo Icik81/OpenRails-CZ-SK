@@ -2247,28 +2247,20 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Test to see if coupler forces have been exceeded, and coupler has broken. Exceeding this limit will break the coupler
-                if (IsPlayerTrain && Simulator.Settings.BreakCouplers && !Simulator.PlayerCoupling) // Only break couplers on player trains
+                if (IsPlayerTrain && Simulator.Settings.BreakCouplers && !Simulator.PlayerCoupling && this.HUDCouplerForceIndication == 1) // Only break couplers on player trains
                 {
                     // Icik
                     float MaxImpulseCouplerForceUN = 850000; // default 850kN                                        
-                    float ImpulsForce = 0;
-                    float ImpulsForce2 = 0;
+                    float ImpulsForceToCoupler = 0;
+                    
+                    if (Math.Abs(ImpulseCouplerForceUN) > 100000f)
+                    {
+                        ImpulsForceToCoupler = Math.Abs(CouplerForceU) * 10f;
+                        //Simulator.Confirmer.MSG("ImpulsForce = " + ImpulseCouplerForceUN);
+                        //Simulator.Confirmer.MSG2("CouplerForceU = " + CouplerForceU);
+                    }
 
-                    if (ImpulseCouplerForceUN < 0)
-                        ImpulsForce2 = Math.Abs(ImpulseCouplerForceUN);
-                    if (CouplerForceU < 0 && ImpulsForce2 > 50000f)
-                        ImpulsForce = Math.Abs(CouplerForceU) * 6f;
-
-                    //if (ImpulsForce > 100000)
-                    //{
-                    //    Simulator.Confirmer.MSG("ImpulsForce = " + ImpulsForce);
-                    //}
-                    //if (ImpulsForce2 > 30000)
-                    //{
-                    //    Simulator.Confirmer.Warning("ImpulsForce2 = " + ImpulsForce2);
-                    //}
-
-                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || ImpulsForce > MaxImpulseCouplerForceUN || DerailCouplerBreak)  // break couplers if either static or impulse forces exceeded
+                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || ImpulsForceToCoupler > MaxImpulseCouplerForceUN || DerailCouplerBreak)  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
 
@@ -2276,9 +2268,9 @@ namespace Orts.Simulation.RollingStocks
                         {
                             Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive static coupler force {1}", CarID, CouplerForceU);
                         }
-                        else if (Math.Abs(ImpulsForce) > MaxImpulseCouplerForceUN)
+                        else if (Math.Abs(ImpulsForceToCoupler) > MaxImpulseCouplerForceUN)
                         {
-                            Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive impulse coupler force {1}", CarID, ImpulsForce);
+                            Trace.TraceInformation("Coupler on CarID {0} has broken due to excessive impulse coupler force {1}", CarID, ImpulsForceToCoupler);
                         }
                     }
                     else

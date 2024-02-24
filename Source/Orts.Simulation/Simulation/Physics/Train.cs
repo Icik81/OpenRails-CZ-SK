@@ -122,6 +122,7 @@ namespace Orts.Simulation.Physics
         public int SlaveCarNumber;
         public TrainCar MasterLoco;
         public TrainCar SlaveLoco;
+        public float TrainDistanceTravelledM;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
