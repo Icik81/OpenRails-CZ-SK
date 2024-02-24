@@ -5018,32 +5018,22 @@ namespace Orts.Simulation.Physics
                 car.ImpulseCouplerForceUN = car.CouplerForceU;
 
                 // This section seems to be required to get car moving
-                if (car.IsPlayerTrain && Simulator.UseAdvancedAdhesion && car.IsAdvancedCoupler) // "Advanced coupler"
-                {
-                    Cars[i].SpeedMpS += Cars[i].CouplerForceU / Cars[i].MassKG;
-                    Cars[i + 1].SpeedMpS -= Cars[i].CouplerForceU / Cars[i + 1].MassKG;
+                Cars[i].SpeedMpS += Cars[i].CouplerForceU / Cars[i].MassKG;
+                Cars[i + 1].SpeedMpS -= Cars[i].CouplerForceU / Cars[i + 1].MassKG;
 
-                    // This ensures that the last car speed never goes negative - as this might cause a sudden jerk in the train when viewed.
-                    if (i == Cars.Count - 2)
+                // This ensures that the last car speed never goes negative - as this might cause a sudden jerk in the train when viewed.
+                if (i == Cars.Count - 2)
+                {
+                    if (FirstCar.SpeedMpS > 0 && Cars[i + 1].SpeedMpS < 0)
                     {
-                        if (FirstCar.SpeedMpS > 0 && Cars[i + 1].SpeedMpS < 0)
-                        {
-                            Cars[i + 1].SpeedMpS = 0;
-                            //                                         Trace.TraceInformation("Last Car Zero Speed Set - CarID {0} - -ve set +ve", car.CarID);
-                        }
-                        else if (FirstCar.SpeedMpS < 0 && Cars[i + 1].SpeedMpS > 0)
-                        {
-                            Cars[i + 1].SpeedMpS = 0;
-                            //                                        Trace.TraceInformation("Last Car Zero Speed Set - CarID {0} - +ve set -ve", car.CarID);
-                        }
+                        Cars[i + 1].SpeedMpS = 0;
+                        //                                         Trace.TraceInformation("Last Car Zero Speed Set - CarID {0} - -ve set +ve", car.CarID);
                     }
-
-
-                }
-                else // Simple Coupler
-                {
-                    Cars[i].SpeedMpS += Cars[i].CouplerForceU / Cars[i].MassKG;
-                    Cars[i + 1].SpeedMpS -= Cars[i].CouplerForceU / Cars[i + 1].MassKG;
+                    else if (FirstCar.SpeedMpS < 0 && Cars[i + 1].SpeedMpS > 0)
+                    {
+                        Cars[i + 1].SpeedMpS = 0;
+                        //                                        Trace.TraceInformation("Last Car Zero Speed Set - CarID {0} - +ve set -ve", car.CarID);
+                    }
                 }
 
                 //if (Cars[i].CouplerForceU != 0)
