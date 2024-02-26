@@ -1042,6 +1042,12 @@ namespace Orts.Simulation.RollingStocks
                     }                    
                     if (!IsPlayerTrain)
                     {
+                        if (CarHasHeatingReady)
+                        {
+                            car.BrakeSystem.HeatingIsOn = true;
+                            car.BrakeSystem.HeatingMenu = 0;
+
+                        }
                         // Nad 20°C budou kamna vypnutá
                         if (car.WagonHasStove)
                         {

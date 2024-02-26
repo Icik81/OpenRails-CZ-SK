@@ -5086,7 +5086,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars)
                     {
-                        car.CarHasHeatingReady = true;
+                        car.CarHasHeatingReady = true;                        
                     }
                 }
 
