@@ -1983,49 +1983,17 @@ namespace Orts.Simulation.RollingStocks
             if (PowerOn)
                 AITimePowerRunning += elapsedClockSeconds;
 
-            // Detekce změny směru AI
-            if (LocomotiveTypeNumber == 131)
+            // Detekce změny směru AI            
+            if (Direction == Direction.Reverse)
             {
-                if (Direction == Direction.Reverse)
-                {
-                    CurrentAIDirection = true;
-                    UsingRearCab = true;
-                }
-                if (Direction == Direction.Forward)
-                {
-                    CurrentAIDirection = false;
-                    UsingRearCab = false;
-                }
+                CurrentAIDirection = true;
+                UsingRearCab = true;
             }
-            else
+            if (Direction == Direction.Forward)
             {
-                if (Flipped)
-                {
-                    if (Direction == Direction.Forward)
-                    {
-                        CurrentAIDirection = true;
-                        UsingRearCab = true;
-                    }
-                    if (Direction == Direction.Reverse)
-                    {
-                        CurrentAIDirection = false;
-                        UsingRearCab = false;
-                    }
-                }
-                else
-                {
-                    if (Direction == Direction.Reverse)
-                    {
-                        CurrentAIDirection = true;
-                        UsingRearCab = true;
-                    }
-                    if (Direction == Direction.Forward)
-                    {
-                        CurrentAIDirection = false;
-                        UsingRearCab = false;
-                    }
-                }
-            }
+                CurrentAIDirection = false;
+                UsingRearCab = false;
+            }            
             if (PreAIDirection != CurrentAIDirection && MassKG > 75 * 1000)
                 AIPantoChange = true;
             PreAIDirection = CurrentAIDirection;
