@@ -3962,6 +3962,15 @@ namespace Orts.Simulation.RollingStocks
             MaleSurnames = MaleSurnames_;
             FemaleNames = FemaleNames_;
             FemaleSurames = FemaleSurnames_;
+            if (MaleNames == null)
+            {
+                Names names = new Names();
+                names.InitializeNames();
+                MaleNames = names.FirstNameMale;
+                FemaleNames = names.FirstNameFemale;
+                MaleSurnames = names.SurnameMale;
+                FemaleSurames = names.SurnameFemale;
+            }
             if (MaleNames.Count == 0)
             {
                 Names names = new Names();
