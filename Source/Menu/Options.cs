@@ -224,6 +224,9 @@ namespace ORTS
             checkForcedRedAtStationStops.Checked = !Settings.NoForcedRedAtStationStops;
             checkDoorsAITrains.Checked = Settings.OpenDoorsInAITrains;
             checkGenerateRandomPax.Checked = Settings.GenerateRandomPaxCount;
+            trackMinPax.Value = Settings.PaxCountMinimumPercent;
+            trackMaxPax.Value = Settings.PaxCountMaximumPercent;
+            checkOverrideActivityPaxCount.Checked = Settings.OverrideActivityPassengerCount;
             checkBoxVibration.Checked = Settings.CarsVibration;
 
             // Keyboard tab
@@ -518,6 +521,9 @@ namespace ORTS
             Settings.NoForcedRedAtStationStops = !checkForcedRedAtStationStops.Checked;
             Settings.OpenDoorsInAITrains = checkDoorsAITrains.Checked;
             Settings.GenerateRandomPaxCount = checkGenerateRandomPax.Checked;
+            Settings.PaxCountMinimumPercent = trackMinPax.Value;
+            Settings.PaxCountMaximumPercent= trackMaxPax.Value;
+            Settings.OverrideActivityPassengerCount = checkOverrideActivityPaxCount.Checked;
             Settings.CarsVibration = checkBoxVibration.Checked;
 
             // Keyboard tab
@@ -1068,6 +1074,19 @@ namespace ORTS
         private void checkBoxMSTSCompatibilityMode_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void trackMinPax_Scroll(object sender, EventArgs e)
+        {
+            if (trackMaxPax.Value < trackMinPax.Value)
+                trackMaxPax.Value = trackMinPax.Value;
+
+        }
+
+        private void trackMaxPax_Scroll(object sender, EventArgs e)
+        {
+            if (trackMinPax.Value > trackMaxPax.Value)
+                trackMinPax.Value = trackMaxPax.Value;
         }
     }
 }

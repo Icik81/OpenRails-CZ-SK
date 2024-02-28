@@ -13671,6 +13671,8 @@ namespace Orts.Simulation.Signalling
         public bool[] PlatformSide = new bool[2] { false, false };
         public int PlatformFrontUiD = -1;
         public List<object> PassengerList = new List<object>();
+        public List<object> PassengerListBuffer = new List<object>();
+        public List<int> SecondToAdd = new List<int>();
 
         // Icik
         public int NumPassengersWaitingBase;

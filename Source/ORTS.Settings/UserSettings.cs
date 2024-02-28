@@ -207,6 +207,12 @@ namespace ORTS.Settings
         // Jindřich
         [Default(true)]
         public bool GenerateRandomPaxCount { get; set; }
+        [Default(25)]
+        public int PaxCountMinimumPercent { get; set; }
+        [Default(100)]
+        public int PaxCountMaximumPercent { get; set; }
+        [Default(false)]
+        public bool OverrideActivityPassengerCount { get; set; }
 
         // Audio settings:
         [Default(true)]
