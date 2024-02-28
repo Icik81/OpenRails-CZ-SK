@@ -14,9 +14,7 @@
     <ApplicationIcon>..\..\ORTS.ico</ApplicationIcon>
     <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup>
-    <ApplicationManifest>..\..\Launcher\app.manifest</ApplicationManifest>
-  </PropertyGroup>
+  <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\Program\</OutputPath>
@@ -48,6 +46,9 @@
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GNU.Gettext, Version=1.1.5151.39896, Culture=neutral, processorArchitecture=MSIL">

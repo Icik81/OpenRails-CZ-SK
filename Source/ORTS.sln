@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RunActivity", "RunActivity\RunActivity.csproj", "{9BE44F64-417D-4AA6-AF4D-2A6A0CBC814D}"
 EndProject
@@ -197,8 +197,8 @@ Global
 		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Debug|x64.Build.0 = Debug|Any CPU
 		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|Any CPU.Build.0 = Release|Any CPU
-		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|x64.ActiveCfg = Release|Any CPU
-		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|x64.Build.0 = Release|Any CPU
+		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|x64.ActiveCfg = Debug|Any CPU
+		{79C3A70B-7535-40CB-8448-91AB87CBAE44}.Release|x64.Build.0 = Debug|Any CPU
 		{333C4378-D82E-4B47-B561-6BA923B8FDFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{333C4378-D82E-4B47-B561-6BA923B8FDFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{333C4378-D82E-4B47-B561-6BA923B8FDFD}.Debug|x64.ActiveCfg = Debug|Any CPU
