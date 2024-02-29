@@ -16646,6 +16646,7 @@ namespace Orts.Simulation.Physics
         public List<int> PaxInStationGenerateCompleted = new List<int>();
         protected bool initPax = true;
         protected int statCount = 0;
+        float actualRandom = 1;
 
         public void GeneratePaxDynamically()
         {
@@ -16660,10 +16661,17 @@ namespace Orts.Simulation.Physics
             if ((Simulator.Activity != null && Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting != null) && !Simulator.Settings.OverrideActivityPassengerCount)
                 return;
 
+            if (statCount != StationStops.Count)
+            {
+                Random rnd = new Random();
+                actualRandom = rnd.Next(2, 30);
+                actualRandom = actualRandom / 10;
+                statCount = StationStops.Count;
+            }
+
             int iii = 0;
             if (initPax)
             {
-                statCount = StationStops.Count;
                 foreach (StationStop s in StationStops)
                 {
                     if (iii != 0)
@@ -16678,7 +16686,7 @@ namespace Orts.Simulation.Physics
             int station = 0;
             foreach (StationStop ss in StationStops)
             {
-                int freeSeatsNextStation = 0;
+                float freeSeatsNextStation = 0;
                 foreach (TrainCar tc in Cars)
                 {
                     foreach (Passenger pax in tc.PassengerList)
@@ -16687,7 +16695,7 @@ namespace Orts.Simulation.Physics
                             freeSeatsNextStation++;
                     }
                 }
-                ss.PlatformItem.NumPassengersWaiting = freeSeatsNextStation;
+                ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
                 int numPax = ss.PlatformItem.NumPassengersWaiting;
                 int maxStation = 0;
