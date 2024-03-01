@@ -41,7 +41,7 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 20 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("*** Car Operation Menu ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 20 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("Car Operation Menu"))
         {
             Viewer = owner.Viewer;
         }
@@ -64,10 +64,11 @@ namespace Orts.Viewer3D.Popups
             ID.Color = Color.Yellow;
 
             vbox.AddHorizontalSeparator();
-            if (!(Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive))
-                vbox.Add(buttonLocoChange = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+            vbox.Add(buttonLocoChange = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Togle Locomotive Station"), LabelAlignment.Center));
+            if (!(Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive))                            
+                buttonLocoChange.Color = Color.Gray;            
             else
-                vbox.Add(buttonLocoChange = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Togle Locomotive Station"), LabelAlignment.Center));
+                buttonLocoChange.Color = Color.White;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).CarIsPlayerLoco)
                 buttonLocoChange.Color = Color.Yellow;
 
@@ -77,11 +78,12 @@ namespace Orts.Viewer3D.Popups
                 buttonHandbrake.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
+            vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) == null || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).IsLeadLocomotive())
-                vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+                buttonTogglePower.Color = Color.Gray;
             else
             {
-                vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
+                buttonTogglePower.Color = Color.White;
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).PowerOn)
                     buttonTogglePower.Color = Color.LightGreen;
             }
@@ -100,21 +102,37 @@ namespace Orts.Viewer3D.Popups
             }
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU") + "   " + InfoMasterSlaveText, LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null)
+                buttonToggleMUCable.Color = Color.White;
+            else
+                buttonToggleMUCable.Color = Color.Gray;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)            
                 buttonToggleMUCable.Color = Color.LightGreen;            
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleMUPower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power MU"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null)
+                buttonToggleMUPower.Color = Color.White;
+            else
+                buttonToggleMUPower.Color = Color.Gray;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals)
                 buttonToggleMUPower.Color = Color.LightGreen;            
             
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleHelper = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Connect/Unmount Helper"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && !Viewer.PlayerTrain.Cars[CarPosition].CarIsPlayerLoco)
+                buttonToggleHelper.Color = Color.White;
+            else
+                buttonToggleHelper.Color = Color.Gray;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
                 buttonToggleHelper.Color = Color.LightGreen;
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonToggleHelperOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Helper Options"), LabelAlignment.Center));
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptHelperSignals)
+                buttonToggleHelperOptions.Color = Color.White;
+            else
+                buttonToggleHelperOptions.Color = Color.Gray;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).HelperOptionsOpened)
                 buttonToggleHelperOptions.Color = Color.LightGreen;
 
@@ -163,6 +181,10 @@ namespace Orts.Viewer3D.Popups
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonNoPaxsMode = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("No Pax`s mode"), LabelAlignment.Center));
+            if (Viewer.PlayerTrain.Cars[CarPosition].HasPassengerCapacity)
+                buttonNoPaxsMode.Color = Color.White;
+            else
+                buttonNoPaxsMode.Color = Color.Gray;
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
                 buttonNoPaxsMode.Color = Color.LightGreen;
 
@@ -294,8 +316,6 @@ namespace Orts.Viewer3D.Popups
                     (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).UserPowerOff = false;
                 }
             }
-            else
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No power command for this type of car!"));
         }
 
         void buttonToggleMUCable_Click(Control arg1, Point arg2)
@@ -323,8 +343,6 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
                 Viewer.PlayerTrain.AcceptPowerSignalsChange = true;
             }
-            else
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Cable MU command for this type of car!"));
         }
 
         void buttonToggleMUPower_Click(Control arg1, Point arg2)
@@ -348,9 +366,7 @@ namespace Orts.Viewer3D.Popups
                 else
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Power MU connected"));
-            }
-            else
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Power MU command for this type of car!"));
+            }            
         }
 
         void buttonToggleHelper_Click(Control arg1, Point arg2)
@@ -370,9 +386,7 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper disconnected"));
                 else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Helper connected"));
-            }
-            else            
-                Viewer.Simulator.Confirmer.Warning(Viewer.Catalog.GetString("No Helper command for this type of car!"));                            
+            }            
         }
         void buttonToggleHelperOptions_Click(Control arg1, Point arg2)
         {
@@ -519,15 +533,18 @@ namespace Orts.Viewer3D.Popups
 
         void buttonNoPaxsMode_Click(Control arg1, Point arg2)
         {
-            (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode = !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode;
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+            if (Viewer.PlayerTrain.Cars[CarPosition].HasPassengerCapacity)
             {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("No Pax`s mode"));                
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode = !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode;
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+                {
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("No Pax`s mode"));
+                }
+                if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
+                {
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pax`s mode"));
+                }
             }
-            if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
-            {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pax`s mode"));                
-            }            
         }
 
         void buttonHeating_Click(Control arg1, Point arg2)

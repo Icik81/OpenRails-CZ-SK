@@ -1244,6 +1244,13 @@ namespace Orts.Viewer3D
 
         public override void Update(ElapsedTime elapsedTime)
         {
+            // Icik
+            if (Viewer.Simulator.attachedCar != null)
+            {
+                attachedCar = Viewer.Simulator.attachedCar;
+                Viewer.Simulator.attachedCar = null;
+            }
+
             var replayRemainingS = EndTime - Viewer.Simulator.ClockTime;
             if (replayRemainingS > 0)
             {
@@ -2561,7 +2568,7 @@ namespace Orts.Viewer3D
         public override void Update(ElapsedTime elapsedTime)
         {
             bool trainForwards;
-            var train = PrepUpdate(out trainForwards);
+            var train = PrepUpdate(out trainForwards);            
 
             // Train is close enough if the last car we used is part of the same train and still close enough.
             var trainClose = (LastCheckCar != null) && (LastCheckCar.Train == train) && (WorldLocation.GetDistance2D(LastCheckCar.WorldPosition.WorldLocation, cameraLocation).Length() < MaximumDistance);

@@ -31,7 +31,7 @@ namespace Orts.Viewer3D.Popups
         readonly Viewer Viewer;      
 
         public HelperSpeedSelectWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("*** Helper Speed Select ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Helper Speed Select"))
         {
             Viewer = owner.Viewer;
         }

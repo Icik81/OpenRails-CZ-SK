@@ -33,7 +33,7 @@ namespace Orts.Viewer3D.Popups
         readonly Viewer Viewer;      
 
         public HelperOptionsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 5 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("*** Helper Options ***"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 5 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Helper Options"))
         {
             Viewer = owner.Viewer;
         }

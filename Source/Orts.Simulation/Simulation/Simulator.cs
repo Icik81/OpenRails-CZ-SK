@@ -249,8 +249,8 @@ namespace Orts.Simulation
         public bool ManualCouplingOverride;
         public bool GameWasRestored;
         public bool DashLightCanActivate;
-        public bool ESCKeyActivated;        
-
+        public bool ESCKeyActivated;
+        public TrainCar attachedCar;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

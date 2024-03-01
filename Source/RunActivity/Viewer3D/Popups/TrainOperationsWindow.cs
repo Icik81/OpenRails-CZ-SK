@@ -194,6 +194,8 @@ namespace Orts.Viewer3D.Popups
             Viewer.CarOperationsWindow.Visible = true;
 
             // Icik
+            Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
+
             foreach (var car in Viewer.PlayerTrain.Cars)
                 car.SelectedCar = false;
             Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
