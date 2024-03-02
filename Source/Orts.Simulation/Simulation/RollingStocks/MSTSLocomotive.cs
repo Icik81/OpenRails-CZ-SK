@@ -339,9 +339,9 @@ namespace Orts.Simulation.RollingStocks
                     return 0;
 
                 // Icik
-                Train.TrainDistanceTravelledM += Math.Abs(Train.SpeedMpS) * elapsedTime;
-                //return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
-                return OdometerCountingForwards ? Train.TrainDistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.TrainDistanceTravelledM;
+                //Train.TrainDistanceTravelledM += Math.Abs(Train.SpeedMpS) * elapsedTime;
+                return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
+                //return OdometerCountingForwards ? Train.TrainDistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.TrainDistanceTravelledM;
             }
         }
 
