@@ -190,31 +190,40 @@ namespace Orts.Viewer3D.Popups
 
             vbox.AddHorizontalSeparator();
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
             {
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
                 {
-                    vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Stove Heating"), LabelAlignment.Center));
+                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)
+                    {
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Stove Heating"), LabelAlignment.Center));
+                        if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
+                            buttonHeating.Color = Color.LightGreen;
+                    }
+                    else
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Steam Heating"), LabelAlignment.Center));
+                }
+                else
+                {
+                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower > 0)
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Diesel Heating"), LabelAlignment.Center));
+                    else
+                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower == 0
+                        && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine
+                        && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Electric
+                        && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Control)
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Calorifer Heating"), LabelAlignment.Center));
+                    else
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));
                     if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
                         buttonHeating.Color = Color.LightGreen;
                 }
-                else
-                    vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Steam Heating"), LabelAlignment.Center));                                    
             }
             else
             {
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower > 0)
-                    vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Diesel Heating"), LabelAlignment.Center));
-                else
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).DieselHeaterPower == 0 
-                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine 
-                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Electric
-                    && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Control)
-                    vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Calorifer Heating"), LabelAlignment.Center));
-                else
-                    vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
-                    buttonHeating.Color = Color.LightGreen;
+                vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+                buttonHeating.Color = Color.Gray;
             }
             
             vbox.AddHorizontalSeparator();
@@ -549,19 +558,22 @@ namespace Orts.Viewer3D.Popups
 
         void buttonHeating_Click(Control arg1, Point arg2)
         {
-            new HeatingCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu += 1);
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu = 0;
-
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 0)
+            if ((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
             {
-                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace zapnuto"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = true;
-            }
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 1)
-            {
-                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace vypnuto"));
-                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = false;
+                new HeatingCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu += 1);
+
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu = 0;
+
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 0)
+                {
+                    //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace zapnuto"));
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = true;
+                }
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu == 1)
+                {
+                    //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Topení/klimatizace vypnuto"));
+                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn = false;
+                }
             }
         }
 

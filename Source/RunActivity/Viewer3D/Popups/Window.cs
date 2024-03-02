@@ -210,7 +210,9 @@ namespace Orts.Viewer3D.Popups
         {
             // Pad window by 4px, add caption and space between to content area.
             var content = layout.AddLayoutOffset(4, 4, 4, 4).AddLayoutVertical();
-            content.Add(new Label(content.RemainingWidth, Owner.TextFontDefault.Height, Caption, LabelAlignment.Center));
+            Label Head;
+            content.Add(Head = new Label(content.RemainingWidth, Owner.TextFontDefault.Height, Caption, LabelAlignment.Center));
+            Head.Color = Color.LawnGreen;            
             content.AddSpace(0, 5);
             return content;
         }

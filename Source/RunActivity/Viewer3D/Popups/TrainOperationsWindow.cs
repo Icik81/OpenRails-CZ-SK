@@ -83,7 +83,7 @@ namespace Orts.Viewer3D.Popups
 
                     //if (car.SelectedCar) carLabel.Color = Color.Yellow;
                     if (car == PlayerTrain.LeadLocomotive)
-                        carLabel.Color = Color.GreenYellow;
+                        carLabel.Color = Color.LightGreen;
 
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
@@ -150,8 +150,12 @@ namespace Orts.Viewer3D.Popups
                 new UncoupleCommand(Viewer.Log, CarPosition);
                 Viewer.Simulator.CarByUserUncoupled = true;
                 if (Viewer.CarOperationsWindow.CarPosition > CarPosition)
+                {
                     Viewer.CarOperationsWindow.Visible = false;
-            }
+                    Viewer.BrakeModeOptionsWindow.Visible = false;
+                    Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
+                }
+            }            
         }
     }
 
@@ -192,10 +196,7 @@ namespace Orts.Viewer3D.Popups
         {
             Viewer.CarOperationsWindow.CarPosition = CarPosition;
             Viewer.CarOperationsWindow.Visible = true;
-
-            // Icik
             Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
-
             foreach (var car in Viewer.PlayerTrain.Cars)
                 car.SelectedCar = false;
             Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;

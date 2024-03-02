@@ -32,7 +32,7 @@ namespace Orts.Viewer3D.Popups
         readonly Viewer Viewer;
 
         public BrakeModeOptionsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Car Brake Mode"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Car Brake Mode"))
         {
             Viewer = owner.Viewer;
         }
@@ -52,7 +52,12 @@ namespace Orts.Viewer3D.Popups
             var vbox = base.Layout(layout).AddLayoutVertical();
             var vbox2 = base.Layout(layout).AddLayoutVertical();
 
-            vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarID >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarID].CarID), LabelAlignment.Center));
+            if (Viewer.PlayerTrain.Cars[CarID] is MSTSLocomotive)
+                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarID >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarID].CarID)
+                + "     " + (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).LocomotiveName, LabelAlignment.Center));
+            else
+                vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarID >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarID].CarID)
+                + "     " + (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).WagonName, LabelAlignment.Center));
             ID.Color = Color.Yellow;
             vbox2.Add(ID = new Label(vbox2.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString(""), LabelAlignment.Right));
 
