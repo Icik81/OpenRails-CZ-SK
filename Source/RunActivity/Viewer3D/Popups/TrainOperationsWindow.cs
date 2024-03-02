@@ -39,7 +39,7 @@ namespace Orts.Viewer3D.Popups
         const int TextBoxHeight = 50;
 
         public TrainOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 22, Window.DecorationSize.Y + CarListPadding + owner.TextFontDefault.Height * TextBoxHeight, Viewer.Catalog.GetString("Train Operations"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + CarListPadding + owner.TextFontDefault.Height * TextBoxHeight, Viewer.Catalog.GetString("Train Operations"))
         {
         }
 
@@ -57,7 +57,7 @@ namespace Orts.Viewer3D.Popups
             var hbox = base.Layout(layout).AddLayoutVertical();
             var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
             if (PlayerTrain != null)
-            {
+            {                                
                 int carPosition = 0;                
                 scrollbox.Add(new TrainOperationsInfo(textHeight * 22, textHeight + (textHeight / 2), Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
@@ -112,12 +112,19 @@ namespace Orts.Viewer3D.Popups
                     // Icik
                     || Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated
                     || Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange
+                    || Owner.Viewer.Simulator.ScreenSizeY != Owner.ScreenSize.Y
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
+
+                    Owner.Viewer.Simulator.ScreenSizeY = Owner.ScreenSize.Y;
+                    int Y_Height = Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count + 1) * 3 + 10;
+                    if (Y_Height > Owner.ScreenSize.Y - 20) Y_Height = Owner.ScreenSize.Y - 20;
+
+                    SizeTo(Window.DecorationSize.X + Owner.TextFontDefault.Height * 23, Y_Height);
                     Layout();
                 }
             }

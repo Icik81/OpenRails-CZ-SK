@@ -251,6 +251,7 @@ namespace Orts.Simulation
         public bool DashLightCanActivate;
         public bool ESCKeyActivated;
         public TrainCar attachedCar;
+        public int ScreenSizeY;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
