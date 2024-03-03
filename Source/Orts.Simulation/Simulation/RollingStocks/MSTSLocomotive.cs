@@ -337,11 +337,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Train == null)
                     return 0;
-
-                // Icik
-                //Train.TrainDistanceTravelledM += Math.Abs(Train.SpeedMpS) * elapsedTime;
-                return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
-                //return OdometerCountingForwards ? Train.TrainDistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.TrainDistanceTravelledM;
+                                
+                //return OdometerCountingForwards ? Train.DistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.DistanceTravelledM;
+                return OdometerCountingForwards ? Train.TrainDistanceTravelledM - OdometerResetPositionM : OdometerResetPositionM - Train.TrainDistanceTravelledM;
             }
         }
 
@@ -6350,6 +6348,11 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
+                // Odometer
+                if (IsLeadLocomotive())
+                {                 
+                    Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;
+                }
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
                 // StepController odpovídá v defaultu throttle
@@ -10516,24 +10519,24 @@ namespace Orts.Simulation.RollingStocks
             if (Train == null)
                 return;
 
-            if (OdometerCountingForwards != OdometerCountingUp ^ (Direction == Direction.Reverse))
-            {
-                OdometerCountingForwards = !OdometerCountingForwards;
-            }
+            //if (OdometerCountingForwards != OdometerCountingUp ^ (Direction == Direction.Reverse))
+            //{
+            //    OdometerCountingForwards = !OdometerCountingForwards;
+            //}
 
-            if (Direction == Direction.Reverse)
+            //if (Direction == Direction.Reverse)
+            //{
+            //    if (OdometerCountingForwards)
+            //        OdometerResetPositionM = Train.TrainDistanceTravelledM - Train.Length;
+            //    else
+            //        OdometerResetPositionM = Train.TrainDistanceTravelledM;
+            //}
+            //else
             {
                 if (OdometerCountingForwards)
-                    OdometerResetPositionM = Train.DistanceTravelledM - Train.Length;
+                    OdometerResetPositionM = Train.TrainDistanceTravelledM;
                 else
-                    OdometerResetPositionM = Train.DistanceTravelledM;
-            }
-            else
-            {
-                if (OdometerCountingForwards)
-                    OdometerResetPositionM = Train.DistanceTravelledM;
-                else
-                    OdometerResetPositionM = Train.DistanceTravelledM + Train.Length;
+                    OdometerResetPositionM = Train.TrainDistanceTravelledM + Train.Length;
             }
 
             Simulator.Confirmer.Confirm(CabControl.Odometer, CabSetting.On);
