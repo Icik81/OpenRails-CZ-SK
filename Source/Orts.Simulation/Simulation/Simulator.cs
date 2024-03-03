@@ -348,8 +348,9 @@ namespace Orts.Simulation
                 {
                     string[] arr = File.ReadAllText(fl).Split('|');
                     WebService ws = new WebService();
-                    if (ws.CheckSuperUser(arr[0]) == arr[1])
-                        SuperUser = true;
+                    if (arr[0] != "" && arr[1] != "")
+                        if (ws.CheckSuperUser(arr[0]) == arr[1])
+                            SuperUser = true;
                 }
             }
             catch { }
