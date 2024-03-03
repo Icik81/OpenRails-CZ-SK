@@ -2771,6 +2771,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         genModeActive = loco.extendedPhysics.GeneratoricModeActive;
                     }
 
+                    // Centrální řízení PK, pokud není na kombinovaném přepínači
+                    if (loco.CompressorOffAutoOn)
+                    {
+                        if (loco.LocoStation == 1)
+                        {
+                            loco.AuxCompressorMode_OffOn[2] = loco.AuxCompressorMode_OffOn[1];
+                        }
+                        if (loco.LocoStation == 2)
+                        {
+                            loco.AuxCompressorMode_OffOn[1] = loco.AuxCompressorMode_OffOn[2];
+                        }
+                    }
+
                     if ((loco.MainResPressurePSI <= loco.CompressorRestartPressurePSI || (loco.Compressor_I_HandMode[loco.LocoStation]
                         && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)))
                         && (loco.AuxPowerOn || genModeActive)
