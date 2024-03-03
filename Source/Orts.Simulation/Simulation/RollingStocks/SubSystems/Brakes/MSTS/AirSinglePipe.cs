@@ -2565,7 +2565,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             //loco.AuxCompressorMode_OffOn = true;  // Vždy ruční spuštění
                             // Zpoždění náběhu kompresoru
-                            if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                            if (loco.AuxCompressorMode_OffOn[loco.LocoStation] && !loco.AuxCompressorIsOn)
                             {
                                 loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
                                 if (loco.BrakeSystem.AuxCompressorT0 > 1)
@@ -2588,11 +2588,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.Compressor_II = true;
                             if (loco.AutoCompressor)
                             {
-                                loco.AuxCompressorMode_OffOn = true;                                
+                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = true;                                
                             }
                             else
                             {
-                                loco.AuxCompressorMode_OffOn = false;                                
+                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = false;                                
                             }
                             if (loco.CircuitBreakerOn)
                             {
@@ -2619,15 +2619,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (SlaveCar.AcceptCableSignals)
                             {
                                 SlaveCar.AuxCompressorNoActiveStation = false;
-                                if (MasterCar.AuxCompressorMode_OffOn)
+                                if (MasterCar.AuxCompressorMode_OffOn[loco.LocoStation])
                                 {
                                     SlaveCar.AuxCompressor = MasterCar.AuxCompressor;
                                     SlaveCar.AuxCompressorNoActiveStation = true;
-                                    SlaveCar.AuxCompressorMode_OffOn = true;
+                                    SlaveCar.AuxCompressorMode_OffOn[loco.LocoStation] = true;
                                 }
                                 else
                                 {
-                                    SlaveCar.AuxCompressorMode_OffOn = false;
+                                    SlaveCar.AuxCompressorMode_OffOn[loco.LocoStation] = false;
                                 }
 
                                 SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
@@ -2667,7 +2667,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 SlaveCar.AuxCompressorNoActiveStation = false;
                                 SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
-                                SlaveCar.AuxCompressorMode_OffOn = false;
+                                SlaveCar.AuxCompressorMode_OffOn[loco.LocoStation] = false;
                                 SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
                                 SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
                                 SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
@@ -2705,7 +2705,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         if (loco.AuxCompressor)
                         {
-                            if (loco.AuxCompressorMode_OffOn && !loco.AuxCompressorIsOn)
+                            if (loco.AuxCompressorMode_OffOn[loco.LocoStation] && !loco.AuxCompressorIsOn)
                             {
                                 loco.BrakeSystem.AuxCompressorT0 += elapsedClockSeconds;
                                 if (loco.BrakeSystem.AuxCompressorT0 > 1) // 1s
@@ -2760,7 +2760,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if ((loco.AuxResPressurePSI <= loco.AuxCompressorRestartPressurePSI && AuxResRestart || !AuxResRestart)
                         && loco.Battery && (loco.PowerKey || loco.AuxCompressorNoActiveStation)
-                        && loco.AuxCompressorMode_OffOn && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
+                        && loco.AuxCompressorMode_OffOn[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.AuxCompressorNoActiveStation) || (loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive)
                         && loco.BrakeSystem.AuxCompressorOnDelay
                         && !loco.AuxCompressorIsOn)
                         loco.SignalEvent(Event.AuxCompressorOn);
@@ -2790,14 +2790,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if ((loco.AuxResPressurePSI >= loco.MaxAuxResPressurePSI && AuxResRestart
                         || (!loco.Battery || (!loco.PowerKey && !loco.AuxCompressorNoActiveStation))
-                        || !loco.AuxCompressorMode_OffOn)
+                        || ((!loco.AuxCompressorMode_OffOn[1] && loco.StationIsActivated[1]) || (!loco.AuxCompressorMode_OffOn[2] && loco.StationIsActivated[2])))
                         && loco.AuxCompressorIsOn)
                         loco.SignalEvent(Event.AuxCompressorOff);
 
                     if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_I_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
                         //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_I_HandMode)
                         || (!loco.AuxPowerOn && !genModeActive)
-                        || (!loco.CompressorMode_OffAuto[loco.LocoStation] && !loco.Compressor_I_HandMode[loco.LocoStation]))
+                        || (((!loco.CompressorMode_OffAuto[1] && loco.StationIsActivated[1]) || (!loco.CompressorMode_OffAuto[2] && loco.StationIsActivated[2])) && ((!loco.Compressor_I_HandMode[1] && loco.StationIsActivated[1]) || (!loco.Compressor_I_HandMode[2] && loco.StationIsActivated[2]))))                        
                         && loco.CompressorIsOn)
                         loco.SignalEvent(Event.CompressorOff);
 
@@ -2805,7 +2805,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (((loco.MainResPressurePSI >= loco.MaxMainResPressurePSI && !loco.Compressor_II_HandMode[loco.LocoStation] && ((loco is MSTSElectricLocomotive && loco.StationIsActivated[loco.LocoStation]) || loco is MSTSDieselLocomotive || loco is MSTSSteamLocomotive))
                         //|| (loco.MainResPressurePSI >= loco.MaxMainResOverPressurePSI && loco.Compressor_II_HandMode)
                         || (!loco.AuxPowerOn && !genModeActive)
-                        || (!loco.CompressorMode2_OffAuto[loco.LocoStation] && !loco.Compressor_II_HandMode[loco.LocoStation]))
+                        || (((!loco.CompressorMode2_OffAuto[1] && loco.StationIsActivated[1]) || (!loco.CompressorMode2_OffAuto[2] && loco.StationIsActivated[2])) && ((!loco.Compressor_II_HandMode[1] && loco.StationIsActivated[1]) || (!loco.Compressor_II_HandMode[2] && loco.StationIsActivated[2]))))                        
                         && loco.Compressor2IsOn)
                         loco.SignalEvent(Event.Compressor2Off);
                 }

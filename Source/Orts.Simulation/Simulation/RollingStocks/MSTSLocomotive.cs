@@ -472,7 +472,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoesPowerLossResetControls = false;
         public bool DoesPowerLossResetControls2 = false;
         public bool ThrottleZero = false;
-        public bool AuxCompressorMode_OffOn;
+        public bool[] AuxCompressorMode_OffOn = new bool[3];
         public bool EngineBrakeEngageEDB = false;
         public bool HeatingEnable = false;
         public bool CabHeatingEnable = false;
@@ -1918,7 +1918,8 @@ namespace Orts.Simulation.RollingStocks
             #region Icik            
             outf.Write(HVOffStatusBrakeCyl);
             outf.Write(HVOffStatusBrakePipe);
-            outf.Write(AuxCompressorMode_OffOn);
+            outf.Write(AuxCompressorMode_OffOn[1]);
+            outf.Write(AuxCompressorMode_OffOn[2]);
             outf.Write(EngineBrakeEngageEDB);
             outf.Write(SwitchingVoltageMode_OffAC);
             outf.Write(SwitchingVoltageMode_OffDC);
@@ -2172,7 +2173,8 @@ namespace Orts.Simulation.RollingStocks
             #region Icik            
             HVOffStatusBrakeCyl = inf.ReadBoolean();
             HVOffStatusBrakePipe = inf.ReadBoolean();
-            AuxCompressorMode_OffOn = inf.ReadBoolean();
+            AuxCompressorMode_OffOn[1] = inf.ReadBoolean();
+            AuxCompressorMode_OffOn[2] = inf.ReadBoolean();
             EngineBrakeEngageEDB = inf.ReadBoolean();
             SwitchingVoltageMode_OffAC = inf.ReadBoolean();
             SwitchingVoltageMode_OffDC = inf.ReadBoolean();
@@ -13360,12 +13362,12 @@ namespace Orts.Simulation.RollingStocks
                 {
                     case 0:
                         {
-                            AuxCompressorMode_OffOn = true;
+                            AuxCompressorMode_OffOn[LocoStation] = true;
                         }
                         break;
                     case 1:
                         {
-                            AuxCompressorMode_OffOn = false;
+                            AuxCompressorMode_OffOn[LocoStation] = false;
                             CompressorMode_OffAuto[LocoStation] = false;
                         }
                         break;
@@ -13387,7 +13389,7 @@ namespace Orts.Simulation.RollingStocks
                     switch (CompressorSwitch[LocoStation])
                     {
                         case 0:
-                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn ? CabSetting.On : CabSetting.Off);
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);
                             break;
                         case 1:
                             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
@@ -13614,10 +13616,10 @@ namespace Orts.Simulation.RollingStocks
         {
             if (AuxCompressor && !CompressorCombined)
             {
-                AuxCompressorMode_OffOn = !AuxCompressorMode_OffOn;
-                if (AuxCompressorMode_OffOn) SignalEvent(Event.AuxCompressorMode_OffOnOn);
+                AuxCompressorMode_OffOn[LocoStation] = !AuxCompressorMode_OffOn[LocoStation];
+                if (AuxCompressorMode_OffOn[LocoStation]) SignalEvent(Event.AuxCompressorMode_OffOnOn);
                 else SignalEvent(Event.AuxCompressorMode_OffOnOff);
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn ? CabSetting.On : CabSetting.Off);
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.AuxCompressorMode_OffOn, AuxCompressorMode_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);
             }
         }
         public void ToggleCompressorMode_OffAuto()
@@ -20082,7 +20084,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         AuxCompressor = true;
                         AuxCompressorNoActiveStation = true;
-                        data = AuxCompressorMode_OffOn ? 1 : 0;
+                        data = AuxCompressorMode_OffOn[LocoStation] ? 1 : 0;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_MODE_OFFAUTO:

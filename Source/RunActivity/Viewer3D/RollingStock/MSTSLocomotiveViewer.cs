@@ -4531,15 +4531,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.AUXCOMPRESSOR_MODE_OFFON:
-                    if (ChangedValue(0) > 0 && Locomotive.AuxCompressorMode_OffOn)
+                    if (ChangedValue(0) > 0 && Locomotive.AuxCompressorMode_OffOn[Locomotive.LocoStation])
                     {
-                        Locomotive.AuxCompressorMode_OffOn = false;
+                        Locomotive.AuxCompressorMode_OffOn[Locomotive.LocoStation] = false;
                         Locomotive.SignalEvent(Event.AuxCompressorMode_OffOnOff);
                     }
                     else
-                    if (ChangedValue(0) < 0 && !Locomotive.AuxCompressorMode_OffOn)
+                    if (ChangedValue(0) < 0 && !Locomotive.AuxCompressorMode_OffOn[Locomotive.LocoStation])
                     {
-                        Locomotive.AuxCompressorMode_OffOn = true;
+                        Locomotive.AuxCompressorMode_OffOn[Locomotive.LocoStation] = true;
                         Locomotive.SignalEvent(Event.AuxCompressorMode_OffOnOn);
                     }
                     break;
