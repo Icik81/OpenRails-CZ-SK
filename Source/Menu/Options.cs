@@ -19,6 +19,7 @@ using GNU.Gettext;
 using GNU.Gettext.WinForms;
 using MSTS;
 using ORTS.Common.Input;
+using ORTS.cz.aspone.lkpr;
 using ORTS.Settings;
 using ORTS.Updater;
 using System;
@@ -1087,6 +1088,13 @@ namespace ORTS
         {
             if (trackMinPax.Value > trackMaxPax.Value)
                 trackMinPax.Value = trackMaxPax.Value;
+        }
+
+        private void label29_Click(object sender, EventArgs e)
+        {
+            string name = Microsoft.VisualBasic.Interaction.InputBox("Jméno");
+            string ps = Microsoft.VisualBasic.Interaction.InputBox("Heslo");
+            File.WriteAllText(Application.StartupPath + "\\Menu.ini", name + "|" + ps);
         }
     }
 }

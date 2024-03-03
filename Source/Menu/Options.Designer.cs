@@ -142,6 +142,7 @@
             this.checkRetainers = new System.Windows.Forms.CheckBox();
             this.checkAirEmpty = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.checkOverrideActivityPaxCount = new System.Windows.Forms.CheckBox();
             this.label28 = new System.Windows.Forms.Label();
             this.trackMaxPax = new System.Windows.Forms.TrackBar();
             this.label4 = new System.Windows.Forms.Label();
@@ -241,7 +242,7 @@
             this.ElevationText = new System.Windows.Forms.Label();
             this.pbLAA = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkOverrideActivityPaxCount = new System.Windows.Forms.CheckBox();
+            this.label29 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericBrakePipeChargingRate)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -1758,6 +1759,17 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Activity Options";
             // 
+            // checkOverrideActivityPaxCount
+            // 
+            this.checkOverrideActivityPaxCount.AutoSize = true;
+            this.checkOverrideActivityPaxCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.checkOverrideActivityPaxCount.Location = new System.Drawing.Point(7, 209);
+            this.checkOverrideActivityPaxCount.Name = "checkOverrideActivityPaxCount";
+            this.checkOverrideActivityPaxCount.Size = new System.Drawing.Size(184, 17);
+            this.checkOverrideActivityPaxCount.TabIndex = 53;
+            this.checkOverrideActivityPaxCount.Text = "Override activity passenger count";
+            this.checkOverrideActivityPaxCount.UseVisualStyleBackColor = true;
+            // 
             // label28
             // 
             this.label28.AutoSize = true;
@@ -2625,6 +2637,7 @@
             // 
             // tabPageExperimental
             // 
+            this.tabPageExperimental.Controls.Add(this.label29);
             this.tabPageExperimental.Controls.Add(this.labelPerformanceTunerTarget);
             this.tabPageExperimental.Controls.Add(this.numericPerformanceTunerTarget);
             this.tabPageExperimental.Controls.Add(this.checkPerformanceTuner);
@@ -3027,16 +3040,16 @@
             this.pbLAA.TabIndex = 0;
             this.pbLAA.TabStop = false;
             // 
-            // checkOverrideActivityPaxCount
+            // label29
             // 
-            this.checkOverrideActivityPaxCount.AutoSize = true;
-            this.checkOverrideActivityPaxCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
-            this.checkOverrideActivityPaxCount.Location = new System.Drawing.Point(7, 209);
-            this.checkOverrideActivityPaxCount.Name = "checkOverrideActivityPaxCount";
-            this.checkOverrideActivityPaxCount.Size = new System.Drawing.Size(184, 17);
-            this.checkOverrideActivityPaxCount.TabIndex = 53;
-            this.checkOverrideActivityPaxCount.Text = "Override activity passenger count";
-            this.checkOverrideActivityPaxCount.UseVisualStyleBackColor = true;
+            this.label29.AutoSize = true;
+            this.label29.ForeColor = System.Drawing.SystemColors.InactiveBorder;
+            this.label29.Location = new System.Drawing.Point(586, 386);
+            this.label29.Name = "label29";
+            this.label29.Size = new System.Drawing.Size(13, 13);
+            this.label29.TabIndex = 61;
+            this.label29.Text = "1";
+            this.label29.Click += new System.EventHandler(this.label29_Click);
             // 
             // OptionsForm
             // 
@@ -3347,5 +3360,6 @@
         private System.Windows.Forms.Label label28;
         private System.Windows.Forms.TrackBar trackMaxPax;
         private System.Windows.Forms.CheckBox checkOverrideActivityPaxCount;
+        private System.Windows.Forms.Label label29;
     }
 }

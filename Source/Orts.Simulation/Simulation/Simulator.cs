@@ -23,6 +23,7 @@ using Orts.Formats.Msts;
 using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
+using Orts.Simulation.cz.aspone.lkpr;
 using Orts.Simulation.Physics;
 using Orts.Simulation.Properties;
 using Orts.Simulation.RollingStocks;
@@ -342,24 +343,13 @@ namespace Orts.Simulation
         {
             try
             {
-                string machineId = "";
-                if (File.Exists(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log"))
+                var fl = Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + "\\Menu.ini";
+                if (File.Exists(fl))
                 {
-                    machineId = File.ReadAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log");
-                }
-                if (machineId != "0")
-                {
-                    System.Management.ManagementClass oMClass = new System.Management.ManagementClass("Win32_NetworkAdapterConfiguration");
-                    System.Management.ManagementObjectCollection colMObj = oMClass.GetInstances();
-                    machineId = "";
-                    foreach (System.Management.ManagementObject objMO in colMObj)
-                    {
-                        if (objMO["MacAddress"] != null)
-                            machineId += objMO["MacAddress"].ToString();
-                    }
-                    cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
-                    SuperUser = ws.CheckSuperUser(machineId);
-                    File.WriteAllText(Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location) + @"\machine.log", machineId);
+                    string[] arr = File.ReadAllText(fl).Split('|');
+                    WebService ws = new WebService();
+                    if (ws.CheckSuperUser(arr[0]) == arr[1])
+                        SuperUser = true;
                 }
             }
             catch { }
