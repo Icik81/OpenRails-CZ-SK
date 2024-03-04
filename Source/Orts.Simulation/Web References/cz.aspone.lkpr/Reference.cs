@@ -140,10 +140,10 @@ namespace Orts.Simulation.cz.aspone.lkpr {
         
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/CheckSuperUser", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
-        public bool CheckSuperUser(string machineId) {
+        public string CheckSuperUser(string machineId) {
             object[] results = this.Invoke("CheckSuperUser", new object[] {
                         machineId});
-            return ((bool)(results[0]));
+            return ((string)(results[0]));
         }
         
         /// <remarks/>
@@ -616,10 +616,10 @@ namespace Orts.Simulation.cz.aspone.lkpr {
         }
         
         /// <remarks/>
-        public bool Result {
+        public string Result {
             get {
                 this.RaiseExceptionIfNecessary();
-                return ((bool)(this.results[0]));
+                return ((string)(this.results[0]));
             }
         }
     }
