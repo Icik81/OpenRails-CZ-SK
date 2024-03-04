@@ -2712,7 +2712,7 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// ProcessTunnels : check position of each car in train wrt tunnel
         /// <\summary>        
-
+        public bool inTunnel;
         public void ProcessTunnels()
         {
             // start at front of train
@@ -2736,7 +2736,7 @@ namespace Orts.Simulation.Physics
                 while (validSections)
                 {
                     TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisSectionIndex];
-                    bool inTunnel = false;
+                    inTunnel = false;
 
                     // car spans sections
                     if ((car.CarLengthM - processedCarLength) > thisSectionOffset)

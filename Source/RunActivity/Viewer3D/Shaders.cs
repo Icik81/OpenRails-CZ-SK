@@ -171,15 +171,15 @@ namespace Orts.Viewer3D
                 NightBrightnessValue = NightBrightness;
                 NightBrightnessSet = true;
                 Program.Simulator._NightBrightnessValue = (float)NightBrightnessValue;
-            }
-            
+            }            
+
             DayBrightnessCoef = Program.Simulator.Settings.DayAmbientLight / 35.0f;
             // Zařídí tmu v tunelu
             Program.Simulator.TunnelActivateM = 0;
-            if (Program.Simulator.TunnelLengthM > 35)
+            if (Program.Simulator.TunnelLengthM > 35 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
-                {                    
+                {
                     vIn = Program.Simulator.Settings.DayAmbientLight;
                     vIn = vIn - (Program.Simulator.PlayerCarIsInTunnelBeginM * DayBrightnessCoef);
                     if (vIn < 1) vIn = 1;
@@ -190,7 +190,7 @@ namespace Orts.Viewer3D
                 }
                 else
                 if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < 35)
-                {                 
+                {
                     vIn = Program.Simulator.Settings.DayAmbientLight;
                     vIn = vIn - (Program.Simulator.PlayerCarIsInTunnelEndM * DayBrightnessCoef);
                     if (vIn < 1) vIn = 1;
@@ -198,7 +198,7 @@ namespace Orts.Viewer3D
                     NightBrightness = NightBrightnessValue;
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelEndM * (NightBrightnessValue / 35.0f));
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
-                }   
+                }
                 else
                 if (Program.Simulator.CabInDarkTunnel)
                 {
@@ -206,6 +206,7 @@ namespace Orts.Viewer3D
                     vIn = NightBrightnessValue;
                 }
             }
+
             float FullBrightness = (float)vIn / 20.0f;
 
             if (_imageTextureIsNight)
@@ -739,7 +740,7 @@ namespace Orts.Viewer3D
             // Icik
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 35)
+            if (Program.Simulator.TunnelLengthM > 35 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
@@ -762,6 +763,7 @@ namespace Orts.Viewer3D
                     Program.Simulator.CabInDarkTunnel = true;
                 }
             }
+
             if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate || isNightTexture)
             {                
                 nightColorModifier.SetValue(1.0f + (Program.Simulator.CabLightActivate ? 0.5f : 0));
