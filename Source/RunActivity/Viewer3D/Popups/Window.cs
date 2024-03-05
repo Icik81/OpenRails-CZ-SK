@@ -212,7 +212,7 @@ namespace Orts.Viewer3D.Popups
             var content = layout.AddLayoutOffset(4, 4, 4, 4).AddLayoutVertical();
             Label Head;
             content.Add(Head = new Label(content.RemainingWidth, Owner.TextFontDefault.Height, Caption, LabelAlignment.Center));
-            Head.Color = Color.Black;            
+            Head.Color = Color.White;            
             content.AddSpace(0, 5);
             return content;
         }
