@@ -1643,20 +1643,14 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         public void CalculatePositionInTunnel()
         {
-            //Simulator.Confirmer.MSG3("InTunnel: " + Train.inTunnel);            
+            //Simulator.Confirmer.MSG("InTunnel: " + Train.inTunnel);            
             //Simulator.Confirmer.MSG2("Simulator.PlayerCarIsInTunnelEndM: " + Simulator.PlayerCarIsInTunnelEndM);
             //Simulator.Confirmer.MSG3("Simulator.PlayerCarIsInTunnelBeginM: " + Simulator.PlayerCarIsInTunnelBeginM);
-            if (CarIsPlayerLoco && Train.inTunnel)
+            if (CarIsPlayerLoco && CarTunnelData.LengthMOfTunnelAheadFront != null && CarTunnelData.LengthMOfTunnelBehindRear != null)
             {                
                 Simulator.PlayerCarIsInTunnelBeginM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value - CarTunnelData.LengthMOfTunnelAheadFront);
                 Simulator.PlayerCarIsInTunnelEndM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value - CarTunnelData.LengthMOfTunnelBehindRear);
                 Simulator.TunnelLengthM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value);
-            }
-            else
-            {
-                Simulator.PlayerCarIsInTunnelBeginM = 0;
-                Simulator.PlayerCarIsInTunnelEndM = 0;
-                Simulator.TunnelLengthM = 0;
             }
         }
 
