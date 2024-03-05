@@ -1013,7 +1013,7 @@ namespace Orts.Viewer3D
 
             // Icik
             Simulator.PlayerCarIsInTunnel = false;
-            if (Camera.IsUnderground
+            if (Camera.IsUnderground 
                 && (Simulator.PlayerIsInCab
                 || Camera == PassengerCamera
                 || Camera == HeadOutForwardCamera

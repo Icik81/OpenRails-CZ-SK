@@ -1646,6 +1646,7 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Confirmer.MSG("InTunnel: " + Train.inTunnel);            
             //Simulator.Confirmer.MSG2("Simulator.PlayerCarIsInTunnelEndM: " + Simulator.PlayerCarIsInTunnelEndM);
             //Simulator.Confirmer.MSG3("Simulator.PlayerCarIsInTunnelBeginM: " + Simulator.PlayerCarIsInTunnelBeginM);
+            
             if (CarIsPlayerLoco && CarTunnelData.LengthMOfTunnelAheadFront != null && CarTunnelData.LengthMOfTunnelBehindRear != null)
             {                
                 Simulator.PlayerCarIsInTunnelBeginM = (float)(CarTunnelData.LengthMOfTunnelAheadFront.Value + CarTunnelData.LengthMOfTunnelBehindRear.Value - CarTunnelData.LengthMOfTunnelAheadFront);

@@ -558,7 +558,7 @@ namespace Orts.Viewer3D
                 else
                 {
                     // Icik
-                    if (Viewer.Simulator.PlayerCarIsInTunnel)
+                    if (Viewer.Simulator.CabInDarkTunnel)
                     {
                         if (clampValue < 2.5f)
                             clampValue += 0.01f;
@@ -578,9 +578,9 @@ namespace Orts.Viewer3D
                     else if (sunDirection.Y >= 0.15)
                     {
                         if (clampValue < 0.1f)
-                            clampValue += 0.01f;
+                            clampValue += 0.03f;
                         else if (clampValue > 0.1f)
-                            clampValue -= 0.01f;
+                            clampValue -= 0.03f;
                         //clampValue = 0.5f; // at daytime min headlight                        
                         distance = lightDrawer.LightConeDistance * 1.0f; // and min distance
                     }
