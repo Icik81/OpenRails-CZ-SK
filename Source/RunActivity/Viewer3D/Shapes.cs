@@ -434,7 +434,7 @@ namespace Orts.Viewer3D
                 // Icik
                 for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
                 {
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_W"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_w"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
@@ -457,7 +457,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_O"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
@@ -480,7 +480,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("FAN_W"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_w"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
@@ -525,7 +525,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("FAN_O"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_o"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {     
@@ -569,7 +569,7 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[3]);
                         }
                     }
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TW"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_tw"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
@@ -592,7 +592,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("LAMELA_TO"))
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_to"))
                     {
                         if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
                         {
@@ -614,15 +614,92 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[5]);
                         }
                     }
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("3"))
+                    {
+                        if (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive != null)
+                        {
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Up = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Down = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Raising = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Lowering = false;
+
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen)
+                            {
+                                TimeAction[6] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[1].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 0.5f : TimeAction[6] / 0.5f);
+                                if (AnimationKey[6] < 1)
+                                {
+                                    AnimationKey[6] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Raising = true;
+                                }
+                                else
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Up = true;
+                            }
+                            
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen)
+                            {
+                                TimeAction[6] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[1].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 0.5f : TimeAction[6] / 0.5f);
+                                if (AnimationKey[6] > 0)
+                                {
+                                    AnimationKey[6] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Lowering = true;
+                                }
+                                else
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Down = true;                            
+                            }
+                            AnimateMatrix(matrix, AnimationKey[6]);
+                        }
+                    }
+                    else
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("4"))
+                    {
+                        if (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive != null)
+                        {
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Up = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Down = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Raising = false;
+                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Lowering = false;
+
+                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen)
+                            {
+                                TimeAction[7] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[2].DelayS; 
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 0.5f : TimeAction[7] / 0.5f);
+                                if (AnimationKey[7] < 1)
+                                {
+                                    AnimationKey[7] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Raising = true;
+                                }
+                                else
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Up = true;
+                            }
+
+                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen)
+                            {
+                                TimeAction[7] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[2].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 0.5f : TimeAction[7] / 0.5f);
+                                if (AnimationKey[7] > 0)
+                                {
+                                    AnimationKey[7] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Lowering = true;
+                                }
+                                else
+                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Down = true;
+                            }
+                            AnimateMatrix(matrix, AnimationKey[7]);
+                        }
+                    }
 
                     else
                     {
                         // Vyloučené animace
                         for (var i = 0; i < SharedShape.Matrices.Length; ++i)
                         {
-                            if (SharedShape.MatrixNames[i].Contains("LAMELA_W") || SharedShape.MatrixNames[i].Contains("LAMELA_O")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].Contains("FAN_W") || SharedShape.MatrixNames[i].Contains("FAN_O")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].Contains("LAMELA_TW") || SharedShape.MatrixNames[i].Contains("LAMELA_TO")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_w") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_o")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("fan_w") || SharedShape.MatrixNames[i].ToLower().Contains("fan_o")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;                            
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
                         }
 
                         // Smyčka pro obecné animace světa

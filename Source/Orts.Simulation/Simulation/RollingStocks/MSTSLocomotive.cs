@@ -743,6 +743,14 @@ namespace Orts.Simulation.RollingStocks
         public bool Switch5LightEnable;
         public bool Switch6LightEnable;
         public int[] DriveAxleNumber = new int[7];
+        public bool Panto3Up;
+        public bool Panto4Up;
+        public bool Panto3Down;
+        public bool Panto4Down;
+        public bool Panto3Raising;
+        public bool Panto4Raising;
+        public bool Panto3Lowering;
+        public bool Panto4Lowering;
 
         // Jindrich
         public bool IsActive = false;
@@ -6350,6 +6358,11 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
+                //Simulator.Confirmer.MSG("Panto3Up: " + Panto3Up);
+                //Simulator.Confirmer.MSG2("Panto3Raising: " + Panto3Raising);
+                //Simulator.Confirmer.MSG3("Panto3Down: " + Panto3Down);
+                //Simulator.Confirmer.MSG4("Panto3Lowering: " + Panto3Lowering);
+
                 // Odometer
                 if (IsLeadLocomotive())
                 {                 
