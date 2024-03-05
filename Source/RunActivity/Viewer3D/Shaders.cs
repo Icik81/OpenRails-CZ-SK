@@ -207,6 +207,12 @@ namespace Orts.Viewer3D
                 }
             }
 
+            if (Program.Simulator.TunnelLengthM < Program.Simulator.PlayerCarIsInTunnelBeginM)
+            {
+                vIn = Program.Simulator.Settings.DayAmbientLight;
+                Program.Simulator.CabInDarkTunnel = false;                
+            }
+
             float FullBrightness = (float)vIn / 20.0f;
 
             if (_imageTextureIsNight)
