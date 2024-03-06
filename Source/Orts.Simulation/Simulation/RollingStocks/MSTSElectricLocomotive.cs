@@ -1110,7 +1110,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Blokování HV u vícesystémových lokomotiv při malém napětí                                                
                 if (MultiSystemEngine)
-                {                    
+                {
                     // Pokud nebude žádný HV aktivní
                     if (!HV5Enable && !HV3Enable && !HV3NAEnable && !HV2Enable && !HV4Enable)
                     {
@@ -1121,43 +1121,46 @@ namespace Orts.Simulation.RollingStocks
                     if (BreakPowerButton || !Battery || ForceBreakPower)
                     {
                         HVOff = true;
-                        if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+                        for (int i = 1; i <= Pantographs.Count; i++)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph);
-                            if (MPManager.IsMultiPlayer())
+                            if (Pantographs[i].State == PantographState.Up)
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                if (Pantographs.Count == 4)
+                                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                if (MPManager.IsMultiPlayer())
                                 {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                }
-                            }
-                            if (AcceptMUSignals)
-                                foreach (TrainCar car in Train.Cars)
-                                {
-                                    if (car.AcceptMUSignals)
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                    if (Pantographs.Count == 4)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                        if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                    }
+                                }
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car.AcceptMUSignals)
                                         {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                            if (Pantographs.Count == 4)
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (MPManager.IsMultiPlayer())
                                             {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                                if (Pantographs.Count == 4)
+                                                {
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                                }
                                             }
                                         }
                                     }
-                                }
-                        }                        
+                            }
+                        }
                     }
-                  
+
                     // Loco Vectron shazuje pantografy, pokud není očekávané napětí
                     if (LocoType == LocoTypes.Vectron)
-                    {                        
+                    {
                         ForceBreakPower = false;
 
                         if (SelectedPowerSystem == PowerSystem.AT15kV
@@ -1179,47 +1182,50 @@ namespace Orts.Simulation.RollingStocks
                             SwitchingVoltageMode_OffAC = false;
                         }
 
-                        if ((Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                        for (int i = 1; i <= Pantographs.Count; i++)
                         {
-                            if (RouteVoltageV == 0)
+                            if (Pantographs[i].State == PantographState.Up)
                             {
-                                if (CircuitBreakerOn)
+                                if (RouteVoltageV == 0)
                                 {
-                                    HVOff = true;
+                                    if (CircuitBreakerOn)
+                                    {
+                                        HVOff = true;
+                                        SignalEvent(Event.Failure);
+                                    }
+                                }
+                                else
+                                if (!Loco15kV && RouteVoltageV == 15000)
+                                {
+                                    ForceBreakPower = true;
+                                    PantoCommandDown = true;
+                                    SignalEvent(Event.Failure);
+                                }
+                                else
+                                if (Loco15kV && RouteVoltageV != 15000)
+                                {
+                                    ForceBreakPower = true;
+                                    PantoCommandDown = true;
+                                    SignalEvent(Event.Failure);
+                                }
+                                else
+                                if (SwitchingVoltageMode_OffAC && RouteVoltageV != 15000 && RouteVoltageV != 25000)
+                                {
+                                    ForceBreakPower = true;
+                                    PantoCommandDown = true;
+                                    SignalEvent(Event.Failure);
+                                }
+                                else
+                                if (SwitchingVoltageMode_OffDC && RouteVoltageV != 3000)
+                                {
+                                    ForceBreakPower = true;
+                                    PantoCommandDown = true;
                                     SignalEvent(Event.Failure);
                                 }
                             }
-                            else
-                            if (!Loco15kV && RouteVoltageV == 15000)
-                            {
-                                ForceBreakPower = true;
-                                PantoCommandDown = true;
-                                SignalEvent(Event.Failure);
-                            }
-                            else
-                            if (Loco15kV && RouteVoltageV != 15000)
-                            {
-                                ForceBreakPower = true;
-                                PantoCommandDown = true;
-                                SignalEvent(Event.Failure);
-                            }
-                            else
-                            if (SwitchingVoltageMode_OffAC && RouteVoltageV != 15000 && RouteVoltageV != 25000)                                
-                            {
-                                ForceBreakPower = true;
-                                PantoCommandDown = true;
-                                SignalEvent(Event.Failure);
-                            }
-                            else
-                            if (SwitchingVoltageMode_OffDC && RouteVoltageV != 3000)
-                            {
-                                ForceBreakPower = true;
-                                PantoCommandDown = true;
-                                SignalEvent(Event.Failure);
-                            }                                                       
                         }
                     }
-                    
+
                     // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (15kV)                    
                     if (Loco15kV && RouteVoltageV != 15000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                     {
@@ -1237,49 +1243,68 @@ namespace Orts.Simulation.RollingStocks
 
                     // Nedovolí zapnout HV, pokud není potřebné napětí v drátech (25kV nebo 3kV)
                     if (!Loco15kV && RouteVoltageV == 15000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                        HVOff = true;                    
+                        HVOff = true;
 
                     // Nastavení AC 25kV nebo DC 3kV při zapnutém HV a pantografy nahoře přejede do úseku 15kV - shodí HV
-                    if (!Loco15kV && CircuitBreakerOn && RouteVoltageV == 15000
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))                    
-                        HVOff = true;                                            
-
+                    if (!Loco15kV && CircuitBreakerOn && RouteVoltageV == 15000)
+                    {
+                        for (int i = 1; i <= Pantographs.Count; i++)
+                        {
+                            if (Pantographs[i].State == PantographState.Up)
+                                HVOff = true;
+                        }
+                    }
                     // Nedovolí zapnout HV, pokud není napětí v drátech 
                     if (RouteVoltageV == 1 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                         HVOff = true;
 
                     // Nastavení AC při zapnutém HV a pantografy nahoře přejede do úseku 3kV - shodí HV
-                    if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    if (CircuitBreakerOn && SwitchingVoltageMode_OffAC && RouteVoltageV == 3000)
                     {
-                        HVOff = true;
-                        PantographFaultByVoltageChange = true;
+                        for (int i = 1; i <= Pantographs.Count; i++)
+                        {
+                            if (Pantographs[i].State == PantographState.Up)
+                            {
+                                HVOff = true;
+                                PantographFaultByVoltageChange = true;
+                            }
+                        }
                     }
-
                     // Nastavení DC při zapnutém HV a pantografy nahoře přejede do úseku 15kV nebo 25kV - shodí HV
-                    if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV > 3000
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    if (CircuitBreakerOn && SwitchingVoltageMode_OffDC && RouteVoltageV > 3000)
                     {
-                        HVOff = true;
-                        PantographFaultByVoltageChange = true;
+                        for (int i = 1; i <= Pantographs.Count; i++)
+                        {
+                            if (Pantographs[i].State == PantographState.Up)
+                            {
+                                HVOff = true;
+                                PantographFaultByVoltageChange = true;
+                            }
+                        }
                     }
 
                     // Při zapnutém HV přejede do beznapěťového úseku - shodí HV po pár sekundách
-                    if (CircuitBreakerOn && RouteVoltageV == 1 && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
+                    if (CircuitBreakerOn && RouteVoltageV == 1)
                     {
-                        TRouteVoltageV_1 += elapsedClockSeconds;
-                        if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
+                        for (int i = 1; i <= Pantographs.Count; i++)
                         {
-                            if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
-                                HVOff = true;
-                            TRouteVoltageV_1 = 0;
+                            if (Pantographs[i].State == PantographState.Up)
+                            {
+                                TRouteVoltageV_1 += elapsedClockSeconds;
+                                if (!VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(2, 4))
+                                {
+                                    if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
+                                        HVOff = true;
+                                    TRouteVoltageV_1 = 0;
+                                }
+                                if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(4, 6))
+                                {
+                                    if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
+                                        HVOff = true;
+                                    TRouteVoltageV_1 = 0;
+                                }
+                            }
                         }
-                        if (VoltageFilter && TRouteVoltageV_1 > Simulator.Random.Next(4, 6))
-                        {
-                            if (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum > 0)
-                                HVOff = true;
-                            TRouteVoltageV_1 = 0;
-                        }                        
                     }                    
 
                     if (LocoSwitchACDC
@@ -1300,17 +1325,32 @@ namespace Orts.Simulation.RollingStocks
                         HVOff = true;
 
                     if (RouteVoltageV > 3000 && PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && VoltageAC < 10000)
-                        HVOff = true;                    
+                        HVOff = true;
 
                     if (SwitchingVoltageMode_OffAC && RouteVoltageV == 3000
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
-                        HVOff = true;
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
+                    {
+                        for (int i = 1; i <= Pantographs.Count; i++)
+                        {
+                            if (Pantographs[i].State == PantographState.Up)
+                            {
+
+                                HVOff = true;
+                            }
+                        }
+                    }
 
                     if (SwitchingVoltageMode_OffDC && RouteVoltageV > 3000
-                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
-                        && (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up))
-                        HVOff = true;
+                        && (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing || PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed))
+                    {
+                        for (int i = 1; i <= Pantographs.Count; i++)
+                        {
+                            if (Pantographs[i].State == PantographState.Up)
+                            {
+                                HVOff = true;
+                            }
+                        }
+                    }
 
 
                     // Test napětí v troleji stanoví napěťovou soustavu
@@ -1746,14 +1786,25 @@ namespace Orts.Simulation.RollingStocks
         public void VoltageIndicate(float elapsedSeconds)
         {
             PantographUp = false;
-            if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
+            for (int i = 1; i <= Pantographs.Count; i++)
             {
-                PantographDown = false;
-                PantographUp = true;
+                if (Pantographs[i].State == PantographState.Up)
+                {
+                    PantographDown = false;
+                    PantographUp = true;
+                }
             }
-            
-            if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
-                PantographDown = true;            
+
+            if (Pantographs.Count == 4)
+            {
+                if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down && Pantographs[3].State == PantographState.Down && Pantographs[4].State == PantographState.Down)
+                    PantographDown = true;
+            }
+            else
+            {
+                if (Pantographs[1].State == PantographState.Down && Pantographs[2].State == PantographState.Down)
+                    PantographDown = true;
+            }
 
             if (!PantographDown && !VoltageIndicateTestCompleted && RouteVoltageV > 1)
                 TimerVoltageIndicateTest += elapsedSeconds;
