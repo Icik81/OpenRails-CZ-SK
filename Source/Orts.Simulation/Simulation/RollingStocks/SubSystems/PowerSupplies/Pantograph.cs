@@ -91,7 +91,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Initialize()
         {
-            while (List.Count() < 2)
+            while (List.Count() < 4)
             {
                 Add(new Pantograph(Wagon));
             }

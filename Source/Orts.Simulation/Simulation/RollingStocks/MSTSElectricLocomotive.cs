@@ -890,6 +890,11 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                if (Pantographs.Count == 4)
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                }
                             }
                             if (AcceptMUSignals)
                                 foreach (TrainCar car in Train.Cars)
@@ -901,6 +906,11 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                            if (Pantographs.Count == 4)
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                            }
                                         }
                                     }
                                 }
@@ -936,6 +946,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Pantographs[1].PantographsBlocked = true;
                         Pantographs[2].PantographsBlocked = true;
+                        if (Pantographs.Count == 4)
+                        {
+                            Pantographs[3].PantographsBlocked = true;
+                            Pantographs[4].PantographsBlocked = true;
+                        }
                     }
                     if (!CircuitBreakerOn && Pantographs[1].PantographsBlocked == false && Pantographs[2].PantographsBlocked == false)
                     {
@@ -946,6 +961,11 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                if (Pantographs.Count == 4)
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                }
                             }
                             if (AcceptMUSignals)
                                 foreach (TrainCar car in Train.Cars)
@@ -957,6 +977,11 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                            if (Pantographs.Count == 4)
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                            }
                                         }
                                     }
                                 }
@@ -969,12 +994,22 @@ namespace Orts.Simulation.RollingStocks
                         {
                             Pantographs[1].PantographsBlocked = false;
                             Pantographs[2].PantographsBlocked = false;
+                            if (Pantographs.Count == 4)
+                            {
+                                Pantographs[3].PantographsBlocked = false;
+                                Pantographs[4].PantographsBlocked = false;
+                            }
                         }
                         else
                         if (!Pantograph4Enable && !Pantograph5Enable && !Pantograph3Enable)
                         {
                             Pantographs[1].PantographsBlocked = false;
                             Pantographs[2].PantographsBlocked = false;
+                            if (Pantographs.Count == 4)
+                            {
+                                Pantographs[3].PantographsBlocked = false;
+                                Pantographs[4].PantographsBlocked = false;
+                            }
                         }
 
                         if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
@@ -1093,6 +1128,11 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                if (Pantographs.Count == 4)
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                }
                             }
                             if (AcceptMUSignals)
                                 foreach (TrainCar car in Train.Cars)
@@ -1104,6 +1144,11 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                            if (Pantographs.Count == 4)
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                            }
                                         }
                                     }
                                 }
@@ -1286,6 +1331,11 @@ namespace Orts.Simulation.RollingStocks
 
                     Pantographs[1].PantographsBlocked = false;
                     Pantographs[2].PantographsBlocked = false;
+                    if (Pantographs.Count == 4)
+                    {
+                        Pantographs[3].PantographsBlocked = false;
+                        Pantographs[4].PantographsBlocked = false;
+                    }
 
                     if (!EDBIndependent && Simulator.GameTimeCyklus10 == 10)
                     {
@@ -1560,6 +1610,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                        if (Pantographs.Count == 4)
+                        {
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                        }
                     }
                     Pantograph3Switch[LocoStation] = 1;
                 }
@@ -1727,6 +1782,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                        if (Pantographs.Count == 4)
+                        {
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                        }
                     }
                 }
 
@@ -2289,6 +2349,11 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                        if (Pantographs.Count == 4)
+                                        {
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                        }
                                     }
                                 }
                                 break;
@@ -2701,6 +2766,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                        if (Pantographs.Count == 4)
+                        {
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                        }
                     }
                 }
                 else

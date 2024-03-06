@@ -32,14 +32,18 @@ using Microsoft.Xna.Framework.Graphics;
 using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Viewer3D.Common;
 using ORTS.Common;
+using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
+using static Orts.Simulation.RollingStocks.SubSystems.FreightAnimationStatic;
 using Event = Orts.Common.Event;
 using Events = Orts.Common.Events;
 
@@ -420,6 +424,9 @@ namespace Orts.Viewer3D
         bool TestCondition2;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            var ELoco = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
+            var DLoco = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive);
+
             //Viewer.PlayerLocomotive.Simulator.Confirmer.MSG("TimeAction[3]  " + TimeAction[3]);
 
             if (Viewer.Simulator.MSTSWagon as MSTSWagon != null)
@@ -436,19 +443,19 @@ namespace Orts.Viewer3D
                 {
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_w"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {
-                            if (TestCondition1 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[0] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition1 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (!TestCondition1 && !DLoco.DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[0] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] > 0)
                                     AnimationKey[0] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -459,19 +466,19 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {
-                            if (TestCondition2 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[1] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
                                 if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition2 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (!TestCondition2 && !DLoco.DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[1] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
                                 if (AnimationKey[1] > 0)
                                     AnimationKey[1] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -482,25 +489,25 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_w"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {
-                            bool FanWRunning = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0 > 0.99f * (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].IdleRPM ? true : false;
+                            bool FanWRunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
 
                             if (FanWRunning)
                             {
-                                if (TestCondition1 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                                if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning)
                                 {
                                     TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
                                     if (TimeAction[2] < 0.05f)
                                         TimeAction[2] = 0.05f;
-                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
                                 }
-                                if (!TestCondition1 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                                if (!TestCondition1 && !DLoco.DieselEngines[0].WaterTempCoolingRunning)
                                 {
                                     TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
                                 }
                             }
                             else
@@ -527,25 +534,25 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_o"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {     
-                            bool FanORunning = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0 > 0.99f * (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].IdleRPM ? true : false;
+                            bool FanORunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
 
                             if (FanORunning)
                             {
-                                if (TestCondition2 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                                if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning)
                                 {
                                     TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
                                     if (TimeAction[3] < 0.05f)
                                         TimeAction[3] = 0.05f;
-                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
                                 }
-                                if (!TestCondition2 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                                if (!TestCondition2 && !DLoco.DieselEngines[0].OilTempCoolingRunning)
                                 {
                                     TimeAction[3] += 0.01f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0))
-                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / ((Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM / (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].RealRPM0);
+                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
                                 }
                             }
                             else
@@ -571,19 +578,19 @@ namespace Orts.Viewer3D
                     }
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_tw"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {
-                            if (TestCondition1 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[4] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesUpS;
+                                TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
                                 if (AnimationKey[4] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[4] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition1 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                            if (!TestCondition1 && !DLoco.DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[4] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].WaterCoolingPlatesDownS;
+                                TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
                                 if (AnimationKey[4] > 0)
                                     AnimationKey[4] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -594,19 +601,19 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_to"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive != null)
+                        if (DLoco != null)
                         {
-                            if (TestCondition2 || (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[5] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesUpS;
+                                TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f: TimeAction[5] / 2.0f);
                                 if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[5] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition2 && !(Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                            if (!TestCondition2 && !DLoco.DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[5] = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive).DieselEngines[0].OilCoolingPlatesDownS;
+                                TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
                                 if (AnimationKey[5] > 0)
                                     AnimationKey[5] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
@@ -615,38 +622,33 @@ namespace Orts.Viewer3D
                         }
                     }
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("3"))
-                    {
-                        if (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive != null)
+                    {                        
+                        if (ELoco != null && ELoco.Pantographs.Count == 4)
                         {
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Up = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Down = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Raising = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Lowering = false;
-
-                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen)
+                            if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
                             {
-                                TimeAction[6] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[1].DelayS;
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 0.5f : TimeAction[6] / 0.5f);
+                                TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] < 1)
                                 {
                                     AnimationKey[6] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Raising = true;
+                                    ELoco.Pantographs[3].State = PantographState.Raising; 
                                 }
                                 else
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Up = true;
+                                    ELoco.Pantographs[3].State = PantographState.Up;
                             }
                             
-                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen)
+                            if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
                             {
-                                TimeAction[6] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[1].DelayS;
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 0.5f : TimeAction[6] / 0.5f);
+                                TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] > 0)
                                 {
                                     AnimationKey[6] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Lowering = true;
+                                    ELoco.Pantographs[3].State = PantographState.Lowering;
                                 }
                                 else
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto3Down = true;                            
+                                    ELoco.Pantographs[3].State = PantographState.Down;
                             }
                             AnimateMatrix(matrix, AnimationKey[6]);
                         }
@@ -654,37 +656,32 @@ namespace Orts.Viewer3D
                     else
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("4"))
                     {
-                        if (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive != null)
+                        if (ELoco != null && ELoco.Pantographs.Count == 4)
                         {
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Up = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Down = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Raising = false;
-                            (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Lowering = false;
-
-                            if ((Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen)
+                            if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
                             {
-                                TimeAction[7] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[2].DelayS; 
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 0.5f : TimeAction[7] / 0.5f);
+                                TimeAction[7] = ELoco.Pantographs[4].DelayS; 
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] < 1)
                                 {
                                     AnimationKey[7] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Raising = true;
+                                    ELoco.Pantographs[4].State = PantographState.Raising;
                                 }
                                 else
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Up = true;
+                                    ELoco.Pantographs[4].State = PantographState.Up;
                             }
 
-                            if (!(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen)
+                            if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
                             {
-                                TimeAction[7] = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Pantographs[2].DelayS;
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 0.5f : TimeAction[7] / 0.5f);
+                                TimeAction[7] = ELoco.Pantographs[4].DelayS;
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] > 0)
                                 {
                                     AnimationKey[7] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Lowering = true;
+                                    ELoco.Pantographs[4].State = PantographState.Lowering;
                                 }
                                 else
-                                    (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive).Panto4Down = true;
+                                    ELoco.Pantographs[4].State = PantographState.Down;
                             }
                             AnimateMatrix(matrix, AnimationKey[7]);
                         }
