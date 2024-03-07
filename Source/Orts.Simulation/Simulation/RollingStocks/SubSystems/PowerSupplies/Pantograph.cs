@@ -205,7 +205,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float TimeS { get; private set; }
 
         // Icik
-        public float AnimCorrectTimeCoef { get; private set; }
+        public float AnimCorrectTimeCoefUp { get; private set; }
+        public float AnimCorrectTimeCoefDown { get; private set; }
 
         public bool CommandUp
         {
@@ -250,7 +251,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Parse(STFReader stf)
         {
-            AnimCorrectTimeCoef = 1.0f;
+            AnimCorrectTimeCoefUp = 1.0f;
+            AnimCorrectTimeCoefDown = 1.0f;
             stf.MustMatch("(");
             stf.ParseBlock(
                 new STFReader.TokenProcessor[] {
@@ -261,9 +263,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }),
                     // Icik
                     new STFReader.TokenProcessor(
-                        "animcorrecttimecoef",
+                        "animcorrecttimecoefup",
                         () => {
-                            AnimCorrectTimeCoef = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
+                            AnimCorrectTimeCoefUp = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
+                        }),
+                     new STFReader.TokenProcessor(
+                        "animcorrecttimecoefdown",
+                        () => {
+                            AnimCorrectTimeCoefDown = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
                         }),
                 }
             );
@@ -274,7 +281,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             State = pantograph.State;
             DelayS = pantograph.DelayS;
             TimeS = pantograph.TimeS;
-            AnimCorrectTimeCoef = pantograph.AnimCorrectTimeCoef;
+            AnimCorrectTimeCoefUp = pantograph.AnimCorrectTimeCoefUp;
+            AnimCorrectTimeCoefDown = pantograph.AnimCorrectTimeCoefDown;
         }
 
         public void Restore(BinaryReader inf)

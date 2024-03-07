@@ -146,25 +146,45 @@ namespace Orts.Viewer3D
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoef);
+            {
+                if (state)
+                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
+                else
+                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
+            }
         }
         public void UpdateStatePanto2(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoef);
+            {
+                if (state)
+                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
+                else
+                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
+            }
         }
         public void UpdateStatePanto3(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoef);
+            {
+                if (state)
+                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
+                else
+                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
+            }
         }
         public void UpdateStatePanto4(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoef);
+            {
+                if (state)
+                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
+                else
+                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
+            }
         }
 
         /// <summary>
