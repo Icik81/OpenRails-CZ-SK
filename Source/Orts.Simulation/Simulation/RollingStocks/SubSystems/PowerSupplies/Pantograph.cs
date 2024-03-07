@@ -59,6 +59,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
                     );
 
+                    Wagon.WagonRealPantoCount = List.Count;
+
                     if (List.Count() == 0)
                         throw new InvalidDataException("ORTSPantographs block with no pantographs");
 
@@ -91,9 +93,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Initialize()
         {
-            while (List.Count() < 4)
+            if (List.Count < 2)
             {
-                Add(new Pantograph(Wagon));
+                while (List.Count() < 2)
+                {
+                    Add(new Pantograph(Wagon));
+                }
             }
 
             foreach (Pantograph pantograph in List)

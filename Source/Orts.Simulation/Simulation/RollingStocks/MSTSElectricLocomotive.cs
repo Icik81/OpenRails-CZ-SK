@@ -1721,9 +1721,30 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                         {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            if (MPManager.IsMultiPlayer())
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                            if (Pantographs.Count == 4)
+                            {
+                                if (RouteVoltageV == 3000)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
+                                }
+                                if (RouteVoltageV > 3000)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                }
+                            }
+                            else
+                            {
+                                if (RouteVoltageV > 1)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                }
+                            }
                         }
 
                         Pantograph3Switch[LocoStation] = 2;
@@ -1900,60 +1921,188 @@ namespace Orts.Simulation.RollingStocks
 
                     if (Flipped || UsingRearCab)
                     {
-                        if (Direction == Direction.Reverse && Pantographs[1].State != PantographState.Up)
+                        if (Pantographs.Count == 4)
                         {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            if (MPManager.IsMultiPlayer())
+                            if (SwitchingVoltageMode == 0)
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                if (Direction == Direction.Reverse && Pantographs[3].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                }
+                                if (Direction == Direction.Forward && Pantographs[4].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Forward && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                }
+                            }
+                            if (SwitchingVoltageMode == 2)
+                            {
+                                if (Direction == Direction.Reverse && Pantographs[1].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                }
+                                if (Direction == Direction.Forward && Pantographs[2].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                }
                             }
                         }
-                        if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                        else
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                        }
-                        if (Direction == Direction.Forward && Pantographs[2].State != PantographState.Up)
-                        {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                            if (MPManager.IsMultiPlayer())
+                            if (Direction == Direction.Reverse && Pantographs[1].State != PantographState.Up)
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                if (MPManager.IsMultiPlayer())
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                }
                             }
-                        }
-                        if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
-                        {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                            if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            }
+                            if (Direction == Direction.Forward && Pantographs[2].State != PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                                if (MPManager.IsMultiPlayer())
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                }
+                            }
+                            if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                            }
                         }
                     }
                     else
                     {
-                        if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
+                        if (Pantographs.Count == 4)
                         {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            if (MPManager.IsMultiPlayer())
+                            if (SwitchingVoltageMode == 0)
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                if (Direction == Direction.Forward && Pantographs[3].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Forward && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[4].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                }
+                            }
+                            if (SwitchingVoltageMode == 2)
+                            {
+                                if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                                    if (MPManager.IsMultiPlayer())
+                                    {
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                    }
+                                }
+                                if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                }
                             }
                         }
-                        if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                        else
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                        }
-                        if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
-                        {
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                            if (MPManager.IsMultiPlayer())
+                            if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
                             {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                                if (MPManager.IsMultiPlayer())
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                }
                             }
-                        }
-                        if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
-                        {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                            if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            }
+                            if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
+                                if (MPManager.IsMultiPlayer())
+                                {
+                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                                }
+                            }
+                            if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                            {
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
+                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                            }
                         }
                     }
                 }
@@ -2256,6 +2405,16 @@ namespace Orts.Simulation.RollingStocks
             if (!AIPantoDownStop)
                 AIPantoDownStopSoundCyklus = false;
 
+            // AI se 4 pantografy
+            if (Pantographs.Count == 4)
+            {
+                if (RouteVoltageV == 3000)
+                {
+                    if (TrainPantoMarker == 1) TrainPantoMarker = 3;
+                    if (TrainPantoMarker == 2) TrainPantoMarker = 4;
+                }
+            }
+
             // Pantografy AI
             for (int i = 1; i <= Pantographs.Count; i++)
             {
@@ -2545,7 +2704,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Pantografy
                 if (MaxLineVoltage0 > 10000)
-                {
+                {                   
                     if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                     {
                         SignalEvent(Event.Pantograph1UpAC);
@@ -2570,26 +2729,53 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
+                    if (Pantographs.Count == 4)
                     {
-                        SignalEvent(Event.Pantograph1UpDC);
-                        TPanto1DC = 1;
-                    }
-                    if (Pantographs[1].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
-                    {
-                        SignalEvent(Event.Pantograph1DownDC);
-                        TPanto1DC = 0;
-                    }
+                        if (Pantographs[3].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1UpDC);
+                            TPanto1DC = 1;
+                        }
+                        if (Pantographs[3].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1DownDC);
+                            TPanto1DC = 0;
+                        }
 
-                    if (Pantographs[2].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
-                    {
-                        SignalEvent(Event.Pantograph2UpDC);
-                        TPanto2DC = 1;
+                        if (Pantographs[4].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2UpDC);
+                            TPanto2DC = 1;
+                        }
+                        if (Pantographs[4].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2DownDC);
+                            TPanto2DC = 0;
+                        }
                     }
-                    if (Pantographs[2].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
+                    else
                     {
-                        SignalEvent(Event.Pantograph2DownDC);
-                        TPanto2DC = 0;
+                        if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1UpDC);
+                            TPanto1DC = 1;
+                        }
+                        if (Pantographs[1].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1DownDC);
+                            TPanto1DC = 0;
+                        }
+
+                        if (Pantographs[2].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2UpDC);
+                            TPanto2DC = 1;
+                        }
+                        if (Pantographs[2].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2DownDC);
+                            TPanto2DC = 0;
+                        }
                     }
                 }
             }
@@ -2744,17 +2930,37 @@ namespace Orts.Simulation.RollingStocks
                 switch (evt)
                 {
                     case PowerSupplyEvent.RaisePantograph:
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.On);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.On);
+                        if (WagonRealPantoCount == 1)
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                        if (WagonRealPantoCount == 2)
+                        {
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
+                        }
+                        if (WagonRealPantoCount == 4)
+                        {
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.On);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.On);
+                        }
                         break;
 
                     case PowerSupplyEvent.LowerPantograph:
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.Off);
-                        Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.Off);
+                        if (WagonRealPantoCount == 1)
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                        if (WagonRealPantoCount == 2)
+                        {
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
+                        }
+                        if (WagonRealPantoCount == 4)
+                        {
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.Off);
+                            Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.Off);
+                        }
                         break;
                 }
             }
@@ -2783,10 +2989,20 @@ namespace Orts.Simulation.RollingStocks
                 switch (evt)
                 {
                     case PowerSupplyEvent.RaisePantograph:
-                        if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
-                        if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
-                        if (id == 3) Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.On);
-                        if (id == 4) Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.On);
+                        if (WagonRealPantoCount == 1)
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                        if (WagonRealPantoCount == 2)
+                        {
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                            if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
+                        }
+                        if (WagonRealPantoCount == 4)
+                        {
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.On);
+                            if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.On);
+                            if (id == 3) Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.On);
+                            if (id == 4) Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.On);
+                        }
 
                         if (!Simulator.TRK.Tr_RouteFile.Electrified)
                             Simulator.Confirmer.Warning(Simulator.Catalog.GetString("No power line!"));
@@ -2795,10 +3011,20 @@ namespace Orts.Simulation.RollingStocks
                         break;
 
                     case PowerSupplyEvent.LowerPantograph:
-                        if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
-                        if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
-                        if (id == 3) Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.Off);
-                        if (id == 4) Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.Off);
+                        if (WagonRealPantoCount == 1)
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                        if (WagonRealPantoCount == 2)
+                        {
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                            if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
+                        }
+                        if (WagonRealPantoCount == 4)
+                        {
+                            if (id == 1) Simulator.Confirmer.Confirm(CabControl.Pantograph1, CabSetting.Off);
+                            if (id == 2) Simulator.Confirmer.Confirm(CabControl.Pantograph2, CabSetting.Off);
+                            if (id == 3) Simulator.Confirmer.Confirm(CabControl.Pantograph3, CabSetting.Off);
+                            if (id == 4) Simulator.Confirmer.Confirm(CabControl.Pantograph4, CabSetting.Off);
+                        }
                         break;
                 }
             }
@@ -3535,25 +3761,37 @@ namespace Orts.Simulation.RollingStocks
             // Icik                        
             if (UsingRearCab)
             {
-                if (Pantographs.List.Count == 2)
+                if (WagonRealPantoCount == 1)
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
-                if (Pantographs.List.Count == 4)
-                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
-                if (Pantographs.List.Count <= 2)
+                if (WagonRealPantoCount == 2)
+                {
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
-                if (Pantographs.List.Count == 4)
+                }
+                if (WagonRealPantoCount == 4)
+                {
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                }
             }
             else
             {
-                if (Pantographs.List.Count == 2)
+                if (WagonRealPantoCount == 1)
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));                
+                if (WagonRealPantoCount == 2)
+                {
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
-                if (Pantographs.List.Count == 4)
-                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
-                if (Pantographs.List.Count <= 2)
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
-                if (Pantographs.List.Count == 4)
+                }
+                if (WagonRealPantoCount == 4)
+                {
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
                     status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
+                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                }
             }
 
             status.AppendLine();

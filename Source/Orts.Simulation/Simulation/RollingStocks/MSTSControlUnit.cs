@@ -817,25 +817,37 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (UsingRearCab)
                             {
-                                if (PU.Pantographs.List.Count == 2)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[1].State)));
-                                if (PU.Pantographs.List.Count == 4)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[3].State)));
-                                if (PU.Pantographs.List.Count <= 2)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[2].State)));
-                                if (PU.Pantographs.List.Count == 4)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[4].State)));
+                                if (PU.WagonRealPantoCount == 1)
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                if (PU.WagonRealPantoCount == 2)
+                                {
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                                }
+                                if (PU.WagonRealPantoCount == 4)
+                                {
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                                }
                             }
                             else
                             {
-                                if (PU.Pantographs.List.Count == 2)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[2].State)));
-                                if (PU.Pantographs.List.Count == 4)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[4].State)));
-                                if (PU.Pantographs.List.Count <= 2)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[1].State)));
-                                if (PU.Pantographs.List.Count == 4)
-                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(PU.Pantographs[3].State)));
+                                if (PU.WagonRealPantoCount == 1)
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                if (PU.WagonRealPantoCount == 2)
+                                {
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                }
+                                if (PU.WagonRealPantoCount == 4)
+                                {
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[2].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[4].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[3].State)));
+                                    status.AppendFormat("{0} ", Simulator.Catalog.GetParticularString("Pantograph", GetStringAttribute.GetPrettyName(Pantographs[1].State)));
+                                }                                
                             }
                             status.AppendLine();
 
