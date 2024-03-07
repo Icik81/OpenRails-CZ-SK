@@ -595,10 +595,10 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            Pantograph1.UpdateState(MSTSWagon.Pantographs[1].CommandUp, elapsedTime);
-            Pantograph2.UpdateState(MSTSWagon.Pantographs[2].CommandUp, elapsedTime);
-            if (MSTSWagon.Pantographs.List.Count > 2) Pantograph3.UpdateState(MSTSWagon.Pantographs[3].CommandUp, elapsedTime);
-            if (MSTSWagon.Pantographs.List.Count > 3) Pantograph4.UpdateState(MSTSWagon.Pantographs[4].CommandUp, elapsedTime);
+            Pantograph1.UpdateStatePanto1(MSTSWagon.Pantographs[1].CommandUp, elapsedTime);
+            Pantograph2.UpdateStatePanto2(MSTSWagon.Pantographs[2].CommandUp, elapsedTime);
+            if (MSTSWagon.Pantographs.List.Count > 2) Pantograph3.UpdateStatePanto3(MSTSWagon.Pantographs[3].CommandUp, elapsedTime);
+            if (MSTSWagon.Pantographs.List.Count > 3) Pantograph4.UpdateStatePanto4(MSTSWagon.Pantographs[4].CommandUp, elapsedTime);
             LeftDoor.UpdateState(MSTSWagon.DoorLeftOpen, elapsedTime);
             RightDoor.UpdateState(MSTSWagon.DoorRightOpen, elapsedTime);
             Mirrors.UpdateState(MSTSWagon.MirrorOpen, elapsedTime);

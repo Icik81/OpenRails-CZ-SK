@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using static Orts.Formats.Msts.TrackTypesFile;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
@@ -65,7 +66,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         throw new InvalidDataException("ORTSPantographs block with no pantographs");
 
                     break;
-            }
+            }            
         }
 
         public void Copy(Pantographs pantographs)
@@ -203,6 +204,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float DelayS { get; private set; }
         public float TimeS { get; private set; }
 
+        // Icik
+        public float AnimCorrectTimeCoef { get; private set; }
+
         public bool CommandUp
         {
             get
@@ -246,24 +250,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
         public void Parse(STFReader stf)
         {
+            AnimCorrectTimeCoef = 1.0f;
             stf.MustMatch("(");
             stf.ParseBlock(
-                new[] {
+                new STFReader.TokenProcessor[] {
                     new STFReader.TokenProcessor(
                         "delay",
                         () => {
-                            DelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
-                        }
-                    )
+                            DelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, null);                            
+                        }),
+                    // Icik
+                    new STFReader.TokenProcessor(
+                        "animcorrecttimecoef",
+                        () => {
+                            AnimCorrectTimeCoef = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
+                        }),
                 }
             );
-        }
+        }        
 
         public void Copy(Pantograph pantograph)
         {
             State = pantograph.State;
             DelayS = pantograph.DelayS;
             TimeS = pantograph.TimeS;
+            AnimCorrectTimeCoef = pantograph.AnimCorrectTimeCoef;
         }
 
         public void Restore(BinaryReader inf)

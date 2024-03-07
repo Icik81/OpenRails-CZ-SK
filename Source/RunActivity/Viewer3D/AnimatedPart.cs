@@ -16,6 +16,7 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Orts.Formats.Msts;
+using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -138,6 +139,32 @@ namespace Orts.Viewer3D
         public void UpdateState(bool state, ElapsedTime elapsedTime)
         {
             SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
+        }
+
+        // Icik
+        public void UpdateStatePanto1(bool state, ElapsedTime elapsedTime)
+        {
+            var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
+            if (ELoco != null)
+                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoef);
+        }
+        public void UpdateStatePanto2(bool state, ElapsedTime elapsedTime)
+        {
+            var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
+            if (ELoco != null)
+                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoef);
+        }
+        public void UpdateStatePanto3(bool state, ElapsedTime elapsedTime)
+        {
+            var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
+            if (ELoco != null)
+                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoef);
+        }
+        public void UpdateStatePanto4(bool state, ElapsedTime elapsedTime)
+        {
+            var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
+            if (ELoco != null)
+                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoef);
         }
 
         /// <summary>

@@ -631,7 +631,7 @@ namespace Orts.Viewer3D
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] < 1)
                                 {
-                                    AnimationKey[6] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    AnimationKey[6] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoef;
                                     ELoco.Pantographs[3].State = PantographState.Raising; 
                                 }
                                 else
@@ -644,7 +644,7 @@ namespace Orts.Viewer3D
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] > 0)
                                 {
-                                    AnimationKey[6] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    AnimationKey[6] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoef;
                                     ELoco.Pantographs[3].State = PantographState.Lowering;
                                 }
                                 else
@@ -664,7 +664,7 @@ namespace Orts.Viewer3D
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] < 1)
                                 {
-                                    AnimationKey[7] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    AnimationKey[7] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoef;
                                     ELoco.Pantographs[4].State = PantographState.Raising;
                                 }
                                 else
@@ -677,7 +677,7 @@ namespace Orts.Viewer3D
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] > 0)
                                 {
-                                    AnimationKey[7] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                    AnimationKey[7] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoef;
                                     ELoco.Pantographs[4].State = PantographState.Lowering;
                                 }
                                 else
