@@ -105,7 +105,6 @@ namespace Orts.Viewer3D.RollingStock
         public MSTSWagonViewer(Viewer viewer, MSTSWagon car)
             : base(viewer, car)
         {
-
             string steamTexture = viewer.Simulator.BasePath + @"\GLOBAL\TEXTURES\smokemain.ace";
             string dieselTexture = viewer.Simulator.BasePath + @"\GLOBAL\TEXTURES\dieselsmoke.ace";
 
@@ -405,7 +404,7 @@ namespace Orts.Viewer3D.RollingStock
         }
 
         void MatchMatrixToPart(MSTSWagon car, int matrix, int bogieMatrix)
-        {
+        {            
             var matrixName = TrainCarShape.SharedShape.MatrixNames[matrix].ToUpper();
             // Gate all RunningGearPartIndexes on this!
             var matrixAnimated = TrainCarShape.SharedShape.Animations != null && TrainCarShape.SharedShape.Animations.Count > 0 && TrainCarShape.SharedShape.Animations[0].anim_nodes.Count > matrix && TrainCarShape.SharedShape.Animations[0].anim_nodes[matrix].controllers.Count > 0;
@@ -595,6 +594,7 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            Viewer.Simulator.MSTSWagon = Car;
             Pantograph1.UpdateStatePanto1(MSTSWagon.Pantographs[1].CommandUp, elapsedTime);
             Pantograph2.UpdateStatePanto2(MSTSWagon.Pantographs[2].CommandUp, elapsedTime);
             if (MSTSWagon.Pantographs.List.Count > 2) Pantograph3.UpdateStatePanto3(MSTSWagon.Pantographs[3].CommandUp, elapsedTime);
@@ -1112,10 +1112,9 @@ namespace Orts.Viewer3D.RollingStock
                 // Display Animation Shape                    
                 FreightShape.PrepareFrame(frame, elapsedTime);
             }
-
+            
             if (FreightAnimations != null)
-            {
-                Viewer.Simulator.MSTSWagon = Car;
+            {                
                 foreach (var freightAnim in FreightAnimations.Animations)
                 {
                     if (freightAnim.Animation is FreightAnimationStatic)

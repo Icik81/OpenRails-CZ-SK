@@ -151,9 +151,7 @@ namespace Orts.Viewer3D
                     SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
-            }
-            else
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
+            }            
         }
         public void UpdateStatePanto2(bool state, ElapsedTime elapsedTime)
         {
@@ -164,9 +162,7 @@ namespace Orts.Viewer3D
                     SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
-            }
-            else
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
+            }            
         }
         public void UpdateStatePanto3(bool state, ElapsedTime elapsedTime)
         {
@@ -177,9 +173,7 @@ namespace Orts.Viewer3D
                     SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
-            }
-            else
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
+            }            
         }
         public void UpdateStatePanto4(bool state, ElapsedTime elapsedTime)
         {
@@ -190,9 +184,7 @@ namespace Orts.Viewer3D
                     SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
-            }
-            else
-                SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
+            }            
         }
 
         /// <summary>

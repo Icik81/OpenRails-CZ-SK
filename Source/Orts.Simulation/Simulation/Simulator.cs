@@ -230,7 +230,7 @@ namespace Orts.Simulation
         public bool IsWheelSlip;
         public bool AIRequestSignal;        
         public bool GameSwitchManualModeOverdrive;
-        public TrainCar MSTSWagon;
+        public TrainCar MSTSWagon;        
         public bool TryToCouple;
         public bool CouplingAction;
         public bool SanderIsOn;
