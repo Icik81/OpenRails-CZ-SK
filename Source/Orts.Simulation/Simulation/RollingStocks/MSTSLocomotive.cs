@@ -5790,6 +5790,19 @@ namespace Orts.Simulation.RollingStocks
                 p4 = Pantographs.List[3];
             }            
 
+            if (UsingRearCab)
+            {
+                p1 = Pantographs.List[1];
+                p2 = Pantographs.List[0];
+                p3 = Pantographs.List[1];
+                p4 = Pantographs.List[0];
+                if (Pantographs.Count == 4)
+                {
+                    p3 = Pantographs.List[3];
+                    p4 = Pantographs.List[2];
+                }
+            }
+
             switch (PantoMode)
             {
                 case PantoModes.Auto:
