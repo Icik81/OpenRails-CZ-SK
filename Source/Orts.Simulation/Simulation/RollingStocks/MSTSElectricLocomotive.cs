@@ -354,7 +354,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Amps > 2100)
                     Amps = 2100;
             }
-
+            
             int powerSys = -1;
             int markerVoltage = 0;
             VoltageChangeMarker marker;

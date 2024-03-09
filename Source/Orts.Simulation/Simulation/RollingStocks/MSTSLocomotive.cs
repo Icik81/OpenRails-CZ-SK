@@ -12166,20 +12166,30 @@ namespace Orts.Simulation.RollingStocks
                 // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
                 if (Battery && StationIsActivated[LocoStation])
                 {
-                    switch (RouteVoltageV)
+                    switch (SelectingPowerSystem)
                     {
-                        case 3000:
-                            SwitchingVoltageMode = 0;
-                            SwitchingVoltageMode_OffDC = true;
-                            SwitchingVoltageMode_OffAC = false;
-                            break;
-                        case 15000:
-                        case 25000:
+                        case PowerSystem.AT15kV:
+                        case PowerSystem.DE15kV:
                             SwitchingVoltageMode = 2;
                             SwitchingVoltageMode_OffDC = false;
                             SwitchingVoltageMode_OffAC = true;
+                            Loco15kV = true;
                             break;
-                    }
+                        case PowerSystem.CZ25kV:
+                        case PowerSystem.SK25kV:
+                            SwitchingVoltageMode = 2;
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                            Loco15kV = false;
+                            break;
+                        case PowerSystem.CZ3kV:
+                        case PowerSystem.SK3kV:
+                            SwitchingVoltageMode = 0;
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                            Loco15kV = false;
+                            break;
+                    }                    
                 }
                 if (LastStateHV3[LocoStation] != HV3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
