@@ -3396,6 +3396,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 //lead.Simulator.Confirmer.MSG("EngineBrakeTresholdRate: " + lead.BrakeSystem.EngineBrakeTresholdRate);                                
 
+                float BrakeDelayToEngageByPressReduce = (EngineBrakeControllerRate - brakeSystem.EngineBrakeControllerApplyDeadZone) * brakeSystem.BrakeDelayToEngage;
+
                 // Definice pro brzdič BP1
                 if (brakeSystem.BP1_EngineBrakeController)
                 {                     
@@ -3420,10 +3422,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         float dp = elapsedClockSeconds * lead.BrakeSystem.BP1_EngineBrakeControllerRatePSIpS * lead.BrakeSystem.EngineBrakeTresholdRate;
 
                         brakeSystem.EngineBrakeDelay += elapsedClockSeconds;
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
                             lead.BrakeSystem.AutoCylPressurePSI1 = 0.1f * 14.50377f;
 
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage + 0.25f)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce + 0.25f)
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply);
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
@@ -3490,10 +3492,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             dp = lead.MainResPressurePSI - lead.BrakeSystem.AutoCylPressurePSI1 - lead.BrakeSystem.AutoCylPressurePSI0;
 
                         brakeSystem.EngineBrakeDelay += elapsedClockSeconds;
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
                             lead.BrakeSystem.AutoCylPressurePSI1 = 0.1f * 14.50377f;
 
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage + 0.25f)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce + 0.25f)
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
@@ -3553,10 +3555,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             dp = lead.MainResPressurePSI - lead.BrakeSystem.AutoCylPressurePSI1 - lead.BrakeSystem.AutoCylPressurePSI0;
 
                         brakeSystem.EngineBrakeDelay += elapsedClockSeconds;
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce - 0.05f && brakeSystem.EngineBrakeDelay < brakeSystem.BrakeDelayToEngage && AutoCylPressurePSI < 1)
                             lead.BrakeSystem.AutoCylPressurePSI1 = 0.1f * 14.50377f;
 
-                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage + 0.25f)
+                        if (brakeSystem.EngineBrakeDelay > brakeSystem.BrakeDelayToEngage - BrakeDelayToEngageByPressReduce + 0.25f)
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);

@@ -2339,9 +2339,9 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
 
                         if (TrainIsPassenger)
-                            BreakSpeedPanto2Down = Simulator.Random.Next(20, 40) / 3.6f;
+                            BreakSpeedPanto2Down = Simulator.Random.Next(10, 25) / 3.6f;
                         else
-                            BreakSpeedPanto2Down = Simulator.Random.Next(15, 25) / 3.6f;
+                            BreakSpeedPanto2Down = Simulator.Random.Next(15, 30) / 3.6f;
                         TrainHasBreakSpeedPanto2Down = true;
                     }
 
