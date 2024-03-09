@@ -102,6 +102,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
             }
 
+            // Default
+            if (Wagon.WagonRealPantoCount == 0)
+            {
+                Wagon.WagonRealPantoCount = 2;
+            }
+
             foreach (Pantograph pantograph in List)
             {
                 pantograph.Initialize();
