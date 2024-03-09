@@ -205,8 +205,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float TimeS { get; private set; }
 
         // Icik
-        public float AnimCorrectTimeCoefUp { get; private set; }
-        public float AnimCorrectTimeCoefDown { get; private set; }
+        public float AnimCorrectTimeCoefUp = 1.0f;
+        public float AnimCorrectTimeCoefDown = 1.0f;
 
         public bool CommandUp
         {
@@ -250,9 +250,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         }
 
         public void Parse(STFReader stf)
-        {
-            AnimCorrectTimeCoefUp = 1.0f;
-            AnimCorrectTimeCoefDown = 1.0f;
+        {            
             stf.MustMatch("(");
             stf.ParseBlock(
                 new STFReader.TokenProcessor[] {

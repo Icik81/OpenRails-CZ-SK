@@ -2192,6 +2192,7 @@ namespace Orts.Simulation.RollingStocks
         float AIPantoDownStopTimer = 0;
         float AITimeToAIPantoDownStop;
         float AITimePowerRunning;
+        float AIprevSpeedMpS;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain)
@@ -2219,8 +2220,7 @@ namespace Orts.Simulation.RollingStocks
                                 else
                                 if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny pro zdvižení pantografu
                                 {
-                                    AIPantoDownStop = true;
-                                    AIPanto2Raise = false;
+                                    AIPantoDownStop = true;                                    
                                 }                                                                
                             }
                         }
@@ -2301,35 +2301,47 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            // Detekce zvednutí obou pantografů
+            if (Pantographs.Count == 4)
+            {
+                if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                {
+                    AIPanto2Raise = true;
+                }
+                if (Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                {
+                    AIPanto2Raise = true;
+                }
+            }
+            else
+            {
+                if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                {
+                    AIPanto2Raise = true;
+                }
+            }
+
+            // Detekce zastavení vlaku a následný rozjezd
+            if (Math.Abs((Train as AITrain).SpeedMpS) < 0.01f)
+            {
+                AIprevSpeedMpS = Math.Abs((Train as AITrain).SpeedMpS);                
+            }
+            if (AIprevSpeedMpS > -1 && AIprevSpeedMpS < Math.Abs((Train as AITrain).SpeedMpS))
+            {
+                AIPanto2Raise = true;
+                AIprevSpeedMpS = -1;
+            }
+            
             // AI zvedne druhý pantograf při rozjezdu
             if (AIPanto2Raise)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
-                float TrainMassKg = 400 * 1000; // Vlak těžší než 400t
-                float MassKoef = 0;
+                float TrainMassKg = 200 * 1000; // Vlak těžší než 200t                
 
                 if (LocomotiveTypeNumber == 131)
-                    TrainMassKg = 1000 * 1000;
+                    TrainMassKg = 1000 * 1000;                
 
-                if (!TrainHasMassKoef)
-                {
-                    foreach (TrainCar car in Train.Cars)
-                    {
-                        if (car.WagonType == WagonTypes.Passenger && !TrainIsPassenger)
-                        {
-                            if ((Train as AITrain).MassKg > 200 * 1000)
-                                MassKoef = Simulator.Random.Next(0, 3) * 100 * 1000;
-                            TrainHasMassKoef = true;
-                            TrainIsPassenger = true;
-                        }
-                    }
-                    TrainHasMassKoef = true;
-                }
-
-                if (Simulator.Season == SeasonType.Winter)
-                    MassKoef = 250 * 1000;
-
-                if ((Train as AITrain) != null && (Train as AITrain).MassKg > TrainMassKg - MassKoef || (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up))
+                if ((Train as AITrain) != null && (Train as AITrain).MassKg > TrainMassKg)
                 {
                     if (!TrainHasBreakSpeedPanto2Down)
                     {
@@ -2337,11 +2349,15 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
                         if (TrainPantoMarker == 2)
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                        if (TrainPantoMarker == 3)
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 4);
+                        if (TrainPantoMarker == 4)
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
 
                         if (TrainIsPassenger)
-                            BreakSpeedPanto2Down = Simulator.Random.Next(10, 25) / 3.6f;
+                            BreakSpeedPanto2Down = Simulator.Random.Next(5, 10) / 3.6f;
                         else
-                            BreakSpeedPanto2Down = Simulator.Random.Next(15, 30) / 3.6f;
+                            BreakSpeedPanto2Down = Simulator.Random.Next(10, 20) / 3.6f;
                         TrainHasBreakSpeedPanto2Down = true;
                     }
 
@@ -2351,16 +2367,18 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
                         if (TrainPantoMarker == 2)
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                        AIPanto2Raise = false;
-                        TrainHasMassKoef = false;
+                        if (TrainPantoMarker == 3)
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
+                        if (TrainPantoMarker == 4)
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
+                        AIPanto2Raise = false;                        
                         TrainIsPassenger = false;
                         TrainHasBreakSpeedPanto2Down = false;
                     }
                 }
                 else
                 {
-                    AIPanto2Raise = false;
-                    TrainHasMassKoef = false;
+                    AIPanto2Raise = false;                    
                     TrainIsPassenger = false;
                 }
             }

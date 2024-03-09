@@ -157,7 +157,7 @@ namespace Orts.Viewer3D
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-            {
+            {               
                 if (state)
                     SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
                 else
