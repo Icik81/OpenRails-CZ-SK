@@ -12170,7 +12170,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
-                if (Battery && StationIsActivated[LocoStation])
+                if (LocoType == LocoTypes.Vectron && Battery && StationIsActivated[LocoStation])
                 {
                     switch (SelectingPowerSystem)
                     {
@@ -16816,6 +16816,10 @@ namespace Orts.Simulation.RollingStocks
 
             if (!HS198ControllerEnable)
                 return;
+
+            SwitchingVoltageMode = 0;
+            SwitchingVoltageMode_OffAC = false;
+            SwitchingVoltageMode_OffDC = true;
 
             if (HS198DirectionControllerPressUp)
             {
