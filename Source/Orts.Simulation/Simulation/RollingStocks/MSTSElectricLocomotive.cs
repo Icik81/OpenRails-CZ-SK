@@ -2322,11 +2322,11 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Detekce zastavení vlaku a následný rozjezd
-            if (Math.Abs((Train as AITrain).SpeedMpS) < 0.01f)
+            if (Train as AITrain != null && Math.Abs((Train as AITrain).SpeedMpS) < 0.01f)
             {
                 AIprevSpeedMpS = Math.Abs((Train as AITrain).SpeedMpS);                
             }
-            if (AIprevSpeedMpS > -1 && AIprevSpeedMpS < Math.Abs((Train as AITrain).SpeedMpS))
+            if (Train as AITrain != null && AIprevSpeedMpS > -1 && AIprevSpeedMpS < Math.Abs((Train as AITrain).SpeedMpS))
             {
                 AIPanto2Raise = true;
                 AIprevSpeedMpS = -1;

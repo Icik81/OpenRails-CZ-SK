@@ -134,7 +134,7 @@ namespace Orts.Viewer3D.Popups
     class TrainOperationsCoupler : Image
     {
         readonly Viewer Viewer;
-        readonly int CarPosition;
+        int CarPosition;
 
         public TrainOperationsCoupler(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
             : base(x, y, size, size)
@@ -160,6 +160,8 @@ namespace Orts.Viewer3D.Popups
                 {
                     Viewer.CarOperationsWindow.Visible = false;
                     Viewer.BrakeModeOptionsWindow.Visible = false;
+                    if (CarPosition > Viewer.PlayerTrain.Cars.Count - 1)
+                        CarPosition = Viewer.PlayerTrain.Cars.Count - 1;
                     Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
                 }
             }            
