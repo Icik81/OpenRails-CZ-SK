@@ -1606,7 +1606,7 @@ namespace Orts.Simulation.RollingStocks
                     SwitchingVoltageMode = 1;
                 }
             }
-
+            
         // Icik            
         EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);            
@@ -2193,13 +2193,14 @@ namespace Orts.Simulation.RollingStocks
         float AITimeToAIPantoDownStop;
         float AITimePowerRunning;
         float AIprevSpeedMpS;
+        int AITogglePanto2Up = 0;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain)
                 return;
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
-
+          
             if (TrainHasFirstPantoMarker)
             {
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
@@ -2330,18 +2331,25 @@ namespace Orts.Simulation.RollingStocks
             {
                 AIPanto2Raise = true;
                 AIprevSpeedMpS = -1;
+                if ((Train as AITrain).Cars.Count > 3)
+                {
+                    if (RouteVoltageV == 3000)
+                        AITogglePanto2Up = Simulator.Random.Next(1, 3);
+                    else
+                        AITogglePanto2Up = Simulator.Random.Next(1, 5);
+                }
             }
             
             // AI zvedne druhý pantograf při rozjezdu
             if (AIPanto2Raise)
             {
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   Hmotnost " + (Train as AITrain).MassKg / 1000 + " t");
-                float TrainMassKg = 200 * 1000; // Vlak těžší než 200t                
+                float TrainMassKg = 400 * 1000; // Vlak těžší než 400t                
 
                 if (LocomotiveTypeNumber == 131)
                     TrainMassKg = 1000 * 1000;                
 
-                if ((Train as AITrain) != null && (Train as AITrain).MassKg > TrainMassKg)
+                if ((Train as AITrain) != null && ((Train as AITrain).MassKg > TrainMassKg || AITogglePanto2Up == 1))
                 {
                     if (!TrainHasBreakSpeedPanto2Down)
                     {
@@ -2428,8 +2436,17 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (RouteVoltageV == 3000)
                 {
+                    if (Pantographs[1].State == PantographState.Up) Pantographs[1].State = PantographState.Lowering;
+                    if (Pantographs[2].State == PantographState.Up) Pantographs[2].State = PantographState.Lowering;
                     if (TrainPantoMarker == 1) TrainPantoMarker = 3;
                     if (TrainPantoMarker == 2) TrainPantoMarker = 4;
+                }
+                else                    
+                {
+                    if (Pantographs[3].State == PantographState.Up) Pantographs[3].State = PantographState.Lowering;
+                    if (Pantographs[4].State == PantographState.Up) Pantographs[4].State = PantographState.Lowering;
+                    if (TrainPantoMarker == 3) TrainPantoMarker = 1;
+                    if (TrainPantoMarker == 4) TrainPantoMarker = 2;
                 }
             }
 

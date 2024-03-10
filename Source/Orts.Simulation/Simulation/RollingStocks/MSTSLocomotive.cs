@@ -2949,7 +2949,13 @@ namespace Orts.Simulation.RollingStocks
                 pss.IsDefault = true;
                 Simulator.powerSupplyStations.Add(pss);
                 pss = new PowerSupplyStation();
-                pss.PowerSystem = 1;
+                switch ((float)Simulator.TRK.Tr_RouteFile.MaxLineVoltage)
+                {
+                    case 0: pss.PowerSystem = 1; break;
+                    case 3000: pss.PowerSystem = 0; break;
+                    case 15000: pss.PowerSystem = 2; break;
+                    case 25000: pss.PowerSystem = 1; break;                    
+                }                
                 Simulator.powerSupplyStations.Add(pss);
             }
         }
