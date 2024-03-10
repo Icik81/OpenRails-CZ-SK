@@ -372,7 +372,8 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 myStation = new PowerSupplyStation();
-                myStation.PowerSystem = markerVoltage == 3000 ? 0 : 1;
+                //myStation.PowerSystem = markerVoltage == 3000 ? 0 : 1;
+                powerSys = myStation.PowerSystem;
             }
             if (powerSys == 0)
             {
@@ -2200,7 +2201,11 @@ namespace Orts.Simulation.RollingStocks
                 return;
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
-          
+
+            if (Battery)
+                foreach (Pantograph p in Pantographs.List)
+                    p.PantographsBlocked = false;
+
             if (TrainHasFirstPantoMarker)
             {
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
