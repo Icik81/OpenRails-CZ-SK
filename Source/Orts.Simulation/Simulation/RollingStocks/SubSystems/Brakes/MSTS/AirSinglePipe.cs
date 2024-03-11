@@ -3869,7 +3869,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             HandBrakeCarsCount = 12;
                         if (y > 60 && y <= 65)
                             HandBrakeCarsCount = 13;
-                    }                       
+                    }
+
+                    train.Cars[LeadPosition].BrakeSystem.HandBrakeDeactive = false;
+                    train.Cars[LeadPosition].BrakeSystem.HandBrakeActive = true;
 
                     if (train.Cars.Count > 1 && LeadPosition > train.Cars.Count / 2f)
                     {

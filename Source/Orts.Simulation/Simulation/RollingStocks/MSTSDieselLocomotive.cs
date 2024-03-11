@@ -1093,7 +1093,7 @@ namespace Orts.Simulation.RollingStocks
                                     AIMotorStop = false;
                                 }
                                 else
-                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny 
+                                if (AITimeToGo > (Train as AITrain).TrainAISeasonWaitTimeOff) // Čekání dle sezóny 
                                 {
                                     AIMotorStop = true;
                                     AIMotorStart = false;

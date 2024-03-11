@@ -124,6 +124,11 @@ namespace Orts.Simulation.Physics
         public TrainCar MasterLoco;
         public TrainCar SlaveLoco;
         public float TrainDistanceTravelledM;
+        public float TrainAISeasonWaitTimeOff;
+        public float TrainAITogglePanto2Up;
+        public bool TrainHasBreakSpeedPanto2Down = false;
+        public float TrainBreakSpeedPanto2Down;
+        public float AITrainprevSpeedMpS;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

@@ -2186,29 +2186,28 @@ namespace Orts.Simulation.RollingStocks
         public float AIPantoChangeTime = 0;
         float AISetPowerTime = 0;
         bool TrainHasMassKoef = false;
-        bool TrainIsPassenger = false;
-        bool TrainHasBreakSpeedPanto2Down = false;
-        float BreakSpeedPanto2Down;
+        bool TrainIsPassenger = false;        
         bool AIPantoDownStopSoundCyklus;
         float AIPantoDownStopTimer = 0;
         float AITimeToAIPantoDownStop;
-        float AITimePowerRunning;
-        float AIprevSpeedMpS;
-        int AITogglePanto2Up = 0;
+        float AITimePowerRunning;        
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain)
+            if (IsPlayerTrain || Train as AITrain == null)
                 return;
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
 
             if (Battery)
                 foreach (Pantograph p in Pantographs.List)
+                {
                     p.PantographsBlocked = false;
+                    p.PantographsUpBlocked = false;
+                }
 
             if (TrainHasFirstPantoMarker)
             {
-                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                if ((Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
@@ -2219,12 +2218,12 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 double AITimeToGo = ((AuxActionWPItem)(Train as AITrain).nextActionInfo).ActualDepart - Simulator.ClockTime;
                                 if (AITimeToGo < 120) // Čekání 2min pro nahození 2.pantografu 
-                                {
+                                {                                 
                                     AIPanto2Raise = true;
                                     AIPantoDownStop = false;
                                 }
                                 else
-                                if (AITimeToGo > AISeasonWaitTimeOff) // Čekání dle sezóny pro zdvižení pantografu
+                                if (AITimeToGo > (Train as AITrain).TrainAISeasonWaitTimeOff) // Čekání dle sezóny pro zdvižení pantografu
                                 {
                                     AIPantoDownStop = true;                                    
                                 }                                                                
@@ -2269,9 +2268,15 @@ namespace Orts.Simulation.RollingStocks
             {
                 SignalEvent(PowerSupplyEvent.LowerPantograph);
                 if (PowerOn)
+                {
                     SignalEvent(Event.EnginePowerOff);
-
-                PowerOn = false;
+                    PowerOn = false;
+                    SignalEvent(Event.CircuitBreakerOpen);
+                    if (RouteVoltageV == 3000)
+                        SignalEvent(Event.CircuitBreakerOpenDC);
+                    else
+                        SignalEvent(Event.CircuitBreakerOpenAC);
+                }                
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   změna směru ");
                 if (AIPantoChangeTime == 0)
                 {
@@ -2283,14 +2288,12 @@ namespace Orts.Simulation.RollingStocks
                 }
                 AIPantoChangeTime += elapsedClockSeconds;
                 SpeedMpS = 0;
+                ThrottlePercent = 0;
+                ControllerVolts = 0;                
                 if (AIPantoChangeTime > 10)
                 {
                     AIPantoChange = false;
-                    AIPantoChangeTime = -1;
-                    AIPanto2Raise = true;
-                    TrainHasMassKoef = false;
-                    TrainIsPassenger = false;
-                    TrainHasBreakSpeedPanto2Down = false;
+                    AIPantoChangeTime = -1;                                                            
                 }
             }
             // Vyčká na místě po obratu
@@ -2299,9 +2302,10 @@ namespace Orts.Simulation.RollingStocks
                 CarLightsPowerOn = true;
                 SpeedMpS = 0;
                 ThrottlePercent = 0;
+                ControllerVolts = 0;                
                 AISetPowerTime += elapsedClockSeconds;
                 if (AISetPowerTime > 10)
-                {
+                {                    
                     AISetPowerTime = 0;
                     AIPantoChangeTime = 0;
                 }
@@ -2328,20 +2332,21 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Detekce zastavení vlaku a následný rozjezd
-            if (Train as AITrain != null && Math.Abs((Train as AITrain).SpeedMpS) < 0.01f)
+            if (Math.Abs((Train as AITrain).SpeedMpS) < 0.01f)
             {
-                AIprevSpeedMpS = Math.Abs((Train as AITrain).SpeedMpS);                
+                (Train as AITrain).AITrainprevSpeedMpS = Math.Abs((Train as AITrain).SpeedMpS);
+                (Train as AITrain).TrainHasBreakSpeedPanto2Down = false;
             }
-            if (Train as AITrain != null && AIprevSpeedMpS > -1 && AIprevSpeedMpS < Math.Abs((Train as AITrain).SpeedMpS))
+            if ((Train as AITrain).AITrainprevSpeedMpS > -1 && (Train as AITrain).AITrainprevSpeedMpS < Math.Abs((Train as AITrain).SpeedMpS))
             {
                 AIPanto2Raise = true;
-                AIprevSpeedMpS = -1;
+                (Train as AITrain).AITrainprevSpeedMpS = -1;
                 if ((Train as AITrain).Cars.Count > 3)
                 {
                     if (RouteVoltageV == 3000)
-                        AITogglePanto2Up = Simulator.Random.Next(1, 3);
+                        (Train as AITrain).TrainAITogglePanto2Up = Simulator.Random.Next(1, 3);
                     else
-                        AITogglePanto2Up = Simulator.Random.Next(1, 5);
+                        (Train as AITrain).TrainAITogglePanto2Up = Simulator.Random.Next(1, 5);
                 }
             }
             
@@ -2354,9 +2359,9 @@ namespace Orts.Simulation.RollingStocks
                 if (LocomotiveTypeNumber == 131)
                     TrainMassKg = 1000 * 1000;                
 
-                if ((Train as AITrain) != null && ((Train as AITrain).MassKg > TrainMassKg || AITogglePanto2Up == 1))
+                if ((Train as AITrain).MassKg > TrainMassKg || (Train as AITrain).TrainAITogglePanto2Up == 1)
                 {
-                    if (!TrainHasBreakSpeedPanto2Down)
+                    if (!(Train as AITrain).TrainHasBreakSpeedPanto2Down)
                     {
                         if (TrainPantoMarker == 1)
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
@@ -2368,13 +2373,13 @@ namespace Orts.Simulation.RollingStocks
                             SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
 
                         if (TrainIsPassenger)
-                            BreakSpeedPanto2Down = Simulator.Random.Next(5, 10) / 3.6f;
+                            (Train as AITrain).TrainBreakSpeedPanto2Down = Simulator.Random.Next(5, 10) / 3.6f;
                         else
-                            BreakSpeedPanto2Down = Simulator.Random.Next(10, 20) / 3.6f;
-                        TrainHasBreakSpeedPanto2Down = true;
+                            (Train as AITrain).TrainBreakSpeedPanto2Down = Simulator.Random.Next(10, 20) / 3.6f;
+                        (Train as AITrain).TrainHasBreakSpeedPanto2Down = true;
                     }
 
-                    if (Math.Abs((Train as AITrain).SpeedMpS) > BreakSpeedPanto2Down || IsOverJunction()) // Překročí rychlost nebo je na výhybce
+                    if (Math.Abs((Train as AITrain).SpeedMpS) > (Train as AITrain).TrainBreakSpeedPanto2Down || IsOverJunction()) // Překročí rychlost nebo je na výhybce
                     {
                         if (TrainPantoMarker == 1)
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
@@ -2385,8 +2390,7 @@ namespace Orts.Simulation.RollingStocks
                         if (TrainPantoMarker == 4)
                             SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
                         AIPanto2Raise = false;                        
-                        TrainIsPassenger = false;
-                        TrainHasBreakSpeedPanto2Down = false;
+                        TrainIsPassenger = false;                        
                     }
                 }
                 else
@@ -2431,6 +2435,12 @@ namespace Orts.Simulation.RollingStocks
                     AIPantoDownStopSoundCyklus = true;
                     AIPantoDownStopTimer = 0;
                     SignalEvent(Event.EnginePowerOff);
+                    PowerOn = false;
+                    SignalEvent(Event.CircuitBreakerOpen);
+                    if (RouteVoltageV == 3000)
+                        SignalEvent(Event.CircuitBreakerOpenDC);
+                    else
+                        SignalEvent(Event.CircuitBreakerOpenAC);
                 }
             }
             if (!AIPantoDownStop)
@@ -2456,42 +2466,36 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Pantografy AI
-            for (int i = 1; i <= Pantographs.Count; i++)
+            if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !AIPantoChange)
             {
-                switch (Pantographs[i].State)
+                SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
+                if (!PowerOn && PantographUp)
                 {
-                    case PantographState.Raising:
-                    case PantographState.Lowering:
-                    case PantographState.Down:
-                        if (RouteVoltageV != 1 && !AIPantoDown && !AIPantoDownStop && !AIPantoChange)
-                        {
-                            Pantographs[i].PantographsUpBlocked = false;
-                            SignalEvent(PowerSupplyEvent.RaisePantograph, TrainPantoMarker);
-                        }
-                        break;
-                    case PantographState.Up:
-                        if (AIPantoChangeTime == -1)
-                            return;
-                        else
-                        if (!PowerOn)
-                        {
-                            SignalEvent(Event.EnginePowerOn);
-                            PowerOn = true;
-                        }
-
-                        if (RouteVoltageV == 1 || AIPantoDownStop)
-                        {
-                            Pantographs[i].PantographsUpBlocked = true;
-                            SignalEvent(PowerSupplyEvent.LowerPantograph);
-                            if (PowerOn)
-                                SignalEvent(Event.EnginePowerOff);
-                            PowerOn = false;
-                            if (!AIPantoDownStop)
-                                AIPantoDown = true;
-                        }
-                        break;
+                    SignalEvent(Event.EnginePowerOn);
+                    PowerOn = true;
                 }
-            }            
+            }
+
+            if (AIPantoChangeTime == -1)
+                return;                        
+
+            if (RouteVoltageV == 1 || AIPantoDownStop)
+            {
+                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                if (PowerOn)
+                {
+                    SignalEvent(Event.EnginePowerOff);
+                    PowerOn = false;                    
+                    SignalEvent(Event.CircuitBreakerOpen);
+                    if (RouteVoltageV == 3000)
+                        SignalEvent(Event.CircuitBreakerOpenDC);
+                    else
+                        SignalEvent(Event.CircuitBreakerOpenAC);
+                }
+                if (!AIPantoDownStop)
+                    AIPantoDown = true;
+            }
+
         }
 
         // Penalizace hráče

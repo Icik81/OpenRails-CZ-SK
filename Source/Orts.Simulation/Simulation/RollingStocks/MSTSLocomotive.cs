@@ -5083,7 +5083,6 @@ namespace Orts.Simulation.RollingStocks
         bool AIStartOn;
         bool AIBellStartOn;
         bool CarIsWaitingAtStation;
-        public float AISeasonWaitTimeOff;
         public void SetAIAction(float elapsedClockSeconds)
         {            
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
@@ -5098,16 +5097,16 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Čas v sekundách, kdy AI vypne napájení
-                if (AISeasonWaitTimeOff == 0)
+                if ((Train as AITrain).TrainAISeasonWaitTimeOff == 0)
                 {
                     switch (Simulator.Season)
                     {
-                        case SeasonType.Spring: AISeasonWaitTimeOff = Simulator.Random.Next(15, 21); break;
-                        case SeasonType.Summer: AISeasonWaitTimeOff = Simulator.Random.Next(10, 16); break;
-                        case SeasonType.Autumn: AISeasonWaitTimeOff = Simulator.Random.Next(15, 31); break;
-                        case SeasonType.Winter: AISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
+                        case SeasonType.Spring: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(15, 21); break;
+                        case SeasonType.Summer: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(10, 16); break;
+                        case SeasonType.Autumn: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(15, 31); break;
+                        case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
-                    AISeasonWaitTimeOff *= 60f; 
+                    (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f; 
                 }
 
                 CarIsWaiting = false;
@@ -5121,9 +5120,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (TrainCar car in (Train as AITrain).Cars)
                             {
-                                car.BrakeSystem.PowerForWagon = false;
-                                PowerOn = false;
-                                Battery = false;
+                                car.BrakeSystem.PowerForWagon = false;                               
                             }
                         }
                     }
@@ -5136,10 +5133,29 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (TrainCar car in (Train as AITrain).Cars)
                             {
-                                car.BrakeSystem.PowerForWagon = true;
-                                PowerOn = true;
-                                Battery = true;
+                                car.BrakeSystem.PowerForWagon = true;                                
                             }
+                        }
+                    }
+                }
+
+                if (this.BrakeSystem.PowerForWagon == true)
+                {
+                    foreach (TrainCar car in (Train as AITrain).Cars)
+                    {                        
+                        if (car is MSTSLocomotive)
+                        {                     
+                            (car as MSTSLocomotive).Battery = true;
+                        }
+                    }
+                }
+                if (this.BrakeSystem.PowerForWagon == false)
+                {
+                    foreach (TrainCar car in (Train as AITrain).Cars)
+                    {
+                        if (car is MSTSLocomotive)
+                        {
+                            (car as MSTSLocomotive).Battery = false;
                         }
                     }
                 }
@@ -5148,7 +5164,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this as MSTSSteamLocomotive != null && !(this as MSTSLocomotive).LocoIsStatic)
                 {
                     this.BrakeSystem.PowerForWagon = true;
-                    PowerOn = true;
+                    //PowerOn = true;
                 }
 
                 // AI je ve stanici nebo stojí
