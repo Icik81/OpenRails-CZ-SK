@@ -2747,33 +2747,33 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Pantografy
-                if (MaxLineVoltage0 > 10000)
-                {                   
-                    if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
-                    {
-                        SignalEvent(Event.Pantograph1UpAC);
-                        TPanto1AC = 1;
-                    }
-                    if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
-                    {
-                        SignalEvent(Event.Pantograph1DownAC);
-                        TPanto1AC = 0;
-                    }
-
-                    if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
-                    {
-                        SignalEvent(Event.Pantograph2UpAC);
-                        TPanto2AC = 1;
-                    }
-                    if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
-                    {
-                        SignalEvent(Event.Pantograph2DownAC);
-                        TPanto2AC = 0;
-                    }
-                }
-                else
+                if (Pantographs.Count == 4)
                 {
-                    if (Pantographs.Count == 4)
+                    if (SwitchingVoltageMode == 2)
+                    {
+                        if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1UpAC);
+                            TPanto1AC = 1;
+                        }
+                        if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1DownAC);
+                            TPanto1AC = 0;
+                        }
+
+                        if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2UpAC);
+                            TPanto2AC = 1;
+                        }
+                        if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2DownAC);
+                            TPanto2AC = 0;
+                        }
+                    }
+                    if (SwitchingVoltageMode == 0)
                     {
                         if (Pantographs[3].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
@@ -2797,7 +2797,34 @@ namespace Orts.Simulation.RollingStocks
                             TPanto2DC = 0;
                         }
                     }
-                    else
+                }
+                else
+                {
+                    if (SwitchingVoltageMode == 2)
+                    {
+                        if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1UpAC);
+                            TPanto1AC = 1;
+                        }
+                        if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
+                        {
+                            SignalEvent(Event.Pantograph1DownAC);
+                            TPanto1AC = 0;
+                        }
+
+                        if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2UpAC);
+                            TPanto2AC = 1;
+                        }
+                        if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
+                        {
+                            SignalEvent(Event.Pantograph2DownAC);
+                            TPanto2AC = 0;
+                        }
+                    }
+                    if (SwitchingVoltageMode == 0)
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
@@ -2821,7 +2848,7 @@ namespace Orts.Simulation.RollingStocks
                             TPanto2DC = 0;
                         }
                     }
-                }
+                }                
             }
         }
 
