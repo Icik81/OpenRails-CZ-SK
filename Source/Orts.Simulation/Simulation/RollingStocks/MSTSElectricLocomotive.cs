@@ -2349,7 +2349,36 @@ namespace Orts.Simulation.RollingStocks
                         (Train as AITrain).TrainAITogglePanto2Up = Simulator.Random.Next(1, 5);
                 }
             }
-            
+
+            // Kontrola 2 pantografů při rychlosti nad 25 km/h
+            if (Math.Abs((Train as AITrain).SpeedMpS) > 25f / 3.6f)
+            {
+                if (Pantographs.Count == 4)
+                {
+                    if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    {
+                        SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                    }
+                    if (Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
+                    {
+                        SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
+                    }
+                }
+                else
+                {
+                    if (Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
+                    {
+                        SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                    }
+                }
+            }
+
+            (Train as AITrain).MassKg = 0;
+            foreach (TrainCar car in (Train as AITrain).Cars)
+            {
+                (Train as AITrain).MassKg += car.MassKG;
+            }
+
             // AI zvedne druhý pantograf při rozjezdu
             if (AIPanto2Raise)
             {
