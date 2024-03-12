@@ -1132,11 +1132,6 @@ namespace Orts.Simulation.RollingStocks
                     MotorSoundStopCycle++;
                 }
 
-                if (!Battery)
-                {
-                    SignalEvent(Event.BatteryOn);
-                    Battery = true;
-                }
                 if (!PowerKey)
                 {
                     SignalEvent(Event.PowerKeyOn);

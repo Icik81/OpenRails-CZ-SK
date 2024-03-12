@@ -298,7 +298,7 @@ namespace Orts.Viewer3D
                 newCarLightFrontLR = false;
                 newCarLightFrontRR = false;
                 newCarLightRearLR = false;
-                newCarLightRearRR = false;
+                newCarLightRearRR = false;                                
             }
 
             if (LightCycle < 1 && Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
@@ -326,8 +326,7 @@ namespace Orts.Viewer3D
                 // AI posunuje
                 if (Car.CarIsShunting)
                 {
-                    newTrainHeadlight = 0;
-                    newCarInService = false;
+                    newTrainHeadlight = 0;                    
                 }
                 else
                 // AI vyčkává na místě

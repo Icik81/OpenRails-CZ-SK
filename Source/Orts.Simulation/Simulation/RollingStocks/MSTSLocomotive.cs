@@ -6546,7 +6546,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
-                SetAIAction(elapsedClockSeconds);
+                SetAIAction(elapsedClockSeconds);                
                 AcceptMUSignals = true;
                 PowerReduction = 0;
 

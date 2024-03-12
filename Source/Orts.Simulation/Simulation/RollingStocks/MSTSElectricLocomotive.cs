@@ -2198,12 +2198,11 @@ namespace Orts.Simulation.RollingStocks
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
 
-            if (Battery)
-                foreach (Pantograph p in Pantographs.List)
-                {
-                    p.PantographsBlocked = false;
-                    p.PantographsUpBlocked = false;
-                }
+            foreach (Pantograph p in Pantographs.List)
+            {
+                p.PantographsBlocked = false;
+                p.PantographsUpBlocked = false;
+            }
 
             if (TrainHasFirstPantoMarker)
             {
