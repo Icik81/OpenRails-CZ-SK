@@ -2741,7 +2741,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MaxForceN == 0)  // Default 300kN
                 MaxForceN = 300000;
-
+            
             Variable1 = ThrottlePercent;
             if (ThrottlePercent == 0f) Variable2 = 0;
             else
@@ -2753,10 +2753,28 @@ namespace Orts.Simulation.RollingStocks
                 else if (dV2 < -max) dV2 = -max;
                 Variable2 += dV2;
             }
-            if (DynamicBrakePercent > 0)
-                Variable3 = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
-            else
-                Variable3 = 0;
+
+            if (!IsPlayerTrain)
+            {
+                Variable2 *= 2f;
+                if (ThrottlePercent < 0.1f) Variable2 = 0;
+                if (DynamicBrakeController != null)
+                {
+                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 15.0f / 3.6f) ? 1f : (1.0f - ((15.0f - (AbsSpeedMpS / 3.6f)) / 13f));
+                    if (CoefSpeedMpSCutOff < 0) CoefSpeedMpSCutOff = 0;
+                    if (AccelerationMpSS < -0.1f && Train.AITrainBrakePercent > 0f && AbsSpeedMpS > 2.0f / 3.6f)
+                        Variable3 = Math.Abs(AccelerationMpSS) * CoefSpeedMpSCutOff * 2f;
+                    else
+                        Variable3 = 0;
+                }
+            }
+            else            
+            {
+                if (DynamicBrakePercent > 0)
+                    Variable3 = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                else
+                    Variable3 = 0;
+            }
 
             // Multisystémová lokomotiva
             if (MultiSystemEngine)
