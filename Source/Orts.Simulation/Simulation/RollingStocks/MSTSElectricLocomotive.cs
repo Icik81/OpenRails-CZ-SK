@@ -2190,7 +2190,8 @@ namespace Orts.Simulation.RollingStocks
         bool AIPantoDownStopSoundCyklus;
         float AIPantoDownStopTimer = 0;
         float AITimeToAIPantoDownStop;
-        float AITimePowerRunning;        
+        float AITimePowerRunning;
+        bool TrainPantoMarkerSetUp;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain || Train as AITrain == null)
@@ -2279,11 +2280,28 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, "ID " + (Train as AITrain).GetTrainName(CarID) + "   změna směru ");
                 if (AIPantoChangeTime == 0)
                 {
-                    if (TrainPantoMarker == 1)
-                        TrainPantoMarker = 2;
+                    if (Pantographs.Count == 4)
+                    {
+                        if (TrainPantoMarker == 1)
+                            TrainPantoMarker = 2;
+                        else
+                        if (TrainPantoMarker == 2)
+                            TrainPantoMarker = 1;
+                        else
+                        if (TrainPantoMarker == 3)
+                            TrainPantoMarker = 4;
+                        else
+                        if (TrainPantoMarker == 4)
+                            TrainPantoMarker = 3;
+                    }
                     else
-                    if (TrainPantoMarker == 2)
-                        TrainPantoMarker = 1;
+                    {
+                        if (TrainPantoMarker == 1)
+                            TrainPantoMarker = 2;
+                        else
+                        if (TrainPantoMarker == 2)
+                            TrainPantoMarker = 1;
+                    }
                 }
                 AIPantoChangeTime += elapsedClockSeconds;
                 SpeedMpS = 0;
@@ -2490,6 +2508,22 @@ namespace Orts.Simulation.RollingStocks
                     if (Pantographs[4].State == PantographState.Up) Pantographs[4].State = PantographState.Lowering;
                     if (TrainPantoMarker == 3) TrainPantoMarker = 1;
                     if (TrainPantoMarker == 4) TrainPantoMarker = 2;
+                }
+            }
+
+            // Při načtení hry kontroluje číslo uloženého akčního panta
+            if (Simulator.GameWasRestored && !TrainPantoMarkerSetUp)
+            {
+                TrainPantoMarkerSetUp = true;
+                if (TrainPantoMarker == 2)
+                {
+                    TrainPantoMarker = 1;
+                    Pantographs[2].State = PantographState.Down;
+                }
+                if (TrainPantoMarker == 4)
+                {
+                    TrainPantoMarker = 3;
+                    Pantographs[4].State = PantographState.Down;
                 }
             }
 

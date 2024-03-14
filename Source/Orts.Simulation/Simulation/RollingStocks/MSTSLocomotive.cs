@@ -6876,7 +6876,7 @@ namespace Orts.Simulation.RollingStocks
                 if (CruiseControl != null && (TrainBrakeController.TCSEmergencyBraking || TrainBrakeController.TCSFullServiceBraking))
                 CruiseControl.WasBraking = true;
 
-            if (LocoType != LocoTypes.Vectron)
+            if (LocoType != LocoTypes.Vectron || !IsPlayerTrain)
                 UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);
 
             if (LocoType == LocoTypes.Vectron)
