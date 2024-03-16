@@ -11550,8 +11550,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 this.CarPowerKey = true;
                 Simulator.TrainPowerKey = true;
-                StationIsActivated[1] = true;
-                StationIsActivated[2] = true;
+                StationIsActivated[1] = StationIsActivated[2] = false;                
+                StationIsActivated[LocoStation] = true;                
             }
         }
 
