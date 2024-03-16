@@ -12188,7 +12188,7 @@ namespace Orts.Simulation.RollingStocks
                 // Výběr napájecího systému při HV3 (zde bude výběr dle obrazovky)
                 if (LocoType == LocoTypes.Vectron && Battery && StationIsActivated[LocoStation])
                 {
-                    switch (SelectingPowerSystem)
+                    switch (SelectedPowerSystem)
                     {
                         case PowerSystem.AT15kV:
                         case PowerSystem.DE15kV:
