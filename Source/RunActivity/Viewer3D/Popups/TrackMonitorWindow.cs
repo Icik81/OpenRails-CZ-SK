@@ -2505,8 +2505,9 @@ namespace Orts.Viewer3D.Popups
                 itemLocation = forward ? startObjectArea : endObjectArea;
                 displayRequired = true;
             }
-
-            if (displayRequired)
+            // Icik
+            var train = Program.Viewer.PlayerLocomotive.Train;
+            if (displayRequired && !train.NoSignals)
             {
                 spriteBatch.Draw(SignalAspects, new Rectangle(offset.X + signalPosition[0], offset.Y + itemLocation + signalPosition[forward ? 1 : 2], signalPosition[3], signalPosition[4]), displayItem, Color.White);
             }

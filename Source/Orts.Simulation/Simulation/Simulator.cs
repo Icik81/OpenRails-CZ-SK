@@ -252,7 +252,7 @@ namespace Orts.Simulation
         public bool DashLightCanActivate;
         public bool ESCKeyActivated;
         public TrainCar attachedCar;
-        public int ScreenSizeY;
+        public int ScreenSizeY;        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -1546,8 +1546,7 @@ namespace Orts.Simulation
             if (conFileName.Contains("tilted")) train.IsTilting = true;
 
             // Icik
-            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;            
-
+            if (conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) Settings.AirEmpty = true; // Cold & Dark
 
 #if ACTIVITY_EDITOR
             AIPath aiPath = new AIPath(TDB, TSectionDat, patFileName, TimetableMode, orRouteConfig);
@@ -1727,7 +1726,7 @@ namespace Orts.Simulation
             if (conFileName.Contains("tilted")) train.IsTilting = true;
 
             // Icik
-            if ((conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) && !conFileName.Contains("aire")) Settings.AirEmpty = true;            
+            if (conFileName.ToLower().Contains("airempty") || conFileName.ToLower().Contains("aire")) Settings.AirEmpty = true; // Cold & Dark            
 
             return train;
         }

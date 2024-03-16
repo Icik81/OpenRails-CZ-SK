@@ -129,6 +129,7 @@ namespace Orts.Simulation.Physics
         public bool TrainHasBreakSpeedPanto2Down = false;
         public float TrainBreakSpeedPanto2Down;
         public float AITrainprevSpeedMpS;
+        public bool NoSignals;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1705,10 +1706,14 @@ namespace Orts.Simulation.Physics
             {
                 if (Simulator.conFileName != null)
                 {
-                    if (Simulator.conFileName.Contains("MC"))
+                    if (Simulator.conFileName.Contains("MC")) 
                     {                        
                         Simulator.ManualCouplingOverride = true;
-                    }                    
+                    }
+                    if (Simulator.conFileName.ToLower().Contains("nosig")) // bez signálů na TM
+                    {
+                        NoSignals = true;
+                    }
                 }
 
                 if (Simulator.ManualCouplingOverride)

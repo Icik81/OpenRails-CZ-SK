@@ -594,7 +594,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (Car.Train.Simulator.conFileName != null)
                     {
-                        if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.Simulator.conFileName.Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;                        
+                        if (Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;                        
                     }
                     if (!Car.Train.Simulator.Settings.AirEmpty)
                         PowerForWagon = true;
