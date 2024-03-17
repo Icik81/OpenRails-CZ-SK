@@ -706,6 +706,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            NoSignals = inf.ReadBoolean();
             TrainDistanceTravelledM = inf.ReadSingle();
             TrainHeatingStartOn = inf.ReadBoolean();
             TrainRouteIsReversed = inf.ReadBoolean();
@@ -1080,6 +1081,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(NoSignals);
             outf.Write(TrainDistanceTravelledM);
             outf.Write(TrainHeatingStartOn);
             outf.Write(TrainRouteIsReversed);

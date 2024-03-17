@@ -673,7 +673,7 @@ namespace Orts.Simulation
             outf.Write(ControllerVoltsLocoHelper);
             outf.Write(TrainPowerKey);
             outf.Write(OldClockTime);
-            outf.Write(ManualCouplingOverride);
+            outf.Write(ManualCouplingOverride);            
 
             outf.Write(ClockTime);
             outf.Write((int)Season);
