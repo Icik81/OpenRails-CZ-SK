@@ -3748,8 +3748,7 @@ namespace Orts.Simulation.RollingStocks
         /// <returns> returns true if car is over junction</returns>
 
         public bool IsOverJunction()
-        {
-
+        {            
             // To Do - This identifies the start of the train, but needs to be further refined to work for each carriage.
             var isOverJunction = false;
             // start at front of train
@@ -3757,9 +3756,8 @@ namespace Orts.Simulation.RollingStocks
             float thisSectionOffset = Train.PresentPosition[0].TCOffset;
             int thisSectionDirection = Train.PresentPosition[0].TCDirection;
 
-
             float usedCarLength = CarLengthM;
-
+            
             if (Train.PresentPosition[0].TCSectionIndex != Train.PresentPosition[1].TCSectionIndex)
             {
                 try
@@ -3772,8 +3770,9 @@ namespace Orts.Simulation.RollingStocks
 
                         if (thisSection.CircuitType == TrackCircuitSection.TrackCircuitType.Junction || thisSection.CircuitType == TrackCircuitSection.TrackCircuitType.Crossover)
                         {
-
-                            // train is on a switch; let's see if car is on a switch too
+                            if (Simulator.TDB.TrackDB.TrackNodes[thisSection.OriginalIndex].UiD == null)
+                                return false;
+                            // train is on a switch; let's see if car is on a switch too                            
                             WorldLocation switchLocation = TileLocation(Simulator.TDB.TrackDB.TrackNodes[thisSection.OriginalIndex].UiD);
                             var distanceFromSwitch = WorldLocation.GetDistanceSquared(WorldPosition.WorldLocation, switchLocation);
                             if (distanceFromSwitch < CarLengthM * CarLengthM + Math.Min(SpeedMpS * 3, 150))
