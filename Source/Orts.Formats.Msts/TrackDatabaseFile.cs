@@ -1021,6 +1021,9 @@ namespace Orts.Formats.Msts
         /// <summary>number to be displayed if ShowNumber is true</summary>
         public int DisplayNumber { get; set; }
 
+        // Icik
+        public float RestrictedZoneSpeed { get; set; }
+
         /// <summary>Get the direction the signal is NOT facing</summary>
         public int ReverseDirection
         {
@@ -1106,7 +1109,7 @@ namespace Orts.Formats.Msts
         /// 
         public WorldPosition WorldPosition;
 
-        public TempSpeedPostItem(Tr_RouteFile routeFile, Position position, bool isStart, WorldPosition worldPosition, bool isWarning)
+        public TempSpeedPostItem(Tr_RouteFile routeFile, Position position, bool isStart, WorldPosition worldPosition, bool isWarning, float restrictedZoneSpeed)
         {
             // TrItemId needs to be set later
             ItemType = trItemType.trSPEEDPOST;
@@ -1117,19 +1120,25 @@ namespace Orts.Formats.Msts
             IsLimit = true;
             IsFreight = IsPassenger = true;
             IsWarning = isWarning;
+            // Icik
+            RestrictedZoneSpeed = restrictedZoneSpeed;
 
             if (!isStart) { IsLimit = true; IsResume = true; }//end zone
-            float speed = routeFile.TempRestrictedSpeed;
+            if (RestrictedZoneSpeed <= 0)
+            {
+                RestrictedZoneSpeed = routeFile.TempRestrictedSpeed;
+            }
+            float speed = RestrictedZoneSpeed;
             if (speed < 0) speed = ORTS.Common.MpS.FromKpH(25); //todo. Value is not used. Should it be used below instead of TempRestrictedSpeed? And if so, is the +0.01 then still needed?
             if (routeFile.MilepostUnitsMetric == true)
             {
                 this.IsMPH = false;
-                SpeedInd = (int)(ORTS.Common.MpS.ToKpH(routeFile.TempRestrictedSpeed) + 0.1f);
+                SpeedInd = (int)(ORTS.Common.MpS.ToKpH(RestrictedZoneSpeed) + 0.1f);
             }
             else
             {
                 this.IsMPH = true;
-                SpeedInd = (int)(ORTS.Common.MpS.ToMpH(routeFile.TempRestrictedSpeed) + 0.1f);
+                SpeedInd = (int)(ORTS.Common.MpS.ToMpH(RestrictedZoneSpeed) + 0.1f);
             }
 
             Angle = 0;

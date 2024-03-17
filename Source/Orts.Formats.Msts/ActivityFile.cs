@@ -1794,6 +1794,7 @@ namespace Orts.Formats.Msts
     {
         public Position StartPosition;
         public Position EndPosition;
+        public float RestrictedZoneSpeed;
 
         public ActivityRestrictedSpeedZone(STFReader stf)
         {
@@ -1801,6 +1802,7 @@ namespace Orts.Formats.Msts
             stf.ParseBlock(new STFReader.TokenProcessor[] {
                 new STFReader.TokenProcessor("startposition", ()=>{ StartPosition = new Position(stf); }),
                 new STFReader.TokenProcessor("endposition", ()=>{ EndPosition = new Position(stf); }),
+                new STFReader.TokenProcessor("speed", ()=>{ RestrictedZoneSpeed = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); }),
             });
         }
     }

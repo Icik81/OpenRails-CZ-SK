@@ -539,17 +539,17 @@ namespace Orts.Simulation
             {
                 var worldPosition1 = new WorldPosition();
                 newSpeedPostItems[0] = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, true, worldPosition1, false);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, true, worldPosition1, false, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
                 var worldPosition2 = new WorldPosition();
                 newSpeedPostItems[1] = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, false, worldPosition2, false);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, false, worldPosition2, false, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
 
                 var worldPosition11 = new WorldPosition();
                 newSpeedPostItems[2] = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, true, worldPosition11, false);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].EndPosition, true, worldPosition11, false, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
                 var worldPosition22 = new WorldPosition();
                 newSpeedPostItems[3] = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition22, false);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition22, false, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
 
                 // Add the speedposts to the track database. This will set the TrItemId's of all speedposts
                 trackDB.AddTrItems(newSpeedPostItems);
@@ -592,11 +592,11 @@ namespace Orts.Simulation
                 // Upozornění pomalé jízdy
                 var worldPosition3 = new WorldPosition();
                 var speedWarningPostItem = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition3, true);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition3, true, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
 
                 var worldPosition33 = new WorldPosition();
                 var speedWarningPostItem_back = new TempSpeedPostItem(routeFile,
-                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition33, true);
+                    zones.ActivityRestrictedSpeedZoneList[idxZone].StartPosition, false, worldPosition33, true, zones.ActivityRestrictedSpeedZoneList[idxZone].RestrictedZoneSpeed);
 
                 traveller.Move(distanceOfWarningPost);
                 SpeedPostPosition(speedWarningPostItem, ref traveller);
