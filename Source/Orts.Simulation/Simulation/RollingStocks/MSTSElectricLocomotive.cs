@@ -2790,13 +2790,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain)
             {
-                Variable2 *= 2f;
-                if (ThrottlePercent < 1.0f)
-                {
-                    while (Variable2 > 0)
-                        Variable2--;
-                    if (Variable2 < 0) Variable2 = 0;
-                }
+                Variable2 *= 2f;                
                 if (DynamicBrakeController != null)
                 {
                     float CoefSpeedMpSCutOff = (AbsSpeedMpS > 15.0f / 3.6f) ? 1f : (1.0f - ((15.0f - (AbsSpeedMpS / 3.6f)) / 13f));
