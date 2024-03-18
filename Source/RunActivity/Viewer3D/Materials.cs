@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Formats.Msts;
 using Orts.Viewer3D.Common;
 using Orts.Viewer3D.Popups;
 using ORTS.Common;
@@ -58,13 +59,22 @@ namespace Orts.Viewer3D
 
             if (path == null || path == "")
                 return defaultTexture;
+            
+            Texture2D texture;
+
+            // Icik
+            string pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" +  Path.GetFileName(path);
+            if (File.Exists(pathRestrictedSpeedZone))
+            {
+                texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
+                return texture;
+            }
 
             path = path.ToLowerInvariant();
             if (!Textures.ContainsKey(path))
             {
                 try
-                {
-                    Texture2D texture;
+                {                    
                     if (Path.GetExtension(path) == ".dds")
                     {
                         if (File.Exists(path))
@@ -95,7 +105,7 @@ namespace Orts.Viewer3D
                         else if (File.Exists(path))
                         {
                             texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, path);
-                        }
+                        }                        
                         else
                         {
                             Texture2D missing()
