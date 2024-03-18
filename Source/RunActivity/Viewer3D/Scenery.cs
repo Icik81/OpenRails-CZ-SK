@@ -261,7 +261,7 @@ namespace Orts.Viewer3D
         public List<PickupObj> PickupList = new List<PickupObj>();
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
 
-        readonly Viewer Viewer;
+        readonly Viewer Viewer;        
 
         /// <summary>
         /// Open the specified WFile and load all the scenery objects into the viewer.
@@ -534,9 +534,47 @@ namespace Orts.Viewer3D
                         }
                         else
                         {
+                            // Icik
+                            // Vybere správnou návěst pro varování snížení rychlosti PJ
+                            int TempWarningSpeedShapeNamesNr = 0;
+                            float ZoneSpeed = (int)(ORTS.Common.MpS.ToKpH(tempSpeedItem.RestrictedZoneSpeed) + 0.1f);
+
+                            if (tempSpeedItem.IsWarning)
+                            {
+                                // Nastaví správný směr označníku
+                                tempSpeedItem.WorldPosition.XNAMatrix.M11 *= -1;
+                                tempSpeedItem.WorldPosition.XNAMatrix.M13 *= -1;
+                                tempSpeedItem.WorldPosition.XNAMatrix.M31 *= -1;
+                                tempSpeedItem.WorldPosition.XNAMatrix.M33 *= -1;
+
+                                switch (ZoneSpeed) // km/h
+                                {
+                                    case 5:
+                                    case 10:
+                                    case 15:
+                                        TempWarningSpeedShapeNamesNr = 0;
+                                        break;
+                                    case 20:
+                                    case 25:
+                                        TempWarningSpeedShapeNamesNr = 1;
+                                        break;
+                                    case 30:
+                                    case 35:
+                                        TempWarningSpeedShapeNamesNr = 2;
+                                        break;
+                                    case 40:
+                                    case 45:
+                                        TempWarningSpeedShapeNamesNr = 3;
+                                        break;
+                                    case 50:
+                                        TempWarningSpeedShapeNamesNr = 4;
+                                        break;
+                                }
+                            }                      
+
                             sceneryObjects.Add(new StaticShape(viewer,
-                                tempSpeedItem.IsWarning ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[0] : (tempSpeedItem.IsResume ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[2] : Viewer.SpeedpostDatFile.TempSpeedShapeNames[1]),
-                                tempSpeedItem.WorldPosition, ShapeFlags.None));
+                                tempSpeedItem.IsWarning ? Viewer.SpeedpostDatFile.TempWarningSpeedShapeNames[TempWarningSpeedShapeNamesNr] : (tempSpeedItem.IsResume ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[2] : Viewer.SpeedpostDatFile.TempSpeedShapeNames[1]),
+                                tempSpeedItem.WorldPosition, ShapeFlags.None));                            
                         }
                     }
                 }

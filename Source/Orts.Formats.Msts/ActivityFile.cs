@@ -1794,7 +1794,7 @@ namespace Orts.Formats.Msts
     {
         public Position StartPosition;
         public Position EndPosition;
-        public float RestrictedZoneSpeed;
+        public float RestrictedZoneSpeed;                     
 
         public ActivityRestrictedSpeedZone(STFReader stf)
         {
