@@ -342,11 +342,13 @@ namespace Orts.Viewer3D
             // so it is opened only in activity mode
             if (Simulator.ActivityRun != null && Simulator.Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones != null)
             {
-                var speedpostDatFile = Simulator.RoutePath + @"\speedpost.dat";
+                // Icik
+                string RestrictedSpeedPath = System.IO.Path.Combine(ContentPath, "RestrictedSpeedPost\\");
+                var speedpostDatFile = System.IO.Path.Combine(RestrictedSpeedPath, "..\\RestrictedSpeedPost\\RestrictedSpeedPost.dat");
                 if (File.Exists(speedpostDatFile))
                 {
                     Trace.Write(" SPEEDPOST");
-                    SpeedpostDatFile = new SpeedpostDatFile(Simulator.RoutePath + @"\speedpost.dat", Simulator.RoutePath + @"\shapes\");
+                    SpeedpostDatFile = new SpeedpostDatFile(speedpostDatFile, RestrictedSpeedPath);
                 }
             }
 

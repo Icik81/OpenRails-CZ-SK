@@ -928,6 +928,13 @@
     <Content Include="Content\Raindrop10.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\RestrictedSpeedPost\PomKZ.s" />
+    <Content Include="Content\RestrictedSpeedPost\PomZK.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_1.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_2.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_3.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_4.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_5.s" />
     <Content Include="Content\SceneryShader.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1108,6 +1115,21 @@
     <None Include="Content\GenericSound\4_Wheels\GenSound_ex.sms" />
     <None Include="Content\GenericSound\6_Wheels\GenSound.sms" />
     <None Include="Content\GenericSound\6_Wheels\GenSound_ex.sms" />
+    <None Include="Content\RestrictedSpeedPost\pomk.ace" />
+    <None Include="Content\RestrictedSpeedPost\PomKZ.sd" />
+    <None Include="Content\RestrictedSpeedPost\pomz.ace" />
+    <None Include="Content\RestrictedSpeedPost\PomZK.sd" />
+    <None Include="Content\RestrictedSpeedPost\pred_1.ace" />
+    <None Include="Content\RestrictedSpeedPost\pred_1.sd" />
+    <None Include="Content\RestrictedSpeedPost\pred_2.ace" />
+    <None Include="Content\RestrictedSpeedPost\pred_2.sd" />
+    <None Include="Content\RestrictedSpeedPost\pred_3.ace" />
+    <None Include="Content\RestrictedSpeedPost\pred_3.sd" />
+    <None Include="Content\RestrictedSpeedPost\pred_4.ace" />
+    <None Include="Content\RestrictedSpeedPost\pred_4.sd" />
+    <None Include="Content\RestrictedSpeedPost\pred_5.ace" />
+    <None Include="Content\RestrictedSpeedPost\pred_5.sd" />
+    <None Include="Content\RestrictedSpeedPost\RestrictedSpeedPost.dat" />
     <None Include="Content\SignalLight\SignalLight128.ace" />
     <None Include="Content\SignalLight\SignalLight256.ace" />
     <None Include="Content\SignalLight\SignalLight64M.ace" />
