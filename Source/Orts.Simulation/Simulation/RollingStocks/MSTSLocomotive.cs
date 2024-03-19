@@ -5083,6 +5083,7 @@ namespace Orts.Simulation.RollingStocks
         bool AIStartOn;
         bool AIBellStartOn;
         bool CarIsWaitingAtStation;
+        bool CheckBellEvent;
         public void SetAIAction(float elapsedClockSeconds)
         {            
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
@@ -5227,9 +5228,10 @@ namespace Orts.Simulation.RollingStocks
                             }
                         }
                     }
-                }                
+                }
 
                 // AI zapíská
+                CheckBellEvent = false;
                 if (AIStartOn && !AIBellStartOn && this.ThrottlePercent > 0.0f)
                 {
                     if (!(Train as AITrain).AITrainWillAttach)
@@ -5237,14 +5239,14 @@ namespace Orts.Simulation.RollingStocks
                     if (AIBellTimer == 0.0f && (Train as AITrain).Name != (Train as AITrain).AITrainNameShunting)
                         SignalEvent(Event.BellOn);
                     (Train as AITrain).AITrainNameShunting = (Train as AITrain).Name;
-
                     AIBellTimer += elapsedClockSeconds;
-                    if (AIBellTimer > 0.5f)
-                    {
-                        SignalEvent(Event.BellOff);
-                        AIBellStartOn = true;
-                        AIBellTimer = 0.0f;
-                    }
+                    CheckBellEvent = true;
+                }
+                if (AIBellTimer > 0.5f || (!CheckBellEvent && AIBellTimer > 0.0f))
+                {
+                    SignalEvent(Event.BellOff);
+                    AIBellStartOn = true;
+                    AIBellTimer = 0.0f;
                 }
 
                 // Výpravčí pískne k odjezdu AI ze stanice
