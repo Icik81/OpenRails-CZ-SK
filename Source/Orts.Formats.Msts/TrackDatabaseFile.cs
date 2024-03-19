@@ -1023,6 +1023,8 @@ namespace Orts.Formats.Msts
 
         // Icik
         public float RestrictedZoneSpeed { get; set; }
+        public float RestrictedZoneWarningPosition { get; set; }
+        public string RestrictedZoneLocation { get; set; }
 
         /// <summary>Get the direction the signal is NOT facing</summary>
         public int ReverseDirection
@@ -1109,7 +1111,7 @@ namespace Orts.Formats.Msts
         /// 
         public WorldPosition WorldPosition;
 
-        public TempSpeedPostItem(Tr_RouteFile routeFile, Position position, bool isStart, WorldPosition worldPosition, bool isWarning, float restrictedZoneSpeed)
+        public TempSpeedPostItem(Tr_RouteFile routeFile, Position position, bool isStart, WorldPosition worldPosition, bool isWarning, float restrictedZoneSpeed, float restrictedZoneWarningPosition, string restrictedZoneLocation)
         {
             // TrItemId needs to be set later
             ItemType = trItemType.trSPEEDPOST;
@@ -1122,6 +1124,8 @@ namespace Orts.Formats.Msts
             IsWarning = isWarning;
             // Icik
             RestrictedZoneSpeed = restrictedZoneSpeed;
+            RestrictedZoneWarningPosition = restrictedZoneWarningPosition;
+            RestrictedZoneLocation = restrictedZoneLocation;
 
             if (!isStart) { IsLimit = true; IsResume = true; }//end zone
             if (RestrictedZoneSpeed <= 0)

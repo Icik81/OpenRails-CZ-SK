@@ -69,6 +69,21 @@ namespace Orts.Viewer3D
                 texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
                 return texture;
             }
+            else
+            {
+                pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" + Path.GetFileNameWithoutExtension(path) + "_cz" + Path.GetExtension(path);
+                if (File.Exists(pathRestrictedSpeedZone))
+                {
+                    texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
+                    return texture;
+                }
+                pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" + Path.GetFileNameWithoutExtension(path) + "_sk" + Path.GetExtension(path);
+                if (File.Exists(pathRestrictedSpeedZone))
+                {
+                    texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
+                    return texture;
+                }
+            }
 
             path = path.ToLowerInvariant();
             if (!Textures.ContainsKey(path))
