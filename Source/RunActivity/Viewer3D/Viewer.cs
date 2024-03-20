@@ -112,6 +112,7 @@ namespace Orts.Viewer3D
         public EnvironmentFile ENVFile { get; private set; }
         public SignalConfigurationFile SIGCFG { get; private set; }
         public TrackTypesFile TrackTypes { get; private set; }
+        public SpeedpostDatFileCZSK SpeedpostDatFileCZSK;
         public SpeedpostDatFile SpeedpostDatFile;
         public bool MilepostUnitsMetric { get; private set; }
         // Cameras
@@ -348,7 +349,14 @@ namespace Orts.Viewer3D
                 if (File.Exists(speedpostDatFile))
                 {
                     Trace.Write(" SPEEDPOST");
-                    SpeedpostDatFile = new SpeedpostDatFile(speedpostDatFile, RestrictedSpeedPath);
+                    SpeedpostDatFileCZSK = new SpeedpostDatFileCZSK(speedpostDatFile, RestrictedSpeedPath);
+                }
+
+                speedpostDatFile = Simulator.RoutePath + @"\speedpost.dat";
+                if (File.Exists(speedpostDatFile))
+                {
+                    Trace.Write(" SPEEDPOST");
+                    SpeedpostDatFile = new SpeedpostDatFile(Simulator.RoutePath + @"\speedpost.dat", Simulator.RoutePath + @"\shapes\");
                 }
             }
 

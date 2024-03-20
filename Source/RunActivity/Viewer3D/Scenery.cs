@@ -527,7 +527,7 @@ namespace Orts.Viewer3D
                 {
                     if (tempSpeedItem.WorldPosition.TileX == TileX && tempSpeedItem.WorldPosition.TileZ == TileZ)
                     {
-                        if (Viewer.SpeedpostDatFile == null)
+                        if (Viewer.SpeedpostDatFileCZSK == null && Viewer.SpeedpostDatFile == null)
                         {
                             Trace.TraceWarning(String.Format("{0} missing; speed posts for temporary speed restrictions in tile {1} {2} will not be visible.", Viewer.Simulator.RoutePath + @"\speedpost.dat", TileX, TileZ));
                             break;
@@ -540,7 +540,7 @@ namespace Orts.Viewer3D
                             int TempSpeedShapeNamesNr = 1;
 
                             if (tempSpeedItem.RestrictedZoneLocation == null)
-                                tempSpeedItem.RestrictedZoneLocation = "cz";
+                                tempSpeedItem.RestrictedZoneLocation = "default";
 
                             if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz")
                             {
@@ -551,75 +551,87 @@ namespace Orts.Viewer3D
                                 TempSpeedShapeNamesNr = 3;
                             }
 
-                            float ZoneSpeed = (int)(ORTS.Common.MpS.ToKpH(tempSpeedItem.RestrictedZoneSpeed) + 0.1f);
-
-                            if (tempSpeedItem.IsWarning)
+                            if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz" || tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
                             {
-                                // Nastaví správný směr označníku
-                                tempSpeedItem.WorldPosition.XNAMatrix.M11 *= -1;
-                                tempSpeedItem.WorldPosition.XNAMatrix.M13 *= -1;
-                                tempSpeedItem.WorldPosition.XNAMatrix.M31 *= -1;
-                                tempSpeedItem.WorldPosition.XNAMatrix.M33 *= -1;
-
-                                // CZ
-                                if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz")
+                                float ZoneSpeed = (int)(ORTS.Common.MpS.ToKpH(tempSpeedItem.RestrictedZoneSpeed) + 0.1f);
+                                if (tempSpeedItem.IsWarning)
                                 {
-                                    switch (ZoneSpeed) // km/h
+                                    // Nastaví správný směr označníku
+                                    tempSpeedItem.WorldPosition.XNAMatrix.M11 *= -1;
+                                    tempSpeedItem.WorldPosition.XNAMatrix.M13 *= -1;
+                                    tempSpeedItem.WorldPosition.XNAMatrix.M31 *= -1;
+                                    tempSpeedItem.WorldPosition.XNAMatrix.M33 *= -1;
+
+                                    // CZ
+                                    if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz")
                                     {
-                                        case 5:
-                                        case 10:
-                                        case 15:
-                                            TempWarningSpeedShapeNamesNr = 0;
-                                            break;
-                                        case 20:
-                                        case 25:
-                                            TempWarningSpeedShapeNamesNr = 1;
-                                            break;
-                                        case 30:
-                                        case 35:
-                                            TempWarningSpeedShapeNamesNr = 2;
-                                            break;
-                                        case 40:
-                                        case 45:
-                                            TempWarningSpeedShapeNamesNr = 3;
-                                            break;
-                                        case 50:
-                                            TempWarningSpeedShapeNamesNr = 4;
-                                            break;
+                                        switch (ZoneSpeed) // km/h
+                                        {
+                                            case 5:
+                                            case 10:
+                                            case 15:
+                                                TempWarningSpeedShapeNamesNr = 0;
+                                                break;
+                                            case 20:
+                                            case 25:
+                                                TempWarningSpeedShapeNamesNr = 1;
+                                                break;
+                                            case 30:
+                                            case 35:
+                                                TempWarningSpeedShapeNamesNr = 2;
+                                                break;
+                                            case 40:
+                                            case 45:
+                                                TempWarningSpeedShapeNamesNr = 3;
+                                                break;
+                                            case 50:
+                                                TempWarningSpeedShapeNamesNr = 4;
+                                                break;
+                                        }
+                                    }
+                                    // SK
+                                    if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
+                                    {
+                                        switch (ZoneSpeed) // km/h
+                                        {
+                                            case 5:
+                                            case 10:
+                                            case 15:
+                                                TempWarningSpeedShapeNamesNr = 5;
+                                                break;
+                                            case 20:
+                                            case 25:
+                                                TempWarningSpeedShapeNamesNr = 6;
+                                                break;
+                                            case 30:
+                                            case 35:
+                                                TempWarningSpeedShapeNamesNr = 7;
+                                                break;
+                                            case 40:
+                                            case 45:
+                                                TempWarningSpeedShapeNamesNr = 8;
+                                                break;
+                                            case 50:
+                                                TempWarningSpeedShapeNamesNr = 9;
+                                                break;
+                                        }
                                     }
                                 }
-                                // SK
-                                if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
-                                {
-                                    switch (ZoneSpeed) // km/h
-                                    {
-                                        case 5:
-                                        case 10:
-                                        case 15:
-                                            TempWarningSpeedShapeNamesNr = 5;
-                                            break;
-                                        case 20:
-                                        case 25:
-                                            TempWarningSpeedShapeNamesNr = 6;
-                                            break;
-                                        case 30:
-                                        case 35:
-                                            TempWarningSpeedShapeNamesNr = 7;
-                                            break;
-                                        case 40:
-                                        case 45:
-                                            TempWarningSpeedShapeNamesNr = 8;
-                                            break;
-                                        case 50:
-                                            TempWarningSpeedShapeNamesNr = 9;
-                                            break;
-                                    }
-                                }
-                            }                      
+                            }
 
-                            sceneryObjects.Add(new StaticShape(viewer,
-                                tempSpeedItem.IsWarning ? Viewer.SpeedpostDatFile.TempWarningSpeedShapeNames[TempWarningSpeedShapeNamesNr] : (tempSpeedItem.IsResume ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[TempSpeedShapeNamesNr + 1] : Viewer.SpeedpostDatFile.TempSpeedShapeNames[TempSpeedShapeNamesNr]),
-                                tempSpeedItem.WorldPosition, ShapeFlags.None));                            
+                            if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz" || tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
+                            {
+                                sceneryObjects.Add(new StaticShape(viewer,
+                                tempSpeedItem.IsWarning ? Viewer.SpeedpostDatFileCZSK.TempWarningSpeedShapeNamesCZSK[TempWarningSpeedShapeNamesNr] : (tempSpeedItem.IsResume ? Viewer.SpeedpostDatFileCZSK.TempSpeedShapeNamesCZSK[TempSpeedShapeNamesNr + 1] : Viewer.SpeedpostDatFileCZSK.TempSpeedShapeNamesCZSK[TempSpeedShapeNamesNr]),
+                                tempSpeedItem.WorldPosition, ShapeFlags.None));
+                            }
+
+                            if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "default")
+                            {
+                                sceneryObjects.Add(new StaticShape(viewer,
+                                tempSpeedItem.IsWarning ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[0] : (tempSpeedItem.IsResume ? Viewer.SpeedpostDatFile.TempSpeedShapeNames[2] : Viewer.SpeedpostDatFile.TempSpeedShapeNames[1]),
+                                tempSpeedItem.WorldPosition, ShapeFlags.None));
+                            }
                         }
                     }
                 }
