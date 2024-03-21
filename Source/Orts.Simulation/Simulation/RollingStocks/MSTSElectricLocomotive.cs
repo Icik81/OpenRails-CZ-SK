@@ -1669,9 +1669,19 @@ namespace Orts.Simulation.RollingStocks
                         CompressorSwitch2[LocoStation] = 1;
 
                     if (CompressorOffAutoOn)
-                        CompressorSwitch[LocoStation] = 1;
+                    {
+                        if (CompressorAutoOffOn)
+                            CompressorSwitch[LocoStation] = -1;
+                        else
+                            CompressorSwitch[LocoStation] = 1;
+                    }
                     if (CompressorOffAutoOn2)
-                        CompressorSwitch2[LocoStation] = 1;
+                    {
+                        if (CompressorAutoOffOn2)
+                            CompressorSwitch2[LocoStation] = -1;
+                        else
+                            CompressorSwitch2[LocoStation] = 1;
+                    }
 
                     CompressorMode_OffAuto[LocoStation] = true;
                     CompressorMode2_OffAuto[LocoStation] = true;

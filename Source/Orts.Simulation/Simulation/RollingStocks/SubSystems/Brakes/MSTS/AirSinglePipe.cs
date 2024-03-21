@@ -3610,7 +3610,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         lead.ParkingBrakeTargetPressurePSI = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
 
-                    if (lead.BrakeSystem.AutoCylPressurePSI2 < lead.ParkingBrakeTargetPressurePSI)
+                    if (lead.BrakeSystem.AutoCylPressurePSI2 <= lead.ParkingBrakeTargetPressurePSI)
                     {
                         float dp = elapsedClockSeconds * lead.EngineBrakeApplyRatePSIpS;
 

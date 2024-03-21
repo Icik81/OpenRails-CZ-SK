@@ -4505,28 +4505,60 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_OFFAUTOON:
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (Locomotive.CompressorAutoOffOn)
                     {
-                        new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
                     }
-                    if (ChangedValue(0) > 0 && !IsChanged)
+                    else
                     {
-                        new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
                     }
                     break;
 
                 case CABViewControlTypes.COMPRESSOR_OFFAUTOON2:
-                    if (ChangedValue(0) < 0 && !IsChanged)
+                    if (Locomotive.CompressorAutoOffOn2)
                     {
-                        new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
                     }
-                    if (ChangedValue(0) > 0 && !IsChanged)
+                    else
                     {
-                        new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
-                        IsChanged = true;
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitch2UpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            new ToggleCompressorCombinedSwitch2DownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
                     }
                     break;
 
