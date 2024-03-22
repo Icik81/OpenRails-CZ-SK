@@ -13969,7 +13969,7 @@ namespace Orts.Simulation.RollingStocks
             if (!CompressorCombined2) return;            
             if (CompressorSwitch2[LocoStation] < 2)
             {
-                CompressorSwitch[LocoStation]++;
+                CompressorSwitch2[LocoStation]++;
                 SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined2();                
             }
@@ -13980,7 +13980,7 @@ namespace Orts.Simulation.RollingStocks
             if (!CompressorCombined2) return;            
             if (CompressorSwitch2[LocoStation] > 0)
             {
-                CompressorSwitch[LocoStation]--;
+                CompressorSwitch2[LocoStation]--;
                 SignalEvent(Event.CompressorMode_OffAutoOn);
                 ToggleCompressorCombined2();                
             }
