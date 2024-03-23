@@ -1502,7 +1502,7 @@ namespace Orts.Simulation.RollingStocks
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
                         this.SignalEvent(Event.BrakeSkidStart);
-                    WheelDamageValue += 1 * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2) * (1 - (1 - (this.MassKG / 85000)));                    
+                    WheelDamageValue += 0.1f * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2) * (1 - (1 - (this.MassKG / 85000)));                    
                 }
                 else
                 {

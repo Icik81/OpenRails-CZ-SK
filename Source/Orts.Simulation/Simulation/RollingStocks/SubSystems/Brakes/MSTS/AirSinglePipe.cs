@@ -3621,10 +3621,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (brakeSystem.AutoEngineBrakeDelay > brakeSystem.BrakeDelayToEngage + 0.25f)
                             lead.BrakeSystem.AutoCylPressurePSI2 += dp;
 
-                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
                         if (lead.BrakeSystem.AutoCylPressurePSI2 >= lead.ParkingBrakeTargetPressurePSI)
                             lead.SignalEvent(Event.TrainBrakePressureStoppedChanging);
-                        else lead.SignalEvent(Event.TrainBrakePressureIncrease);
+                        else
+                        {
+                            lead.SignalEvent(Event.TrainBrakePressureIncrease);
+                            lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                        }
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                     }
