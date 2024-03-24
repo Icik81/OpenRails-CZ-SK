@@ -495,7 +495,7 @@ namespace ORTS
                                 return;
                             }
 
-                            DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, version);
+                            DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, "0");                            
                             int currentRow = 0;
                             
                             WebClient webClient = new WebClient();                            
@@ -679,8 +679,8 @@ namespace ORTS
                                 sw.Close();
                                 return;
                             }
-
-                            DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, version);
+                            
+                            DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, "0");
                             int currentRow = 0;
 
                             WebClient webClient = new WebClient();
