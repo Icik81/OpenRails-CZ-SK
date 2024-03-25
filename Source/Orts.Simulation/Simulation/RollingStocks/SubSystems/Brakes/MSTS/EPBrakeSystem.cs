@@ -52,11 +52,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (AutoCylPressurePSI < demandedAutoCylPressurePSI)
             {
                 float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
-                if (BrakeLine2PressurePSI - dp * AuxBrakeLineVolumeRatio / AuxCylVolumeRatio < AutoCylPressurePSI + dp)
-                    dp = (BrakeLine2PressurePSI - AutoCylPressurePSI) / (1 + AuxBrakeLineVolumeRatio / AuxCylVolumeRatio);
+                if (BrakeLine2PressurePSI - dp * AuxBrakeLineVolumeRatio / AuxCylVolumeRatioBase < AutoCylPressurePSI + dp)
+                    dp = (BrakeLine2PressurePSI - AutoCylPressurePSI) / (1 + AuxBrakeLineVolumeRatio / AuxCylVolumeRatioBase);
                 if (dp > demandedAutoCylPressurePSI - AutoCylPressurePSI)
                     dp = demandedAutoCylPressurePSI - AutoCylPressurePSI;
-                BrakeLine2PressurePSI -= dp * AuxBrakeLineVolumeRatio / AuxCylVolumeRatio;
+                BrakeLine2PressurePSI -= dp * AuxBrakeLineVolumeRatio / AuxCylVolumeRatioBase;
                 AutoCylPressurePSI += dp;
             }
         }
