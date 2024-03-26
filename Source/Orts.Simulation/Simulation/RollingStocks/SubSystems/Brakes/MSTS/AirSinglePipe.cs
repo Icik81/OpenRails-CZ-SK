@@ -42,6 +42,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float EmergResPressurePSI = 72;
         protected float FullServPressurePSI = 50;
         protected float MaxCylPressurePSI = 55;
+        protected float MaxCylPressureEmptyPSI = 0;
         protected float AuxCylVolumeRatio = 2.5f;
         protected float AuxCylVolumeRatioEmpty = 0f;
         protected float AuxCylVolumeRatioBase = 2.5f;
@@ -132,6 +133,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             AirSinglePipe thiscopy = (AirSinglePipe)copy;
             MaxCylPressurePSI = thiscopy.MaxCylPressurePSI;
+            MaxCylPressureEmptyPSI = thiscopy.MaxCylPressureEmptyPSI;
             AuxCylVolumeRatio = thiscopy.AuxCylVolumeRatio;
             AuxCylVolumeRatioEmpty = thiscopy.AuxCylVolumeRatioEmpty;
             AuxCylVolumeRatioBase = thiscopy.AuxCylVolumeRatioBase;
@@ -340,8 +342,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             switch (lowercasetoken)
             {
                 case "wagon(brakecylinderpressureformaxbrakebrakeforce": MaxCylPressurePSI = AutoCylPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                case "wagon(brakecylinderpressureformaxbrakebrakeforceempty": MaxCylPressureEmptyPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "wagon(triplevalveratio": AuxCylVolumeRatio = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "wagon(triplevalveratioempty": AuxCylVolumeRatioEmpty = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                //case "wagon(triplevalveratioempty": AuxCylVolumeRatioEmpty = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "wagon(brakedistributorreleaserate":
                 case "wagon(maxreleaserate": MaxReleaseRatePSIpS = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "wagon(brakedistributorapplicationrate":
@@ -775,12 +778,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AuxResPressurePSI = 0;
             }
 
-            // Stanovení TVR pro prázdný a naložený vůz
+            MCP = MaxCylPressurePSI;
+            // Stanovení TVR pro prázdný vůz nebo lokomotivu v režimu G dle zadaného max tlaku v BV "BrakeCylinderPressureForMaxBrakeBrakeForceEmpty"
             AuxCylVolumeRatioBase = AuxCylVolumeRatio;
-            if (BrakeCarModePL == 0)
+            if ((!(Car is MSTSLocomotive) && BrakeCarModePL == 0) || ((Car is MSTSLocomotive) && BrakeCarMode == 0))
             {
-                if (AuxCylVolumeRatioEmpty == 0) AuxCylVolumeRatioEmpty = AuxCylVolumeRatio;
-                AuxCylVolumeRatioBase = AuxCylVolumeRatioEmpty;
+                if (MaxCylPressureEmptyPSI == 0)
+                {
+                    AuxCylVolumeRatioEmpty = AuxCylVolumeRatio;
+                }
+                else
+                {                    
+                    AuxCylVolumeRatioEmpty = MaxCylPressureEmptyPSI / (MCP / AuxCylVolumeRatio);
+                    MCP = MaxCylPressureEmptyPSI;                    
+                }
+                AuxCylVolumeRatioBase = AuxCylVolumeRatioEmpty;                
             }
 
             // Výpočet cílového tlaku v brzdovém válci
@@ -1219,8 +1231,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 AuxCylVolumeRatioLowPressureBraking = 0;
-                float MCPLowPressureBraking = threshold;
-                MCP = MaxCylPressurePSI;
+                float MCPLowPressureBraking = threshold;                
                 // Načte hodnotu maximálního tlaku v BV
                 if (TwoStateBrake && BrakeCarMode > 1) // Vozy v R, Mg mají nad určitou rychlost plný tlak do válců
                 {
