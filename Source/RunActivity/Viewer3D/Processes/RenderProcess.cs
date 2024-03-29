@@ -214,7 +214,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
-                            Game.Settings.ShadowMapResolution = 8192;
+                            Game.Settings.ShadowMapResolution = 6144;
                             StandShadowCoef = 2.0f;
                         }
                         break;
@@ -224,7 +224,7 @@ namespace Orts.Viewer3D.Processes
                             Game.Settings.ShadowMapCount = 4;
                             Game.Settings.ShadowMapDistance = 500;                            
                             Game.Settings.ShadowMapBlur = true;
-                            Game.Settings.ShadowMapResolution = 12288;
+                            Game.Settings.ShadowMapResolution = 8192;
                             StandShadowCoef = 2.0f;
                         }
                         break;

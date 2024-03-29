@@ -860,6 +860,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         TotalCapacityMainResBrakePipe = 0;
                         loco.MainResPressurePSI = 0;
                         loco.AuxResPressurePSI = 0;
+                        loco.LapActive[1] = true;
+                        loco.LapActive[2] = true;
                     }
                     if ((Car as MSTSWagon).HandBrakePresent)
                     {
@@ -1916,7 +1918,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
             //{
-            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.001f, 0.01f);
+            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.0f, 0.01f);
             BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
             //}
 
