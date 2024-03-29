@@ -475,7 +475,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
 	// Specular effect next.
-	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In) * 0.0f;
+	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
 	
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
 	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.25;

@@ -998,6 +998,13 @@ namespace Orts.Viewer3D
                     throw new InvalidDataException("Options has unexpected SceneryMaterialOptions.SpecularMask value.");
             }
 
+            // Icik 
+            // Zruší Specular efekt u textur hlavy kolejnic
+            if (TexturePath != null && TexturePath.ToLower().Contains("acleantrack"))
+            {
+                shader.LightingSpecular = 0;
+            }
+
             graphicsDevice.SamplerStates[0] = GetShadowTextureAddressMode();
 
             if (NightTexture != null && NightTexture != SharedMaterialManager.MissingTexture && (((Options & SceneryMaterialOptions.UndergroundTexture) != 0 &&
