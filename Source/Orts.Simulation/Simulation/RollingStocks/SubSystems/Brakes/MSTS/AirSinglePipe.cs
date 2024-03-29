@@ -860,8 +860,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         TotalCapacityMainResBrakePipe = 0;
                         loco.MainResPressurePSI = 0;
                         loco.AuxResPressurePSI = 0;
-                        loco.LapActive[1] = true;
-                        loco.LapActive[2] = true;
+                        if (loco.LapButtonEnable)
+                        {
+                            loco.LapActive[1] = true;
+                            loco.LapActive[2] = true;
+                        }
                     }
                     if ((Car as MSTSWagon).HandBrakePresent)
                     {
