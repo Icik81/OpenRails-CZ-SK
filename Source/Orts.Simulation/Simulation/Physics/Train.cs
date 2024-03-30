@@ -1966,9 +1966,9 @@ namespace Orts.Simulation.Physics
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG1 <= TrainMassKG2)
-                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
+                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2 / 2.0f));
                             else
-                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2));
+                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2 / 2.0f));
                             HasCarCoupleSpeed = false;
                             CyklusCouplerImpuls = 1;
                         }
