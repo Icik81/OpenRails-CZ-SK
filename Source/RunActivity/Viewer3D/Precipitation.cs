@@ -46,6 +46,7 @@ namespace Orts.Viewer3D
 
         readonly Material Material;
         readonly PrecipitationPrimitive Pricipitation;
+        readonly PrecipitationPrimitive Pricipitation2;
 
         Vector3 Wind;
 
@@ -57,7 +58,7 @@ namespace Orts.Viewer3D
 
             Material = viewer.MaterialManager.Load("Precipitation");
             Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
-
+            Pricipitation2 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
 
 
             Wind = new Vector3(0, 0, 0);
@@ -68,7 +69,9 @@ namespace Orts.Viewer3D
         {
             var gameTime = (float)Viewer.Simulator.GameTime;
             Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
-            Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2, Viewer);
+            Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (2f / 3f), Viewer);
+            Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
+            Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (1f / 3f), Viewer);
 
             // Note: This is quite a hack. We ideally should be able to pass this through RenderItem somehow.
             var XNAWorldLocation = Matrix.Identity;
@@ -77,6 +80,7 @@ namespace Orts.Viewer3D
             XNAWorldLocation.M22 = Viewer.Camera.TileZ;
 
             frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+            frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
         }
 
         public void Reset()
@@ -88,6 +92,7 @@ namespace Orts.Viewer3D
 
             var gameTime = (float)Viewer.Simulator.GameTime;
             Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
+            Pricipitation2.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             // Camera is null during first initialisation.
             if (Viewer.Camera != null) Pricipitation.Update(gameTime, null, Weather.PricipitationIntensityPPSPM2, Viewer);
         }
@@ -326,9 +331,18 @@ namespace Orts.Viewer3D
 
         public void DynamicUpdate(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
         {
-            if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
+            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - SnowVelocityMpS) * weather.PrecipitationLiquidity + SnowVelocityMpS) / ParticleVelocityFactor;
             wind.X = 18 * weather.PrecipitationLiquidity + 2;
+            ParticleDirection = wind;
+        }
+
+        public void DynamicUpdate2(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
+        {
+            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
+            float snowVelocityMpS = SnowVelocityMpS * 0.5f;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;                        
+            wind.X = 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(-2, 3);
             ParticleDirection = wind;
         }
 
