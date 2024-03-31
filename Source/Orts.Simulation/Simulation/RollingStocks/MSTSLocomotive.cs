@@ -13082,8 +13082,16 @@ namespace Orts.Simulation.RollingStocks
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
-                    if (PantoStatus != PrePantoStatus[LocoStation])
+                    if (PantoStatus != PrePantoStatus[LocoStation] 
+                        || LocomotiveTypeNumber == 162
+                        || LocomotiveTypeNumber == 163)
                     {
+                        if (LocomotiveTypeNumber == 162 || LocomotiveTypeNumber == 163)
+                        {
+                            Pantographs[1].PantographsBlocked = false;
+                            Pantographs[2].PantographsBlocked = false;
+                        }
+
                         switch (Pantograph4Switch[LocoStation])
                         {
                             case 0:
