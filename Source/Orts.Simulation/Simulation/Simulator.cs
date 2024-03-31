@@ -1103,11 +1103,11 @@ namespace Orts.Simulation
 
             #region Manuální spojování vozů vlaku hráče            
             // Manuální spojování vozů vlaku hráče            
-            if (drivenTrain.SpeedMpS == 0 && Settings.ManualCoupling && TryToCouple)
+            if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && TryToCouple)
             {
                 TryToCouple = false;
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && train.SpeedMpS == 0)
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f)
                     {
                         float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
                         // Give another try if multiplayer
