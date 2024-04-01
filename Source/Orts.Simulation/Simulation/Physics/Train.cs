@@ -1941,11 +1941,11 @@ namespace Orts.Simulation.Physics
                     (car as MSTSWagon).AbsWheelSpeedMpS = Math.Abs((car as MSTSWagon).WheelSpeedMpS);
                 }
                 // Provede odraz vozů při prudkém najetí
-                if (!MPManager.IsMultiPlayer() && car.IsDriveable && car.Train.IsActualPlayerTrain)
+                if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain)
                 {
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
-                        SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -Math.Abs(car.SpeedMpS) : Math.Abs(car.SpeedMpS);
+                        SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -SpeedMpS1 : SpeedMpS1;
 
                         if (car.SpeedMpS < 0)
                         {
@@ -1966,9 +1966,15 @@ namespace Orts.Simulation.Physics
                         if (CyklusCouplerImpuls == 0)
                         {
                             if (TrainMassKG1 <= TrainMassKG2)
-                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2 / 2.0f));
+                            {
+                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1 / 2.0f));
+                                car.SpeedMpS = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -car.SpeedMpS : car.SpeedMpS;
+                            }
                             else
-                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS2 / 2.0f));
+                            {
+                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1 / 2.0f));
+                                car.SpeedMpS = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -car.SpeedMpS : car.SpeedMpS;
+                            }
                             HasCarCoupleSpeed = false;
                             CyklusCouplerImpuls = 1;
                         }
@@ -4733,8 +4739,9 @@ namespace Orts.Simulation.Physics
             foreach (TrainCar car in Cars)
                 kg1 += car.MassKG;
             float kg2 = 0;
-            foreach (TrainCar car in otherTrain.Cars)
-                kg2 += car.MassKG;
+            foreach (TrainCar car in otherTrain.Cars)            
+                kg2 += car.MassKG;                                    
+            
             SpeedMpS = (((kg1 * SpeedMpS) + (kg2 * otherTrain.SpeedMpS)) * otherMult) / (kg1 + kg2);
             otherTrain.SpeedMpS = SpeedMpS;
 
@@ -4752,6 +4759,7 @@ namespace Orts.Simulation.Physics
                     if (kg1 <= kg2 && otherMult == -1)
                         car1.SpeedMpS = -car1.SpeedMpS;
                     SpeedMpS1 = car1.SpeedMpS;
+                    car1.SpeedMpS = 0;
                 }
                 foreach (TrainCar car2 in otherTrain.Cars)
                 {     //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
