@@ -13064,6 +13064,8 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.PantographToggle);
             }
         }
+
+        int PantoStatusBreakPowerButton = -1;
         public void TogglePantograph4Switch()
         {
             if (!MultiSystemEngine && !CircuitBreakerOn)
@@ -13072,9 +13074,30 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Zabrání zvednutí pantografu po stlačení tlačítka přerušení napájení
                 if (BreakPowerButton)
+                {
                     BreakPowerButton_Activated = true;
-                if (BreakPowerButton_Activated && Pantograph4Switch[LocoStation] == 0)
+                    PantoStatusBreakPowerButton = Pantograph4Switch[LocoStation];
+                }
+                if (BreakPowerButton_Activated && Pantograph4Switch[LocoStation] != PantoStatusBreakPowerButton)
+                {
                     BreakPowerButton_Activated = false;
+                    Pantographs[1].PantographsBlocked = false;
+                    Pantographs[2].PantographsBlocked = false;
+                }
+
+                // Jednosystémová lokomotiva nemusí dávat přepínač pantografů do 0 při vybavení ochrany HV
+                if (!MultiSystemEngine && !BreakPowerButton_Activated)
+                {
+                    if (Pantographs[1].PantographsBlocked && Pantographs[2].PantographsBlocked && Pantograph4Switch[LocoStation] == 0)
+                    {
+                        return;
+                    }
+                    else
+                    {
+                        Pantographs[1].PantographsBlocked = false;
+                        Pantographs[2].PantographsBlocked = false;
+                    }
+                }
 
                 if (Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
                 {
@@ -13082,16 +13105,8 @@ namespace Orts.Simulation.RollingStocks
                     int p1 = 1; int p2 = 2;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2";
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
-                    if (PantoStatus != PrePantoStatus[LocoStation] 
-                        || LocomotiveTypeNumber == 162
-                        || LocomotiveTypeNumber == 163)
-                    {
-                        if (LocomotiveTypeNumber == 162 || LocomotiveTypeNumber == 163)
-                        {
-                            Pantographs[1].PantographsBlocked = false;
-                            Pantographs[2].PantographsBlocked = false;
-                        }
-
+                    //if (PantoStatus != PrePantoStatus[LocoStation])                     
+                    //{                        
                         switch (Pantograph4Switch[LocoStation])
                         {
                             case 0:
@@ -13216,7 +13231,7 @@ namespace Orts.Simulation.RollingStocks
                                         }
                                 }
                                 break;
-                        }
+                        //}
                     }
                     PrePantoStatus[LocoStation] = Pantograph4Switch[LocoStation];
                 }
