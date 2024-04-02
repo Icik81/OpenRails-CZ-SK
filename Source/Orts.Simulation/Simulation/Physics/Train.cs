@@ -1946,18 +1946,6 @@ namespace Orts.Simulation.Physics
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
                         SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -SpeedMpS1 : SpeedMpS1;
-
-                        if (car.SpeedMpS < 0)
-                        {
-                            SpeedMpS0 = -SpeedMpS0;
-                            SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -SpeedMpS0 : SpeedMpS0;
-                        }
-                        else
-                        if (car.SpeedMpS > 0)
-                        {
-                            SpeedMpS0 = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -SpeedMpS0 : SpeedMpS0;
-                        }
-
                         HasCarCoupleSpeed = true;
                     }
                     if (HasCarCoupleSpeed && !Simulator.CarByUserUncoupled)
@@ -4756,10 +4744,7 @@ namespace Orts.Simulation.Physics
                 //                 car1.SpeedMpS = car1.Flipped ? -SpeedMpS : SpeedMpS;                
                 {
                     car1.SpeedMpS = car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab) ? -SpeedMpS : SpeedMpS;
-                    if (kg1 <= kg2 && otherMult == -1)
-                        car1.SpeedMpS = -car1.SpeedMpS;
                     SpeedMpS1 = car1.SpeedMpS;
-                    car1.SpeedMpS = 0;
                 }
                 foreach (TrainCar car2 in otherTrain.Cars)
                 {     //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
