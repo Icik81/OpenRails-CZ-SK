@@ -665,12 +665,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
         public virtual void UpdateTripleValveState(float controlPressurePSI)
         {
-            // Funkční 3-cestný ventil          
-            if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.5f) TripleValveState = ValveState.Apply;
-            else
-                TripleValveState = ValveState.Lap;
+            MSTSLocomotive loco = Car as MSTSLocomotive;
+            if (loco != null && (loco.TrainBrakeController.BS2ControllerOnStation || loco.LocoType == MSTSLocomotive.LocoTypes.Vectron))
+            {
+                // Funkční 3-cestný ventil pro BS2 nebo Vectron        
+                if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.5f) TripleValveState = ValveState.Apply;
+                else
+                    TripleValveState = ValveState.Lap;
 
-            if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.5f) TripleValveState = ValveState.Release;
+                if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.5f) TripleValveState = ValveState.Release;
+            }
+            else
+            {
+                // Funkční 3-cestný ventil pro ostatní          
+                if (!BailOffOn && BrakeLine1PressurePSI < AuxResPressurePSI - 0.01f) TripleValveState = ValveState.Apply;
+                else
+                    TripleValveState = ValveState.Lap;
+
+                if (!BailOffOn && BrakeLine1PressurePSI > AuxResPressurePSI + 0.01f) TripleValveState = ValveState.Release;
+            }
         }
 
         public void TrainBrakePositionSet()
@@ -1927,14 +1940,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 3;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
             float brakePipeTimeFactorSBase = brakePipeTimeFactorS_Release;
 
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
-            float brakePipeChargingQuickPSIpS = 1000; // Rychlost plnění průběžného potrubí při švihu 1000 PSI/s
+            float brakePipeChargingQuickPSIpS = BrakePipeChargingRatePSIorInHgpS0 * 3; // Rychlost plnění průběžného potrubí při švihu 
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
