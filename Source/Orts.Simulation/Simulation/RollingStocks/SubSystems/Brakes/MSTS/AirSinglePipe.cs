@@ -827,13 +827,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     threshold = MathHelper.Clamp(threshold, 0, MCP_TrainBrake);
             }
 
-            if (!StartOn)
+            MSTSLocomotive loco = Car as MSTSLocomotive;
+            // Static
+            if (loco != null && loco.LocoIsStatic)
             {
+                IsAirEmpty = true;
+                IsAirFull = false;
+                HandBrakeActive = true;
+                ForceTwoPipesConnection = false;
+                AngleCockAOpen = false;
+                AngleCockBOpen = false;
+                if (BrakeLine1PressurePSI == 0)
+                    loco.LocoIsStatic = false;
+                else
+                {
+                    FullServPressurePSI = 0;
+                    AutoCylPressurePSI = 0;
+                    AutoCylPressurePSI0 = 0;
+                    AuxResPressurePSI = 0;
+                    PrevAuxResPressurePSI = 0;
+                    BrakeLine1PressurePSI = 0;
+                    BrakeLine2PressurePSI = 0;
+                    BrakeLine3PressurePSI = 0;
+                    prevBrakeLine1PressurePSI = 0;
+                    TotalCapacityMainResBrakePipe = 0;
+                    loco.MainResPressurePSI = 0;
+                    loco.AuxResPressurePSI = 0;                    
+                }
+            }
+
+            if (!StartOn)
+            {                
                 if (HandbrakePercent > 0) { HandBrakeActive = true; HandBrakeDeactive = false; }
                 else { HandBrakeActive = false; HandBrakeDeactive = true; }
             }
-
-            MSTSLocomotive loco = Car as MSTSLocomotive;
+            
             if (StartOn)
             {
                 TrainBrakePositionSet();
@@ -850,7 +878,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeLine2PressurePSI = 0;
                     BrakeLine3PressurePSI = 0;
                     prevBrakeLine1PressurePSI = 0;
-                }
+                }                
                 // Vyfouká lokomotivu při AirEmpty a nastaví ruční brzdy
                 if (IsAirEmpty || !IsAirFull)
                 {
@@ -1919,7 +1947,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         }
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
-        {
+        {            
             PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
 
@@ -1928,25 +1956,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
-            //var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
-            var brakePipeTimeFactorS = 0.003f; // Průrazná rychlost tlakové vlny 250m/s 0.003f
+            
+            var brakePipeTimeFactorS = lead == null ? 0.0003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 0.003f
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
-
-            //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
-            //{
-            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.0f, 0.01f);
+            
+            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.0002f, 0.0004f);
             BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
-            //}
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
             float brakePipeTimeFactorSBase = brakePipeTimeFactorS_Release;
 
-            float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 29 PSI/s
+            float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 
             float brakePipeChargingQuickPSIpS = BrakePipeChargingRatePSIorInHgpS0 * 3; // Rychlost plnění průběžného potrubí při švihu 
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);

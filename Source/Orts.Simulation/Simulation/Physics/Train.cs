@@ -4479,7 +4479,11 @@ namespace Orts.Simulation.Physics
                 // Propagate brake pressure of locomotiveless static consists in the advanced way,
                 // to allow proper shunting operations.
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
+                if ((Cars[0] is MSTSLocomotive) && (Cars[0] as MSTSLocomotive).MainResPressurePSI == 0) (Cars[0] as MSTSLocomotive).LocoIsStatic = true;
                 SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                SignalEvent(Event.CompressorOff);
+                SignalEvent(Event.Compressor2Off);
+                SignalEvent(Event.AuxCompressorOff);
                 ToggleDoors(true, false);
                 ToggleDoors(false, false);
             }

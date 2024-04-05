@@ -6015,6 +6015,7 @@ namespace Orts.Simulation.RollingStocks
                 HV3NASwitch[1] = HV3NASwitch[2] = 1;
                 Switch5LightPosition[1] = Switch5LightPosition[2] = 2;
                 Switch6LightPosition[1] = Switch6LightPosition[2] = 2;
+                CompressorSwitch[1] = CompressorSwitch[2] = 1;
 
                 if (CruiseControl != null)
                 {
@@ -6511,8 +6512,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsLeadLocomotive())
             {
-                CarIsPlayerLoco = true;
-                LocoIsStatic = false;                
+                CarIsPlayerLoco = true;                
             }
             else
                 CarIsPlayerLoco = false;
