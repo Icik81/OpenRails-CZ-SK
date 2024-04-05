@@ -4478,12 +4478,20 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of locomotiveless static consists in the advanced way,
                 // to allow proper shunting operations.
-                Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
-                if ((Cars[0] is MSTSLocomotive) && (Cars[0] as MSTSLocomotive).MainResPressurePSI == 0) (Cars[0] as MSTSLocomotive).LocoIsStatic = true;
-                SignalEvent(Event.TrainBrakePressureStoppedChanging);
-                SignalEvent(Event.CompressorOff);
-                SignalEvent(Event.Compressor2Off);
-                SignalEvent(Event.AuxCompressorOff);
+                Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);                
+                if ((Cars[0] is MSTSLocomotive))
+                {
+                    var loco = Cars[0] as MSTSLocomotive;                    
+                    if (loco.MainResPressurePSI == 0)
+                        loco.LocoIsStatic = true;
+                    if (loco.CompressorIsOn)
+                        SignalEvent(Event.CompressorOff);
+                    if (loco.Compressor2IsOn)
+                        SignalEvent(Event.Compressor2Off);
+                    if (loco.AuxCompressorIsOn)
+                        SignalEvent(Event.AuxCompressorOff);
+                }
+                SignalEvent(Event.TrainBrakePressureStoppedChanging);                
                 ToggleDoors(true, false);
                 ToggleDoors(false, false);
             }
