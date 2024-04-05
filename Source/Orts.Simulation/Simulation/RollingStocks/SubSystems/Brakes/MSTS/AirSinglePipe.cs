@@ -1964,15 +1964,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
-            float brakePipeTimeFactorSToTrainLength = train.Length / (330 / (brakePipeTimeFactorS * 7.5f * 25) * train.Cars.Count);
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorSToTrainLength = train.Length / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.Cars.Count);
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 3f;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
             float brakePipeTimeFactorSBase = brakePipeTimeFactorS_Release;
 
             float brakePipeChargingNormalPSIpS = BrakePipeChargingRatePSIorInHgpS0; // Rychlost plnění průběžného potrubí při normálním plnění 
-            float brakePipeChargingQuickPSIpS = BrakePipeChargingRatePSIorInHgpS0 * 3; // Rychlost plnění průběžného potrubí při švihu 
+            float brakePipeChargingQuickPSIpS = BrakePipeChargingRatePSIorInHgpS0 * 3f; // Rychlost plnění průběžného potrubí při švihu 
 
             int nSteps = (int)(elapsedClockSeconds / brakePipeTimeFactorS + 1);
             float TrainPipeTimeVariationS = elapsedClockSeconds / nSteps;
