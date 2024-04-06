@@ -1667,22 +1667,28 @@ namespace Orts.Simulation
         {
             foreach (var trainItem in Simulator.Trains)
             {
-                int nCars = 0;//all cars other than WagonIdList.
-                int nWagonListCars = 0;//individual wagon drop.
-                foreach (var item in trainItem.Cars)
+                // Icik
+                if (atSiding(trainItem.FrontTDBTraveller, trainItem.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
                 {
-                    if (!wagonIdList.Contains(item.CarID)) nCars++;
-                    if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
-                }
-                // Compare two lists to make sure wagons are present.
-                bool listsMatch = true;
-                //support individual wagonIdList drop
-                if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
-                {
-                    if (excludesWagons(trainItem, wagonIdList)) listsMatch = false;//all wagons dropped
-
-                    if (listsMatch) return trainItem;
-
+                    if (trainItem != Simulator.PlayerLocomotive.Train && trainItem.Cars.Count == wagonIdList.Count)
+                    {
+                        int nCars = 0;//all cars other than WagonIdList.
+                        int nWagonListCars = 0;//individual wagon drop.
+                        foreach (var item in trainItem.Cars)
+                        {
+                            if (!wagonIdList.Contains(item.CarID)) nCars++;
+                            if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
+                        }
+                        // Compare two lists to make sure wagons are present.
+                        bool listsMatch = true;
+                        //support individual wagonIdList drop
+                        if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
+                        {
+                            //if (excludesWagons(trainItem, wagonIdList)) listsMatch = false;//all wagons dropped
+                            listsMatch = true;
+                            if (listsMatch) return trainItem;
+                        }
+                    }
                 }
 
             }
