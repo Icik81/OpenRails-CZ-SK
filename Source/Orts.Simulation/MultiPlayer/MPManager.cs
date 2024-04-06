@@ -76,7 +76,7 @@ namespace Orts.MultiPlayer
         public double serverTimeDifference = 0;
 
         public double lastPlayerAddedTime;
-        public int MPUpdateInterval = 10;
+        public int MPUpdateInterval = 1;
         static public bool AllowedManualSwitch = true;
         public bool TrySwitch = true;
         public bool AllowNewPlayer = true;
@@ -229,7 +229,7 @@ namespace Orts.MultiPlayer
         /// </summary>
         public void Update(double newtime)
         {
-            if (begineZeroTime == 0) begineZeroTime = newtime - 10;
+            if (begineZeroTime == 0) begineZeroTime = newtime - 1;
 
             CheckPlayerTrainSpad();//over speed or pass a red light
 
@@ -325,7 +325,7 @@ namespace Orts.MultiPlayer
 
 
             //need to send a keep-alive message if have not sent one to the server for the last 30 seconds
-            if (Client != null && Server == null && newtime - lastSendTime >= 30f)
+            if (Client != null && Server == null && newtime - lastSendTime >= 5f)
             {
                 Notify((new MSGAlive(GetUserName())).ToString());
                 lastSendTime = newtime;
@@ -333,7 +333,7 @@ namespace Orts.MultiPlayer
 
             //some players are removed
             //need to send a keep-alive message if have not sent one to the server for the last 30 seconds
-            if (IsServer() && newtime - lastSyncTime >= 60f)
+            if (IsServer() && newtime - lastSyncTime >= 10f)
             {
                 Notify((new MSGMessage("All", "TimeCheck", Simulator.ClockTime.ToString(System.Globalization.CultureInfo.InvariantCulture))).ToString());
                 lastSyncTime = newtime;
@@ -604,7 +604,7 @@ namespace Orts.MultiPlayer
                 List<string> removeLost = null;
                 foreach (var x in lostPlayer)
                 {
-                    if (Simulator.GameTime - x.Value.quitTime > 600) //within 10 minutes it will be held
+                    if (Simulator.GameTime - x.Value.quitTime > 10) //within 10 minutes it will be held
                     {
                         if (removeLost == null) removeLost = new List<string>();
                         removeLost.Add(x.Key);
