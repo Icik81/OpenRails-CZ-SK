@@ -1665,29 +1665,23 @@ namespace Orts.Simulation
         /// <returns>train or null</returns>
         private Train matchesConsistNoOrder(List<string> wagonIdList)
         {
+            int CarsFound = 0; 
             foreach (var trainItem in Simulator.Trains)
             {
                 // Icik
                 if (atSiding(trainItem.FrontTDBTraveller, trainItem.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
                 {
-                    if (trainItem != Simulator.PlayerLocomotive.Train && trainItem.Cars.Count == wagonIdList.Count)
+                    if (trainItem != Simulator.PlayerLocomotive.Train)
                     {
-                        int nCars = 0;//all cars other than WagonIdList.
-                        int nWagonListCars = 0;//individual wagon drop.
                         foreach (var item in trainItem.Cars)
-                        {
-                            if (!wagonIdList.Contains(item.CarID)) nCars++;
-                            if (wagonIdList.Contains(item.CarID)) nWagonListCars++;
+                        {                            
+                            if (wagonIdList.Contains(item.CarID)) CarsFound++;
                         }
-                        // Compare two lists to make sure wagons are present.
-                        bool listsMatch = true;
-                        //support individual wagonIdList drop
-                        if (trainItem.Cars.Count - nCars == (wagonIdList.Count == nWagonListCars ? wagonIdList.Count : nWagonListCars))
-                        {
-                            //if (excludesWagons(trainItem, wagonIdList)) listsMatch = false;//all wagons dropped
-                            listsMatch = true;
-                            if (listsMatch) return trainItem;
-                        }
+
+                        if (CarsFound == wagonIdList.Count)
+                        {                            
+                            return trainItem;
+                        }                        
                     }
                 }
 
