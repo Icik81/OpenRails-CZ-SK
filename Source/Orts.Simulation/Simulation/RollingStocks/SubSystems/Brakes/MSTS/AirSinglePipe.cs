@@ -863,7 +863,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                 {
                     AutoCylPressurePSI0 = MaxCylPressurePSI;                    
-                    AuxResPressurePSI = 3.5f * 14.50377f;                    
+                    AuxResPressurePSI = maxPressurePSI0 - (MaxCylPressurePSI / AuxCylVolumeRatioBase);                    
                     BrakeLine1PressurePSI = 0;                                        
                 }
             }
@@ -920,9 +920,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                     }
                     if ((Car as MSTSWagon).HandBrakePresent)
-                    {
+                    {                                                
                         if (!(Car as MSTSWagon).IsDriveable)
-                            HandbrakePercent = Simulator.Random.Next(80, 101);
+                        {
+                            (Car as MSTSWagon).WagonIsStatic = true;
+                            int HandBrakeCount = (int)(Car.Train.Cars.Count / 3f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 3f);
+                            Car.Train.TrainCurrentCarHandBrake++;
+                            if (HandBrakeCount >= Car.Train.TrainCurrentCarHandBrake)
+                                HandbrakePercent = Simulator.Random.Next(80, 101);
+                        }
                         if (HandBrakeDeactive)
                             HandbrakePercent = 0;
                         if (HandBrakeActive)

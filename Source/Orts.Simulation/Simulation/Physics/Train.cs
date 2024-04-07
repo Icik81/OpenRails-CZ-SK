@@ -130,6 +130,7 @@ namespace Orts.Simulation.Physics
         public float TrainBreakSpeedPanto2Down;
         public float AITrainprevSpeedMpS;
         public bool NoSignals;
+        public int TrainCurrentCarHandBrake;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
