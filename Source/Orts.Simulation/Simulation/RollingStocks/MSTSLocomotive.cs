@@ -643,7 +643,7 @@ namespace Orts.Simulation.RollingStocks
         public float MaxPowerWBase;
         public bool DoorSwitchEnable;
         public float PrevDoorSwitch = 1;
-        public bool LocoIsStatic;
+        public bool LocoIsStatic;        
         public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
         public int DirectionButtonPosition = 2;

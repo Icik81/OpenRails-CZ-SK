@@ -233,6 +233,7 @@ namespace Orts.Simulation
         public TrainCar MSTSWagon;        
         public bool TryToCouple;
         public bool CouplingAction;
+        public bool AICouplingAction;
         public bool SanderIsOn;
         public bool PlayerLocomotiveChange;
         public int LeadLocomotiveIndex;
@@ -1981,7 +1982,8 @@ namespace Orts.Simulation
 
             if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Decouple(Confirmer, train)) return;
             int i = 0;
-            while (train.Cars[i] != car) ++i;  // it can't happen that car isn't in car.Train
+            while (train.Cars[i] != car) ++i;  // it can't happen that car isn't in car.Train            
+
             if (i == train.Cars.Count - 1)
             {
                 // Icik
@@ -1989,6 +1991,10 @@ namespace Orts.Simulation
                     TryToCouple = true;
                 return;  // can't uncouple behind last car
             }
+
+            // Icik
+            if (!train.IsActualPlayerTrain)
+                AICouplingAction = true;
             if (train.IsActualPlayerTrain)
                 CouplingAction = true;
             ++i;
@@ -2090,14 +2096,15 @@ namespace Orts.Simulation
             }
             else train2.TrainType = Train.TRAINTYPE.STATIC;
             train2.LeadLocomotive = null;
+            // Icik
             if ((train.TrainType == Train.TRAINTYPE.AI || train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING) && train2.TrainType == Train.TRAINTYPE.STATIC)
                 train2.InitializeBrakes();
-            else
-            {
-                train2.Cars[0].BrakeSystem.PropagateBrakePressure(5);
-                foreach (MSTSWagon wagon in train2.Cars)
-                    wagon.MSTSBrakeSystem.Update(5);
-            }
+            //else
+            //{
+            //    train2.Cars[0].BrakeSystem.PropagateBrakePressure(5);
+            //    foreach (MSTSWagon wagon in train2.Cars)
+            //        wagon.MSTSBrakeSystem.Update(5);
+            //}
             bool inPath;
 
             if ((train.IsActualPlayerTrain && j >= i) || !keepFront)

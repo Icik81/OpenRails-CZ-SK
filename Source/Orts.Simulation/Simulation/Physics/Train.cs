@@ -4461,7 +4461,7 @@ namespace Orts.Simulation.Physics
                     {
                         if (car.IsDriveable)
                         {
-                            LeadLocomotiveIndex = index; 
+                            LeadLocomotiveIndex = index;
                             break;
                         }
                         index++;
@@ -4478,20 +4478,38 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of locomotiveless static consists in the advanced way,
                 // to allow proper shunting operations.
-                Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);                
-                if ((Cars[0] is MSTSLocomotive))
+                Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
+                int CurrentCar = 0;
+                foreach (TrainCar car in Cars)
                 {
-                    var loco = Cars[0] as MSTSLocomotive;                    
-                    if (loco.MainResPressurePSI == 0)
-                        loco.LocoIsStatic = true;
-                    if (loco.CompressorIsOn)
-                        SignalEvent(Event.CompressorOff);
-                    if (loco.Compressor2IsOn)
-                        SignalEvent(Event.Compressor2Off);
-                    if (loco.AuxCompressorIsOn)
-                        SignalEvent(Event.AuxCompressorOff);
+                    if ((car is MSTSLocomotive))
+                    {
+                        var loco = car as MSTSLocomotive;
+                        if (loco.MainResPressurePSI == 0)
+                            loco.LocoIsStatic = true;
+                        if (loco.CompressorIsOn)
+                            SignalEvent(Event.CompressorOff);
+                        if (loco.Compressor2IsOn)
+                            SignalEvent(Event.Compressor2Off);
+                        if (loco.AuxCompressorIsOn)
+                            SignalEvent(Event.AuxCompressorOff);
+                    }
+
+                    if (Simulator.AICouplingAction)
+                    {                        
+                        car.WagonIsStatic = true;
+                        int HandBrakeCount = (int)(Cars.Count / 3f) == 0 ? 1 : (int)(Cars.Count / 3f);
+                        CurrentCar++;
+                        if (CurrentCar <= HandBrakeCount)
+                        {
+                            car.BrakeSystem.HandBrakeActive = true;
+                            car.BrakeSystem.HandBrakeDeactive = false;
+                            car.BrakeSystem.SetHandbrakePercent(Simulator.Random.Next(90, 101));
+                        }                        
+                    }                    
                 }
-                SignalEvent(Event.TrainBrakePressureStoppedChanging);                
+                Simulator.AICouplingAction = false;
+                SignalEvent(Event.TrainBrakePressureStoppedChanging);
                 ToggleDoors(true, false);
                 ToggleDoors(false, false);
             }
@@ -4499,7 +4517,7 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of AI trains simplified
                 AISetUniformBrakePressures();
-            }
+            }            
         }
 
         /// <summary>

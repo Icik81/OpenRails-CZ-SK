@@ -828,6 +828,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             MSTSLocomotive loco = Car as MSTSLocomotive;
+            MSTSWagon wagon = Car as MSTSWagon;
             // Static
             if (loco != null && loco.LocoIsStatic)
             {
@@ -853,6 +854,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     TotalCapacityMainResBrakePipe = 0;
                     loco.MainResPressurePSI = 0;
                     loco.AuxResPressurePSI = 0;                    
+                }
+            }
+            if (wagon != null && wagon.WagonIsStatic)
+            {
+                if (AutoCylPressurePSI0 == MaxCylPressurePSI)
+                    wagon.WagonIsStatic = false;
+                else
+                {
+                    AutoCylPressurePSI0 = MaxCylPressurePSI;                    
+                    AuxResPressurePSI = 3.5f * 14.50377f;                    
+                    BrakeLine1PressurePSI = 0;                                        
                 }
             }
 
