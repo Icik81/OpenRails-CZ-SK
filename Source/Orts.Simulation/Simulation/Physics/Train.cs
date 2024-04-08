@@ -5810,6 +5810,10 @@ namespace Orts.Simulation.Physics
                 car.FrontCouplerSlackM = 0;
 
                 // Calculate coupler slack - this should be the full amount for both couplers
+                if (float.IsNaN(car.CouplerSlackM))
+                {
+                    car.CouplerSlackM = 0;
+                }
                 car.CouplerSlackM += (car.SpeedMpS - Cars[i + 1].SpeedMpS) * elapsedTime;
 
                 // Make sure that coupler slack does not exceed the maximum (dynamic) coupler slack
