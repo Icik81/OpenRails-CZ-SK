@@ -5856,29 +5856,31 @@ namespace Orts.Simulation.Physics
 
                 // Proportion coupler slack across front and rear couplers of this car, and the following car
                 // Icik
-                if (Math.Abs(SpeedMpS) < 0.001f)
-                {
-                    TotalCouplerSlackMTimer += elapsedTime;                    
-                    if (TotalCouplerSlackMTimer > 0.5f)
-                    {
-                        car.CouplerSlackM = 0;
-                        TotalCouplerSlackM = 0;
-                        car.RearCouplerSlackM = 0;
-                        car.FrontCouplerSlackM = 0;
-                        if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive())
-                            car.SpeedMpS = car.SpeedMpS;
-                        else
-                            car.SpeedMpS = 0;
-                        TotalCouplerSlackMTimer = 0.5f;
-                    }
-                }
-                else
-                {
+                //if (Math.Abs(SpeedMpS) < 0.001f)
+                //{
+                //    TotalCouplerSlackMTimer += elapsedTime;                    
+                //    if (TotalCouplerSlackMTimer > 0.0f)
+                //    {
+                //        //TotalCouplerSlackM = 0;
+                //        //car.RearCouplerSlackM = 0;
+                //        //car.FrontCouplerSlackM = 0;
+                //        if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive())
+                //            car.SpeedMpS = car.SpeedMpS;
+                //        else
+                //        {
+                //            car.SpeedMpS = 0;
+                //            car.CouplerSlackM = 0;
+                //        }
+                //        TotalCouplerSlackMTimer = 0.0f;
+                //    }
+                //}
+                //else
+                //{
                     if (Math.Abs(SpeedMpS) > 0.1f)
                         TotalCouplerSlackMTimer = 0;
                     car.RearCouplerSlackM = car.CouplerSlackM / AdvancedCouplerDuplicationFactor;
                     car.FrontCouplerSlackM = Cars[i + 1].CouplerSlackM / AdvancedCouplerDuplicationFactor;
-                }                
+                //}                
 
                 // Check to see if coupler is opened or closed - only closed or opened couplers have been specified
                 // It is assumed that the front coupler on first car will always be opened, and so will coupler on last car. All others on the train will be coupled
