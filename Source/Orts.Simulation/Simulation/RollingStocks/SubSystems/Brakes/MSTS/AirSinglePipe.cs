@@ -899,7 +899,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         loco.MainResPressurePSI = 0;
                         if (loco.HandBrakePresent)
                         {
-                            HandbrakePercent = Simulator.Random.Next(80, 101);
+                            HandbrakePercent = Simulator.Random.Next(90, 101);
                         }
                         FullServPressurePSI = 0;
                         AutoCylPressurePSI = 0;
@@ -924,15 +924,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (!(Car as MSTSWagon).IsDriveable)
                         {
                             (Car as MSTSWagon).WagonIsStatic = true;
-                            int HandBrakeCount = (int)(Car.Train.Cars.Count / 3f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 3f);
+                            int HandBrakeTotalCount = (int)(Car.Train.Cars.Count / 2f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 2f);                                                                                  
                             Car.Train.TrainCurrentCarHandBrake++;
-                            if (HandBrakeCount >= Car.Train.TrainCurrentCarHandBrake)
-                                HandbrakePercent = Simulator.Random.Next(80, 101);
-                        }
+                            if (Car.Train.TrainHandBrakeCount <= HandBrakeTotalCount)
+                            {
+                                if (Simulator.Random.Next(0, 2) == 1)
+                                {
+                                    Car.Train.TrainHandBrakeCount++;
+                                    HandBrakeActive = true;
+                                    HandBrakeDeactive = false;                                    
+                                }
+                            }
+                            if (Car.Train.Cars.Count - Car.Train.TrainCurrentCarHandBrake <= HandBrakeTotalCount - Car.Train.TrainHandBrakeCount)
+                            {
+                                Car.Train.TrainHandBrakeCount++;
+                                HandBrakeActive = true;
+                                HandBrakeDeactive = false;                                
+                            }
+                        }                        
                         if (HandBrakeDeactive)
                             HandbrakePercent = 0;
                         if (HandBrakeActive)
-                            HandbrakePercent = Simulator.Random.Next(80, 101);
+                            HandbrakePercent = Simulator.Random.Next(90, 101);
                     }
                 }
                 //Start vlaku se vzduchem

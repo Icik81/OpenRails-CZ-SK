@@ -131,6 +131,7 @@ namespace Orts.Simulation.Physics
         public float AITrainprevSpeedMpS;
         public bool NoSignals;
         public int TrainCurrentCarHandBrake;
+        public int TrainHandBrakeCount;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -4481,6 +4482,7 @@ namespace Orts.Simulation.Physics
                 // to allow proper shunting operations.
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
                 int CurrentCar = 0;
+                int HandBrakeCount = 0;
                 foreach (TrainCar car in Cars)
                 {
                     if ((car is MSTSLocomotive))
@@ -4499,14 +4501,25 @@ namespace Orts.Simulation.Physics
                     if (Simulator.AICouplingAction)
                     {                        
                         car.WagonIsStatic = true;
-                        int HandBrakeCount = (int)(Cars.Count / 3f) == 0 ? 1 : (int)(Cars.Count / 3f);
+                        int HandBrakeTotalCount = (int)(Cars.Count / 2f) == 0 ? 1 : (int)(Cars.Count / 2f);
                         CurrentCar++;
-                        if (CurrentCar <= HandBrakeCount)
+                        if (HandBrakeCount <= HandBrakeTotalCount)
                         {
+                            if (Simulator.Random.Next(0, 2) == 1)
+                            {
+                                HandBrakeCount++;
+                                car.BrakeSystem.HandBrakeActive = true;
+                                car.BrakeSystem.HandBrakeDeactive = false;
+                                car.BrakeSystem.SetHandbrakePercent(Simulator.Random.Next(90, 101));
+                            }
+                        }   
+                        if (Cars.Count - CurrentCar <= HandBrakeTotalCount - HandBrakeCount)
+                        {
+                            HandBrakeCount++;
                             car.BrakeSystem.HandBrakeActive = true;
                             car.BrakeSystem.HandBrakeDeactive = false;
                             car.BrakeSystem.SetHandbrakePercent(Simulator.Random.Next(90, 101));
-                        }                        
+                        }
                     }                    
                 }
                 Simulator.AICouplingAction = false;
@@ -5796,6 +5809,7 @@ namespace Orts.Simulation.Physics
         /// Update coupler slack - ensures that coupler slack doesn't exceed the maximum permissible value, and provides indication to HUD
         /// <\summary>
 
+        float TotalCouplerSlackMTimer;
         public void UpdateCouplerSlack(float elapsedTime)
         {
             TotalCouplerSlackM = 0;
@@ -5810,10 +5824,12 @@ namespace Orts.Simulation.Physics
                 car.FrontCouplerSlackM = 0;
 
                 // Calculate coupler slack - this should be the full amount for both couplers
+                // Icik
                 if (float.IsNaN(car.CouplerSlackM))
                 {
                     car.CouplerSlackM = 0;
                 }
+                                
                 car.CouplerSlackM += (car.SpeedMpS - Cars[i + 1].SpeedMpS) * elapsedTime;
 
                 // Make sure that coupler slack does not exceed the maximum (dynamic) coupler slack
@@ -5831,7 +5847,7 @@ namespace Orts.Simulation.Physics
                 }
                 else // Simple coupler
                 {
-                    float max = car.GetMaximumSimpleCouplerSlack2M();
+                    float max = car.GetMaximumSimpleCouplerSlack2M();                 
                     if (car.CouplerSlackM < -max)  // Compression
                         car.CouplerSlackM = -max;
                     else if (car.CouplerSlackM > max) // Tension
@@ -5839,8 +5855,30 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Proportion coupler slack across front and rear couplers of this car, and the following car
-                car.RearCouplerSlackM = car.CouplerSlackM / AdvancedCouplerDuplicationFactor;
-                car.FrontCouplerSlackM = Cars[i + 1].CouplerSlackM / AdvancedCouplerDuplicationFactor;
+                // Icik
+                if (Math.Abs(SpeedMpS) < 0.001f)
+                {
+                    TotalCouplerSlackMTimer += elapsedTime;                    
+                    if (TotalCouplerSlackMTimer > 0.5f)
+                    {
+                        car.CouplerSlackM = 0;
+                        TotalCouplerSlackM = 0;
+                        car.RearCouplerSlackM = 0;
+                        car.FrontCouplerSlackM = 0;
+                        if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive())
+                            car.SpeedMpS = car.SpeedMpS;
+                        else
+                            car.SpeedMpS = 0;
+                        TotalCouplerSlackMTimer = 0.5f;
+                    }
+                }
+                else
+                {
+                    if (Math.Abs(SpeedMpS) > 0.1f)
+                        TotalCouplerSlackMTimer = 0;
+                    car.RearCouplerSlackM = car.CouplerSlackM / AdvancedCouplerDuplicationFactor;
+                    car.FrontCouplerSlackM = Cars[i + 1].CouplerSlackM / AdvancedCouplerDuplicationFactor;
+                }                
 
                 // Check to see if coupler is opened or closed - only closed or opened couplers have been specified
                 // It is assumed that the front coupler on first car will always be opened, and so will coupler on last car. All others on the train will be coupled
