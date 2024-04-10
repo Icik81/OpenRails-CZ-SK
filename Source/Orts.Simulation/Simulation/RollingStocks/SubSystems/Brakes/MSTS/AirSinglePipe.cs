@@ -2268,10 +2268,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.TrainBrakeController.MaxPressurePSI = 5.25f * 14.50377f;
                         else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
-
-                        if (lead.BrakeSystem.BrakeLine1PressurePSI > 0.98f * lead.TrainBrakeController.MaxPressurePSI)
+                        
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI >= 0.9999f * lead.TrainBrakeController.MaxPressurePSI)
                             lead.BrakeSystem.OverChargeActivated = true;
-
+                        
                         lead.BrakeSystem.OverChargeRunning = true;
                     }
 
