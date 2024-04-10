@@ -131,7 +131,7 @@ namespace Orts.Simulation.Physics
         public float AITrainprevSpeedMpS;
         public bool NoSignals;
         public int TrainCurrentCarHandBrake;
-        public int TrainHandBrakeCount;
+        public int TrainHandBrakeCount = 1;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -4482,7 +4482,7 @@ namespace Orts.Simulation.Physics
                 // to allow proper shunting operations.
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
                 int CurrentCar = 0;
-                int HandBrakeCount = 0;
+                int HandBrakeCount = 1;
                 foreach (TrainCar car in Cars)
                 {
                     if ((car is MSTSLocomotive))
@@ -5126,8 +5126,7 @@ namespace Orts.Simulation.Physics
         /// <\summary>
 
         public void ComputeCouplerForces(float elapsedTime)
-        {
-
+        {            
             // TODO: this loop could be extracted and become a separate method, that could be called also by TTTrain.physicsPreUpdate
             for (int i = 0; i < Cars.Count; i++)
             {
@@ -5146,6 +5145,10 @@ namespace Orts.Simulation.Physics
             // Calculate RH side coupler force
             // Whilever coupler faces not in contact, then "zero coupler force" by setting A = C = R = 0
             // otherwise R is calculated based on difference in acceleration between cars, or stiffness and damping value
+            
+            // Icik
+            // Pro stojící vlak nepočítej síly ve spřáhlech
+            if (Math.Abs(SpeedMpS) < 0.01f || Simulator.GameSpeed > 1.0f) return;
 
             for (int i = 0; i < Cars.Count - 1; i++)
             {
@@ -5628,7 +5631,7 @@ namespace Orts.Simulation.Physics
         /// <\summary>
 
         public void UpdateCarSpeeds(float elapsedTime)
-        {
+        {            
             // The train speed is calculated by averaging all the car speeds. The individual car speeds are calculated from the TotalForce acting on each car. 
             // Typically the TotalForce consists of the MotiveForce or Gravitational forces (though other forces like friction have a small impact as well).
             // At stop under normal circumstances the BrakeForce exceeds the TotalForces, and therefore the wagon is "held in a stationary position". 
@@ -5808,10 +5811,9 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// Update coupler slack - ensures that coupler slack doesn't exceed the maximum permissible value, and provides indication to HUD
         /// <\summary>
-
-        float TotalCouplerSlackMTimer;
+        
         public void UpdateCouplerSlack(float elapsedTime)
-        {
+        {            
             TotalCouplerSlackM = 0;
             NPull = NPush = 0;
             for (int i = 0; i < Cars.Count - 1; i++)
@@ -5854,33 +5856,11 @@ namespace Orts.Simulation.Physics
                         car.CouplerSlackM = max;
                 }
 
-                // Proportion coupler slack across front and rear couplers of this car, and the following car
-                // Icik
-                //if (Math.Abs(SpeedMpS) < 0.001f)
-                //{
-                //    TotalCouplerSlackMTimer += elapsedTime;                    
-                //    if (TotalCouplerSlackMTimer > 0.0f)
-                //    {
-                //        //TotalCouplerSlackM = 0;
-                //        //car.RearCouplerSlackM = 0;
-                //        //car.FrontCouplerSlackM = 0;
-                //        if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive())
-                //            car.SpeedMpS = car.SpeedMpS;
-                //        else
-                //        {
-                //            car.SpeedMpS = 0;
-                //            car.CouplerSlackM = 0;
-                //        }
-                //        TotalCouplerSlackMTimer = 0.0f;
-                //    }
-                //}
-                //else
-                //{
-                    if (Math.Abs(SpeedMpS) > 0.1f)
-                        TotalCouplerSlackMTimer = 0;
-                    car.RearCouplerSlackM = car.CouplerSlackM / AdvancedCouplerDuplicationFactor;
-                    car.FrontCouplerSlackM = Cars[i + 1].CouplerSlackM / AdvancedCouplerDuplicationFactor;
-                //}                
+                TotalCouplerSlackM += car.CouplerSlackM; // Total coupler slack displayed in HUD only
+
+                // Proportion coupler slack across front and rear couplers of this car, and the following car                
+                car.RearCouplerSlackM = car.CouplerSlackM / AdvancedCouplerDuplicationFactor;
+                car.FrontCouplerSlackM = Cars[i + 1].CouplerSlackM / AdvancedCouplerDuplicationFactor;
 
                 // Check to see if coupler is opened or closed - only closed or opened couplers have been specified
                 // It is assumed that the front coupler on first car will always be opened, and so will coupler on last car. All others on the train will be coupled
@@ -5920,9 +5900,7 @@ namespace Orts.Simulation.Physics
                     car.RearCouplerOpen = false;
                 }
 
-
-
-                TotalCouplerSlackM += car.CouplerSlackM; // Total coupler slack displayed in HUD only
+                
 
 #if DEBUG_COUPLER_FORCES
                 if (car.IsAdvancedCoupler)
