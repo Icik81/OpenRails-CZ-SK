@@ -193,33 +193,37 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	
 	// Sky Color Fix by DR-Aeronautics
 	// increase orange at sunset and yellow at sunrise - fog limits the effect	
+	
+	float SunSizeCoef = LightVector.y * 10;	
+	if (SunSizeCoef > 3) SunSizeCoef = 3;
+	
 	if (LightVector.x < 0)
 	{
 		// These if-statements prevent the yellow-flash effect
 		if (LightVector.y > 0.13)
 		{
-			skyColor.rg += SkyColor.z * 2 * angleRcp * Fog.z * 0.5;
-			skyColor.r += SkyColor.z * 2 * angleRcp * Fog.z * 0.5;
+			skyColor.rg += SkyColor.z * (8 - SunSizeCoef) * angleRcp * Fog.z * 0.5;
+			skyColor.r += SkyColor.z * (8 - SunSizeCoef) * angleRcp * Fog.z * 0.5;
 		}
 	
 		else
 		{
-			skyColor.rg += angleRcp * 0.075 * SkyColor.y * 0.5;
-			skyColor.r += angleRcp * 0.075 * SkyColor.y * 0.5;
+			skyColor.rg += angleRcp * 0.300 * SkyColor.y * 0.5;
+			skyColor.r += angleRcp * 0.300 * SkyColor.y * 0.5;
 		}
 	}
 	else
 	{
 		if (LightVector.y > 0.15)
 		{
-			skyColor.rg += SkyColor.z * 3 * angleRcp * Fog.z * 0.5;
-			skyColor.r += SkyColor.z * angleRcp * Fog.z * 0.5;
+			skyColor.rg += SkyColor.z * (12 - SunSizeCoef) * angleRcp * Fog.z * 0.5;
+			skyColor.r += SkyColor.z * (12 - SunSizeCoef) * angleRcp * Fog.z * 0.5;
 		}
 	
 		else
 		{
-			skyColor.rg += angleRcp * 0.075 * SkyColor.y * 0.5;
-			skyColor.r += pow(angleRcp * 0.075 * SkyColor.y, 2);
+			skyColor.rg += angleRcp * 0.300 * SkyColor.y * 0.5;
+			skyColor.r += pow(angleRcp * 0.300 * SkyColor.y, 2);
 		}
 	}
 	
