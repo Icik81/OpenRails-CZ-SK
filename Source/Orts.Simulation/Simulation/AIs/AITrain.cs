@@ -144,7 +144,6 @@ namespace Orts.Simulation.AIs
         /// <summary>
         /// Constructor
         /// </summary>
-
         public AITrain(Simulator simulator, Service_Definition sd, AI ai, AIPath path, float efficiency,
                 string name, Traffic_Service_Definition trafficService, float maxVelocityA)
             : base(simulator)
@@ -170,9 +169,13 @@ namespace Orts.Simulation.AIs
             else
                 Efficiency = MathHelper.Clamp(Efficiency, 0.3f, 1.0f);
 
-            if (Name.ToLower().Contains("pulnoc")) // Půlnoční vlak startující po půlnoci
-                StartTime = (int)(ServiceDefinition.Time + 86400);
-
+            // Pokud AI bude mít nižší startovní čas než hráč a tento rozdíl bude více jak 60 minut, bude půlnoční
+            if (Simulator.PlayerTrainStartTime == null)
+                Simulator.PlayerTrainStartTime = StartTime;                
+            else
+            if ((StartTime < Simulator.PlayerTrainStartTime && Simulator.PlayerTrainStartTime - StartTime > 3600) || Name.ToLower().Contains("pulnoc"))            
+                StartTime = (int)(ServiceDefinition.Time + 86400);                        
+            
             TrafficService = trafficService;
             MaxVelocityA = maxVelocityA;
             // <CSComment> TODO: as Cars.Count is always = 0 at this point, activityClearingDistanceM is set to the short distance also for long trains
