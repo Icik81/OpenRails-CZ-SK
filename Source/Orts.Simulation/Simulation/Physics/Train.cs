@@ -132,6 +132,7 @@ namespace Orts.Simulation.Physics
         public bool NoSignals;
         public int TrainCurrentCarHandBrake;
         public int TrainHandBrakeCount = 1;
+        public int? PlayerTrainStartTime = -1;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -708,6 +709,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            PlayerTrainStartTime = inf.ReadInt32();
             NoSignals = inf.ReadBoolean();
             TrainDistanceTravelledM = inf.ReadSingle();
             TrainHeatingStartOn = inf.ReadBoolean();
@@ -1083,6 +1085,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write((int)PlayerTrainStartTime);
             outf.Write(NoSignals);
             outf.Write(TrainDistanceTravelledM);
             outf.Write(TrainHeatingStartOn);

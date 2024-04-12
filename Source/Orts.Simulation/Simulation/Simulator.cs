@@ -633,7 +633,7 @@ namespace Orts.Simulation
             ControllerVoltsLocoHelper = inf.ReadSingle();
             TrainPowerKey = inf.ReadBoolean();            
             OldClockTime = inf.ReadDouble();
-            ManualCouplingOverride = inf.ReadBoolean();
+            ManualCouplingOverride = inf.ReadBoolean();            
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -817,7 +817,7 @@ namespace Orts.Simulation
             if (ActiveMovingTable != null) ActiveMovingTable.Update();
 
             // Represent conditions at the specified clock time.
-            List<Train> movingTrains = new List<Train>();
+            List<Train> movingTrains = new List<Train>();            
 
             if (PlayerLocomotive != null)
             {
@@ -833,6 +833,10 @@ namespace Orts.Simulation
 
             foreach (Train train in Trains)
             {
+                // Icik                
+                if (train.PlayerTrainStartTime == -1)
+                    train.PlayerTrainStartTime = (int)ClockTime;                
+
                 if ((train.SpeedMpS != 0 || (train.ControlMode == Train.TRAIN_CONTROL.EXPLORER && train.TrainType == Train.TRAINTYPE.REMOTE && MPManager.IsServer())) &&
                     train.GetType() != typeof(AITrain) && train.GetType() != typeof(TTTrain) &&
                     (PlayerLocomotive == null || train != PlayerLocomotive.Train))

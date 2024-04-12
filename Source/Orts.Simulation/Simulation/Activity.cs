@@ -929,8 +929,22 @@ namespace Orts.Simulation
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
+
             if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0)
-                MyPlayerTrain.Delay = TimeSpan.FromSeconds((Simulator.ClockTime - MyPlayerTrain.StationStops[0].DepartTime) % (24 * 3600));
+            {
+                if (MyPlayerTrain.PlayerTrainStartTime > Simulator.ClockTime)
+                {
+                    MyPlayerTrain.Delay = TimeSpan.FromSeconds((Simulator.ClockTime - 86400 - MyPlayerTrain.StationStops[0].DepartTime) % (24 * 3600));
+                }
+                else
+                {
+                 if (Simulator.ClockTime - MyPlayerTrain.StationStops[0].DepartTime > 3600)
+                        MyPlayerTrain.Delay = TimeSpan.FromSeconds((Simulator.ClockTime - 86400 - MyPlayerTrain.StationStops[0].DepartTime) % (24 * 3600));
+                 else
+                    MyPlayerTrain.Delay = TimeSpan.FromSeconds((Simulator.ClockTime - MyPlayerTrain.StationStops[0].DepartTime) % (24 * 3600));
+                }
+            }
+
             // The train is stopped.
             if (EventType == ActivityEventType.TrainStop)
             {

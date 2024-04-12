@@ -49,9 +49,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="SelectRoute.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
+    <Compile Include="SelectRoute.cs" />
     <Compile Include="SinglePage.cs">
       <SubType>UserControl</SubType>
     </Compile>
