@@ -1336,8 +1336,7 @@ namespace Orts.Viewer3D
                     }
                     if (fogTimer == 0) ORTSFog = -1;
                 }
-                weatherControl.Weather.FogDistance = 150;
-
+                
                 // Icik
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)

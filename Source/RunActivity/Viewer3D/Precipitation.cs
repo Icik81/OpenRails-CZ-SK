@@ -184,12 +184,12 @@ namespace Orts.Viewer3D
 
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
             {
-                ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
-                ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
-                ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
+                //ParticleBoxLengthM = (float)Program.Simulator.Settings.PrecipitationBoxLength;
+                //ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
+                //ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
 
                 // Icik
-                /*if (viewer.Simulator.Weather.SnowVelocityMpS < 0.5f)
+                if (viewer.Simulator.Weather.SnowVelocityMpS < 0.5f)
                 {
                     ParticleBoxLengthM = 500;
                     ParticleBoxWidthM = 500;
@@ -200,7 +200,7 @@ namespace Orts.Viewer3D
                     ParticleBoxLengthM = 300;
                     ParticleBoxWidthM = 500;
                     ParticleBoxHeightM = 100;
-                }*/
+                }
             }
             else
             {
@@ -208,8 +208,6 @@ namespace Orts.Viewer3D
                 ParticleBoxWidthM = ParticleBoxWidthM_16;
                 ParticleBoxHeightM = ParticleBoxHeightM_16;
             }
-            Weather w = new Weather();
-            w.FogDistance = 300;
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
                 MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2 / MaxIntensityKoef * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
             // Processing 16bit device
@@ -218,7 +216,6 @@ namespace Orts.Viewer3D
             // Checking if graphics device is 16bit.
             if (graphicsDevice.GraphicsProfile != GraphicsProfile.HiDef)
                 Debug.Assert(MaxParticles * VerticiesPerParticle < ushort.MaxValue, "The maximum number of precipitation verticies must be able to fit in a ushort (16bit unsigned) index buffer.");
-
             Vertices = new ParticleVertex[MaxParticles * VerticiesPerParticle];
             VertexDeclaration = new VertexDeclaration(ParticleVertex.SizeInBytes, ParticleVertex.VertexElements);
             VertexStride = Marshal.SizeOf(typeof(ParticleVertex));
