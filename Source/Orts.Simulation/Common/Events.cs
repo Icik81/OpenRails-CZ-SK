@@ -382,6 +382,9 @@ namespace Orts.Common
         ToggleCenterNA,
         ButtonPressed, 
         ButtonReleased,
+        ToggleHandBrakeUp,
+        ToggleHandBrakeDown,
+        ToggleHandBrakeStop,
     }
 
     public static class Events
@@ -778,6 +781,9 @@ namespace Orts.Common
                         case 20135: return Event.ToggleCenterNA;
                         case 20136: return Event.ButtonPressed;
                         case 20137: return Event.ButtonReleased;
+                        case 20138: return Event.ToggleHandBrakeUp;
+                        case 20139: return Event.ToggleHandBrakeDown;
+                        case 20140: return Event.ToggleHandBrakeStop;
 
                         default: return 0;
                     }

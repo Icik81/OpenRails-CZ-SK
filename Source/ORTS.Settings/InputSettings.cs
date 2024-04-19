@@ -631,6 +631,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlToggleARRConfirmButton] = new UserCommandKeyInput(0x20, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlToggleARRDriveOutButton] = new UserCommandKeyInput(0x1F, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlToggleARRParkingButton] = new UserCommandKeyInput(0x1E, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeUp] = new UserCommandKeyInput(0x28, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeDown] = new UserCommandKeyInput(0x27, KeyModifiers.Shift | KeyModifiers.Control);
 
         }
         #endregion

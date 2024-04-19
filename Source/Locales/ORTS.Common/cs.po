@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2023-11-10 17:18:25+0100\n"
-"PO-Revision-Date: 2023-11-10 17:20+0100\n"
+"POT-Creation-Date: 2024-04-19 16:58:00+0200\n"
+"PO-Revision-Date: 2024-04-19 17:12+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -606,10 +606,6 @@ msgstr "Pohled Vlak hráče"
 #: ../../ORTS.Common/Input/UserCommand.cs:117
 msgid "Camera Jump See Switch"
 msgstr "Pohled Výhybka"
-
-#: ../../ORTS.Common/Input/UserCommand.cs:118
-msgid "Camera Vibrate"
-msgstr "Pohled kývání vlaku"
 
 #: ../../ORTS.Common/Input/UserCommand.cs:119
 msgid "Camera Scroll Right"
@@ -1383,37 +1379,100 @@ msgstr "Ovládání_CZSK Houkačka 2"
 msgid "Control_CZSK Horn 1 + 2"
 msgstr "Ovládání_CZSK Houkačka 1 + 2"
 
+#: ../../ORTS.Common/Input/UserCommand.cs:319
+msgid "Control_CZSK Panto Activation +"
+msgstr "Ovládání_CZSK Aktivace pantografu +"
+
 #: ../../ORTS.Common/Input/UserCommand.cs:320
+msgid "Control_CZSK Panto Activation -"
+msgstr "Ovládání_CZSK Aktivace pantografu -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:321
+msgid "Control_CZSK Voltage Selection +"
+msgstr "Ovládání_CZSK Volba napětí +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:322
+msgid "Control_CZSK Voltage Selection -"
+msgstr "Ovládání_CZSK Volba napětí -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:323
+msgid "Control_CZSK HV3NA +"
+msgstr "Ovládání_CZSK HV3NA +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:324
+msgid "Control_CZSK HV3NA -"
+msgstr "Ovládání_CZSK HV3NA -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:325
+msgid "Control_CZSK Switch5Light +"
+msgstr "Ovládání_CZSK Volba zadních světel +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:326
+msgid "Control_CZSK Switch5Light -"
+msgstr "Ovládání_CZSK Volba zadních světel -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:327
+msgid "Control_CZSK Switch6Light +"
+msgstr "Ovládání_CZSK Volba předních světel +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:328
+msgid "Control_CZSK Switch6Light -"
+msgstr "Ovládání_CZSK Volba předních světel -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:329
+msgid "Control_CZSK ARR Confirm Button"
+msgstr "Ovládání_CZSK ARR Tlačítko potvrzení"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:330
+msgid "Control_CZSK ARR DriveOut Button"
+msgstr "Ovládání_CZSK ARR Tlačítko výběhu"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:331
+msgid "Control_CZSK ARR Parking Button"
+msgstr "Ovládání_CZSK ARR Tlačítko parkovací brzdy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:332
+msgid "Control_CZSK PlayerLoco Handbrake +"
+msgstr "Ovládání_CZSK Utahovat ruční brzdu lokomotivy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:333
+msgid "Control_CZSK PlayerLoco Handbrake -"
+msgstr "Ovládání_CZSK Povolovat ruční brzdu lokomotivy"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:336
 msgid "Set Power Supply Station Location"
 msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:321
+#: ../../ORTS.Common/Input/UserCommand.cs:337
 msgid "Set Voltage 25k"
 msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:322
+#: ../../ORTS.Common/Input/UserCommand.cs:338
 msgid "Set Voltage 15k"
 msgstr "Nastavit napětí 15kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:323
+#: ../../ORTS.Common/Input/UserCommand.cs:339
 msgid "Set Voltage 3k"
 msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:324
+#: ../../ORTS.Common/Input/UserCommand.cs:340
 msgid "Set Voltage 0"
 msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:325
+#: ../../ORTS.Common/Input/UserCommand.cs:341
 msgid "Set Delete Voltage Marker"
 msgstr "Smazat napěťový marker (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:327
+#: ../../ORTS.Common/Input/UserCommand.cs:343
 msgid "Control_CZSK Reload World Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů světa"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:328
+#: ../../ORTS.Common/Input/UserCommand.cs:344
 msgid "Control_CZSK Reload Cab Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů kabiny"
+
+#~ msgid "Camera Vibrate"
+#~ msgstr "Pohled kývání vlaku"
 
 #~ msgid "Control_Classic PowerKey"
 #~ msgstr "Ovládání_Classic Spínač pultu zap/vyp"

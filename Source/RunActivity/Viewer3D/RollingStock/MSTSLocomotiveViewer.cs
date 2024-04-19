@@ -413,6 +413,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlToggleARRConfirmButton, new Action[] { Noop, () => new ToggleARRConfirmButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlToggleARRDriveOutButton, new Action[] { Noop, () => new ToggleARRDriveOutButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlToggleARRParkingButton, new Action[] { Noop, () => new ToggleARRParkingButtonCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeDown, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, false) });
+            UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeUp, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, true) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -451,6 +453,29 @@ namespace Orts.Viewer3D.RollingStock
         {
             // Icik
             DoublePressedKeyTest();
+
+            // Ovládání ruční brzdy na lokomotivě
+            if (Locomotive.HandBrakePresent)
+            {
+                if (Locomotive.HandBrakePercent < 100f && UserInput.IsDown(UserCommand.ControlPlayerLocomotiveHandbrakeUp))
+                {
+                    Locomotive.HandBrakePercent += 10.0f * Locomotive.Simulator.OneSecondLoop;                    
+                    Locomotive.BrakeSystem.SetHandbrakePercent(Locomotive.HandBrakePercent);
+                    Locomotive.Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("Handbrake") + ": " + Locomotive.HandBrakePercent.ToString("0") + " %");
+                    Locomotive.SignalEvent(Event.ToggleHandBrakeUp);
+                }
+                if (Locomotive.HandBrakePercent > 0f && UserInput.IsDown(UserCommand.ControlPlayerLocomotiveHandbrakeDown))
+                {
+                    Locomotive.HandBrakePercent -= 10.0f * Locomotive.Simulator.OneSecondLoop;                    
+                    Locomotive.BrakeSystem.SetHandbrakePercent(Locomotive.HandBrakePercent);
+                    Locomotive.Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("Handbrake") + ": " + Locomotive.HandBrakePercent.ToString("0") + " %");
+                    Locomotive.SignalEvent(Event.ToggleHandBrakeDown);
+                }
+                else
+                {
+                    Locomotive.SignalEvent(Event.ToggleHandBrakeStop);
+                }
+            }
 
             // Ovládání ARR CONFIRM BUTTON nearetované pozice
             if (Locomotive.ARRConfirmButtonEnable)

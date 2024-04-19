@@ -972,7 +972,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 //if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
                 //{
                 if (loco != null) // Lokomotiva
-                {
+                {                    
                     MaxReleaseRatePSIpS = ReleaseRatePSIpS = MathHelper.Clamp(MaxReleaseRatePSIpS, 0.1f * 14.50377f, 0.5f * 14.50377f);
                     MaxApplicationRatePSIpS = MathHelper.Clamp(MaxApplicationRatePSIpS, 0.5f * 14.50377f, 1.0f * 14.50377f);
                 }
@@ -1046,6 +1046,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             //{
             if (loco != null) // Lokomotiva
             {
+                if (loco.HandBrakePercent != HandbrakePercent)
+                    loco.HandBrakePercent = HandbrakePercent;
                 MaxCylPressurePSI = AutoCylPressurePSI = MathHelper.Clamp(MaxCylPressurePSI, 0.0f * 14.50377f, 10.0f * 14.50377f);
                 AuxCylVolumeRatioBase = MathHelper.Clamp(AuxCylVolumeRatioBase, 0.0f, 6.0f);
                 loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatioBase;

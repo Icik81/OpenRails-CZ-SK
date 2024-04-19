@@ -3079,4 +3079,26 @@ namespace Orts.Common
             return base.ToString() + " " + (ToState ? "sound" : "off");
         }
     }
+    [Serializable()]
+    public sealed class PlayerLocomotiveHandbrakeCommand : BooleanCommand
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public PlayerLocomotiveHandbrakeCommand(CommandLog log, bool toState)
+            : base(log, toState)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.SetPlayerLocomotiveHandbrake(ToState);
+            // Report();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " - " + (ToState ? "apply" : "release");
+        }
+    }
 }

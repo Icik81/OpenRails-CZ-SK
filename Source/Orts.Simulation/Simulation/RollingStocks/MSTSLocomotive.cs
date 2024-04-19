@@ -10240,6 +10240,13 @@ namespace Orts.Simulation.RollingStocks
             AcceptHelperSignals = ToState;
         }
 
+        public float HandBrakePercent;
+        public void SetPlayerLocomotiveHandbrake(bool apply)
+        {
+            // Icik
+            // Ovláddání ruční brzdy lokomotivy
+        }
+
         public void SetTrainHandbrake(bool apply)
         {
             if (apply)
