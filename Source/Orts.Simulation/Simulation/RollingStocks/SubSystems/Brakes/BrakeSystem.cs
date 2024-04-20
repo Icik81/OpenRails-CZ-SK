@@ -34,7 +34,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
     }
 
     public abstract class BrakeSystem
-    {
+    {        
         public float BrakeLine1PressurePSI = 72;    // main trainline pressure at this car
         public float BrakeLine2PressurePSI;         // main reservoir equalization pipe pressure
         public float BrakeLine3PressurePSI;         // engine brake cylinder equalization pipe pressure
@@ -168,6 +168,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResPressurePSI;
         public float MaxMainResPressurePSI;
         public float EngineBrakeTresholdRate = 1.0f;
+        public float BrakeCylReleaseFlowTimerOn;
+        public float BrakeCylReleaseFlowTimerOff;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;

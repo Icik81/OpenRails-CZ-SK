@@ -141,7 +141,7 @@ namespace Orts.Simulation.RollingStocks
         public float MaxCurrentA = 0;
         public float MaxSpeedMpS = 1e3f;
         public float UnloadingSpeedMpS;
-        public float MainResPressurePSI = 130;
+        public float MainResPressurePSI = 130;        
         public bool CompressorIsOn;
         public float AverageForceN;
         public bool PowerOn;
