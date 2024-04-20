@@ -5252,12 +5252,18 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpravčí pískne k odjezdu AI ze stanice
-                if (Simulator.Settings.TrainDepartSound == 1 && CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
+                if (CarIsWaitingAtStation && this.ThrottlePercent > 0.0f)
                 {
                     AITimerStart += elapsedClockSeconds;
                     CarIsWaitingAtStation = false;
                     if ((Train as AITrain).Name != (Train as AITrain).AITrainNameReadyToDepart)
-                        SignalEvent(Event.AIPermissionToDepart);
+                    {
+                        switch (Simulator.Settings.TrainDepartSound)
+                        {
+                            case 0: Simulator.SoundNotify = Event.PermissionToDepart; break;
+                            case 1: SignalEvent(Event.AIPermissionToDepart); break;                            
+                        }                                                
+                    }
                     (Train as AITrain).AITrainNameReadyToDepart = (Train as AITrain).Name;
                 }
 
