@@ -1225,9 +1225,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             // This should be executed also anytime number of cars changed in consist.
             if (firstIteration) // if this is executed the first time, let's check all other than player engines in the consist, and record them for further throttle manipulation
             {
-                if (SelectedNumberOfAxles[Locomotive.LocoStation] == 0) // also set the axles, for better delta computing, if user omits to set it
+                if (SelectedNumberOfAxles[Locomotive.LocoStation] != 0) // also set the axles, for better delta computing, if user omits to set it
                 {
-                    SelectedNumberOfAxles[Locomotive.LocoStation] = (int)(Locomotive.Train.Length / 6.6f) + 4;
+                    //SelectedNumberOfAxles[Locomotive.LocoStation] = (int)(Locomotive.Train.Length / 6.6f) + 4;
                     trainLength = SelectedNumberOfAxles[Locomotive.LocoStation] * 6.6f;
                     TrainLengthMeters = (int)Math.Round(trainLength + 0.5, 0);
                 }

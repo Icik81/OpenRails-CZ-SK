@@ -6027,7 +6027,14 @@ namespace Orts.Simulation.RollingStocks
                 {
                     PantoCommandDown = true;
                     HV3Switch[1] = HV3Switch[2] = 0;
-                    LastStateHV3[1] = LastStateHV3[2] = 0;                    
+                    LastStateHV3[1] = LastStateHV3[2] = 0;
+                    if (CruiseControl != null)
+                    {
+                        badNumber:                      
+                        CruiseControl.SelectedNumberOfAxles[LocoStation] = (int)(Simulator.Random.Next(50, 150) / 6.6f) + 4;
+                        if (CruiseControl.SelectedNumberOfAxles[LocoStation] % 4 != 0)
+                            goto badNumber;
+                    }
                 }
                 else
                 {
@@ -6061,6 +6068,8 @@ namespace Orts.Simulation.RollingStocks
                             LocoStation = 2;
 
                         // ARR
+                        if (CruiseControl != null)                        
+                            CruiseControl.SelectedNumberOfAxles[LocoStation] = (int)(Train.Length / 6.6f) + 4;                        
                         if (IsLeadLocomotive())
                         {
                             PowerKeyPosition[LocoStation] = 2;
