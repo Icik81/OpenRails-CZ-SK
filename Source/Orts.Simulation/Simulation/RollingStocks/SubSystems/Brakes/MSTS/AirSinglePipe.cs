@@ -29,6 +29,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using static Orts.Simulation.RollingStocks.TrainCar;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
@@ -1980,21 +1981,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {            
             PropagateBrakeLinePressures(elapsedClockSeconds, Car, TwoPipesConnection);
         }
-        
+
         protected static void PropagateBrakeLinePressures(float elapsedClockSeconds, TrainCar trainCar, bool TwoPipesConnection)
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
-            
+
             var brakePipeTimeFactorS = lead == null ? 0.0003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
             var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
-            
+
             brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.0002f, 0.0004f);
             BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 15f;
-            float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 100f;                     
+            float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 100f;
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.Cars.Count);
@@ -2013,7 +2014,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             float AutoCylPressurePSI = 0;
             if (lead != null)
-            {                
+            {
                 if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI0)
                     AutoCylPressurePSI = lead.BrakeSystem.AutoCylPressurePSI0;
                 if (AutoCylPressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
@@ -2203,9 +2204,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     // Pohlídá tlak v equalizéru, aby nebyl větší než tlak hlavní jímky
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI) train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
-                    
+
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
-                    {                        
+                    {
                         if (lead.LocoType != MSTSLocomotive.LocoTypes.Katr7507
                             && lead.LocomotiveTypeNumber != 671 && lead.LocomotiveTypeNumber != 971)
                         {
@@ -2215,7 +2216,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply)
-                    {                        
+                    {
                         lead.ARRTrainBrakeEngage = false;
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
@@ -2230,7 +2231,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             lead.BrakeSystem.MainResFlowTimerOn += elapsedClockSeconds;
                             if (lead.BrakeSystem.MainResFlowTimerOn > 1.0f)
-                            {                                
+                            {
                                 lead.BrakeSystem.BrakePipeFlow = true;
                             }
                             else
@@ -2240,7 +2241,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             lead.BrakeSystem.BrakePipeFlow = false;
                             lead.BrakeSystem.MainResFlowTimerOn = 0;
-                        }                    
+                        }
                     }
                     if (!lead.BrakeSystem.MainResFlow)
                     {
@@ -2248,9 +2249,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.MainResFlowTimerOff += elapsedClockSeconds;
                         if (lead.BrakeSystem.MainResFlowTimerOff > 0.5f)
                         {
-                            lead.BrakeSystem.BrakePipeFlow = false;                                                      
+                            lead.BrakeSystem.BrakePipeFlow = false;
                         }
-                    }                    
+                    }
                     lead.BrakeSystem.MainResFlow = false;
 
                     if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
@@ -2283,10 +2284,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;
                         else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
-                        
+
                         if (lead.BrakeSystem.BrakeLine1PressurePSI >= 0.9999f * lead.TrainBrakeController.MaxPressurePSI)
                             lead.BrakeSystem.OverChargeActivated = true;
-                        
+
                         lead.BrakeSystem.OverChargeRunning = true;
                     }
 
@@ -2705,11 +2706,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.Compressor_II = true;
                             if (loco.AutoCompressor)
                             {
-                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = true;                                
+                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = true;
                             }
                             else
                             {
-                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = false;                                
+                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = false;
                             }
                             if (loco.CircuitBreakerOn)
                             {
@@ -2784,11 +2785,68 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 SlaveCar.AuxCompressorNoActiveStation = false;
                                 SlaveCar.StationIsActivated[SlaveCar.LocoStation] = false;
-                                SlaveCar.AuxCompressorMode_OffOn[loco.LocoStation] = false;
+                                SlaveCar.AuxCompressorMode_OffOn[SlaveCar.LocoStation] = false;
                                 SlaveCar.CompressorMode_OffAuto[SlaveCar.LocoStation] = false;
                                 SlaveCar.CompressorMode2_OffAuto[SlaveCar.LocoStation] = false;
                                 SlaveCar.Compressor_I_HandMode[SlaveCar.LocoStation] = false;
                                 SlaveCar.Compressor_II_HandMode[SlaveCar.LocoStation] = false;
+                            }
+                        }
+                        else
+                        {
+                            // Lokomotivy spojené kabelem oddělené vozy
+                            if (lead != null && lead.Simulator.TrainIsPassenger)
+                            {
+                                foreach (TrainCar car in train.Cars)
+                                {
+                                    if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())
+                                    {
+                                        if (car.AcceptCableSignals && lead.AcceptCableSignals)
+                                        {
+                                            if (lead.CompressorIsOn)
+                                            {
+                                                (car as MSTSLocomotive).Compressor_I = lead.Compressor_I;
+                                                (car as MSTSLocomotive).StationIsActivated[(car as MSTSLocomotive).LocoStation] = true;
+                                                (car as MSTSLocomotive).CompressorMode_OffAuto[(car as MSTSLocomotive).LocoStation] = true;
+                                                if (lead.Compressor_I_HandMode[lead.LocoStation])
+                                                {
+                                                    (car as MSTSLocomotive).Compressor_I_HandMode[(car as MSTSLocomotive).LocoStation] = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                (car as MSTSLocomotive).CompressorMode_OffAuto[(car as MSTSLocomotive).LocoStation] = false;
+                                                (car as MSTSLocomotive).Compressor_I_HandMode[(car as MSTSLocomotive).LocoStation] = false;
+                                            }
+                                            if (lead.Compressor2IsOn)
+                                            {
+                                                (car as MSTSLocomotive).Compressor_II = lead.Compressor_II;
+                                                (car as MSTSLocomotive).StationIsActivated[(car as MSTSLocomotive).LocoStation] = true;
+                                                (car as MSTSLocomotive).CompressorMode2_OffAuto[(car as MSTSLocomotive).LocoStation] = true;
+                                                if (lead.Compressor_II_HandMode[lead.LocoStation])
+                                                {
+                                                    (car as MSTSLocomotive).Compressor_II_HandMode[(car as MSTSLocomotive).LocoStation] = true;
+                                                }
+                                            }
+                                            else
+                                            {
+                                                (car as MSTSLocomotive).CompressorMode2_OffAuto[(car as MSTSLocomotive).LocoStation] = false;
+                                                (car as MSTSLocomotive).Compressor_II_HandMode[(car as MSTSLocomotive).LocoStation] = false;
+                                            }
+                                        }
+                                        else
+                                        if (!car.AcceptCableSignals || !lead.AcceptCableSignals)
+                                        {
+                                            (car as MSTSLocomotive).AuxCompressorNoActiveStation = false;
+                                            (car as MSTSLocomotive).StationIsActivated[(car as MSTSLocomotive).LocoStation] = false;
+                                            (car as MSTSLocomotive).AuxCompressorMode_OffOn[(car as MSTSLocomotive).LocoStation] = false;
+                                            (car as MSTSLocomotive).CompressorMode_OffAuto[(car as MSTSLocomotive).LocoStation] = false;
+                                            (car as MSTSLocomotive).CompressorMode2_OffAuto[(car as MSTSLocomotive).LocoStation] = false;
+                                            (car as MSTSLocomotive).Compressor_I_HandMode[(car as MSTSLocomotive).LocoStation] = false;
+                                            (car as MSTSLocomotive).Compressor_II_HandMode[(car as MSTSLocomotive).LocoStation] = false;
+                                        }
+                                    }
+                                }
                             }
                         }
 

@@ -216,6 +216,7 @@ namespace Orts.Simulation
         public int LocoCount;
         public int MUCableLocoCount;
         public bool TrainIsPassenger;
+        public bool TrainIsFreight;
         public int WeatherAdv;
         public bool RefreshCab;
         public int InitLocoCycleCount = 0;

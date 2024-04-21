@@ -10917,10 +10917,11 @@ namespace Orts.Simulation.RollingStocks
 
                         // Osobní vlak s elektrickou lokomotivou                                                            
                         if (Simulator.TrainIsPassenger)
-                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                            foreach (var car in Train.Cars)
                             {
                                 if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                                     car.AcceptCableSignals = true;
+                                car.BrakeSystem.ForceTwoPipesConnection = true;
                             }
 
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
@@ -11012,8 +11013,19 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Simulator.SanderIsOn = false;
 
+                Simulator.TrainIsFreight = false;
+                Simulator.TrainIsPassenger = false;
                 foreach (TrainCar car in Train.Cars)
                 {
+                    if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
+                    {
+                        Simulator.TrainIsFreight = true;
+                    }
+                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
+                    {
+                        Simulator.TrainIsPassenger = true;
+                    }
+
                     if (car is MSTSLocomotive)
                     {
                         Simulator.LocoCount++;
@@ -11030,7 +11042,10 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount < 1)
+
+                if (Simulator.TrainIsFreight) Simulator.TrainIsPassenger = false;
+
+                if (Simulator.LocoCount == 1 || Simulator.MUCableLocoCount <= 1)
                     AcceptCableSignals = false;
                 //else
                 //    AcceptCableSignals = true;
