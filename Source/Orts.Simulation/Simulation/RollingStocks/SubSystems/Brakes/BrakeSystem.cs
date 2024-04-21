@@ -79,7 +79,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool AutoLoadRegulatorEquipped;
         public float AutoLoadRegulatorMaxBrakeMass;
         public bool BrakeCylRelease;
-        public bool BrakeCylReleaseFlow;
+        public bool MainResFlow;
         public bool BrakeCylApply;
         public float MainResMinimumPressureForMGbrakeActivationPSI;
         public float BrakePipePressureForMGbrakeActivationPSI;
@@ -168,8 +168,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResPressurePSI;
         public float MaxMainResPressurePSI;
         public float EngineBrakeTresholdRate = 1.0f;
-        public float BrakeCylReleaseFlowTimerOn;
-        public float BrakeCylReleaseFlowTimerOff;
+        public float MainResFlowTimerOn;
+        public float MainResFlowTimerOff;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;
