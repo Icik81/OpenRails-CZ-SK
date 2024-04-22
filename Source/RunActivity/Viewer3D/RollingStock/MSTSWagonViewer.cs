@@ -170,7 +170,11 @@ namespace Orts.Viewer3D.RollingStock
                 // Steam leak in heating hose 
 
                 if (emitter.Key.ToLowerInvariant() == "heatinghosefx")
+                {
                     HeatingHose.AddRange(emitter.Value);
+                    // Icik
+                    car.HasWagonSteamHeatingElements = true;
+                }
 
                 foreach (var drawer in HeatingHose)
                 {

@@ -4607,7 +4607,7 @@ namespace Orts.Simulation.RollingStocks
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, topení aktivní
-                            if (((!car.LocomotiveCab && Train.HeatingIsOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
+                            if (((!car.LocomotiveCab && Train.HeatingIsOn && !Train.CarSteamHeatOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
                                 car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                                
 
@@ -4650,7 +4650,7 @@ namespace Orts.Simulation.RollingStocks
                                 MSGHeatingCycle = 0;
                             }
                             // Termostat vypnutý, klimatizace aktivní
-                            if (((!car.LocomotiveCab && Train.HeatingIsOn) || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
+                            if (((!car.LocomotiveCab && Train.HeatingIsOn && !Train.CarSteamHeatOn) || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature > car.SetTempCThreshold && !car.ThermostatOn && car.PowerReductionByAirCondition > 0)
                             {
                                 car.TempCDelta = -car.PowerReductionByAirCondition0 / TempStepDown / CarAirVolumeM3 * elapsedClockSeconds;
                                 if (car.WagonTemperature < car.SetTempCThreshold + 0.1f)
@@ -4692,11 +4692,18 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         // Parní topení počítá teplotu svým algoritmem
-                        if ((Train.CarSteamHeatOn && !car.WagonHasStove) && !car.LocomotiveCab)
-                            car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
-                        else
-                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
-
+                        if (Train.CarSteamHeatOn)
+                        {
+                            if (!car.WagonHasStove && car.WagonCanEnableSteamHeating && !car.LocomotiveCab)
+                            {
+                                car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
+                                car.StatusHeatIsOn = true;
+                            }
+                            else
+                                car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                            if (!car.WagonCanEnableSteamHeating && !car.WagonHasStove)
+                                car.StatusHeatIsOn = false;
+                        }
                         // Parní lokomotiva
                         if (car is MSTSSteamLocomotive && car.WagonTemperature < car.SteamLocoCabTemperatureBase)
                         {
@@ -4707,7 +4714,7 @@ namespace Orts.Simulation.RollingStocks
                                 car.WagonTemperature += (BoilerPowerKW * 1.0f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds) + car.TempCDeltaAir;
 
                             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
-                        }
+                        }                        
                     }
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
@@ -5303,8 +5310,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                // Aktivuje parní topení pro AI, pokud je k dispozici
-                if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !(Train as AITrain).CarSteamHeatOn)
+                // Aktivuje parní topení pro AI, pokud je k dispozici               
+                if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !(Train as AITrain).CarSteamHeatOn && (Train as AITrain).Cars.Count > 1)
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars)
                     {
@@ -5325,7 +5332,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    if ((this as MSTSLocomotive).CarOutsideTempC > 18f)
+                    if ((this as MSTSLocomotive).CarOutsideTempC > 18f || (Train as AITrain).Cars.Count < 2)
                         (Train as AITrain).CarSteamHeatOn = false;
                 }
                 
@@ -6554,6 +6561,39 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = false;
                     PowerKeyPosition[1] = 0;
                     PowerKeyPosition[2] = 0;
+                }
+            }
+
+            // Testuje připojené potrubí pro vozy s parním vytápěním            
+            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count)
+            {
+                Train.prevTrainCarsCount = Train.Cars.Count; 
+                int SteamHeatCarPosition = 0;
+                int CarPosition = 0;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    car.WagonCanEnableSteamHeating = false;
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsSteamHeatFitted)
+                    {
+                        SteamHeatCarPosition = CarPosition;
+                    }
+                    CarPosition++;
+                }                                
+                for (int i = SteamHeatCarPosition; i < Train.Cars.Count; i++) 
+                {
+                    var wagon = Train.Cars[i];
+                    if (!wagon.HasWagonSteamHeatingElements)                    
+                        break;                    
+                    else                                    
+                        wagon.WagonCanEnableSteamHeating = true;                    
+                }
+                for (int i = SteamHeatCarPosition; i >= 0; i--)
+                {
+                    var wagon = Train.Cars[i];
+                    if (!wagon.HasWagonSteamHeatingElements)
+                        break;
+                    else
+                        wagon.WagonCanEnableSteamHeating = true;
                 }
             }
 
@@ -11284,7 +11324,7 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueAGA;
         float TrainBrakeValueSA; // SlowApply
         float TrainBrakeValueRUN; // Running        
-
+        float LocoStationChangeTimer;
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
@@ -11298,8 +11338,14 @@ namespace Orts.Simulation.RollingStocks
                     LocoStation = 2;
                 if (Simulator.LocoStationChange)
                 {
-                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
-                    Simulator.LocoStationChange = false;
+                    if (LocoStationChangeTimer == 0)
+                        SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                    LocoStationChangeTimer += elapsedTime;
+                    if (LocoStationChangeTimer > 0.5f)
+                    {
+                        Simulator.LocoStationChange = false;
+                        LocoStationChangeTimer = 0;
+                    }
                 }
                 #region TrainBrakeCheckPosition
                 TrainBrakeValueL = -1;

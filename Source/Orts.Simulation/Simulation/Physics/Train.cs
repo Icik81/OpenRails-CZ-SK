@@ -133,6 +133,7 @@ namespace Orts.Simulation.Physics
         public int TrainCurrentCarHandBrake;
         public int TrainHandBrakeCount = 1;
         public int? PlayerTrainStartTime = -1;
+        public int prevTrainCarsCount;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

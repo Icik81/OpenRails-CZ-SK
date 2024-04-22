@@ -2393,7 +2393,7 @@ namespace Orts.Viewer3D
             string p = GetNextFile();
             if (p != "")
             {
-                if (ORTSStream != null && ORTSStream.ALSoundSource != null)
+                if (ORTSStream != null && ORTSStream.ALSoundSource != null && !Program.Viewer.Simulator.LocoStationChange)
                     // Icik
                     //ORTSStream.ALSoundSource.Queue(p, PlayMode.OneShot, ORTSStream.SoundSource.IsExternal, ORTSStream.RepeatedTrigger);
                     ORTSStream.ALSoundSource.Queue(p, PlayMode.OneShot, ORTSStream.SoundSource.IsExternal, true);
