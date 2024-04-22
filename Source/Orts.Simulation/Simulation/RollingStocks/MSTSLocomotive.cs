@@ -6565,7 +6565,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Testuje připojené potrubí pro vozy s parním vytápěním            
-            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count)
+            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count && LocoSetUpTimer > 2)
             {
                 Train.prevTrainCarsCount = Train.Cars.Count; 
                 int SteamHeatCarPosition = 0;
