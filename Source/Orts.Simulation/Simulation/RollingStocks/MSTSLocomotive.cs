@@ -4290,8 +4290,8 @@ namespace Orts.Simulation.RollingStocks
                     if ((car as MSTSLocomotive).CarSteamHeatOn)
                     {
                         Train.CarSteamHeatOn = true;                       
-                        Train.CurrentSteamHeatPressurePSI += (car as MSTSSteamLocomotive).CurrentSteamHeatPressurePSI;
-                        Train.SteamHeatControllerCurrentValue = (car as MSTSSteamLocomotive).SteamHeatController.CurrentValue;
+                        Train.CurrentSteamHeatPressurePSI += (car as MSTSLocomotive).CurrentSteamHeatPressurePSI;
+                        Train.SteamHeatControllerCurrentValue = (car as MSTSLocomotive).SteamHeatController.CurrentValue;
                         foreach (TrainCar car1 in Train.Cars)
                         {
                             if (car1 is MSTSLocomotive)
