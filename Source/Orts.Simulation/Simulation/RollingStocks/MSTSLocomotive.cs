@@ -4704,6 +4704,11 @@ namespace Orts.Simulation.RollingStocks
                             if (!car.WagonCanEnableSteamHeating && !car.WagonHasStove)
                                 car.StatusHeatIsOn = false;
                         }
+                        else 
+                        {
+                            car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                        }
+                        
                         // Parní lokomotiva
                         if (car is MSTSSteamLocomotive && car.WagonTemperature < car.SteamLocoCabTemperatureBase)
                         {
