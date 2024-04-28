@@ -1240,7 +1240,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             locomotive.DieselOilPressurePSI = DieselOilPressurePSI;
 
             // Inicializace AI
-            if ((!locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.LocoIsStatic) || locomotive.CarLengthM < 1f)
+            if (locomotive.BrakeSystem.StartOn && ((!locomotive.IsPlayerTrain && !locomotive.LocoIsStatic) || locomotive.CarLengthM < 1f))
             {
                 RealRPM = IdleRPM;
                 EngineStatus = Status.Running;
