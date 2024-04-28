@@ -316,9 +316,9 @@ namespace Orts.Simulation.RollingStocks
         public float HotBoxStartTimeS;
 
         // Icik        
-        public bool TypVibrace_1 = false;
-        public bool TypVibrace_2 = false;
-        public bool TypVibrace_3 = false;
+        public bool VibrationType_1 = false;
+        public bool VibrationType_2 = false;
+        public bool VibrationType_3 = false;
         public int Factor_vibration;
         public int direction1 = 0;
         public int direction2 = 0;
@@ -2794,6 +2794,12 @@ namespace Orts.Simulation.RollingStocks
 
         public void ComputePosition(Traveller traveler, bool backToFront, float elapsedTimeS, float distance, float speed)
         {
+            // Icik
+            if (float.IsNaN(speed))
+            {
+                speed = 0;
+            }
+
             for (var j = 0; j < Parts.Count; j++)
                 Parts[j].InitLineFit();
             var tileX = traveler.TileX;
@@ -3050,7 +3056,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Math.Round((VibrationOffsetM.X + DistanceM) / CarLengthM) != Math.Round((VibrationOffsetM.X + DistanceM + distanceM) / CarLengthM))
                 {
                     AddVibrations(VibrationFactorDistance, elapsedTimeS);
-                    TypVibrace_1 = true;
+                    VibrationType_1 = true;
                 }
 
                 // Add new vibrations every track vector section which changes the curve radius.
@@ -3062,8 +3068,8 @@ namespace Orts.Simulation.RollingStocks
                         // Use the difference in curvature to determine the strength of the vibration caused.
                         AddVibrations(VibrationFactorTrackVectorSection * Math.Abs(VibrationTrackCurvaturepM - curvaturepM) / VibrationMaximumCurvaturepM, elapsedTimeS);
                         VibrationTrackCurvaturepM = curvaturepM;
-                        TypVibrace_1 = true;
-                        TypVibrace_2 = true;
+                        VibrationType_1 = true;
+                        VibrationType_2 = true;
                     }
                     VibrationTrackVectorSection = traveler.TrackVectorSectionIndex;
                 }
@@ -3073,7 +3079,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     AddVibrations(VibrationFactorTrackNode, elapsedTimeS);
                     VibrationTrackNode = traveler.TrackNodeIndex;
-                    TypVibrace_3 = true;
+                    VibrationType_3 = true;
                 }
 
                 AddVibrations(VibrationFactorDistance, elapsedTimeS);
@@ -3501,7 +3507,7 @@ namespace Orts.Simulation.RollingStocks
                 else x = CarLengthM;
 
                 // Vibrace při prokluzu kol
-                if (WheelSlip)
+                if (IsPlayerTrain && WheelSlip)
                 {
                     VibrationSpringConstantPrimepSpS = 14f / 0.2f;
                     VibratioDampingCoefficient = 0.04f;
@@ -3531,7 +3537,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //Vibrace náhodné nerovnosti
-                if (TypVibrace_1)   //Vibrace na spojích, dle vzdálenosti
+                if (VibrationType_1)   //Vibrace na spojích, dle vzdálenosti
                 {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
@@ -3578,7 +3584,7 @@ namespace Orts.Simulation.RollingStocks
                         VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.25f * VibrationMassKG) / x;                                                
                 }
 
-                if (TypVibrace_2)   //Vibrace v oblouku
+                if (VibrationType_2)   //Vibrace v oblouku
                 {                    
                     float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 0, 3);                                                            
                     force = (int)forceF;
@@ -3609,7 +3615,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Vibration3Timer = 0;
 
-                if (TypVibrace_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)   //Vibrace na výhybce
+                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)   //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
@@ -3655,9 +3661,9 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                TypVibrace_1 = false;
-                TypVibrace_2 = false;
-                TypVibrace_3 = false;                                 
+                VibrationType_1 = false;
+                VibrationType_2 = false;
+                VibrationType_3 = false;                                 
             }
         }
         #endregion
