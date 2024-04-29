@@ -6090,7 +6090,8 @@ namespace Orts.Simulation.RollingStocks
 
                             if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap
                                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
-                                || LapActive[LocoStation])
+                                || LapActive[LocoStation]
+                                || TrainBrakeController.Notches.Count == 0)
                                 EngineBrakeValue[LocoStation] = 1.0f;
 
                             prevEngineBrakeValue[LocoStation] = EngineBrakeValue[LocoStation];
@@ -9518,7 +9519,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (TrainBrakeController.Notches[TrainBrakeController.CurrentNotch].SpringLoaded)
+            if (TrainBrakeController.CurrentNotch != -1 && TrainBrakeController.Notches[TrainBrakeController.CurrentNotch].SpringLoaded)
                 TrainBrakeController.StartIncrease();
 
             AlerterReset(TCSEvent.TrainBrakeChanged);
