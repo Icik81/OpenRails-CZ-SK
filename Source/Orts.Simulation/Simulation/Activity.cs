@@ -1524,8 +1524,8 @@ namespace Orts.Simulation
         }
 
         //Icik
-        bool PickUpWagonsCorrect;
-        float PickUpWagonsTimer;
+        bool DelayedMessage;
+        float DelayedMessageTimer;
         float ChangeWagonIdListLengthM;
         float ActualPositionM;
         override public Boolean Triggered(Activity activity)
@@ -1547,8 +1547,8 @@ namespace Orts.Simulation
             Train consistTrain;
 
             // Icik
-            if (PickUpWagonsCorrect)
-                PickUpWagonsTimer += Simulator.OneSecondLoop;
+            if (DelayedMessage)
+                DelayedMessageTimer += Simulator.OneSecondLoop;
            
             switch (e.Type)
             {
@@ -1583,31 +1583,31 @@ namespace Orts.Simulation
                     {
                         consistTrain = matchesConsistNoOrder(ChangeWagonIdList);
                         triggered = consistTrain != null;
-                    }
+                    }                    
                     break;
                 case EventType.PickUpPassengers:
                     break;
                 case EventType.PickUpWagons: // PickUpWagons is independent of location or siding
-                    triggered = includesWagons(OriginalPlayerTrain, ChangeWagonIdList);
-
-                    // Icik
-                    if (triggered)
-                    {
-                        PickUpWagonsCorrect = true;
-                        triggered = false;
-                    }
-                    if (PickUpWagonsTimer > 2.0f)
-                    {
-                        triggered = true;
-                        PickUpWagonsCorrect = false;
-                        PickUpWagonsTimer = 0;
-                    }
-
+                    triggered = includesWagons(OriginalPlayerTrain, ChangeWagonIdList);                    
                     break;
                 case EventType.ReachSpeed:
                     triggered = (Math.Abs(Simulator.PlayerLocomotive.SpeedMpS) >= e.SpeedMpS);
                     break;
             }
+
+            // Icik
+            if (triggered)
+            {
+                DelayedMessage = true;
+                triggered = false;
+            }
+            if (DelayedMessageTimer > 2.0f)
+            {
+                triggered = true;
+                DelayedMessage = false;
+                DelayedMessageTimer = 0;
+            }
+
             return triggered;
         }
         /// <summary>
