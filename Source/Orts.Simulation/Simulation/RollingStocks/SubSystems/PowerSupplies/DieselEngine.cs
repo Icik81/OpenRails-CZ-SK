@@ -1262,10 +1262,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 RealRPM = 0;
                 EngineStatus = Status.Stopped;
                 locomotive.Battery = false;
-                locomotive.PowerKey = false;
-                locomotive.DieselDirectionControllerPosition[locomotive.LocoStation] = 2;
-                locomotive.DieselDirectionController2Position[locomotive.LocoStation] = 0;
-                locomotive.DieselDirectionController4Position[locomotive.LocoStation] = 0;
+                locomotive.PowerKey = false;                                
             }
 
             if (EngineStatus == DieselEngine.Status.Running)

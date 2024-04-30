@@ -705,8 +705,7 @@ namespace Orts.Simulation.RollingStocks
         public bool[] SeasonSwitchPosition = new bool[3];
         public int[] DoorSwitch = new int[3];
         public int[] DieselDirectionControllerPosition = new int[3];
-        public int[] DieselDirectionController2Position = new int[3];
-        public int[] DieselDirectionController4Position = new int[3];
+        public int[] DieselDirectionController2Position = new int[3];        
         public int[] prevDieselDirectionControllerPosition = new int[3];
         public int[] prevDieselDirectionController2Position = new int[3];
         public float[] AripotControllerValue = new float[3];
@@ -6014,8 +6013,8 @@ namespace Orts.Simulation.RollingStocks
                 Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
                 Pantograph5Switch[1] = Pantograph5Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;
-                DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = DieselDirectionController4Position[1] = -1;
-                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = DieselDirectionController4Position[2] = -1;
+                DieselDirectionControllerPosition[1] = DieselDirectionController2Position[1] = -1;
+                DieselDirectionControllerPosition[2] = DieselDirectionController2Position[2] = -1;
                 Headlight[1] = Headlight[2] = 0;
                 MirelRSDirectionControllerPosition[1] = preMirelRSDirectionControllerPosition[1] = MirelRSDirectionControllerPosition[2] = preMirelRSDirectionControllerPosition[2] = 1;
                 MirelRSControllerPosition[1] = preMirelRSControllerPosition[1] = MirelRSControllerPosition[2] = preMirelRSControllerPosition[2] = 3;
