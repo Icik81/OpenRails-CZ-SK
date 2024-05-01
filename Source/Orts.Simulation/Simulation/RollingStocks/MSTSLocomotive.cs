@@ -5036,10 +5036,16 @@ namespace Orts.Simulation.RollingStocks
 
             if (RDSTBreakerRDSTEnable && Battery && !EmergencyButtonPressed)
             {
-                foreach (TrainCar car in Train.Cars)
+                if (!RDSTBreaker[1] && !RDSTBreaker[2])
+                    RDSTBreakerRDSTState += 1;
+
+                if (IsLeadLocomotive() && AcceptCableSignals)
                 {
-                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
-                        RDSTBreakerRDSTState += 1;
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptCableSignals && !car.RDSTBreaker[1] && !car.RDSTBreaker[2])
+                            RDSTBreakerRDSTState += 1;
+                    }                    
                 }
                 if (RDSTBreakerRDSTState > 0)
                     TrainBrakeController.EmergencyBrakingPushButton = true;
@@ -5048,10 +5054,16 @@ namespace Orts.Simulation.RollingStocks
             }
             if (RDSTBreakerVZEnable && Battery && !EmergencyButtonPressed)
             {
-                foreach (TrainCar car in Train.Cars)
+                if (!RDSTBreaker[1] && !RDSTBreaker[2])
+                    RDSTBreakerVZState += 1;
+
+                if (IsLeadLocomotive() && AcceptCableSignals)
                 {
-                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
-                        RDSTBreakerVZState += 1;
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptCableSignals && !car.RDSTBreaker[1] && !car.RDSTBreaker[2])
+                            RDSTBreakerVZState += 1;
+                    }
                 }
                 if (RDSTBreakerVZState > 0)
                 {
@@ -5078,11 +5090,17 @@ namespace Orts.Simulation.RollingStocks
             }
             if (RDSTBreakerPowerEnable && Battery)
             {
-                foreach (TrainCar car in Train.Cars)
+                if (!RDSTBreaker[1] && !RDSTBreaker[2])
+                    RDSTBreakerPowerState += 1;
+
+                if (IsLeadLocomotive() && AcceptCableSignals)
                 {
-                    if (car is MSTSLocomotive && (!car.RDSTBreaker[1] && !car.RDSTBreaker[2]))
-                        RDSTBreakerPowerState += 1;
-                }
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && car.AcceptCableSignals && !car.RDSTBreaker[1] && !car.RDSTBreaker[2])
+                            RDSTBreakerPowerState += 1;
+                    }
+                }                
                 if (RDSTBreakerPowerState > 0)
                     PowerReductionResult8 = 1;
                 else
