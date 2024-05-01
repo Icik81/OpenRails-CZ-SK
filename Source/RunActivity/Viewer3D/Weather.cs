@@ -1140,17 +1140,26 @@ namespace Orts.Viewer3D
 
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
             {
-                Weather.PrecipitationLiquidity = 1.0f;                
+                if (Weather.PrecipitationLiquidity < 1.0f)
+                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                if (Weather.PrecipitationLiquidity > 1.0f)
+                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
             }
             else
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-            {
-                Weather.PrecipitationLiquidity = 0.2f;
+            {                
+                if (Weather.PrecipitationLiquidity < 0.2f)
+                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                if (Weather.PrecipitationLiquidity > 0.2f)
+                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
                 Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.05f);                
             }
             else
             {
-                Weather.PrecipitationLiquidity = 0.0f;                
+                if (Weather.PrecipitationLiquidity < 0.0f)
+                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                if (Weather.PrecipitationLiquidity > 0.0f)
+                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
             }
 
             if (Weather.PricipitationIntensityPPSPM2 < 0.25f && Viewer.Simulator.WeatherType != WeatherType.Clear)
@@ -1440,13 +1449,13 @@ namespace Orts.Viewer3D
                     {
                         FinishPrecipitationIntensity = ORTSPrecipitationIntensity - precipitationIntensityTimer * (precipitationIntensityChangeRate2 / 1000f);
                         
-                        FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, weatherControl.Weather.OvercastFactor > 0.7f ? 1f : weatherControl.Weather.OvercastFactor);
+                        FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0.002f, weatherControl.Weather.OvercastFactor > 0.7f ? 1f : weatherControl.Weather.OvercastFactor);
 
                         if (weatherControl.Weather.OvercastFactor < 0.3f)
                             FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0);
                         else
                         if (weatherControl.Weather.OvercastFactor < 0.5f)
-                            FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, Simulator.Random.Next(10, 50) / 1000f);                                                                                                                                                                        
+                            FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0.001f, Simulator.Random.Next(10, 50) / 1000f);                                                                                                                                                                        
                     }
                     else
                         weatherControl.Weather.PricipitationIntensityPPSPM2 = ORTSPrecipitationIntensity - precipitationIntensityTimer * precipitationIntensityChangeRate;
