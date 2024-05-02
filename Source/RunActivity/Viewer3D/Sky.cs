@@ -96,7 +96,7 @@ namespace Orts.Viewer3D
             // The arrays have intervals of 1200 secs or 20 mins.
             // Using the Lerp() function, so need to calculate the in-between differential
             // The rest of this increments/decrements the array indices and checks for overshoot/undershoot.
-            while (clockTime >= (OldClockTime - DayTimeOffsetS + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
+            if (clockTime >= (OldClockTime - DayTimeOffsetS + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
             {
                 OldClockTime = OldClockTime + 1200;
                 Step1++;
@@ -110,7 +110,7 @@ namespace Orts.Viewer3D
                     Step1 = 0;
                 }
             }
-            if (clockTime <= (OldClockTime - DayTimeOffsetS)) // Minus key
+            if (clockTime <= (OldClockTime - DayTimeOffsetS + 1200)) // Minus key
             {
                 OldClockTime = OldClockTime - 1200;
                 Step1--;

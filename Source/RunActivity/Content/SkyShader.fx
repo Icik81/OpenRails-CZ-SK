@@ -191,9 +191,6 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	// Coefficients selected by the author to achieve the desired appearance - fot limits the effect
 	skyColor += angleRcp * Fog.y * 0.5;
 	
-	// Sky Color Fix by DR-Aeronautics
-	// increase orange at sunset and yellow at sunrise - fog limits the effect	
-	
 	float SunSizeCoef = LightVector.y * 10;	
 	if (SunSizeCoef > 3) SunSizeCoef = 3;
 	
@@ -209,8 +206,8 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 		else
 		{
 			skyColor.rg += angleRcp * 0.300 * SkyColor.y * 0.5;
-			skyColor.r += angleRcp * 0.300 * SkyColor.y * 0.5;
-		}
+            skyColor.r += pow(angleRcp * 0.300 * SkyColor.y, 3);
+        }
 	}
 	else
 	{
@@ -223,7 +220,7 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 		else
 		{
 			skyColor.rg += angleRcp * 0.300 * SkyColor.y * 0.5;
-			skyColor.r += pow(angleRcp * 0.300 * SkyColor.y, 2);
+			skyColor.r += pow(angleRcp * 0.300 * SkyColor.y, 1);
 		}
 	}
 	
@@ -301,21 +298,21 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 
 technique Sky {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_1 VSSky();
-	  PixelShader = compile ps_4_0_level_9_1 PSSky();
+	  VertexShader = compile vs_4_0_level_9_3 VSSky();
+	  PixelShader = compile ps_4_0_level_9_3 PSSky();
    }
 }
 
 technique Moon {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_1 VSMoon();
-	  PixelShader = compile ps_4_0_level_9_1 PSMoon();
+	  VertexShader = compile vs_4_0_level_9_3 VSMoon();
+	  PixelShader = compile ps_4_0_level_9_3 PSMoon();
    }
 }
 
 technique Clouds {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_1 VSSky();
-	  PixelShader = compile ps_4_0_level_9_1 PSClouds();
+	  VertexShader = compile vs_4_0_level_9_3 VSSky();
+	  PixelShader = compile ps_4_0_level_9_3 PSClouds();
    }
 }
