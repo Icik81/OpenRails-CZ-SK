@@ -1079,6 +1079,7 @@ namespace Orts.Simulation
         public void CheckForCoupling(Train drivenTrain, float elapsedClockSeconds)
         {
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
+            if (CarDerailed) return;
 
             // Icik
             int PreviousCarCount = (int)drivenTrain.Cars.Count;
