@@ -3172,7 +3172,7 @@ namespace Orts.Simulation.RollingStocks
         float prevAbsSpeedMpS;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {                        
-            if (!IsPlayerTrain) return;
+            //if (!IsPlayerTrain) return;
 
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;
@@ -3329,8 +3329,8 @@ namespace Orts.Simulation.RollingStocks
                     ZRotFinal = Math.Max(ZRotFinal, Math.Abs(ZRot));
                     PushXFinal = Math.Max(PushXFinal, Math.Abs(PushX));
                     PushXFinalMarker = DerailRotateCoef != 0 ? Math.Abs(DerailRotateCoef) / DerailRotateCoef : 1;
-                    XRotFinal = Math.Max(XRotFinal, XRot);
-                    YRotFinal = Math.Max(YRotFinal, YRot);
+                    XRotFinal = Math.Max(XRotFinal, Math.Abs(XRot));
+                    YRotFinal = Math.Max(YRotFinal, Math.Abs(YRot));
                 }
                 
                 if (ZRotFinal > 0.5f && AbsSpeedMpS > 1.0f)
@@ -3397,7 +3397,7 @@ namespace Orts.Simulation.RollingStocks
                 if (AbsSpeedMpS < 0.1f)
                 {
                     SpeedMpS = 0;
-                    Simulator.CarDerailed = true;
+                    if (IsPlayerTrain) Simulator.CarDerailed = true;
                 }
 
                 // Vibrace po pražcích                
@@ -3428,7 +3428,7 @@ namespace Orts.Simulation.RollingStocks
             if (AbsSpeedMpS < 0.01f && prevAbsSpeedMpS > 10.0f / 3.6f)
             {
                 SpeedMpS = 0;
-                Simulator.CarDerailed = true;
+                if (IsPlayerTrain) Simulator.CarDerailed = true;
             }
             prevAbsSpeedMpS = AbsSpeedMpS;
         }
