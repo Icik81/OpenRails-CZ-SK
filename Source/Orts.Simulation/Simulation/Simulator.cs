@@ -1115,8 +1115,8 @@ namespace Orts.Simulation
             {
                 TryToCouple = false;
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f)
-                    {
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f && !train.TrainOutOfRoute)
+                    {                        
                         float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
                         // Give another try if multiplayer
                         if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
@@ -1223,8 +1223,8 @@ namespace Orts.Simulation
             if (drivenTrain.SpeedMpS < 0)
             {
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
-                    {                        
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute)
+                    {
                         //avoid coupling of player train with other players train
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
 
@@ -1357,7 +1357,7 @@ namespace Orts.Simulation
             else if (drivenTrain.SpeedMpS > 0)
             {
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED)
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute)
                     {
                         //avoid coupling of player train with other players train if it is too short alived (e.g, when a train is just spawned, it may overlap with another train)
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;

@@ -2163,6 +2163,14 @@ namespace Orts.Simulation.RollingStocks
         // Game save
         public virtual void Save(BinaryWriter outf)
         {
+            outf.Write(XRotFinal);
+            outf.Write(YRotFinal);
+            outf.Write(ZRotFinal);
+            outf.Write(PushXFinal);
+            outf.Write(XRotFinalMarker);
+            outf.Write(YRotFinalMarker);
+            outf.Write(ZRotFinalMarker);
+            outf.Write(PushXFinalMarker);
             outf.Write(Flipped);
             outf.Write(UiD);
             outf.Write(CarID);
@@ -2215,6 +2223,14 @@ namespace Orts.Simulation.RollingStocks
         // Game restore
         public virtual void Restore(BinaryReader inf)
         {
+            XRotFinal = inf.ReadSingle();
+            YRotFinal = inf.ReadSingle();
+            ZRotFinal = inf.ReadSingle();
+            PushXFinal = inf.ReadSingle();
+            XRotFinalMarker = inf.ReadSingle();
+            YRotFinalMarker = inf.ReadSingle();
+            ZRotFinalMarker = inf.ReadSingle();
+            PushXFinalMarker = inf.ReadSingle();
             Flipped = inf.ReadBoolean();
             UiD = inf.ReadInt32();
             CarID = inf.ReadString();
@@ -3186,251 +3202,265 @@ namespace Orts.Simulation.RollingStocks
                 TiltingZRot = 0f;
             }
 
-            if (IsOverJunction())
+            if (Train.TrainIsDerailed)
             {
-                if (AbsSpeedMpS > ActualTrackSpeedMpS + (20f / 3.6f) && CurrentCurveRadius < 200f * (AbsSpeedMpS / ActualTrackSpeedMpS) && !IsJunctionCase)
-                {
-                    if (Flipped)
-                    {
-                        if (CurrentCurveAngle > 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 0.05f);
-                        else
-                        if (CurrentCurveAngle < 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.05f));
-                        else
-                        {
-                            int ChanceToDerail = Simulator.Random.Next(0, 20);
-                            if (ChanceToDerail == 5)
-                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (0.01f));
-                            else
-                            if (ChanceToDerail == 10)
-                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.01f));
-                        }
-                    }
-                    else
-                    {
-                        if (CurrentCurveAngle < 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 0.05f);
-                        else
-                        if (CurrentCurveAngle > 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.05f));
-                        else
-                        {
-                            int ChanceToDerail = Simulator.Random.Next(0, 20);
-                            if (ChanceToDerail == 5)
-                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (0.01f));
-                            else
-                            if (ChanceToDerail == 10)
-                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.01f));
-                        }
-                    }
-                    DerailRotateCoef = MathHelper.Clamp(DerailRotateCoef, -5f, 5f);
-                    if(DerailRotateCoef != 0) 
-                        IsJunctionCase = true;
-                }
-                //Simulator.Confirmer.Information("Radius " + CurrentCurveRadius);
-            }
-            else
-            {
-                if (AbsSpeedMpS > ActualTrackSpeedMpS + (50f / 3.6f) && CurrentCurveRadius < 200f * (AbsSpeedMpS / ActualTrackSpeedMpS) && !IsCurveCase)
-                {
-                    if (Flipped)
-                    {
-                        if (CurrentCurveAngle < 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
-                        else
-                        if (CurrentCurveAngle > 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
-                    }
-                    else
-                    {
-                        if (CurrentCurveAngle > 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
-                        else
-                        if (CurrentCurveAngle < 0)
-                            DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
-                    }
-                    DerailRotateCoef = MathHelper.Clamp(DerailRotateCoef, -20f, 20f);
-                    if (DerailRotateCoef != 0)
-                        IsCurveCase = true;
-                }
-                //Simulator.Confirmer.Information("Radius " + CurrentCurveRadius);
-            }
-
-            if (DerailRotateCoef != 0)
-                DerailmentTimer += elapsedTimeS;
-            else
-            {
-                DerailmentTimer = 0.0f;
-                DerailIsOn = false;
-            }
-
-            if (DerailmentTimer > 0.0f)
-                DerailIsOn = true;
-            
-
-            if (DerailIsOn)
-            {
-                VibrationSpringConstantPrimepSpS = 14f / 0.2f;
-                VibratioDampingCoefficient = 0.04f;
-                if (IsJunctionCase)
-                {
-                    if (DerailRotateCoef > DerailRotateCoefDelta)
-                    {
-                        TiltingXRot -= 0.1f * elapsedTimeS;
-                        TiltingYRot += 0.5f * elapsedTimeS;
-                        ZRot += 1.0f * elapsedTimeS;
-                        VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Y += 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Z += 0.1f * elapsedTimeS;
-                        DerailRotateCoefDelta++;
-                    }
-                    else
-                    if (DerailRotateCoef < DerailRotateCoefDelta)
-                    {
-                        TiltingXRot -= 0.1f * elapsedTimeS;
-                        TiltingYRot -= 0.5f * elapsedTimeS;
-                        ZRot -= 1.0f * elapsedTimeS;
-                        VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
-                        DerailRotateCoefDelta--;
-                    }
-                }
-                else
-                {
-                    if (DerailRotateCoef > DerailRotateCoefDelta)
-                    {
-                        TiltingXRot -= 0.001f * elapsedTimeS;
-                        TiltingYRot += 0.01f * elapsedTimeS;
-                        ZRot += 4.0f * elapsedTimeS;
-                        VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Y += 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Z += 0.1f * elapsedTimeS;
-                        DerailRotateCoefDelta++;
-                    }
-                    else
-                        if (DerailRotateCoef < DerailRotateCoefDelta)
-                    {
-                        TiltingXRot -= 0.001f * elapsedTimeS;
-                        TiltingYRot -= 0.01f * elapsedTimeS;
-                        ZRot -= 4.0f * elapsedTimeS;
-                        VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
-                        VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
-                        DerailRotateCoefDelta--;
-                    }
-                }
-                                                
-                ZRotFinalMarker = ZRot != 0 ? Math.Abs(ZRot) / ZRot : 1;
-
-                if (HasZRotFinalMarker == 0 || HasZRotFinalMarker == ZRotFinalMarker)
-                {
-                    ZRotFinal = Math.Max(ZRotFinal, Math.Abs(ZRot));
-                    PushXFinal = Math.Max(PushXFinal, Math.Abs(PushX));
-                    PushXFinalMarker = DerailRotateCoef != 0 ? Math.Abs(DerailRotateCoef) / DerailRotateCoef : 1;
-                    XRotFinal = Math.Max(XRotFinal, Math.Abs(XRot));
-                    YRotFinal = Math.Max(YRotFinal, Math.Abs(YRot));
-                }
-                
-                if (ZRotFinal > 0.5f && AbsSpeedMpS > 1.0f)
-                {
-                    HasZRotFinalMarker = ZRotFinalMarker;
-                    PushX += AbsSpeedMpS * 0.1f * elapsedTimeS;
-                    if (CarIsDecoupled) XRot += AbsSpeedMpS * 0.001f * elapsedTimeS; // Náchylné na mizení vozů!
-                    YRot += AbsSpeedMpS * 0.001f * elapsedTimeS;
-                    PushY += 0.0f * elapsedTimeS;
-                    if (XRotFinalMarker == 0) XRotFinalMarker = Simulator.Random.Next(-1, 2);
-                    if (YRotFinalMarker == 0) YRotFinalMarker = Simulator.Random.Next(-1, 2);
-                }                
-
+                if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
                 var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
                 var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
                 var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
                 var DerailTranslation = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, PushY, 0);
                 WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslation * WorldPosition.XNAMatrix;
-
-                // Zpomalení díky vykolejení
-                if (IsJunctionCase)
+            }
+            else
+            {
+                if (IsOverJunction())
                 {
-                    (this as MSTSWagon).DavisAN = MassKG / 24000f * 60000f;
-                    (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 60000f;
-
-                    if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f)
+                    if (AbsSpeedMpS > ActualTrackSpeedMpS + (20f / 3.6f) && CurrentCurveRadius < 200f * (AbsSpeedMpS / ActualTrackSpeedMpS) && !IsJunctionCase)
                     {
-                        DerailmentTimer3 += elapsedTimeS;
-                        if (DerailmentTimer3 > 2.0f)
+                        if (Flipped)
                         {
-                            DerailCouplerBreak = true;
-                            CarIsDecoupled = true;
+                            if (CurrentCurveAngle > 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 0.05f);
+                            else
+                            if (CurrentCurveAngle < 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.05f));
+                            else
+                            {
+                                int ChanceToDerail = Simulator.Random.Next(0, 20);
+                                if (ChanceToDerail == 5)
+                                    DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (0.01f));
+                                else
+                                if (ChanceToDerail == 10)
+                                    DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.01f));
+                            }
                         }
+                        else
+                        {
+                            if (CurrentCurveAngle < 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 0.05f);
+                            else
+                            if (CurrentCurveAngle > 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.05f));
+                            else
+                            {
+                                int ChanceToDerail = Simulator.Random.Next(0, 20);
+                                if (ChanceToDerail == 5)
+                                    DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (0.01f));
+                                else
+                                if (ChanceToDerail == 10)
+                                    DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-0.01f));
+                            }
+                        }
+                        DerailRotateCoef = MathHelper.Clamp(DerailRotateCoef, -5f, 5f);
+                        if (DerailRotateCoef != 0)
+                            IsJunctionCase = true;
                     }
-                    SignalEvent(Event.Derail1);
+                    //Simulator.Confirmer.Information("Radius " + CurrentCurveRadius);
                 }
                 else
                 {
-                    // Vypnutí HV na elektrické lokomotivě
-                    if (this as MSTSElectricLocomotive != null && this is MSTSElectricLocomotive)                    
-                        (this as MSTSElectricLocomotive).HVOff = true;
-
-                    if (this as MSTSLocomotive != null && this is MSTSLocomotive)
-                        (this as MSTSLocomotive).ThrottleToZero();
-
-                    if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f)
+                    if (AbsSpeedMpS > ActualTrackSpeedMpS + (50f / 3.6f) && CurrentCurveRadius < 200f * (AbsSpeedMpS / ActualTrackSpeedMpS) && !IsCurveCase)
                     {
-                        DerailmentTimer4 += elapsedTimeS;
-                        if (DerailmentTimer4 > 2.0f)
+                        if (Flipped)
                         {
-                            DerailCouplerBreak = true;
-                            CarIsDecoupled = true;
+                            if (CurrentCurveAngle < 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
+                            else
+                            if (CurrentCurveAngle > 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
                         }
+                        else
+                        {
+                            if (CurrentCurveAngle > 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
+                            else
+                            if (CurrentCurveAngle < 0)
+                                DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
+                        }
+                        DerailRotateCoef = MathHelper.Clamp(DerailRotateCoef, -20f, 20f);
+                        if (DerailRotateCoef != 0)
+                            IsCurveCase = true;
                     }
-
-                    (this as MSTSWagon).DavisAN = MassKG / 24000f * 120000f;
-                    (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 120000f;
-
-                    SignalEvent(Event.Derail1);
-                    SignalEvent(Event.Derail2);
-                    SignalEvent(Event.Derail3);
+                    //Simulator.Confirmer.Information("Radius " + CurrentCurveRadius);
                 }
 
-                if (AbsSpeedMpS < 0.1f)
+                if (DerailRotateCoef != 0)
+                    DerailmentTimer += elapsedTimeS;
+                else
                 {
-                    SpeedMpS = 0;
-                    if (IsPlayerTrain) Simulator.CarDerailed = true;
+                    DerailmentTimer = 0.0f;
+                    DerailIsOn = false;
                 }
 
-                // Vibrace po pražcích                
-                if (IsJunctionCase)
-                {
-                    if (AbsSpeedMpS > 1f)
+                if (DerailmentTimer > 0.0f)
+                    DerailIsOn = true;
+
+
+                if (DerailIsOn)
+                {                    
+                    VibrationSpringConstantPrimepSpS = 14f / 0.2f;
+                    VibratioDampingCoefficient = 0.04f;
+                    if (IsJunctionCase)
                     {
-                        VibrationSpringConstantPrimepSpS = 100f / 0.2f;
-                        VibratioDampingCoefficient = 0.5f;
-                        DerailmentTimer2 += elapsedTimeS;
-                        if (DerailmentTimer2 > 10f / (AbsSpeedMpS * 3.6f))
+                        if (DerailRotateCoef > DerailRotateCoefDelta)
                         {
-                            VibrationRotationRad.X -= 0.2f * elapsedTimeS;
-                            DerailmentTimer2 = 0;
+                            TiltingXRot -= 0.1f * elapsedTimeS;
+                            TiltingYRot += 0.5f * elapsedTimeS;
+                            ZRot += 1.0f * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Y += 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Z += 0.1f * elapsedTimeS;
+                            DerailRotateCoefDelta++;
                         }
-                        if (DerailmentTimer2 < 10f / (AbsSpeedMpS * 3.6f))
+                        else
+                        if (DerailRotateCoef < DerailRotateCoefDelta)
                         {
-                            VibrationRotationRad.X += 0.2f * elapsedTimeS;
+                            TiltingXRot -= 0.1f * elapsedTimeS;
+                            TiltingYRot -= 0.5f * elapsedTimeS;
+                            ZRot -= 1.0f * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
+                            DerailRotateCoefDelta--;
                         }
                     }
                     else
                     {
-                        VibrationSpringConstantPrimepSpS = 100f / 0.2f;
-                        VibratioDampingCoefficient = 0.50f;
+                        if (DerailRotateCoef > DerailRotateCoefDelta)
+                        {
+                            TiltingXRot -= 0.001f * elapsedTimeS;
+                            TiltingYRot += 0.01f * elapsedTimeS;
+                            ZRot += 4.0f * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Y += 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Z += 0.1f * elapsedTimeS;
+                            DerailRotateCoefDelta++;
+                        }
+                        else
+                            if (DerailRotateCoef < DerailRotateCoefDelta)
+                        {
+                            TiltingXRot -= 0.001f * elapsedTimeS;
+                            TiltingYRot -= 0.01f * elapsedTimeS;
+                            ZRot -= 4.0f * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
+                            VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
+                            DerailRotateCoefDelta--;
+                        }
+                    }
+
+                    ZRotFinalMarker = ZRot != 0 ? Math.Abs(ZRot) / ZRot : 1;
+
+                    if (HasZRotFinalMarker == 0 || HasZRotFinalMarker == ZRotFinalMarker)
+                    {
+                        ZRotFinal = Math.Max(ZRotFinal, Math.Abs(ZRot));
+                        PushXFinal = Math.Max(PushXFinal, Math.Abs(PushX));
+                        PushXFinalMarker = DerailRotateCoef != 0 ? Math.Abs(DerailRotateCoef) / DerailRotateCoef : 1;
+                        XRotFinal = Math.Max(XRotFinal, Math.Abs(XRot));
+                        YRotFinal = Math.Max(YRotFinal, Math.Abs(YRot));
+                    }
+
+                    if (ZRotFinal > 0.5f && AbsSpeedMpS > 1.0f)
+                    {
+                        HasZRotFinalMarker = ZRotFinalMarker;
+                        PushX += AbsSpeedMpS * 0.1f * elapsedTimeS;
+                        if (CarIsDecoupled) XRot += AbsSpeedMpS * 0.001f * elapsedTimeS; // Náchylné na mizení vozů!
+                        YRot += AbsSpeedMpS * 0.001f * elapsedTimeS;
+                        PushY += 0.0f * elapsedTimeS;
+                        if (XRotFinalMarker == 0) XRotFinalMarker = Simulator.Random.Next(-1, 2);
+                        if (YRotFinalMarker == 0) YRotFinalMarker = Simulator.Random.Next(-1, 2);
+                    }
+
+                    if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
+                    var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
+                    var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
+                    var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
+                    var DerailTranslation = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, PushY, 0);
+                    WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslation * WorldPosition.XNAMatrix;
+
+                    // Zpomalení díky vykolejení
+                    if (IsJunctionCase)
+                    {
+                        (this as MSTSWagon).DavisAN = MassKG / 24000f * 60000f;
+                        (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 60000f;
+
+                        if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f)
+                        {
+                            DerailmentTimer3 += elapsedTimeS;
+                            if (DerailmentTimer3 > 2.0f)
+                            {
+                                DerailCouplerBreak = true;
+                                CarIsDecoupled = true;
+                            }
+                        }
+                        SignalEvent(Event.Derail1);
+                    }
+                    else
+                    {
+                        // Vypnutí HV na elektrické lokomotivě
+                        if (this as MSTSElectricLocomotive != null && this is MSTSElectricLocomotive)
+                            (this as MSTSElectricLocomotive).HVOff = true;
+
+                        if (this as MSTSLocomotive != null && this is MSTSLocomotive)
+                            (this as MSTSLocomotive).ThrottleToZero();
+
+                        if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f)
+                        {
+                            DerailmentTimer4 += elapsedTimeS;
+                            if (DerailmentTimer4 > 2.0f)
+                            {
+                                DerailCouplerBreak = true;
+                                CarIsDecoupled = true;
+                            }
+                        }
+
+                        (this as MSTSWagon).DavisAN = MassKG / 24000f * 120000f;
+                        (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 120000f;
+
+                        SignalEvent(Event.Derail1);
+                        SignalEvent(Event.Derail2);
+                        SignalEvent(Event.Derail3);
+                    }
+
+                    if (AbsSpeedMpS < 0.1f)
+                    {
+                        SpeedMpS = 0;
+                        Train.TrainIsDerailed = true;
+                        if (IsPlayerTrain) Simulator.CarDerailed = true;
+                    }
+
+                    // Vibrace po pražcích                
+                    if (IsJunctionCase)
+                    {
+                        if (AbsSpeedMpS > 1f)
+                        {
+                            VibrationSpringConstantPrimepSpS = 100f / 0.2f;
+                            VibratioDampingCoefficient = 0.5f;
+                            DerailmentTimer2 += elapsedTimeS;
+                            if (DerailmentTimer2 > 10f / (AbsSpeedMpS * 3.6f))
+                            {
+                                VibrationRotationRad.X -= 0.2f * elapsedTimeS;
+                                DerailmentTimer2 = 0;
+                            }
+                            if (DerailmentTimer2 < 10f / (AbsSpeedMpS * 3.6f))
+                            {
+                                VibrationRotationRad.X += 0.2f * elapsedTimeS;
+                            }
+                        }
+                        else
+                        {
+                            VibrationSpringConstantPrimepSpS = 100f / 0.2f;
+                            VibratioDampingCoefficient = 0.50f;
+                        }
                     }
                 }
+                if (AbsSpeedMpS < 0.01f && prevAbsSpeedMpS > 10.0f / 3.6f)
+                {
+                    SpeedMpS = 0;
+                    if (IsPlayerTrain) Simulator.CarDerailed = true;
+                }
+                prevAbsSpeedMpS = AbsSpeedMpS;
             }
-            if (AbsSpeedMpS < 0.01f && prevAbsSpeedMpS > 10.0f / 3.6f)
-            {
-                SpeedMpS = 0;
-                if (IsPlayerTrain) Simulator.CarDerailed = true;
-            }
-            prevAbsSpeedMpS = AbsSpeedMpS;
         }
 
         // Úprava síly vibrací dle rychlostníků na trati
