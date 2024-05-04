@@ -136,6 +136,7 @@ namespace Orts.Simulation.Physics
         public int prevTrainCarsCount;
         public bool TrainOutOfRoute;
         public bool TrainIsDerailed;
+        public bool TrainEndOfRoute;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -712,6 +713,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
             NoSignals = inf.ReadBoolean();
@@ -1089,6 +1091,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
             outf.Write(NoSignals);
@@ -1893,16 +1896,21 @@ namespace Orts.Simulation.Physics
             //if out of track, will set it to stop
             if ((FrontTDBTraveller != null && FrontTDBTraveller.IsEnd) || (RearTDBTraveller != null && RearTDBTraveller.IsEnd))
             {
-                if (FrontTDBTraveller.IsEnd && RearTDBTraveller.IsEnd)
-                {//if both travellers are out, very rare occation, but have to treat it
-                    RearTDBTraveller.ReverseDirection();
-                    RearTDBTraveller.NextTrackNode();
-                }
-                else if (FrontTDBTraveller.IsEnd) RearTDBTraveller.Move(-1);//if front is out, move back
-                else if (RearTDBTraveller.IsEnd) RearTDBTraveller.Move(1);//if rear is out, move forward
-                foreach (var car in Cars) { car.SpeedMpS = 0; } //can set crash here by setting XNA matrix
-                SignalEvent(Event._ResetWheelSlip);//reset everything to 0 power
+                // Icik
+                TrainEndOfRoute = true;
+
+                //if (FrontTDBTraveller.IsEnd && RearTDBTraveller.IsEnd)
+                //{//if both travellers are out, very rare occation, but have to treat it
+                //    RearTDBTraveller.ReverseDirection();
+                //    RearTDBTraveller.NextTrackNode();
+                //}
+                //else if (FrontTDBTraveller.IsEnd) RearTDBTraveller.Move(-1);//if front is out, move back
+                //else if (RearTDBTraveller.IsEnd) RearTDBTraveller.Move(1);//if rear is out, move forward
+                //foreach (var car in Cars) { car.SpeedMpS = 0; } //can set crash here by setting XNA matrix
+                //SignalEvent(Event._ResetWheelSlip);//reset everything to 0 power
             }
+            else
+                TrainEndOfRoute = false;
 
             if (this.TrainType == TRAINTYPE.REMOTE || updateMSGReceived == true) //server tolds me this train (may include mine) needs to update position
             {
