@@ -137,6 +137,7 @@ namespace Orts.Simulation.Physics
         public bool TrainOutOfRoute;
         public bool TrainIsDerailed;
         public bool TrainEndOfRoute;
+        public bool TrainImpactSoundEvent;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1898,7 +1899,6 @@ namespace Orts.Simulation.Physics
             {
                 // Icik
                 TrainEndOfRoute = true;
-
                 //if (FrontTDBTraveller.IsEnd && RearTDBTraveller.IsEnd)
                 //{//if both travellers are out, very rare occation, but have to treat it
                 //    RearTDBTraveller.ReverseDirection();
@@ -1910,7 +1910,10 @@ namespace Orts.Simulation.Physics
                 //SignalEvent(Event._ResetWheelSlip);//reset everything to 0 power
             }
             else
+            {
                 TrainEndOfRoute = false;
+                TrainImpactSoundEvent = false;
+            }
 
             if (this.TrainType == TRAINTYPE.REMOTE || updateMSGReceived == true) //server tolds me this train (may include mine) needs to update position
             {

@@ -3493,16 +3493,22 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Train.TrainEndOfRoute)
                 {
+                    if (!Train.TrainImpactSoundEvent)
+                    {
+                        Train.TrainImpactSoundEvent = true;
+                        SignalEvent(Event.CoupleImpact);
+                    }
+
                     if (PushZFinalMarker == 0) PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
                     if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)
-                    {                        
-                        prevDereailAbsSpeedMpS = Math.Abs(prevSpeedMpS);                        
+                    {
+                        prevDereailAbsSpeedMpS = Math.Abs(prevSpeedMpS);
                         if (IsPlayerTrain) Simulator.CarDerailed = true;
                     }
                     else
                     if (prevDereailAbsSpeedMpS == -1)
                     {
-                        VibrationRotationRad.X -= 0.1f * elapsedTimeS;
+                        VibrationRotationRad.X -= Math.Abs(prevSpeedMpS * 3.6f) / 10f * elapsedTimeS;
                         SpeedMpS = -0.01f * PushZFinalMarker;
                     }
                 }
