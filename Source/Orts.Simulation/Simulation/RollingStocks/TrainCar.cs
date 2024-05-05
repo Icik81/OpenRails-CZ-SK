@@ -3211,6 +3211,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (Train.TrainIsDerailed || prevDereailAbsSpeedMpS > 0)
             {
+                DerailIsOn = true;
                 // Vypnutí HV na elektrické lokomotivě
                 if (this as MSTSElectricLocomotive != null && this is MSTSElectricLocomotive)
                     (this as MSTSElectricLocomotive).HVOff = true;
@@ -3365,7 +3366,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot += 0.01f * elapsedTimeS;
-                            ZRot += 4.0f * elapsedTimeS;
+                            ZRot += 2.0f * elapsedTimeS;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS;
                             VibrationRotationRad.Y += 0.1f * elapsedTimeS;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
@@ -3376,7 +3377,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot -= 0.01f * elapsedTimeS;
-                            ZRot -= 4.0f * elapsedTimeS;
+                            ZRot -= 2.0f * elapsedTimeS;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS;
                             VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
@@ -3423,12 +3424,16 @@ namespace Orts.Simulation.RollingStocks
                         if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
                             DerailmentTimer3 += elapsedTimeS;
-                            if (DerailmentTimer3 > 2.0f)
+                            if (DerailmentTimer3 > 1.0f)
                             {
+                                DerailmentTimer3 = 0;
                                 CarIsDecoupled = true;
                                 Train.TrainIsDerailing = true;
-                                var uncoupleBehindCar = Train.Cars[0];
-                                Simulator.UncoupleBehind(uncoupleBehindCar, false);
+                                if (Train.Cars.Count > 1)
+                                {
+                                    var uncoupleBehindCar = Train.Cars[0];
+                                    Simulator.UncoupleBehind(uncoupleBehindCar, false);
+                                }
                             }
                         }                        
                         SignalEvent(Event.Derail1);
@@ -3445,12 +3450,16 @@ namespace Orts.Simulation.RollingStocks
                         if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
                             DerailmentTimer4 += elapsedTimeS;
-                            if (DerailmentTimer4 > 2.0f)
+                            if (DerailmentTimer4 > 1.0f)
                             {
+                                DerailmentTimer4 = 0;
                                 CarIsDecoupled = true;
                                 Train.TrainIsDerailing = true;
-                                var uncoupleBehindCar = Train.Cars[0];
-                                Simulator.UncoupleBehind(uncoupleBehindCar, false);
+                                if (Train.Cars.Count > 1)
+                                {
+                                    var uncoupleBehindCar = Train.Cars[0];
+                                    Simulator.UncoupleBehind(uncoupleBehindCar, false);                                    
+                                }
                             }
                         }                                             
 
