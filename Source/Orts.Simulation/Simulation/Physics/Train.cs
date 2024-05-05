@@ -140,6 +140,7 @@ namespace Orts.Simulation.Physics
         public bool TrainEndOfRoute;
         public bool TrainImpactSoundEvent;
         public int TrainDerailCarPosition;
+        public float TrainDerailmentTimer;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -4710,6 +4711,7 @@ namespace Orts.Simulation.Physics
             // process the cars last to first
             for (var i = Cars.Count - 1; i >= 0; --i)
             {
+                if (i >= Cars.Count) return;
                 var car = Cars[i];
                 if (i < Cars.Count - 1)
                 {
