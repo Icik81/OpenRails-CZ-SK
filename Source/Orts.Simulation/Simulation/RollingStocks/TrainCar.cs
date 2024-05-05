@@ -3190,8 +3190,7 @@ namespace Orts.Simulation.RollingStocks
         bool SetDerailCoef;
         bool IsJunctionCase;
         bool IsCurveCase;
-        bool CarIsDecoupled;
-        public bool DerailCouplerBreak;
+        bool CarIsDecoupled;        
         float prevSpeedMpS;
         float prevDereailAbsSpeedMpS = -1;
         public void Derailment(float elapsedTimeS, float speedMpS)
@@ -3208,7 +3207,7 @@ namespace Orts.Simulation.RollingStocks
                 TiltingXRot = 0f;
                 TiltingYRot = 0f;
                 TiltingZRot = 0f;
-            }
+            }            
 
             if (Train.TrainIsDerailed || prevDereailAbsSpeedMpS > 0)
             {
@@ -3413,7 +3412,7 @@ namespace Orts.Simulation.RollingStocks
                     var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
                     var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
                     var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
-                    WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * WorldPosition.XNAMatrix;
+                    WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * WorldPosition.XNAMatrix;                    
 
                     // Zpomalení díky vykolejení
                     if (IsJunctionCase)
@@ -3421,15 +3420,17 @@ namespace Orts.Simulation.RollingStocks
                         (this as MSTSWagon).DavisAN = MassKG / 24000f * 60000f;
                         (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 60000f;
 
-                        if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f)
+                        if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
                             DerailmentTimer3 += elapsedTimeS;
                             if (DerailmentTimer3 > 2.0f)
                             {
-                                DerailCouplerBreak = true;
                                 CarIsDecoupled = true;
+                                Train.TrainIsDerailing = true;
+                                var uncoupleBehindCar = Train.Cars[0];
+                                Simulator.UncoupleBehind(uncoupleBehindCar, false);
                             }
-                        }
+                        }                        
                         SignalEvent(Event.Derail1);
                     }
                     else
@@ -3441,15 +3442,17 @@ namespace Orts.Simulation.RollingStocks
                         if (this as MSTSLocomotive != null && this is MSTSLocomotive)
                             (this as MSTSLocomotive).ThrottleToZero();
 
-                        if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f)
+                        if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
                             DerailmentTimer4 += elapsedTimeS;
                             if (DerailmentTimer4 > 2.0f)
                             {
-                                DerailCouplerBreak = true;
                                 CarIsDecoupled = true;
+                                Train.TrainIsDerailing = true;
+                                var uncoupleBehindCar = Train.Cars[0];
+                                Simulator.UncoupleBehind(uncoupleBehindCar, false);
                             }
-                        }
+                        }                                             
 
                         (this as MSTSWagon).DavisAN = MassKG / 24000f * 120000f;
                         (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 120000f;
@@ -3491,6 +3494,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+
                 if (Train.TrainEndOfRoute)
                 {
                     if (!Train.TrainImpactSoundEvent)

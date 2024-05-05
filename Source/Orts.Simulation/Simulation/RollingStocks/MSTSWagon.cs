@@ -2260,7 +2260,7 @@ namespace Orts.Simulation.RollingStocks
                         //Simulator.Confirmer.MSG2("CouplerForceU = " + CouplerForceU);
                     }
 
-                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || ImpulsForceToCoupler > MaxImpulseCouplerForceUN || DerailCouplerBreak)  // break couplers if either static or impulse forces exceeded
+                    if (Math.Abs(CouplerForceU) > GetCouplerBreak2N() || ImpulsForceToCoupler > MaxImpulseCouplerForceUN)  // break couplers if either static or impulse forces exceeded
                     {
                         CouplerExceedBreakLimit = true;
 

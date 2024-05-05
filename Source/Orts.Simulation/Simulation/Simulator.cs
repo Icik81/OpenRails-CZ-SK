@@ -1252,7 +1252,7 @@ namespace Orts.Simulation
                                 if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
-                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
+                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed && drivenTrain.IsActualPlayerTrain)
                                     CarCoupleMaxSpeedOvercome = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
@@ -1313,7 +1313,7 @@ namespace Orts.Simulation
                                 if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
-                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
+                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed && drivenTrain.IsActualPlayerTrain)
                                     CarCoupleMaxSpeedOvercome = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
@@ -1402,7 +1402,7 @@ namespace Orts.Simulation
                                 if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
-                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
+                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed && drivenTrain.IsActualPlayerTrain)
                                     CarCoupleMaxSpeedOvercome = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
@@ -1484,7 +1484,7 @@ namespace Orts.Simulation
                                 if (Math.Abs(train.SpeedMpS) > 0.01f)
                                     drivenTrain.HasSpeedInCoupler = true;
 
-                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed)
+                                if (DifferenceSpeedMpS > CarCoupleMaxSpeed && drivenTrain.IsActualPlayerTrain)
                                     CarCoupleMaxSpeedOvercome = true;
 
                                 if (DifferenceSpeedMpS > CarCoupleSpeed && drivenTrain.IsActualPlayerTrain)
