@@ -3146,7 +3146,7 @@ namespace Orts.Simulation.RollingStocks
             #endregion RouteVoltage
 
             //RouteVoltageV = 3000;
-            if (RouteVoltageV != preRouteVoltage)
+            if (RouteVoltageV != preRouteVoltage && !Simulator.WireHeightDoNothing)
             {
                 if (Simulator.WireHeigth >= 0)
                 {

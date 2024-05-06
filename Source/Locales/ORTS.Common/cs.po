@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2024-04-19 16:58:00+0200\n"
-"PO-Revision-Date: 2024-04-19 17:12+0200\n"
+"POT-Creation-Date: 2024-05-06 14:44:13+0200\n"
+"PO-Revision-Date: 2024-05-06 16:15+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1470,6 +1470,10 @@ msgstr "Ovládání_CZSK Znovunačtení objektů světa"
 #: ../../ORTS.Common/Input/UserCommand.cs:344
 msgid "Control_CZSK Reload Cab Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů kabiny"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:345
+msgid "Control_CZSK Reload Wire Object"
+msgstr "Ovládání_CZSK Znovunačtení trolejového vedení"
 
 #~ msgid "Camera Vibrate"
 #~ msgstr "Pohled kývání vlaku"

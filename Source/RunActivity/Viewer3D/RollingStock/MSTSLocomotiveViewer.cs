@@ -1325,6 +1325,7 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání tlačítka znovunačtení vedení
             if (UserInput.IsPressed(UserCommand.ControlRefreshWire) || Locomotive.Simulator.WireHeightSwitch57 || Locomotive.Simulator.WireHeightSwitch62 || Locomotive.Simulator.WireHeightSwitchHidden)
             {
+                if (Locomotive.Simulator.WireHeightDoNothing) return;
                 if (Locomotive.Simulator.WireHeigth == 0) Locomotive.Simulator.WireHeigth = 5.7f;
                 if (!Locomotive.Simulator.WireHeigthSet)
                 {

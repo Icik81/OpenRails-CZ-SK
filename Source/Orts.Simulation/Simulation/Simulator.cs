@@ -262,6 +262,7 @@ namespace Orts.Simulation
         public bool WireHeightSwitch57;
         public bool WireHeightSwitch62;
         public bool WireHeightSwitchHidden;
+        public bool WireHeightDoNothing;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

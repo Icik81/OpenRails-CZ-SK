@@ -407,10 +407,14 @@ namespace Orts.Viewer3D
             float dist = (viewer.Simulator.TRK.Tr_RouteFile.TriphaseWidth > 0 ?
                 viewer.Simulator.TRK.Tr_RouteFile.TriphaseWidth : 1.0f);
 
-            if (viewer.Simulator.RefreshWire)
+            // Icik
+            if (topHeight > 0.0f)
             {
-                topHeight = (float)viewer.Simulator.WireHeigth;
+                if (viewer.Simulator.RefreshWire)
+                    topHeight = (float)viewer.Simulator.WireHeigth;
             }
+            else
+                viewer.Simulator.WireHeightDoNothing = true;        
 
             if (drawTriphaseWire)
             {
