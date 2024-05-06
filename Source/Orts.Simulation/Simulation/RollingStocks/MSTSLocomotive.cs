@@ -3148,11 +3148,18 @@ namespace Orts.Simulation.RollingStocks
             //RouteVoltageV = 3000;
             if (RouteVoltageV != preRouteVoltage)
             {
-                switch (RouteVoltageV)
+                if (Simulator.WireHeigth >= 0)
                 {
-                    case 3000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
-                    case 15000: if (preRouteVoltage != 15000) Simulator.WireHeightSwitch62 = true; break;
-                    case 25000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
+                    switch (RouteVoltageV)
+                    {
+                        case 3000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
+                        case 15000: if (preRouteVoltage != 15000) Simulator.WireHeightSwitch62 = true; break;
+                        case 25000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
+                    }
+                }
+                else
+                {
+                    Simulator.WireHeightSwitchHidden = true;
                 }
             }
             preRouteVoltage = RouteVoltageV;

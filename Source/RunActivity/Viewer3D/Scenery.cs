@@ -169,6 +169,7 @@ namespace Orts.Viewer3D
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Wire hidden"));
                 Viewer.Simulator.WireHeightSwitch57 = false;
                 Viewer.Simulator.WireHeightSwitch62 = false;
+                Viewer.Simulator.WireHeightSwitchHidden = false;
                 Viewer.Simulator.WireHeigthSet = false;
                 Viewer.Simulator.RefreshWire = false;
             }

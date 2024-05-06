@@ -261,6 +261,7 @@ namespace Orts.Simulation
         public bool WireHeigthSet;
         public bool WireHeightSwitch57;
         public bool WireHeightSwitch62;
+        public bool WireHeightSwitchHidden;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -634,6 +635,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            WireHeigth = inf.ReadInt32();
             GameWasRestored = true;
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
@@ -677,6 +679,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(WireHeigth);
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
             outf.Write(TrainPowerKey);

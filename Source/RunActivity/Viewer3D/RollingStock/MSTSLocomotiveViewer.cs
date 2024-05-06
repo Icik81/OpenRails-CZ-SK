@@ -1323,7 +1323,7 @@ namespace Orts.Viewer3D.RollingStock
                 Locomotive.ToggleRefreshWorld(false);
             }
             // Ovládání tlačítka znovunačtení vedení
-            if (UserInput.IsPressed(UserCommand.ControlRefreshWire) || Locomotive.Simulator.WireHeightSwitch57 || Locomotive.Simulator.WireHeightSwitch62)
+            if (UserInput.IsPressed(UserCommand.ControlRefreshWire) || Locomotive.Simulator.WireHeightSwitch57 || Locomotive.Simulator.WireHeightSwitch62 || Locomotive.Simulator.WireHeightSwitchHidden)
             {
                 if (Locomotive.Simulator.WireHeigth == 0) Locomotive.Simulator.WireHeigth = 5.7f;
                 if (!Locomotive.Simulator.WireHeigthSet)
@@ -1346,6 +1346,10 @@ namespace Orts.Viewer3D.RollingStock
                     if (Locomotive.Simulator.WireHeightSwitch62)
                     {
                         Locomotive.Simulator.WireHeigth = 6.2f;
+                    }
+                    if (Locomotive.Simulator.WireHeightSwitchHidden)
+                    {
+                        Locomotive.Simulator.WireHeigth = -100f;
                     }
                 }
                 Locomotive.ToggleRefreshWire(true);
