@@ -2642,6 +2642,22 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class ToggleRefreshWireCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleRefreshWireCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleRefreshWire(true);
+        }
+    }
+    [Serializable()]
     public sealed class ToggleRefreshCabCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }

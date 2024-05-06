@@ -201,6 +201,7 @@ namespace Orts.Simulation
         public bool CabInDarkTunnel;
         public float _NightBrightnessValue;
         public bool RefreshWorld;
+        public bool RefreshWire;
         public bool PlayerUsingRearCab;
         public float StepControllerValue;
         public int StepControllerMinValue;
@@ -256,6 +257,10 @@ namespace Orts.Simulation
         public TrainCar attachedCar;
         public int ScreenSizeY;
         public int? PlayerTrainStartTime;
+        public float WireHeigth;
+        public bool WireHeigthSet;
+        public bool WireHeightSwitch57;
+        public bool WireHeightSwitch62;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

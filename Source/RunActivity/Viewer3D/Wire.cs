@@ -407,6 +407,11 @@ namespace Orts.Viewer3D
             float dist = (viewer.Simulator.TRK.Tr_RouteFile.TriphaseWidth > 0 ?
                 viewer.Simulator.TRK.Tr_RouteFile.TriphaseWidth : 1.0f);
 
+            if (viewer.Simulator.RefreshWire)
+            {
+                topHeight = (float)viewer.Simulator.WireHeigth;
+            }
+
             if (drawTriphaseWire)
             {
                 pl = SingleWireProfile("TopWireLeft", topHeight, -dist / 2);
@@ -530,7 +535,7 @@ namespace Orts.Viewer3D
             }
             DTrackData.deltaY = 0;
 
-            if (WireProfile == null)
+            if (WireProfile == null || viewer.Simulator.RefreshWire)
             {
                 WireProfile = new WireProfile(viewer);
             }

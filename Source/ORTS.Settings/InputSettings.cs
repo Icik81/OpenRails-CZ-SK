@@ -633,6 +633,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlToggleARRParkingButton] = new UserCommandKeyInput(0x1E, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeUp] = new UserCommandKeyInput(0x28, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeDown] = new UserCommandKeyInput(0x27, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlRefreshWire] = new UserCommandKeyInput(0x3D, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
 
         }
         #endregion

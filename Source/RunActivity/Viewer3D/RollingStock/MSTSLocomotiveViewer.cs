@@ -415,6 +415,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlToggleARRParkingButton, new Action[] { Noop, () => new ToggleARRParkingButtonCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeDown, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, false) });
             UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeUp, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, true) });
+            UserInputCommands.Add(UserCommand.ControlRefreshWire, new Action[] { Noop, () => new ToggleRefreshWireCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -1321,6 +1322,35 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Locomotive.ToggleRefreshWorld(false);
             }
+            // Ovládání tlačítka znovunačtení vedení
+            if (UserInput.IsPressed(UserCommand.ControlRefreshWire) || Locomotive.Simulator.WireHeightSwitch57 || Locomotive.Simulator.WireHeightSwitch62)
+            {
+                if (Locomotive.Simulator.WireHeigth == 0) Locomotive.Simulator.WireHeigth = 5.7f;
+                if (!Locomotive.Simulator.WireHeigthSet)
+                {
+                    if (UserInput.IsPressed(UserCommand.ControlRefreshWire))
+                    {
+                        if (Locomotive.Simulator.WireHeigth == 5.7f)
+                            Locomotive.Simulator.WireHeigth = 6.2f;
+                        else
+                        if (Locomotive.Simulator.WireHeigth == 6.2f)
+                            Locomotive.Simulator.WireHeigth = -100f;
+                        else
+                        if (Locomotive.Simulator.WireHeigth == -100f)
+                            Locomotive.Simulator.WireHeigth = 5.7f;                        
+                    }
+                    if (Locomotive.Simulator.WireHeightSwitch57)
+                    {
+                        Locomotive.Simulator.WireHeigth = 5.7f;
+                    }
+                    if (Locomotive.Simulator.WireHeightSwitch62)
+                    {
+                        Locomotive.Simulator.WireHeigth = 6.2f;
+                    }
+                }
+                Locomotive.ToggleRefreshWire(true);
+                Locomotive.Simulator.WireHeigthSet = true;                                                
+            }            
             // Ovládání tlačítka znovunačtení kabiny
             if (UserInput.IsPressed(UserCommand.ControlRefreshCab))
             {

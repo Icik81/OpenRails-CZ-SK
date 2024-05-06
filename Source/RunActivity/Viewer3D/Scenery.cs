@@ -44,6 +44,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.Simulation;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -84,7 +85,7 @@ namespace Orts.Viewer3D
             Viewer.DontLoadDayTextures = (Program.Simulator.Settings.ConditionalLoadOfDayOrNightTextures &&
             ((Viewer.MaterialManager.sunDirection.Y < -0.05f && Program.Simulator.ClockTime % 86400 >= 43200) ||
             (Viewer.MaterialManager.sunDirection.Y < -0.15f && Program.Simulator.ClockTime % 86400 < 43200))) ? true : false;
-            if (TileX != VisibleTileX || TileZ != VisibleTileZ || Viewer.Simulator.RefreshWorld)
+            if (TileX != VisibleTileX || TileZ != VisibleTileZ || Viewer.Simulator.RefreshWorld || Viewer.Simulator.RefreshWire)
             {
                 TileX = VisibleTileX;
                 TileZ = VisibleTileZ;
@@ -104,7 +105,7 @@ namespace Orts.Viewer3D
                         CameraTileZ = (int)(Math.Abs(cameraTile) - (long)Math.Abs(CameraTileX) * 100000);
                         if ((CameraTileX != TileX || CameraTileZ != TileZ) && (Math.Abs(CameraTileX - (TileX + x)) > needed || Math.Abs(CameraTileZ - (TileZ + z)) > needed))
                             continue;
-                        if (tile == null || Viewer.Simulator.RefreshWorld)
+                        if (tile == null || Viewer.Simulator.RefreshWorld || Viewer.Simulator.RefreshWire)
                             tile = LoadWorldFile(TileX + x, TileZ + z, x == 0 && z == 0);
                         if (tile != null)
                         {
@@ -159,6 +160,21 @@ namespace Orts.Viewer3D
                 else if (sunHeight >= -0.01)
                     Viewer.DayTexturesNotLoaded = false; // too late to try, we must give up and we don't load the day textures. TODO: is this OK?
             }
+
+            if (Viewer.Simulator.RefreshWire)
+            {
+                if (Viewer.Simulator.WireHeigth > 0)
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Wire heigth set to:") + " " + Viewer.Simulator.WireHeigth + " m");
+                else
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Wire hidden"));
+                Viewer.Simulator.WireHeightSwitch57 = false;
+                Viewer.Simulator.WireHeightSwitch62 = false;
+                Viewer.Simulator.WireHeigthSet = false;
+                Viewer.Simulator.RefreshWire = false;
+            }
+
+            if (Viewer.Simulator.RefreshWorld)
+                Viewer.Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
         }
 
         [CallOnThread("Loader")]
@@ -674,7 +690,7 @@ namespace Orts.Viewer3D
             if (viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) SuperElevationManager.DecomposeStaticSuperElevation(Viewer, dTrackList, TileX, TileZ);
             
             // Icik
-            if (viewer.Simulator.RefreshWorld)            
+            if (viewer.Simulator.RefreshWorld || viewer.Simulator.RefreshWire)            
                 Unload();
             
             if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);

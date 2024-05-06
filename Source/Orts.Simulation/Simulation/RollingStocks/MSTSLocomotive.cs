@@ -3094,6 +3094,70 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        protected float preRouteVoltage;
+        protected PowerSupplyStation prevPss = null;        
+        protected PowerSupplyStation myStation = null;
+        public void WireHeightSwitching()
+        {
+            // Určení napětí v trati pro neelektrické lokomotivy hráče
+            #region RouteVoltage
+            if (IsLeadLocomotive() && !(this is MSTSElectricLocomotive))
+            {
+                int powerSys = -1;
+                int markerVoltage = 0;
+                VoltageChangeMarker marker;
+
+                float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
+                float dist = DistanceToPowerSupplyStationM(markerVoltage == 3000 ? 0 : 1, out myStation);
+
+                if (myStation == null && prevPss != null)
+                {
+                    myStation = prevPss;
+                    powerSys = myStation.PowerSystem;
+                }
+                else if (myStation != null)
+                    powerSys = myStation.PowerSystem;
+                else
+                {
+                    myStation = new PowerSupplyStation();
+                    powerSys = myStation.PowerSystem;
+                }
+                if (powerSys == 0)
+                {
+                    RouteVoltageV = 3000;
+                }
+                else if (powerSys == 1)
+                {
+                    RouteVoltageV = 25000;
+                }
+                else if (powerSys == 2)
+                {
+                    RouteVoltageV = 15000;
+                }
+                if (powerSys == -1)
+                {
+                    RouteVoltageV = 0;
+                }
+                if (distToMarker < dist)
+                {
+                    RouteVoltageV = markerVoltage;
+                }
+            }
+            #endregion RouteVoltage
+
+            //RouteVoltageV = 3000;
+            if (RouteVoltageV != preRouteVoltage)
+            {
+                switch (RouteVoltageV)
+                {
+                    case 3000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
+                    case 15000: if (preRouteVoltage != 15000) Simulator.WireHeightSwitch62 = true; break;
+                    case 25000: if (preRouteVoltage == 15000) Simulator.WireHeightSwitch57 = true; break;
+                }
+            }
+            preRouteVoltage = RouteVoltageV;
+        }
+
         // Master & Slave
         #region Master & Slave       
         public virtual void MasterSlave()
@@ -6705,6 +6769,7 @@ namespace Orts.Simulation.RollingStocks
                 DoorSwitchLogic();
                 TrainBrakePercent();
                 MasterSlave();
+                WireHeightSwitching();
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -15084,8 +15149,12 @@ namespace Orts.Simulation.RollingStocks
         // Znovu načte objekty světa
         public void ToggleRefreshWorld(bool refreshWorld)
         {
-            Simulator.RefreshWorld = refreshWorld;
-            Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
+            Simulator.RefreshWorld = refreshWorld;            
+        }
+        // Znovu načte trolejové vedení
+        public void ToggleRefreshWire(bool refreshWire)
+        {
+            Simulator.RefreshWire = refreshWire;            
         }
         // Znovu načte objekty kabiny
         public int CabRefreshCycle;

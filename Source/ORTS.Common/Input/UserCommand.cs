@@ -342,5 +342,6 @@
 
         [GetString("Control_CZSK Reload World Object")] ControlRefreshWorld,
         [GetString("Control_CZSK Reload Cab Object")] ControlRefreshCab,
+        [GetString("Control_CZSK Reload Wire Object")] ControlRefreshWire,
     }
 }
