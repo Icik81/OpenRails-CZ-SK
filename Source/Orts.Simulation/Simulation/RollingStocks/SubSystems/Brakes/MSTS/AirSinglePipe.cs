@@ -61,6 +61,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected string RetainerDebugState = string.Empty;
         protected bool NoMRPAuxResCharging;
         protected float CylVolumeM3;
+        protected bool CylApplySet;
 
         protected bool TrainBrakePressureChanging = false;
         protected bool EngineBrakePressureChanging = false;
@@ -1589,9 +1590,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Vynulování časovače při brzdění a tlaku v potrubí menším než je drop brzdícího ústrojí
                 if (BrakeCylApply && BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
                     TrainBrakeDelay = 0;
+                
+                // Plní válce až do cílového tlaku
+                if (BrakeCylApply && AutoCylPressurePSI0 < threshold)                                    
+                    CylApplySet = true;
+                if (AutoCylPressurePSI0 >= threshold)
+                    CylApplySet = false;
 
                 // Napouští brzdový válec            
-                if (BrakeCylApply
+                if (CylApplySet
                     && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage
                     && ThresholdBailOffOn == 0
                     && BrakeCylApplyMainResPressureOK
@@ -1604,7 +1611,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (AutoCylPressurePSI0 < threshold)
                         {
-                            AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS;
+                            if (TwoStateBrake)
+                            {
+                                if (LowPressure)
+                                    AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS * (BrakeCylinderMaxPressureForLowState / MaxCylPressurePSI);
+                                else
+                                    AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS;
+                            }
+                            else
+                                AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS;
                             if (AutoCylPressurePSI0 > threshold)
                                 AutoCylPressurePSI0 = threshold;
                         }
@@ -1617,7 +1632,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (AutoCylPressurePSI0 > threshold)
                     {
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
+                        if (TwoStateBrake)
+                        {
+                            if (LowPressure)
+                                AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS * (BrakeCylinderMaxPressureForLowState / MaxCylPressurePSI);
+                            else
+                                AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
+                        }
+                        else
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * ReleaseRatePSIpS;
                         if (AutoCylPressurePSI0 < threshold)
                             AutoCylPressurePSI0 = threshold;
                     }
