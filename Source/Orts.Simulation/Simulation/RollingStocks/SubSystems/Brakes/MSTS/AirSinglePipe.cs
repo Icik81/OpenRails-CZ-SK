@@ -1491,8 +1491,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         dp = MCP - AutoCylPressurePSI0;
 
                     if (dp < 0) dp = 0;
-                    if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen)
-                        dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
+
+                    if (TwoStateBrake && LowPressure)
+                    {
+                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioLowPressureBraking && !BleedOffValveOpen)
+                            dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioLowPressureBraking;
+                    }
+                    else
+                    {
+                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen)
+                            dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
+                    }
 
                     // Otestuje citlivost brzdy, nastartuje časovač zpoždění náběhu brzdy a nastaví příznak pro neukládání threshold                
                     if (BrakePipeChangeRate >= BrakeSensitivityPSIpS)
@@ -1588,9 +1597,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     TrainBrakeDelay += elapsedClockSeconds;
 
                 // Vynulování časovače při brzdění a tlaku v potrubí menším než je drop brzdícího ústrojí
-                if (BrakeCylApply && BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
+                if (BrakeLine1PressurePSI > PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage)
                     TrainBrakeDelay = 0;
-                
+
                 // Plní válce až do cílového tlaku
                 if (BrakeCylApply && AutoCylPressurePSI0 < threshold)                                    
                     CylApplySet = true;
