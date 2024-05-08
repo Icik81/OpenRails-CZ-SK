@@ -814,10 +814,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (TwoStateBrake)
             {
                 if (AuxCylVolumeRatioLowPressureBraking > 0)
+                {
                     threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioLowPressureBraking;
+                    threshold = MathHelper.Clamp(threshold, 0, BrakeCylinderMaxPressureForLowState);
+                }
                 else
+                {
                     threshold = (PrevAuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
-                threshold = MathHelper.Clamp(threshold, 0, MCP);
+                    threshold = MathHelper.Clamp(threshold, 0, MCP);
+                }                
             }
 
             if (!TwoStateBrake)
