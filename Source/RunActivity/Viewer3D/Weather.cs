@@ -1130,12 +1130,12 @@ namespace Orts.Viewer3D
 
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 15f || Viewer.PlayerLocomotive.CarOutsideTempC < 0f)
             {
-                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 1.0f);
+                dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 1.0f);
             }
             else
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
             {
-                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.3f);
+                dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 0.3f);
             }
 
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
@@ -1266,7 +1266,7 @@ namespace Orts.Viewer3D
 
             public void WeatherChange_Init(ORTSWeatherChange eventWeatherChange, WeatherControl weatherControl)
             {
-                var wChangeOn = false;
+                var wChangeOn = false;               
                 if (eventWeatherChange.ORTSOvercast >= 0 && eventWeatherChange.ORTSOvercastTransitionTimeS >= 0)
                 {
                     ORTSOvercast = eventWeatherChange.ORTSOvercast;
@@ -1319,7 +1319,7 @@ namespace Orts.Viewer3D
             }
 
             float precipitationIntensityChangeRate2 = 1;
-            float FinishPrecipitationIntensity;
+            public float FinishPrecipitationIntensity;
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {
                 var wChangeOn = false;
@@ -1345,8 +1345,8 @@ namespace Orts.Viewer3D
                     }
                     if (fogTimer == 0) ORTSFog = -1;
                 }
-                
-                // Icik
+
+                // Icik                
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {
@@ -1362,15 +1362,19 @@ namespace Orts.Viewer3D
                         {
                             case SeasonType.Spring:
                                 ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 3);
+                                weatherControl.Weather.PrecipitationLiquidity = 1.0f;
                                 break;
                             case SeasonType.Summer:
                                 ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 11);
+                                weatherControl.Weather.PrecipitationLiquidity = 1.0f;
                                 break;
                             case SeasonType.Autumn:
                                 ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 5);
+                                weatherControl.Weather.PrecipitationLiquidity = 1.0f;
                                 break;
                             case SeasonType.Winter:
                                 ORTSPrecipitationIntensity = 0.1f * Simulator.Random.Next(0, 11);
+                                weatherControl.Weather.PrecipitationLiquidity = 0.0f;
                                 break;
                         }
 
@@ -1430,9 +1434,9 @@ namespace Orts.Viewer3D
                 }
 
                 FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 1.0f);
-                ORTSPrecipitationIntensity = MathHelper.Clamp(ORTSPrecipitationIntensity, 0, 1.0f);
-                weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1.0f);
-                
+                ORTSPrecipitationIntensity = MathHelper.Clamp(ORTSPrecipitationIntensity, 0, 1.0f);                
+                weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1.0f);                
+
                 if (FinishPrecipitationIntensity > weatherControl.Weather.PricipitationIntensityPPSPM2)
                     weatherControl.Weather.PricipitationIntensityPPSPM2 += 0.01f * elapsedTime.ClockSeconds;
                 if (FinishPrecipitationIntensity < weatherControl.Weather.PricipitationIntensityPPSPM2)
