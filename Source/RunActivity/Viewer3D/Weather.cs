@@ -1140,7 +1140,7 @@ namespace Orts.Viewer3D
                     dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 0.3f);
                 }
             }
-
+            
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
             {
                 if (Weather.PrecipitationLiquidity < 1.0f)
@@ -1155,7 +1155,7 @@ namespace Orts.Viewer3D
                     Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
                 if (Weather.PrecipitationLiquidity > 0.2f)
                     Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
-                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.05f);                
+                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.01f);                
             }
             else
             {

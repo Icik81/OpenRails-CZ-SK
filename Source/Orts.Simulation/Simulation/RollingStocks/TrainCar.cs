@@ -348,6 +348,7 @@ namespace Orts.Simulation.RollingStocks
         public float CarOutsideTempC0;
         public bool StatusHeatIsOn = false;
         public float CarOutsideTempCBase;
+        public float CarOutsideTempCBaseFinish;
         public float CarOutsideTempCLastStatus;
         public float TempCClockDelta;
         public bool LocomotiveCab = false;
@@ -452,12 +453,12 @@ namespace Orts.Simulation.RollingStocks
         // Temperature in deg Celcius
         static float[] WorldTemperatureWinter = new float[]
         {
-            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, 0.1f, -0.2f, -5.7f
+            0.9f, 8.7f, 12.4f, 17.2f, 20.9f, 25.9f, 22.8f, 18.2f, 11.1f, -1.1f, -5.2f, -10.7f
          };
 
         static float[] WorldTemperatureAutumn = new float[]
         {
-            7.5f, 13.7f, 18.8f, 22.0f, 24.0f, 26.0f, 25.0f, 21.6f, 21.0f, 14.3f, 6.0f, 3.8f
+            7.5f, 13.7f, 18.8f, 22.0f, 24.0f, 26.0f, 25.0f, 21.6f, 21.0f, 14.3f, 8.0f, 3.8f
          };
 
         static float[] WorldTemperatureSpring = new float[]
@@ -1254,9 +1255,17 @@ namespace Orts.Simulation.RollingStocks
                     TempCClockDelta = -3;
 
                 // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
+                if (Simulator.GameTime == 0)                
+                    CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;                
 
-                CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
-                CarOutsideTempCBase = MathHelper.Clamp(CarOutsideTempCBase, -25, 40);
+                CarOutsideTempCBaseFinish = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
+                CarOutsideTempCBaseFinish = MathHelper.Clamp(CarOutsideTempCBaseFinish, -25, 40);
+
+                if (CarOutsideTempCBase > CarOutsideTempCBaseFinish)
+                    CarOutsideTempCBase -= 0.01f * elapsedClockSeconds;
+                else
+                if (CarOutsideTempCBase < CarOutsideTempCBaseFinish)
+                    CarOutsideTempCBase += 0.01f * elapsedClockSeconds;
 
                 // Okolní teplota závisí na podmínkách (oblačno, déšť, mlha)
                 switch (Simulator.Season)
