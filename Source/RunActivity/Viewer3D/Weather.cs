@@ -1128,14 +1128,17 @@ namespace Orts.Viewer3D
                 }
             }
 
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 15f || Viewer.PlayerLocomotive.CarOutsideTempC < 0f)
+            if (dynamicWeather != null)
             {
-                dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 1.0f);
-            }
-            else
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-            {
-                dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 0.3f);
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 15f || Viewer.PlayerLocomotive.CarOutsideTempC < 0f)
+                {
+                    dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 1.0f);
+                }
+                else
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                {
+                    dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 0.3f);
+                }
             }
 
             if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
