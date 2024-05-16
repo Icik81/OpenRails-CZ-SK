@@ -79,7 +79,7 @@ namespace Orts.Viewer3D.Popups
                     {
                         List<Passenger> sorted = tc.PassengerList.OrderBy(c => c.StationOrderIndex).ToList();
                         //Name.Text += Viewer.Catalog.GetString("Car Nr. ") + carNum.ToString() + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
-                        Name.Text += Viewer.Catalog.GetString("Car Nr. ") + train0.Cars[carNum].CarID + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + (tc.PassengerCapacity * 1.2).ToString() + ")" + Environment.NewLine;
+                        Name.Text += Viewer.Catalog.GetString("Car Nr. ") + train0.Cars[carNum].CarID + Viewer.Catalog.GetString(" (Passengers: ") + tc.PassengerList.Count + Viewer.Catalog.GetString(", Capacity ") + tc.PassengerCapacity.ToString() + ")" + Environment.NewLine;
                         From.Text += Environment.NewLine;
                         To.Text += Environment.NewLine;
                         top += scrollbox.TextHeight;

@@ -17124,8 +17124,11 @@ namespace Orts.Simulation.Physics
             ActualPassengerCountAtStation = 0;
             foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
             {
+                if (pax.DepartureStation == ActualStationNumber)
+                {
                     PeopleWantToEntry = true;
                     ActualPassengerCountAtStation++; 
+                }
             }            
         }
 
@@ -17408,11 +17411,7 @@ namespace Orts.Simulation.Physics
             {
                 foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
                 {
-                    if (pax.TimeToStartBoarding == 0)
-                    {
-                        pax.TimeToStartBoarding = gameClock + 1;
-                    }
-                    if (pax.TimeToStartBoarding < gameClock) // board him
+                    if (pax.TimeToStartBoarding < gameClock && ActualStationNumber == pax.DepartureStation) // board him
                     {
                         for (int i = 0; i < train.Cars.Count; i++)
                         {
