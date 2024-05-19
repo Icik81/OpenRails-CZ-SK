@@ -18,6 +18,7 @@
 // #define DEBUG_MULTIPLAYER
 // DEBUG flag for debug prints
 
+using Microsoft.Xna.Framework.Input;
 using Orts.Simulation.Physics;
 using System;
 using System.Diagnostics;
@@ -26,6 +27,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace Orts.MultiPlayer
 {
@@ -126,8 +128,16 @@ namespace Orts.MultiPlayer
                 }
                 catch (SameNameError) //I have conflict with some one in the game, will close, and abort.
                 {
-                    if (MPManager.Simulator.Confirmer != null)
-                        MPManager.Simulator.Confirmer.Error(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"));
+                    //if (MPManager.Simulator.Confirmer != null)
+                    //    MPManager.Simulator.Confirmer.Error(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"));
+
+                    // Zobrazí dialogové okno s chybovou zprávou
+                    System.Windows.Forms.MessageBox.Show(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"),
+                                    "Chyba připojení",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error
+                                    );
+
                     MPManager.Client = null;
                     tcpClient.Close();
                     listenThread.Abort();
@@ -139,7 +149,13 @@ namespace Orts.MultiPlayer
                 }
             }
             if (MPManager.Simulator.Confirmer != null)
-                MPManager.Simulator.Confirmer.Error(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"));
+                //MPManager.Simulator.Confirmer.Error(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"));
+                // Zobrazí dialogové okno s chybovou zprávou
+                System.Windows.Forms.MessageBox.Show(MPManager.Catalog.GetString("Connection to the server is lost, will play as single mode"),
+                            "Chyba připojení",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error
+                            );
             try
             {
                 foreach (var p in MPManager.OnlineTrains.Players)
