@@ -47,6 +47,9 @@ namespace Orts.Viewer3D
         readonly Material Material;
         readonly PrecipitationPrimitive Pricipitation;
         readonly PrecipitationPrimitive Pricipitation2;
+        readonly PrecipitationPrimitive Pricipitation3;
+        readonly PrecipitationPrimitive Pricipitation4;
+        readonly PrecipitationPrimitive Pricipitation5;        
 
         Vector3 Wind;
 
@@ -59,7 +62,9 @@ namespace Orts.Viewer3D
             Material = viewer.MaterialManager.Load("Precipitation");
             Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
             Pricipitation2 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
-
+            Pricipitation3 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
+            Pricipitation4 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
+            Pricipitation5 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
 
             Wind = new Vector3(0, 0, 0);
             Reset();
@@ -73,6 +78,16 @@ namespace Orts.Viewer3D
             Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
             Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (1f / 3f), Viewer);
 
+            if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
+            {
+                Pricipitation3.DynamicUpdate3(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation3.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
+                Pricipitation4.DynamicUpdate4(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation4.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
+                Pricipitation5.DynamicUpdate5(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation5.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
+            }
+
             // Note: This is quite a hack. We ideally should be able to pass this through RenderItem somehow.
             var XNAWorldLocation = Matrix.Identity;
             XNAWorldLocation.M11 = gameTime;
@@ -81,6 +96,13 @@ namespace Orts.Viewer3D
 
             frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
             frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+
+            if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
+            {
+                frame.AddPrimitive(Material, Pricipitation3, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+                frame.AddPrimitive(Material, Pricipitation4, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+                frame.AddPrimitive(Material, Pricipitation5, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+            }
         }
 
         public void Reset()
@@ -93,6 +115,9 @@ namespace Orts.Viewer3D
             var gameTime = (float)Viewer.Simulator.GameTime;
             Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             Pricipitation2.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
+            Pricipitation3.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
+            Pricipitation4.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
+            Pricipitation5.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             // Camera is null during first initialisation.
             if (Viewer.Camera != null) Pricipitation.Update(gameTime, null, Weather.PricipitationIntensityPPSPM2, Viewer);
         }
@@ -188,19 +213,10 @@ namespace Orts.Viewer3D
                 //ParticleBoxWidthM = (float)Program.Simulator.Settings.PrecipitationBoxWidth;
                 //ParticleBoxHeightM = (float)Program.Simulator.Settings.PrecipitationBoxHeight;
 
-                // Icik
-                if (viewer.Simulator.Weather.SnowVelocityMpS < 0.5f)
-                {
-                    ParticleBoxLengthM = 500;
-                    ParticleBoxWidthM = 500;
-                    ParticleBoxHeightM = 50;
-                }
-                else
-                {
-                    ParticleBoxLengthM = 300;
-                    ParticleBoxWidthM = 500;
-                    ParticleBoxHeightM = 100;
-                }
+                // Icik                
+                ParticleBoxLengthM = 500;
+                ParticleBoxWidthM = 500;
+                ParticleBoxHeightM = 50;                
             }
             else
             {
@@ -343,6 +359,32 @@ namespace Orts.Viewer3D
             float snowVelocityMpS = SnowVelocityMpS * 0.5f;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;                        
             wind.X = 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(-2, 3);
+            ParticleDirection = wind;
+        }
+
+        public void DynamicUpdate3(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
+        {
+            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
+            float snowVelocityMpS = SnowVelocityMpS * 0.15f;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
+            wind.X *= -1;
+            ParticleDirection = wind;
+        }
+
+        public void DynamicUpdate4(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
+        {
+            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
+            float snowVelocityMpS = SnowVelocityMpS * 0.10f;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
+            wind.X *= -1;
+            ParticleDirection = wind;
+        }
+        public void DynamicUpdate5(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
+        {
+            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
+            float snowVelocityMpS = SnowVelocityMpS * 0.05f;
+            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
+            wind.X *= -1;
             ParticleDirection = wind;
         }
 

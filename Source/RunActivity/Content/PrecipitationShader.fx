@@ -78,10 +78,10 @@ VERTEX_OUTPUT VSPrecipitation(in VERTEX_INPUT In)
 	float3 right = invView[0].xyz;
 	float3 up = normalize(In.StartPosition_StartTime.xyz - In.EndPosition_EndTime.xyz);
 	
-	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz - 5, age );
+	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz, age);
 	In.StartPosition_StartTime.xz += (cameraTileXZ - In.TileXZ_Vertex.xy) * float2(-2048, 2048);
-	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.03;
-	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize * 0.3;
+	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.02;
+	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize * 0.10;
 	
 	Out.Position = mul(float4(In.StartPosition_StartTime.xyz, 1), worldViewProjection);
 	Out.TexCoord = texCoords[vertIdx];
