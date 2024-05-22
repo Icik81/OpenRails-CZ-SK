@@ -347,7 +347,7 @@ namespace Orts.Simulation.RollingStocks
         public bool WagonHasTemperature = false;
         public float CarOutsideTempC0;
         public bool StatusHeatIsOn = false;
-        public float CarOutsideTempCBase;
+        public float CarOutsideTempCBase = -1000;
         public float CarOutsideTempCBaseFinish;
         public float CarOutsideTempCLastStatus;
         public float TempCClockDelta;
@@ -1255,8 +1255,8 @@ namespace Orts.Simulation.RollingStocks
                     TempCClockDelta = -3;
 
                 // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
-                if (Simulator.GameTime == 0)                
-                    CarOutsideTempCBase = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;                
+                if (CarOutsideTempCBase == -1000)                
+                    CarOutsideTempCBase = InitialCarOutsideTempC;                
 
                 CarOutsideTempCBaseFinish = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
                 CarOutsideTempCBaseFinish = MathHelper.Clamp(CarOutsideTempCBaseFinish, -25, 40);
@@ -2227,6 +2227,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(InitialWheelBearingRiseTemperatureDegC);
             outf.Write(InitialWheelBearingDeclineTemperatureDegC);
             outf.Write(CarHasHeatingReady);
+            outf.Write(CarOutsideTempCBase);
 
             BrakeSystem.Save(outf);
         }
@@ -2290,6 +2291,7 @@ namespace Orts.Simulation.RollingStocks
             InitialWheelBearingRiseTemperatureDegC = inf.ReadSingle();
             InitialWheelBearingDeclineTemperatureDegC = inf.ReadSingle();
             CarHasHeatingReady = inf.ReadBoolean();
+            CarOutsideTempCBase = inf.ReadSingle();
 
             BrakeSystem.Restore(inf);
         }
