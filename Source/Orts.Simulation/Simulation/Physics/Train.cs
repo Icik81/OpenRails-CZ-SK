@@ -16919,7 +16919,7 @@ namespace Orts.Simulation.Physics
             {
                 numCars = train.Cars.Count;
             }
-            else if (numCars != train.Cars.Count) // car was added or removed, calculate new passengers
+            else if (Simulator.Settings.GenerateRandomPaxCount && numCars != train.Cars.Count) // car was added or removed, calculate new passengers
             {
                 wasCarsChanged = true;
                 numUsableWagons = 0;
