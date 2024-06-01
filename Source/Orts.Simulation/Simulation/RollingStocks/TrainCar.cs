@@ -3204,6 +3204,7 @@ namespace Orts.Simulation.RollingStocks
         bool CarIsDecoupled;        
         float prevSpeedMpS;
         float prevDereailAbsSpeedMpS = -1;
+        Matrix XNAMatrixDerailed;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {                        
             //if (!IsPlayerTrain) return;
@@ -3226,7 +3227,35 @@ namespace Orts.Simulation.RollingStocks
                 if (Train.TrainDerailmentTimer > 10.0f) Simulator.CarDerailed = true;
             }
 
-            if (Train.TrainIsDerailed || prevDereailAbsSpeedMpS > 0)
+            if (!Train.TrainEndOfRoute)
+            {
+                XNAMatrixDerailed = WorldPosition.XNAMatrix;
+            }
+
+            if (Train.TrainEndOfRoute)
+            {
+                if (!Train.TrainImpactSoundEvent)
+                {
+                    Train.TrainImpactSoundEvent = true;
+                    SignalEvent(Event.CoupleImpact);
+                }
+
+                if (PushZFinalMarker == 0) PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
+                if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)
+                {
+                    prevDereailAbsSpeedMpS = Math.Abs(prevSpeedMpS);
+                    if (Train.IsActualPlayerTrain && Train.TrainDerailmentTimer == 0) Train.TrainDerailmentTimer = 0.01f;
+                }
+                else
+                if (prevDereailAbsSpeedMpS == -1)
+                {
+                    VibrationRotationRad.X -= Math.Abs(prevSpeedMpS * 3.6f) / 10f * elapsedTimeS;
+                    SpeedMpS = -0.01f * PushZFinalMarker;
+                    Train.TrainEndOfRoute = false;
+                }
+            }
+
+            if (Train.TrainIsDerailed || prevDereailAbsSpeedMpS > 0 || Train.TrainEndOfRoute)
             {
                 DerailIsOn = true;
                 // Vypnutí HV na elektrické lokomotivě
@@ -3235,13 +3264,13 @@ namespace Orts.Simulation.RollingStocks
 
                 if (this as MSTSLocomotive != null && this is MSTSLocomotive)
                     (this as MSTSLocomotive).ThrottleToZero();
-                
-                //PushZFinal = Math.Max(PushZFinal, Math.Abs(PushZ));
+                                                
                 // Vyšinutí vozu na konci trati
                 if (prevDereailAbsSpeedMpS > 0)
                 {
-                    //PushZ += prevDereailAbsSpeedMpS * 0.1f * elapsedTimeS;
-                    prevDereailAbsSpeedMpS = SpeedMpS;
+                    prevDereailAbsSpeedMpS = Math.Abs(SpeedMpS);
+                    PushZ = prevDereailAbsSpeedMpS * elapsedTimeS;
+                    PushZFinal = PushZ;
                     VibrationRotationRad.X -= 0.1f * elapsedTimeS;
                     VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
                     VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
@@ -3252,9 +3281,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.Derail1);
                     SignalEvent(Event.Derail2);
                     SignalEvent(Event.Derail3);
-                }
-                else
-                    prevDereailAbsSpeedMpS = 0;
+                }                
 
                 if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
                 var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
@@ -3262,7 +3289,9 @@ namespace Orts.Simulation.RollingStocks
                 var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
                 var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
                 var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
-                WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * WorldPosition.XNAMatrix;
+                if (prevDereailAbsSpeedMpS != 0)
+                    XNAMatrixDerailed = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * XNAMatrixDerailed;
+                WorldPosition.XNAMatrix = XNAMatrixDerailed;
             }
             else
             {
@@ -3519,31 +3548,9 @@ namespace Orts.Simulation.RollingStocks
                             VibratioDampingCoefficient = 0.50f;
                         }
                     }
-                }
-
-                if (Train.TrainEndOfRoute)
-                {
-                    if (!Train.TrainImpactSoundEvent)
-                    {
-                        Train.TrainImpactSoundEvent = true;
-                        SignalEvent(Event.CoupleImpact);
-                    }
-
-                    if (PushZFinalMarker == 0) PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
-                    if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)
-                    {
-                        prevDereailAbsSpeedMpS = Math.Abs(prevSpeedMpS);
-                        if (Train.IsActualPlayerTrain && Train.TrainDerailmentTimer == 0) Train.TrainDerailmentTimer = 0.01f;
-                    }
-                    else
-                    if (prevDereailAbsSpeedMpS == -1)
-                    {
-                        VibrationRotationRad.X -= Math.Abs(prevSpeedMpS * 3.6f) / 10f * elapsedTimeS;
-                        SpeedMpS = -0.01f * PushZFinalMarker;
-                    }
-                }
-                prevSpeedMpS = SpeedMpS;                
-            }
+                }                               
+            }            
+            prevSpeedMpS = SpeedMpS;
         }
 
         // Úprava síly vibrací dle rychlostníků na trati
