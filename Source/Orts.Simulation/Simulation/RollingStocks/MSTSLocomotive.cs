@@ -4609,7 +4609,7 @@ namespace Orts.Simulation.RollingStocks
                         float TempStepUp = 200;
                         float TempStepDown = 300;
                         float TempStepUpSlow = 100;
-                        float TempStepDownSlow = 100;
+                        float TempStepDownSlow = 10;
                         float TempCDeltaOutside;
                         float CarAirVolumeM3;
 
@@ -4622,8 +4622,8 @@ namespace Orts.Simulation.RollingStocks
                             CarAirVolumeM3 = car.CarWidthM * 1.5f * (car.CarHeightM - 1.06f);
                             TempStepUp = 1000;
                             TempStepDown = 3000;
-                            TempStepUpSlow = 10;
-                            TempStepDownSlow = 10;
+                            TempStepUpSlow = 2;
+                            TempStepDownSlow = 2;
                         }
 
                         // Vliv otevření dveří u vozů
@@ -4639,14 +4639,14 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
-                        TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0 / 5;
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (250 / 3.6f))))
-                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (250 / 3.6f)))) * elapsedClockSeconds;
+                        TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0;
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0)
+                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (2500 / 3.6f)))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 * (1 - (car.AbsSpeedMpS / (250 / 3.6f))))
-                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (250 / 3.6f))) * elapsedClockSeconds;
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0)
+                            car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (2500 / 3.6f))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 * 1.05f)
+                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0)
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
@@ -4657,9 +4657,7 @@ namespace Orts.Simulation.RollingStocks
                         // Topení
                         if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
                         {
-                            float SetTempCHyst = 3.5f;
-                            //TempCDeltaOutside = car.CarOutsideTempC0 / car.WagonTemperature;
-
+                            float SetTempCHyst = 3.5f;                            
                             if (car.SetTemperatureC == 0)
                             {
                                 car.SetTemperatureC = Simulator.Random.Next(19, 27);
@@ -4700,9 +4698,7 @@ namespace Orts.Simulation.RollingStocks
                         // Klimatizace
                         if (Simulator.Season == SeasonType.Summer)
                         {
-                            float SetTempCHyst = 2.5f;
-                            TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC;
-
+                            float SetTempCHyst = 2.5f;                            
                             if (car.SetTemperatureC == 0)
                             {
                                 car.SetTemperatureC = Simulator.Random.Next(17, 25);
