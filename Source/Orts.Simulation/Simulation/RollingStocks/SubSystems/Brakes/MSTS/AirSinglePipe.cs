@@ -2450,6 +2450,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car0.BrakeSystem.BrakeLine1PressurePSI += TrainPipePressureDiffPropogationPSI * car.BrakeSystem.BrakePipeVolumeM3 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
                     }
 
+                    if (train.Cars.Count == 1 && (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen))
+                    {
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * AngleCockLeakCoef);
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
+                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                    }
+                    else
+                    if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
+                    {
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * AngleCockLeakCoef);
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
+                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                    }
+                    else
+                    if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
+                    {
+                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * AngleCockLeakCoef);
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
+                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                    }
+                    else
                     if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
@@ -2466,12 +2487,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         }
                     }
-                    if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
-                    {
-                        car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipeTimeVariationS * p1 / (brakePipeTimeFactorSBase * AngleCockLeakCoef);
-                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
-                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                    }
+                    
                     p0 = car.BrakeSystem.BrakeLine1PressurePSI;
                     car0 = car;
                     brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;

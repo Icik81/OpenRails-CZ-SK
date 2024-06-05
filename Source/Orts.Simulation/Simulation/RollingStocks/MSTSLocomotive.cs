@@ -6663,9 +6663,15 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     car.WagonCanEnableSteamHeating = false;
-                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsSteamHeatFitted)
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).IsSteamHeatFitted)
                     {
                         SteamHeatCarPosition = CarPosition;
+                        break;
+                    }
+                    if (car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler || car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
+                    {
+                        SteamHeatCarPosition = CarPosition;
+                        break;
                     }
                     CarPosition++;
                 }                                
