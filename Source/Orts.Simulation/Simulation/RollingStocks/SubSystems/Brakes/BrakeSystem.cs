@@ -147,6 +147,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float CylinderChangeRateBar;
         public string OLBailOffType;
         public bool OLBailOff;
+        public bool OLBailOffActivated;
         public float OLBailOffLimitPressurePSI;
         public bool OL3active;
         public bool EmerBrakeTriggerActive = false;

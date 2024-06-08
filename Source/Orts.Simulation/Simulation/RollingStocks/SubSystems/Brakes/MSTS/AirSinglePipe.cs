@@ -865,7 +865,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             if (wagon != null && wagon.WagonIsStatic)
             {
-                if (AutoCylPressurePSI0 == MaxCylPressurePSI)
+                if (AutoCylPressurePSI0 > 0.95f * MaxCylPressurePSI)
                     wagon.WagonIsStatic = false;
                 else
                 {
@@ -1608,7 +1608,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Plní válce až do cílového tlaku
                 if (BrakeCylApply && AutoCylPressurePSI0 < threshold)                                    
                     CylApplySet = true;
-                if (AutoCylPressurePSI0 >= threshold)
+                if (AutoCylPressurePSI0 >= threshold || OLBailOffActivated)
                     CylApplySet = false;
 
                 // Napouští brzdový válec            
@@ -1661,6 +1661,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else BrakeCylRelease = false;
                 }
 
+                if (TripleValveState == ValveState.Lap)
+                {
+                    OLBailOffActivated = false;
+                }
+
                 // triple valve set to release pressure in brake cylinder and EP valve set
                 if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !CarHasAirStuckBrake_1)
                 {
@@ -1669,6 +1674,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeReadyToApply = false;
                     //ThresholdBailOffOn = 0;
                     BrakeCylReleaseEDBOn = false;
+                    OLBailOffActivated = false;
 
                     if ((Car as MSTSWagon).EmergencyReservoirPresent)
                     {
@@ -1708,7 +1714,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     && loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff
                     && loco.Direction != Direction.N
                 )
+                {
                     OLBailOff = true;
+                    OLBailOffActivated = true;
+                }
                 else
                     OLBailOff = false;
 
