@@ -1577,7 +1577,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             if (ElevatedConsumptionMode)
                             {
                                 float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
-                                if (RealRPM > 1.09f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
+                                if (RealRPM > 1.309f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
                                 {
                                     RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
                                     //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
@@ -1585,7 +1585,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             }
                             else
                             {
-                                if (RealRPM > 1.09f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                                if (RealRPM > 1.309f * ThrottleRPMTab[locomotive.ThrottlePercent])
                                 {
                                     RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
                                     //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
@@ -1620,7 +1620,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             }
                         }
 
-                        // 2s pro vzpamatování regulátoru
+                        // 1.5s pro vzpamatování regulátoru
                         if (RegulatorRecoveryTimer > 1.5f)
                         {
                             RegulatorRecoveryTimer = 0;
@@ -2064,10 +2064,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
+                float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
                 RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselWaterTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselWaterTemperatureDeg))
             {
@@ -2082,10 +2083,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)
             {
+                float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleOilTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
                 RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselOilTempTimeConstantSec;
             }
             if (float.IsNaN(RealDieselOilTemperatureDeg))
             {
