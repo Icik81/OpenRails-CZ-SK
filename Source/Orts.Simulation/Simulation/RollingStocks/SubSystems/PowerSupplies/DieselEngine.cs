@@ -616,6 +616,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             OilCoolingPlatesUpS = copy.OilCoolingPlatesUpS;
             OilCoolingPlatesDownS = copy.OilCoolingPlatesDownS;
             CoolingFlowBase = copy.CoolingFlowBase;
+            IndependentPlates = copy.IndependentPlates;
 
             if (copy.GearBox != null)
             {
@@ -982,6 +983,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OilCoolingPlatesUpS;
         public float OilCoolingPlatesDownS;
         public float CoolingFlowBase;
+        public bool IndependentPlates;
 
         /// <summary>
         /// Load of the engine
@@ -1129,6 +1131,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "oilcoolingplatesup": OilCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesdown": OilCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
+                    case "independentplates": IndependentPlates = stf.ReadBoolBlock(false); break;
 
                     default:
                         end = true;
@@ -2058,7 +2061,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (RealRPM > IdleRPM)
                 CoolingFlow = CoolingFlowBase * 10f;
 
-            float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -10f , 10f);
+            float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -5f , 5f);
 
             // Voda
             // Teplotu zvyšují otáčky a zátěž motoru
