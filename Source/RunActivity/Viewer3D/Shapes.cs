@@ -445,7 +445,7 @@ namespace Orts.Viewer3D
                     {
                         if (DLoco != null)
                         {
-                            if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning || (DLoco.DieselEngines[0].IndependentPlates && DLoco.DieselEngines[0].WaterTempCoolingLowRunning))
+                            if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning || (DLoco.DieselEngines[0].IndependentWaterPlates && DLoco.DieselEngines[0].WaterTempCoolingLowRunning))
                             {
                                 TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
@@ -453,7 +453,7 @@ namespace Orts.Viewer3D
                                     AnimationKey[0] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentPlates && !DLoco.DieselEngines[0].WaterTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentPlates && !DLoco.DieselEngines[0].WaterTempCoolingLowRunning)))
+                            if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].WaterTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].WaterTempCoolingLowRunning)))
                             {
                                 TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
@@ -468,7 +468,7 @@ namespace Orts.Viewer3D
                     {
                         if (DLoco != null)
                         {
-                            if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning))
+                            if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentOilPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning))
                             {
                                 TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
@@ -476,7 +476,7 @@ namespace Orts.Viewer3D
                                     AnimationKey[1] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }
 
-                            if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentPlates && !DLoco.DieselEngines[0].OilTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentPlates && !DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
+                            if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].OilTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
                             {
                                 TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);

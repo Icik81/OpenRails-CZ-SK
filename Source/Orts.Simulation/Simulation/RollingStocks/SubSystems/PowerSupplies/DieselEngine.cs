@@ -616,7 +616,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             OilCoolingPlatesUpS = copy.OilCoolingPlatesUpS;
             OilCoolingPlatesDownS = copy.OilCoolingPlatesDownS;
             CoolingFlowBase = copy.CoolingFlowBase;
-            IndependentPlates = copy.IndependentPlates;
+            IndependentWaterPlates = copy.IndependentWaterPlates;
+            IndependentOilPlates = copy.IndependentOilPlates;
 
             if (copy.GearBox != null)
             {
@@ -983,7 +984,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OilCoolingPlatesUpS;
         public float OilCoolingPlatesDownS;
         public float CoolingFlowBase;
-        public bool IndependentPlates;
+        public bool IndependentWaterPlates;
+        public bool IndependentOilPlates;
 
         /// <summary>
         /// Load of the engine
@@ -1131,7 +1133,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "oilcoolingplatesup": OilCoolingPlatesUpS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "oilcoolingplatesdown": OilCoolingPlatesDownS = stf.ReadFloatBlock(STFReader.UNITS.Time, 2f); break;
                     case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
-                    case "independentplates": IndependentPlates = stf.ReadBoolBlock(false); break;
+                    case "independentwaterplates": IndependentWaterPlates = stf.ReadBoolBlock(false); break;
+                    case "independentoilplates": IndependentOilPlates = stf.ReadBoolBlock(false); break;
 
                     default:
                         end = true;
