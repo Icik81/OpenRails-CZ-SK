@@ -1979,7 +1979,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         
 
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)
-            if (SoundTriggerCounter >= 0.5f)
+            if (SoundTriggerCounter >= 1.0f)
             {
                 SoundTriggerCounter = 0f;
                 // Událost pro hodnotu tlaku v brzdovém válci
