@@ -585,7 +585,9 @@ namespace Orts.Simulation.Signalling
                 // update required part
                 // in preupdate, process all
 
-                int totalSignal = signalObjects.Length - 1;
+                //int totalSignal = signalObjects.Length - 1;
+                // James Roos patched
+                int totalSignal = foundSignals;
 
                 int updatestep = (totalSignal / 20) + 1;
                 if (preUpdate)
@@ -603,7 +605,9 @@ namespace Orts.Simulation.Signalling
                 }
 
                 updatecount += updatestep;
-                updatecount = updatecount > totalSignal ? 0 : updatecount;
+                //updatecount = updatecount > totalSignal ? 0 : updatecount;
+                // James Roos patched
+                updatecount = updatecount >= totalSignal ? 0 : updatecount;
             }
         }  //Update
 
