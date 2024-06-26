@@ -9035,7 +9035,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if ((CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && CruiseControl.UseThrottleAsSpeedSelector && CruiseControl.SelectedSpeedMpS > 0)
                 {
-                    ThrottleController.CurrentValue = 1;
+                    if (!AripotControllerEnable)
+                        ThrottleController.CurrentValue = 1;
                 }
             }
             if (CombinedControlType == CombinedControl.ThrottleDynamic && ThrottleController.CurrentValue <= 0)
