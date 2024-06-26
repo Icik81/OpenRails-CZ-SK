@@ -11492,7 +11492,7 @@ namespace Orts.Simulation.RollingStocks
                             TrainBrakeValueRUN = notch.Value;
                             break;
                     }
-                }
+                }                
 
                 if ((TrainBrakeValue[1] == TrainBrakeValueL && TrainBrakeValue[2] == TrainBrakeValueL)
                     || (LapActive[1] && LapActive[2])
@@ -11620,6 +11620,16 @@ namespace Orts.Simulation.RollingStocks
                         BrakeSystem.Running = false;
                 }
                 #endregion
+
+                // OBD2 a OBE vybavují VZ při změně pozice
+                if (!TrainBrakeController.BS2ControllerOnStation)
+                {
+                    if (TrainBrakeValue[LocoStation] != TrainBrakeController.CurrentValue)
+                    {
+                        AlerterReset();
+                    }
+                }
+
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
 
                 // Páry mají jen jedno stanoviště
