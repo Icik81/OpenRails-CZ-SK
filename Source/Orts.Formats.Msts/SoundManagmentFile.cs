@@ -437,7 +437,8 @@ namespace Orts.Formats.Msts
             EngineBrakeController_Inc_Past, EngineBrakeController_Dec_Past, EngineBrakeController_Equals_To, EngineBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
             CurveForce_Inc_Past, CurveForce_Dec_Past, CurveForce_Equals_To, CurveForce_NEquals_To,
-            StepController_Inc_Past, StepController_Dec_Past, StepController_Equals_To, StepController_NEquals_To
+            StepController_Inc_Past, StepController_Dec_Past, StepController_Equals_To, StepController_NEquals_To,
+            AripotController_Inc_Past, AripotController_Dec_Past, AripotController_Equals_To, AripotController_NEquals_To
         };
 
         public Events Event;
@@ -593,6 +594,10 @@ namespace Orts.Formats.Msts
                 case "stepcontroller_dec_past": Event = Events.StepController_Dec_Past; break;
                 case "stepcontroller_equals_to": Event = Events.StepController_Equals_To; break;
                 case "stepcontroller_nequals_to": Event = Events.StepController_NEquals_To; break;
+                case "aripotcontroller_inc_past": Event = Events.AripotController_Inc_Past; break;
+                case "aripotcontroller_dec_past": Event = Events.AripotController_Dec_Past; break;
+                case "aripotcontroller_equals_to": Event = Events.AripotController_Equals_To; break;
+                case "aripotcontroller_nequals_to": Event = Events.AripotController_NEquals_To; break;
             }
 
 

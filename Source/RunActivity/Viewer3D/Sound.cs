@@ -2027,6 +2027,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Dec_Past:
                     if (newValue < SMS.Threshold)
                     {
                         Signaled = true;
@@ -2075,6 +2076,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Inc_Past:
                     if (newValue > SMS.Threshold)
                     {
                         Signaled = true;
@@ -2112,6 +2114,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Equals_To:
                     if (newValue == SMS.Threshold && EqualsCycle < 2)
                     {
                         EqualsCycle++;
@@ -2153,6 +2156,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_NEquals_To:
                     if (newValue != SMS.Threshold && NEqualsCycle < 2)
                     {
                         NEqualsCycle++;
@@ -2360,6 +2364,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.StepController_NEquals_To:
                     return car.CarIsPlayerLoco ? (car as MSTSLocomotive).StepControllerValue : Program.Simulator.StepControllerMinValue;
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.AripotController_NEquals_To:
+                    return car.CarIsPlayerLoco ? (car as MSTSLocomotive).AripotControllerValue[(car as MSTSLocomotive).LocoStation] : 0;
                 default:
                     return 0;
             }

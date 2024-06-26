@@ -1650,9 +1650,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (BlueLight)
             {                
                 Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
-                
+
                 if (MirelType == Type.LS90)
+                {
                     Locomotive.SignalEvent(Common.Event.MirelOff);
+                    ResetVigilance();
+                }
 
                 if (MirelType == Type.LS90 && Locomotive.SpeedMpS == 0)
                 {
@@ -1660,7 +1663,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     EmergencyBrakes(false);
                 }
                 return;
-            }
+            }            
+
             Locomotive.SignalEvent(Common.Event.MirelOff);
             if (ZS1B && !ZS1BConfirmed)
             {
