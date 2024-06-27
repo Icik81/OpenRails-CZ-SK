@@ -895,20 +895,20 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Locomotive.AripotControllerValue[Locomotive.LocoStation] = (float)Math.Round(Locomotive.AripotControllerValue[Locomotive.LocoStation], 2);
                 Locomotive.AripotControllerEnable = true;
-                Locomotive.AripotControllerPreValue[Locomotive.LocoStation] = Locomotive.AripotControllerValue[Locomotive.LocoStation];
-                if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
-                {                    
-                    Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
-                }
-                if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
-                {                    
-                    Locomotive.AripotControllerValue[Locomotive.LocoStation] -= 0.01f;
-                }
-                Locomotive.AripotControllerValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.AripotControllerValue[Locomotive.LocoStation], 0, 1);
+                Locomotive.AripotControllerPreValue[Locomotive.LocoStation] = Locomotive.AripotControllerValue[Locomotive.LocoStation];                
 
                 if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     // Auto
+                    if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                    {
+                        Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
+                    }
+                    if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                    {
+                        Locomotive.AripotControllerValue[Locomotive.LocoStation] -= 0.01f;
+                    }
+                    Locomotive.AripotControllerValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.AripotControllerValue[Locomotive.LocoStation], 0, 1);
                     Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;
                     if (Aripot_CycleTime > 0.2f)
                     {
@@ -936,8 +936,21 @@ namespace Orts.Viewer3D.RollingStock
                     else
                         Aripot_CycleTime = 0;
 
-                    if (Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation])
-                        Locomotive.SetThrottlePercent(Locomotive.AripotControllerValue[Locomotive.LocoStation] * 100);
+                    if (Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation])                                            
+                        Locomotive.AripotControllerValue[Locomotive.LocoStation] = Locomotive.ThrottleController.CurrentValue;                    
+
+                    if (!Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation])
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                        {
+                            Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
+                        }
+                        if (UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                        {
+                            Locomotive.AripotControllerValue[Locomotive.LocoStation] -= 0.01f;
+                        }
+                        Locomotive.AripotControllerValue[Locomotive.LocoStation] = MathHelper.Clamp(Locomotive.AripotControllerValue[Locomotive.LocoStation], 0, 1);
+                    }
 
                     if (!Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation] && Locomotive.AripotControllerValue[Locomotive.LocoStation] == 0)
                         Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation] = true;

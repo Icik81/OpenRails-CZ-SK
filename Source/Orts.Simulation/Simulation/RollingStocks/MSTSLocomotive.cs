@@ -8799,7 +8799,7 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController3 && DieselDirection_0)
                 || (DieselDirectionController4 && DieselDirection_0))
                 return;
-            if (AripotControllerEnable)
+            if (AripotControllerEnable && !AripotControllerCanUseThrottle[LocoStation])
                 return;
             if (MirerControllerEnable)
                 return;
@@ -8972,7 +8972,7 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController3 && DieselDirection_0)
                 || (DieselDirectionController4 && DieselDirection_0))
                 return;
-            if (AripotControllerEnable)
+            if (AripotControllerEnable && !AripotControllerCanUseThrottle[LocoStation])
                 return;
             if (MirerControllerEnable)
                 return;
