@@ -900,6 +900,7 @@ namespace Orts.Viewer3D.RollingStock
                 if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                 {
                     // Auto
+                    Locomotive.AripotControllerAuto = true;
                     if (UserInput.IsDown(UserCommand.ControlThrottleIncrease))
                     {
                         Locomotive.AripotControllerValue[Locomotive.LocoStation] += 0.01f;
@@ -922,7 +923,8 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 else
                 {
-                    // Manual                                        
+                    // Manual
+                    Locomotive.AripotControllerAuto = false;
                     if (Locomotive.CruiseControl.SelectedSpeedMpS > 0)
                     {
                         Aripot_CycleTime += 1 * Locomotive.Simulator.OneSecondLoop;

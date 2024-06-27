@@ -657,6 +657,7 @@ namespace Orts.Simulation.RollingStocks
         bool BreakEDBButtonPressed = false;
         public bool BreakEDBButton_Activated;
         public bool AripotControllerEnable;
+        public bool AripotControllerAuto;        
         public InterpolatorDiesel2D CurrentForceCurves;
         public string CabFrontSoundFileName;
         public string CabRearSoundFileName;
@@ -8799,7 +8800,7 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController3 && DieselDirection_0)
                 || (DieselDirectionController4 && DieselDirection_0))
                 return;
-            if (AripotControllerEnable && !AripotControllerCanUseThrottle[LocoStation])
+            if (AripotControllerEnable && (!AripotControllerCanUseThrottle[LocoStation] || AripotControllerAuto))
                 return;
             if (MirerControllerEnable)
                 return;
@@ -8972,7 +8973,7 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController3 && DieselDirection_0)
                 || (DieselDirectionController4 && DieselDirection_0))
                 return;
-            if (AripotControllerEnable && !AripotControllerCanUseThrottle[LocoStation])
+            if (AripotControllerEnable && (!AripotControllerCanUseThrottle[LocoStation] || AripotControllerAuto))
                 return;
             if (MirerControllerEnable)
                 return;
