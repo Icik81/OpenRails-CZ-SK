@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Formats.Msts;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
@@ -150,8 +151,34 @@ namespace Orts.Viewer3D
             const float HalfNightBrightness = 0.6f;
             const float ShadowBrightness = 0.5f;
             //const float NightBrightness = 0.2f;
-            
+
             // Icik
+            float SeasonAmbientLightCoef = 1.0f;
+            switch (Program.Simulator.Season)
+            {
+                case SeasonType.Spring:
+                    {
+                        SeasonAmbientLightCoef = 0.9f;
+                    }
+                    break;
+                case SeasonType.Summer:
+                    {
+                        SeasonAmbientLightCoef = 1.1f;                        
+                    }
+                    break;
+                case SeasonType.Autumn:
+                    {
+                        SeasonAmbientLightCoef = 0.8f;
+                    }
+                    break;
+                case SeasonType.Winter:
+                    {
+                        SeasonAmbientLightCoef = 0.8f;
+                    }
+                    break;
+            }
+
+
             if (!NightBrightnessSet)
             {
                 switch (NightBrightness)
@@ -213,7 +240,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.CabInDarkTunnel = false;                
             }
 
-            float FullBrightness = (float)vIn / 20.0f;
+            float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef;
 
             if (_imageTextureIsNight)
             {
