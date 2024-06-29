@@ -141,6 +141,9 @@ namespace Orts.Viewer3D
         float NightBrightnessValue;
         float DayBrightnessCoef;                
         float SeasonAmbientLightCoef = 1.0f;
+        float GameTimeToHoursLowBorder;
+        float GameTimeToHoursHighBorder;
+        float DayTimeAmbientLightChangeCoef;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -157,17 +160,21 @@ namespace Orts.Viewer3D
             // Mění intenzitu okolního světla v závislosti na ročním období a denní době
             float GameTimeToHours = (float)Program.Simulator.ClockTime / 60f / 60f;             
             if (GameTimeToHours > 24f) GameTimeToHours = GameTimeToHours - 24f;
-            if (Program.Simulator.DayTimeAmbientLightCoef == -1) Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / 12f;                                        
+
+            //Program.Simulator.Confirmer.Information("DayTimeAmbientLightCoef = " + Program.Simulator.DayTimeAmbientLightCoef);
             switch (Program.Simulator.Season)
             {
                 case SeasonType.Spring:
                     {
                         SeasonAmbientLightCoef = 0.9f;
-                        
-                        if (GameTimeToHours < 9f || GameTimeToHours > 13f)
-                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        GameTimeToHoursLowBorder = 10f;
+                        GameTimeToHoursHighBorder = 12f;
+                        DayTimeAmbientLightChangeCoef = 1f;
+
+                        if (GameTimeToHours > GameTimeToHoursHighBorder)
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
                         else
-                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / GameTimeToHoursLowBorder;
 
                         Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);                        
                     }
@@ -175,23 +182,29 @@ namespace Orts.Viewer3D
                 case SeasonType.Summer:
                     {
                         SeasonAmbientLightCoef = 1.1f;
-                        
-                        if (GameTimeToHours < 9f || GameTimeToHours > 17f)
-                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
-                        else
-                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        GameTimeToHoursLowBorder = 10f;
+                        GameTimeToHoursHighBorder = 15f;
+                        DayTimeAmbientLightChangeCoef = 3f;
 
-                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.1f);
+                        if (GameTimeToHours > GameTimeToHoursHighBorder)
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
+                        else
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / GameTimeToHoursLowBorder;
+                                                
+                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.1f);                        
                     }
                     break;
                 case SeasonType.Autumn:
                     {
                         SeasonAmbientLightCoef = 0.8f;
+                        GameTimeToHoursLowBorder = 12f;
+                        GameTimeToHoursHighBorder = 13f;
+                        DayTimeAmbientLightChangeCoef = 1f;
 
-                        if (GameTimeToHours < 9f || GameTimeToHours > 13f)
-                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        if (GameTimeToHours > GameTimeToHoursHighBorder)
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
                         else
-                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / GameTimeToHoursLowBorder;
 
                         Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);
                     }
@@ -199,11 +212,14 @@ namespace Orts.Viewer3D
                 case SeasonType.Winter:
                     {
                         SeasonAmbientLightCoef = 0.8f;
+                        GameTimeToHoursLowBorder = 10f;
+                        GameTimeToHoursHighBorder = 12f;
+                        DayTimeAmbientLightChangeCoef = 1f;
 
-                        if (GameTimeToHours < 9f || GameTimeToHours > 12f)
-                            Program.Simulator.DayTimeAmbientLightCoef -= 0.10f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        if (GameTimeToHours > GameTimeToHoursHighBorder)
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
                         else
-                            Program.Simulator.DayTimeAmbientLightCoef += 0.10f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / GameTimeToHoursLowBorder;
 
                         Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);
                     }
