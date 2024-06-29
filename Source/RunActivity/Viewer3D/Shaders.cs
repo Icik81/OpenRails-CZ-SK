@@ -139,7 +139,8 @@ namespace Orts.Viewer3D
         float NightBrightness = Program.Simulator.Settings.NightBrightness;
         bool NightBrightnessSet;
         float NightBrightnessValue;
-        float DayBrightnessCoef;
+        float DayBrightnessCoef;                
+        float SeasonAmbientLightCoef = 1.0f;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -152,32 +153,62 @@ namespace Orts.Viewer3D
             const float ShadowBrightness = 0.5f;
             //const float NightBrightness = 0.2f;
 
-            // Icik
-            float SeasonAmbientLightCoef = 1.0f;
+            // Icik            
+            // Mění intenzitu okolního světla v závislosti na ročním období a denní době
+            float GameTimeToHours = (float)Program.Simulator.ClockTime / 60f / 60f;             
+            if (GameTimeToHours > 24f) GameTimeToHours = GameTimeToHours - 24f;
+            if (Program.Simulator.DayTimeAmbientLightCoef == -1) Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / 12f;                                        
             switch (Program.Simulator.Season)
             {
                 case SeasonType.Spring:
                     {
                         SeasonAmbientLightCoef = 0.9f;
+                        
+                        if (GameTimeToHours < 9f || GameTimeToHours > 13f)
+                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        else
+                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+
+                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);                        
                     }
                     break;
                 case SeasonType.Summer:
                     {
-                        SeasonAmbientLightCoef = 1.1f;                        
+                        SeasonAmbientLightCoef = 1.1f;
+                        
+                        if (GameTimeToHours < 9f || GameTimeToHours > 17f)
+                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        else
+                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+
+                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.1f);
                     }
                     break;
                 case SeasonType.Autumn:
                     {
                         SeasonAmbientLightCoef = 0.8f;
+
+                        if (GameTimeToHours < 9f || GameTimeToHours > 13f)
+                            Program.Simulator.DayTimeAmbientLightCoef -= 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        else
+                            Program.Simulator.DayTimeAmbientLightCoef += 0.05f * Program.Simulator.OneSecondLoop / 60f / 60f;
+
+                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);
                     }
                     break;
                 case SeasonType.Winter:
                     {
                         SeasonAmbientLightCoef = 0.8f;
+
+                        if (GameTimeToHours < 9f || GameTimeToHours > 12f)
+                            Program.Simulator.DayTimeAmbientLightCoef -= 0.10f * Program.Simulator.OneSecondLoop / 60f / 60f;
+                        else
+                            Program.Simulator.DayTimeAmbientLightCoef += 0.10f * Program.Simulator.OneSecondLoop / 60f / 60f;
+
+                        Program.Simulator.DayTimeAmbientLightCoef = MathHelper.Clamp(Program.Simulator.DayTimeAmbientLightCoef, 0.8f, 1.0f);
                     }
                     break;
             }
-
 
             if (!NightBrightnessSet)
             {
@@ -240,7 +271,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.CabInDarkTunnel = false;                
             }
 
-            float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef;
+            float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef;
 
             if (_imageTextureIsNight)
             {

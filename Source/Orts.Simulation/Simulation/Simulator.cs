@@ -263,6 +263,7 @@ namespace Orts.Simulation
         public bool WireHeightSwitch62;
         public bool WireHeightSwitchHidden;
         public bool WireHeightDoNothing;
+        public float DayTimeAmbientLightCoef = -1f;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -636,6 +637,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            DayTimeAmbientLightCoef = inf.ReadInt32();
             WireHeigth = inf.ReadInt32();
             GameWasRestored = true;
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
@@ -680,6 +682,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(DayTimeAmbientLightCoef);
             outf.Write(WireHeigth);
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
