@@ -11011,12 +11011,7 @@ namespace Orts.Simulation.RollingStocks
         bool AllCabItemReaded;
         bool MasterSlaveInitiate;
         public void CarFrameUpdate(float elapsedClockSeconds)
-        {           
-            if (AllCabItemReaded || !IsLeadLocomotive())
-                this.CarFrameUpdateState++;
-            if (this.CarFrameUpdateState > 100)
-                this.CarFrameUpdateState = 100;
-
+        {            
             // První průběh - inicializace hodnot
             if (this.CarFrameUpdateState == 1)
             {
@@ -11138,6 +11133,11 @@ namespace Orts.Simulation.RollingStocks
 
             // EDB Hack
             if (LocoHasNoDynamicController) DynamicBrakeController = null;
+
+            if (AllCabItemReaded || !IsLeadLocomotive())
+                this.CarFrameUpdateState++;
+            if (this.CarFrameUpdateState > 100)
+                this.CarFrameUpdateState = 100;
         }
 
         public void MUCableLogic()
