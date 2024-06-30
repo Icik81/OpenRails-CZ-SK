@@ -2825,12 +2825,6 @@ namespace Orts.Simulation.RollingStocks
 
         public void ComputePosition(Traveller traveler, bool backToFront, float elapsedTimeS, float distance, float speed)
         {
-            // Icik
-            if (float.IsNaN(speed))
-            {
-                speed = 0;
-            }            
-
             for (var j = 0; j < Parts.Count; j++)
                 Parts[j].InitLineFit();
             var tileX = traveler.TileX;
@@ -3035,7 +3029,16 @@ namespace Orts.Simulation.RollingStocks
 
             // Don't add vibrations to train cars less than 2.5 meter in length; they're unsuitable for these calculations.
             if (CarLengthM < 2.5f || (this as MSTSWagon).WagonIsServis) return;
-            
+
+            // Vyloučí z vibrací AI vlaky obsahující servis1 nebo servis4
+            if (!IsPlayerTrain)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if ((car as MSTSWagon).WagonIsServis14) return;
+                }
+            }
+
             if (Simulator.Settings.CarsVibration)            
                 Simulator.Settings.CarVibratingLevel = 2;            
             else

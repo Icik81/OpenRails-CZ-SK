@@ -178,6 +178,7 @@ namespace Orts.Simulation.RollingStocks
         public bool StartOn = true;
         public bool NoPaxsMode;
         public bool WagonIsServis;
+        public bool WagonIsServis14;        
         public float FanOSpeedLow;
         public float FanWSpeedLow;
         public float FanOSpeedHigh;
@@ -950,17 +951,24 @@ namespace Orts.Simulation.RollingStocks
         private void ORTSDavisSetUp()
         {
             if (MainShapeFileName.ToLower().Contains("servis"))
-            {
+            {                
                 var loco = this as MSTSLocomotive;
                 WagonIsServis = true;
-                if (!MainShapeFileName.ToLower().Contains("servis1")) InitialMassKG = MassKG = 1000f;
+                if (MainShapeFileName.ToLower().Contains("servis1") || MainShapeFileName.ToLower().Contains("servis4"))
+                {
+                    WagonIsServis14 = true;
+                }
+                else
+                {                    
+                    InitialMassKG = MassKG = 1000f;
+                }
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
                 if (loco != null && Simulator.Settings.MSTSCompatibilityMode)
                 {
                     var AITrain = Train as AITrain; 
                     loco.PowerReduction = 0;
-                    MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS /** AITrain.EfficiencyServis*/;
-                    float SpeedCoef = MaxSpeedServis / Math.Abs(loco.SpeedMpS);                    
+                    MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS <= 0 ? (50f / 3.6f) : loco.Train.AllowedMaxSpeedMpS /** AITrain.EfficiencyServis*/;
+                    float SpeedCoef = loco.SpeedMpS == 0 ? 1 : MaxSpeedServis / Math.Abs(loco.SpeedMpS);                    
                     //loco.SpeedMpS = loco.Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && Math.Abs(loco.SpeedMpS) < MaxSpeedServis ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;                                         
                 }
                 return;
