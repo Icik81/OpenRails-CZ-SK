@@ -59,16 +59,16 @@ namespace Orts.Viewer3D
             switch ((int)Program.Viewer.Simulator.Season)
             {
                 case 0:
-                    DayTimeOffsetS = (float)0.0;
+                    DayTimeOffsetS = (float)-1.0f * 60f * 60f;
                     break;
                 case 1:
-                    DayTimeOffsetS = (float)-1.5 * 60 * 60;
+                    DayTimeOffsetS = (float)-1.5f * 60f * 60f;
                     break;
                 case 2:
-                    DayTimeOffsetS = (float)-1.5 * 60 * 60;
+                    DayTimeOffsetS = (float)+0.0f * 60f * 60f;
                     break;
                 case 3:
-                    DayTimeOffsetS = (float)0.0;
+                    DayTimeOffsetS = (float)+0.0f * 60f * 60f;
                     break;
             }
 
