@@ -1648,20 +1648,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (initTest != InitTest.Passed)
                 return;
             if (BlueLight)
-            {                
-                Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
-
+            {                                                
                 if (MirelType == Type.LS90)
                 {
-                    Locomotive.SignalEvent(Common.Event.MirelOff);
-                    ResetVigilance();
-                }
+                    if (interventionTimer < 4)
+                        Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+                    else
+                    {
+                        Locomotive.SignalEvent(Common.Event.MirelOff);
+                        ResetVigilance();
+                    }
 
-                if (MirelType == Type.LS90 && Locomotive.SpeedMpS == 0)
-                {
-                    Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
-                    EmergencyBrakes(false);
+                    if (Locomotive.SpeedMpS == 0)
+                    {
+                        Locomotive.TrainBrakeController.EmergencyBrakingPushButton = false;
+                        EmergencyBrakes(false);
+                    }
                 }
+                else
+                    Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+
                 return;
             }            
 
@@ -1693,7 +1699,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float previousDistanceToSignal = 0;
         protected float manualModeTime = 0;
         protected bool flashingByMaxSpeed = false;
-        protected float lengthPassedWithoutSignal = 0;
+        protected float lengthPassedWithoutSignal = 0;        
         protected void MirelCheck(float elapsedTimeSeconds)
         {
             if (flashing && MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && !driveModeSetup && !MaxSpeedSetup)
