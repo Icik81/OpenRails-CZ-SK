@@ -1453,7 +1453,8 @@ namespace Orts.Simulation.AIs
                     float[] distancesM = CalculateDistancesToNextStation(thisStation, TrainMaxSpeedMpS, false);
                     if (distancesM[0] < 0f && !(MovementState == AI_MOVEMENT_STATE.STATION_STOP && distancesM[0] != -1)) // stop is not valid
                     {
-
+                        if (IsPlayerDriven)
+                            break;
                         StationStops.RemoveAt(0);
                         if (StationStops.Count == 0)
                         {
@@ -6816,9 +6817,6 @@ namespace Orts.Simulation.AIs
 
                         StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                         RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
-
-                        if (!PeopleWantToEntry)
-                            PaxInStationGenerateCompleted[ActualStationNumber] = 1;
 
                         // Still have to wait
                         if (remaining > 0)

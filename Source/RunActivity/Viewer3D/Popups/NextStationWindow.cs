@@ -293,7 +293,7 @@ namespace Orts.Viewer3D.Popups
                         PassengersWaiting.Text = "";
                         if (playerTimetableTrain.StationStops.Count > 1)
                             if (playerTimetableTrain.StationStops[1].PlatformItem != null && playerTimetableTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                PassengersWaiting.Text = playerTimetableTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
+                                PassengersWaiting.Text = playerTimetableTrain.ActualPassengerCountAtStation1.ToString();
 
                         if (playerTimetableTrain.StationStops == null || playerTimetableTrain.StationStops.Count == 0)
                         {
@@ -550,7 +550,7 @@ namespace Orts.Viewer3D.Popups
                             PassengersWaiting.Text = "";
                             if (playerTrain.StationStops.Count > 1)
                                 if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                    PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
+                                    PassengersWaiting.Text = playerTrain.ActualPassengerCountAtStation1.ToString();
 
                             StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;                            
                             StationCurrentArriveScheduled.Text = playerTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");
@@ -674,7 +674,7 @@ namespace Orts.Viewer3D.Popups
                         PassengersWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 1)                        
                             if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
+                                PassengersWaiting.Text = playerTrain.ActualPassengerCountAtStation1.ToString();
                         
                         StationNextDistance.Text = "";
                         if (playerTrain.StationStops.Count > 0 && playerTrain.StationStops[0].PlatformItem != null &&

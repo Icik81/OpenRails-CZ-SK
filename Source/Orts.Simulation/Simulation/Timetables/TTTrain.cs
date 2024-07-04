@@ -10412,9 +10412,6 @@ namespace Orts.Simulation.Timetables
                         StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                         RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
 
-                        if (!PeopleWantToEntry)
-                            PaxInStationGenerateCompleted[ActualStationNumber] = 1;
-
                         // Still have to wait
                         if (remaining > 0)
                         {

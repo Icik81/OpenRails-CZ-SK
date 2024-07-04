@@ -5314,8 +5314,8 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
-                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if ((AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);                            
+                            if (AbsSpeedMpS < 0.01f && (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
                             {
                                 CarIsShunting = true;
                                 AIStartOn = true;
