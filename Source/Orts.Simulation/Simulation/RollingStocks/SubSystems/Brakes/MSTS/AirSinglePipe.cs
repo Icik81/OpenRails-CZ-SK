@@ -930,7 +930,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {                                                
                         if (!(Car as MSTSWagon).IsDriveable)
                         {
-                            (Car as MSTSWagon).WagonIsStatic = true;
                             int HandBrakeTotalCount = (int)(Car.Train.Cars.Count / 2f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 2f);                                                                                  
                             Car.Train.TrainCurrentCarHandBrake++;
                             if (Car.Train.TrainHandBrakeCount <= HandBrakeTotalCount)
@@ -1132,9 +1131,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             #region AI
             if (!Car.IsPlayerTrain)
             {
-                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;
-                AuxResPressurePSI = MathHelper.Clamp(AuxResPressurePSI, 3.5f * 14.50377f, maxPressurePSI0);
-                BrakeLine1PressurePSI = MathHelper.Clamp(BrakeLine1PressurePSI, 3.5f * 14.50377f, maxPressurePSI0);
+                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;                                
                 if (loco != null)
                 {
                     loco.EmergencyButtonPressed = false;
