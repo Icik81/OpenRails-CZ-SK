@@ -6679,7 +6679,7 @@ namespace Orts.Simulation.RollingStocks
                 for (int i = SteamHeatCarPosition; i < Train.Cars.Count; i++) 
                 {
                     var wagon = Train.Cars[i];
-                    if (!wagon.HasWagonSteamHeatingElements)                    
+                    if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)                    
                         break;                    
                     else                                    
                         wagon.WagonCanEnableSteamHeating = true;                    
@@ -6687,7 +6687,7 @@ namespace Orts.Simulation.RollingStocks
                 for (int i = SteamHeatCarPosition; i >= 0; i--)
                 {
                     var wagon = Train.Cars[i];
-                    if (!wagon.HasWagonSteamHeatingElements)
+                    if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)
                         break;
                     else
                         wagon.WagonCanEnableSteamHeating = true;

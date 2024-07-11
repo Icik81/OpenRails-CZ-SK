@@ -1130,8 +1130,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjednodušený model pro AI
             #region AI
             if (!Car.IsPlayerTrain)
-            {
-                AutoCylPressurePSI1 = AutoCylPressurePSI2 = 0f;                                
+            {                          
                 if (loco != null)
                 {
                     loco.EmergencyButtonPressed = false;
