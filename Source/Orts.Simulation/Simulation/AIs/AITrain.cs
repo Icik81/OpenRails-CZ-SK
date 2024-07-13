@@ -3765,7 +3765,7 @@ namespace Orts.Simulation.AIs
         {
             if (AITrainThrottlePercent > 0)
             {
-                AITrainThrottlePercent = 0;
+                AITrainThrottlePercent -= stepSize * timeS;
             }
 
             if (AITrainBrakePercent < 100)
@@ -3788,7 +3788,6 @@ namespace Orts.Simulation.AIs
             }
 
             SetPercentsFromTrainToTrainset();
-
         }
 
         public void AdjustControlsBrakeLess(float reqDecelMpSS, float timeS, int stepSize)
@@ -3885,7 +3884,7 @@ namespace Orts.Simulation.AIs
         }
 
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
-        {
+        {            
             // Icik
             foreach (TrainCar car in Cars)
             {
@@ -3894,11 +3893,8 @@ namespace Orts.Simulation.AIs
                     AITrainThrottlePercent = 0;
                     return;
                 }
-            }
-
-            float step = stepSize;
-            if (!Simulator.Paused)
-                step = 0.1f;
+            }            
+            
             foreach (TrainCar car in Cars)
             {
                 if (car is MSTSElectricLocomotive)
@@ -3919,6 +3915,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
             }
+
             if (AITrainBrakePercent > 0)
             {
                 AdjustControlsBrakeOff();
@@ -3926,7 +3923,7 @@ namespace Orts.Simulation.AIs
 
             if (AITrainThrottlePercent < 100)
             {
-                AITrainThrottlePercent += step;
+                AITrainThrottlePercent += stepSize * timeS;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
