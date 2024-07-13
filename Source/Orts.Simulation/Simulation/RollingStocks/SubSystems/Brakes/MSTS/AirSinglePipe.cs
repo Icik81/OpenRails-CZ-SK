@@ -870,7 +870,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else
                 {
                     AutoCylPressurePSI0 = MaxCylPressurePSI;                    
-                    AuxResPressurePSI = maxPressurePSI0 - (MaxCylPressurePSI / AuxCylVolumeRatioBase);                    
+                    PrevAuxResPressurePSI = AuxResPressurePSI = maxPressurePSI0 - (MaxCylPressurePSI / AuxCylVolumeRatioBase);                    
                     BrakeLine1PressurePSI = 0;                                        
                 }
             }
