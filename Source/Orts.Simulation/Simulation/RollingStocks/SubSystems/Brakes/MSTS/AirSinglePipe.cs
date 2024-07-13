@@ -4139,7 +4139,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 train.Cars[i + LeadPosition].BrakeSystem.HandBrakeActive = true;
                             }
                         }
-                    }
+                    }                    
                 }
                 else
                 if (!train.LocoIsAirEmpty && !trainCar.Simulator.Settings.AirEmpty)
@@ -4209,12 +4209,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             if (!(Car as MSTSWagon).HandBrakePresent)
             {
-                HandbrakePercent = 0;
+                HandbrakePercent = 0;                
                 return;
             }
             if (percent < 0) percent = 0;
             if (percent > 100) percent = 100;
             HandbrakePercent = percent;
+            (Car as MSTSWagon).Simulator.HandBrakeStatusChange = true;
         }
 
         public override void AISetPercent(float percent)

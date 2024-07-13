@@ -69,6 +69,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using static System.Collections.Specialized.BitVector32;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.Physics
@@ -4511,6 +4512,13 @@ namespace Orts.Simulation.Physics
                             SignalEvent(Event.AuxCompressorOff);
                     }
 
+                    if (Cars.Count > 3)
+                    {
+                        car.BrakeSystem.FrontBrakeHoseConnected = true;
+                        Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                        Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                    }
+
                     if (Simulator.AICouplingAction)
                     {                        
                         car.WagonIsStatic = true;
@@ -4533,6 +4541,9 @@ namespace Orts.Simulation.Physics
                             car.BrakeSystem.HandBrakeDeactive = false;
                             car.BrakeSystem.SetHandbrakePercent(Simulator.Random.Next(90, 101));
                         }
+                        car.BrakeSystem.FrontBrakeHoseConnected = true;
+                        Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                        Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
                     }                    
                 }
                 Simulator.AICouplingAction = false;

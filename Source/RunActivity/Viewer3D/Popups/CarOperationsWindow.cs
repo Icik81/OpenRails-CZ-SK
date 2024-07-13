@@ -285,7 +285,7 @@ namespace Orts.Viewer3D.Popups
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake set"));
             else
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake off"));
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake off"));            
         }
 
         void buttonTogglePower_Click(Control arg1, Point arg2)

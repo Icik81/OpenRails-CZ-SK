@@ -4576,6 +4576,7 @@ namespace Orts.Simulation.RollingStocks
                 MSTSBrakeSystem.SetHandbrakePercent(100);
             else
                 MSTSBrakeSystem.SetHandbrakePercent(0);
+            Simulator.HandBrakeStatusChange = true;
         }
 
         /// <summary>
