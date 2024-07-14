@@ -547,7 +547,26 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             int powerSys = -1;
 
-            float dist = DistanceToPowerSupplyStationM(RouteVoltageV == 3000 ? 0 : 1, out myStation);
+            int pSys = 0;
+            switch (RouteVoltageV)
+            {
+                case 3000:
+                    {
+                        pSys = 0;
+                        break;
+                    }
+                case 25000:
+                    {
+                        pSys = 1;
+                        break;
+                    }
+                case 15000:
+                    {
+                        pSys = 2;
+                        break;
+                    }
+            }
+            float dist = DistanceToPowerSupplyStationM(pSys, out myStation);
             float distToMarker = DistanceToVoltageMarkerM(out markerVoltage, out marker);
 
             if (dist < 200)

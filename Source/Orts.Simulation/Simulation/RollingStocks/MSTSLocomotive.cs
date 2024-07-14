@@ -2737,7 +2737,24 @@ namespace Orts.Simulation.RollingStocks
                     {
                         distance = currdistance;
                         myStation = pss;
-                        RouteVoltageV = myStation.PowerSystem == 0 ? 3000 : 25000;
+                        switch (myStation.PowerSystem)
+                        {
+                            case 0:
+                                {
+                                    RouteVoltageV = 3000;
+                                    break;
+                                }
+                            case 1:
+                                {
+                                    RouteVoltageV = 25000;
+                                    break;
+                                }
+                            case 2:
+                                {
+                                    RouteVoltageV = 15000;
+                                    break;
+                                }
+                        }
                     }
                 }
             }
