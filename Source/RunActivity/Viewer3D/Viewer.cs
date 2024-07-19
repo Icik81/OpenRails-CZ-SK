@@ -703,6 +703,8 @@ namespace Orts.Viewer3D
             ToggleARRParkingButtonCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             PlayerLocomotiveHandbrakeCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleRefreshWireCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleTractionSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleTractionSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

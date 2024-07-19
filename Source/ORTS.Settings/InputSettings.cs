@@ -634,6 +634,8 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeUp] = new UserCommandKeyInput(0x28, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPlayerLocomotiveHandbrakeDown] = new UserCommandKeyInput(0x27, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlRefreshWire] = new UserCommandKeyInput(0x3D, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlTractionSwitchUp] = new UserCommandKeyInput(0x18);
+            Commands[(int)UserCommand.ControlTractionSwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
 
         }
         #endregion

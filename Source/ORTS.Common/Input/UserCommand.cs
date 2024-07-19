@@ -331,6 +331,8 @@
         [GetString("Control_CZSK ARR Parking Button")] ControlToggleARRParkingButton,
         [GetString("Control_CZSK PlayerLoco Handbrake +")] ControlPlayerLocomotiveHandbrakeUp,
         [GetString("Control_CZSK PlayerLoco Handbrake -")] ControlPlayerLocomotiveHandbrakeDown,
+        [GetString("Control_CZSK Traction Switch +")] ControlTractionSwitchUp,
+        [GetString("Control_CZSK Traction Switch -")] ControlTractionSwitchDown,
 
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,

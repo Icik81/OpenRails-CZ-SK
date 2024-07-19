@@ -2099,6 +2099,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Switch5LightPosition[2]);
             outf.Write(Switch6LightPosition[1]);
             outf.Write(Switch6LightPosition[2]);
+            outf.Write(TractionSwitchPosition[1]);
+            outf.Write(TractionSwitchPosition[2]);
             #endregion
 
             base.Save(outf);
@@ -2354,6 +2356,8 @@ namespace Orts.Simulation.RollingStocks
             Switch5LightPosition[2] = inf.ReadInt32();
             Switch6LightPosition[1] = inf.ReadInt32();
             Switch6LightPosition[2] = inf.ReadInt32();
+            TractionSwitchPosition[1] = inf.ReadInt32();
+            TractionSwitchPosition[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -3877,6 +3881,7 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult11
                     + PowerReductionResult12
                     + PowerReductionResult13
+                    + PowerReductionResult14
                     )
                     PowerReduction += 1 * elapsedClockSeconds;
 
@@ -3894,6 +3899,7 @@ namespace Orts.Simulation.RollingStocks
                     + PowerReductionResult11
                     + PowerReductionResult12
                     + PowerReductionResult13
+                    + PowerReductionResult14
                     )
                     PowerReduction -= 1 * elapsedClockSeconds;
 
@@ -6797,6 +6803,7 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakePercent();
                 MasterSlave();
                 WireHeightSwitching();
+                TractionSwitch();
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -16165,6 +16172,49 @@ namespace Orts.Simulation.RollingStocks
             PreSeasonSwitchPosition = SeasonSwitchPosition[LocoStation];
         }
 
+        #region Traction Switch
+        public bool TractionSwitchEnable;
+        public int[] TractionSwitchPosition = new int[3];
+        public void TractionSwitchUp()
+        {
+            if (!TractionSwitchEnable) return;
+            if (TractionSwitchPosition[LocoStation] < 1)
+            {
+                TractionSwitchPosition[LocoStation]++;
+                SignalEvent(Event.ToggleTractionSwitchUp);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: " + Simulator.Catalog.GetString("On")));
+            }            
+        }
+        public void TractionSwitchDown()
+        {
+            if (!TractionSwitchEnable) return;
+            if (TractionSwitchPosition[LocoStation] > 0)
+            {
+                TractionSwitchPosition[LocoStation]--;
+                SignalEvent(Event.ToggleTractionSwitchDown);
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: " + Simulator.Catalog.GetString("Off")));
+            }            
+        }
+        public void TractionSwitch()
+        {
+            if (!TractionSwitchEnable) return;
+
+            if (Battery && PowerKeyPosition[LocoStation] == 2)
+            {
+                switch (TractionSwitchPosition[LocoStation])
+                {
+                    case 0: PowerReductionResult14 = 1.0f; break;
+
+                    case 1: PowerReductionResult14 = 0.0f; break;
+                }
+            }
+            else
+            {
+                PowerReductionResult14 = 1.0f;
+            }
+        }
+        #endregion Traction Switch
+
         #region Mirer ovladač
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
@@ -21863,6 +21913,12 @@ namespace Orts.Simulation.RollingStocks
                     {
                         ARRParkingButtonEnable = true;
                         data = ARRParkingButtonState;
+                        break;
+                    }
+                case CABViewControlTypes.TRACTION_SWITCH:
+                    {
+                        TractionSwitchEnable = true;
+                        data = TractionSwitchPosition[LocoStation] + 1;
                         break;
                     }
 

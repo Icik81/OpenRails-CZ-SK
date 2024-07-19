@@ -1479,7 +1479,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Zvýšení otáček motoru při prudkém snížení stupňů regulátorem
-            if (locomotive.OverVoltage)
+            if (locomotive.OverVoltage || EngineStatus != Status.Running)
             {
                 RPMgrowth = false;
             }
@@ -1510,72 +1510,98 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         case 771:
                             CheckRPMOverkill = true;
                             break;
-                    }
+                    }                    
 
-                    if (CheckRPMOverkill)
+                    if (CheckRPMOverkill || locomotive.TractionSwitchEnable)
                     {
                         int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;
-                        if (CurrentThrottlePercent > preThrottlePercent)
-                        {
-                            preThrottlePercent = CurrentThrottlePercent;                            
+
+                        bool TractionSwitchOverKill = false;
+                        if (locomotive.TractionSwitchEnable)
+                        {                            
+                            if (locomotive.TractionSwitchPosition[locomotive.LocoStation] == 0 && preThrottlePercent != 0)
+                            {
+                                if (preThrottlePercent > 0 && LoadPercent > 15f)
+                                {
+                                    CurrentThrottlePercent = 0;
+                                    TractionSwitchOverKill = true;
+                                }
+                            }
+
+                            if (locomotive.TractionSwitchPosition[locomotive.LocoStation] == 1)
+                            {
+                                preThrottlePercent = (int)locomotive.LocalThrottlePercent;
+                            }
+                            else
+                            if (!TractionSwitchOverKill)
+                            {
+                                preThrottlePercent = 0;
+                            }
                         }
 
-                        // Zpoždění reakce regulátoru na změnu dávky paliva                        
-                        RegulatorRecoveryTime = 1.0f;
-                        if (Math.Abs(dRPM) == 0)
+                        if (!locomotive.TractionSwitchEnable)
                         {
-                            RegulatorStandChange = false;
-                        }                        
+                            if (CurrentThrottlePercent > preThrottlePercent)
+                            {
+                                preThrottlePercent = CurrentThrottlePercent;
+                            }
 
-                        if (CurrentThrottlePercent > preThrottlePercentMinus)
-                        {
-                            preThrottlePercentMinus = CurrentThrottlePercent;
-                        }
-                        else
-                        if (CurrentThrottlePercent < preThrottlePercentPlus)
-                        {
-                            preThrottlePercentPlus = CurrentThrottlePercent;
-                        }
-                        if ((CurrentThrottlePercent < preThrottlePercentMinus && !RPMgrowth && !RPMOverkill)
-                            || RegulatorRecoveryTimer3 > 0)
-                        {
-                            preThrottlePercentMinus = CurrentThrottlePercent;
-                            preThrottlePercentPlus = CurrentThrottlePercent;
-                            if (RegulatorRecoveryTimer3 == 0)
+                            // Zpoždění reakce regulátoru na změnu dávky paliva                        
+                            RegulatorRecoveryTime = 1.0f;
+                            if (Math.Abs(dRPM) == 0)
                             {
-                                CurrentRPM0 = RealRPM + ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
+                                RegulatorStandChange = false;
                             }
-                            RegulatorRecoveryTimer3 += elapsedClockSeconds;
-                            if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
+
+                            if (CurrentThrottlePercent > preThrottlePercentMinus)
                             {
-                                RegulatorRecoveryTimer3 = 0;
-                                RegulatorStandChange = true;
+                                preThrottlePercentMinus = CurrentThrottlePercent;
                             }
-                            if (!RegulatorStandChange)
-                                RealRPM = CurrentRPM0;
+                            else
+                            if (CurrentThrottlePercent < preThrottlePercentPlus)
+                            {
+                                preThrottlePercentPlus = CurrentThrottlePercent;
+                            }
+                            if ((CurrentThrottlePercent < preThrottlePercentMinus && !RPMgrowth && !RPMOverkill)
+                                || RegulatorRecoveryTimer3 > 0)
+                            {
+                                preThrottlePercentMinus = CurrentThrottlePercent;
+                                preThrottlePercentPlus = CurrentThrottlePercent;
+                                if (RegulatorRecoveryTimer3 == 0)
+                                {
+                                    CurrentRPM0 = RealRPM + ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
+                                }
+                                RegulatorRecoveryTimer3 += elapsedClockSeconds;
+                                if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
+                                {
+                                    RegulatorRecoveryTimer3 = 0;
+                                    RegulatorStandChange = true;
+                                }
+                                if (!RegulatorStandChange)
+                                    RealRPM = CurrentRPM0;
+                            }
+                            else
+                            if ((CurrentThrottlePercent > preThrottlePercentPlus && !RPMgrowth && !RPMOverkill)
+                                || RegulatorRecoveryTimer3 > 0)
+                            {
+                                preThrottlePercentPlus = CurrentThrottlePercent;
+                                preThrottlePercentMinus = CurrentThrottlePercent;
+                                if (RegulatorRecoveryTimer3 == 0)
+                                {
+                                    CurrentRPM0 = RealRPM - ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
+                                }
+                                RegulatorRecoveryTimer3 += elapsedClockSeconds;
+                                if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
+                                {
+                                    RegulatorRecoveryTimer3 = 0;
+                                    RegulatorStandChange = true;
+                                }
+                                if (!RegulatorStandChange)
+                                    RealRPM = CurrentRPM0;
+                            }
                         }
-                        else
-                        if ((CurrentThrottlePercent > preThrottlePercentPlus && !RPMgrowth && !RPMOverkill)
-                            || RegulatorRecoveryTimer3 > 0)
-                        {
-                            preThrottlePercentPlus = CurrentThrottlePercent;
-                            preThrottlePercentMinus = CurrentThrottlePercent;
-                            if (RegulatorRecoveryTimer3 == 0)
-                            {
-                                CurrentRPM0 = RealRPM - ((Math.Abs(dRPM) + Math.Abs(DeltaUpRPMpS)) * elapsedClockSeconds);
-                            }
-                            RegulatorRecoveryTimer3 += elapsedClockSeconds;
-                            if (RegulatorRecoveryTimer3 > RegulatorRecoveryTime)
-                            {
-                                RegulatorRecoveryTimer3 = 0;
-                                RegulatorStandChange = true;
-                            }
-                            if (!RegulatorStandChange)
-                                RealRPM = CurrentRPM0;
-                        }
-                        
                         // Výpočet nárůstu otáček 
-                        if (locomotive.PowerCurrent1 > 0 && CurrentThrottlePercent < preThrottlePercent)
+                        if ((locomotive.PowerCurrent1 > 0 || TractionSwitchOverKill) && CurrentThrottlePercent < preThrottlePercent)
                         {
                             preThrottlePercent = CurrentThrottlePercent;
                             CurrentRPM = RealRPM;
@@ -1583,38 +1609,74 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             if (ElevatedConsumptionMode)
                             {
                                 float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
-                                if (RealRPM > 1.309f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta))
+                                if (RealRPM > 1.309f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta) || TractionSwitchOverKill)
                                 {
-                                    RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                                    //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                    if (TractionSwitchOverKill)
+                                    {
+                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[0];
+                                    }
+                                    else
+                                    {
+                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                        //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                    }
                                 }
                             }
                             else
                             {
-                                if (RealRPM > 1.309f * ThrottleRPMTab[locomotive.ThrottlePercent])
+                                if (RealRPM > 1.309f * ThrottleRPMTab[locomotive.ThrottlePercent] || TractionSwitchOverKill)
                                 {
-                                    RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
-                                    //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                    if (TractionSwitchOverKill)
+                                    {
+                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[0];
+                                    }
+                                    else
+                                    {
+                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                        //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
+                                    }
                                 }
                             }
-                        }                         
+                        }
 
                         // Strmost nárůstu otáček
-                        if ((locomotive.PowerCurrent1 == 0 && RegulatorDeltaRPM > 0) || RPMgrowth)
+                        if (locomotive.TractionSwitchEnable)
                         {
-                            if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
+                            if ((TractionSwitchOverKill && RegulatorDeltaRPM > 0) || RPMgrowth)
                             {
-                                RealRPM += 200.0f * CurrentRPM / MaxRPM * elapsedClockSeconds;
-                                RPMgrowth = true;
-                            }
-                            if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
-                            {
-                                RegulatorRecoveryTimer += elapsedClockSeconds;
-                                RealRPM = CurrentRPM + RegulatorDeltaRPM;
-                                if (RealRPM > MaxRPM)
-                                    RPMOverkill = true;
+                                if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
+                                {
+                                    RealRPM += 200.0f * CurrentRPM / MaxRPM * elapsedClockSeconds;
+                                    RPMgrowth = true;
+                                }
+                                if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
+                                {
+                                    RegulatorRecoveryTimer += elapsedClockSeconds;
+                                    RealRPM = CurrentRPM + RegulatorDeltaRPM;
+                                    if (RealRPM > MaxRPM)
+                                        RPMOverkill = true;
+                                }
                             }
                         }
+                        if (!locomotive.TractionSwitchEnable)
+                        {
+                            if (((locomotive.PowerCurrent1 == 0) && RegulatorDeltaRPM > 0) || RPMgrowth)
+                            {
+                                if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
+                                {
+                                    RealRPM += 200.0f * CurrentRPM / MaxRPM * elapsedClockSeconds;
+                                    RPMgrowth = true;
+                                }
+                                if (RealRPM > 0.999f * CurrentRPM + RegulatorDeltaRPM)
+                                {
+                                    RegulatorRecoveryTimer += elapsedClockSeconds;
+                                    RealRPM = CurrentRPM + RegulatorDeltaRPM;
+                                    if (RealRPM > MaxRPM)
+                                        RPMOverkill = true;
+                                }
+                            }
+                        }
+
 
                         if (RegulatorRecoveryTimer == 0 && RegulatorDeltaRPM > 0 && !RPMgrowth)
                         {

@@ -3117,4 +3117,38 @@ namespace Orts.Common
             return base.ToString() + " - " + (ToState ? "apply" : "release");
         }
     }
+    [Serializable()]
+    public sealed class ToggleTractionSwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleTractionSwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TractionSwitchUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleTractionSwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleTractionSwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.TractionSwitchDown();
+            // Report();
+        }
+    }
 }

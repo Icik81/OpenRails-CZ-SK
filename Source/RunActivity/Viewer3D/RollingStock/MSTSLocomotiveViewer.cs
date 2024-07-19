@@ -416,6 +416,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeDown, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, false) });
             UserInputCommands.Add(UserCommand.ControlPlayerLocomotiveHandbrakeUp, new Action[] { Noop, () => new PlayerLocomotiveHandbrakeCommand(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlRefreshWire, new Action[] { Noop, () => new ToggleRefreshWireCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlTractionSwitchUp, new Action[] { Noop, () => new ToggleTractionSwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlTractionSwitchDown, new Action[] { Noop, () => new ToggleTractionSwitchDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -454,6 +456,19 @@ namespace Orts.Viewer3D.RollingStock
         {
             // Icik
             DoublePressedKeyTest();
+
+            // Ovládání TRACTION_SWITCH aretované pozice
+            if (Locomotive.TractionSwitchEnable)
+            {                
+                if (UserInput.IsPressed(UserCommand.ControlTractionSwitchUp))
+                {
+                    new ToggleTractionSwitchUpCommand(Viewer.Log);
+                }
+                if (UserInput.IsPressed(UserCommand.ControlTractionSwitchDown))
+                {
+                    new ToggleTractionSwitchDownCommand(Viewer.Log);
+                }
+            }
 
             // Ovládání ruční brzdy na lokomotivě
             if (Locomotive.HandBrakePresent)
@@ -3707,6 +3722,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ARR_CONFIRM_BUTTON:
                 case CABViewControlTypes.ARR_DRIVEOUT_BUTTON:
                 case CABViewControlTypes.ARR_PARKING_BUTTON:
+                case CABViewControlTypes.TRACTION_SWITCH:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4299,6 +4315,21 @@ namespace Orts.Viewer3D.RollingStock
                         if (UserInput.IsMouseLeftButtonReleased)
                         {
                             Locomotive.SignalEvent(Event.ButtonReleased);
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.TRACTION_SWITCH:
+                    {
+                        // Ovládání aretované pozice                        
+                        if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleTractionSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (!IsChanged && ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleTractionSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
                         }
                         break;
                     }

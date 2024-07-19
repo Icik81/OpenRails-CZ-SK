@@ -535,6 +535,7 @@ namespace Orts.Formats.Msts
         ARR_CONFIRM_BUTTON,
         ARR_DRIVEOUT_BUTTON,
         ARR_PARKING_BUTTON,
+        TRACTION_SWITCH,
 
         // ORTS
         ORTS_SCREEN_SELECT,
