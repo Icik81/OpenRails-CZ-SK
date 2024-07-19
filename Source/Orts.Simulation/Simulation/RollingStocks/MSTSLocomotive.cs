@@ -16175,6 +16175,7 @@ namespace Orts.Simulation.RollingStocks
         #region Traction Switch
         public bool TractionSwitchEnable;
         public int[] TractionSwitchPosition = new int[3];
+        public bool TractionOn;
         public void TractionSwitchUp()
         {
             if (!TractionSwitchEnable) return;
@@ -16182,7 +16183,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 TractionSwitchPosition[LocoStation]++;
                 SignalEvent(Event.ToggleTractionSwitchUp);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: " + Simulator.Catalog.GetString("On")));
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("On"));                
             }            
         }
         public void TractionSwitchDown()
@@ -16192,8 +16193,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 TractionSwitchPosition[LocoStation]--;
                 SignalEvent(Event.ToggleTractionSwitchDown);
-                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: " + Simulator.Catalog.GetString("Off")));
-            }            
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("Off"));                                   
+            }              
         }
         public void TractionSwitch()
         {
@@ -16203,14 +16204,33 @@ namespace Orts.Simulation.RollingStocks
             {
                 switch (TractionSwitchPosition[LocoStation])
                 {
-                    case 0: PowerReductionResult14 = 1.0f; break;
+                    case 0: 
+                        PowerReductionResult14 = 1.0f;
+                        if (TractionOn)
+                        {
+                            TractionOn = false;
+                            SignalEvent(Event.ToggleTractionOff);
+                        }
+                        break;
 
-                    case 1: PowerReductionResult14 = 0.0f; break;
+                    case 1:
+                        PowerReductionResult14 = 0.0f;
+                        if (!TractionOn)
+                        {
+                            TractionOn = true;
+                            SignalEvent(Event.ToggleTractionOn);
+                        }
+                        break;
                 }
             }
             else
             {
                 PowerReductionResult14 = 1.0f;
+                if (TractionOn)
+                {
+                    TractionOn = false;
+                    SignalEvent(Event.ToggleTractionOff);
+                }
             }
         }
         #endregion Traction Switch

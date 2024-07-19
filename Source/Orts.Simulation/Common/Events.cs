@@ -387,6 +387,8 @@ namespace Orts.Common
         ToggleHandBrakeStop,
         ToggleTractionSwitchUp,
         ToggleTractionSwitchDown,
+        ToggleTractionOn,
+        ToggleTractionOff,
     }
 
     public static class Events
@@ -788,6 +790,8 @@ namespace Orts.Common
                         case 20140: return Event.ToggleHandBrakeStop;
                         case 20141: return Event.ToggleTractionSwitchUp;
                         case 20142: return Event.ToggleTractionSwitchDown;
+                        case 20143: return Event.ToggleTractionOn;
+                        case 20144: return Event.ToggleTractionOff;
 
                         default: return 0;
                     }
