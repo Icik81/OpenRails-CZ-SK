@@ -979,10 +979,22 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        bool ChanceToProblemWithBrake;
+        float ChanceToProblemWithBrakeTimer;
         public void BrakeCarStatus()
         {
             if (!IsPlayerTrain)
                 return;
+
+            // Závada se může stát i během jízdy
+            if (Simulator.GameTime > 60f)
+                ChanceToProblemWithBrakeTimer += Simulator.OneSecondLoop; 
+
+            if (ChanceToProblemWithBrakeTimer > 600f)
+            {
+                BrakeSystem.BrakeCarHasStatus = (Simulator.Random.Next(0, 2)) == 1 ? false : true;                
+                ChanceToProblemWithBrakeTimer = 0;
+            }
 
             if (BrakeSystem.CarHasAirStuckBrake_1 || BrakeSystem.CarHasAirStuckBrake_2 || BrakeSystem.CarHasAirStuckBrake_3
                 || BrakeSystem.CarHasMechanicStuckBrake_1 || BrakeSystem.CarHasMechanicStuckBrake_2)
@@ -990,6 +1002,7 @@ namespace Orts.Simulation.RollingStocks
 
             var car = this as MSTSWagon;
             if (!BrakeSystem.BrakeCarHasStatus 
+                && !BrakeSystem.CarHasProblemWithBrake
                 && WagonType != WagonTypes.Engine 
                 && WagonType != WagonTypes.Passenger 
                 && car != Train.Cars[Train.Cars.Count - 1] 
@@ -1017,9 +1030,12 @@ namespace Orts.Simulation.RollingStocks
                         WheelDamageValue = Simulator.Random.Next(5, 15);                                                                       
                         break;
                 }
-                int ChanceToWheelDamageValue = Simulator.Random.Next(0, 20);
-                if (ChanceToWheelDamageValue == 10)
-                    WheelDamageValue = Simulator.Random.Next(0, 10);
+                if (Simulator.GameTime == 0)
+                {
+                    int ChanceToWheelDamageValue = Simulator.Random.Next(0, 20);
+                    if (ChanceToWheelDamageValue == 10)
+                        WheelDamageValue = Simulator.Random.Next(0, 10);
+                }
             }        
         }
 
@@ -1029,6 +1045,8 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             if (float.IsNaN(MassKG))
                 MassKG = InitialMassKG;
+
+            BrakeCarStatus();
 
             if (Simulator.GameTimeCyklus10 == 10)
             {                
@@ -1086,8 +1104,7 @@ namespace Orts.Simulation.RollingStocks
                         CoefF = 0.60f;
                         break;
                 }
-
-                BrakeCarStatus();
+                
                 AntiSkidSystem();
                 BrakeSystem.WagonType = (int)WagonType;
 
