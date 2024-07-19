@@ -243,8 +243,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 driveMode = DriveMode.Trailing;
                 selectedDriveMode = DriveMode.Trailing;
-                UpdateSpeedNumbers((int)MpS.ToKpH(Locomotive.MaxSpeedMpS), true);
+                BlueLight = false;
+                UpdateSpeedNumbers(0, true);
                 was15kV = true;
+                transmittionSignalFreq = TransmittionSignalFreq.None;
+                UpdateDisplay();
+                return;
             }
             else if (was15kV)
             {
@@ -768,6 +772,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void UpdateDisplay()
         {
+            if (Locomotive.RouteVoltageV == 15000)
+            {
+                Display = "   ";
+                return;
+            }
             if (initTest == InitTest.Off)
                 Display = "   ";
             else if (initTest == InitTest.Running)
@@ -1572,6 +1581,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void UpdateSpeedNumbers(int Speed, bool NoSpeedDisplayed)
         {
+            if (Locomotive.RouteVoltageV == 15000)
+            {
+                MirelSpeedNum1 = 0;
+                MirelSpeedNum2 = 0;
+                MirelSpeedNum3 = 0;
+                return;
+            }
             if ((initTest == InitTest.Passed && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.None) ||
                 (initTest == InitTest.Passed && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station2 && !Locomotive.UsingRearCab) ||
                 (initTest == InitTest.Passed && Locomotive.ActiveStation == MSTSLocomotive.DriverStation.Station1 && Locomotive.UsingRearCab))
@@ -1702,6 +1718,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float lengthPassedWithoutSignal = 0;        
         protected void MirelCheck(float elapsedTimeSeconds)
         {
+            if (Locomotive.RouteVoltageV == 15000)
+            {
+                BlueLight = false;
+                UpdateSpeedNumbers(0, true);
+                return;
+            }
             if (flashing && MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && !driveModeSetup && !MaxSpeedSetup)
             {
                 flashing = false;
