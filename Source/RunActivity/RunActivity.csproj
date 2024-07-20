@@ -951,6 +951,7 @@
     <Content Include="Content\Season\SpringSkyDome.png" />
     <Content Include="Content\Season\SummerClouds.png" />
     <Content Include="Content\Season\SummerSkyDome.png" />
+    <Content Include="Content\Season\SummerSkyDomeClear.png" />
     <Content Include="Content\Season\WinterClouds.png" />
     <Content Include="Content\Season\WinterSkyDome.png" />
     <Content Include="Content\ShadowMap.fx">

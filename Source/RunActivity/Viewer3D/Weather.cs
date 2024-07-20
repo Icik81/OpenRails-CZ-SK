@@ -329,7 +329,7 @@ namespace Orts.Viewer3D
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Clear;
-                            Weather.OvercastFactor = 0.35f;
+                            Weather.OvercastFactor = 0.0f;
                             Weather.FogDistance = 12000f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;
