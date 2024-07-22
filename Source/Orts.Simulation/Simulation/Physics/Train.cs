@@ -16887,15 +16887,29 @@ namespace Orts.Simulation.Physics
                 station++;
             }
         }
-        
+
+        int ActivityNumPassengersWaitingIsZero = -1;
         public void FillNames(Train train)
         {
             // Icik
             if (MaxStationCountFromStart == -1)
             {
                 foreach (StationStop stop in StationStops)
+                {
                     if (stop.PlatformItem.NumPassengersWaiting >= 10000)
-                        stop.PlatformItem.NumPassengersWaitingBase = stop.PlatformItem.NumPassengersWaiting;
+                        stop.PlatformItem.NumPassengersWaitingBase = stop.PlatformItem.NumPassengersWaiting;                    
+                }
+
+                foreach (StationStop stop in StationStops)
+                {
+                    if (stop.PlatformItem.NumPassengersWaiting > 0)
+                    {
+                        ActivityNumPassengersWaitingIsZero = 1;
+                        break;
+                    }
+                    else
+                        ActivityNumPassengersWaitingIsZero = 0;
+                }
 
                 foreach (StationStop stop in StationStops)
                 {
@@ -16931,15 +16945,16 @@ namespace Orts.Simulation.Physics
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
-                if (Simulator.Settings.GenerateRandomPaxCount)
+                if (Simulator.Settings.GenerateRandomPaxCount || ActivityNumPassengersWaitingIsZero == 0)
                 {
                     // calculate maximum capacity
-                    MaxPaxCapacity = 0;
+                    MaxPaxCapacity = 0;                                                            
                     foreach (TrainCar tc in train.Cars)
                     {
-                        if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
-                            if (tc.PassengerCapacity == 0 && !tc.HasPassengerCapacity)
-                                continue;
+                        // Pokud se bude ignorovat nulová kapacita lokomotivy, tak bude první stanice bez paxů
+                        //if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
+                        //    if (tc.PassengerCapacity == 0 && !tc.HasPassengerCapacity)
+                        //        continue;
                         MaxPaxCapacity += tc.PassengerCapacity;
                         if (tc.PassengerCapacity == 0)
                             MaxPaxCapacity += 25f;
