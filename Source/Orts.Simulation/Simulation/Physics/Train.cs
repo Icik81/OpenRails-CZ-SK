@@ -16898,18 +16898,7 @@ namespace Orts.Simulation.Physics
                 {
                     if (stop.PlatformItem.NumPassengersWaiting >= 10000)
                         stop.PlatformItem.NumPassengersWaitingBase = stop.PlatformItem.NumPassengersWaiting;                    
-                }
-
-                foreach (StationStop stop in StationStops)
-                {
-                    if (stop.PlatformItem.NumPassengersWaiting > 0)
-                    {
-                        ActivityNumPassengersWaitingIsZero = 1;
-                        break;
-                    }
-                    else
-                        ActivityNumPassengersWaitingIsZero = 0;
-                }
+                }                
 
                 foreach (StationStop stop in StationStops)
                 {
@@ -16926,11 +16915,25 @@ namespace Orts.Simulation.Physics
                 MaxStationCountFromStart = StationStops.Count;
             }            
 
+            if (ActivityNumPassengersWaitingIsZero == -1)
+            {
+                foreach (StationStop stop in StationStops)
+                {
+                    if (stop.PlatformItem.NumPassengersWaiting > 0)
+                    {
+                        ActivityNumPassengersWaitingIsZero = 1;
+                        break;
+                    }
+                    else
+                        ActivityNumPassengersWaitingIsZero = 0;
+                }
+            }
+
             if (numCars == 0)
             {
                 numCars = train.Cars.Count;
             }
-            else if (Simulator.Settings.GenerateRandomPaxCount && numCars != train.Cars.Count) // car was added or removed, calculate new passengers
+            else if ((Simulator.Settings.GenerateRandomPaxCount || ActivityNumPassengersWaitingIsZero == 0) && numCars != train.Cars.Count) // car was added or removed, calculate new passengers
             {
                 wasCarsChanged = true;
                 numUsableWagons = 0;
@@ -16951,10 +16954,9 @@ namespace Orts.Simulation.Physics
                     MaxPaxCapacity = 0;                                                            
                     foreach (TrainCar tc in train.Cars)
                     {
-                        // Pokud se bude ignorovat nulová kapacita lokomotivy, tak bude první stanice bez paxů
-                        //if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
-                        //    if (tc.PassengerCapacity == 0 && !tc.HasPassengerCapacity)
-                        //        continue;
+                        if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
+                            if (tc.PassengerCapacity == 0 && !tc.HasPassengerCapacity)
+                                continue;
                         MaxPaxCapacity += tc.PassengerCapacity;
                         if (tc.PassengerCapacity == 0)
                             MaxPaxCapacity += 25f;
@@ -16978,7 +16980,7 @@ namespace Orts.Simulation.Physics
                         else
                             remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count);
                         float byPlatform = ss.PlatformItem.Length / 25.0f;
-                        if (index > 0)
+                        if (index > 0 && MaxPaxCapacity != 0)
                             remainingPax += (int)Math.Round(byPlatform, 0);
 
                         if (index > 0)
@@ -17009,10 +17011,15 @@ namespace Orts.Simulation.Physics
                         }
                         remainingPax = (int)Math.Round((double)remainingPax, 0);
 
-                        if (!wasRestoredPax)
+                        if (ActivityNumPassengersWaitingIsZero == 0)
                             ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
                         else
-                            wasRestoredPax = false;
+                        {
+                            if (!wasRestoredPax)
+                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
+                            else
+                                wasRestoredPax = false;
+                        }
 
                         index++;
                     }
