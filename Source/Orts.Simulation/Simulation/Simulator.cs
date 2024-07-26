@@ -265,6 +265,8 @@ namespace Orts.Simulation
         public bool WireHeightDoNothing;
         public float DayTimeAmbientLightCoef;
         public bool HandBrakeStatusChange;
+        public int TrainOperationsMenuTextWidth;
+        public int TrainOperationsMenuMinimumTextWidth;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

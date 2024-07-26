@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
@@ -56,17 +57,18 @@ namespace Orts.Viewer3D.Popups
             var textHeight = Owner.TextFontDefault.Height;
             var hbox = base.Layout(layout).AddLayoutVertical();
             var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
+            
             if (PlayerTrain != null)
             {                                
                 int carPosition = 0;                
-                scrollbox.Add(new TrainOperationsInfo(textHeight * 22, textHeight, Owner.Viewer, LabelAlignment.Center));
+                scrollbox.Add(new TrainOperationsInfo(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
-                scrollbox.Add(new TrainOperationsBrakePercent(textHeight * 22, textHeight, Owner.Viewer, LabelAlignment.Center));
+                scrollbox.Add(new TrainOperationsBrakePercent(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
-
+                                
                 foreach (var car in PlayerTrain.Cars)
                 {
-                    var carLabel = new TrainOperationsLabel(textHeight * 22, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition, LabelAlignment.Center);
+                    var carLabel = new TrainOperationsLabel(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition, LabelAlignment.Center);
                     carLabel.Click += new Action<Control, Point>(carLabel_Click);
 
                     if (car.CarHasBrakePipeConnected)
@@ -85,11 +87,14 @@ namespace Orts.Viewer3D.Popups
                     if (car == PlayerTrain.LeadLocomotive)
                         carLabel.Color = Color.LightGreen;
 
+                    //if (car.BrakeSystem.HandBrakeActive)
+                    //    carLabel.Color = Color.Orange;
+
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
                     scrollbox.Add(carLabel);
                     if (car != PlayerTrain.Cars.Last())
-                        scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * 22 / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
+                        scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
                     carPosition++;
                 }
             }
@@ -126,8 +131,18 @@ namespace Orts.Viewer3D.Popups
                     int Y_Height = Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count + 1) * 3 + 10;
                     if (Y_Height > Owner.ScreenSize.Y - 20) Y_Height = Owner.ScreenSize.Y - 20;
 
-                    SizeTo(Window.DecorationSize.X + Owner.TextFontDefault.Height * 23, Y_Height);
-                    Layout();
+
+                    var carLabel1 = new TrainOperationsInfo(1, 1, Owner.Viewer, LabelAlignment.Center);
+                    Owner.Viewer.Simulator.TrainOperationsMenuTextWidth = 0;                    
+                    int carPosition = 0;
+                    foreach (var car in PlayerTrain.Cars)
+                    {                        
+                        var carLabel2 = new TrainOperationsLabel(1, 1, Owner.Viewer, car, carPosition, LabelAlignment.Center);
+                        carPosition++;
+                    }                    
+
+                    SizeTo(Window.DecorationSize.X + Owner.TextFontDefault.Height * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, Y_Height);
+                    Layout();                    
                 }
             }
         }
@@ -207,6 +222,9 @@ namespace Orts.Viewer3D.Popups
             // Icik
             if (!Viewer.CarOperationsWindow.Visible)
                 car.SelectedCar = false;
+
+            Viewer.Simulator.TrainOperationsMenuTextWidth = Math.Max(Viewer.Simulator.TrainOperationsMenuTextWidth, (int)Math.Round(Text.Length / 2f, 0) - 2);
+            Viewer.Simulator.TrainOperationsMenuTextWidth = Math.Max(Viewer.Simulator.TrainOperationsMenuMinimumTextWidth, Viewer.Simulator.TrainOperationsMenuTextWidth);
         }
 
         void TrainOperationsLabel_Click(Control arg1, Point arg2)
@@ -233,6 +251,8 @@ namespace Orts.Viewer3D.Popups
                 + Viewer.Catalog.GetString("Mass") + " " + (int)(Viewer.PlayerTrain.MassKg / 1000f) + " t    "
                 + Viewer.Catalog.GetString("Cars count") + " " + Viewer.PlayerTrain.Cars.Count;
             Color = Color.Yellow;
+
+            Viewer.Simulator.TrainOperationsMenuMinimumTextWidth = (int)Math.Round(Text.Length / 2f) - 3;
         }
     }
     class TrainOperationsBrakePercent : Label

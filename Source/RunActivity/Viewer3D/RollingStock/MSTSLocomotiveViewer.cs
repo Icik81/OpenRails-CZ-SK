@@ -4942,12 +4942,22 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ARIPOT_CONTROLLER:
                     // Aripot
-                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment)
+                    if (Locomotive.CruiseControl != null && Locomotive.CruiseControl.AripotEquipment && Locomotive.AripotControllerAuto)
                     {
                         if (ChangedValue(0) > 0)                        
                             Locomotive.AripotControllerValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), 0, 0.05f);                                                    
                         if (ChangedValue(0) < 0)                        
                             Locomotive.AripotControllerValue[Locomotive.LocoStation] += MathHelper.Clamp(NormalizedMouseMovement(), -0.05f, 0);                                                    
+                    }
+                    if (!Locomotive.AripotControllerAuto)
+                    {
+                        if (ChangedValue(0) != 0)
+                        {
+                            Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
+                            Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
+                            Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
+                            Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                        }
                     }
                     break;
 
