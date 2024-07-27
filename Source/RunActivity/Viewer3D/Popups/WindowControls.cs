@@ -349,6 +349,9 @@ namespace Orts.Viewer3D.Popups
         public IEnumerable<Control> Controls { get { return controls; } }
         public int TextHeight { get; internal set; }
 
+        // Icik
+        public int NumMenu { get; internal set; }
+
         public ControlLayout(int x, int y, int width, int height)
             : base(x, y, width, height)
         {
@@ -852,6 +855,10 @@ namespace Orts.Viewer3D.Popups
             position = Math.Max(0, Math.Min(Math.Max(0, ScrollSize), position));
             Client.MoveBy(0, ScrollPosition - position);
             ScrollPosition = position;
+            
+            // Icik
+            if (Client.NumMenu == 1) // TrainOperationsMenu
+                Program.Simulator.TrainOperationsMenuSetScrollPosition = ScrollPosition;
         }
     }
 }

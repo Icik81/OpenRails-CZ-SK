@@ -267,6 +267,8 @@ namespace Orts.Simulation
         public bool HandBrakeStatusChange;
         public int TrainOperationsMenuTextWidth;
         public int TrainOperationsMenuMinimumTextWidth;
+        public bool CarPositionChanged;
+        public int TrainOperationsMenuSetScrollPosition;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

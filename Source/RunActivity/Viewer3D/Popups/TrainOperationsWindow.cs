@@ -36,7 +36,7 @@ namespace Orts.Viewer3D.Popups
         Train PlayerTrain;
         int LastPlayerTrainCars;
         bool LastPlayerLocomotiveFlippedState;
-
+        ControlLayoutScrollbox TrainOperationsMenuScroller;
         const int TextBoxHeight = 50;
 
         public TrainOperationsWindow(WindowManager owner)
@@ -51,23 +51,26 @@ namespace Orts.Viewer3D.Popups
                 // TODO: This should happen on the loader thread.
                 CouplerTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsCoupler.png"));
         }
-
+            
         protected override ControlLayout Layout(ControlLayout layout)
         {
             var textHeight = Owner.TextFontDefault.Height;
             var hbox = base.Layout(layout).AddLayoutVertical();
             var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
-            
+            TrainOperationsMenuScroller = (ControlLayoutScrollbox)hbox.Controls.Last();
+            scrollbox.NumMenu = 1;
+
             if (PlayerTrain != null)
-            {                                
-                int carPosition = 0;                
+            {                                                                
                 scrollbox.Add(new TrainOperationsInfo(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
                 scrollbox.Add(new TrainOperationsBrakePercent(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
-                                
-                foreach (var car in PlayerTrain.Cars)
+
+                int carPosition = 0;
+                for (int i = carPosition; i < PlayerTrain.Cars.Count; i++)
                 {
+                    var car = PlayerTrain.Cars[i];
                     var carLabel = new TrainOperationsLabel(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition, LabelAlignment.Center);
                     carLabel.Click += new Action<Control, Point>(carLabel_Click);
 
@@ -90,6 +93,9 @@ namespace Orts.Viewer3D.Popups
                     //if (car.BrakeSystem.HandBrakeActive)
                     //    carLabel.Color = Color.Orange;
 
+                    if (car.SelectedCar)
+                        carLabel.Color = Color.Yellow;
+
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
                     scrollbox.Add(carLabel);
@@ -97,6 +103,7 @@ namespace Orts.Viewer3D.Popups
                         scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
                     carPosition++;
                 }
+                TrainOperationsMenuScroller.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
             }
             return hbox;
         }
@@ -119,10 +126,12 @@ namespace Orts.Viewer3D.Popups
                     || Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange
                     || Owner.Viewer.Simulator.ScreenSizeY != Owner.ScreenSize.Y
                     || Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange
+                    || Owner.Viewer.Simulator.CarPositionChanged
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
                     Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange = false;
+                    Owner.Viewer.Simulator.CarPositionChanged = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
@@ -130,7 +139,6 @@ namespace Orts.Viewer3D.Popups
                     Owner.Viewer.Simulator.ScreenSizeY = Owner.ScreenSize.Y;
                     int Y_Height = Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count + 1) * 3 + 10;
                     if (Y_Height > Owner.ScreenSize.Y - 20) Y_Height = Owner.ScreenSize.Y - 20;
-
 
                     var carLabel1 = new TrainOperationsInfo(1, 1, Owner.Viewer, LabelAlignment.Center);
                     Owner.Viewer.Simulator.TrainOperationsMenuTextWidth = 0;                    
@@ -229,12 +237,16 @@ namespace Orts.Viewer3D.Popups
 
         void TrainOperationsLabel_Click(Control arg1, Point arg2)
         {
+            if (Viewer.CarOperationsWindow.CarPosition != CarPosition)
+            {
+                Viewer.Simulator.CarPositionChanged = true;
+                foreach (var car in Viewer.PlayerTrain.Cars)
+                    car.SelectedCar = false;
+                Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
+            }
             Viewer.CarOperationsWindow.CarPosition = CarPosition;
             Viewer.CarOperationsWindow.Visible = true;
-            Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
-            foreach (var car in Viewer.PlayerTrain.Cars)
-                car.SelectedCar = false;
-            Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
+            Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];            
         }        
     }
 
