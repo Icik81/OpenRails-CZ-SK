@@ -16183,7 +16183,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 TractionSwitchPosition[LocoStation]++;
                 SignalEvent(Event.ToggleTractionSwitchUp);
-                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("On"));                
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("On"));                
             }            
         }
         public void TractionSwitchDown()
@@ -16193,7 +16193,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 TractionSwitchPosition[LocoStation]--;
                 SignalEvent(Event.ToggleTractionSwitchDown);
-                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("Off"));                                   
+                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Traction: ") + Simulator.Catalog.GetString("Off"));                                   
             }              
         }
         public void TractionSwitch()

@@ -315,7 +315,7 @@ namespace Orts.Viewer3D
         {
             // Will not zoom-in-out when help windows is up.
             // TODO: Property input processing through WindowManager.
-            if (UserInput.IsMouseWheelChanged && !Viewer.HelpWindow.Visible)
+            if (UserInput.IsMouseWheelChanged && !Viewer.HelpWindow.Visible && !Viewer.TrainOperationsWindow.Visible && !Viewer.PaxWindow.Visible)
             {
                 var fieldOfView = MathHelper.Clamp(FieldOfView - speed * UserInput.MouseWheelChange / 10, 1, 135);
                 new FieldOfViewCommand(Viewer.Log, fieldOfView);
@@ -1599,7 +1599,9 @@ namespace Orts.Viewer3D
     public class BrakemanCamera : NonTrackingCamera
     {
         protected bool attachedToRear;
-        
+
+        protected bool ChangeSideAttachedCar;
+
         public override string Name { get { return Viewer.Catalog.GetString("Brakeman"); } }
 
         // Icik
@@ -1638,9 +1640,20 @@ namespace Orts.Viewer3D
             attachedToRear = car.Train.Cars[0] != car;
         }
 
+        float Timer;
         protected override bool IsCameraFlipped()
         {
-            return attachedToRear ^ attachedCar.Flipped;
+            if (UserInput.IsReleased(UserCommand.CameraBrakeman))
+            {
+                if (Timer == 0)
+                    ChangeSideAttachedCar = !ChangeSideAttachedCar;
+                Timer += 1;
+            } 
+
+            if (Timer > 1)
+                Timer = 0;
+
+            return ChangeSideAttachedCar;
         }
 
         // attached car may be no more part of the list, therefore base methods would return errors
