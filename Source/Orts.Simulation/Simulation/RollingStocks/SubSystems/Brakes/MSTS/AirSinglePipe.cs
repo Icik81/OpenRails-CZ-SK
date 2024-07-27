@@ -947,6 +947,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 HandBrakeActive = true;
                                 HandBrakeDeactive = false;                                
                             }
+                            if (!(Car as MSTSWagon).Simulator.Settings.ManualCoupling)
+                            {
+                                if (Car.Train.Cars.Count > 4)
+                                {
+                                    FrontBrakeHoseConnected = true;
+                                    Car.Train.Cars[1].BrakeSystem.FrontBrakeHoseConnected = false;
+                                    Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                                }
+                            }
                         }                        
                         if (HandBrakeDeactive)
                             HandbrakePercent = 0;
