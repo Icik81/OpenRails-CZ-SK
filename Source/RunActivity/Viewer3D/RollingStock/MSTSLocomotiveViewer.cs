@@ -4952,6 +4952,15 @@ namespace Orts.Viewer3D.RollingStock
                     else
                     if (Locomotive.AripotControllerCanUseThrottle[Locomotive.LocoStation])
                     {
+                        if ((Locomotive.DieselDirectionController && Locomotive.DieselDirection_0)
+                            || (Locomotive.DieselDirectionController2 && Locomotive.DieselDirection_0)
+                            || (Locomotive.DieselDirectionController3 && Locomotive.DieselDirection_0)
+                            || (Locomotive.DieselDirectionController4 && Locomotive.DieselDirection_0))
+                            break;
+
+                        if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                            break;
+
                         if (ChangedValue(0) != 0)
                         {
                             Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
