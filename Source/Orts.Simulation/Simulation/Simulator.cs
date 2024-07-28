@@ -641,7 +641,8 @@ namespace Orts.Simulation
 
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
-            // Icik            
+            // Icik
+            TrainOperationsMenuSetScrollPosition = inf.ReadInt32();
             WireHeigth = inf.ReadInt32();
             GameWasRestored = true;
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
@@ -685,7 +686,8 @@ namespace Orts.Simulation
 
         public void Save(BinaryWriter outf)
         {
-            // Icik            
+            // Icik
+            outf.Write(TrainOperationsMenuSetScrollPosition);
             outf.Write(WireHeigth);
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);

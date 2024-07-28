@@ -2246,6 +2246,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(InitialWheelBearingDeclineTemperatureDegC);
             outf.Write(CarHasHeatingReady);
             outf.Write(CarOutsideTempCBase);
+            outf.Write(SelectedCar);
 
             BrakeSystem.Save(outf);
         }
@@ -2310,6 +2311,7 @@ namespace Orts.Simulation.RollingStocks
             InitialWheelBearingDeclineTemperatureDegC = inf.ReadSingle();
             CarHasHeatingReady = inf.ReadBoolean();
             CarOutsideTempCBase = inf.ReadSingle();
+            SelectedCar = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

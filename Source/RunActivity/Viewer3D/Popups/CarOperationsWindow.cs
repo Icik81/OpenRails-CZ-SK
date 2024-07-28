@@ -32,9 +32,9 @@ namespace Orts.Viewer3D.Popups
     {
         readonly Viewer Viewer;
 
-        public int CarPosition
+        public int CarPosition 
         {
-            set;
+            set; 
             get;
         }
 
@@ -53,7 +53,7 @@ namespace Orts.Viewer3D.Popups
             var vbox = base.Layout(layout).AddLayoutVertical();
 
             if (CarPosition >= Viewer.PlayerTrain.Cars.Count)
-                CarPosition = Viewer.PlayerTrain.Cars.Count - 1;
+                CarPosition = Viewer.PlayerTrain.Cars.Count - 1;            
 
             if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
                 vbox.Add(ID = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Car ID") + "  " + (CarPosition >= Viewer.PlayerTrain.Cars.Count ? " " : Viewer.PlayerTrain.Cars[CarPosition].CarID)

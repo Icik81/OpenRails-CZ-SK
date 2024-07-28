@@ -58,7 +58,7 @@ namespace Orts.Viewer3D.Popups
             var hbox = base.Layout(layout).AddLayoutVertical();
             var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
             TrainOperationsMenuScroller = (ControlLayoutScrollbox)hbox.Controls.Last();
-            scrollbox.NumMenu = 1;
+            scrollbox.NumMenu = 1;            
 
             if (PlayerTrain != null)
             {                                                                
@@ -227,7 +227,7 @@ namespace Orts.Viewer3D.Popups
 
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
 
-            // Icik
+            // Icik            
             if (!Viewer.CarOperationsWindow.Visible)
                 car.SelectedCar = false;
 
