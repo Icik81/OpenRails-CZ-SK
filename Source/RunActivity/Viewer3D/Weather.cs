@@ -1462,7 +1462,9 @@ namespace Orts.Viewer3D
                             FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 0);
                         else
                         if (weatherControl.Weather.OvercastFactor < 0.5f)
-                            FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0.001f, Simulator.Random.Next(10, 50) / 1000f);                                                                                                                                                                        
+                            FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0.001f, Simulator.Random.Next(10, 50) / 1000f);
+
+                        if (precipitationIntensityTimer == 0) ORTSPrecipitationIntensity = -1;
                     }
                     else
                         weatherControl.Weather.PricipitationIntensityPPSPM2 = ORTSPrecipitationIntensity - precipitationIntensityTimer * precipitationIntensityChangeRate;
@@ -1484,8 +1486,7 @@ namespace Orts.Viewer3D
                             weatherControl.Viewer.Simulator.WeatherType = WeatherType.Clear;
                             weatherControl.UpdateSoundSources();
                         }
-                    }
-                    if (precipitationIntensityTimer == 0) ORTSPrecipitationIntensity = -1;
+                    }                    
                 }
                 else if (ORTSPrecipitationIntensity >= 0 && precipitationIntensityDelayTimer > 0)
                 {
