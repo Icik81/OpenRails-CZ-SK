@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-19 20:36:50+0200\n"
-"PO-Revision-Date: 2024-07-19 20:36:50+0200\n"
+"POT-Creation-Date: 2024-07-29 18:36:33+0200\n"
+"PO-Revision-Date: 2024-07-29 18:36:33+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -37,27 +37,27 @@ msgstr ""
 msgid "Outside Rear"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1603
+#: ../../RunActivity/Viewer3D/Cameras.cs:1605
 msgid "Brakeman"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1889
+#: ../../RunActivity/Viewer3D/Cameras.cs:1902
 msgid "Passenger"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1983
+#: ../../RunActivity/Viewer3D/Cameras.cs:1996
 msgid "3D Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2084
+#: ../../RunActivity/Viewer3D/Cameras.cs:2097
 msgid "Head out"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2198
+#: ../../RunActivity/Viewer3D/Cameras.cs:2211
 msgid "Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2481
+#: ../../RunActivity/Viewer3D/Cameras.cs:2494
 msgid "Trackside"
 msgstr ""
 
@@ -202,7 +202,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2448
+#: ../../RunActivity/Viewer3D/Weather.cs:2449
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -579,12 +579,12 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:187
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:190
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:192
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:197
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:200
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:202
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:210
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:213
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:215
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:220
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:223
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:225
 msgid "Car ID"
 msgstr ""
 
@@ -1517,7 +1517,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:568
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:612
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:232
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:262
 msgid "Length"
 msgstr ""
 
@@ -2064,7 +2064,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1506
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1536
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:233
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:263
 msgid "Mass"
 msgstr ""
 
@@ -3192,19 +3192,19 @@ msgstr ""
 msgid "Player train can't be switched when in turntable not aligned to a track"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:42
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:43
 msgid "Train Operations"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:155
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:178
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:234
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:264
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:248
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:280
 msgid "Real braking percentages"
 msgstr ""
 

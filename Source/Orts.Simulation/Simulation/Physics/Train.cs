@@ -16760,7 +16760,9 @@ namespace Orts.Simulation.Physics
                 return;
             if (StationStops.Count == 0)
                 return;
-            if ((Simulator.Activity != null && Simulator.Activity.Tr_Activity.Tr_Activity_File.PlatformNumPassengersWaiting != null) && !Simulator.Settings.OverrideActivityPassengerCount)
+            if (!Simulator.Settings.GenerateRandomPaxCount)
+                return;
+            if (Simulator.Activity != null && !Simulator.Settings.OverrideActivityPassengerCount)
                 return;
 
             if (statCount != StationStops.Count)
@@ -16887,8 +16889,7 @@ namespace Orts.Simulation.Physics
                 station++;
             }
         }
-
-        int ActivityNumPassengersWaitingIsZero = -1;
+        
         public void FillNames(Train train)
         {
             // Icik
@@ -16913,27 +16914,13 @@ namespace Orts.Simulation.Physics
                     UnboardStationsName.Add(stop.PlatformItem.Name);                    
                 }
                 MaxStationCountFromStart = StationStops.Count;
-            }            
-
-            if (ActivityNumPassengersWaitingIsZero == -1)
-            {
-                foreach (StationStop stop in StationStops)
-                {
-                    if (stop.PlatformItem.NumPassengersWaiting > 0)
-                    {
-                        ActivityNumPassengersWaitingIsZero = 1;
-                        break;
-                    }
-                    else
-                        ActivityNumPassengersWaitingIsZero = 0;
-                }
-            }
+            }                        
 
             if (numCars == 0)
             {
                 numCars = train.Cars.Count;
             }
-            else if ((Simulator.Settings.GenerateRandomPaxCount || ActivityNumPassengersWaitingIsZero == 0) && numCars != train.Cars.Count) // car was added or removed, calculate new passengers
+            else if (Simulator.Settings.GenerateRandomPaxCount && numCars != train.Cars.Count) // car was added or removed, calculate new passengers
             {
                 wasCarsChanged = true;
                 numUsableWagons = 0;
@@ -16948,7 +16935,7 @@ namespace Orts.Simulation.Physics
             MSTSWagon locoWag = null;
             if (!namesFilled)
             {
-                if (Simulator.Settings.GenerateRandomPaxCount || ActivityNumPassengersWaitingIsZero == 0)
+                if (Simulator.Settings.GenerateRandomPaxCount)
                 {
                     // calculate maximum capacity
                     MaxPaxCapacity = 0;                                                            
@@ -16971,7 +16958,8 @@ namespace Orts.Simulation.Physics
                     float trainOccupancyPercent = paxRand.Next(Simulator.Settings.PaxCountMinimumPercent, Simulator.Settings.PaxCountMaximumPercent);
                     CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100.0f);
                     CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
-                    int index = 0;
+                    
+                    int index = 0;                    
                     foreach (StationStop ss in train.StationStops)
                     {
                         float remainingPax = 0;
@@ -17009,17 +16997,12 @@ namespace Orts.Simulation.Physics
                             if (Simulator.ClockTime / 3600f > 0.0f)
                                 remainingPax *= 0.25f;
                         }
-                        remainingPax = (int)Math.Round((double)remainingPax, 0);
+                        remainingPax = (int)Math.Round((double)remainingPax, 0) * (train.StationStops.Count / MaxStationCountFromStart);
 
-                        if (ActivityNumPassengersWaitingIsZero == 0)
+                        if (!wasRestoredPax)
                             ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
                         else
-                        {
-                            if (!wasRestoredPax)
-                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
-                            else
-                                wasRestoredPax = false;
-                        }
+                            wasRestoredPax = false;
 
                         index++;
                     }
