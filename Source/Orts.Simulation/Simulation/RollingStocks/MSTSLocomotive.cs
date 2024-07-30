@@ -745,6 +745,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Switch5LightEnable;
         public bool Switch6LightEnable;
         public int[] DriveAxleNumber = new int[7];
+        public bool DriverUsingRearCab;
 
 
         // Jindrich
@@ -6719,15 +6720,29 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
-                SetAIAction(elapsedClockSeconds);                
+                SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
                 PowerReduction = 0;
+
+                // Automatický přechod řidiče v kabině loko AI                            
+                if (Direction == Direction.Reverse)
+                {
+                    if (!DriverUsingRearCab)
+                        ToggleMirrors();
+                    DriverUsingRearCab = true;
+                }
+                if (Direction == Direction.Forward)
+                {
+                    if (DriverUsingRearCab)
+                        ToggleMirrors();
+                    DriverUsingRearCab = false;
+                }
 
                 if (Flipped && !UsingRearCab)
                 {
                     if (Direction == Direction.Forward)
                         Direction = Direction.Reverse;
-                }                
+                }
             }
 
             if (IsPlayerTrain && !Simulator.Paused)
