@@ -702,9 +702,36 @@ namespace Orts.Viewer3D.Popups
         }
 
         public static Color GetArrivalColor(DateTime expected, DateTime? actual)
-        {
-            if (actual.HasValue && actual.Value <= expected)
-                return Color.LightGreen;
+        {            
+            if (actual.HasValue)
+            {
+                int eHour = expected.Hour;
+                int eMinute = expected.Minute;
+                int eSecond = expected.Second;
+                int eTime = (eHour * 60 * 60) + (eMinute * 60) + eSecond;
+
+                int aHour = actual.Value.Hour;
+                int aMinute = actual.Value.Minute;
+                int aSecond = actual.Value.Second;
+                int aTime = (aHour * 60 * 60) + (aMinute * 60) + aSecond;
+
+                if (aTime - eTime > 5f * 60f)
+                    return Color.SaddleBrown;
+                else
+                if (aTime - eTime > 3f * 60f)
+                    return Color.OrangeRed;
+                else
+                if (aTime - eTime > 1f * 60f)
+                    return Color.Orange;
+                else
+                if (aTime - eTime >= 0f * 60f)
+                    return Color.LightGreen;
+                else
+                    return Color.LightBlue;
+            }
+
+            //if (actual.HasValue && actual.Value <= expected)
+            //    return Color.LightGreen;
             return Color.LightSalmon;
         }
 
