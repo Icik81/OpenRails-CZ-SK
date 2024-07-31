@@ -275,9 +275,11 @@ namespace Orts.Viewer3D.Popups
                             {
                                 DateTime actArrDT = new DateTime((long)(Math.Pow(10, 7) * playerTimetableTrain.PreviousStop.ActualArrival));
                                 StationPreviousArriveActual.Text = actArrDT.ToString("HH:mm:ss");
-                                StationPreviousArriveActual.Color = actArrDT < playerTimetableTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
+                                // Icik
+                                StationPreviousArriveActual.Color = GetArrivalColor(playerTimetableTrain.PreviousStop.arrivalDT, actArrDT);
+                                //StationPreviousArriveActual.Color = actArrDT < playerTimetableTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;                                                                
                                 DateTime actDepDT = new DateTime((long)(Math.Pow(10, 7) * playerTimetableTrain.PreviousStop.ActualDepart));
-                                StationPreviousDepartActual.Text = actDepDT.ToString("HH:mm:ss");
+                                StationPreviousDepartActual.Text = actDepDT.ToString("HH:mm:ss");                                                                
                                 StationPreviousDepartActual.Color = actDepDT > playerTimetableTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
                             }
                             else
@@ -328,8 +330,9 @@ namespace Orts.Viewer3D.Popups
                             {
                                 DateTime actArrDT = new DateTime((long)(Math.Pow(10, 7) * playerTimetableTrain.StationStops[0].ActualArrival));
                                 StationCurrentArriveActual.Text = actArrDT.ToString("HH:mm:ss");
-                                StationCurrentArriveActual.Color = actArrDT < playerTimetableTrain.StationStops[0].arrivalDT ? Color.LightGreen : Color.LightSalmon;
-
+                                // Icik
+                                StationCurrentArriveActual.Color = GetArrivalColor(playerTimetableTrain.StationStops[0].arrivalDT, actArrDT);
+                                //StationCurrentArriveActual.Color = actArrDT < playerTimetableTrain.StationStops[0].arrivalDT ? Color.LightGreen : Color.LightSalmon;
                             }
                             else
                             {
@@ -507,7 +510,9 @@ namespace Orts.Viewer3D.Popups
                             {
                                 DateTime actArrDT = new DateTime((long)(Math.Pow(10, 7) * playerTrain.PreviousStop.ActualArrival));
                                 StationPreviousArriveActual.Text = actArrDT.ToString("HH:mm:ss");
-                                StationPreviousArriveActual.Color = actArrDT < playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
+                                // Icik
+                                StationPreviousArriveActual.Color = GetArrivalColor(playerTrain.PreviousStop.arrivalDT, actArrDT);
+                                //StationPreviousArriveActual.Color = actArrDT < playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
                                 DateTime actDepDT = new DateTime((long)(Math.Pow(10, 7) * playerTrain.PreviousStop.ActualDepart));
                                 StationPreviousDepartActual.Text = actDepDT.ToString("HH:mm:ss");
                                 StationPreviousDepartActual.Color = actDepDT > playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
@@ -558,8 +563,9 @@ namespace Orts.Viewer3D.Popups
                             {
                                 DateTime actArrDT = new DateTime((long)(Math.Pow(10, 7) * playerTrain.StationStops[0].ActualArrival));
                                 StationCurrentArriveActual.Text = actArrDT.ToString("HH:mm:ss");
-                                StationCurrentArriveActual.Color = actArrDT < playerTrain.StationStops[0].arrivalDT ? Color.LightGreen : Color.LightSalmon;
-
+                                // Icik
+                                StationCurrentArriveActual.Color = GetArrivalColor(playerTrain.StationStops[0].arrivalDT, actArrDT);
+                                //StationCurrentArriveActual.Color = actArrDT < playerTrain.StationStops[0].arrivalDT ? Color.LightGreen : Color.LightSalmon;
                             }
                             else
                             {

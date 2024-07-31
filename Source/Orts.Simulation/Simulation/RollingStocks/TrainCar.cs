@@ -988,10 +988,10 @@ namespace Orts.Simulation.RollingStocks
                 return;
 
             // Závada se může stát i během jízdy
-            if (Simulator.GameTime > 60f)
+            if (Simulator.GameTime > 60)
                 ChanceToProblemWithBrakeTimer += Simulator.OneSecondLoop; 
 
-            if (ChanceToProblemWithBrakeTimer > 600f)
+            if (ChanceToProblemWithBrakeTimer > 60 * 60)
             {
                 BrakeSystem.BrakeCarHasStatus = (Simulator.Random.Next(0, 2)) == 1 ? false : true;                
                 ChanceToProblemWithBrakeTimer = 0;
@@ -1018,8 +1018,6 @@ namespace Orts.Simulation.RollingStocks
                     case 151:
                         BrakeSystem.CarHasAirStuckBrake_2 = true; // Nejde zabrzdit                        
                         break;
-                    case 52:
-                    case 122:
                     case 152:
                         BrakeSystem.CarHasAirStuckBrake_3 = true; // Netěsný vůz                        
                         break;
