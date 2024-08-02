@@ -16938,7 +16938,7 @@ namespace Orts.Simulation.Physics
                 if (Simulator.Settings.GenerateRandomPaxCount)
                 {
                     // calculate maximum capacity
-                    MaxPaxCapacity = 0;                                                            
+                    MaxPaxCapacity = 0;
                     foreach (TrainCar tc in train.Cars)
                     {
                         if (tc.GetType() == typeof(MSTSDieselLocomotive) || tc.GetType() == typeof(MSTSElectricLocomotive) || tc.GetType() == typeof(MSTSLocomotive))
@@ -16948,18 +16948,18 @@ namespace Orts.Simulation.Physics
                         if (tc.PassengerCapacity == 0)
                             MaxPaxCapacity += 25f;
                     }
-                    
+
                     Random paxRand = new Random();
                     if (MaxPaxCapacity > train.Cars.Count * 80f)
                     {
                         MaxPaxCapacity = paxRand.Next((int)(train.Cars.Count * Simulator.Settings.PaxCountMinimumPercent), (int)(train.Cars.Count * Simulator.Settings.PaxCountMaximumPercent));
                     }
-                    
+
                     float trainOccupancyPercent = paxRand.Next(Simulator.Settings.PaxCountMinimumPercent, Simulator.Settings.PaxCountMaximumPercent);
                     CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100.0f);
                     CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
-                    
-                    int index = 0;                    
+
+                    int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
                         float remainingPax = 0;
@@ -16971,38 +16971,40 @@ namespace Orts.Simulation.Physics
                         if (index > 0 && MaxPaxCapacity != 0)
                             remainingPax += (int)Math.Round(byPlatform, 0);
 
-                        if (index > 0)
-                        {
-                            if (Simulator.ClockTime / 3600f > 22.0f)
-                                remainingPax *= 0.25f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 20.0f)
-                                remainingPax *= 0.5f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 18.0f)
-                                remainingPax *= 0.8f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 16.0f)
-                                remainingPax *= 1.0f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 14.0f)
-                                remainingPax *= 1.5f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 8.0f)
-                                remainingPax *= 0.5f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 5.0f)
-                                remainingPax *= 1.5f;
-                            else
-                            if (Simulator.ClockTime / 3600f > 0.0f)
-                                remainingPax *= 0.25f;
-                        }
-                        remainingPax = (int)Math.Round((double)remainingPax, 0) * (train.StationStops.Count / MaxStationCountFromStart);
+                        if (Simulator.ClockTime / 3600f > 22.0f)
+                            remainingPax *= 0.25f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 20.0f)
+                            remainingPax *= 0.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 18.0f)
+                            remainingPax *= 0.8f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 16.0f)
+                            remainingPax *= 1.0f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 14.0f)
+                            remainingPax *= 1.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 8.0f)
+                            remainingPax *= 0.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 5.0f)
+                            remainingPax *= 1.5f;
+                        else
+                        if (Simulator.ClockTime / 3600f > 0.0f)
+                            remainingPax *= 0.25f;
+
+                        remainingPax = (int)Math.Round((double)remainingPax, 0) * ((train.StationStops.Count - index) / (float)MaxStationCountFromStart);
 
                         if (!wasRestoredPax)
                             ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
                         else
+                        {
                             wasRestoredPax = false;
+                            if (!AtStation)
+                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
+                        }
 
                         index++;
                     }
