@@ -31,7 +31,7 @@ namespace Orts.Viewer3D.Popups
         readonly Viewer Viewer;      
 
         public HelperSpeedSelectWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Helper Speed Select"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 13, Window.DecorationSize.Y + 2 + owner.TextFontDefault.Height * 9 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Helper Speed Select"))
         {
             Viewer = owner.Viewer;
         }
@@ -41,18 +41,24 @@ namespace Orts.Viewer3D.Popups
         {
             CarID = Viewer.HelperOptionsWindow.CarID;                        
 
-            Label buttonSpeedIncrement, Speed, buttonSpeedDecrement, buttonStart, buttonReset, buttonClose;
+            Label buttonSpeedIncrement, buttonSpeedIncrement2, Speed, buttonSpeedDecrement, buttonSpeedDecrement2, buttonStart, buttonReset, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             
             vbox.Add(buttonSpeedIncrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("+"), LabelAlignment.Center));
+            
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonSpeedIncrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("++"), LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
             vbox.Add(Speed = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Speed: ") + (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive != null ? (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush : 0) + " km/h", LabelAlignment.Center));            
             Speed.Color = Color.Yellow;
-                      
+
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonSpeedDecrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("-"), LabelAlignment.Center));
+            vbox.Add(buttonSpeedDecrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("--"), LabelAlignment.Center));
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonSpeedDecrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("-"), LabelAlignment.Center));        
 
             vbox.AddHorizontalSeparator();            
             vbox.Add(buttonStart = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Start"), LabelAlignment.Center));
@@ -67,6 +73,8 @@ namespace Orts.Viewer3D.Popups
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonSpeedIncrement.Click += new Action<Control, Point>(buttonSpeedIncrement_Click);            
             buttonSpeedDecrement.Click += new Action<Control, Point>(buttonSpeedDecrement_Click);
+            buttonSpeedIncrement2.Click += new Action<Control, Point>(buttonSpeedIncrement2_Click);
+            buttonSpeedDecrement2.Click += new Action<Control, Point>(buttonSpeedDecrement2_Click);
             buttonStart.Click += new Action<Control, Point>(buttonStart_Click);
             buttonReset.Click += new Action<Control, Point>(buttonReset_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
@@ -95,7 +103,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonSpeedIncrement_Click(Control arg1, Point arg2)
         {
-            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush < 101)
+            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush < 100)
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush++;
         }
 
@@ -103,6 +111,18 @@ namespace Orts.Viewer3D.Popups
         {
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush > 0)
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush--;
+        }
+
+        void buttonSpeedIncrement2_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush < 91)
+                (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush += 1 * 10;
+        }
+
+        void buttonSpeedDecrement2_Click(Control arg1, Point arg2)
+        {
+            if ((Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush > 9)
+                (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush -= 1 * 10;
         }
 
         void buttonStart_Click(Control arg1, Point arg2)

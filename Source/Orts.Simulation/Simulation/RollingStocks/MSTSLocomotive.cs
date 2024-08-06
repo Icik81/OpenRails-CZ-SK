@@ -665,7 +665,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HelperLocoDontPush;
         public bool HelperLocoPush;
         public bool HelperLocoFollow;
-        public int HelperSpeedPush;
+        public int HelperSpeedPush = 40;
         public bool HelperPushStart;
         public bool HelperOptionsOpened;
         public bool MirerControllerEnable;
