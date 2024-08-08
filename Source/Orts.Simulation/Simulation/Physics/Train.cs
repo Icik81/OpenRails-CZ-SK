@@ -16768,7 +16768,7 @@ namespace Orts.Simulation.Physics
             if (statCount != StationStops.Count)
             {
                 Random rnd = new Random();
-                actualRandom = rnd.Next(2, 30);
+                actualRandom = rnd.Next(2, 5);
                 actualRandom = actualRandom / 10;
                 statCount = StationStops.Count;
             }
