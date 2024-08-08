@@ -16790,15 +16790,25 @@ namespace Orts.Simulation.Physics
             int station = 0;
             foreach (StationStop ss in StationStops)
             {
+                if (station == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
+                {
+                    ss.PlatformItem.NumPassengersWaiting = 0;
+                    ss.PlatformItem.PassengerListBuffer.Clear();
+                    ss.PlatformItem.PassengerList.Clear();
+                    return;
+                }
+                
                 float freeSeatsNextStation = 0;
                 foreach (TrainCar tc in Cars)
                 {
                     foreach (Passenger pax in tc.PassengerList)
                     {
                         if (ss.PlatformItem.Name == pax.ArrivalStationName)
-                            freeSeatsNextStation++;
+                            freeSeatsNextStation++;                        
                     }
                 }
+                freeSeatsNextStation = MathHelper.Clamp(freeSeatsNextStation, 0, 10);
+
                 ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
                 int numPax = ss.PlatformItem.NumPassengersWaiting;
@@ -16962,7 +16972,8 @@ namespace Orts.Simulation.Physics
                     int index = 0;
                     foreach (StationStop ss in train.StationStops)
                     {
-                        float remainingPax = 0;
+                        float remainingPax = 0;                        
+
                         if (index == 0)
                             remainingPax = MaxPaxCapacity * (trainOccupancyPercent / 100);
                         else
@@ -16996,6 +17007,11 @@ namespace Orts.Simulation.Physics
                             remainingPax *= 0.25f;
 
                         remainingPax = (int)Math.Round((double)remainingPax, 0) * ((train.StationStops.Count - index) / (float)MaxStationCountFromStart);
+
+                        if (index == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
+                        {
+                            remainingPax = 0;
+                        }
 
                         if (!wasRestoredPax)
                             ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
@@ -17056,7 +17072,7 @@ namespace Orts.Simulation.Physics
                 
                 station = ActualStationNumber;
                 foreach (StationStop ss in train.StationStops)
-                {
+                {                    
                     if (station - ActualStationNumber + 1 == StationStops.Count)
                         break;
 
