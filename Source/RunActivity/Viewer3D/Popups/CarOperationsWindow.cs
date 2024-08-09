@@ -41,7 +41,7 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, owner.TextFontDefault.Height * 26 + 5, Viewer.Catalog.GetString("Car Operation Menu"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + owner.TextFontDefault.Height * 22 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("Car Operation Menu"))
         {
             Viewer = owner.Viewer;
         }
@@ -93,15 +93,15 @@ namespace Orts.Viewer3D.Popups
             {
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).MasterLoco)
                 {
-                    InfoMasterSlaveText = "MASTER";
+                    InfoMasterSlaveText = "   " + "MASTER";
                 }
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).SlaveLoco)
                 {
-                    InfoMasterSlaveText = "SLAVE";
+                    InfoMasterSlaveText = "   " + "SLAVE";
                 }
             }
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU") + "   " + InfoMasterSlaveText, LabelAlignment.Center));
+            vbox.Add(buttonToggleMUCable = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Cable MU") + InfoMasterSlaveText, LabelAlignment.Center));
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null)
                 buttonToggleMUCable.Color = Color.White;
             else
