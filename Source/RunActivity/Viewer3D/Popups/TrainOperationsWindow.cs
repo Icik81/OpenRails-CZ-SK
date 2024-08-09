@@ -237,7 +237,7 @@ namespace Orts.Viewer3D.Popups
 
         void TrainOperationsLabel_Click(Control arg1, Point arg2)
         {
-            if (Viewer.CarOperationsWindow.CarPosition != CarPosition)
+            if (!Viewer.PlayerTrain.Cars[CarPosition].SelectedCar)
             {
                 Viewer.Simulator.CarPositionChanged = true;
                 foreach (var car in Viewer.PlayerTrain.Cars)
