@@ -32,7 +32,7 @@ namespace Orts.Viewer3D.Popups
         readonly Viewer Viewer;
 
         public BrakeModeOptionsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 6 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Car Brake Mode"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height * 6) + (ControlLayout.SeparatorSize * 5), Viewer.Catalog.GetString("Car Brake Mode"))
         {
             Viewer = owner.Viewer;
         }

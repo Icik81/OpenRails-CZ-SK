@@ -145,8 +145,7 @@ namespace Orts.Viewer3D.Popups
                     }
                     carPosition++;
                 }
-                TrainOperationsMenuScroller.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
-                TrainOperationsMenuScroller2.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
+                TrainOperationsMenuScroller.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);                
             }
             return hbox;
         }
@@ -159,6 +158,7 @@ namespace Orts.Viewer3D.Popups
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
         {
             base.PrepareFrame(elapsedTime, updateFull);
+            TrainOperationsMenuScroller2.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
 
             if (updateFull)
             {
@@ -180,7 +180,7 @@ namespace Orts.Viewer3D.Popups
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
 
                     Owner.Viewer.Simulator.ScreenSizeY = Owner.ScreenSize.Y;
-                    int Y_Height = Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count + 1) * 3 + 10;
+                    int Y_Height = Window.DecorationSize.Y + (Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count * 3 + 2)) + (ControlLayout.SeparatorSize * 3);
                     if (Y_Height > Owner.ScreenSize.Y - 20) Y_Height = Owner.ScreenSize.Y - 20;
 
                     var carLabel1 = new TrainOperationsInfo(1, 1, Owner.Viewer, LabelAlignment.Center);
@@ -205,12 +205,12 @@ namespace Orts.Viewer3D.Popups
         int CarPosition;
 
         public TrainOperationsCoupler(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
-            : base(x, y, 20, 20)
+            : base(x, y, size, size)
         {
             Viewer = viewer;
             CarPosition = carPosition;
             Texture = TrainOperationsWindow.CouplerTexture;
-            Source = new Rectangle(0, 0, 16, 16);
+            Source = new Rectangle(0, 0, size, size);
             Click += new Action<Control, Point>(TrainOperationsCoupler_Click);
         }
 
@@ -332,7 +332,7 @@ namespace Orts.Viewer3D.Popups
         int CarPosition;
 
         public TrainOperationsIcon(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
-            : base(x, y, 60, 30)
+            : base(x, y, 2 * size, size)
         {
             Viewer = viewer;
             CarPosition = carPosition;

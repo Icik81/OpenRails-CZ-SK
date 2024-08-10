@@ -145,9 +145,7 @@ namespace Orts.Viewer3D.Popups
         internal WindowTextFont(string fontFamily, float sizeInPt, FontStyle style, int outlineSize)
         {
             Font = new Font(fontFamily, (int)Math.Round(sizeInPt * 96 / 72), style, GraphicsUnit.Pixel);
-            FontHeight = Font.Height;
-            // Icik
-            FontHeight = 20;
+            FontHeight = Font.Height;            
             OutlineSize = outlineSize;
             Characters = new CharacterGroup(Font, OutlineSize);
             if (Viewer3D.Viewer.Catalog != null)
