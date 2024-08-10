@@ -990,9 +990,17 @@
     <Content Include="Content\TrackMonitorImages.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\TrainOperations2FreightCar.png" />
+    <Content Include="Content\TrainOperations2PassengerCar.png" />
+    <Content Include="Content\TrainOperations4FreightCar.png" />
+    <Content Include="Content\TrainOperations4PassengerCar.png" />
     <Content Include="Content\TrainOperationsCoupler.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\TrainOperationsDLoco.png" />
+    <Content Include="Content\TrainOperationsELoco.png" />
+    <Content Include="Content\TrainOperationsSLoco.png" />
+    <Content Include="Content\TrainOperationsTender.png" />
     <Content Include="Content\train_TM.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

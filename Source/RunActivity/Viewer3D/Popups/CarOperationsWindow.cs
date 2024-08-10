@@ -41,7 +41,7 @@ namespace Orts.Viewer3D.Popups
         public bool HelperOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + owner.TextFontDefault.Height * 22 + ControlLayout.SeparatorSize * 11, Viewer.Catalog.GetString("Car Operation Menu"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height + 2) * 22 + ControlLayout.SeparatorSize * 3, Viewer.Catalog.GetString("Car Operation Menu"))
         {
             Viewer = owner.Viewer;
         }

@@ -33,10 +33,19 @@ namespace Orts.Viewer3D.Popups
     {
         const int CarListPadding = 2;
         internal static Texture2D CouplerTexture;
+        internal static Texture2D LocoDTexture;
+        internal static Texture2D LocoETexture;
+        internal static Texture2D LocoSTexture;
+        internal static Texture2D TenderTexture;
+        internal static Texture2D Passenger2CarTexture;
+        internal static Texture2D Passenger4CarTexture;
+        internal static Texture2D Freight2CarTexture;
+        internal static Texture2D Freight4CarTexture;
         Train PlayerTrain;
         int LastPlayerTrainCars;
         bool LastPlayerLocomotiveFlippedState;
         ControlLayoutScrollbox TrainOperationsMenuScroller;
+        ControlLayoutScrollbox TrainOperationsMenuScroller2;
         const int TextBoxHeight = 50;
 
         public TrainOperationsWindow(WindowManager owner)
@@ -50,14 +59,38 @@ namespace Orts.Viewer3D.Popups
             if (CouplerTexture == null)
                 // TODO: This should happen on the loader thread.
                 CouplerTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsCoupler.png"));
+
+            if (LocoDTexture == null)
+                LocoDTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsDLoco.png"));
+            if (LocoETexture == null)
+                LocoETexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsELoco.png"));
+            if (LocoSTexture == null)
+                LocoSTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsSLoco.png"));
+
+            if (TenderTexture == null)
+                TenderTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsTender.png"));
+
+            if (Passenger2CarTexture == null)
+                Passenger2CarTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperations2PassengerCar.png"));
+            if (Passenger4CarTexture == null)
+                Passenger4CarTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperations4PassengerCar.png"));
+
+            if (Freight2CarTexture == null)
+                Freight2CarTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperations2FreightCar.png"));
+            if (Freight4CarTexture == null)
+                Freight4CarTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperations4FreightCar.png"));
         }
             
         protected override ControlLayout Layout(ControlLayout layout)
         {
             var textHeight = Owner.TextFontDefault.Height;
             var hbox = base.Layout(layout).AddLayoutVertical();
-            var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);
+            var hbox2 = base.Layout(layout).AddLayoutVertical();
+            var scrollbox = hbox.AddLayoutScrollboxVertical(hbox.RemainingWidth);            
+            var scrollbox2 = hbox2.AddLayoutScrollboxVertical(hbox2.RemainingWidth);
+
             TrainOperationsMenuScroller = (ControlLayoutScrollbox)hbox.Controls.Last();
+            TrainOperationsMenuScroller2 = (ControlLayoutScrollbox)hbox2.Controls.Last();
             scrollbox.NumMenu = 1;            
 
             if (PlayerTrain != null)
@@ -66,6 +99,11 @@ namespace Orts.Viewer3D.Popups
                 scrollbox.AddHorizontalSeparator();
                 scrollbox.Add(new TrainOperationsBrakePercent(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
+
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
 
                 int carPosition = 0;
                 for (int i = carPosition; i < PlayerTrain.Cars.Count; i++)
@@ -99,11 +137,16 @@ namespace Orts.Viewer3D.Popups
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
                     scrollbox.Add(carLabel);
+                    scrollbox2.Add(new TrainOperationsIcon(10, 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
                     if (car != PlayerTrain.Cars.Last())
-                        scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
+                    {
+                        scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));                        
+                        scrollbox2.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
+                    }
                     carPosition++;
                 }
                 TrainOperationsMenuScroller.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
+                TrainOperationsMenuScroller2.SetScrollPosition(Owner.Viewer.PlayerTrain.Simulator.TrainOperationsMenuSetScrollPosition);
             }
             return hbox;
         }
@@ -162,12 +205,12 @@ namespace Orts.Viewer3D.Popups
         int CarPosition;
 
         public TrainOperationsCoupler(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
-            : base(x, y, size, size)
+            : base(x, y, 20, 20)
         {
             Viewer = viewer;
             CarPosition = carPosition;
             Texture = TrainOperationsWindow.CouplerTexture;
-            Source = new Rectangle(0, 0, size, size);
+            Source = new Rectangle(0, 0, 16, 16);
             Click += new Action<Control, Point>(TrainOperationsCoupler_Click);
         }
 
@@ -203,35 +246,36 @@ namespace Orts.Viewer3D.Popups
         {
             Viewer = viewer;
             CarPosition = carPosition;
+            string TextGap = "";
 
             if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
             {
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName == null)
-                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
+                    Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
                 else 
                 if(car.BrakeSystem.HandBrakeActive)
-                    Text = "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
+                    Text = TextGap + "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
                 else                
-                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
+                    Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
             }
             else
             {
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName == null)
-                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
+                    Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
                 else
                 if (car.BrakeSystem.HandBrakeActive)
-                    Text = "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
+                    Text = TextGap + "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
                 else
-                    Text = Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
+                    Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
             }
 
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
 
             // Icik            
-            if (!Viewer.CarOperationsWindow.Visible)
-                car.SelectedCar = false;
+            //if (!Viewer.CarOperationsWindow.Visible)
+            //    car.SelectedCar = false;
 
-            Viewer.Simulator.TrainOperationsMenuTextWidth = Math.Max(Viewer.Simulator.TrainOperationsMenuTextWidth, (int)Math.Round(Text.Length / 2f, 0) - 2);
+            Viewer.Simulator.TrainOperationsMenuTextWidth = Math.Max(Viewer.Simulator.TrainOperationsMenuTextWidth, (int)Math.Round((Text.Length - TextGap.Length) / 2f, 0) + 3);
             Viewer.Simulator.TrainOperationsMenuTextWidth = Math.Max(Viewer.Simulator.TrainOperationsMenuMinimumTextWidth, Viewer.Simulator.TrainOperationsMenuTextWidth);
         }
 
@@ -246,7 +290,7 @@ namespace Orts.Viewer3D.Popups
             }
             Viewer.CarOperationsWindow.CarPosition = CarPosition;
             Viewer.CarOperationsWindow.Visible = true;
-            Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];            
+            //Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];            
         }        
     }
 
@@ -264,7 +308,7 @@ namespace Orts.Viewer3D.Popups
                 + Viewer.Catalog.GetString("Cars count") + " " + Viewer.PlayerTrain.Cars.Count;
             Color = Color.Yellow;
 
-            Viewer.Simulator.TrainOperationsMenuMinimumTextWidth = (int)Math.Round(Text.Length / 2f) - 3;
+            Viewer.Simulator.TrainOperationsMenuMinimumTextWidth = (int)Math.Round(Text.Length / 2f) + 3;
         }
     }
     class TrainOperationsBrakePercent : Label
@@ -279,6 +323,86 @@ namespace Orts.Viewer3D.Popups
             
             Text = Viewer.Catalog.GetString("Real braking percentages") + " " + (int)PlayerTrain.PlayerTrainBrakePercent + " %";                
             Color = Color.Yellow;
+        }
+    }
+
+    class TrainOperationsIcon : Image
+    {
+        readonly Viewer Viewer;
+        int CarPosition;
+
+        public TrainOperationsIcon(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
+            : base(x, y, 60, 30)
+        {
+            Viewer = viewer;
+            CarPosition = carPosition;
+            if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
+            {
+                if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSDieselLocomotive)
+                {
+                    Texture = TrainOperationsWindow.LocoDTexture;
+                    Source = new Rectangle(0, 0, 209, 74);
+                }
+                else
+                if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSElectricLocomotive)
+                {
+                    Texture = TrainOperationsWindow.LocoETexture;
+                    Source = new Rectangle(0, 0, 250, 92);
+                }
+                else
+                if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)
+                {
+                    Texture = TrainOperationsWindow.LocoSTexture;
+                    Source = new Rectangle(0, 0, 392, 142);
+                }
+            }
+            else
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonType == TrainCar.WagonTypes.Tender)
+            {
+                Texture = TrainOperationsWindow.TenderTexture;
+                Source = new Rectangle(0, 0, 124, 106);
+            } 
+            else
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonNumAxles <= 2)
+                {
+                    Texture = TrainOperationsWindow.Passenger2CarTexture;
+                    Source = new Rectangle(0, 0, 201, 79);
+                }
+                else
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonNumAxles > 2)
+                {
+                    Texture = TrainOperationsWindow.Passenger4CarTexture;
+                    Source = new Rectangle(0, 0, 242, 76);
+                }
+            }
+            else
+            if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
+            {
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonNumAxles <= 2)
+                {
+                    Texture = TrainOperationsWindow.Freight2CarTexture;
+                    Source = new Rectangle(0, 0, 186, 87);
+                }
+                else
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonNumAxles > 2)
+                {
+                    Texture = TrainOperationsWindow.Freight4CarTexture;
+                    Source = new Rectangle(0, 0, 189, 75);
+                }
+            }            
+            Click += new Action<Control, Point>(TrainOperationsIcon_Click);
+        }
+
+        void TrainOperationsIcon_Click(Control arg1, Point arg2)
+        {
+            Viewer.CarOperationsWindow.Visible = false;
+            Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
+            Viewer.Simulator.CarPositionChanged = true;
+            foreach (var car in Viewer.PlayerTrain.Cars)
+                car.SelectedCar = false;
+            Viewer.PlayerTrain.Cars[CarPosition].SelectedCar = true;
         }
     }
 }
