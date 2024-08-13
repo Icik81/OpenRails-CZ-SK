@@ -10442,10 +10442,11 @@ namespace Orts.Simulation.Timetables
                                 if (NextSignalObject[0] != null)
                                     distanceToNextSignal = NextSignalObject[0].DistanceTo(FrontTDBTraveller);
 
-                                if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
+                                if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
                                     && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
-                                    || NextSignalObject[0].hasPermission == SignalObject.Permission.Granted)
+                                    || NextSignalObject[0].hasPermission == SignalObject.Permission.Granted))
                                     || distanceToNextSignal > 600
+                                    || EndStation
                                     )
                                 {
                                     TimeToClearForDepart++;
