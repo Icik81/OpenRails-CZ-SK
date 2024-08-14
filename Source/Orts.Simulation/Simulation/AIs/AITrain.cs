@@ -6849,6 +6849,7 @@ namespace Orts.Simulation.AIs
                                     && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
                                     || NextSignalObject[0].hasPermission == SignalObject.Permission.Granted))
                                     || distanceToNextSignal > 600
+                                    || distanceToNextSignal == -1
                                     || EndStation
                                     )
                                 {
