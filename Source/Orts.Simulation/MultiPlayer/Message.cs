@@ -21,6 +21,7 @@
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
+using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.Signalling;
@@ -2158,8 +2159,22 @@ namespace Orts.MultiPlayer
             }
             else if (EventName == "LOCOLIGHTS")
             {
+                if (t.LeadLocomotive != null)
+                {
+                    if (((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn)
+                    {
+                        foreach (TrainCar car in t.Cars)
+                            car.CarLightsPowerOn = true;
+                    }
+                    else
+                    {
+                        foreach (TrainCar car in t.Cars)
+                            car.CarLightsPowerOn = false;
+                    }
+                }
+
                 if (t.LeadLocomotive != null && EventState == 0) ((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn = false;
-                if (t.LeadLocomotive != null && EventState == 1) ((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn = true;
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn = true;                                                                        
                 if (t.LeadLocomotive != null && EventState == 10) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLW = false;
                 if (t.LeadLocomotive != null && EventState == 11) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLW = true;                
                 if (t.LeadLocomotive != null && EventState == 20) ((MSTSWagon)(t.LeadLocomotive)).LightFrontRW = false;

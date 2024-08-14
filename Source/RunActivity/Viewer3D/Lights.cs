@@ -25,7 +25,9 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Common;
 using Orts.Formats.Msts;
+using Orts.MultiPlayer;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.Processes;
@@ -151,7 +153,8 @@ namespace Orts.Viewer3D
         {
             // Icik            
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
-            var mstsLocomotive = locomotive as MSTSLocomotive;            
+            var mstsLocomotive = locomotive as MSTSLocomotive;
+
             if (Car.Train != null && !Car.CarLightsPowerOn)                              
             {
                 HasLightCone = false;
@@ -335,7 +338,7 @@ namespace Orts.Viewer3D
                     newTrainHeadlight = 2;
                 else
                     newTrainHeadlight = 1;                
-            }
+            }            
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
