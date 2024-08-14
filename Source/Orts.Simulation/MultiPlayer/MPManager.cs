@@ -234,7 +234,7 @@ namespace Orts.MultiPlayer
             CheckPlayerTrainSpad();//over speed or pass a red light
 
             //server update train location of all
-            if (Server != null && newtime - lastMoveTime >= 1f)
+            if (Server != null && newtime - lastMoveTime >= 0.1f)
             {
                 MSGMove move = new MSGMove();
                 if (Simulator.PlayerLocomotive.Train.TrainType != Train.TRAINTYPE.REMOTE)
@@ -276,7 +276,7 @@ namespace Orts.MultiPlayer
             }
 
             //client updates itself
-            if (Client != null && Server == null && newtime - lastMoveTime >= 1f)
+            if (Client != null && Server == null && newtime - lastMoveTime >= 0.1f)
             {
                 Train t = Simulator.PlayerLocomotive.Train;
                 MSGMove move = new MSGMove();

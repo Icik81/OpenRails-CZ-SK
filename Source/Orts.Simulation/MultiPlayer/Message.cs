@@ -2156,6 +2156,32 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 2) t.LeadLocomotive.SignalEvent(Event._HeadlightOn);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "LOCOLIGHTS")
+            {
+                if (t.LeadLocomotive != null && EventState == 0) ((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn = false;
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn = true;
+                if (t.LeadLocomotive != null && EventState == 10) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLW = false;
+                if (t.LeadLocomotive != null && EventState == 11) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLW = true;                
+                if (t.LeadLocomotive != null && EventState == 20) ((MSTSWagon)(t.LeadLocomotive)).LightFrontRW = false;
+                if (t.LeadLocomotive != null && EventState == 21) ((MSTSWagon)(t.LeadLocomotive)).LightFrontRW = true;
+                if (t.LeadLocomotive != null && EventState == 30) ((MSTSWagon)(t.LeadLocomotive)).LightRearLW = false;
+                if (t.LeadLocomotive != null && EventState == 31) ((MSTSWagon)(t.LeadLocomotive)).LightRearLW = true;
+                if (t.LeadLocomotive != null && EventState == 40) ((MSTSWagon)(t.LeadLocomotive)).LightRearRW = false;
+                if (t.LeadLocomotive != null && EventState == 41) ((MSTSWagon)(t.LeadLocomotive)).LightRearRW = true;
+                if (t.LeadLocomotive != null && EventState == 50) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLR = false;
+                if (t.LeadLocomotive != null && EventState == 51) ((MSTSWagon)(t.LeadLocomotive)).LightFrontLR = true;
+                if (t.LeadLocomotive != null && EventState == 60) ((MSTSWagon)(t.LeadLocomotive)).LightFrontRR = false;
+                if (t.LeadLocomotive != null && EventState == 61) ((MSTSWagon)(t.LeadLocomotive)).LightFrontRR = true;
+                if (t.LeadLocomotive != null && EventState == 70) ((MSTSWagon)(t.LeadLocomotive)).LightRearLR = false;
+                if (t.LeadLocomotive != null && EventState == 71) ((MSTSWagon)(t.LeadLocomotive)).LightRearLR = true;
+                if (t.LeadLocomotive != null && EventState == 80) ((MSTSWagon)(t.LeadLocomotive)).LightRearRR = false;
+                if (t.LeadLocomotive != null && EventState == 81) ((MSTSWagon)(t.LeadLocomotive)).LightRearRR = true;
+                if (t.LeadLocomotive != null && EventState == 90) ((MSTSWagon)(t.LeadLocomotive)).FrontHeadLight = false;
+                if (t.LeadLocomotive != null && EventState == 91) ((MSTSWagon)(t.LeadLocomotive)).FrontHeadLight = true;
+                if (t.LeadLocomotive != null && EventState == 100) ((MSTSWagon)(t.LeadLocomotive)).RearHeadLight = false;
+                if (t.LeadLocomotive != null && EventState == 101) ((MSTSWagon)(t.LeadLocomotive)).RearHeadLight = true;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else return;
         }
 

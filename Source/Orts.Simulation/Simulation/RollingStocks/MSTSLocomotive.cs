@@ -15263,7 +15263,55 @@ namespace Orts.Simulation.RollingStocks
 
         public int LightsFrameUpdate = 0;
         public void LightPositionHandle()
-        {            
+        {
+            if (MPManager.IsMultiPlayer())
+            {
+                if (!Battery)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());
+                if (Battery)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());
+                if (!LightFrontLW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 10)).ToString());
+                if (LightFrontLW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 11)).ToString());
+                if (!LightFrontRW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 20)).ToString());
+                if (LightFrontRW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 21)).ToString());
+                if (!LightRearLW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 30)).ToString());
+                if (LightRearLW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 31)).ToString());                
+                if (!LightRearRW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 40)).ToString());
+                if (LightRearRW)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 41)).ToString());
+                if (!LightFrontLR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 50)).ToString());
+                if (LightFrontLR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 51)).ToString());
+                if (!LightFrontRR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 60)).ToString());
+                if (LightFrontRR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 61)).ToString());
+                if (!LightRearLR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 70)).ToString());
+                if (LightRearLR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 71)).ToString());
+                if (!LightRearRR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 80)).ToString());
+                if (LightRearRR)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 81)).ToString());
+                if (!FrontHeadLight)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 90)).ToString());
+                if (FrontHeadLight)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 91)).ToString());
+                if (!RearHeadLight)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 100)).ToString());
+                if (RearHeadLight)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 101)).ToString());
+            }
+
             if (LightsFrameUpdate < 3)
                 LightsFrameUpdate++;
 
@@ -19211,7 +19259,7 @@ namespace Orts.Simulation.RollingStocks
                 case Event.Horn2Off:
                     if (this == Simulator.PlayerLocomotive && Simulator.Confirmer != null)
                         Simulator.Confirmer.Confirm(this is MSTSSteamLocomotive ? CabControl.Whistle : CabControl.Horn2, Horn2 ? CabSetting.On : CabSetting.Off);
-                    break;
+                    break;                
             }
 
             base.SignalEvent(evt);
