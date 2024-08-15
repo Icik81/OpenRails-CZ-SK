@@ -15623,91 +15623,100 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars)
                     {
-                        if (UsingRearCab)
+
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar && car.CarIsPlayerLoco)
                         {
-                            if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
+                            if (!Flipped)
                             {
-                                car.LightFrontLPosition = LightFrontLPosition;
-                                car.LightFrontRPosition = LightFrontRPosition;
                                 car.LightRearLPosition = 0;
                                 car.LightRearRPosition = 0;
-                                car.LightRearLW = false;
-                                car.LightRearLR = false;
-                                car.LightRearRW = false;
-                                car.LightRearRR = false;
                             }
-                            if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar)
+                            if (Flipped)
                             {
-                                car.LightFrontLW = false;
-                                car.LightFrontLR = false;
-                                car.LightFrontRW = false;
-                                car.LightFrontRR = false;
+                                car.LightFrontLPosition = 0;
+                                car.LightFrontRPosition = 0;
                             }
                         }
                         else
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && car.CarIsPlayerLoco)
                         {
-                            if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar)
+                            if (Flipped)
+                            {
+                                car.LightRearLPosition = 0;
+                                car.LightRearRPosition = 0;
+                            }
+                            if (!Flipped)
+                            {
+                                car.LightFrontLPosition = 0;
+                                car.LightFrontRPosition = 0;
+                            }
+                        }
+
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar && !car.CarIsPlayerLoco)
+                        {
+                            if (!car.Flipped)
                             {
                                 if (!Flipped)
                                 {
-                                    car.LightRearLW = false;
-                                    car.LightRearLR = false;
-                                    car.LightRearRW = false;
-                                    car.LightRearRR = false;
+                                    car.LightFrontLPosition = -LightRearLPosition;
+                                    car.LightFrontRPosition = -LightRearRPosition;
                                 }
                                 if (Flipped)
                                 {
-                                    car.LightFrontLPosition = LightRearRPosition;
-                                    car.LightFrontRPosition = LightRearLPosition;
+                                    car.LightFrontLPosition = -LightFrontLPosition;
+                                    car.LightFrontRPosition = -LightFrontRPosition;
                                 }
+                                car.LightRearLPosition = 0;
+                                car.LightRearRPosition = 0;
                             }
-
-                            if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && !car.CarIsPlayerLoco)
+                            else
                             {
-                                if (!car.Flipped)
+                                if (!Flipped)
                                 {
-                                    car.LightRearLPosition = LightRearLPosition;
-                                    car.LightRearRPosition = LightRearRPosition;
-                                    //car.LightFrontLPosition = 0;
-                                    //car.LightFrontRPosition = 0;
-                                    car.LightFrontLW = false;
-                                    car.LightFrontLR = false;
-                                    car.LightFrontRW = false;
-                                    car.LightFrontRR = false;
+                                    car.LightRearLPosition = -LightRearLPosition;
+                                    car.LightRearRPosition = -LightRearRPosition;
                                 }
-                                else
+                                if (Flipped)
                                 {
-                                    car.LightFrontLPosition = LightRearRPosition;
-                                    car.LightFrontRPosition = LightRearLPosition;
-                                    car.LightRearLPosition = 0;
-                                    car.LightRearRPosition = 0;
-                                    car.LightRearLW = false;
-                                    car.LightRearLR = false;
-                                    car.LightRearRW = false;
-                                    car.LightRearRR = false;
+                                    car.LightRearLPosition = -LightFrontLPosition;
+                                    car.LightRearRPosition = -LightFrontRPosition;
                                 }
+                                car.LightFrontLPosition = 0;
+                                car.LightFrontRPosition = 0;
                             }
-
-                            if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && car.CarIsPlayerLoco)
+                        }
+                        else
+                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && !car.CarIsPlayerLoco)
+                        {
+                            if (!car.Flipped)
                             {
-                                if (!car.Flipped)
+                                if (!Flipped)
                                 {
-                                    car.LightRearLPosition = LightRearLPosition;
-                                    car.LightRearRPosition = LightRearRPosition;
-                                    //car.LightFrontLPosition = 0;
-                                    //car.LightFrontRPosition = 0;
-                                    car.LightFrontLW = false;
-                                    car.LightFrontLR = false;
-                                    car.LightFrontRW = false;
-                                    car.LightFrontRR = false;
+                                    car.LightRearLPosition = -LightFrontLPosition;
+                                    car.LightRearRPosition = -LightFrontRPosition;
                                 }
-                                else
+                                if (Flipped)
                                 {
-                                    car.LightRearLW = false;
-                                    car.LightRearLR = false;
-                                    car.LightRearRW = false;
-                                    car.LightRearRR = false;
+                                    car.LightRearLPosition = -LightRearLPosition;
+                                    car.LightRearRPosition = -LightRearRPosition;
                                 }
+                                car.LightFrontLPosition = 0;
+                                car.LightFrontRPosition = 0;
+                            }
+                            else
+                            {
+                                if (!Flipped)
+                                {
+                                    car.LightFrontLPosition = -LightFrontLPosition;
+                                    car.LightFrontRPosition = -LightFrontRPosition;
+                                }
+                                if (Flipped)
+                                {
+                                    car.LightFrontLPosition = -LightRearLPosition;
+                                    car.LightFrontRPosition = -LightRearRPosition;
+                                }
+                                car.LightRearLPosition = 0;
+                                car.LightRearRPosition = 0;
                             }
                         }
                     }
