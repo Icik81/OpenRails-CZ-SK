@@ -133,6 +133,7 @@ namespace Orts.Simulation.Physics
         public bool NoSignals;
         public int TrainCurrentCarHandBrake;
         public int TrainHandBrakeCount = 1;
+        public int HandBrakeNum = 0;
         public int? PlayerTrainStartTime = -1;
         public int prevTrainCarsCount;
         public bool TrainOutOfRoute;

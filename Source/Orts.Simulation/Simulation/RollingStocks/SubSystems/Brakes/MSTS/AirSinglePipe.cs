@@ -782,7 +782,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }            
         }
-
+        
         public override void Update(float elapsedClockSeconds)
         {
             // Ochrana proti NaN
@@ -956,7 +956,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
                                 }
                             }
-                        }                        
+                            Car.Train.HandBrakeNum++;
+                            if (Car.Train.HandBrakeNum == 1 && Car.Train.Cars.Count > 1)
+                            {
+                                HandBrakeActive = false;
+                                HandBrakeDeactive = true;
+                            }
+                        }                              
                         if (HandBrakeDeactive)
                             HandbrakePercent = 0;
                         if (HandBrakeActive)

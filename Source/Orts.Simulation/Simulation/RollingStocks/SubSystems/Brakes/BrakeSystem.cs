@@ -90,7 +90,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool AntiSkidSystemEquipped;
         public bool BailOffOnAntiSkid;
         public bool IsAirEmpty;
-        public bool IsAirFull = true;
+        public bool IsAirFull;
         public bool HandBrakeActive;
         public bool HandBrakeDeactive;
         public bool StartOn = true;
