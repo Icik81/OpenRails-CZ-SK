@@ -12804,7 +12804,9 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -12852,7 +12854,9 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -12906,8 +12910,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                        if (Pantographs[p1].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+
+                                                        if (Pantographs[p2].State != PantographState.Down)
+                                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -12953,8 +12961,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
-                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p4);
+                                                        if (Pantographs[p3].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
+
+                                                        if (Pantographs[p4].State != PantographState.Down)
+                                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p4);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 1).ToString());
@@ -12989,8 +13001,12 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                    if (Pantographs[p1].State != PantographState.Up)
+                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+
+                                                    if (Pantographs[p2].State != PantographState.Down)
+                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
                                                     if (MPManager.IsMultiPlayer())
                                                     {
                                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13036,8 +13052,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                        if (Pantographs[p1].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+
+                                                        if (Pantographs[p2].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13082,8 +13102,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
+                                                        if (Pantographs[p3].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
+
+                                                        if (Pantographs[p4].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 1).ToString());
@@ -13117,8 +13141,12 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                    if (Pantographs[p1].State != PantographState.Up)
+                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+
+                                                    if (Pantographs[p2].State != PantographState.Up)
+                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
                                                     if (MPManager.IsMultiPlayer())
                                                     {
                                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13164,8 +13192,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                        if (Pantographs[p2].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
+                                                        if (Pantographs[p1].State != PantographState.Down)
+                                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -13211,8 +13243,12 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
-                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p3);
+                                                        if (Pantographs[p4].State != PantographState.Up)
+                                                            car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
+
+                                                        if (Pantographs[p3].State != PantographState.Down)
+                                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p3);
+
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
@@ -13247,8 +13283,12 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                                    if (Pantographs[p2].State != PantographState.Up)
+                                                        car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
+                                                    if (Pantographs[p1].State != PantographState.Down)
+                                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+
                                                     if (MPManager.IsMultiPlayer())
                                                     {
                                                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -13332,131 +13372,143 @@ namespace Orts.Simulation.RollingStocks
                     if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; }
                     //if (PantoStatus != PrePantoStatus[LocoStation])                     
                     //{                        
-                        switch (Pantograph4Switch[LocoStation])
-                        {
-                            case 0:
+                    switch (Pantograph4Switch[LocoStation])
+                    {
+                        case 0:
+                            {
+                                if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
                                 {
-                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
-                                    {
-                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                    }
-                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                }
+                                if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                }
 
-                                    if (AcceptMUSignals)
-                                        foreach (TrainCar car in Train.Cars)
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car.AcceptMUSignals)
                                         {
-                                            if (car.AcceptMUSignals)
-                                            {
+                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                                if (MPManager.IsMultiPlayer())
-                                                {
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                                }
+
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
                                             }
                                         }
-                                }
-                                break;
-                            case 1:
+                                    }
+                            }
+                            break;
+                        case 1:
+                            {
+                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
                                 {
-                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                    }
-                                    if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                }
+                                if (Pantographs[p2].State == PantographState.Up || Pantographs[p2].State == PantographState.Raising) // Přední panto
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
+                                }
 
-                                    if (AcceptMUSignals)
-                                        foreach (TrainCar car in Train.Cars)
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car.AcceptMUSignals)
                                         {
-                                            if (car.AcceptMUSignals)
-                                            {
+                                            if (Pantographs[p1].State != PantographState.Up)                                            
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                            
+                                            if (Pantographs[p2].State != PantographState.Down)                                            
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
-                                                if (MPManager.IsMultiPlayer())
-                                                {
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                                }
+                                            
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
                                             }
                                         }
-                                }
-                                break;
-                            case 2:
+                                    }
+                            }
+                            break;
+                        case 2:
+                            {
+                                if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
                                 {
-                                    if (AirForPantograph && Pantographs[p1].State == PantographState.Down || AirForPantograph && Pantographs[p1].State == PantographState.Lowering) // Zadní panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                    }
-                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                }
+                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                }
 
-                                    if (AcceptMUSignals)
-                                        foreach (TrainCar car in Train.Cars)
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car.AcceptMUSignals)
                                         {
-                                            if (car.AcceptMUSignals)
-                                            {
+                                            if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph);
-                                                if (MPManager.IsMultiPlayer())
-                                                {
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                                }
-                                            }
-                                        }
-                                }
-                                break;
-                            case 3:
-                                {
-                                    if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
-                                    {
-                                        SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                    }
-                                    if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
-                                    {
-                                        SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                        if (MPManager.IsMultiPlayer())
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                    }
 
-                                    if (AcceptMUSignals)
-                                        foreach (TrainCar car in Train.Cars)
-                                        {
-                                            if (car.AcceptMUSignals)
+                                            if (MPManager.IsMultiPlayer())
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
-                                                if (MPManager.IsMultiPlayer())
-                                                {
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                                }
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
                                             }
                                         }
+                                    }
+                            }
+                            break;
+                        case 3:
+                            {
+                                if (Pantographs[p1].State == PantographState.Up || Pantographs[p1].State == PantographState.Raising) // Zadní panto                            
+                                {
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                 }
-                                break;
-                        //}
+                                if (AirForPantograph && Pantographs[p2].State == PantographState.Down || AirForPantograph && Pantographs[p2].State == PantographState.Lowering) // Přední panto
+                                {
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                    if (MPManager.IsMultiPlayer())
+                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                }
+
+                                if (AcceptMUSignals)
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car.AcceptMUSignals)
+                                        {
+                                            if (Pantographs[p1].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+
+                                            if (Pantographs[p2].State != PantographState.Up)
+                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
+                                            if (MPManager.IsMultiPlayer())
+                                            {
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
+                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
+                                            }
+                                        }
+                                    }
+                            }
+                            break;
+                            //}
                     }
                     PrePantoStatus[LocoStation] = Pantograph4Switch[LocoStation];
                 }
@@ -13602,7 +13654,9 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -13642,9 +13696,12 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (Pantograph4NCActivated)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+                                                if (Pantographs[p1].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                             }
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                            if (Pantographs[p2].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13681,7 +13738,9 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13720,10 +13779,13 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+                                            if (Pantographs[p1].State != PantographState.Down)
+                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+
                                             if (Pantograph4NCActivated)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (Pantographs[p2].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
                                             }
                                             if (MPManager.IsMultiPlayer())
                                             {
@@ -13806,7 +13868,9 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13836,8 +13900,12 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+                                                if (Pantographs[p1].State != PantographState.Down)
+                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
+
+                                                if (Pantographs[p2].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -13867,7 +13935,9 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                                if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
@@ -13897,8 +13967,12 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
-                                                car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+                                                if (Pantographs[p1].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
+
+                                                if (Pantographs[p2].State != PantographState.Down)
+                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
@@ -13928,7 +14002,9 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                    car.SignalEvent(PowerSupplyEvent.RaisePantograph);
+
                                                 if (MPManager.IsMultiPlayer())
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
