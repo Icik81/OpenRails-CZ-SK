@@ -15342,6 +15342,10 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MPManager.IsMultiPlayer())
             {
+                if (LocoStation == 1)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
+                if (LocoStation == 2)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
                 if (!Battery)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());
                 if (Battery)

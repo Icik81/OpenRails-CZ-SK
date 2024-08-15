@@ -1130,6 +1130,7 @@ namespace Orts.Simulation
             // Manuální spojování vozů vlaku hráče            
             if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && TryToCouple)
             {
+                if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
                 TryToCouple = false;
                 foreach (Train train in Trains)
                     if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f && !train.TrainOutOfRoute)
@@ -1296,6 +1297,8 @@ namespace Orts.Simulation
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
 
+                            if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
+
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             foreach (TrainCar car in train.Cars)
                             {
@@ -1356,6 +1359,8 @@ namespace Orts.Simulation
                             // couple my rear to rear of train
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
+
+                            if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
 
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
@@ -1442,7 +1447,9 @@ namespace Orts.Simulation
                                 return;
                             }
                             // couple my front to rear of train
-                            
+
+                            if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
+
                             if (lead == null)
                             {//Like Rear coupling with changed data                                                                              
                                 if (drivenTrain.SpeedMpS > 1.5)
@@ -1526,6 +1533,8 @@ namespace Orts.Simulation
                             // couple my front to front of train
                             if (drivenTrain.SpeedMpS > 1.5)
                                 DbfEvalOverSpeedCoupling += 1;
+
+                            if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
 
                             lead = drivenTrain.LeadLocomotive;
                             drivenTrain.FirstCar.SignalEvent(Event.Coupling);

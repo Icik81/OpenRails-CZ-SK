@@ -2194,7 +2194,13 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 90) ((MSTSWagon)(t.LeadLocomotive)).FrontHeadLight = false;
                 if (t.LeadLocomotive != null && EventState == 91) ((MSTSWagon)(t.LeadLocomotive)).FrontHeadLight = true;
                 if (t.LeadLocomotive != null && EventState == 100) ((MSTSWagon)(t.LeadLocomotive)).RearHeadLight = false;
-                if (t.LeadLocomotive != null && EventState == 101) ((MSTSWagon)(t.LeadLocomotive)).RearHeadLight = true;
+                if (t.LeadLocomotive != null && EventState == 101) ((MSTSWagon)(t.LeadLocomotive)).RearHeadLight = true;                
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "LOCOSTATION")
+            {
+                if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).LocoStation = 1;
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).LocoStation = 2;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else return;
