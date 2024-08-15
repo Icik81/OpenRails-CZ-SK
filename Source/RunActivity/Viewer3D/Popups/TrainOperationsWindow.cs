@@ -141,7 +141,7 @@ namespace Orts.Viewer3D.Popups
                     if (car != PlayerTrain.Cars.Last())
                     {
                         scrollbox.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));                        
-                        scrollbox2.Add(new TrainOperationsCoupler((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
+                        scrollbox2.Add(new TrainOperationsCoupler2((int)(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth / 2 - (textHeight / 2)), 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));
                     }
                     carPosition++;
                 }
@@ -233,6 +233,27 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Simulator.attachedCar = Viewer.PlayerTrain.Cars[CarPosition];
                 }
             }            
+        }
+    }
+
+    class TrainOperationsCoupler2 : Image
+    {
+        readonly Viewer Viewer;
+        int CarPosition;
+
+        public TrainOperationsCoupler2(int x, int y, int size, Viewer viewer, TrainCar car, int carPosition)
+            : base(x, y, size, size)
+        {
+            Viewer = viewer;
+            CarPosition = carPosition;
+            Texture = TrainOperationsWindow.CouplerTexture;
+            Source = new Rectangle(0, 0, size, size);
+            Click += new Action<Control, Point>(TrainOperationsCoupler_Click);
+        }
+
+        void TrainOperationsCoupler_Click(Control arg1, Point arg2)
+        {
+            
         }
     }
 

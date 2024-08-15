@@ -4093,62 +4093,62 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     foreach (TrainCar car in train.Cars)
                     {
                         car.BrakeSystem.IsAirEmpty = true;                        
-                        if (car == lead)
-                        {
-                            LeadPosition = CarPosition;                            
-                        }
-                        CarPosition++;
-                        if (y > 1 && y <= 10)
-                            HandBrakeCarsCount = 2;
-                        if (y > 10 && y <= 15)
-                            HandBrakeCarsCount = 3;
-                        if (y > 15 && y <= 20)
-                            HandBrakeCarsCount = 4;
-                        if (y > 20 && y <= 25)
-                            HandBrakeCarsCount = 5;
-                        if (y > 25 && y <= 30)
-                            HandBrakeCarsCount = 6;
-                        if (y > 30 && y <= 35)
-                            HandBrakeCarsCount = 7;
-                        if (y > 35 && y <= 40)
-                            HandBrakeCarsCount = 8;
-                        if (y > 40 && y <= 45)
-                            HandBrakeCarsCount = 9;
-                        if (y > 45 && y <= 50)
-                            HandBrakeCarsCount = 10;
-                        if (y > 50 && y <= 55)
-                            HandBrakeCarsCount = 11;
-                        if (y > 55 && y <= 60)
-                            HandBrakeCarsCount = 12;
-                        if (y > 60 && y <= 65)
-                            HandBrakeCarsCount = 13;
+                        //if (car == lead)
+                        //{
+                        //    LeadPosition = CarPosition;                            
+                        //}
+                        //CarPosition++;
+                        //if (y > 1 && y <= 10)
+                        //    HandBrakeCarsCount = 2;
+                        //if (y > 10 && y <= 15)
+                        //    HandBrakeCarsCount = 3;
+                        //if (y > 15 && y <= 20)
+                        //    HandBrakeCarsCount = 4;
+                        //if (y > 20 && y <= 25)
+                        //    HandBrakeCarsCount = 5;
+                        //if (y > 25 && y <= 30)
+                        //    HandBrakeCarsCount = 6;
+                        //if (y > 30 && y <= 35)
+                        //    HandBrakeCarsCount = 7;
+                        //if (y > 35 && y <= 40)
+                        //    HandBrakeCarsCount = 8;
+                        //if (y > 40 && y <= 45)
+                        //    HandBrakeCarsCount = 9;
+                        //if (y > 45 && y <= 50)
+                        //    HandBrakeCarsCount = 10;
+                        //if (y > 50 && y <= 55)
+                        //    HandBrakeCarsCount = 11;
+                        //if (y > 55 && y <= 60)
+                        //    HandBrakeCarsCount = 12;
+                        //if (y > 60 && y <= 65)
+                        //    HandBrakeCarsCount = 13;
                     }
+                    
+                    //train.Cars[LeadPosition].BrakeSystem.HandBrakeDeactive = false;
+                    //train.Cars[LeadPosition].BrakeSystem.HandBrakeActive = true;
 
-                    train.Cars[LeadPosition].BrakeSystem.HandBrakeDeactive = false;
-                    train.Cars[LeadPosition].BrakeSystem.HandBrakeActive = true;
-
-                    if (train.Cars.Count > 1 && LeadPosition > train.Cars.Count / 2f)
-                    {
-                        for (int i = 0; i < HandBrakeCarsCount; i++)
-                        {
-                            if (LeadPosition - i > -1)
-                            {
-                                train.Cars[LeadPosition - i].BrakeSystem.HandBrakeDeactive = false;
-                                train.Cars[LeadPosition - i].BrakeSystem.HandBrakeActive = true;
-                            }
-                        }
-                    }
-                    else
-                    {
-                        for (int i = 0; i < HandBrakeCarsCount; i++)
-                        {
-                            if (LeadPosition + i < train.Cars.Count)
-                            {
-                                train.Cars[i + LeadPosition].BrakeSystem.HandBrakeDeactive = false;
-                                train.Cars[i + LeadPosition].BrakeSystem.HandBrakeActive = true;
-                            }
-                        }
-                    }                    
+                    //if (train.Cars.Count > 1 && LeadPosition > train.Cars.Count / 2f)
+                    //{
+                    //    for (int i = 0; i < HandBrakeCarsCount; i++)
+                    //    {
+                    //        if (LeadPosition - i > -1)
+                    //        {
+                    //            train.Cars[LeadPosition - i].BrakeSystem.HandBrakeDeactive = false;
+                    //            train.Cars[LeadPosition - i].BrakeSystem.HandBrakeActive = true;
+                    //        }
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    for (int i = 0; i < HandBrakeCarsCount; i++)
+                    //    {
+                    //        if (LeadPosition + i < train.Cars.Count)
+                    //        {
+                    //            train.Cars[i + LeadPosition].BrakeSystem.HandBrakeDeactive = false;
+                    //            train.Cars[i + LeadPosition].BrakeSystem.HandBrakeActive = true;
+                    //        }
+                    //    }
+                    //}                    
                 }
                 else
                 if (!train.LocoIsAirEmpty && !trainCar.Simulator.Settings.AirEmpty)
