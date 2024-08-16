@@ -2161,15 +2161,21 @@ namespace Orts.MultiPlayer
             {
                 if (t.LeadLocomotive != null)
                 {
-                    if (((MSTSWagon)(t.LeadLocomotive)).CarLightsPowerOn)
+                    if (((MSTSLocomotive)(t.LeadLocomotive)).Battery)
                     {
                         foreach (TrainCar car in t.Cars)
+                        {
+                            if (car is MSTSLocomotive) (car as MSTSLocomotive).Battery = true;
                             car.CarLightsPowerOn = true;
+                        }
                     }
                     else
                     {
                         foreach (TrainCar car in t.Cars)
+                        {
+                            if (car is MSTSLocomotive) (car as MSTSLocomotive).Battery = false;
                             car.CarLightsPowerOn = false;
+                        }
                     }
                 }
 
@@ -2203,6 +2209,12 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).LocoStation = 2;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "BATTERY")
+            {
+                if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Battery = false;
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Battery = true;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }            
             else return;
         }
 
