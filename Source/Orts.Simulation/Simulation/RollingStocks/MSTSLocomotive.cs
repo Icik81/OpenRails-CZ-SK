@@ -6819,6 +6819,7 @@ namespace Orts.Simulation.RollingStocks
                 MasterSlave();
                 WireHeightSwitching();
                 TractionSwitch();
+                MP_Messages();
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -15337,11 +15338,14 @@ namespace Orts.Simulation.RollingStocks
             CabRefreshCycle++;
         }
 
-        public int LightsFrameUpdate = 0;
-        public void LightPositionHandle()
+        public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
             {
+                if (LocoStation == 1)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", 0)).ToString());
+
+
                 if (LocoStation == 1)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
                 if (LocoStation == 2)
@@ -15401,7 +15405,12 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 101)).ToString());
                 }
             }
+        }
 
+
+        public int LightsFrameUpdate = 0;
+        public void LightPositionHandle()
+        {            
             if (LightsFrameUpdate < 3)
                 LightsFrameUpdate++;
 

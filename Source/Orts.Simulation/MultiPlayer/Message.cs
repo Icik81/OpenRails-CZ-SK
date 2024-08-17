@@ -2214,7 +2214,29 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Battery = false;
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Battery = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
+            }
+            else if (EventName == "WAGONINDEX")
+            {
+                if (EventState > -1) t.WagonIndex = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "WAGONLOADING")
+            {
+                if (t.TrainWagon != null && t.TrainWagon.FreightAnimations != null && ((MSTSWagon)(t.TrainWagon)).FreightAnimations.LoadedOne != null && EventState > -1) ((MSTSWagon)(t.TrainWagon)).FreightAnimations.LoadedOne.LoadPerCent = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "WAGONLEFTDOORS")
+            {
+                if (t.TrainWagon != null && EventState == 0) { ((MSTSWagon)(t.TrainWagon)).DoorLeftOpen = false; ((MSTSWagon)(t.TrainWagon)).DoorLeftIsOpened = false; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorClose); }
+                if (t.TrainWagon != null && EventState == 1) { ((MSTSWagon)(t.TrainWagon)).DoorLeftOpen = true; ((MSTSWagon)(t.TrainWagon)).DoorLeftIsOpened = true; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorOpen); }
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "WAGONRIGHTDOORS")
+            {
+                if (t.TrainWagon != null && EventState == 0) { ((MSTSWagon)(t.TrainWagon)).DoorRightOpen = false; ((MSTSWagon)(t.TrainWagon)).DoorRightIsOpened = false; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorClose); }
+                if (t.TrainWagon != null && EventState == 1) { ((MSTSWagon)(t.TrainWagon)).DoorRightOpen = true; ((MSTSWagon)(t.TrainWagon)).DoorRightIsOpened = true; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorOpen); }
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else return;
         }
 

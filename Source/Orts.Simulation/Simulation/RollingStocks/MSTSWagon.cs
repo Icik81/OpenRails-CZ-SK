@@ -38,6 +38,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.RollingStocks.SubSystems;
@@ -943,6 +944,55 @@ namespace Orts.Simulation.RollingStocks
 
             if (BrakeSystem == null)
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);            
+        }
+
+        public bool DoorLeftIsOpened;
+        public bool DoorRightIsOpened;
+        public void MP_Messages()
+        {
+            if (MPManager.IsMultiPlayer())
+            {
+                // Určí index aktuálního vozu
+                int CarIndex = 0;
+                for (int i = 0; i < Train.Cars.Count; i++)
+                {
+                    if (Train.Cars[i].CarID == CarID)
+                    {
+                        CarIndex = i;
+                        break;
+                    }
+                }
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());
+                
+                // Hodnota dynamického nákladu
+                if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
+
+                // Jednotlivé dveře vozů
+                if (DoorLeftOpen && !DoorLeftIsOpened)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLEFTDOORS", 1)).ToString());                    
+                    DoorLeftIsOpened = true;
+                }
+                if (!DoorLeftOpen && DoorLeftIsOpened)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLEFTDOORS", 0)).ToString());
+                    DoorLeftIsOpened = false;
+                }
+                if (DoorRightOpen && !DoorRightIsOpened)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONRIGHTDOORS", 1)).ToString());
+                    DoorRightIsOpened = true;
+                }
+                if (!DoorRightOpen && DoorRightIsOpened)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONRIGHTDOORS", 0)).ToString());
+                    DoorRightIsOpened = false;
+                }
+
+
+
+            }
         }
 
         // Dynamicky nastavuje Davisovi konstanty A, B, C pro různé podvozky v závislosti na aktuální váze vozu
@@ -2496,6 +2546,7 @@ namespace Orts.Simulation.RollingStocks
 
         private void UpdateTrainBaseResistance()
         {
+            MP_Messages();
             ORTSDavisSetUp();
             ORTSWagonResistanceTypes();
 

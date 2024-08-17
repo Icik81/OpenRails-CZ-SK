@@ -143,6 +143,7 @@ namespace Orts.Simulation.Physics
         public bool TrainImpactSoundEvent;
         public int TrainDerailCarPosition;
         public float TrainDerailmentTimer;
+        public int WagonIndex = -1;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -557,6 +558,15 @@ namespace Orts.Simulation.Physics
                         //    lead.EngineBrakeController.UpdateEngineBrakePressure(ref BrakeLine3PressurePSI, 1000);
                     }
             }
+        }
+
+        // Icik
+        public TrainCar TrainWagon
+        {
+            get
+            {
+                return WagonIndex >= 0 && WagonIndex < Cars.Count ? Cars[WagonIndex] : null;
+            }            
         }
 
         public object WagonTypes { get; internal set; }
