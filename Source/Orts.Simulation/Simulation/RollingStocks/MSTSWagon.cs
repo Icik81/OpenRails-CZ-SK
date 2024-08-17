@@ -188,6 +188,7 @@ namespace Orts.Simulation.RollingStocks
         public float AbsWheelSpeed2MpS;
         public float AbsWheelSpeed3MpS;
         public float AbsWheelSpeed4MpS;
+        public int MPWagonLoadPercent;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;

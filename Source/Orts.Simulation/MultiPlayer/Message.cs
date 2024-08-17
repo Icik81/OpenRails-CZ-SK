@@ -24,6 +24,7 @@ using Orts.Simulation;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.Signalling;
 using ORTS.Common;
 using ORTS.Scripting.Api;
@@ -2222,7 +2223,7 @@ namespace Orts.MultiPlayer
             }
             else if (EventName == "WAGONLOADING")
             {
-                if (t.TrainWagon != null && t.TrainWagon.FreightAnimations != null && ((MSTSWagon)(t.TrainWagon)).FreightAnimations.LoadedOne != null && EventState > -1) ((MSTSWagon)(t.TrainWagon)).FreightAnimations.LoadedOne.LoadPerCent = EventState;
+                if (t.TrainWagon != null && EventState > -1) ((MSTSWagon)(t.TrainWagon)).MPWagonLoadPercent = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "WAGONLEFTDOORS")

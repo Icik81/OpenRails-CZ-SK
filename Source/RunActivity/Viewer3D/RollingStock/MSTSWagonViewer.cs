@@ -1131,7 +1131,8 @@ namespace Orts.Viewer3D.RollingStock
                             (animation.Visibility[(int)FreightAnimationStatic.VisibleFrom.Outside] && (Viewer.Camera.AttachedCar != this.MSTSWagon ||
                             (Viewer.Camera.Style != Camera.Styles.ThreeDimCab && Viewer.Camera.Style != Camera.Styles.Cab))))) continue;
                     }
-                    if (freightAnim.FreightShape != null && !((freightAnim.Animation is FreightAnimationContinuous) && (freightAnim.Animation as FreightAnimationContinuous).LoadPerCent == 0))
+                    if (freightAnim.FreightShape != null && (!((freightAnim.Animation is FreightAnimationContinuous) && ((freightAnim.Animation as FreightAnimationContinuous).LoadPerCent == 0))
+                        || ((freightAnim.Animation is FreightAnimationContinuous) && (MSTSWagon as MSTSWagon).MPWagonLoadPercent > 0)))
                     {
                         freightAnim.FreightShape.Location.XNAMatrix = Car.WorldPosition.XNAMatrix;
                         freightAnim.FreightShape.Location.TileX = Car.WorldPosition.TileX; freightAnim.FreightShape.Location.TileZ = Car.WorldPosition.TileZ;
@@ -1141,8 +1142,19 @@ namespace Orts.Viewer3D.RollingStock
                             {
                                 var continuousFreightAnim = freightAnim.Animation as FreightAnimationContinuous;
                                 if (MSTSWagon.FreightAnimations.IsGondola) freightAnim.FreightShape.XNAMatrices[0] = TrainCarShape.XNAMatrices[1];
-                                freightAnim.FreightShape.XNAMatrices[0].M42 = continuousFreightAnim.MinHeight +
-                                   continuousFreightAnim.LoadPerCent / 100 * (continuousFreightAnim.MaxHeight - continuousFreightAnim.MinHeight);
+
+                                // Icik
+                                // Procenta nákladu pro MP
+                                if ((MSTSWagon as MSTSWagon).MPWagonLoadPercent > 0)
+                                {
+                                    freightAnim.FreightShape.XNAMatrices[0].M42 = continuousFreightAnim.MinHeight +
+                                   (float)(MSTSWagon as MSTSWagon).MPWagonLoadPercent / 100f * (continuousFreightAnim.MaxHeight - continuousFreightAnim.MinHeight);
+                                }
+                                else
+                                {
+                                    freightAnim.FreightShape.XNAMatrices[0].M42 = continuousFreightAnim.MinHeight +
+                                       continuousFreightAnim.LoadPerCent / 100 * (continuousFreightAnim.MaxHeight - continuousFreightAnim.MinHeight);
+                                }
                             }
                             if (freightAnim.Animation is FreightAnimationStatic)
                             {
