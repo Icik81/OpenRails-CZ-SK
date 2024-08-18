@@ -1749,6 +1749,13 @@ namespace Orts.Simulation.Physics
                     Simulator.Settings.ManualCoupling = true; // Vynucené ruční svěšování
             }
 
+            // Manuální režim výhybek a signálů pro MP
+            if (MPManager.IsMultiPlayer())
+            {
+                if (ControlMode != TRAIN_CONTROL.MANUAL)                                                    
+                    ToggleToManualMode();
+            }
+
             // MSTS kompatibility mód
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
@@ -10486,6 +10493,9 @@ namespace Orts.Simulation.Physics
 
         public void RequestToggleManualMode()
         {
+            // Icik
+            if (MPManager.IsMultiPlayer()) return;
+            
             if (TrainType == TRAINTYPE.AI_PLAYERHOSTING)
             {
                 if (Simulator.Confirmer != null) // As Confirmer may not be created until after a restore.
@@ -10519,7 +10529,7 @@ namespace Orts.Simulation.Physics
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Original route is reverse from present direction, stop train before switching"));
                     }
                     else
-                    {
+                    {                        
                         ToggleFromManualMode(routeIndex);
                         if (!Simulator.Settings.MSTSCompatibilityMode)
                             Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.On);
@@ -10613,7 +10623,7 @@ namespace Orts.Simulation.Physics
         //
 
         public void ToggleFromManualMode(int routeIndex)
-        {
+        {            
             // extract route at present front position
 
             TCSubpathRoute newRoute = new TCSubpathRoute();
