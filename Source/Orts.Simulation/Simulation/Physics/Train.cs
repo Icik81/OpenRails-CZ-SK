@@ -2182,6 +2182,14 @@ namespace Orts.Simulation.Physics
                 // Update the value of the Wind Speed and Direction for the train
                 PhysicsWindDirectionDeg = MathHelper.ToDegrees(Simulator.Weather.WindDirection);
                 PhysicsWindSpeedMpS = Simulator.Weather.WindSpeed;
+
+                // Icik
+                if (MPManager.IsMultiPlayer() && !MPManager.IsServer())
+                {
+                    PhysicsWindDirectionDeg = MathHelper.ToDegrees(Simulator.Weather.MPWindDirection);
+                    PhysicsWindSpeedMpS = Simulator.Weather.MPWindSpeed;
+                }
+
                 float TrainSpeedMpS = Math.Abs(SpeedMpS);
 
                 // If a westerly direction (ie -ve) convert to an angle between 0 and 360

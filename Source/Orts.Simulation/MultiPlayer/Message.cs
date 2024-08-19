@@ -2238,6 +2238,43 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && EventState == 1) { ((MSTSWagon)(t.TrainWagon)).DoorRightOpen = true; ((MSTSWagon)(t.TrainWagon)).DoorRightIsOpened = true; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorOpen); }
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "PRECIPITATIONINTENSITY")
+            {
+                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.PricipitationIntensityPPSPM2 = EventState / 10000f;                
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "PRECIPITATIONLIQUIDITY")
+            {
+                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.PrecipitationLiquidity = EventState / 10000f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "FOGDISTANCE")
+            {
+                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.FogDistance = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "OVERCASTFACTOR")
+            {
+                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.OvercastFactor = EventState / 10000f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "WINDSPEED")
+            {
+                if (t.LeadLocomotive != null) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.MPWindSpeed = EventState / 10f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "WINDDIRECTION")
+            {
+                if (t.LeadLocomotive != null) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.MPWindDirection = EventState / 10f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "SNOWVELOCITY")
+            {
+                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.SnowVelocityMpS = EventState / 10f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+
+
             else return;
         }
 

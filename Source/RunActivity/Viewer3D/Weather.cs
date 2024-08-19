@@ -1325,6 +1325,18 @@ namespace Orts.Viewer3D
             public float FinishPrecipitationIntensity;
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {
+                if (MPManager.IsMultiPlayer())
+                {
+                    if (!MPManager.IsServer()) return;
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONINTENSITY", (int)(weatherControl.Weather.PricipitationIntensityPPSPM2 * 10000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONLIQUIDITY", (int)(weatherControl.Weather.PrecipitationLiquidity * 10000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FOGDISTANCE", (int)weatherControl.Weather.FogDistance)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OVERCASTFACTOR", (int)(weatherControl.Weather.OvercastFactor * 10000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDSPEED", (int)((weatherControl.Weather.WindSpeed * 10f)))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDDIRECTION", (int)((weatherControl.Weather.WindDirection * 10f)))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());
+                }
+
                 var wChangeOn = false;
                 if (ORTSOvercast >= 0)
                 {

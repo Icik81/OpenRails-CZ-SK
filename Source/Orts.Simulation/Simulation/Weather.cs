@@ -53,5 +53,8 @@ namespace Orts.Simulation
 
         // Icik
         public float SnowVelocityMpS;
+        public float MPWindSpeed;
+        public float MPWindDirection;
+
     }
 }
