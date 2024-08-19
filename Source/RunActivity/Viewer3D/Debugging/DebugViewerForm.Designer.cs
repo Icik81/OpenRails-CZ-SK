@@ -67,7 +67,6 @@
             this.btnSeeInGame = new System.Windows.Forms.Button();
             this.lblSimulationTimeText = new System.Windows.Forms.Label();
             this.lblSimulationTime = new System.Windows.Forms.Label();
-            this.lblShow = new System.Windows.Forms.Label();
             this.cbShowPlatformLabels = new System.Windows.Forms.CheckBox();
             this.cbShowSidings = new System.Windows.Forms.CheckBox();
             this.cbShowSignals = new System.Windows.Forms.CheckBox();
@@ -91,18 +90,23 @@
             this.lblInstruction3 = new System.Windows.Forms.Label();
             this.lblInstruction4 = new System.Windows.Forms.Label();
             this.cbShowPlatforms = new System.Windows.Forms.CheckBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.lblShow = new System.Windows.Forms.GroupBox();
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.windowSizeUpDown)).BeginInit();
             this.gbTrainLabels.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDaylightOffsetHrs)).BeginInit();
             this.tWindow.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.lblShow.SuspendLayout();
             this.SuspendLayout();
             // 
             // pbCanvas
             // 
-            this.pbCanvas.Location = new System.Drawing.Point(5, 131);
+            this.pbCanvas.Location = new System.Drawing.Point(7, 161);
+            this.pbCanvas.Margin = new System.Windows.Forms.Padding(4);
             this.pbCanvas.Name = "pbCanvas";
-            this.pbCanvas.Size = new System.Drawing.Size(754, 626);
+            this.pbCanvas.Size = new System.Drawing.Size(1005, 770);
             this.pbCanvas.TabIndex = 0;
             this.pbCanvas.TabStop = false;
             this.pbCanvas.SizeChanged += new System.EventHandler(this.pbCanvas_SizeChanged);
@@ -113,10 +117,11 @@
             // refreshButton
             // 
             this.refreshButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.refreshButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.refreshButton.Location = new System.Drawing.Point(820, 137);
+            this.refreshButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.refreshButton.Location = new System.Drawing.Point(1127, 168);
+            this.refreshButton.Margin = new System.Windows.Forms.Padding(4);
             this.refreshButton.Name = "refreshButton";
-            this.refreshButton.Size = new System.Drawing.Size(93, 23);
+            this.refreshButton.Size = new System.Drawing.Size(104, 30);
             this.refreshButton.TabIndex = 1;
             this.refreshButton.Text = "View Train";
             this.refreshButton.UseVisualStyleBackColor = true;
@@ -125,13 +130,14 @@
             // windowSizeUpDown
             // 
             this.windowSizeUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.windowSizeUpDown.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.windowSizeUpDown.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
             this.windowSizeUpDown.Increment = new decimal(new int[] {
             50,
             0,
             0,
             0});
-            this.windowSizeUpDown.Location = new System.Drawing.Point(802, 31);
+            this.windowSizeUpDown.Location = new System.Drawing.Point(1084, 38);
+            this.windowSizeUpDown.Margin = new System.Windows.Forms.Padding(4);
             this.windowSizeUpDown.Maximum = new decimal(new int[] {
             200000,
             0,
@@ -143,7 +149,7 @@
             0,
             0});
             this.windowSizeUpDown.Name = "windowSizeUpDown";
-            this.windowSizeUpDown.Size = new System.Drawing.Size(79, 23);
+            this.windowSizeUpDown.Size = new System.Drawing.Size(105, 26);
             this.windowSizeUpDown.TabIndex = 6;
             this.windowSizeUpDown.Value = new decimal(new int[] {
             5000,
@@ -157,9 +163,10 @@
             this.resLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.resLabel.AutoSize = true;
             this.resLabel.Font = new System.Drawing.Font("Tahoma", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.resLabel.Location = new System.Drawing.Point(887, 35);
+            this.resLabel.Location = new System.Drawing.Point(1198, 43);
+            this.resLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.resLabel.Name = "resLabel";
-            this.resLabel.Size = new System.Drawing.Size(19, 16);
+            this.resLabel.Size = new System.Drawing.Size(26, 21);
             this.resLabel.TabIndex = 8;
             this.resLabel.Text = "m";
             // 
@@ -167,9 +174,10 @@
             // 
             this.AvatarView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AvatarView.HideSelection = false;
-            this.AvatarView.Location = new System.Drawing.Point(779, 200);
+            this.AvatarView.Location = new System.Drawing.Point(1034, 246);
+            this.AvatarView.Margin = new System.Windows.Forms.Padding(4);
             this.AvatarView.Name = "AvatarView";
-            this.AvatarView.Size = new System.Drawing.Size(121, 556);
+            this.AvatarView.Size = new System.Drawing.Size(197, 683);
             this.AvatarView.TabIndex = 14;
             this.AvatarView.UseCompatibleStateImageBehavior = false;
             this.AvatarView.SelectedIndexChanged += new System.EventHandler(this.AvatarView_SelectedIndexChanged);
@@ -177,10 +185,10 @@
             // rmvButton
             // 
             this.rmvButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.rmvButton.Location = new System.Drawing.Point(773, 164);
-            this.rmvButton.Margin = new System.Windows.Forms.Padding(2);
+            this.rmvButton.Location = new System.Drawing.Point(1034, 202);
+            this.rmvButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.rmvButton.Name = "rmvButton";
-            this.rmvButton.Size = new System.Drawing.Size(72, 24);
+            this.rmvButton.Size = new System.Drawing.Size(91, 30);
             this.rmvButton.TabIndex = 15;
             this.rmvButton.Text = "Remove";
             this.rmvButton.UseVisualStyleBackColor = true;
@@ -188,13 +196,13 @@
             // 
             // chkAllowUserSwitch
             // 
-            this.chkAllowUserSwitch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAllowUserSwitch.AutoSize = true;
             this.chkAllowUserSwitch.Checked = true;
             this.chkAllowUserSwitch.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllowUserSwitch.Location = new System.Drawing.Point(681, 71);
+            this.chkAllowUserSwitch.Location = new System.Drawing.Point(905, 84);
+            this.chkAllowUserSwitch.Margin = new System.Windows.Forms.Padding(4);
             this.chkAllowUserSwitch.Name = "chkAllowUserSwitch";
-            this.chkAllowUserSwitch.Size = new System.Drawing.Size(83, 17);
+            this.chkAllowUserSwitch.Size = new System.Drawing.Size(97, 20);
             this.chkAllowUserSwitch.TabIndex = 16;
             this.chkAllowUserSwitch.Text = "Auto Switch";
             this.chkAllowUserSwitch.UseVisualStyleBackColor = true;
@@ -202,13 +210,13 @@
             // 
             // chkShowAvatars
             // 
-            this.chkShowAvatars.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkShowAvatars.AutoSize = true;
             this.chkShowAvatars.Checked = true;
             this.chkShowAvatars.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkShowAvatars.Location = new System.Drawing.Point(681, 53);
+            this.chkShowAvatars.Location = new System.Drawing.Point(905, 65);
+            this.chkShowAvatars.Margin = new System.Windows.Forms.Padding(4);
             this.chkShowAvatars.Name = "chkShowAvatars";
-            this.chkShowAvatars.Size = new System.Drawing.Size(92, 17);
+            this.chkShowAvatars.Size = new System.Drawing.Size(111, 20);
             this.chkShowAvatars.TabIndex = 17;
             this.chkShowAvatars.Text = "Show Avatars";
             this.chkShowAvatars.UseVisualStyleBackColor = true;
@@ -218,9 +226,10 @@
             // 
             this.MSG.Enabled = false;
             this.MSG.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.MSG.Location = new System.Drawing.Point(1, 38);
+            this.MSG.Location = new System.Drawing.Point(1, 47);
+            this.MSG.Margin = new System.Windows.Forms.Padding(4);
             this.MSG.Name = "MSG";
-            this.MSG.Size = new System.Drawing.Size(560, 26);
+            this.MSG.Size = new System.Drawing.Size(745, 30);
             this.MSG.TabIndex = 18;
             this.MSG.WordWrap = false;
             this.MSG.Enter += new System.EventHandler(this.MSGEnter);
@@ -229,14 +238,13 @@
             // 
             // msgSelected
             // 
-            this.msgSelected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.msgSelected.Enabled = false;
-            this.msgSelected.Location = new System.Drawing.Point(569, 78);
-            this.msgSelected.Margin = new System.Windows.Forms.Padding(2);
-            this.msgSelected.MaximumSize = new System.Drawing.Size(200, 24);
-            this.msgSelected.MinimumSize = new System.Drawing.Size(104, 24);
+            this.msgSelected.Location = new System.Drawing.Point(759, 104);
+            this.msgSelected.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.msgSelected.MaximumSize = new System.Drawing.Size(267, 30);
+            this.msgSelected.MinimumSize = new System.Drawing.Size(139, 30);
             this.msgSelected.Name = "msgSelected";
-            this.msgSelected.Size = new System.Drawing.Size(104, 24);
+            this.msgSelected.Size = new System.Drawing.Size(139, 30);
             this.msgSelected.TabIndex = 19;
             this.msgSelected.Text = "MSG to Selected";
             this.msgSelected.UseVisualStyleBackColor = true;
@@ -244,14 +252,13 @@
             // 
             // msgAll
             // 
-            this.msgAll.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.msgAll.Enabled = false;
-            this.msgAll.Location = new System.Drawing.Point(569, 53);
-            this.msgAll.Margin = new System.Windows.Forms.Padding(2);
-            this.msgAll.MaximumSize = new System.Drawing.Size(200, 24);
-            this.msgAll.MinimumSize = new System.Drawing.Size(104, 24);
+            this.msgAll.Location = new System.Drawing.Point(759, 73);
+            this.msgAll.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.msgAll.MaximumSize = new System.Drawing.Size(267, 30);
+            this.msgAll.MinimumSize = new System.Drawing.Size(139, 30);
             this.msgAll.Name = "msgAll";
-            this.msgAll.Size = new System.Drawing.Size(104, 24);
+            this.msgAll.Size = new System.Drawing.Size(139, 30);
             this.msgAll.TabIndex = 20;
             this.msgAll.Text = "MSG to All";
             this.msgAll.UseVisualStyleBackColor = true;
@@ -259,13 +266,12 @@
             // 
             // composeMSG
             // 
-            this.composeMSG.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.composeMSG.Location = new System.Drawing.Point(569, 28);
-            this.composeMSG.Margin = new System.Windows.Forms.Padding(2);
-            this.composeMSG.MaximumSize = new System.Drawing.Size(200, 24);
-            this.composeMSG.MinimumSize = new System.Drawing.Size(104, 24);
+            this.composeMSG.Location = new System.Drawing.Point(759, 42);
+            this.composeMSG.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.composeMSG.MaximumSize = new System.Drawing.Size(267, 30);
+            this.composeMSG.MinimumSize = new System.Drawing.Size(139, 30);
             this.composeMSG.Name = "composeMSG";
-            this.composeMSG.Size = new System.Drawing.Size(104, 24);
+            this.composeMSG.Size = new System.Drawing.Size(139, 30);
             this.composeMSG.TabIndex = 21;
             this.composeMSG.Text = "Compose MSG";
             this.composeMSG.UseVisualStyleBackColor = true;
@@ -275,22 +281,22 @@
             // 
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(770, 35);
+            this.label1.Location = new System.Drawing.Point(1021, 42);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(26, 13);
+            this.label1.Size = new System.Drawing.Size(32, 16);
             this.label1.TabIndex = 7;
             this.label1.Text = "Res";
             // 
             // reply2Selected
             // 
-            this.reply2Selected.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.reply2Selected.Enabled = false;
-            this.reply2Selected.Location = new System.Drawing.Point(569, 103);
-            this.reply2Selected.Margin = new System.Windows.Forms.Padding(2);
-            this.reply2Selected.MaximumSize = new System.Drawing.Size(200, 24);
-            this.reply2Selected.MinimumSize = new System.Drawing.Size(104, 24);
+            this.reply2Selected.Location = new System.Drawing.Point(759, 135);
+            this.reply2Selected.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.reply2Selected.MaximumSize = new System.Drawing.Size(267, 30);
+            this.reply2Selected.MinimumSize = new System.Drawing.Size(139, 30);
             this.reply2Selected.Name = "reply2Selected";
-            this.reply2Selected.Size = new System.Drawing.Size(104, 24);
+            this.reply2Selected.Size = new System.Drawing.Size(139, 30);
             this.reply2Selected.TabIndex = 23;
             this.reply2Selected.Text = "Reply to Selected";
             this.reply2Selected.UseVisualStyleBackColor = true;
@@ -298,13 +304,13 @@
             // 
             // chkDrawPath
             // 
-            this.chkDrawPath.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkDrawPath.AutoSize = true;
             this.chkDrawPath.Checked = true;
             this.chkDrawPath.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkDrawPath.Location = new System.Drawing.Point(803, 58);
+            this.chkDrawPath.Location = new System.Drawing.Point(1052, 65);
+            this.chkDrawPath.Margin = new System.Windows.Forms.Padding(4);
             this.chkDrawPath.Name = "chkDrawPath";
-            this.chkDrawPath.Size = new System.Drawing.Size(76, 17);
+            this.chkDrawPath.Size = new System.Drawing.Size(90, 20);
             this.chkDrawPath.TabIndex = 24;
             this.chkDrawPath.Text = "Draw Path";
             this.chkDrawPath.UseVisualStyleBackColor = true;
@@ -316,11 +322,12 @@
             this.boxSetSignal.Enabled = false;
             this.boxSetSignal.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.boxSetSignal.FormattingEnabled = true;
-            this.boxSetSignal.ItemHeight = 20;
-            this.boxSetSignal.Location = new System.Drawing.Point(209, 205);
-            this.boxSetSignal.MinimumSize = new System.Drawing.Size(160, 100);
+            this.boxSetSignal.ItemHeight = 25;
+            this.boxSetSignal.Location = new System.Drawing.Point(279, 252);
+            this.boxSetSignal.Margin = new System.Windows.Forms.Padding(4);
+            this.boxSetSignal.MinimumSize = new System.Drawing.Size(213, 123);
             this.boxSetSignal.Name = "boxSetSignal";
-            this.boxSetSignal.Size = new System.Drawing.Size(164, 100);
+            this.boxSetSignal.Size = new System.Drawing.Size(219, 100);
             this.boxSetSignal.TabIndex = 25;
             this.boxSetSignal.Visible = false;
             this.boxSetSignal.SelectedIndexChanged += new System.EventHandler(this.boxSetSignalChosen);
@@ -331,53 +338,54 @@
             this.boxSetSwitch.Enabled = false;
             this.boxSetSwitch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.boxSetSwitch.FormattingEnabled = true;
-            this.boxSetSwitch.ItemHeight = 20;
+            this.boxSetSwitch.ItemHeight = 25;
             this.boxSetSwitch.Items.AddRange(new object[] {
             "To Main Route",
             "To Side Route"});
-            this.boxSetSwitch.Location = new System.Drawing.Point(398, 205);
-            this.boxSetSwitch.MinimumSize = new System.Drawing.Size(120, 50);
+            this.boxSetSwitch.Location = new System.Drawing.Point(531, 252);
+            this.boxSetSwitch.Margin = new System.Windows.Forms.Padding(4);
+            this.boxSetSwitch.MinimumSize = new System.Drawing.Size(160, 62);
             this.boxSetSwitch.Name = "boxSetSwitch";
-            this.boxSetSwitch.Size = new System.Drawing.Size(125, 40);
+            this.boxSetSwitch.Size = new System.Drawing.Size(167, 50);
             this.boxSetSwitch.TabIndex = 26;
             this.boxSetSwitch.Visible = false;
             this.boxSetSwitch.SelectedIndexChanged += new System.EventHandler(this.boxSetSwitchChosen);
             // 
             // chkPickSignals
             // 
-            this.chkPickSignals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkPickSignals.AutoSize = true;
             this.chkPickSignals.Checked = true;
             this.chkPickSignals.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPickSignals.Location = new System.Drawing.Point(803, 75);
+            this.chkPickSignals.Location = new System.Drawing.Point(1052, 84);
+            this.chkPickSignals.Margin = new System.Windows.Forms.Padding(4);
             this.chkPickSignals.Name = "chkPickSignals";
-            this.chkPickSignals.Size = new System.Drawing.Size(84, 17);
+            this.chkPickSignals.Size = new System.Drawing.Size(103, 20);
             this.chkPickSignals.TabIndex = 27;
             this.chkPickSignals.Text = "Pick Signals";
             this.chkPickSignals.UseVisualStyleBackColor = true;
             // 
             // chkPickSwitches
             // 
-            this.chkPickSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkPickSwitches.AutoSize = true;
             this.chkPickSwitches.Checked = true;
             this.chkPickSwitches.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPickSwitches.Location = new System.Drawing.Point(803, 92);
+            this.chkPickSwitches.Location = new System.Drawing.Point(1052, 106);
+            this.chkPickSwitches.Margin = new System.Windows.Forms.Padding(4);
             this.chkPickSwitches.Name = "chkPickSwitches";
-            this.chkPickSwitches.Size = new System.Drawing.Size(93, 17);
+            this.chkPickSwitches.Size = new System.Drawing.Size(111, 20);
             this.chkPickSwitches.TabIndex = 28;
             this.chkPickSwitches.Text = "Pick Switches";
             this.chkPickSwitches.UseVisualStyleBackColor = true;
             // 
             // chkAllowNew
             // 
-            this.chkAllowNew.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkAllowNew.AutoSize = true;
             this.chkAllowNew.Checked = true;
             this.chkAllowNew.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkAllowNew.Location = new System.Drawing.Point(681, 34);
+            this.chkAllowNew.Location = new System.Drawing.Point(905, 44);
+            this.chkAllowNew.Margin = new System.Windows.Forms.Padding(4);
             this.chkAllowNew.Name = "chkAllowNew";
-            this.chkAllowNew.Size = new System.Drawing.Size(67, 17);
+            this.chkAllowNew.Size = new System.Drawing.Size(81, 20);
             this.chkAllowNew.TabIndex = 29;
             this.chkAllowNew.Text = "Can Join";
             this.chkAllowNew.UseVisualStyleBackColor = true;
@@ -387,20 +395,21 @@
             // 
             this.messages.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.messages.FormattingEnabled = true;
-            this.messages.ItemHeight = 18;
-            this.messages.Location = new System.Drawing.Point(1, 68);
+            this.messages.ItemHeight = 24;
+            this.messages.Location = new System.Drawing.Point(1, 84);
+            this.messages.Margin = new System.Windows.Forms.Padding(4);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(560, 58);
+            this.messages.Size = new System.Drawing.Size(745, 52);
             this.messages.TabIndex = 22;
             this.messages.SelectedIndexChanged += new System.EventHandler(this.msgSelectedChanged);
             // 
             // btnAssist
             // 
             this.btnAssist.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnAssist.Location = new System.Drawing.Point(762, 111);
-            this.btnAssist.Margin = new System.Windows.Forms.Padding(2);
+            this.btnAssist.Location = new System.Drawing.Point(1034, 134);
+            this.btnAssist.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnAssist.Name = "btnAssist";
-            this.btnAssist.Size = new System.Drawing.Size(48, 24);
+            this.btnAssist.Size = new System.Drawing.Size(91, 30);
             this.btnAssist.TabIndex = 30;
             this.btnAssist.Text = "Assist";
             this.btnAssist.UseVisualStyleBackColor = true;
@@ -409,10 +418,10 @@
             // btnNormal
             // 
             this.btnNormal.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnNormal.Location = new System.Drawing.Point(762, 136);
-            this.btnNormal.Margin = new System.Windows.Forms.Padding(2);
+            this.btnNormal.Location = new System.Drawing.Point(1034, 168);
+            this.btnNormal.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.btnNormal.Name = "btnNormal";
-            this.btnNormal.Size = new System.Drawing.Size(58, 24);
+            this.btnNormal.Size = new System.Drawing.Size(91, 30);
             this.btnNormal.TabIndex = 31;
             this.btnNormal.Text = "Normal";
             this.btnNormal.UseVisualStyleBackColor = true;
@@ -421,10 +430,11 @@
             // btnFollow
             // 
             this.btnFollow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnFollow.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnFollow.Location = new System.Drawing.Point(847, 165);
+            this.btnFollow.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F);
+            this.btnFollow.Location = new System.Drawing.Point(1127, 202);
+            this.btnFollow.Margin = new System.Windows.Forms.Padding(4);
             this.btnFollow.Name = "btnFollow";
-            this.btnFollow.Size = new System.Drawing.Size(60, 23);
+            this.btnFollow.Size = new System.Drawing.Size(104, 30);
             this.btnFollow.TabIndex = 32;
             this.btnFollow.Text = "Follow";
             this.btnFollow.UseVisualStyleBackColor = true;
@@ -432,13 +442,13 @@
             // 
             // chkBoxPenalty
             // 
-            this.chkBoxPenalty.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkBoxPenalty.AutoSize = true;
             this.chkBoxPenalty.Checked = true;
             this.chkBoxPenalty.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkBoxPenalty.Location = new System.Drawing.Point(681, 107);
+            this.chkBoxPenalty.Location = new System.Drawing.Point(905, 127);
+            this.chkBoxPenalty.Margin = new System.Windows.Forms.Padding(4);
             this.chkBoxPenalty.Name = "chkBoxPenalty";
-            this.chkBoxPenalty.Size = new System.Drawing.Size(61, 17);
+            this.chkBoxPenalty.Size = new System.Drawing.Size(74, 20);
             this.chkBoxPenalty.TabIndex = 33;
             this.chkBoxPenalty.Text = "Penalty";
             this.chkBoxPenalty.UseVisualStyleBackColor = true;
@@ -446,13 +456,13 @@
             // 
             // chkPreferGreen
             // 
-            this.chkPreferGreen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.chkPreferGreen.AutoSize = true;
             this.chkPreferGreen.Checked = true;
             this.chkPreferGreen.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.chkPreferGreen.Location = new System.Drawing.Point(681, 89);
+            this.chkPreferGreen.Location = new System.Drawing.Point(905, 106);
+            this.chkPreferGreen.Margin = new System.Windows.Forms.Padding(4);
             this.chkPreferGreen.Name = "chkPreferGreen";
-            this.chkPreferGreen.Size = new System.Drawing.Size(86, 17);
+            this.chkPreferGreen.Size = new System.Drawing.Size(105, 20);
             this.chkPreferGreen.TabIndex = 34;
             this.chkPreferGreen.Text = "Prefer Green";
             this.chkPreferGreen.UseVisualStyleBackColor = true;
@@ -463,9 +473,10 @@
             // 
             this.btnSeeInGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnSeeInGame.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnSeeInGame.Location = new System.Drawing.Point(820, 113);
+            this.btnSeeInGame.Location = new System.Drawing.Point(1127, 134);
+            this.btnSeeInGame.Margin = new System.Windows.Forms.Padding(4);
             this.btnSeeInGame.Name = "btnSeeInGame";
-            this.btnSeeInGame.Size = new System.Drawing.Size(93, 23);
+            this.btnSeeInGame.Size = new System.Drawing.Size(104, 30);
             this.btnSeeInGame.TabIndex = 35;
             this.btnSeeInGame.Text = "See in Game";
             this.btnSeeInGame.UseVisualStyleBackColor = true;
@@ -475,9 +486,10 @@
             // 
             this.lblSimulationTimeText.AutoSize = true;
             this.lblSimulationTimeText.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSimulationTimeText.Location = new System.Drawing.Point(5, 34);
+            this.lblSimulationTimeText.Location = new System.Drawing.Point(7, 42);
+            this.lblSimulationTimeText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSimulationTimeText.Name = "lblSimulationTimeText";
-            this.lblSimulationTimeText.Size = new System.Drawing.Size(104, 16);
+            this.lblSimulationTimeText.Size = new System.Drawing.Size(129, 20);
             this.lblSimulationTimeText.TabIndex = 36;
             this.lblSimulationTimeText.Text = "Simulation Time";
             this.lblSimulationTimeText.Visible = false;
@@ -486,33 +498,23 @@
             // 
             this.lblSimulationTime.AutoSize = true;
             this.lblSimulationTime.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblSimulationTime.Location = new System.Drawing.Point(115, 34);
+            this.lblSimulationTime.Location = new System.Drawing.Point(153, 42);
+            this.lblSimulationTime.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSimulationTime.Name = "lblSimulationTime";
-            this.lblSimulationTime.Size = new System.Drawing.Size(101, 16);
+            this.lblSimulationTime.Size = new System.Drawing.Size(124, 20);
             this.lblSimulationTime.TabIndex = 37;
             this.lblSimulationTime.Text = "SimulationTime";
             this.lblSimulationTime.Visible = false;
             // 
-            // lblShow
-            // 
-            this.lblShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblShow.AutoSize = true;
-            this.lblShow.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblShow.Location = new System.Drawing.Point(780, 180);
-            this.lblShow.Name = "lblShow";
-            this.lblShow.Size = new System.Drawing.Size(41, 15);
-            this.lblShow.TabIndex = 38;
-            this.lblShow.Text = "Show:";
-            this.lblShow.Visible = false;
-            // 
             // cbShowPlatformLabels
             // 
-            this.cbShowPlatformLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowPlatformLabels.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowPlatformLabels.AutoSize = true;
             this.cbShowPlatformLabels.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowPlatformLabels.Location = new System.Drawing.Point(780, 220);
+            this.cbShowPlatformLabels.Location = new System.Drawing.Point(11, 64);
+            this.cbShowPlatformLabels.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowPlatformLabels.Name = "cbShowPlatformLabels";
-            this.cbShowPlatformLabels.Size = new System.Drawing.Size(108, 19);
+            this.cbShowPlatformLabels.Size = new System.Drawing.Size(128, 22);
             this.cbShowPlatformLabels.TabIndex = 39;
             this.cbShowPlatformLabels.Text = "Platform labels";
             this.cbShowPlatformLabels.UseVisualStyleBackColor = true;
@@ -520,12 +522,13 @@
             // 
             // cbShowSidings
             // 
-            this.cbShowSidings.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowSidings.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowSidings.AutoSize = true;
             this.cbShowSidings.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowSidings.Location = new System.Drawing.Point(780, 240);
+            this.cbShowSidings.Location = new System.Drawing.Point(11, 94);
+            this.cbShowSidings.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowSidings.Name = "cbShowSidings";
-            this.cbShowSidings.Size = new System.Drawing.Size(97, 19);
+            this.cbShowSidings.Size = new System.Drawing.Size(112, 22);
             this.cbShowSidings.TabIndex = 40;
             this.cbShowSidings.Text = "Siding labels";
             this.cbShowSidings.UseVisualStyleBackColor = true;
@@ -533,12 +536,13 @@
             // 
             // cbShowSignals
             // 
-            this.cbShowSignals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowSignals.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowSignals.AutoSize = true;
             this.cbShowSignals.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowSignals.Location = new System.Drawing.Point(780, 280);
+            this.cbShowSignals.Location = new System.Drawing.Point(11, 154);
+            this.cbShowSignals.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowSignals.Name = "cbShowSignals";
-            this.cbShowSignals.Size = new System.Drawing.Size(67, 19);
+            this.cbShowSignals.Size = new System.Drawing.Size(78, 22);
             this.cbShowSignals.TabIndex = 41;
             this.cbShowSignals.Text = "Signals";
             this.cbShowSignals.UseVisualStyleBackColor = true;
@@ -546,12 +550,13 @@
             // 
             // cbShowSignalState
             // 
-            this.cbShowSignalState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowSignalState.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowSignalState.AutoSize = true;
             this.cbShowSignalState.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowSignalState.Location = new System.Drawing.Point(802, 300);
+            this.cbShowSignalState.Location = new System.Drawing.Point(11, 184);
+            this.cbShowSignalState.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowSignalState.Name = "cbShowSignalState";
-            this.cbShowSignalState.Size = new System.Drawing.Size(90, 19);
+            this.cbShowSignalState.Size = new System.Drawing.Size(106, 22);
             this.cbShowSignalState.TabIndex = 42;
             this.cbShowSignalState.Text = "Signal state";
             this.cbShowSignalState.UseVisualStyleBackColor = true;
@@ -564,9 +569,11 @@
             this.gbTrainLabels.Controls.Add(this.rbShowActiveTrainLabels);
             this.gbTrainLabels.Controls.Add(this.rbShowAllTrainLabels);
             this.gbTrainLabels.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.gbTrainLabels.Location = new System.Drawing.Point(779, 323);
+            this.gbTrainLabels.Location = new System.Drawing.Point(1050, 587);
+            this.gbTrainLabels.Margin = new System.Windows.Forms.Padding(4);
             this.gbTrainLabels.Name = "gbTrainLabels";
-            this.gbTrainLabels.Size = new System.Drawing.Size(120, 129);
+            this.gbTrainLabels.Padding = new System.Windows.Forms.Padding(4);
+            this.gbTrainLabels.Size = new System.Drawing.Size(181, 116);
             this.gbTrainLabels.TabIndex = 43;
             this.gbTrainLabels.TabStop = false;
             this.gbTrainLabels.Text = "Train labels";
@@ -576,9 +583,10 @@
             // 
             this.bTrainKey.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bTrainKey.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bTrainKey.Location = new System.Drawing.Point(77, 89);
+            this.bTrainKey.Location = new System.Drawing.Point(120, 77);
+            this.bTrainKey.Margin = new System.Windows.Forms.Padding(4);
             this.bTrainKey.Name = "bTrainKey";
-            this.bTrainKey.Size = new System.Drawing.Size(40, 23);
+            this.bTrainKey.Size = new System.Drawing.Size(53, 28);
             this.bTrainKey.TabIndex = 57;
             this.bTrainKey.Text = "Key";
             this.bTrainKey.UseVisualStyleBackColor = true;
@@ -589,9 +597,10 @@
             // 
             this.rbShowActiveTrainLabels.AutoSize = true;
             this.rbShowActiveTrainLabels.Checked = true;
-            this.rbShowActiveTrainLabels.Location = new System.Drawing.Point(13, 22);
+            this.rbShowActiveTrainLabels.Location = new System.Drawing.Point(17, 27);
+            this.rbShowActiveTrainLabels.Margin = new System.Windows.Forms.Padding(4);
             this.rbShowActiveTrainLabels.Name = "rbShowActiveTrainLabels";
-            this.rbShowActiveTrainLabels.Size = new System.Drawing.Size(81, 19);
+            this.rbShowActiveTrainLabels.Size = new System.Drawing.Size(99, 22);
             this.rbShowActiveTrainLabels.TabIndex = 1;
             this.rbShowActiveTrainLabels.TabStop = true;
             this.rbShowActiveTrainLabels.Text = "Active only";
@@ -601,9 +610,10 @@
             // rbShowAllTrainLabels
             // 
             this.rbShowAllTrainLabels.AutoSize = true;
-            this.rbShowAllTrainLabels.Location = new System.Drawing.Point(13, 44);
+            this.rbShowAllTrainLabels.Location = new System.Drawing.Point(17, 54);
+            this.rbShowAllTrainLabels.Margin = new System.Windows.Forms.Padding(4);
             this.rbShowAllTrainLabels.Name = "rbShowAllTrainLabels";
-            this.rbShowAllTrainLabels.Size = new System.Drawing.Size(38, 19);
+            this.rbShowAllTrainLabels.Size = new System.Drawing.Size(44, 22);
             this.rbShowAllTrainLabels.TabIndex = 0;
             this.rbShowAllTrainLabels.Text = "All";
             this.rbShowAllTrainLabels.UseVisualStyleBackColor = true;
@@ -613,7 +623,8 @@
             // 
             this.nudDaylightOffsetHrs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.nudDaylightOffsetHrs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.nudDaylightOffsetHrs.Location = new System.Drawing.Point(817, 556);
+            this.nudDaylightOffsetHrs.Location = new System.Drawing.Point(1100, 778);
+            this.nudDaylightOffsetHrs.Margin = new System.Windows.Forms.Padding(4);
             this.nudDaylightOffsetHrs.Maximum = new decimal(new int[] {
             12,
             0,
@@ -625,7 +636,7 @@
             0,
             -2147483648});
             this.nudDaylightOffsetHrs.Name = "nudDaylightOffsetHrs";
-            this.nudDaylightOffsetHrs.Size = new System.Drawing.Size(40, 21);
+            this.nudDaylightOffsetHrs.Size = new System.Drawing.Size(53, 24);
             this.nudDaylightOffsetHrs.TabIndex = 44;
             this.nudDaylightOffsetHrs.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.nudDaylightOffsetHrs.Visible = false;
@@ -636,9 +647,10 @@
             this.lblDayLightOffsetHrs.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.lblDayLightOffsetHrs.AutoSize = true;
             this.lblDayLightOffsetHrs.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDayLightOffsetHrs.Location = new System.Drawing.Point(779, 534);
+            this.lblDayLightOffsetHrs.Location = new System.Drawing.Point(1050, 751);
+            this.lblDayLightOffsetHrs.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDayLightOffsetHrs.Name = "lblDayLightOffsetHrs";
-            this.lblDayLightOffsetHrs.Size = new System.Drawing.Size(111, 15);
+            this.lblDayLightOffsetHrs.Size = new System.Drawing.Size(136, 18);
             this.lblDayLightOffsetHrs.TabIndex = 45;
             this.lblDayLightOffsetHrs.Text = "Daylight offset (hrs)";
             this.lblDayLightOffsetHrs.Visible = false;
@@ -652,9 +664,10 @@
             // 
             this.bBackgroundColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.bBackgroundColor.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.bBackgroundColor.Location = new System.Drawing.Point(779, 590);
+            this.bBackgroundColor.Location = new System.Drawing.Point(1050, 820);
+            this.bBackgroundColor.Margin = new System.Windows.Forms.Padding(4);
             this.bBackgroundColor.Name = "bBackgroundColor";
-            this.bBackgroundColor.Size = new System.Drawing.Size(131, 23);
+            this.bBackgroundColor.Size = new System.Drawing.Size(175, 28);
             this.bBackgroundColor.TabIndex = 46;
             this.bBackgroundColor.Text = "Background color";
             this.bBackgroundColor.UseVisualStyleBackColor = true;
@@ -663,12 +676,13 @@
             // 
             // cbShowSwitches
             // 
-            this.cbShowSwitches.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowSwitches.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowSwitches.AutoSize = true;
             this.cbShowSwitches.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowSwitches.Location = new System.Drawing.Point(780, 260);
+            this.cbShowSwitches.Location = new System.Drawing.Point(11, 124);
+            this.cbShowSwitches.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowSwitches.Name = "cbShowSwitches";
-            this.cbShowSwitches.Size = new System.Drawing.Size(75, 19);
+            this.cbShowSwitches.Size = new System.Drawing.Size(90, 22);
             this.cbShowSwitches.TabIndex = 47;
             this.cbShowSwitches.Text = "Switches";
             this.cbShowSwitches.UseVisualStyleBackColor = true;
@@ -677,24 +691,26 @@
             // lblInstruction1
             // 
             this.lblInstruction1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblInstruction1.Location = new System.Drawing.Point(8, 672);
+            this.lblInstruction1.Location = new System.Drawing.Point(11, 868);
+            this.lblInstruction1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInstruction1.Name = "lblInstruction1";
-            this.lblInstruction1.Padding = new System.Windows.Forms.Padding(3);
-            this.lblInstruction1.Size = new System.Drawing.Size(327, 22);
+            this.lblInstruction1.Padding = new System.Windows.Forms.Padding(4);
+            this.lblInstruction1.Size = new System.Drawing.Size(436, 27);
             this.lblInstruction1.TabIndex = 48;
             this.lblInstruction1.Text = "To pan, drag with left mouse.";
             this.lblInstruction1.Visible = false;
             // 
             // cbShowTrainLabels
             // 
-            this.cbShowTrainLabels.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowTrainLabels.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowTrainLabels.AutoSize = true;
             this.cbShowTrainLabels.Checked = true;
             this.cbShowTrainLabels.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbShowTrainLabels.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowTrainLabels.Location = new System.Drawing.Point(790, 395);
+            this.cbShowTrainLabels.Location = new System.Drawing.Point(12, 214);
+            this.cbShowTrainLabels.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowTrainLabels.Name = "cbShowTrainLabels";
-            this.cbShowTrainLabels.Size = new System.Drawing.Size(60, 19);
+            this.cbShowTrainLabels.Size = new System.Drawing.Size(70, 22);
             this.cbShowTrainLabels.TabIndex = 50;
             this.cbShowTrainLabels.Text = "Name";
             this.cbShowTrainLabels.UseVisualStyleBackColor = true;
@@ -702,22 +718,26 @@
             // 
             // tWindow
             // 
+            this.tWindow.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.tWindow.Controls.Add(this.tDispatch);
             this.tWindow.Controls.Add(this.tTimetable);
             this.tWindow.Location = new System.Drawing.Point(0, 0);
+            this.tWindow.Margin = new System.Windows.Forms.Padding(4);
             this.tWindow.Name = "tWindow";
             this.tWindow.SelectedIndex = 0;
-            this.tWindow.Size = new System.Drawing.Size(923, 32);
+            this.tWindow.Size = new System.Drawing.Size(1235, 39);
             this.tWindow.TabIndex = 51;
             this.tWindow.SelectedIndexChanged += new System.EventHandler(this.tWindow_SelectedIndexChanged);
             // 
             // tDispatch
             // 
             this.tDispatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tDispatch.Location = new System.Drawing.Point(4, 22);
+            this.tDispatch.Location = new System.Drawing.Point(4, 25);
+            this.tDispatch.Margin = new System.Windows.Forms.Padding(4);
             this.tDispatch.Name = "tDispatch";
-            this.tDispatch.Padding = new System.Windows.Forms.Padding(3);
-            this.tDispatch.Size = new System.Drawing.Size(915, 6);
+            this.tDispatch.Padding = new System.Windows.Forms.Padding(4);
+            this.tDispatch.Size = new System.Drawing.Size(1227, 10);
             this.tDispatch.TabIndex = 0;
             this.tDispatch.Text = "Dispatch";
             this.tDispatch.UseVisualStyleBackColor = true;
@@ -725,22 +745,24 @@
             // tTimetable
             // 
             this.tTimetable.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.tTimetable.Location = new System.Drawing.Point(4, 22);
+            this.tTimetable.Location = new System.Drawing.Point(4, 25);
+            this.tTimetable.Margin = new System.Windows.Forms.Padding(4);
             this.tTimetable.Name = "tTimetable";
-            this.tTimetable.Padding = new System.Windows.Forms.Padding(3);
-            this.tTimetable.Size = new System.Drawing.Size(915, 6);
+            this.tTimetable.Padding = new System.Windows.Forms.Padding(4);
+            this.tTimetable.Size = new System.Drawing.Size(1212, 10);
             this.tTimetable.TabIndex = 1;
             this.tTimetable.Text = "Timetable";
             this.tTimetable.UseVisualStyleBackColor = true;
             // 
             // cbShowTrainState
             // 
-            this.cbShowTrainState.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowTrainState.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowTrainState.AutoSize = true;
             this.cbShowTrainState.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowTrainState.Location = new System.Drawing.Point(802, 415);
+            this.cbShowTrainState.Location = new System.Drawing.Point(12, 244);
+            this.cbShowTrainState.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowTrainState.Name = "cbShowTrainState";
-            this.cbShowTrainState.Size = new System.Drawing.Size(54, 19);
+            this.cbShowTrainState.Size = new System.Drawing.Size(64, 22);
             this.cbShowTrainState.TabIndex = 52;
             this.cbShowTrainState.Text = "State";
             this.cbShowTrainState.UseVisualStyleBackColor = true;
@@ -749,10 +771,11 @@
             // lblInstruction2
             // 
             this.lblInstruction2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblInstruction2.Location = new System.Drawing.Point(8, 693);
+            this.lblInstruction2.Location = new System.Drawing.Point(11, 894);
+            this.lblInstruction2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInstruction2.Name = "lblInstruction2";
-            this.lblInstruction2.Padding = new System.Windows.Forms.Padding(3);
-            this.lblInstruction2.Size = new System.Drawing.Size(327, 21);
+            this.lblInstruction2.Padding = new System.Windows.Forms.Padding(4);
+            this.lblInstruction2.Size = new System.Drawing.Size(436, 26);
             this.lblInstruction2.TabIndex = 53;
             this.lblInstruction2.Text = "To zoom, drag with left and right mouse or scroll mouse wheel.";
             this.lblInstruction2.Visible = false;
@@ -760,10 +783,11 @@
             // lblInstruction3
             // 
             this.lblInstruction3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblInstruction3.Location = new System.Drawing.Point(8, 714);
+            this.lblInstruction3.Location = new System.Drawing.Point(11, 920);
+            this.lblInstruction3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInstruction3.Name = "lblInstruction3";
-            this.lblInstruction3.Padding = new System.Windows.Forms.Padding(3);
-            this.lblInstruction3.Size = new System.Drawing.Size(327, 21);
+            this.lblInstruction3.Padding = new System.Windows.Forms.Padding(4);
+            this.lblInstruction3.Size = new System.Drawing.Size(436, 26);
             this.lblInstruction3.TabIndex = 54;
             this.lblInstruction3.Text = "To zoom in to a location, press Shift and click the left mouse.";
             this.lblInstruction3.Visible = false;
@@ -771,52 +795,80 @@
             // lblInstruction4
             // 
             this.lblInstruction4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.lblInstruction4.Location = new System.Drawing.Point(8, 735);
+            this.lblInstruction4.Location = new System.Drawing.Point(11, 946);
+            this.lblInstruction4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblInstruction4.Name = "lblInstruction4";
-            this.lblInstruction4.Padding = new System.Windows.Forms.Padding(3);
-            this.lblInstruction4.Size = new System.Drawing.Size(327, 21);
+            this.lblInstruction4.Padding = new System.Windows.Forms.Padding(4);
+            this.lblInstruction4.Size = new System.Drawing.Size(436, 26);
             this.lblInstruction4.TabIndex = 55;
             this.lblInstruction4.Text = "To zoom out of a location, press Alt and click the left mouse.";
             this.lblInstruction4.Visible = false;
             // 
             // cbShowPlatforms
             // 
-            this.cbShowPlatforms.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.cbShowPlatforms.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.cbShowPlatforms.AutoSize = true;
             this.cbShowPlatforms.Checked = true;
             this.cbShowPlatforms.CheckState = System.Windows.Forms.CheckState.Checked;
             this.cbShowPlatforms.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.cbShowPlatforms.Location = new System.Drawing.Point(780, 200);
+            this.cbShowPlatforms.Location = new System.Drawing.Point(11, 34);
+            this.cbShowPlatforms.Margin = new System.Windows.Forms.Padding(4);
             this.cbShowPlatforms.Name = "cbShowPlatforms";
-            this.cbShowPlatforms.Size = new System.Drawing.Size(78, 19);
+            this.cbShowPlatforms.Size = new System.Drawing.Size(94, 22);
             this.cbShowPlatforms.TabIndex = 56;
             this.cbShowPlatforms.Text = "Platforms";
             this.cbShowPlatforms.UseVisualStyleBackColor = true;
             this.cbShowPlatforms.Visible = false;
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.pictureBox1.Location = new System.Drawing.Point(0, 0);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(1235, 171);
+            this.pictureBox1.TabIndex = 57;
+            this.pictureBox1.TabStop = false;
+            // 
+            // lblShow
+            // 
+            this.lblShow.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblShow.AutoSize = true;
+            this.lblShow.Controls.Add(this.cbShowSidings);
+            this.lblShow.Controls.Add(this.cbShowPlatforms);
+            this.lblShow.Controls.Add(this.cbShowPlatformLabels);
+            this.lblShow.Controls.Add(this.cbShowSignals);
+            this.lblShow.Controls.Add(this.cbShowTrainState);
+            this.lblShow.Controls.Add(this.cbShowSignalState);
+            this.lblShow.Controls.Add(this.cbShowTrainLabels);
+            this.lblShow.Controls.Add(this.cbShowSwitches);
+            this.lblShow.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblShow.Location = new System.Drawing.Point(1050, 246);
+            this.lblShow.Margin = new System.Windows.Forms.Padding(4);
+            this.lblShow.Name = "lblShow";
+            this.lblShow.Padding = new System.Windows.Forms.Padding(4);
+            this.lblShow.Size = new System.Drawing.Size(181, 302);
+            this.lblShow.TabIndex = 58;
+            this.lblShow.TabStop = false;
+            this.lblShow.Text = "Show";
+            this.lblShow.Visible = false;
+            // 
             // DispatchViewer
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(923, 768);
-            this.Controls.Add(this.cbShowPlatforms);
+            this.ClientSize = new System.Drawing.Size(1235, 986);
+            this.Controls.Add(this.lblShow);
             this.Controls.Add(this.lblInstruction4);
             this.Controls.Add(this.lblInstruction3);
             this.Controls.Add(this.lblInstruction2);
-            this.Controls.Add(this.cbShowTrainState);
-            this.Controls.Add(this.cbShowTrainLabels);
             this.Controls.Add(this.lblInstruction1);
-            this.Controls.Add(this.cbShowSwitches);
             this.Controls.Add(this.bBackgroundColor);
             this.Controls.Add(this.lblDayLightOffsetHrs);
             this.Controls.Add(this.nudDaylightOffsetHrs);
             this.Controls.Add(this.gbTrainLabels);
-            this.Controls.Add(this.cbShowSignalState);
-            this.Controls.Add(this.cbShowSignals);
-            this.Controls.Add(this.cbShowSidings);
-            this.Controls.Add(this.cbShowPlatformLabels);
-            this.Controls.Add(this.lblShow);
             this.Controls.Add(this.lblSimulationTime);
             this.Controls.Add(this.lblSimulationTimeText);
             this.Controls.Add(this.btnSeeInGame);
@@ -845,10 +897,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.windowSizeUpDown);
             this.Controls.Add(this.refreshButton);
-            this.Controls.Add(this.pbCanvas);
             this.Controls.Add(this.tWindow);
+            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pbCanvas);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "DispatchViewer";
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Map Window";
             this.Leave += new System.EventHandler(this.DispatcherLeave);
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).EndInit();
@@ -857,6 +912,9 @@
             this.gbTrainLabels.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudDaylightOffsetHrs)).EndInit();
             this.tWindow.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            this.lblShow.ResumeLayout(false);
+            this.lblShow.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -895,7 +953,6 @@
         public System.Windows.Forms.Button btnSeeInGame;
         public System.Windows.Forms.Label lblSimulationTimeText;
         public System.Windows.Forms.Label lblSimulationTime;
-        public System.Windows.Forms.Label lblShow;
         public System.Windows.Forms.CheckBox cbShowPlatformLabels;
         public System.Windows.Forms.CheckBox cbShowSidings;
         public System.Windows.Forms.CheckBox cbShowSignals;
@@ -916,5 +973,7 @@
         private System.Windows.Forms.Label lblInstruction4;
         public System.Windows.Forms.CheckBox cbShowPlatforms;
         public System.Windows.Forms.Button bTrainKey;
+        public System.Windows.Forms.PictureBox pictureBox1;
+        public System.Windows.Forms.GroupBox lblShow;
     }
 }

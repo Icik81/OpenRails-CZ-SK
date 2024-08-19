@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-07-29 18:36:33+0200\n"
-"PO-Revision-Date: 2024-07-29 18:36:33+0200\n"
+"POT-Creation-Date: 2024-08-19 08:57:03+0200\n"
+"PO-Revision-Date: 2024-08-19 08:57:03+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -217,68 +217,68 @@ msgid "MSG to Server"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:570
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:256
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:263
 msgid "MSG to All"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:121
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:126
 msgid "View Train"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:164
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:171
 msgid "m"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:185
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:193
 msgid "Remove"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:199
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:207
 msgid "Auto Switch"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:213
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:221
 msgid "Show Avatars"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:241
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:249
 msgid "MSG to Selected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:270
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:276
 #: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:88
 msgid "Compose MSG"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:282
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:289
 msgid "Res"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:295
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:301
 msgid "Reply to Selected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:309
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:315
 msgid "Draw Path"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:356
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:364
 msgid "Pick Signals"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:369
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:377
 msgid "Pick Switches"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:382
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:390
 msgid "Can Join"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:405
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:414
 msgid "Assist"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:417
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:426
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:861
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:875
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:649
@@ -286,116 +286,116 @@ msgstr ""
 msgid "Normal"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:429
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:439
 msgid "Follow"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:443
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:453
 msgid "Penalty"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:457
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:467
 msgid "Prefer Green"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:470
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:481
 msgid "See in Game"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:482
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:494
 msgid "Simulation Time"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:493
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:506
 msgid "SimulationTime"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:505
-msgid "Show:"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:517
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:519
 msgid "Platform labels"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:530
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:533
 msgid "Siding labels"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:543
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:547
 msgid "Signals"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:556
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:561
 msgid "Signal state"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:572
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:579
 msgid "Train labels"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:583
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:591
 msgid "Key"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:597
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:606
 msgid "Active only"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:608
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:618
 msgid "All"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:643
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:655
 msgid "Daylight offset (hrs)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:659
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:672
 msgid "Background color"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:673
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:687
 msgid "Switches"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:685
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:700
 msgid "To pan, drag with left mouse."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:699
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:715
 msgid "Name"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:722
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:742
 msgid "Dispatch"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:733
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:754
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
 msgid "Timetable"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:745
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:767
 msgid "State"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:757
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:780
 msgid "To zoom, drag with left and right mouse or scroll mouse wheel."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:768
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:792
 msgid "To zoom in to a location, press Shift and click the left mouse."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:779
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:804
 msgid "To zoom out of a location, press Alt and click the left mouse."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:793
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:819
 msgid "Platforms"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:852
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:854
+msgid "Show"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:907
 msgid "Map Window"
 msgstr ""
 
@@ -422,7 +422,7 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:204
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:205
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:206
-#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:55
+#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:61
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:356
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:864
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:658
@@ -579,12 +579,12 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:210
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:213
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:215
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:220
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:223
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:225
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:275
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:278
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:280
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:285
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:288
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:290
 msgid "Car ID"
 msgstr ""
 
@@ -667,7 +667,7 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:194
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:230
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:106
-#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:67
+#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:73
 msgid "Close window"
 msgstr ""
 
@@ -1001,14 +1001,22 @@ msgid "+"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:51
+msgid "++"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:54
 msgid "Speed: "
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:58
+msgid "--"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:64
 msgid "Start"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:63
+#: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:69
 msgid "Reset"
 msgstr ""
 
@@ -1052,10 +1060,10 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:143
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:401
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:414
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:285
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:517
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:606
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:609
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:287
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:522
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:612
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:615
 msgid "(missed)"
 msgstr ""
 
@@ -1517,7 +1525,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:568
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:612
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:262
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:327
 msgid "Length"
 msgstr ""
 
@@ -2064,7 +2072,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1506
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1536
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:263
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:328
 msgid "Mass"
 msgstr ""
 
@@ -2416,7 +2424,7 @@ msgid "Train static."
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:238
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:477
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:480
 msgid "Train not active."
 msgstr ""
 
@@ -2425,7 +2433,7 @@ msgid " Activated by other train."
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:248
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:486
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:489
 msgid " Activation time : "
 msgstr ""
 
@@ -2433,41 +2441,41 @@ msgstr ""
 msgid "Train has terminated."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:313
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:539
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:315
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:544
 msgid "No more stations."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:369
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:372
 msgid "Transfer units at next station with train "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:379
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:382
 msgid "Transfer units with train "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:411
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:417
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:414
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:420
 msgid "Train is to attach to : "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:419
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:422
 msgid " ; other train not yet ready"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:428
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:431
 msgid "Train is to pickup train at end of path"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:433
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:436
 msgid "Pick up train ahead"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:443
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:446
 msgid "Transfer units with train ahead"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:698
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:704
 msgid "Activity completed."
 msgstr ""
 
@@ -3192,19 +3200,19 @@ msgstr ""
 msgid "Player train can't be switched when in turntable not aligned to a track"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:43
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:52
 msgid "Train Operations"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:178
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:221
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:264
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:329
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:280
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:345
 msgid "Real braking percentages"
 msgstr ""
 

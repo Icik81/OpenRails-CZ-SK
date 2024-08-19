@@ -84,7 +84,7 @@ namespace Orts.Viewer3D.Debugging
             {
                 F.chkShowAvatars.Checked = Program.Simulator.Settings.ShowAvatar;
                 F.pbCanvas.Location = new System.Drawing.Point(F.pbCanvas.Location.X, F.label1.Location.Y + 18);
-                F.refreshButton.Text = "View Self";
+                //F.refreshButton.Text = Simulator.Catalog.GetString("View Self");
             }
 
             F.chkDrawPath.Visible = dispatchView;
