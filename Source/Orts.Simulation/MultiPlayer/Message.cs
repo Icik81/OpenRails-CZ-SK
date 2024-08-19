@@ -2270,6 +2270,33 @@ namespace Orts.MultiPlayer
 
 
             // Diesel
+            else if (EventName == "POWERONOFF")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.EnginePowerOff);
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.EnginePowerOn);
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "STARTINITMOTOR")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.StartUpMotorStop);
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.StartUpMotor);
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "INITMOTORIDLE")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.InitMotorIdle);
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "MOTORSTOP")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.StartUpMotorStop);
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "MOTORSTOPBREAK")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).SignalEvent(Event.StartUpMotorBreak);
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "VARIABLE4")
             {
                 if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).Variable4 = EventState / 1000f;
@@ -2303,6 +2330,11 @@ namespace Orts.MultiPlayer
             else if (EventName == "REALRPM")
             {
                 if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).DieselEngines[0].RealRPM = EventState;                
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "IDLERPM")
+            {
+                if (t.LeadLocomotive != null && (t.LeadLocomotive as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.LeadLocomotive)).DieselEngines[0].IdleRPM = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "DEMANDEDRPM")

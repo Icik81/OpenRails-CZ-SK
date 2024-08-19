@@ -17,6 +17,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
@@ -1292,7 +1293,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             if ((ThrottleRPMTab != null) && (EngineStatus == Status.Running))
             {
-                DemandedRPM = ThrottleRPMTab[demandedThrottlePercent];
+                DemandedRPM = ThrottleRPMTab[demandedThrottlePercent];                
             }
 
             if (GearBox != null)
@@ -1350,17 +1351,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {                    
                     locomotive.StopButtonReleased = false;
                     locomotive.SignalEvent(Event.InitMotorIdle);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                 }
                 if (locomotive.StopButtonReleased && RealRPM == 0)
                 {
                     locomotive.StopButtonReleased = false;
-                }
-
+                }                
                 if (RealRPM < DemandedRPM)
-                {
-                    MPExhaustParticles = 5;
-                    MPExhaustMagnitude = 5;
-
+                {                    
                     dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
                     if (dRPM > 1.0f) //The forumula above generates a floating point error that we have to compensate for so we can't actually test for zero.
                     {
@@ -1377,19 +1375,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
                 else if (RealRPM > DemandedRPM)
-                {
+                {                    
                     dRPM = (float)Math.Max(-Math.Sqrt(2 * RateOfChangeDownRPMpSS * (RealRPM - DemandedRPM)), -ChangeDownRPMpS);
                     ExhaustParticles = (InitialExhaust + ((ExhaustRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
                     ExhaustMagnitude = (InitialMagnitude + ((MagnitudeRange * (RealRPM - IdleRPM) / RPMRange))) * ExhaustDecelReduction;
                     ExhaustColor = ExhaustDecelColor;
                 }
             }
-                // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???
-                //            if (DemandedRPM < RealRPM && (OutputPowerW > (1.1f * CurrentDieselOutputPowerW)) && (EngineStatus == Status.Running))
-                //            {
-                //                dRPM = (CurrentDieselOutputPowerW - OutputPowerW) / MaximumDieselPowerW * 0.01f * RateOfChangeDownRPMpSS;
-                //            }
-                // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
+            MPExhaustParticles = ExhaustParticles;
+            MPExhaustMagnitude = ExhaustMagnitude;
+
+            // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???
+            //            if (DemandedRPM < RealRPM && (OutputPowerW > (1.1f * CurrentDieselOutputPowerW)) && (EngineStatus == Status.Running))
+            //            {
+            //                dRPM = (CurrentDieselOutputPowerW - OutputPowerW) / MaximumDieselPowerW * 0.01f * RateOfChangeDownRPMpSS;
+            //            }
+            // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
 
 
             // Icik
@@ -1771,7 +1772,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
                 {
                     locomotive.DieselEngines[0].Stop();
-                    locomotive.SignalEvent(Event.StartUpMotorBreak);
+                    locomotive.SignalEvent(Event.StartUpMotorBreak);                    
                 }
 
                 if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))

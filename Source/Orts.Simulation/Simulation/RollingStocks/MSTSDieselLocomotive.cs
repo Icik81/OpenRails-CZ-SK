@@ -1131,6 +1131,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     AITimeMotorRunning += elapsedClockSeconds;                    
                     SignalEvent(Event.InitMotorIdle);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                 }
 
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
@@ -1160,6 +1161,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselEngines[0].AIStartTimeToGo == 10)
                     {
                         SignalEvent(Event.InitMotorIdle);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                     }
                     DieselEngines[0].AIStartTimeToGo -= elapsedClockSeconds;
                     DieselEngines[0].ExhaustColor = Color.TransparentBlack;
@@ -1198,7 +1200,7 @@ namespace Orts.Simulation.RollingStocks
                             if (DieselStartTime == 0)
                             {
                                 SignalEvent(Event.StartUpMotor);
-                                SignalEvent(Event.MirrorOpen);
+                                SignalEvent(Event.MirrorOpen);                                
                             }
                             //Simulator.Confirmer.Information("Motor se startuje..." + UiD);
                         }
@@ -1219,7 +1221,9 @@ namespace Orts.Simulation.RollingStocks
                     else
                     {
                         if (DieselStartTime != 0)
+                        {
                             SignalEvent(Event.StartUpMotorStop);
+                        }
                         DieselStartTime = 0;
                     }
                 }
@@ -1239,7 +1243,10 @@ namespace Orts.Simulation.RollingStocks
             }
             // Spustí inicializační trigger zvuku volnoběhu
             if (LocoSetUpTimer < 0.5f && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+            {
                 SignalEvent(Event.InitMotorIdle);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
+            }
 
             // Při vypnutí baterií motor vypne
             if (LocoSetUpTimer > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
@@ -1287,7 +1294,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselStartTime == 0)
                     {
                         SignalEvent(Event.StartUpMotor);
-                        SignalEvent(Event.MirrorOpen);
+                        SignalEvent(Event.MirrorOpen);                        
                     }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine is starting…"));
                 }
@@ -1295,7 +1302,7 @@ namespace Orts.Simulation.RollingStocks
                 if (DieselStartTime > DieselStartDelayTemp)
                 {
                     DieselStartDelayDone = true;
-                    SignalEvent(Event.StartUpMotorStop);
+                    SignalEvent(Event.StartUpMotorStop);                    
                     DieselStartTime = 0;
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
                     {
@@ -1309,7 +1316,9 @@ namespace Orts.Simulation.RollingStocks
             else
             {
                 if (DieselStartTime != 0)
-                    SignalEvent(Event.StartUpMotorStop);
+                {
+                    SignalEvent(Event.StartUpMotorStop);                    
+                }
                 DieselStartTime = 0;
             }
 

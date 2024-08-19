@@ -15338,6 +15338,8 @@ namespace Orts.Simulation.RollingStocks
             CabRefreshCycle++;
         }
 
+        bool PowerOnIsON;
+        bool StartButtonPressedON;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
@@ -15345,19 +15347,54 @@ namespace Orts.Simulation.RollingStocks
                 // Diesel
                 if (this as MSTSDieselLocomotive != null)
                 {
+           
+                    if (!PowerOn && !PowerOnIsON)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 0)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "MOTORSTOP", 1).ToString()));
+                        PowerOnIsON = true;
+                    }
+                    if (PowerOn && PowerOnIsON)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 1)).ToString());                        
+                        PowerOnIsON = false;
+                    }
+                    if (!PowerOn && StartButtonPressed && !StartButtonPressedON)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "STARTINITMOTOR", 1)).ToString());
+                        StartButtonPressedON = true;
+                    }
+                    if (!StartButtonPressed && StartButtonPressedON)
+                    {                        
+                        StartButtonPressedON = false;
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "STARTINITMOTOR", 0)).ToString());
+                    }
+                    if (!PowerOn)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTPARTICLES", 0)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTMAGNITUDE", 0)).ToString());
+                    }
+                    else
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTPARTICLES", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustParticles * 10f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTMAGNITUDE", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustMagnitude * 10f))).ToString());
+                    }
+
+
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE4", (int)((this as MSTSDieselLocomotive).Variable4 * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE8", (int)((this as MSTSDieselLocomotive).Variable8 * 1000f))).ToString());
+                    
 
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "IDLERPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DEMANDEDRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].DemandedRPM)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM0", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM0)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg * 10f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg * 10f))).ToString());
 
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTPARTICLES", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustParticles * 10f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTMAGNITUDE", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustMagnitude * 10f))).ToString());
+                    
 
 
                     if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates)
