@@ -821,6 +821,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool DieselEngineConfigured = false; // flag to indicate that the user has configured a diesel engine prime mover code block in the ENG file
 
         // Icik
+        public float MPExhaustParticles = 10.0f;
+        public float MPExhaustMagnitude = 1.5f;
         bool FirstFrame = true;
         public bool OnePushStart;
         public bool OnePushStop;
@@ -1356,6 +1358,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 if (RealRPM < DemandedRPM)
                 {
+                    MPExhaustParticles = 5;
+                    MPExhaustMagnitude = 5;
+
                     dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
                     if (dRPM > 1.0f) //The forumula above generates a floating point error that we have to compensate for so we can't actually test for zero.
                     {

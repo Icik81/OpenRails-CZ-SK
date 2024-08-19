@@ -15342,6 +15342,57 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MPManager.IsMultiPlayer())
             {
+                // Diesel
+                if (this as MSTSDieselLocomotive != null)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE4", (int)((this as MSTSDieselLocomotive).Variable4 * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE8", (int)((this as MSTSDieselLocomotive).Variable8 * 1000f))).ToString());
+
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DEMANDEDRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].DemandedRPM)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM0", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM0)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg * 10f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg * 10f))).ToString());
+
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTPARTICLES", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustParticles * 10f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTMAGNITUDE", (int)((this as MSTSDieselLocomotive).DieselEngines[0].MPExhaustMagnitude * 10f))).ToString());
+
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTWATERPLATES", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTWATERPLATES", 1)).ToString());
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTOILPLATES", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTOILPLATES", 1)).ToString());
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLINGLOW", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLINGLOW", 1)).ToString());
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLING", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLING", 1)).ToString());
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLINGLOW", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLINGLOW", 1)).ToString());
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 0)).ToString());
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 1)).ToString());
+                }
+
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this).Variable5 * 1000f))).ToString());
+
                 if (LocoStation == 1)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
                 if (LocoStation == 2)

@@ -991,7 +991,10 @@ namespace Orts.Simulation.RollingStocks
                     DoorRightIsOpened = false;
                 }
 
-
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE10", (int)((this).Variable10 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE12", (int)((this).Variable12 * 1000f))).ToString());
 
             }
         }

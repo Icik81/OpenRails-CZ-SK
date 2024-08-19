@@ -33,6 +33,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
@@ -524,11 +525,22 @@ namespace Orts.Simulation.RollingStocks
         {
             DieselEngines.Update(elapsedClockSeconds);
 
-            ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].ExhaustParticles);
-            ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].ExhaustMagnitude);
-            ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
-            ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
-            ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
+            if (MPManager.IsMultiPlayer())
+            {
+                ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].MPExhaustParticles);
+                ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].MPExhaustMagnitude);
+                ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
+                ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
+                ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
+            }
+            else
+            {
+                ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].ExhaustParticles);
+                ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].ExhaustMagnitude);
+                ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
+                ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
+                ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
+            }
 
             PowerOn = DieselEngines.PowerOn;
             AuxPowerOn = DieselEngines.PowerOn;
