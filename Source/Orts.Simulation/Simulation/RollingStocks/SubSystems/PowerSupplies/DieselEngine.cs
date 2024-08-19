@@ -824,6 +824,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         // Icik
         public float MPExhaustParticles = 10.0f;
         public float MPExhaustMagnitude = 1.5f;
+        public int MPExhaustColorR = 0;
+        public int MPExhaustColorG = 0;
+        public int MPExhaustColorB = 0;      
+        public float MPRealRPM;
+        public float MPDemandedRPM;
+        public float MPIdleRPM;
         bool FirstFrame = true;
         public bool OnePushStart;
         public bool OnePushStop;
@@ -1382,8 +1388,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     ExhaustColor = ExhaustDecelColor;
                 }
             }
-            MPExhaustParticles = ExhaustParticles;
-            MPExhaustMagnitude = ExhaustMagnitude;
 
             // Uncertain about the purpose of this code piece?? Does there need to be a corresponding code for RateOfChangeUpRPMpSS???
             //            if (DemandedRPM < RealRPM && (OutputPowerW > (1.1f * CurrentDieselOutputPowerW)) && (EngineStatus == Status.Running))

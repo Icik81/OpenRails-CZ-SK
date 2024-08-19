@@ -524,23 +524,11 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             DieselEngines.Update(elapsedClockSeconds);
-
-            if (MPManager.IsMultiPlayer())
-            {
-                ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].MPExhaustParticles);
-                ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].MPExhaustMagnitude);
-                ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
-                ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
-                ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
-            }
-            else
-            {
-                ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].ExhaustParticles);
-                ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].ExhaustMagnitude);
-                ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
-                ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
-                ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
-            }
+            ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].ExhaustParticles);
+            ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].ExhaustMagnitude);
+            ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
+            ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
+            ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
 
             PowerOn = DieselEngines.PowerOn;
             AuxPowerOn = DieselEngines.PowerOn;
