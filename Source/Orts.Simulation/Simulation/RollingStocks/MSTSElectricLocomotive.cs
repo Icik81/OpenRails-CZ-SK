@@ -2862,22 +2862,26 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1UpAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1DownAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 0)).ToString());
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2UpAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 1)).ToString());
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2DownAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 0)).ToString());
                             TPanto2AC = 0;
                         }
                     }
@@ -2886,22 +2890,26 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantographs[3].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1UpDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 1)).ToString());
                             TPanto1DC = 1;
                         }
                         if (Pantographs[3].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1DownDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 0)).ToString());
                             TPanto1DC = 0;
                         }
 
                         if (Pantographs[4].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2UpDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 1)).ToString());
                             TPanto2DC = 1;
                         }
                         if (Pantographs[4].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2DownDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 0)).ToString());
                             TPanto2DC = 0;
                         }
                     }
@@ -2913,22 +2921,26 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1UpAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1DownAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 0)).ToString());
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2UpAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2DownAC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 0)).ToString());
                             TPanto2AC = 0;
                         }
                     }
@@ -2937,22 +2949,26 @@ namespace Orts.Simulation.RollingStocks
                         if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1UpDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 1)).ToString());
                             TPanto1DC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
                         {
                             SignalEvent(Event.Pantograph1DownDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 0)).ToString());
                             TPanto1DC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2UpDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 1)).ToString());
                             TPanto2DC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
                         {
                             SignalEvent(Event.Pantograph2DownDC);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 0)).ToString());
                             TPanto2DC = 0;
                         }
                     }
@@ -2979,16 +2995,19 @@ namespace Orts.Simulation.RollingStocks
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && TCircuitBreakerAC == 2)
             {
                 SignalEvent(Event.CircuitBreakerOpenAC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 0)).ToString());
                 TCircuitBreakerAC = 0;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && TCircuitBreakerAC == 0)
             {
                 SignalEvent(Event.CircuitBreakerClosingAC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 1)).ToString());
                 TCircuitBreakerAC = 1;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && TCircuitBreakerAC == 1)
             {
                 SignalEvent(Event.CircuitBreakerClosedAC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 2)).ToString());
                 TCircuitBreakerAC = 2;
             }
 
@@ -3046,16 +3065,19 @@ namespace Orts.Simulation.RollingStocks
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && TCircuitBreakerDC == 2)
             {
                 SignalEvent(Event.CircuitBreakerOpenDC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVDC", 0)).ToString());
                 TCircuitBreakerDC = 0;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && TCircuitBreakerDC == 0)
             {
                 SignalEvent(Event.CircuitBreakerClosingDC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVDC", 1)).ToString());
                 TCircuitBreakerDC = 1;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && TCircuitBreakerDC == 1)
             {
                 SignalEvent(Event.CircuitBreakerClosedDC);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVDC", 2)).ToString());
                 TCircuitBreakerDC = 2;
             }
 

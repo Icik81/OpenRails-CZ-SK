@@ -16,6 +16,7 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Orts.Common;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
@@ -309,14 +310,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 {
                     case CircuitBreakerState.Open:
                         SignalEvent(Event.CircuitBreakerOpen);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 0)).ToString());
                         break;
 
                     case CircuitBreakerState.Closing:
                         SignalEvent(Event.CircuitBreakerClosing);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 1)).ToString());
                         break;
 
                     case CircuitBreakerState.Closed:
                         SignalEvent(Event.CircuitBreakerClosed);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 2)).ToString());
                         break;
                 }
             }
@@ -392,15 +396,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 switch (CurrentState())
                 {
                     case CircuitBreakerState.Open:
-                        if (battery) SignalEvent(Event.CircuitBreakerOpen);
+                        if (battery)
+                        {
+                            SignalEvent(Event.CircuitBreakerOpen);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 0)).ToString());
+                        }
                         break;
 
                     case CircuitBreakerState.Closing:
                         SignalEvent(Event.CircuitBreakerClosing);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 1)).ToString());
                         break;
 
                     case CircuitBreakerState.Closed:
                         SignalEvent(Event.CircuitBreakerClosed);
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HV", 2)).ToString());
                         break;
                 }
             }

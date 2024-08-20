@@ -55,6 +55,7 @@ using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Properties;
 using Orts.Simulation.RollingStocks;
+using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.Signalling;
@@ -1728,7 +1729,7 @@ namespace Orts.Simulation.Physics
         public int[] NumbersOccupiedTrain = new int[20];
         float TimeToRequestSignal;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {
+        {            
             GeneratePaxDynamically();
             // Icik
             if (IsPlayerDriven)

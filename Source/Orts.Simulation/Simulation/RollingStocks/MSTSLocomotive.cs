@@ -15420,17 +15420,32 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 1)).ToString());
                 }
 
-                
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1", (int)((this).Variable1 * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2", (int)((this).Variable2 * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3", (int)((this).Variable3 * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3AC", (int)((this).Variable3AC * 1000f))).ToString());
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3DC", (int)((this).Variable3DC * 1000f))).ToString());
+                // Elektriky
+                if (this as MSTSElectricLocomotive != null)
+                {
+                    if (!PowerOn && !PowerOnIsON)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 0)).ToString());                        
+                        PowerOnIsON = true;
+                    }
+                    if (PowerOn && PowerOnIsON)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());
+                        PowerOnIsON = false;
+                    }                                        
+
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3AC", (int)((this).Variable3AC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3DC", (int)((this).Variable3DC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 1000f))).ToString());
+                }
+                                
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this).Variable5 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE12", (int)((this).Variable12 * 1000f))).ToString());
 
                 if (!CompressorIsOn)                
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 0)).ToString());                
