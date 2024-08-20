@@ -953,18 +953,18 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MPManager.IsMultiPlayer())
             {
-                // Určí index aktuálního vozu
-                int CarIndex = 0;
+                //Určí index aktuálního vozu
+                int CarIndex = 1000;
                 for (int i = 0; i < Train.Cars.Count; i++)
                 {
-                    if (Train.Cars[i].CarID == CarID)
+                    if (Train.Cars[i].UiD == UiD)
                     {
                         CarIndex = i;
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());
                         break;
                     }
                 }
-                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());
-                
+
                 // Hodnota dynamického nákladu
                 if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
@@ -2221,6 +2221,7 @@ namespace Orts.Simulation.RollingStocks
             base.Update(elapsedClockSeconds);
 
             // Icik
+            MP_Messages();
             DetermineFirstCarHeadOfTrain();
             ToggleHeatingCarOperationsWindow();
             ToggleBrakeCarDeactivateCarOperationsWindow();
@@ -2554,8 +2555,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         private void UpdateTrainBaseResistance()
-        {
-            MP_Messages();
+        {            
             ORTSDavisSetUp();
             ORTSWagonResistanceTypes();
 

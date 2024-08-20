@@ -145,6 +145,7 @@ namespace Orts.Simulation.Physics
         public int TrainDerailCarPosition;
         public float TrainDerailmentTimer;
         public int WagonIndex = -1;
+        public int LocoIndex = -1;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -562,6 +563,13 @@ namespace Orts.Simulation.Physics
         }
 
         // Icik
+        public TrainCar TrainLoco
+        {
+            get
+            {
+                return LocoIndex >= 0 && LocoIndex < Cars.Count ? Cars[LocoIndex] : null;
+            }
+        }
         public TrainCar TrainWagon
         {
             get

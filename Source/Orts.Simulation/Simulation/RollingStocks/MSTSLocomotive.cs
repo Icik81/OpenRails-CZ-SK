@@ -6631,7 +6631,8 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            // Icik            
+            // Icik
+            MP_Messages();
             LocomotiveTypeDefinition();
             SetCarLightsPowerOn();
             CarFrameUpdate(elapsedClockSeconds);            
@@ -6818,8 +6819,7 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakePercent();
                 MasterSlave();
                 WireHeightSwitching();
-                TractionSwitch();
-                MP_Messages();
+                TractionSwitch();                
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -15344,6 +15344,17 @@ namespace Orts.Simulation.RollingStocks
         {
             if (MPManager.IsMultiPlayer())
             {
+                int LocoIndex = 1000;
+                for (int i = 0; i < Train.Cars.Count; i++)
+                {
+                    if (Train.Cars[i].UiD == UiD && (this is MSTSLocomotive))
+                    {
+                        LocoIndex = i;
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOINDEX", LocoIndex)).ToString());
+                        break;
+                    }
+                }
+
                 // Diesel
                 if (this as MSTSDieselLocomotive != null)
                 {
