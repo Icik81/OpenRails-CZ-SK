@@ -4632,6 +4632,7 @@ namespace Orts.Simulation.AIs
                 attachTrain.CheckFreight();
                 attachTrain.activityClearingDistanceM = attachTrain.Cars.Count < standardTrainMinCarNo ? shortClearingDistanceM : standardClearingDistanceM;
                 attachCar.SignalEvent(Event.Couple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
 
                 // <CSComment> as of now it seems to run better without this initialization
                 //if (MovementState != AI_MOVEMENT_STATE.AI_STATIC)
@@ -4747,6 +4748,7 @@ namespace Orts.Simulation.AIs
             CheckFreight();
             activityClearingDistanceM = Cars.Count < standardTrainMinCarNo ? shortClearingDistanceM : standardClearingDistanceM;
             attachCar.SignalEvent(Event.Couple);
+            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
 
             // remove attached train
             if (attachTrain.TrainType == TRAINTYPE.AI)
@@ -4824,6 +4826,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 Cars[0].SignalEvent(Event.Couple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
             }
             else
             {
@@ -4854,6 +4857,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 Cars[Cars.Count - 1].SignalEvent(Event.Couple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
             }
             NumberOfCarsToLeaveOrSteal = 0;
             TerminateCoupling(attachTrain, thisTrainFront, attachTrainFront, passedLength);
@@ -4904,6 +4908,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 attachTrain.Cars[0].SignalEvent(Event.Couple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
             }
             else
             {
@@ -4935,6 +4940,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 attachTrain.Cars[attachTrain.Cars.Count - 1].SignalEvent(Event.Couple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
             }
             NumberOfCarsToLeaveOrSteal = 0;
             TerminateCoupling(attachTrain, thisTrainFront, attachTrainFront, -stealedLength);

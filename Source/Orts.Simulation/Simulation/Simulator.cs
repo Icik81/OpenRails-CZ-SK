@@ -1144,6 +1144,7 @@ namespace Orts.Simulation
                         if (TryToCoupleBehind && d1 <= MinimalDistanceToCouple)
                         {
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             foreach (TrainCar car in train.Cars)
                             {
                                 drivenTrain.Cars.Add(car);
@@ -1162,6 +1163,7 @@ namespace Orts.Simulation
                         if (TryToCoupleBehind && d2 <= MinimalDistanceToCouple)
                         {
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
                             {
                                 TrainCar car = train.Cars[i];
@@ -1184,7 +1186,8 @@ namespace Orts.Simulation
                             lead = drivenTrain.LeadLocomotive;
                             if (lead == null)
                             {
-                                train.LastCar.SignalEvent(Event.Coupling);
+                                train.LastCar.SignalEvent(Event.Coupling);                                
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                                 lead = train.LeadLocomotive;                                
                                 for (int i = 0; i < drivenTrain.Cars.Count; ++i)
                                 {
@@ -1199,6 +1202,7 @@ namespace Orts.Simulation
                             else
                             {
                                 drivenTrain.FirstCar.SignalEvent(Event.Coupling);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                                 lead = drivenTrain.LeadLocomotive;
                                 for (int i = 0; i < train.Cars.Count; ++i)
                                 {
@@ -1221,6 +1225,7 @@ namespace Orts.Simulation
                         if (TryToCoupleFront && d2 <= MinimalDistanceToCouple)
                         {
                             drivenTrain.FirstCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             lead = drivenTrain.LeadLocomotive;
                             for (int i = 0; i < train.Cars.Count; ++i)
                             {
@@ -1300,6 +1305,7 @@ namespace Orts.Simulation
                             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
 
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             foreach (TrainCar car in train.Cars)
                             {
                                 drivenTrain.Cars.Add(car);
@@ -1363,6 +1369,7 @@ namespace Orts.Simulation
                             if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
 
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
                             {
                                 TrainCar car = train.Cars[i];
@@ -1457,6 +1464,7 @@ namespace Orts.Simulation
                                 
                                 lead = train.LeadLocomotive;                                                                
                                 drivenTrain.LastCar.SignalEvent(Event.Coupling);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                                 for (int i = 0; i < drivenTrain.Cars.Count; ++i)
                                 {
                                     TrainCar car = drivenTrain.Cars[i];
@@ -1473,6 +1481,7 @@ namespace Orts.Simulation
 
                                 lead = drivenTrain.LeadLocomotive;                                
                                 drivenTrain.FirstCar.SignalEvent(Event.Coupling);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                                 for (int i = 0; i < train.Cars.Count; ++i)
                                 {
                                     TrainCar car = train.Cars[i];
@@ -1538,6 +1547,7 @@ namespace Orts.Simulation
 
                             lead = drivenTrain.LeadLocomotive;
                             drivenTrain.FirstCar.SignalEvent(Event.Coupling);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             for (int i = 0; i < train.Cars.Count; ++i)
                             {
                                 TrainCar car = train.Cars[i];
@@ -2193,7 +2203,10 @@ namespace Orts.Simulation
             train2.Update(0);  // stop the wheels from moving etc
 
             if (!CarCoupleSpeedOvercome)
+            {
                 car.SignalEvent(Event.Uncouple);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 0)).ToString());
+            }
             // TODO which event should we fire
             //car.CreateEvent(62);  these are listed as alternate events
             //car.CreateEvent(63);

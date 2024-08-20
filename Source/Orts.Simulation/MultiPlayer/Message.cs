@@ -2392,7 +2392,7 @@ namespace Orts.MultiPlayer
             }
             else if (EventName == "BRAKECYLINDERPRESSURE")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).BrakeSystem.BrakeCylinderPressurePSI = EventState / 100f;
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).BrakeSystem.BrakeCylinderPressurePSI = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "BRAKEPIPESTATE")
@@ -2418,10 +2418,16 @@ namespace Orts.MultiPlayer
             }
             else if (EventName == "CURVEFORCE")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).CurveForceNFiltered = EventState / 100f;
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).CurveForceNFiltered = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-
+            else if (EventName == "TRAINCOUPLE")
+            {
+                if (t.TrainWagon != null && EventState == 0) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Uncouple);
+                if (t.TrainWagon != null && EventState == 1) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Couple);
+                if (t.TrainWagon != null && EventState == 2) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Coupling);                
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
 
             // Diesel
             else if (EventName == "POWERONOFF")

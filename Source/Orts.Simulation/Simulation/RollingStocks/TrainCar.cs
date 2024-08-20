@@ -35,6 +35,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
@@ -3259,6 +3260,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Train.TrainImpactSoundEvent = true;
                     SignalEvent(Event.CoupleImpact);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                 }
 
                 if (PushZFinalMarker == 0) PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;

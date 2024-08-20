@@ -31,6 +31,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
+using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
@@ -11892,6 +11893,7 @@ namespace Orts.Simulation.Timetables
             // set various items
             attachTrain.CheckFreight();
             attachCar.SignalEvent(Event.Couple);
+            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 1)).ToString());
             attachTrain.ProcessSpeedSettings();
 
             // if not static, reassess signals if coupled at front (no need to reassess signals if coupled to rear)
@@ -12297,6 +12299,7 @@ namespace Orts.Simulation.Timetables
 
             // signal event
             detachCar.SignalEvent(Event.Uncouple);
+            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 0)).ToString());
 
             // update positions train
             TrackNode tn = FrontTDBTraveller.TN;
