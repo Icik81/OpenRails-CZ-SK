@@ -2353,7 +2353,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
-                    return car.BrakeSystem.GetCylPressurePSI();
+                    return car.BrakeSystem.BrakeCylinderPressurePSI;
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.CurveForce_Equals_To:

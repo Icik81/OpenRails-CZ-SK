@@ -20,6 +20,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Physics;
 using Orts.Simulation.Properties;
@@ -793,6 +794,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AuxResPressurePSI = 0;
             }
 
+            BrakeCylinderPressurePSI = GetCylPressurePSI();
             MCP = MaxCylPressurePSI;
             // Stanovení TVR pro prázdný vůz nebo lokomotivu v režimu G dle zadaného max tlaku v BV "BrakeCylinderPressureForMaxBrakeBrakeForceEmpty"
             AuxCylVolumeRatioBase = AuxCylVolumeRatio;
@@ -1999,9 +2001,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (!TrainBrakePressureChanging)
                     {
                         if (AutoCylPressurePSI0 > prevCylPressurePSI)
+                        {
                             Car.SignalEvent(Event.TrainBrakePressureIncrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
+                        }
                         else
+                        {
                             Car.SignalEvent(Event.TrainBrakePressureDecrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
+                        }
                         TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     }
                 }
@@ -2009,6 +2017,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     TrainBrakePressureChanging = !TrainBrakePressureChanging;
                     Car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
                 }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
@@ -2017,16 +2026,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (!BrakePipePressureChanging)
                     {
                         if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
+                        {
                             Car.SignalEvent(Event.BrakePipePressureIncrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 1)).ToString());
+                        }
                         else
+                        {
                             Car.SignalEvent(Event.BrakePipePressureDecrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
+                        }
                         BrakePipePressureChanging = !BrakePipePressureChanging;
                     }
                 }
                 else if (BrakePipePressureChanging)
                 {
                     BrakePipePressureChanging = !BrakePipePressureChanging;
-                    Car.SignalEvent(Event.BrakePipePressureStoppedChanging);                                        
+                    Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 2)).ToString());
                 }
                 prevCylPressurePSI = AutoCylPressurePSI0;
                 prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
@@ -3384,6 +3400,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 car.SignalEvent(Event.TrainBrakePressureDecrease);
                                 car.SignalEvent(Event.BrakePipePressureDecrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
                             }
                             if (car.BrakeSystem.NextLocoRunning
                                 || car.BrakeSystem.NextLocoRelease
@@ -3392,12 +3410,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 car.SignalEvent(Event.TrainBrakePressureIncrease);
                                 car.SignalEvent(Event.BrakePipePressureIncrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 1)).ToString());
                             }
                         }
                         if (car.BrakeSystem.BrakeControllerLap)
                         {
                             car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
                             car.SignalEvent(Event.BrakePipePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 2)).ToString());
                         }
                     }
                 }
@@ -3416,6 +3438,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 car.SignalEvent(Event.TrainBrakePressureDecrease);
                                 car.SignalEvent(Event.BrakePipePressureDecrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
                             }
                             if (car.BrakeSystem.NextLocoRunning
                                 || car.BrakeSystem.NextLocoRelease
@@ -3430,6 +3454,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
                             car.SignalEvent(Event.BrakePipePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 2)).ToString());
                         }
                     }
                 }
@@ -3448,6 +3474,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 car.SignalEvent(Event.TrainBrakePressureDecrease);
                                 car.SignalEvent(Event.BrakePipePressureDecrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
                             }
                             if (car.BrakeSystem.NextLocoRunning
                                 || car.BrakeSystem.NextLocoRelease
@@ -3456,12 +3484,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 car.SignalEvent(Event.TrainBrakePressureIncrease);
                                 car.SignalEvent(Event.BrakePipePressureIncrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 1)).ToString());
                             }
                         }
                         if (car.BrakeSystem.BrakeControllerLap)
                         {
                             car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
                             car.SignalEvent(Event.BrakePipePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 2)).ToString());
                         }
                     }
                 }
@@ -3877,10 +3909,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI2 += dp;
 
                         if (lead.BrakeSystem.AutoCylPressurePSI2 >= lead.ParkingBrakeTargetPressurePSI)
+                        {
                             lead.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());                            
+                        }
                         else
                         {
                             lead.SignalEvent(Event.TrainBrakePressureIncrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
                             lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
                             lead.BrakeSystem.MainResFlow = true;
                         }
@@ -3898,8 +3934,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         float dp = elapsedClockSeconds * lead.EngineBrakeReleaseRatePSIpS;
                         lead.BrakeSystem.AutoCylPressurePSI2 -= dp;
                         if (lead.BrakeSystem.AutoCylPressurePSI2 <= 0)
+                        {
                             lead.SignalEvent(Event.TrainBrakePressureStoppedChanging);
-                        else lead.SignalEvent(Event.TrainBrakePressureDecrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
+                        }
+                        else
+                        {
+                            lead.SignalEvent(Event.TrainBrakePressureDecrease);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
+                        }
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
                         if (lead.BrakeSystem.AutoCylPressurePSI2 < 1) brakeSystem.AutoEngineBrakeDelay = 0;
                     }
@@ -3910,9 +3953,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.EngineBrakeState != prevState)
                     switch (lead.EngineBrakeState)
                     {
-                        case ValveState.Release: lead.SignalEvent(Event.EngineBrakePressureDecrease); break;
-                        case ValveState.Apply: lead.SignalEvent(Event.EngineBrakePressureIncrease); break;
-                        case ValveState.Lap: lead.SignalEvent(Event.EngineBrakePressureStoppedChanging); break;
+                        case ValveState.Release:
+                            {
+                                lead.SignalEvent(Event.EngineBrakePressureDecrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEBRAKESTATE", 0)).ToString());
+                            }
+                            break;
+                        case ValveState.Apply:
+                            {
+                                lead.SignalEvent(Event.EngineBrakePressureIncrease);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEBRAKESTATE", 1)).ToString());
+                            }
+                            break;
+                        case ValveState.Lap:
+                            {
+                                lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEBRAKESTATE", 2)).ToString());
+                            }
+                            break;
                     }
 
 

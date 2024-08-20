@@ -313,6 +313,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool HeatingIsOn;
 
         public int WagonType;
+        public float BrakeCylinderPressurePSI;
 
         public abstract void AISetPercent(float percent);
 

@@ -15420,7 +15420,30 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 1)).ToString());
                 }
 
+                
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1", (int)((this).Variable1 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2", (int)((this).Variable2 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3", (int)((this).Variable3 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3AC", (int)((this).Variable3AC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3DC", (int)((this).Variable3DC * 1000f))).ToString());
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this).Variable5 * 1000f))).ToString());
+
+                if (!CompressorIsOn)                
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 0)).ToString());                
+                if (CompressorIsOn)                
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 1)).ToString());
+                if (!Compressor2IsOn)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 0)).ToString());
+                if (Compressor2IsOn)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 1)).ToString());
+                if (!AuxCompressorIsOn)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 0)).ToString());
+                if (AuxCompressorIsOn)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 1)).ToString());
 
                 if (LocoStation == 1)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());

@@ -991,10 +991,18 @@ namespace Orts.Simulation.RollingStocks
                     DoorRightIsOpened = false;
                 }
 
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDSLIP", (int)((this).WheelSpeedSlipMpS * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE10", (int)((this).Variable10 * 1000f))).ToString());
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 1000f))).ToString());
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE12", (int)((this).Variable12 * 1000f))).ToString());
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECYLINDERPRESSURE", (int)((this).BrakeSystem.BrakeCylinderPressurePSI * 100f))).ToString());                
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered * 100f))).ToString());
 
             }
         }

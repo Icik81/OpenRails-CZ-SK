@@ -18,6 +18,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.MultiPlayer;
 using ORTS.Common;
 using ORTS.Scripting.Api;
 using System;
@@ -172,12 +173,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (CylPressurePSIA < prevCylPressurePSIA && lead.BrakeFlagIncrease && CylPressurePSIA > IncreaseSoundTriggerBandwidth)  // Brake cylinder vacuum increases as pressure in pipe decreases
                                 {
                                     Car.SignalEvent(Event.TrainBrakePressureIncrease);
+                                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
                                     TrainBrakePressureChanging = true;
                                 }
                                 else if (CylPressurePSIA > prevCylPressurePSIA && lead.BrakeFlagDecrease && CylPressurePSIA < DecreaseSoundTriggerBandwidth) // Brake cylinder vacuum decreases as pressure in pipe increases
 
                                 {
                                     Car.SignalEvent(Event.TrainBrakePressureDecrease);
+                                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
                                     TrainBrakePressureChanging = true;
                                 }
                             }
@@ -186,6 +189,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else if (TrainBrakePressureChanging)
                         {
                             Car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 2)).ToString());
                             TrainBrakePressureChanging = false;
                         }
                         prevCylPressurePSIA = CylPressurePSIA;
@@ -198,11 +202,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (BrakeLine1PressurePSI < prevBrakePipePressurePSI && lead.BrakeFlagIncrease && BrakeLine1PressurePSI > IncreaseSoundTriggerBandwidth) // Brakepipe vacuum increases as pressure in pipe decreases
                                 {
                                     Car.SignalEvent(Event.BrakePipePressureIncrease);
+                                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 1)).ToString());
                                     BrakePipePressureChanging = true;
                                 }
                                 else if (BrakeLine1PressurePSI > prevBrakePipePressurePSI && lead.BrakeFlagDecrease && BrakeLine1PressurePSI < DecreaseSoundTriggerBandwidth) // Brakepipe vacuum decreases as pressure in pipe increases
                                 {
                                     Car.SignalEvent(Event.BrakePipePressureDecrease);
+                                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
                                     BrakePipePressureChanging = true;
                                 }
                             }
@@ -211,6 +217,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else if (BrakePipePressureChanging)
                         {
                             Car.SignalEvent(Event.BrakePipePressureStoppedChanging);
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 2)).ToString());
                             BrakePipePressureChanging = false;
                         }
                         prevBrakePipePressurePSI = BrakeLine1PressurePSI;
