@@ -1356,7 +1356,7 @@ namespace Orts.Viewer3D.Debugging
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);
                     }
-                    MPManager.BroadCast((new MSGMessage(name, "Info", "PERMISSION GRANTED!")).ToString());
+                    MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
                 }                
             }            
         }
