@@ -79,6 +79,7 @@ namespace Orts.Viewer3D.Debugging
             F.btnAssist.Visible = multiPlayer;
             F.btnNormal.Visible = multiPlayer;
             F.rmvButton.Visible = multiPlayer;
+            F.buttonPermission.Visible = multiPlayer;
 
             if (multiPlayer)
             {

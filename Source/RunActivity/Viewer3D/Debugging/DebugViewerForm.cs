@@ -597,7 +597,7 @@ namespace Orts.Viewer3D.Debugging
                     this.msgAll.Text = "MSG to All";
                 }
                 if (MultiPlayer.MPManager.IsServer()) { rmvButton.Visible = true; chkAllowNew.Visible = true; chkAllowUserSwitch.Visible = true; }
-                else { rmvButton.Visible = false; chkAllowNew.Visible = false; chkAllowUserSwitch.Visible = false; chkBoxPenalty.Visible = false; chkPreferGreen.Visible = false; }
+                else { rmvButton.Visible = false; chkAllowNew.Visible = false; chkAllowUserSwitch.Visible = false; chkBoxPenalty.Visible = false; chkPreferGreen.Visible = false; }                
             }
             if (firstShow || followTrain)
             {
@@ -622,6 +622,11 @@ namespace Orts.Viewer3D.Debugging
                     firstShow = false;
                 }
             }
+
+            // Icik
+            if (MultiPlayer.MPManager.IsServer() || (MultiPlayer.MPManager.IsClient() && MultiPlayer.MPManager.Instance().AmAider)) { buttonPermission.Visible = true; }
+            else
+                buttonPermission.Visible = false;
 
             try
             {
@@ -1326,6 +1331,34 @@ namespace Orts.Viewer3D.Debugging
             followTrain = false;
             firstShow = true;
             GenerateView();
+        }
+        private void permissionButton_Click(object sender, EventArgs e)
+        {
+            if (MultiPlayer.MPManager.IsClient() && !MultiPlayer.MPManager.Instance().AmAider) return;
+            if (AvatarView.SelectedIndices.Count > 0 && !AvatarView.SelectedIndices.Contains(0))
+            {
+                int i = AvatarView.SelectedIndices.Cast<int>().Min();
+                string name = (AvatarView.Items[i].Text ?? "").Split(' ').First().Trim();
+                if (MultiPlayer.MPManager.OnlineTrains.Players.TryGetValue(name, out MultiPlayer.OnlinePlayer player))
+                {
+                    player.Train.TrainHasPermission = true;
+                }
+                //else if (MultiPlayer.MPManager.Instance().lostPlayer.TryGetValue(name, out MultiPlayer.OnlinePlayer lost))
+                //    player.Train.TrainHasPermission = true;
+
+                if (player != null)
+                {                    
+                    if (player.Train.TrainLoco.Simulator.Direction == Direction.Reverse)
+                    {
+                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);
+                    }
+                    else
+                    {
+                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);
+                    }
+                    MPManager.BroadCast((new MSGMessage(name, "Info", "PERMISSION GRANTED!")).ToString());
+                }                
+            }            
         }
 
         private void ShiftViewUp()

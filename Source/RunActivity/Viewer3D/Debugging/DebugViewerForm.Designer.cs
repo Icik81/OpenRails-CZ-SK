@@ -92,6 +92,7 @@
             this.cbShowPlatforms = new System.Windows.Forms.CheckBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.lblShow = new System.Windows.Forms.GroupBox();
+            this.buttonPermission = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pbCanvas)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.windowSizeUpDown)).BeginInit();
             this.gbTrainLabels.SuspendLayout();
@@ -174,10 +175,10 @@
             // 
             this.AvatarView.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.AvatarView.HideSelection = false;
-            this.AvatarView.Location = new System.Drawing.Point(1034, 246);
+            this.AvatarView.Location = new System.Drawing.Point(1034, 240);
             this.AvatarView.Margin = new System.Windows.Forms.Padding(4);
             this.AvatarView.Name = "AvatarView";
-            this.AvatarView.Size = new System.Drawing.Size(197, 683);
+            this.AvatarView.Size = new System.Drawing.Size(197, 689);
             this.AvatarView.TabIndex = 14;
             this.AvatarView.UseCompatibleStateImageBehavior = false;
             this.AvatarView.SelectedIndexChanged += new System.EventHandler(this.AvatarView_SelectedIndexChanged);
@@ -399,7 +400,7 @@
             this.messages.Location = new System.Drawing.Point(1, 84);
             this.messages.Margin = new System.Windows.Forms.Padding(4);
             this.messages.Name = "messages";
-            this.messages.Size = new System.Drawing.Size(745, 52);
+            this.messages.Size = new System.Drawing.Size(745, 124);
             this.messages.TabIndex = 22;
             this.messages.SelectedIndexChanged += new System.EventHandler(this.msgSelectedChanged);
             // 
@@ -749,7 +750,7 @@
             this.tTimetable.Margin = new System.Windows.Forms.Padding(4);
             this.tTimetable.Name = "tTimetable";
             this.tTimetable.Padding = new System.Windows.Forms.Padding(4);
-            this.tTimetable.Size = new System.Drawing.Size(1212, 10);
+            this.tTimetable.Size = new System.Drawing.Size(1227, 10);
             this.tTimetable.TabIndex = 1;
             this.tTimetable.Text = "Timetable";
             this.tTimetable.UseVisualStyleBackColor = true;
@@ -827,7 +828,7 @@
             this.pictureBox1.Location = new System.Drawing.Point(0, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(1235, 171);
+            this.pictureBox1.Size = new System.Drawing.Size(1235, 217);
             this.pictureBox1.TabIndex = 57;
             this.pictureBox1.TabStop = false;
             // 
@@ -854,12 +855,26 @@
             this.lblShow.Text = "Show";
             this.lblShow.Visible = false;
             // 
+            // buttonPermission
+            // 
+            this.buttonPermission.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.buttonPermission.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(238)));
+            this.buttonPermission.Location = new System.Drawing.Point(822, 168);
+            this.buttonPermission.Margin = new System.Windows.Forms.Padding(4);
+            this.buttonPermission.Name = "buttonPermission";
+            this.buttonPermission.Size = new System.Drawing.Size(180, 42);
+            this.buttonPermission.TabIndex = 1;
+            this.buttonPermission.Text = "Train Permission";
+            this.buttonPermission.UseVisualStyleBackColor = true;
+            this.buttonPermission.Click += new System.EventHandler(this.permissionButton_Click);
+            // 
             // DispatchViewer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(1235, 986);
+            this.Controls.Add(this.buttonPermission);
             this.Controls.Add(this.lblShow);
             this.Controls.Add(this.lblInstruction4);
             this.Controls.Add(this.lblInstruction3);
@@ -975,5 +990,6 @@
         public System.Windows.Forms.Button bTrainKey;
         public System.Windows.Forms.PictureBox pictureBox1;
         public System.Windows.Forms.GroupBox lblShow;
+        public System.Windows.Forms.Button buttonPermission;
     }
 }

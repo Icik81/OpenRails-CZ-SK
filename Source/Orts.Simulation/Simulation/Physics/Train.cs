@@ -1736,6 +1736,7 @@ namespace Orts.Simulation.Physics
 
         public int[] NumbersOccupiedTrain = new int[20];
         float TimeToRequestSignal;
+        public bool TrainHasPermission;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {            
             GeneratePaxDynamically();
@@ -1762,7 +1763,7 @@ namespace Orts.Simulation.Physics
             if (MPManager.IsMultiPlayer())
             {
                 if (ControlMode != TRAIN_CONTROL.MANUAL)                                                    
-                    ToggleToManualMode();
+                    ToggleToManualMode();              
             }
 
             // MSTS kompatibility mód
@@ -8800,6 +8801,8 @@ namespace Orts.Simulation.Physics
 
         public void RequestManualSignalPermission(ref TCSubpathRoute selectedRoute, int routeIndex)
         {
+            // Icik
+            if (MPManager.IsMultiPlayer()) return;
 
             // check if route ends with signal at danger
 
@@ -10029,9 +10032,13 @@ namespace Orts.Simulation.Physics
             TCSubpathRoute newRouteR = CheckExplorerPath(routeIndex, tempPos, ValidRoute[routeIndex], true, ref EndAuthorityType[routeIndex],
                 ref DistanceToEndNodeAuthorityM[routeIndex]);
             ValidRoute[routeIndex] = newRouteR;
-            Simulator.SoundNotify = reqSignal.hasPermission == SignalObject.Permission.Granted ?
-                Event.PermissionGranted :
-                Event.PermissionDenied;
+
+            if (!MPManager.IsMultiPlayer())
+            {
+                Simulator.SoundNotify = reqSignal.hasPermission == SignalObject.Permission.Granted ?
+                    Event.PermissionGranted :
+                    Event.PermissionDenied;
+            }
         }
 
         //================================================================================================//
@@ -10925,7 +10932,8 @@ namespace Orts.Simulation.Physics
                 {
                     if (Simulator.Confirmer != null) // As Confirmer may not be created until after a restore.
                         Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Cannot clear signal behind train while in AUTO mode"));
-                    Simulator.SoundNotify = Event.PermissionDenied;
+                    if (!MPManager.IsMultiPlayer())
+                        Simulator.SoundNotify = Event.PermissionDenied;
                 }
 
                 else if (NextSignalObject[0] != null)

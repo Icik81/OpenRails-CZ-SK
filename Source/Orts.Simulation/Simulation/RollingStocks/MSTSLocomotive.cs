@@ -15488,6 +15488,21 @@ namespace Orts.Simulation.RollingStocks
 
                 if (IsLeadLocomotive())
                 {
+                    if (UsingRearCab || Flipped)
+                    {
+                        if (Simulator.Direction == Direction.Reverse)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                        else
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                    }
+                    else
+                    {
+                        if (Simulator.Direction == Direction.Reverse)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                        else
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                    }
+
                     if (!LightFrontLW)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 10)).ToString());
                     if (LightFrontLW)

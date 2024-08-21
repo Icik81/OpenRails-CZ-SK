@@ -10765,18 +10765,21 @@ namespace Orts.Simulation.Signalling
             if (internalBlockState == InternalBlockstate.OccupiedSameDirection && hasPermission == Permission.Requested && !isPropagated)
             {
                 hasPermission = Permission.Granted;
-                if (sound) signalRef.Simulator.SoundNotify = Event.PermissionGranted;
+                if (!MPManager.IsMultiPlayer())
+                    if (sound) signalRef.Simulator.SoundNotify = Event.PermissionGranted;
             }
             else
             {
                 if (enabledTrain != null && enabledTrain.Train.ControlMode == Train.TRAIN_CONTROL.MANUAL &&
                     internalBlockState <= InternalBlockstate.OccupiedSameDirection && hasPermission == Permission.Requested)
                 {
-                    signalRef.Simulator.SoundNotify = Event.PermissionGranted;
+                    if (!MPManager.IsMultiPlayer())
+                        signalRef.Simulator.SoundNotify = Event.PermissionGranted;
                 }
                 else if (hasPermission == Permission.Requested)
                 {
-                    if (sound) signalRef.Simulator.SoundNotify = Event.PermissionDenied;
+                    if (!MPManager.IsMultiPlayer())
+                        if (sound) signalRef.Simulator.SoundNotify = Event.PermissionDenied;
                 }
 
                 if (enabledTrain != null && enabledTrain.Train.ControlMode == Train.TRAIN_CONTROL.MANUAL && signalState == MstsSignalAspect.STOP &&

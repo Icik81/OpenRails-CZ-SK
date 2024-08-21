@@ -2243,6 +2243,12 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Battery = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "DIRECTION")
+            {
+                if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Direction = Direction.Forward;
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Direction = Direction.Reverse;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
 
             else if (EventName == "LOCOINDEX")
             {
@@ -2643,7 +2649,7 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.SnowVelocityMpS = EventState / 10f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-
+            
 
             else return;
         }
