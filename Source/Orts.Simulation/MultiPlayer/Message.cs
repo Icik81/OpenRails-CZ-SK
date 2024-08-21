@@ -2162,7 +2162,7 @@ namespace Orts.MultiPlayer
             }
 
             // Icik
-            if (EventName == "COMPRESSOR")
+            else if (EventName == "COMPRESSOR")
             {
                 if (t.LeadLocomotive != null)
                 {
@@ -2170,7 +2170,7 @@ namespace Orts.MultiPlayer
                     MPManager.BroadCast(this.ToString()); //if the server, will broadcast
                 }
             }
-            if (EventName == "COMPRESSOR2")
+            else if (EventName == "COMPRESSOR2")
             {
                 if (t.LeadLocomotive != null)
                 {
@@ -2178,7 +2178,7 @@ namespace Orts.MultiPlayer
                     MPManager.BroadCast(this.ToString()); //if the server, will broadcast
                 }
             }
-            if (EventName == "AUXCOMPRESSOR")
+            else if (EventName == "AUXCOMPRESSOR")
             {
                 if (t.LeadLocomotive != null)
                 {
