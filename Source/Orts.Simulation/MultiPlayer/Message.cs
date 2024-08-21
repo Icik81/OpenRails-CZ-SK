@@ -1848,7 +1848,7 @@ namespace Orts.MultiPlayer
         public override void HandleMsg()
         {
             if (MPManager.GetUserName() == user || user == "All")
-            {
+            {                
                 Console.WriteLine("{0}: {1}", level, msgx);
                 if (MPManager.Simulator.Confirmer != null && level == "Error")
                     MPManager.Simulator.Confirmer.Message(ConfirmLevel.Error, msgx);
@@ -1895,6 +1895,7 @@ namespace Orts.MultiPlayer
                     MPManager.Instance().serverTimeDifference = t - MPManager.Simulator.ClockTime;
                     return;
                 }
+                
                 if (MPManager.Simulator.Confirmer != null)
                     MPManager.Simulator.Confirmer.Message(level == "Warning" ? ConfirmLevel.Warning : level == "Info" ? ConfirmLevel.Information : ConfirmLevel.None, msgx);
 
@@ -2247,6 +2248,17 @@ namespace Orts.MultiPlayer
             {
                 if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Direction = Direction.Forward;
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Direction = Direction.Reverse;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "MPCONTROLMODE")
+            {
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Train.ToggleToManualMode();                 
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "TRAINPERMISSION")
+            {
+                if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Train.RequestExplorerSignalPermission(ref ((MSTSLocomotive)(t.LeadLocomotive)).Train.ValidRoute[0], 0);
+                if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Train.RequestExplorerSignalPermission(ref ((MSTSLocomotive)(t.LeadLocomotive)).Train.ValidRoute[1], 1);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 

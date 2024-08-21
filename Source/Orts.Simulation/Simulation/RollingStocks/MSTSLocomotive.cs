@@ -15487,7 +15487,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (IsLeadLocomotive())
-                {
+                {                                                           
                     if (UsingRearCab || Flipped)
                     {
                         if (Simulator.Direction == Direction.Reverse)

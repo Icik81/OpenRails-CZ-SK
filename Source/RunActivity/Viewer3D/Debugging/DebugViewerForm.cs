@@ -624,6 +624,7 @@ namespace Orts.Viewer3D.Debugging
             }
 
             // Icik
+            chkAllowUserSwitch.Visible = false; chkBoxPenalty.Visible = false; chkPreferGreen.Visible = false;
             if (MultiPlayer.MPManager.IsServer() || (MultiPlayer.MPManager.IsClient() && MultiPlayer.MPManager.Instance().AmAider)) { buttonPermission.Visible = true; }
             else
                 buttonPermission.Visible = false;
@@ -1347,17 +1348,19 @@ namespace Orts.Viewer3D.Debugging
                 //    player.Train.TrainHasPermission = true;
 
                 if (player != null)
-                {                    
+                {
                     if (player.Train.TrainLoco.Simulator.Direction == Direction.Reverse)
                     {
-                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);
+                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);                                                                        
+                        MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
                     }
                     else
                     {
-                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);
+                        player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);                        
+                        MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 0)).ToString());
                     }
-                    MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
-                }                
+                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                }
             }            
         }
 

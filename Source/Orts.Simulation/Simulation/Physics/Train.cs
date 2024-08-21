@@ -1762,8 +1762,11 @@ namespace Orts.Simulation.Physics
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())
             {
-                if (ControlMode != TRAIN_CONTROL.MANUAL)                                                    
-                    ToggleToManualMode();              
+                if (ControlMode != TRAIN_CONTROL.MANUAL)
+                {
+                    ToggleToManualMode();
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "MPCONTROLMODE", 1)).ToString());
+                }
             }
 
             // MSTS kompatibility mód
@@ -9994,13 +9997,16 @@ namespace Orts.Simulation.Physics
             {
                 for (int iIndex = PresentPosition[routeIndex].RouteListIndex; iIndex <= ValidRoute[routeIndex].Count - 1 && !signalFound; iIndex++)
                 {
-                    TrackCircuitSection thisSection = signalRef.TrackCircuitList[ValidRoute[routeIndex][iIndex].TCSectionIndex];
-                    int direction = ValidRoute[routeIndex][iIndex].Direction;
-
-                    if (thisSection.EndSignals[direction] != null)
+                    if (iIndex >= 0)
                     {
-                        reqSignal = thisSection.EndSignals[direction];
-                        signalFound = (reqSignal.this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP);
+                        TrackCircuitSection thisSection = signalRef.TrackCircuitList[ValidRoute[routeIndex][iIndex].TCSectionIndex];
+                        int direction = ValidRoute[routeIndex][iIndex].Direction;
+
+                        if (thisSection.EndSignals[direction] != null)
+                        {
+                            reqSignal = thisSection.EndSignals[direction];
+                            signalFound = (reqSignal.this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP);
+                        }
                     }
                 }
             }
