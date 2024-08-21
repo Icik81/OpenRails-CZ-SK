@@ -949,10 +949,20 @@ namespace Orts.Simulation.RollingStocks
 
         public bool DoorLeftIsOpened;
         public bool DoorRightIsOpened;
+        float MPMessageTimer;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
             {
+                MPMessageTimer += Simulator.OneSecondLoop;
+                if (MPMessageTimer > 1.0f)
+                    MPMessageTimer = 0;
+
+                bool VeryLowPriority = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
+                bool LowPriority = (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                bool HighPriority = (MPMessageTimer > 0.2f && MPMessageTimer < 0.3f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                bool VeryHighPriority = (MPMessageTimer > 0.1f && MPMessageTimer < 0.2f) || (MPMessageTimer > 0.3f && MPMessageTimer < 0.4f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.7f && MPMessageTimer < 0.8f) || (MPMessageTimer > 0.9f && MPMessageTimer < 1.0f) ? true : false;
+
                 //Určí index aktuálního vozu
                 int CarIndex = 1000;
                 for (int i = 0; i < Train.Cars.Count; i++)
@@ -965,14 +975,16 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                // Hodnota dynamického nákladu
-                if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
-
+                if (VeryLowPriority)
+                {
+                    // Hodnota dynamického nákladu
+                    if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
+                }
                 // Jednotlivé dveře vozů
                 if (DoorLeftOpen && !DoorLeftIsOpened)
                 {
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLEFTDOORS", 1)).ToString());                    
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLEFTDOORS", 1)).ToString());
                     DoorLeftIsOpened = true;
                 }
                 if (!DoorLeftOpen && DoorLeftIsOpened)
@@ -991,7 +1003,7 @@ namespace Orts.Simulation.RollingStocks
                     DoorRightIsOpened = false;
                 }
 
-                if (Simulator.OneSecondLoop > 0.1f)
+                if (LowPriority)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());

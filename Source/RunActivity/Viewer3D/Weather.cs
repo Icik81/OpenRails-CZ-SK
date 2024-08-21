@@ -1323,18 +1323,31 @@ namespace Orts.Viewer3D
 
             float precipitationIntensityChangeRate2 = 1;
             public float FinishPrecipitationIntensity;
+            float MPMessageTimer;
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {
                 if (MPManager.IsMultiPlayer())
                 {
+                    MPMessageTimer += elapsedTime.ClockSeconds;
+                    if (MPMessageTimer > 1.0f)
+                        MPMessageTimer = 0;
+
+                    bool VeryLowPriority = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
+                    bool LowPriority = (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                    bool HighPriority = (MPMessageTimer > 0.2f && MPMessageTimer < 0.3f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                    bool VeryHighPriority = (MPMessageTimer > 0.1f && MPMessageTimer < 0.2f) || (MPMessageTimer > 0.3f && MPMessageTimer < 0.4f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.7f && MPMessageTimer < 0.8f) || (MPMessageTimer > 0.9f && MPMessageTimer < 1.0f) ? true : false;
+
                     if (!MPManager.IsServer()) return;
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONINTENSITY", (int)(weatherControl.Weather.PricipitationIntensityPPSPM2 * 10000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONLIQUIDITY", (int)(weatherControl.Weather.PrecipitationLiquidity * 10000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FOGDISTANCE", (int)weatherControl.Weather.FogDistance)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OVERCASTFACTOR", (int)(weatherControl.Weather.OvercastFactor * 10000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDSPEED", (int)((weatherControl.Weather.WindSpeed * 10f)))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDDIRECTION", (int)((weatherControl.Weather.WindDirection * 10f)))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());
+                    if (VeryLowPriority)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONINTENSITY", (int)(weatherControl.Weather.PricipitationIntensityPPSPM2 * 10000f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONLIQUIDITY", (int)(weatherControl.Weather.PrecipitationLiquidity * 10000f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FOGDISTANCE", (int)weatherControl.Weather.FogDistance)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OVERCASTFACTOR", (int)(weatherControl.Weather.OvercastFactor * 10000f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDSPEED", (int)((weatherControl.Weather.WindSpeed * 10f)))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDDIRECTION", (int)((weatherControl.Weather.WindDirection * 10f)))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());
+                    }
                 }
 
                 var wChangeOn = false;

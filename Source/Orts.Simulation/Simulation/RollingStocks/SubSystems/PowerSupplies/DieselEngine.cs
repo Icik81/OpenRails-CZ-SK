@@ -828,6 +828,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public int MPExhaustColorG = 0;
         public int MPExhaustColorB = 0;      
         public float MPRealRPM;
+        public float MPRealRPM0;
         public float MPDemandedRPM;
         public float MPIdleRPM;
         bool FirstFrame = true;

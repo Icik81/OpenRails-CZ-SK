@@ -15340,10 +15340,30 @@ namespace Orts.Simulation.RollingStocks
 
         bool PowerOnIsON;
         bool StartButtonPressedON;
+        bool CompressorIsON;
+        bool Compressor2IsON;
+        bool AuxCompressorIsON;
+        bool BatteryIsON;
+        bool IndependentWaterPlatesIsON;
+        bool IndependentOilPlatesIsON;
+        bool WaterCoolingIsON;
+        bool WaterCoolingLowIsON;
+        bool OilCoolingIsON;
+        bool OilCoolingLowIsON;
+        float MPMessageTimer;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
             {
+                MPMessageTimer += Simulator.OneSecondLoop;
+                if (MPMessageTimer > 1.0f)
+                    MPMessageTimer = 0;
+
+                bool VeryLowPriority = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
+                bool LowPriority = (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                bool HighPriority = (MPMessageTimer > 0.2f && MPMessageTimer < 0.3f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
+                bool VeryHighPriority = (MPMessageTimer > 0.1f && MPMessageTimer < 0.2f) || (MPMessageTimer > 0.3f && MPMessageTimer < 0.4f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.7f && MPMessageTimer < 0.8f) || (MPMessageTimer > 0.9f && MPMessageTimer < 1.0f) ? true : false;
+
                 int LocoIndex = 1000;
                 for (int i = 0; i < Train.Cars.Count; i++)
                 {
@@ -15358,7 +15378,7 @@ namespace Orts.Simulation.RollingStocks
                 // Diesel
                 if (this as MSTSDieselLocomotive != null)
                 {
-           
+
                     if (!PowerOn && !PowerOnIsON)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 0)).ToString());
@@ -15367,7 +15387,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (PowerOn && PowerOnIsON)
                     {
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 1)).ToString());                        
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 1)).ToString());
                         PowerOnIsON = false;
                     }
                     if (!PowerOn && StartButtonPressed && !StartButtonPressedON)
@@ -15376,61 +15396,89 @@ namespace Orts.Simulation.RollingStocks
                         StartButtonPressedON = true;
                     }
                     if (!StartButtonPressed && StartButtonPressedON)
-                    {                        
+                    {
                         StartButtonPressedON = false;
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "STARTINITMOTOR", 0)).ToString());
                     }
 
-                    if (Simulator.OneSecondLoop > 0.1f)
+                    if (VeryLowPriority)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTPARTICLES", (int)((this as MSTSDieselLocomotive).DieselEngines[0].ExhaustParticles * 10f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTMAGNITUDE", (int)((this as MSTSDieselLocomotive).DieselEngines[0].ExhaustMagnitude * 10f))).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTCOLORR", (this as MSTSDieselLocomotive).DieselEngines[0].ExhaustColor.R)).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTCOLORR", (this as MSTSDieselLocomotive).DieselEngines[0].ExhaustColor.G)).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "EXHAUSTCOLORR", (this as MSTSDieselLocomotive).DieselEngines[0].ExhaustColor.B)).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOEXHAUST", 0)).ToString());
-
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "REALRPM0", (int)(this as MSTSDieselLocomotive).DieselEngines[0].RealRPM0)).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "IDLERPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM)).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DEMANDEDRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].DemandedRPM)).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg * 10f))).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILTEMP", (int)((this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg * 10f))).ToString());
-
+                    }
+                    if (LowPriority)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE4", (int)((this as MSTSDieselLocomotive).Variable4 * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE8", (int)((this as MSTSDieselLocomotive).Variable8 * 1000f))).ToString());
                     }
-                   
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates)
+
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates && IndependentWaterPlatesIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTWATERPLATES", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates)
+                        IndependentWaterPlatesIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentWaterPlates && !IndependentWaterPlatesIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTWATERPLATES", 1)).ToString());
-
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates)
+                        IndependentWaterPlatesIsON = true;
+                    }
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates && IndependentOilPlatesIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTOILPLATES", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates)
+                        IndependentOilPlatesIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].IndependentOilPlates && !IndependentOilPlatesIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INDEPENDENTOILPLATES", 1)).ToString());
-
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning)
+                        IndependentOilPlatesIsON = true;
+                    }
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning && WaterCoolingLowIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLINGLOW", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning)
+                        WaterCoolingLowIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingLowRunning && !WaterCoolingLowIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLINGLOW", 1)).ToString());
-
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        WaterCoolingLowIsON = true;
+                    }
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning && WaterCoolingIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLING", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning)
+                        WaterCoolingIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning && !WaterCoolingIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WATERCOOLING", 1)).ToString());
-
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning)
+                        WaterCoolingIsON = true;
+                    }
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning && OilCoolingLowIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLINGLOW", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning)
+                        OilCoolingLowIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingLowRunning && !OilCoolingLowIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLINGLOW", 1)).ToString());
-
-                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        OilCoolingLowIsON = true;
+                    }
+                    if (!(this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning && OilCoolingIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 0)).ToString());
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning)
+                        OilCoolingIsON = false;
+                    }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning && !OilCoolingIsON)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 1)).ToString());
+                        OilCoolingIsON = true;
+                    }
                 }
 
                 // Elektriky
@@ -15438,7 +15486,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!PowerOn && !PowerOnIsON)
                     {
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 0)).ToString());                        
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 0)).ToString());
                         PowerOnIsON = true;
                     }
                     if (PowerOn && PowerOnIsON)
@@ -15447,108 +15495,134 @@ namespace Orts.Simulation.RollingStocks
                         PowerOnIsON = false;
                     }
 
-                    if (Simulator.OneSecondLoop > 0.1f)
+                    if (HighPriority)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 1000f))).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3AC", (int)((this).Variable3AC * 1000f))).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3DC", (int)((this).Variable3DC * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 1000f))).ToString());
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 1000f))).ToString());
                     }
                 }
-                if (Simulator.OneSecondLoop > 0.1f)
+                if (LowPriority)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this).Variable5 * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE12", (int)((this).Variable12 * 1000f))).ToString());
                 }
-                if (!CompressorIsOn)                
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 0)).ToString());                
-                if (CompressorIsOn)                
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 1)).ToString());
-                if (!Compressor2IsOn)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 0)).ToString());
-                if (Compressor2IsOn)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 1)).ToString());
-                if (!AuxCompressorIsOn)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 0)).ToString());
-                if (AuxCompressorIsOn)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 1)).ToString());
 
-                if (LocoStation == 1)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
-                if (LocoStation == 2)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
-                if (!Battery)
+                if (!CompressorIsOn && CompressorIsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 0)).ToString());
+                    CompressorIsON = false;
+                }
+                if (CompressorIsOn && !CompressorIsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR", 1)).ToString());
+                    CompressorIsON = true;
+                }
+                if (!Compressor2IsOn && Compressor2IsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 0)).ToString());
+                    Compressor2IsON = false;
+                }
+                if (Compressor2IsOn && !Compressor2IsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "COMPRESSOR2", 1)).ToString());
+                    Compressor2IsON = true;
+                }
+                if (!AuxCompressorIsOn && AuxCompressorIsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 0)).ToString());
+                    AuxCompressorIsON = false;
+                }
+                if (AuxCompressorIsOn && !AuxCompressorIsON)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "AUXCOMPRESSOR", 1)).ToString());
+                    AuxCompressorIsON = true;
+                }
+
+                if (VeryLowPriority)
+                {
+                    if (LocoStation == 1)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
+                    if (LocoStation == 2)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
+                }
+                if (!Battery && BatteryIsON)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 0)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());
+                    BatteryIsON = false;
                 }
-                if (Battery)
+                if (Battery && !BatteryIsON)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 1)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());
+                    BatteryIsON = false;
                 }
 
                 if (IsLeadLocomotive())
-                {                                                           
-                    if (UsingRearCab || Flipped)
+                {
+                    if (LowPriority)
                     {
-                        if (Simulator.Direction == Direction.Reverse)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                        if (UsingRearCab || Flipped)
+                        {
+                            if (Simulator.Direction == Direction.Reverse)
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                            else
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                        }
                         else
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                        {
+                            if (Simulator.Direction == Direction.Reverse)
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                            else
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                        }
                     }
-                    else
+                    if (VeryLowPriority)
                     {
-                        if (Simulator.Direction == Direction.Reverse)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
-                        else
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                        if (!LightFrontLW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 10)).ToString());
+                        if (LightFrontLW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 11)).ToString());
+                        if (!LightFrontRW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 20)).ToString());
+                        if (LightFrontRW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 21)).ToString());
+                        if (!LightRearLW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 30)).ToString());
+                        if (LightRearLW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 31)).ToString());
+                        if (!LightRearRW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 40)).ToString());
+                        if (LightRearRW)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 41)).ToString());
+                        if (!LightFrontLR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 50)).ToString());
+                        if (LightFrontLR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 51)).ToString());
+                        if (!LightFrontRR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 60)).ToString());
+                        if (LightFrontRR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 61)).ToString());
+                        if (!LightRearLR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 70)).ToString());
+                        if (LightRearLR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 71)).ToString());
+                        if (!LightRearRR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 80)).ToString());
+                        if (LightRearRR)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 81)).ToString());
+                        if (!FrontHeadLight)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 90)).ToString());
+                        if (FrontHeadLight)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 91)).ToString());
+                        if (!RearHeadLight)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 100)).ToString());
+                        if (RearHeadLight)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 101)).ToString());
                     }
-
-                    if (!LightFrontLW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 10)).ToString());
-                    if (LightFrontLW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 11)).ToString());
-                    if (!LightFrontRW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 20)).ToString());
-                    if (LightFrontRW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 21)).ToString());
-                    if (!LightRearLW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 30)).ToString());
-                    if (LightRearLW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 31)).ToString());
-                    if (!LightRearRW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 40)).ToString());
-                    if (LightRearRW)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 41)).ToString());
-                    if (!LightFrontLR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 50)).ToString());
-                    if (LightFrontLR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 51)).ToString());
-                    if (!LightFrontRR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 60)).ToString());
-                    if (LightFrontRR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 61)).ToString());
-                    if (!LightRearLR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 70)).ToString());
-                    if (LightRearLR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 71)).ToString());
-                    if (!LightRearRR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 80)).ToString());
-                    if (LightRearRR)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 81)).ToString());
-                    if (!FrontHeadLight)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 90)).ToString());
-                    if (FrontHeadLight)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 91)).ToString());
-                    if (!RearHeadLight)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 100)).ToString());
-                    if (RearHeadLight)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 101)).ToString());
                 }
             }
         }
