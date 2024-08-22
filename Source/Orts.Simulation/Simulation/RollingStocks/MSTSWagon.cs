@@ -949,6 +949,7 @@ namespace Orts.Simulation.RollingStocks
 
         public bool DoorLeftIsOpened;
         public bool DoorRightIsOpened;
+        float LastLoadPerCent;        
         float MPMessageTimer;
         public void MP_Messages()
         {
@@ -963,23 +964,26 @@ namespace Orts.Simulation.RollingStocks
                 bool HighPriority = (MPMessageTimer > 0.2f && MPMessageTimer < 0.3f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
                 bool VeryHighPriority = (MPMessageTimer > 0.1f && MPMessageTimer < 0.2f) || (MPMessageTimer > 0.3f && MPMessageTimer < 0.4f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.7f && MPMessageTimer < 0.8f) || (MPMessageTimer > 0.9f && MPMessageTimer < 1.0f) ? true : false;
 
-                //Určí index aktuálního vozu
+                //Určí index aktuálního vozu                
                 int CarIndex = 1000;
                 for (int i = 0; i < Train.Cars.Count; i++)
                 {
                     if (Train.Cars[i].UiD == UiD)
                     {
                         CarIndex = i;
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());                        
                         break;
                     }
                 }
 
-                if (VeryLowPriority)
+                // Hodnota dynamického nákladu
+                if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
                 {
-                    // Hodnota dynamického nákladu
-                    if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
+                    if (LastLoadPerCent != FreightAnimations.LoadedOne.LoadPerCent)
+                    {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
+                        LastLoadPerCent = FreightAnimations.LoadedOne.LoadPerCent;
+                    }
                 }
                 // Jednotlivé dveře vozů
                 if (DoorLeftOpen && !DoorLeftIsOpened)
@@ -1006,8 +1010,7 @@ namespace Orts.Simulation.RollingStocks
                 if (LowPriority)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDSLIP", (int)((this).WheelSpeedSlipMpS * 1000f))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());                    
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE10", (int)((this).Variable10 * 1000f))).ToString());

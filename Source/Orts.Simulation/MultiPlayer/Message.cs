@@ -2371,12 +2371,7 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).AbsWheelSpeedMpSDC = EventState / 1000f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "WHEELSPEEDSLIP")
-            {
-                if (t.TrainLoco != null) ((MSTSWagon)(t.TrainLoco)).WheelSpeedSlipMpS = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            }            
             else if (EventName == "FACTORVIBRATION")
             {
                 if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).Factor_vibration = EventState;

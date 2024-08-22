@@ -1065,7 +1065,7 @@ namespace Orts.Viewer3D
                 ComposeMessageWindow.InitMessage();
             }
             if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible ? true : false;
-            if (!MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu))
+            if (UserInput.IsPressed(UserCommand.GamePauseMenu))
             {                
                 if (ActivityWindow.Visible)
                 {
