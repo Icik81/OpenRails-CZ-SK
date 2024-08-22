@@ -15378,7 +15378,6 @@ namespace Orts.Simulation.RollingStocks
                 // Diesel
                 if (this as MSTSDieselLocomotive != null)
                 {
-
                     if (!PowerOn && !PowerOnIsON)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 0)).ToString());
@@ -15547,6 +15546,7 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
                     if (LocoStation == 2)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECYLINDERPRESSURE", (int)((this).BrakeSystem.BrakeCylinderPressurePSI))).ToString());
                 }
                 if (!Battery && BatteryIsON)
                 {

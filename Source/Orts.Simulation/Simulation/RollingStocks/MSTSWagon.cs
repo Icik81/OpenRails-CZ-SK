@@ -1010,12 +1010,11 @@ namespace Orts.Simulation.RollingStocks
                 if (LowPriority)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());                    
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE10", (int)((this).Variable10 * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 1000f))).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECYLINDERPRESSURE", (int)((this).BrakeSystem.BrakeCylinderPressurePSI))).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 1000f))).ToString());                    
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
                 }
             }
