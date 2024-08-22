@@ -1332,22 +1332,32 @@ namespace Orts.Viewer3D
                     if (MPMessageTimer > 1.0f)
                         MPMessageTimer = 0;
 
-                    bool VeryLowPriority = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
-                    bool LowPriority = (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
-                    bool HighPriority = (MPMessageTimer > 0.2f && MPMessageTimer < 0.3f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.8f && MPMessageTimer < 0.9f) ? true : false;
-                    bool VeryHighPriority = (MPMessageTimer > 0.1f && MPMessageTimer < 0.2f) || (MPMessageTimer > 0.3f && MPMessageTimer < 0.4f) || (MPMessageTimer > 0.5f && MPMessageTimer < 0.6f) || (MPMessageTimer > 0.7f && MPMessageTimer < 0.8f) || (MPMessageTimer > 0.9f && MPMessageTimer < 1.0f) ? true : false;
+                    bool Time1 = MPMessageTimer > 0.0f && MPMessageTimer < 0.1f ? true : false;
+                    bool Time2 = MPMessageTimer > 0.1f && MPMessageTimer < 0.2f ? true : false;
+                    bool Time3 = MPMessageTimer > 0.2f && MPMessageTimer < 0.3f ? true : false;
+                    bool Time4 = MPMessageTimer > 0.3f && MPMessageTimer < 0.4f ? true : false;
+                    bool Time5 = MPMessageTimer > 0.4f && MPMessageTimer < 0.5f ? true : false;
+                    bool Time6 = MPMessageTimer > 0.5f && MPMessageTimer < 0.6f ? true : false;
+                    bool Time7 = MPMessageTimer > 0.6f && MPMessageTimer < 0.7f ? true : false;
+                    bool Time8 = MPMessageTimer > 0.7f && MPMessageTimer < 0.8f ? true : false;
+                    bool Time9 = MPMessageTimer > 0.8f && MPMessageTimer < 0.9f ? true : false;
+                    bool Time10 = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
 
                     if (!MPManager.IsServer()) return;
-                    if (VeryLowPriority)
-                    {
+                    if (Time1)                    
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONINTENSITY", (int)(weatherControl.Weather.PricipitationIntensityPPSPM2 * 10000f))).ToString());
+                    if (Time2)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONLIQUIDITY", (int)(weatherControl.Weather.PrecipitationLiquidity * 10000f))).ToString());
+                    if (Time3)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FOGDISTANCE", (int)weatherControl.Weather.FogDistance)).ToString());
+                    if (Time4)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OVERCASTFACTOR", (int)(weatherControl.Weather.OvercastFactor * 10000f))).ToString());
+                    if (Time5)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDSPEED", (int)((weatherControl.Weather.WindSpeed * 10f)))).ToString());
+                    if (Time6)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDDIRECTION", (int)((weatherControl.Weather.WindDirection * 10f)))).ToString());
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());
-                    }
+                    if (Time7)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());                    
                 }
 
                 var wChangeOn = false;
