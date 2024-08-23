@@ -2354,20 +2354,30 @@ namespace Orts.MultiPlayer
             }            
             else if (EventName == "SPEED")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).AbsSpeedMpS = EventState / 1000f;
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).SpeedMpS = EventState / 1000f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "WHEELSPEED")
             {
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).WheelSpeedMpS = EventState / 1000f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "ABSSPEED")
+            {
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).AbsSpeedMpS = EventState / 1000f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "ABSWHEELSPEED")
+            {
                 if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).AbsWheelSpeedMpS = EventState / 1000f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-            else if (EventName == "WHEELSPEEDAC")
+            else if (EventName == "ABSWHEELSPEEDAC")
             {
                 if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).AbsWheelSpeedMpSAC = EventState / 1000f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-            else if (EventName == "WHEELSPEEDDC")
+            else if (EventName == "ABSWHEELSPEEDDC")
             {
                 if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).AbsWheelSpeedMpSDC = EventState / 1000f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast

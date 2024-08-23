@@ -951,6 +951,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DoorRightIsOpened;
         float LastLoadPerCent;        
         float MPMessageTimer;
+        bool SpeedSetToZero;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
@@ -1011,12 +1012,22 @@ namespace Orts.Simulation.RollingStocks
                     DoorRightIsOpened = false;
                 }
 
-                if (Time1)                
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
-                if (Time2)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
-                if (Time3)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
+
+                if (AbsSpeedMpS < 0.01f && !SpeedSetToZero)
+                {
+                    //MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());
+                    SpeedSetToZero = true;
+                }
+                else
+                    SpeedSetToZero = false;
+
+                if ((this).AbsSpeedMpS > 0)               
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSSPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
+                if ((this).AbsWheelSpeedMpS > 0)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
+                //if (Time3)
+                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
                 if (Time4)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
                 if (Time5)

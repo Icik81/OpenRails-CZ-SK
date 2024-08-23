@@ -15338,12 +15338,11 @@ namespace Orts.Simulation.RollingStocks
             CabRefreshCycle++;
         }
 
-        bool PowerOnIsON;
+        bool PowerOnIsON;        
         bool StartButtonPressedON;
         bool CompressorIsON;
         bool Compressor2IsON;
-        bool AuxCompressorIsON;
-        bool BatteryIsON;
+        bool AuxCompressorIsON;              
         bool IndependentWaterPlatesIsON;
         bool IndependentOilPlatesIsON;
         bool WaterCoolingIsON;
@@ -15351,6 +15350,7 @@ namespace Orts.Simulation.RollingStocks
         bool OilCoolingIsON;
         bool OilCoolingLowIsON;
         float MPMessageTimer;
+        bool SpeedSetToZero;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
@@ -15421,13 +15421,13 @@ namespace Orts.Simulation.RollingStocks
                     if (Time7)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DEMANDEDRPM", (int)(this as MSTSDieselLocomotive).DieselEngines[0].DemandedRPM)).ToString());
 
-                    if (Time8)
+                    //if (Time8)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE4", (int)((this as MSTSDieselLocomotive).Variable4 * 1000f))).ToString());
                     if (Time9)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 1000f))).ToString());
                     if (Time10)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 1000f))).ToString());
-                    if (Time1)
+                    //if (Time1)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE8", (int)((this as MSTSDieselLocomotive).Variable8 * 1000f))).ToString());
 
 
@@ -15496,33 +15496,37 @@ namespace Orts.Simulation.RollingStocks
                 // Elektriky
                 if (this as MSTSElectricLocomotive != null)
                 {
-                    if (!PowerOn && PowerOnIsON)
-                    {
+                    if (!PowerOn && Time10)                    
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 0)).ToString());
-                        PowerOnIsON = false;
-                    }
-                    if (PowerOn && !PowerOnIsON)
-                    {
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());
-                        PowerOnIsON = true;
-                    }
-
-                    if (Time1)
+                                        
+                    if (PowerOn && Time10)                    
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());                                              
+                    
+                    if ((this).Variable1AC > 0)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 1000f))).ToString());
-                    if (Time2)
+                    if ((this).Variable1DC > 0)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 1000f))).ToString());
-                    if (Time3)
+                    if ((this).Variable2AC > 0)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 1000f))).ToString());
-                    if (Time4)
+                    if ((this).Variable2DC > 0)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 1000f))).ToString());
-                    if (Time5)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 1000f))).ToString());
-                    if (Time6)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 1000f))).ToString());
+                    if ((this).AbsWheelSpeedMpSAC > 0)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 1000f))).ToString());
+                    if ((this).AbsWheelSpeedMpSDC > 0)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 1000f))).ToString());
                 }
 
-                if (Time1)
+                if ((this).Variable5 > 0)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this).Variable5 * 1000f))).ToString());
+
+                if (AbsSpeedMpS < 0.01f && !SpeedSetToZero)
+                {
+                    //MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());
+                    SpeedSetToZero = true;
+                }
+                else
+                    SpeedSetToZero = false;
 
                 if (!CompressorIsOn && CompressorIsON)
                 {
@@ -15563,18 +15567,16 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
                 }
 
-                if (!Battery && BatteryIsON)
-                {
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 0)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());
-                    BatteryIsON = false;
-                }
-                if (Battery && !BatteryIsON)
+                if (Battery && Time10)
                 {
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 1)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());
-                    BatteryIsON = true;
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());                    
                 }
+                if (!Battery && Time10)
+                {
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 0)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());                    
+                }                                
 
                 if (IsLeadLocomotive())
                 {
