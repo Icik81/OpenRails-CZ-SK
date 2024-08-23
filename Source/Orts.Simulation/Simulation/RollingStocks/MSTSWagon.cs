@@ -1015,7 +1015,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (AbsSpeedMpS < 0.01f && !SpeedSetToZero)
                 {
-                    //MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());
                     SpeedSetToZero = true;
                 }
