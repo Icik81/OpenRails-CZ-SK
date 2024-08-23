@@ -36,6 +36,7 @@ namespace Orts.Viewer3D.Popups
         internal static Texture2D LocoDTexture;
         internal static Texture2D LocoETexture;
         internal static Texture2D LocoSTexture;
+        internal static Texture2D DMUTexture;
         internal static Texture2D TenderTexture;
         internal static Texture2D Passenger2CarTexture;
         internal static Texture2D Passenger4CarTexture;
@@ -66,6 +67,8 @@ namespace Orts.Viewer3D.Popups
                 LocoETexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsELoco.png"));
             if (LocoSTexture == null)
                 LocoSTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsSLoco.png"));
+            if (DMUTexture == null)
+                DMUTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsDMU.png"));
 
             if (TenderTexture == null)
                 TenderTexture = SharedTextureManager.Get(Owner.Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Owner.Viewer.ContentPath, "TrainOperationsTender.png"));
@@ -375,6 +378,12 @@ namespace Orts.Viewer3D.Popups
                 {
                     Texture = TrainOperationsWindow.LocoSTexture;
                     Source = new Rectangle(0, 0, 392, 142);
+                }
+                else
+                if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSControlUnit)
+                {
+                    Texture = TrainOperationsWindow.DMUTexture;
+                    Source = new Rectangle(0, 0, 300, 76);
                 }
             }
             else

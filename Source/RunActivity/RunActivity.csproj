@@ -1003,6 +1003,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\TrainOperationsDLoco.png" />
+    <Content Include="Content\TrainOperationsDMU.png" />
     <Content Include="Content\TrainOperationsELoco.png" />
     <Content Include="Content\TrainOperationsSLoco.png" />
     <Content Include="Content\TrainOperationsTender.png" />

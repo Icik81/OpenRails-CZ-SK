@@ -2886,9 +2886,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             // Lokomotivy spojené kabelem oddělené vozy
                             if (lead != null && lead.Simulator.TrainIsPassenger)
                             {
+                                bool ControlUnitFound = false;
                                 foreach (TrainCar car in train.Cars)
                                 {
-                                    if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())
+                                    if (car is MSTSControlUnit)
+                                    {
+                                        ControlUnitFound = true;
+                                        break;
+                                    }
+                                }
+                                foreach (TrainCar car in train.Cars)
+                                {
+                                    if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !ControlUnitFound)
                                     {
                                         if (car.AcceptCableSignals && lead.AcceptCableSignals)
                                         {
