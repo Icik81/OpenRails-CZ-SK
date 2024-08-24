@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-08-21 11:17:14+0200\n"
-"PO-Revision-Date: 2024-08-21 11:17:15+0200\n"
+"POT-Creation-Date: 2024-08-24 11:20:18+0200\n"
+"PO-Revision-Date: 2024-08-24 11:20:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -202,21 +202,49 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2461
+#: ../../RunActivity/Viewer3D/Weather.cs:2484
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2027
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:182
+msgid "System Controlled"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:183
+msgid "Stop"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:184
+msgid "Approach_1"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
+msgid "Approach_2"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:187
+msgid "Clear_1"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:188
+msgid "Clear_2"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:189
+msgid "Call_On"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2056
 msgid "Switching Request Sent to the Server"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:566
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:573
 msgid "MSG to Server"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:570
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:577
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:264
 msgid "MSG to All"
 msgstr ""
@@ -579,12 +607,12 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:275
 #: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:278
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:280
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:285
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:281
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:283
 #: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:288
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:290
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:291
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:293
 msgid "Car ID"
 msgstr ""
 
@@ -1525,7 +1553,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:569
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:613
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:327
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:330
 msgid "Length"
 msgstr ""
 
@@ -2072,7 +2100,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1507
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1537
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:328
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:331
 msgid "Mass"
 msgstr ""
 
@@ -3202,19 +3230,19 @@ msgstr ""
 msgid "Player train can't be switched when in turntable not aligned to a track"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:52
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:53
 msgid "Train Operations"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:221
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:224
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:329
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:332
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:345
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:348
 msgid "Real braking percentages"
 msgstr ""
 

@@ -1,4 +1,6 @@
-﻿namespace Orts.Viewer3D.Debugging
+﻿using Orts.MultiPlayer;
+
+namespace Orts.Viewer3D.Debugging
 {
     partial class DispatchViewer
    {
@@ -319,6 +321,7 @@
             // 
             // boxSetSignal
             // 
+            this.boxSetSignal.BackColor = System.Drawing.SystemColors.Info;
             this.boxSetSignal.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.boxSetSignal.Enabled = false;
             this.boxSetSignal.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -326,28 +329,26 @@
             this.boxSetSignal.ItemHeight = 25;
             this.boxSetSignal.Location = new System.Drawing.Point(279, 252);
             this.boxSetSignal.Margin = new System.Windows.Forms.Padding(4);
-            this.boxSetSignal.MinimumSize = new System.Drawing.Size(213, 123);
+            this.boxSetSignal.MinimumSize = new System.Drawing.Size(130, 123);
             this.boxSetSignal.Name = "boxSetSignal";
-            this.boxSetSignal.Size = new System.Drawing.Size(219, 100);
+            this.boxSetSignal.Size = new System.Drawing.Size(130, 175);
             this.boxSetSignal.TabIndex = 25;
             this.boxSetSignal.Visible = false;
             this.boxSetSignal.SelectedIndexChanged += new System.EventHandler(this.boxSetSignalChosen);
             // 
             // boxSetSwitch
             // 
+            this.boxSetSwitch.BackColor = System.Drawing.SystemColors.Info;
             this.boxSetSwitch.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.boxSetSwitch.Enabled = false;
             this.boxSetSwitch.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.boxSetSwitch.FormattingEnabled = true;
             this.boxSetSwitch.ItemHeight = 25;
-            this.boxSetSwitch.Items.AddRange(new object[] {
-            "To Main Route",
-            "To Side Route"});
             this.boxSetSwitch.Location = new System.Drawing.Point(531, 252);
             this.boxSetSwitch.Margin = new System.Windows.Forms.Padding(4);
-            this.boxSetSwitch.MinimumSize = new System.Drawing.Size(160, 62);
+            this.boxSetSwitch.MinimumSize = new System.Drawing.Size(120, 62);
             this.boxSetSwitch.Name = "boxSetSwitch";
-            this.boxSetSwitch.Size = new System.Drawing.Size(167, 50);
+            this.boxSetSwitch.Size = new System.Drawing.Size(120, 50);
             this.boxSetSwitch.TabIndex = 26;
             this.boxSetSwitch.Visible = false;
             this.boxSetSwitch.SelectedIndexChanged += new System.EventHandler(this.boxSetSwitchChosen);

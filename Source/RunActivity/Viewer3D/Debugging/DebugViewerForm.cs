@@ -21,6 +21,7 @@
 //    Richard Plokhaar / Signalsoft Rail Consultancy Ltd.
 // 
 
+using GNU.Gettext;
 using GNU.Gettext.WinForms;
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
@@ -53,7 +54,7 @@ namespace Orts.Viewer3D.Debugging
     /// </summary>
     public partial class DispatchViewer : Form
     {
-
+        private GettextResourceManager catalog = new GettextResourceManager("Menu");
 
         #region Data Viewers
         //public MessageViewer MessageViewer;
@@ -157,6 +158,8 @@ namespace Orts.Viewer3D.Debugging
         /// /// <param name="viewer"></param>
         public DispatchViewer(Simulator simulator, Viewer viewer)
         {
+            Localizer.Localize(this, catalog);
+
             InitializeComponent();
 
             if (simulator == null)
@@ -176,13 +179,42 @@ namespace Orts.Viewer3D.Debugging
 
             ViewWindow = new RectangleF(0, 0, 5000f, 5000f);
             windowSizeUpDown.Accelerations.Add(new NumericUpDownAcceleration(1, 100));
-            boxSetSignal.Items.Add("System Controlled");
-            boxSetSignal.Items.Add("Stop");
-            boxSetSignal.Items.Add("Approach");
-            boxSetSignal.Items.Add("Proceed");
+
+            if (!MPManager.IsMultiPlayer())
+            {
+                boxSetSignal.Items.Add(catalog.GetString("System Controlled"));
+                boxSetSignal.Items.Add(catalog.GetString("Stop"));
+                boxSetSignal.Items.Add(catalog.GetString("Approach_1"));
+                boxSetSignal.Items.Add(catalog.GetString("Approach_2"));
+                //boxSetSignal.Items.Add("Approach_3");
+                boxSetSignal.Items.Add(catalog.GetString("Clear_1"));
+                boxSetSignal.Items.Add(catalog.GetString("Clear_2"));
+                boxSetSignal.Items.Add(catalog.GetString("Call_On"));
+            }
+            else
+            {
+                boxSetSignal.Items.Add(("Automatika"));
+                boxSetSignal.Items.Add(("Stůj"));
+                boxSetSignal.Items.Add(("Výstraha"));
+                boxSetSignal.Items.Add(("Porucha"));
+                //boxSetSignal.Items.Add("Approach_3");
+                boxSetSignal.Items.Add(("Volno"));
+                boxSetSignal.Items.Add(("Posun"));
+                boxSetSignal.Items.Add(("Přivolávačka"));
+            }
+
+            if (!MPManager.IsMultiPlayer())
+            {
+                boxSetSwitch.Items.AddRange(new object[] { "To Main Route", "To Side Route"});
+            }
+            else
+            {
+                boxSetSwitch.Items.AddRange(new object[] { "Hlavní trať", "Vedlejší trať"});
+            }
+
             chkAllowUserSwitch.Checked = false;
             selectedTrainList = new List<Train>();
-            if (MultiPlayer.MPManager.IsMultiPlayer()) { MultiPlayer.MPManager.AllowedManualSwitch = false; }
+            if (MultiPlayer.MPManager.IsMultiPlayer()) { MultiPlayer.MPManager.AllowedManualSwitch = false; } 
 
             InitData();
             InitImage();
@@ -239,7 +271,7 @@ namespace Orts.Viewer3D.Debugging
             else this.Visible = true;
 
             if (Program.Simulator.GameTime - lastUpdateTime < 1) return;
-            lastUpdateTime = Program.Simulator.GameTime;
+            lastUpdateTime = Program.Simulator.GameTime;            
 
             GenerateView();
         }
@@ -1571,7 +1603,7 @@ namespace Orts.Viewer3D.Debugging
             boxSetSwitch.Visible = false;
         }
         private void HandlePickedSignal()
-        {
+        {            
             if (MultiPlayer.MPManager.IsClient() && !MultiPlayer.MPManager.Instance().AmAider) return;//normal client not server or aider
                                                                                                       //boxSetSwitch.Enabled = false;
             boxSetSwitch.Visible = false;
@@ -1580,20 +1612,21 @@ namespace Orts.Viewer3D.Debugging
             if (LastCursorPosition.Y < 100) y = 100;
             if (LastCursorPosition.Y > pbCanvas.Size.Height - 100) y = pbCanvas.Size.Height - 100;
 
-            if (boxSetSignal.Items.Count == 5)
-                boxSetSignal.Items.RemoveAt(4);
+            //Icik
+            //if (boxSetSignal.Items.Count == 5)
+            //    boxSetSignal.Items.RemoveAt(4);
+            
+            //if (signalPickedItem.Signal.enabledTrain != null && signalPickedItem.Signal.CallOnEnabled)
+            //{
+            //    if (signalPickedItem.Signal.enabledTrain.Train.AllowedCallOnSignal != signalPickedItem.Signal)
+            //        boxSetSignal.Items.Add("Enable call on");
+            //    /*else
+            //        boxSetSignal.Items.Add("Disable call on");*/
+            //    // To disable Call On signal must be manually set to stop, to avoid signal state change
+            //    // in the interval between this list is shown and the option is selected by dispatcher
+            //}
 
-            if (signalPickedItem.Signal.enabledTrain != null && signalPickedItem.Signal.CallOnEnabled)
-            {
-                if (signalPickedItem.Signal.enabledTrain.Train.AllowedCallOnSignal != signalPickedItem.Signal)
-                    boxSetSignal.Items.Add("Enable call on");
-                /*else
-                    boxSetSignal.Items.Add("Disable call on");*/
-                // To disable Call On signal must be manually set to stop, to avoid signal state change
-                // in the interval between this list is shown and the option is selected by dispatcher
-            }
-
-            boxSetSignal.Location = new System.Drawing.Point(LastCursorPosition.X + 2, y);
+            //boxSetSignal.Location = new System.Drawing.Point(LastCursorPosition.X + 2, y);
             boxSetSignal.Enabled = true;
             boxSetSignal.Focus();
             boxSetSignal.SelectedIndex = -1;
@@ -2006,26 +2039,43 @@ namespace Orts.Viewer3D.Debugging
                     signal.holdState = SignalObject.HoldState.ManualApproach;
                     foreach (var sigHead in signal.SignalHeads)
                     {
-                        var drawstate1 = sigHead.def_draw_state(MstsSignalAspect.APPROACH_1);
-                        var drawstate2 = sigHead.def_draw_state(MstsSignalAspect.APPROACH_2);
-                        var drawstate3 = sigHead.def_draw_state(MstsSignalAspect.APPROACH_3);
-                        if (drawstate1 > 0) { sigHead.state = MstsSignalAspect.APPROACH_1; }
-                        else if (drawstate2 > 0) { sigHead.state = MstsSignalAspect.APPROACH_2; }
-                        else { sigHead.state = MstsSignalAspect.APPROACH_3; }
+                        sigHead.state = MstsSignalAspect.APPROACH_1;
                         sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
-                        // Clear the text aspect so as not to leave C# scripted signals in an inconsistent state.
-                        sigHead.TextSignalAspect = "";
                     }
                     break;
                 case 3:
-                    signal.holdState = SignalObject.HoldState.ManualPass;
+                    signal.holdState = SignalObject.HoldState.ManualApproach;
                     foreach (var sigHead in signal.SignalHeads)
                     {
-                        sigHead.SetLeastRestrictiveAspect();
+                        sigHead.state = MstsSignalAspect.APPROACH_2;
                         sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
                     }
                     break;
+                //case 4:
+                //    signal.holdState = SignalObject.HoldState.ManualApproach;
+                //    foreach (var sigHead in signal.SignalHeads)
+                //    {                                                
+                //        sigHead.state = MstsSignalAspect.APPROACH_3;
+                //        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);                        
+                //    }
+                //    break;
                 case 4:
+                    signal.holdState = SignalObject.HoldState.ManualPass;
+                    foreach (var sigHead in signal.SignalHeads)
+                    {
+                        sigHead.state = MstsSignalAspect.CLEAR_1;
+                        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
+                    }
+                    break;
+                case 5:
+                    signal.holdState = SignalObject.HoldState.ManualPass;
+                    foreach (var sigHead in signal.SignalHeads)
+                    {
+                        sigHead.state = MstsSignalAspect.CLEAR_2;
+                        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
+                    }
+                    break;
+                case 6:
                     signal.SetManualCallOn(true);
                     break;
             }
