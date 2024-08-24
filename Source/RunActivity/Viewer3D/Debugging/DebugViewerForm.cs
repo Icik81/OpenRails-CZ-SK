@@ -53,9 +53,7 @@ namespace Orts.Viewer3D.Debugging
     /// when using Open Rails 
     /// </summary>
     public partial class DispatchViewer : Form
-    {
-        private GettextResourceManager catalog = new GettextResourceManager("Menu");
-
+    {        
         #region Data Viewers
         //public MessageViewer MessageViewer;
         #endregion
@@ -150,6 +148,8 @@ namespace Orts.Viewer3D.Debugging
         public float maxX = float.MinValue;
         public float maxY = float.MinValue;
 
+        GettextResourceManager catalog = new GettextResourceManager("RunActivity");
+
         public Viewer Viewer;
         /// <summary>
         /// Creates a new DebugViewerForm.
@@ -157,9 +157,7 @@ namespace Orts.Viewer3D.Debugging
         /// <param name="simulator"></param>
         /// /// <param name="viewer"></param>
         public DispatchViewer(Simulator simulator, Viewer viewer)
-        {
-            Localizer.Localize(this, catalog);
-
+        {            
             InitializeComponent();
 
             if (simulator == null)
@@ -180,37 +178,16 @@ namespace Orts.Viewer3D.Debugging
             ViewWindow = new RectangleF(0, 0, 5000f, 5000f);
             windowSizeUpDown.Accelerations.Add(new NumericUpDownAcceleration(1, 100));
 
-            if (!MPManager.IsMultiPlayer())
-            {
-                boxSetSignal.Items.Add(catalog.GetString("System Controlled"));
-                boxSetSignal.Items.Add(catalog.GetString("Stop"));
-                boxSetSignal.Items.Add(catalog.GetString("Approach_1"));
-                boxSetSignal.Items.Add(catalog.GetString("Approach_2"));
-                //boxSetSignal.Items.Add("Approach_3");
-                boxSetSignal.Items.Add(catalog.GetString("Clear_1"));
-                boxSetSignal.Items.Add(catalog.GetString("Clear_2"));
-                boxSetSignal.Items.Add(catalog.GetString("Stop_and_Proceed"));
-            }
-            else
-            {
-                boxSetSignal.Items.Add(("Automatika"));
-                boxSetSignal.Items.Add(("Stůj"));
-                boxSetSignal.Items.Add(("Výstraha"));
-                boxSetSignal.Items.Add(("Porucha"));
-                //boxSetSignal.Items.Add("Approach_3");
-                boxSetSignal.Items.Add(("Volno"));
-                boxSetSignal.Items.Add(("Posun"));
-                boxSetSignal.Items.Add(("Přivolávačka"));
-            }
+            this.boxSetSignal.Items.AddRange(new object[] {
+            catalog.GetString("System Controlled"),
+            catalog.GetString("Stop"),
+            catalog.GetString("Approach_2"),            
+            catalog.GetString("Clear_2"),
+            catalog.GetString("Stop_and_Proceed")});
 
-            if (!MPManager.IsMultiPlayer())
-            {
-                boxSetSwitch.Items.AddRange(new object[] { "To Main Route", "To Side Route"});
-            }
-            else
-            {
-                boxSetSwitch.Items.AddRange(new object[] { "Hlavní trať", "Vedlejší trať"});
-            }
+            this.boxSetSwitch.Items.AddRange(new object[] {
+            catalog.GetString("To Main Route"),
+            catalog.GetString("To Side Route")});
 
             chkAllowUserSwitch.Checked = false;
             selectedTrainList = new List<Train>();
@@ -1612,14 +1589,14 @@ namespace Orts.Viewer3D.Debugging
             if (LastCursorPosition.Y < 100) y = 100;
             if (LastCursorPosition.Y > pbCanvas.Size.Height - 100) y = pbCanvas.Size.Height - 100;
 
-            //Icik
-            //if (boxSetSignal.Items.Count == 5)
-            //    boxSetSignal.Items.RemoveAt(4);
-
             if (signalPickedItem.Signal.enabledTrain != null && signalPickedItem.Signal.CallOnEnabled)
             {
                 if (signalPickedItem.Signal.enabledTrain.Train.AllowedCallOnSignal != signalPickedItem.Signal)
+                {
+                    if (boxSetSignal.Items.Count == 5)
+                        boxSetSignal.Items.RemoveAt(4);
                     boxSetSignal.Items.Add("Enable call on");
+                }
                 /*else
                     boxSetSignal.Items.Add("Disable call on");*/
                 // To disable Call On signal must be manually set to stop, to avoid signal state change
@@ -2035,15 +2012,15 @@ namespace Orts.Viewer3D.Debugging
                 case 1:
                     signal.requestHoldSignalDispatcher(true);
                     break;
+                //case 2:
+                //    signal.holdState = SignalObject.HoldState.ManualApproach;
+                //    foreach (var sigHead in signal.SignalHeads)
+                //    {
+                //        sigHead.state = MstsSignalAspect.APPROACH_1;
+                //        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
+                //    }
+                //    break;
                 case 2:
-                    signal.holdState = SignalObject.HoldState.ManualApproach;
-                    foreach (var sigHead in signal.SignalHeads)
-                    {
-                        sigHead.state = MstsSignalAspect.APPROACH_1;
-                        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
-                    }
-                    break;
-                case 3:
                     signal.holdState = SignalObject.HoldState.ManualApproach;
                     foreach (var sigHead in signal.SignalHeads)
                     {
@@ -2059,15 +2036,15 @@ namespace Orts.Viewer3D.Debugging
                 //        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);                        
                 //    }
                 //    break;
-                case 4:
-                    signal.holdState = SignalObject.HoldState.ManualPass;
-                    foreach (var sigHead in signal.SignalHeads)
-                    {
-                        sigHead.state = MstsSignalAspect.CLEAR_1;
-                        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
-                    }
-                    break;
-                case 5:
+                //case 4:
+                //    signal.holdState = SignalObject.HoldState.ManualPass;
+                //    foreach (var sigHead in signal.SignalHeads)
+                //    {
+                //        sigHead.state = MstsSignalAspect.CLEAR_1;
+                //        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
+                //    }
+                //    break;
+                case 3:
                     signal.holdState = SignalObject.HoldState.ManualPass;
                     foreach (var sigHead in signal.SignalHeads)
                     {
@@ -2075,7 +2052,7 @@ namespace Orts.Viewer3D.Debugging
                         sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
                     }
                     break;
-                case 6:
+                case 4:
                     signal.holdState = SignalObject.HoldState.ManualPass;
                     foreach (var sigHead in signal.SignalHeads)
                     {
@@ -2084,7 +2061,7 @@ namespace Orts.Viewer3D.Debugging
                     }
                     //signal.SetManualCallOn(true);
                     break;
-                case 7:                    
+                case 5:                    
                     signal.SetManualCallOn(true);
                     break;
             }

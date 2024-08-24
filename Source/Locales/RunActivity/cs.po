@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2024-08-24 11:20:18+0200\n"
-"PO-Revision-Date: 2024-08-24 11:22+0200\n"
+"POT-Creation-Date: 2024-08-24 19:48:26+0200\n"
+"PO-Revision-Date: 2024-08-24 19:51+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -228,96 +228,100 @@ msgid "Stop"
 msgstr "Stůj"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:184
-msgid "Approach_1"
-msgstr "Výstraha"
-
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
 msgid "Approach_2"
 msgstr "Porucha"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:187
-msgid "Clear_1"
-msgstr "Volno"
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
+msgid "Approach_3"
+msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:188
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:186
 msgid "Clear_2"
 msgstr "Posun"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:189
-msgid "Call_On"
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:187
+msgid "Stop_and_Proceed"
 msgstr "Přivolávačka"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2056
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:190
+msgid "To Main Route"
+msgstr "Přímo"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:191
+msgid "To Side Route"
+msgstr "Do odbočky"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2078
 msgid "Switching Request Sent to the Server"
 msgstr "Povel k přestavení výhybky byl odeslán serveru"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:573
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:587
 msgid "MSG to Server"
 msgstr "Zpráva serveru"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:577
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:264
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:591
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:267
 msgid "MSG to All"
 msgstr "Zpráva všem"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:127
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:130
 msgid "View Train"
 msgstr "Zobrazit vlak"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:172
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:175
 msgid "m"
 msgstr "m"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:194
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:197
 msgid "Remove"
 msgstr "Odebrat"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:208
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:211
 msgid "Auto Switch"
 msgstr "Výhybky AUTO"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:222
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:225
 msgid "Show Avatars"
 msgstr "Zobrazit avatary"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:250
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:253
 msgid "MSG to Selected"
 msgstr "Zpráva zvoleným"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:277
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:280
 #: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:88
 msgid "Compose MSG"
 msgstr "Napsat zprávu"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:290
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:293
 msgid "Res"
 msgstr "Měřítko"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:302
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:305
 msgid "Reply to Selected"
 msgstr "Odpovědět zvoleným"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:316
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:319
 msgid "Draw Path"
 msgstr "Vykreslit trasu"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:365
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:367
 msgid "Pick Signals"
 msgstr "Vybrat návěstidla"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:378
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:380
 msgid "Pick Switches"
 msgstr "Vybrat výhybku"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:391
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:393
 msgid "Can Join"
 msgstr "Povolit připojení"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:415
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:417
 msgid "Assist"
 msgstr "Asistence"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:427
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:429
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:861
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:875
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:649
@@ -325,120 +329,120 @@ msgstr "Asistence"
 msgid "Normal"
 msgstr "Normální"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:440
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:442
 msgid "Follow"
 msgstr "Následovat"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:454
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:456
 msgid "Penalty"
 msgstr "Penalizace"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:468
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:470
 msgid "Prefer Green"
 msgstr "Preferovat zelenou"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:482
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:484
 msgid "See in Game"
 msgstr "Zobrazit ve hře"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:495
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:497
 msgid "Simulation Time"
 msgstr "Čas simulace"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:507
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:509
 msgid "SimulationTime"
 msgstr "Čas simulace"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:520
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:522
 msgid "Platform labels"
 msgstr "Názvy stanic"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:534
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:536
 msgid "Siding labels"
 msgstr "Názvy nástupišť"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:548
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:550
 msgid "Signals"
 msgstr "Návěsti"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:562
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:564
 msgid "Signal state"
 msgstr "Stav návěstidel"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:580
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:582
 msgid "Train labels"
 msgstr "Názvy vlaků"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:592
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:594
 msgid "Key"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:607
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:609
 msgid "Active only"
 msgstr "Jen aktivní"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:619
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:621
 msgid "All"
 msgstr "Všechny"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:656
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:658
 msgid "Daylight offset (hrs)"
 msgstr "Posun denního světla (hodiny)"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:673
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:675
 msgid "Background color"
 msgstr "Barva pozadí"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:688
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:690
 msgid "Switches"
 msgstr "Výhybky"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:701
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:703
 msgid "To pan, drag with left mouse."
 msgstr "K natáčení táhni myší při držení levého tlačítka"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:716
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:718
 msgid "Name"
 msgstr "Jméno"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:743
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:745
 msgid "Dispatch"
 msgstr "Dispečer"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:755
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:757
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
 msgid "Timetable"
 msgstr "Jízdní řád"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:768
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:770
 msgid "State"
 msgstr "Stav"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:781
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:783
 msgid "To zoom, drag with left and right mouse or scroll mouse wheel."
 msgstr "Pro přiblížení stsiskni LTM+PTM a táhni myší"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:793
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:795
 msgid "To zoom in to a location, press Shift and click the left mouse."
 msgstr "Pro přiblížení k oblasti stiskni Shift a klikni LTM"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:805
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:807
 msgid "To zoom out of a location, press Alt and click the left mouse."
 msgstr "Pro oodálení z oblasti stiskni Alt a klikni LTM"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:820
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:822
 msgid "Platforms"
 msgstr "Nástupiště"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:855
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:857
 msgid "Show"
 msgstr "Zobrazit"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:867
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:869
 msgid "Train Permission"
 msgstr "Povolení odjezdu vlaku"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:922
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:924
 msgid "Map Window"
 msgstr "Okno s mapou"
 
@@ -3476,6 +3480,12 @@ msgstr "Posunout nahoru"
 msgid "Scroll Down"
 msgstr "Posunout dolů"
 
+#~ msgid "Clear_1"
+#~ msgstr "Volno"
+
+#~ msgid "Call_On"
+#~ msgstr "Přivolávačka"
+
 #~ msgid "View Self"
 #~ msgstr "Zobrazit sebe"
 
@@ -3644,12 +3654,6 @@ msgstr "Posunout dolů"
 
 #~ msgid "Dispatcher does not allow hand throw at this time"
 #~ msgstr "Dispečer nemůže v tuto chvíli vyhazovat"
-
-#~ msgid "main route"
-#~ msgstr "hlavní trať"
-
-#~ msgid "side route"
-#~ msgstr "vedlejší trať"
 
 #~ msgid "You are the new dispatcher. Enjoy!"
 #~ msgstr "Jste nový dispečer. Užijte si to!"

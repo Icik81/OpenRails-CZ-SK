@@ -1,4 +1,5 @@
-﻿using Orts.MultiPlayer;
+﻿using GNU.Gettext;
+using Orts.MultiPlayer;
 
 namespace Orts.Viewer3D.Debugging
 {
@@ -331,7 +332,7 @@ namespace Orts.Viewer3D.Debugging
             this.boxSetSignal.Margin = new System.Windows.Forms.Padding(4);
             this.boxSetSignal.MinimumSize = new System.Drawing.Size(130, 123);
             this.boxSetSignal.Name = "boxSetSignal";
-            this.boxSetSignal.Size = new System.Drawing.Size(130, 175);
+            this.boxSetSignal.Size = new System.Drawing.Size(179, 125);
             this.boxSetSignal.TabIndex = 25;
             this.boxSetSignal.Visible = false;
             this.boxSetSignal.SelectedIndexChanged += new System.EventHandler(this.boxSetSignalChosen);
@@ -348,7 +349,7 @@ namespace Orts.Viewer3D.Debugging
             this.boxSetSwitch.Margin = new System.Windows.Forms.Padding(4);
             this.boxSetSwitch.MinimumSize = new System.Drawing.Size(120, 62);
             this.boxSetSwitch.Name = "boxSetSwitch";
-            this.boxSetSwitch.Size = new System.Drawing.Size(120, 50);
+            this.boxSetSwitch.Size = new System.Drawing.Size(134, 50);
             this.boxSetSwitch.TabIndex = 26;
             this.boxSetSwitch.Visible = false;
             this.boxSetSwitch.SelectedIndexChanged += new System.EventHandler(this.boxSetSwitchChosen);
