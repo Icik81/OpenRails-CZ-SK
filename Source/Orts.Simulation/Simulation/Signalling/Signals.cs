@@ -7141,7 +7141,7 @@ namespace Orts.Simulation.Signalling
                             int usedTrainRouteIndex = nextTrainRouteIndex;
 
                             // if not on route, try this trains route
-                            if (thisTrain != null && (nextRouteFrontIndex < 0 || nextRouteRearIndex < 0))
+                            if (thisTrain != null && thisTrain.ValidRoute[0] != null && (nextRouteFrontIndex < 0 || nextRouteRearIndex < 0))
                             {
                                 nextRouteFrontIndex = thisTrain.ValidRoute[0].GetRouteIndex(nextFront.TCSectionIndex, 0);
                                 nextRouteRearIndex = thisTrain.ValidRoute[0].GetRouteIndex(nextRear.TCSectionIndex, 0);

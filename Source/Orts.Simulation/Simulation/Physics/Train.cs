@@ -563,13 +563,6 @@ namespace Orts.Simulation.Physics
         }
 
         // Icik
-        public TrainCar TrainLoco
-        {
-            get
-            {
-                return LocoIndex >= 0 && LocoIndex < Cars.Count ? Cars[LocoIndex] : null;
-            }
-        }
         public TrainCar TrainWagon
         {
             get

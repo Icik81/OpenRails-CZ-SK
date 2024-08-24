@@ -2161,12 +2161,7 @@ namespace Orts.MultiPlayer
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 
-            // Icik
-            else if (EventName == "LOCOINDEX")
-            {
-                if (EventState > -1) t.LocoIndex = EventState;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            // Icik            
             else if (EventName == "COMPRESSOR")
             {
                 if (t.LeadLocomotive != null)
@@ -2265,8 +2260,8 @@ namespace Orts.MultiPlayer
                 if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Train.RequestExplorerSignalPermission(ref ((MSTSLocomotive)(t.LeadLocomotive)).Train.ValidRoute[0], 0);
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Train.RequestExplorerSignalPermission(ref ((MSTSLocomotive)(t.LeadLocomotive)).Train.ValidRoute[1], 1);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            
+            }            
+
             // Vozy
             else if (EventName == "WAGONINDEX")
             {
@@ -2294,188 +2289,158 @@ namespace Orts.MultiPlayer
             // Variabilní proměnné            
             else if (EventName == "VARIABLE1AC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).Variable1AC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable1AC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "VARIABLE1DC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).Variable1DC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable1DC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }           
             else if (EventName == "VARIABLE2AC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).Variable2AC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable2AC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "VARIABLE2DC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).Variable2DC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable2DC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }                                 
             else if (EventName == "VARIABLE4")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).Variable4 = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable4 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "VARIABLE5")
-            {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSLocomotive) != null) ((MSTSLocomotive)(t.TrainLoco)).Variable5 = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            }            
             else if (EventName == "VARIABLE6")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).Variable6 = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable6 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "VARIABLE7")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).Variable7 = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable7 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "VARIABLE8")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).Variable8 = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable8 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "VARIABLE9")
-            {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).Variable9 = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "VARIABLE10")
-            {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).Variable10 = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "VARIABLE11")
-            {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).Variable11 = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
+            }                      
             else if (EventName == "SPEED")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).SpeedMpS = EventState / 1000f;
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).SpeedMpS = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "WHEELSPEED")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).WheelSpeedMpS = EventState / 1000f;
+                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).WheelSpeedMpS = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "ABSSPEED")
-            {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).AbsSpeedMpS = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "ABSWHEELSPEED")
-            {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).AbsWheelSpeedMpS = EventState / 1000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            }            
             else if (EventName == "ABSWHEELSPEEDAC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).AbsWheelSpeedMpSAC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).AbsWheelSpeedMpSAC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "ABSWHEELSPEEDDC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainLoco)).AbsWheelSpeedMpSDC = EventState / 1000f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).AbsWheelSpeedMpSDC = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }            
             else if (EventName == "FACTORVIBRATION")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).Factor_vibration = EventState;
+                if (t.TrainWagon != null) t.TrainWagon.Factor_vibration = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "BRAKECYLINDERPRESSURE")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).BrakeSystem.BrakeCylinderPressurePSI = EventState;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) t.TrainWagon.BrakeSystem.BrakeCylinderPressurePSI = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "BRAKEPIPESTATE")
             {
-                if (t.TrainWagon != null && EventState == 0) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.BrakePipePressureDecrease);
-                if (t.TrainWagon != null && EventState == 1) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.BrakePipePressureIncrease);
-                if (t.TrainWagon != null && EventState == 2) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.BrakePipePressureStoppedChanging);
+                if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.BrakePipePressureDecrease);
+                if (t.TrainWagon != null && EventState == 1) t.TrainWagon.SignalEvent(Event.BrakePipePressureIncrease);
+                if (t.TrainWagon != null && EventState == 2) t.TrainWagon.SignalEvent(Event.BrakePipePressureStoppedChanging);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "ENGINEBRAKESTATE")
             {
-                if (t.TrainLoco != null && EventState == 0) ((MSTSLocomotive)(t.TrainLoco)).SignalEvent(Event.EngineBrakePressureDecrease);
-                if (t.TrainLoco != null && EventState == 1) ((MSTSLocomotive)(t.TrainLoco)).SignalEvent(Event.EngineBrakePressureIncrease);
-                if (t.TrainLoco != null && EventState == 2) ((MSTSLocomotive)(t.TrainLoco)).SignalEvent(Event.EngineBrakePressureStoppedChanging);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null && EventState == 0) t.TrainWagon.SignalEvent(Event.EngineBrakePressureDecrease);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null && EventState == 1) t.TrainWagon.SignalEvent(Event.EngineBrakePressureIncrease);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null && EventState == 2) t.TrainWagon.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "TRAINBRAKESTATE")
             {
-                if (t.TrainWagon != null && EventState == 0) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.TrainBrakePressureDecrease);
-                if (t.TrainWagon != null && EventState == 1) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.TrainBrakePressureIncrease);
-                if (t.TrainWagon != null && EventState == 2) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.TrainBrakePressureDecrease);
+                if (t.TrainWagon != null && EventState == 1) t.TrainWagon.SignalEvent(Event.TrainBrakePressureIncrease);
+                if (t.TrainWagon != null && EventState == 2) t.TrainWagon.SignalEvent(Event.TrainBrakePressureStoppedChanging);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "CURVEFORCE")
             {
-                if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).CurveForceNFiltered = EventState;
+                if (t.TrainWagon != null) t.TrainWagon.CurveForceNFiltered = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "TRAINCOUPLE")
             {
-                if (t.TrainWagon != null && EventState == 0) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Uncouple);
-                if (t.TrainWagon != null && EventState == 1) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Couple);
-                if (t.TrainWagon != null && EventState == 2) ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.Coupling);                
+                if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.Uncouple);
+                if (t.TrainWagon != null && EventState == 1) t.TrainWagon.SignalEvent(Event.Couple);
+                if (t.TrainWagon != null && EventState == 2) t.TrainWagon.SignalEvent(Event.Coupling);                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 
             // Elektriky
             else if (EventName == "ENGINEPOWERON")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.EnginePowerOff);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.EnginePowerOn);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.EnginePowerOff);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.EnginePowerOn);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "HV")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerOpen);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosing);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosed);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerOpen);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosing);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosed);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "HVDC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerOpenDC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosingDC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosedDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerOpenDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosingDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosedDC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "HVAC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerOpenAC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosingAC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.CircuitBreakerClosedAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerOpenAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosingAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 2) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.CircuitBreakerClosedAC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "PANTO1DC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph1DownDC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph1UpDC);                
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph1DownDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph1UpDC);                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "PANTO2DC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph2DownDC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph2UpDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph2DownDC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph2UpDC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "PANTO1AC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph1DownAC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph1UpAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph1DownAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph1UpAC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "PANTO2AC")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph2DownAC);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainLoco)).SignalEvent(Event.Pantograph2UpAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 0) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph2DownAC);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph2UpAC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 
@@ -2484,54 +2449,54 @@ namespace Orts.MultiPlayer
             // Diesel
             else if (EventName == "POWERONOFF")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.EnginePowerOff);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.EnginePowerOn);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.EnginePowerOff);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.EnginePowerOn);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "STARTINITMOTOR")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.StartUpMotorStop);
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.StartUpMotor);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.StartUpMotorStop);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.StartUpMotor);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "INITMOTORIDLE")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.InitMotorIdle);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.InitMotorIdle);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "MOTORSTOP")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.StartUpMotorStop);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.StartUpMotorStop);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "MOTORSTOPBREAK")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).SignalEvent(Event.StartUpMotorBreak);
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).SignalEvent(Event.StartUpMotorBreak);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
                         
             // Loco Exhaust
             else if (EventName == "EXHAUSTPARTICLES")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustParticles = EventState / 10f;                
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustParticles = EventState / 10f;                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "EXHAUSTMAGNITUDE")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustMagnitude = EventState / 10f;                
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustMagnitude = EventState / 10f;                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }                                             
             else if (EventName == "LOCOEXHAUST")
             {
-                if ((t.TrainLoco as MSTSDieselLocomotive) != null && ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].RealRPM > ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].DemandedRPM)
+                if ((t.TrainWagon as MSTSDieselLocomotive) != null && ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].RealRPM > ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].DemandedRPM)
                 {
-                    if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null)
-                        (t.TrainLoco as MSTSDieselLocomotive).RemoteUpdate(((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustParticles, ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustMagnitude, 200, 200, 200);
+                    if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null)
+                        (t.TrainWagon as MSTSDieselLocomotive).RemoteUpdate(((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustParticles, ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustMagnitude, 200, 200, 200);
                 }
                 else                
                 {
-                    if ((t.TrainLoco as MSTSDieselLocomotive) != null && t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null)
-                        (t.TrainLoco as MSTSDieselLocomotive).RemoteUpdate(((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustParticles, ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].MPExhaustMagnitude, 0, 0, 0);
+                    if ((t.TrainWagon as MSTSDieselLocomotive) != null && t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null)
+                        (t.TrainWagon as MSTSDieselLocomotive).RemoteUpdate(((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustParticles, ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].MPExhaustMagnitude, 0, 0, 0);
                 }                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
@@ -2539,58 +2504,58 @@ namespace Orts.MultiPlayer
             // Diesel motor
             else if (EventName == "REALRPM")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].RealRPM = EventState;                
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].RealRPM = EventState;                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "REALRPM0")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].RealRPM0 = EventState;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].RealRPM0 = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "IDLERPM")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].IdleRPM = EventState;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].IdleRPM = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "DEMANDEDRPM")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].DemandedRPM = EventState;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].DemandedRPM = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }                        
             else if (EventName == "INDEPENDENTWATERPLATES")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].IndependentWaterPlates = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].IndependentWaterPlates = true;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].IndependentWaterPlates = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].IndependentWaterPlates = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "INDEPENDENTOILPLATES")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].IndependentOilPlates = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].IndependentOilPlates = true;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].IndependentOilPlates = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].IndependentOilPlates = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "WATERCOOLINGLOW")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].WaterTempCoolingLowRunning = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].WaterTempCoolingLowRunning = true;                
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].WaterTempCoolingLowRunning = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].WaterTempCoolingLowRunning = true;                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "WATERCOOLING")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].WaterTempCoolingRunning = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].WaterTempCoolingRunning = true;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].WaterTempCoolingRunning = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].WaterTempCoolingRunning = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "OILCOOLINGLOW")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].OilTempCoolingLowRunning = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].OilTempCoolingLowRunning = true;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingLowRunning = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingLowRunning = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "OILCOOLING")
             {
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].OilTempCoolingRunning = false;
-                if (t.TrainLoco != null && (t.TrainLoco as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainLoco)).DieselEngines[0].OilTempCoolingRunning = true;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingRunning = false;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingRunning = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 

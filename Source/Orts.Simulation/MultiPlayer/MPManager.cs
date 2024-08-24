@@ -231,7 +231,8 @@ namespace Orts.MultiPlayer
         {
             if (begineZeroTime == 0) begineZeroTime = newtime - 1;
 
-            CheckPlayerTrainSpad();//over speed or pass a red light
+            // Icik - nepoužívá se
+            //CheckPlayerTrainSpad();//over speed or pass a red light
 
             //server update train location of all
             if (Server != null && newtime - lastMoveTime >= 0.1f)
@@ -240,18 +241,20 @@ namespace Orts.MultiPlayer
                 if (Simulator.PlayerLocomotive.Train.TrainType != Train.TRAINTYPE.REMOTE)
                     move.AddNewItem(GetUserName(), Simulator.PlayerLocomotive.Train);
                 Server.BroadCast(OnlineTrains.MoveTrains(move));
-                MSGExhaust exhaust = new MSGExhaust(); // Also updating loco exhaust
-                Train t = Simulator.PlayerLocomotive.Train;
-                for (int iCar = 0; iCar < t.Cars.Count; iCar++)
-                {
-                    if (t.Cars[iCar] is MSTSDieselLocomotive)
-                    {
-                        exhaust.AddNewItem(GetUserName(), t, iCar);
-                    }
-                }
+                
+                // Icik - dynamický kouř je počítán přes Eventy
+                //MSGExhaust exhaust = new MSGExhaust(); // Also updating loco exhaust
+                //Train t = Simulator.PlayerLocomotive.Train;
+                //for (int iCar = 0; iCar < t.Cars.Count; iCar++)
+                //{
+                //    if (t.Cars[iCar] is MSTSDieselLocomotive)
+                //    {
+                //        exhaust.AddNewItem(GetUserName(), t, iCar);
+                //    }
+                //}
                 // Broadcast also exhaust
-                var exhaustMessage = OnlineTrains.ExhaustingLocos(exhaust);
-                if (exhaustMessage != "") Server.BroadCast(exhaustMessage);
+                //var exhaustMessage = OnlineTrains.ExhaustingLocos(exhaust);
+                //if (exhaustMessage != "") Server.BroadCast(exhaustMessage);
 
                 lastMoveTime = lastSendTime = newtime;
 
@@ -280,20 +283,25 @@ namespace Orts.MultiPlayer
             {
                 Train t = Simulator.PlayerLocomotive.Train;
                 MSGMove move = new MSGMove();
-                MSGExhaust exhaust = new MSGExhaust(); // Also updating loco exhaust
+                
+                // Icik
+                //MSGExhaust exhaust = new MSGExhaust(); // Also updating loco exhaust
+                
                 //if I am still controlling the train
                 if (t.TrainType != Train.TRAINTYPE.REMOTE)
                 {
                     if (Math.Abs(t.SpeedMpS) > 0.001 || newtime - begineZeroTime < 5f || Math.Abs(t.LastReportedSpeed) > 0)
                     {
                         move.AddNewItem(GetUserName(), t);
-                        for (int iCar = 0; iCar < t.Cars.Count; iCar++)
-                        {
-                            if (t.Cars[iCar] is MSTSDieselLocomotive)
-                            {
-                                exhaust.AddNewItem(GetUserName(), t, iCar);
-                            }
-                        }
+                        
+                        // Icik
+                        //for (int iCar = 0; iCar < t.Cars.Count; iCar++)
+                        //{
+                        //    if (t.Cars[iCar] is MSTSDieselLocomotive)
+                        //    {
+                        //        exhaust.AddNewItem(GetUserName(), t, iCar);
+                        //    }
+                        //}
                     }
                     else
                     {
@@ -309,7 +317,10 @@ namespace Orts.MultiPlayer
                 if (move.OKtoSend())
                 {
                     Client.Send(move.ToString());
-                    if (exhaust.OKtoSend()) Client.Send(exhaust.ToString());
+                    
+                    // Icik
+                    //if (exhaust.OKtoSend()) Client.Send(exhaust.ToString());
+
                     lastMoveTime = lastSendTime = newtime;
                 }
                 previousSpeed = t.SpeedMpS;

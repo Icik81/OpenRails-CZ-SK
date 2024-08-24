@@ -160,13 +160,17 @@ namespace Orts.MultiPlayer
                         firstErrorTick = nowTicks;
                         errorCount = 1;
                     }
-                    if (errorCount >= 5 && nowTicks - firstErrorTick < 10) //5 errors last 10 seconds
+                    
+                    // Icik
+                    //if (errorCount >= 5 && nowTicks - firstErrorTick < 10) //5 errors last 10 seconds
+                    
+                    if (errorCount >= 500 && nowTicks - firstErrorTick < 10) //500 errors last 10 seconds
                     {
                         MSGMessage emsg = new MSGMessage(this.Username, "Error", "Too many errors received from you in a short period of time.");
                         MPManager.BroadCast(emsg.ToString());
                         break;
                     }
-                    else if (errorCount < 5) { errorCount++; }
+                    else if (errorCount < 500) { errorCount++; }
                     else { firstErrorTick = nowTicks; errorCount = 0; }
                     //System.Console.WriteLine(e.Message + info);
                 }

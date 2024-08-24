@@ -952,6 +952,7 @@ namespace Orts.Simulation.RollingStocks
         float LastLoadPerCent;        
         float MPMessageTimer;
         bool SpeedSetToZero;
+        int incTime1, incTime2, incTime3, incTime4, incTime5, incTime6, incTime7, incTime8, incTime9, incTime10 = 0;
         public void MP_Messages()
         {
             if (MPManager.IsMultiPlayer())
@@ -960,14 +961,18 @@ namespace Orts.Simulation.RollingStocks
                 if (MPMessageTimer > 1.0f)
                     MPMessageTimer = 0;
 
-                bool Time1 = MPMessageTimer > 0.0f && MPMessageTimer < 0.1f ? true : false;
-                bool Time2 = MPMessageTimer > 0.1f && MPMessageTimer < 0.2f ? true : false;
-                bool Time3 = MPMessageTimer > 0.2f && MPMessageTimer < 0.3f ? true : false;
-                bool Time4 = MPMessageTimer > 0.3f && MPMessageTimer < 0.4f ? true : false;
-                bool Time5 = MPMessageTimer > 0.4f && MPMessageTimer < 0.5f ? true : false;
-                bool Time6 = MPMessageTimer > 0.5f && MPMessageTimer < 0.6f ? true : false;
-                bool Time7 = MPMessageTimer > 0.6f && MPMessageTimer < 0.7f ? true : false;
-                bool Time8 = MPMessageTimer > 0.7f && MPMessageTimer < 0.8f ? true : false;
+                bool Time1 = false; bool Time2 = false; bool Time3 = false; bool Time4 = false; bool Time5 = false; bool Time6 = false; bool Time7 = false; bool Time8 = false; bool Time9 = false; bool Time10 = false;
+                if (MPMessageTimer == 0) incTime1 = incTime2 = incTime3 = incTime4 = incTime5 = incTime6 = incTime7 = incTime8 = incTime9 = incTime10 = 0;
+                if (MPMessageTimer > 0.0f && incTime1 == 0) { Time1 = true; incTime1++; }
+                if (MPMessageTimer > 0.1f && incTime2 == 0) { Time2 = true; incTime2++; }
+                if (MPMessageTimer > 0.2f && incTime3 == 0) { Time3 = true; incTime3++; }
+                if (MPMessageTimer > 0.3f && incTime4 == 0) { Time4 = true; incTime4++; }
+                if (MPMessageTimer > 0.4f && incTime5 == 0) { Time5 = true; incTime5++; }
+                if (MPMessageTimer > 0.5f && incTime6 == 0) { Time6 = true; incTime6++; }
+                if (MPMessageTimer > 0.6f && incTime7 == 0) { Time7 = true; incTime7++; }
+                if (MPMessageTimer > 0.7f && incTime8 == 0) { Time8 = true; incTime8++; }
+                if (MPMessageTimer > 0.8f && incTime9 == 0) { Time9 = true; incTime9++; }
+                if (MPMessageTimer > 0.9f && incTime10 == 0) { Time10 = true; incTime10++; }
 
                 //Určí index aktuálního vozu                
                 int CarIndex = 1000;
@@ -982,7 +987,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Hodnota dynamického nákladu
-                if (FreightAnimations != null && FreightAnimations.LoadedOne != null)
+                if (Time1 && FreightAnimations != null && FreightAnimations.LoadedOne != null)
                 {
                     if (LastLoadPerCent != FreightAnimations.LoadedOne.LoadPerCent)
                     {
@@ -1012,32 +1017,26 @@ namespace Orts.Simulation.RollingStocks
                     DoorRightIsOpened = false;
                 }
 
-
-                if (AbsSpeedMpS < 0.01f && !SpeedSetToZero)
+                if (AbsSpeedMpS < 0.01f)
                 {
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());
-                    SpeedSetToZero = true;
+                    if (Time1)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
+                    if (Time2)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());                    
                 }
-                else
-                    SpeedSetToZero = false;
-
-                if ((this).AbsSpeedMpS > 0)               
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSSPEED", (int)((this).AbsSpeedMpS * 1000f))).ToString());
-                if ((this).AbsWheelSpeedMpS > 0)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEED", (int)((this).AbsWheelSpeedMpS * 1000f))).ToString());
+                else                
+                {
+                    if (Time1)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).SpeedMpS * 100f))).ToString());
+                    if (Time2)                    
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).WheelSpeedMpS * 100f))).ToString());                     
+                }
+               
                 //if (Time3)
-                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());
-                if (Time4)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE9", (int)((this).Variable9 * 1000f))).ToString());
-                if (Time5)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE10", (int)((this).Variable10 * 1000f))).ToString());
-                if (Time6)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 1000f))).ToString());
+                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                
                 if (Time7)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
-                if (Time8)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECYLINDERPRESSURE", (int)((this).BrakeSystem.BrakeCylinderPressurePSI))).ToString());
+                
             }
         }
 

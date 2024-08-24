@@ -1349,7 +1349,7 @@ namespace Orts.Viewer3D.Debugging
 
                 if (player != null)
                 {
-                    if (player.Train.TrainLoco.Simulator.Direction == Direction.Reverse)
+                    if (player.Train.LeadLocomotive.Simulator.Direction == Direction.Reverse)
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);                                                                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());

@@ -2223,12 +2223,12 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Speed_NEquals_To:
-                    return car.AbsSpeedMpS;
+                    return Math.Abs(car.SpeedMpS);
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed_NEquals_To:
-                    return car.AbsWheelSpeedMpS;
+                    return Math.Abs(car.WheelSpeedMpS);
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeedAC_Equals_To:
