@@ -189,7 +189,7 @@ namespace Orts.Viewer3D.Debugging
                 //boxSetSignal.Items.Add("Approach_3");
                 boxSetSignal.Items.Add(catalog.GetString("Clear_1"));
                 boxSetSignal.Items.Add(catalog.GetString("Clear_2"));
-                boxSetSignal.Items.Add(catalog.GetString("Call_On"));
+                boxSetSignal.Items.Add(catalog.GetString("Stop_and_Proceed"));
             }
             else
             {
@@ -1615,18 +1615,18 @@ namespace Orts.Viewer3D.Debugging
             //Icik
             //if (boxSetSignal.Items.Count == 5)
             //    boxSetSignal.Items.RemoveAt(4);
-            
-            //if (signalPickedItem.Signal.enabledTrain != null && signalPickedItem.Signal.CallOnEnabled)
-            //{
-            //    if (signalPickedItem.Signal.enabledTrain.Train.AllowedCallOnSignal != signalPickedItem.Signal)
-            //        boxSetSignal.Items.Add("Enable call on");
-            //    /*else
-            //        boxSetSignal.Items.Add("Disable call on");*/
-            //    // To disable Call On signal must be manually set to stop, to avoid signal state change
-            //    // in the interval between this list is shown and the option is selected by dispatcher
-            //}
 
-            //boxSetSignal.Location = new System.Drawing.Point(LastCursorPosition.X + 2, y);
+            if (signalPickedItem.Signal.enabledTrain != null && signalPickedItem.Signal.CallOnEnabled)
+            {
+                if (signalPickedItem.Signal.enabledTrain.Train.AllowedCallOnSignal != signalPickedItem.Signal)
+                    boxSetSignal.Items.Add("Enable call on");
+                /*else
+                    boxSetSignal.Items.Add("Disable call on");*/
+                // To disable Call On signal must be manually set to stop, to avoid signal state change
+                // in the interval between this list is shown and the option is selected by dispatcher
+            }
+
+            boxSetSignal.Location = new System.Drawing.Point(LastCursorPosition.X + 2, y);
             boxSetSignal.Enabled = true;
             boxSetSignal.Focus();
             boxSetSignal.SelectedIndex = -1;
@@ -2076,6 +2076,15 @@ namespace Orts.Viewer3D.Debugging
                     }
                     break;
                 case 6:
+                    signal.holdState = SignalObject.HoldState.ManualPass;
+                    foreach (var sigHead in signal.SignalHeads)
+                    {
+                        sigHead.state = MstsSignalAspect.STOP_AND_PROCEED;
+                        sigHead.draw_state = sigHead.def_draw_state(sigHead.state);
+                    }
+                    //signal.SetManualCallOn(true);
+                    break;
+                case 7:                    
                     signal.SetManualCallOn(true);
                     break;
             }
