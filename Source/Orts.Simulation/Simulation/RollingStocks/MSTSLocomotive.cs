@@ -7722,6 +7722,7 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         Simulator.Direction = Direction;
+                        Train.LocoDirection = Direction;
                     }
                     if (IsLeadLocomotive() && OneCabDummyStation)
                     {
@@ -15586,14 +15587,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (UsingRearCab || Flipped)
                         {
-                            if (Simulator.Direction == Direction.Reverse)
+                            if (Train.LocoDirection == Direction.Reverse)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
                             else
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
                         }
                         else
                         {
-                            if (Simulator.Direction == Direction.Reverse)
+                            if (Train.LocoDirection == Direction.Reverse)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
                             else
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());

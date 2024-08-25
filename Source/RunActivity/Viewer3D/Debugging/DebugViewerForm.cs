@@ -40,6 +40,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Windows.Forms;
+using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using Color = System.Drawing.Color;
 using Control = System.Windows.Forms.Control;
 using Image = System.Drawing.Image;
@@ -1069,6 +1070,7 @@ namespace Orts.Viewer3D.Debugging
             return rv;
         }
 
+        Traveller position;
         //draw the train path if it is within the window
         public void DrawTrainPath(Train train, float subX, float subY, Pen pathPen, Graphics g, PointF scaledA, PointF scaledB, float stepDist, float MaximumSectionDistance)
         {
@@ -1080,11 +1082,17 @@ namespace Orts.Viewer3D.Debugging
                 if (MultiPlayer.MPManager.OnlineTrains.findTrain(train)) ok = true;
             }
             if (train.FirstCar != null & train.FirstCar.CarID.Contains("AI")) ok = true; //AI train
-            if (Math.Abs(train.SpeedMpS) > 0.001) ok = true;
+            //if (Math.Abs(train.SpeedMpS) > 0.001) ok = true;
             if (ok == false) return;
 
-            var DisplayDistance = MaximumSectionDistance;
-            var position = train.MUDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
+            var DisplayDistance = MaximumSectionDistance;             
+            
+            // Icik
+            if (MultiPlayer.MPManager.OnlineTrains.findTrain(train))
+                position = train.LeadLocomotive.Train.LocoDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);            
+            else
+                position = train.MUDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
+
             var caches = new List<SignallingDebugWindow.TrackSectionCacheEntry>();
             // Work backwards until we end up on a different track section.
             var cacheNode = new Traveller(position);
@@ -1358,7 +1366,7 @@ namespace Orts.Viewer3D.Debugging
 
                 if (player != null)
                 {
-                    if (player.Train.LeadLocomotive.Simulator.Direction == Direction.Reverse)
+                    if (player.Train.LeadLocomotive.Train.LocoDirection == Direction.Reverse)
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);                                                                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
