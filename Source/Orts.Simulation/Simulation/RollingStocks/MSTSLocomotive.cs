@@ -15508,17 +15508,23 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());                                              
                     
                     if ((this).Variable1AC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 100f))).ToString());
                     if ((this).Variable1DC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 100f))).ToString());
                     if ((this).Variable2AC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 100f))).ToString());
                     if ((this).Variable2DC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());
                     if ((this).AbsWheelSpeedMpSAC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 100f))).ToString());
                     if ((this).AbsWheelSpeedMpSDC > 0)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 100f))).ToString());
+                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 100f))).ToString());
                 }
 
                 if (Time2)
