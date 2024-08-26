@@ -5575,14 +5575,14 @@ namespace Orts.Simulation.RollingStocks
 
                 if (!HelperOverheated)
                 {
-                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > 0.99f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg)
-                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > 0.99f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg)
+                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
                 }
 
                 if (HelperOverheated)
                 {
-                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
-                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.85f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.85f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
                     if (HelperCoolDown)
                         HelperOverheated = false;
                 }                                
