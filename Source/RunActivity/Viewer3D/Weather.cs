@@ -875,11 +875,45 @@ namespace Orts.Viewer3D
             }
         }
 
+        float MPMessageTimer;
+        public void MP_Messages(ElapsedTime elapsedTime, WeatherControl weatherControl)
+        {
+            if (MPManager.IsMultiPlayer())
+            {
+                MPMessageTimer += elapsedTime.ClockSeconds;
+                if (MPMessageTimer > 1.0f)
+                    MPMessageTimer = 0;
+
+                bool Time1 = MPMessageTimer > 0.0f && MPMessageTimer < 0.1f ? true : false;
+                bool Time2 = MPMessageTimer > 0.1f && MPMessageTimer < 0.2f ? true : false;
+                bool Time3 = MPMessageTimer > 0.2f && MPMessageTimer < 0.3f ? true : false;
+                bool Time4 = MPMessageTimer > 0.3f && MPMessageTimer < 0.4f ? true : false;
+                bool Time5 = MPMessageTimer > 0.4f && MPMessageTimer < 0.5f ? true : false;
+                bool Time6 = MPMessageTimer > 0.5f && MPMessageTimer < 0.6f ? true : false;
+                bool Time7 = MPMessageTimer > 0.6f && MPMessageTimer < 0.7f ? true : false;
+                bool Time8 = MPMessageTimer > 0.7f && MPMessageTimer < 0.8f ? true : false;
+                bool Time9 = MPMessageTimer > 0.8f && MPMessageTimer < 0.9f ? true : false;
+                bool Time10 = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
+
+                if (Time1 && MPManager.IsServer())
+                    MPManager.Notify((new MSGWeather((int)Viewer.Simulator.WeatherType,
+                        Weather.OvercastFactor,
+                        Weather.PricipitationIntensityPPSPM2,
+                        Weather.PrecipitationLiquidity,
+                        Weather.FogDistance,
+                        Weather.WindSpeed,
+                        Weather.WindDirection,
+                        Weather.SnowVelocityMpS)).ToString());                
+            }
+        }
+
         [CallOnThread("Updater")]
         public virtual void Update(ElapsedTime elapsedTime)
         {
             Time += elapsedTime.ClockSeconds;
             var manager = MPManager.Instance();
+
+            MP_Messages(elapsedTime, this);
 
             // Icik
             if (Viewer.Simulator.GameTimeCyklus10 == 10)
@@ -893,7 +927,7 @@ namespace Orts.Viewer3D
                 UpdateVolume();
             }
 
-            if (MPManager.IsClient() && manager.weatherChanged)
+            if (MPManager.IsClient())
             {
                 // Multiplayer weather has changed so we need to update our state to match weather, overcastFactor, pricipitationIntensity and fogDistance.
                 if (manager.weather >= 0 && manager.weather != (int)Viewer.Simulator.WeatherType)
@@ -908,18 +942,20 @@ namespace Orts.Viewer3D
                     Weather.PricipitationIntensityPPSPM2 = manager.pricipitationIntensity;
                     UpdateVolume();
                 }
+                if (manager.pricipitationLiquidity >= 0)
+                    Weather.PrecipitationLiquidity = manager.pricipitationLiquidity;
+                
                 if (manager.fogDistance >= 0)
                     Weather.FogDistance = manager.fogDistance;
+                
+                if (manager.windSpeedFactor > -1000)
+                    Weather.MPWindSpeed = manager.windSpeedFactor;                
 
-                // Reset the message now that we've applied all the changes.
-                if ((manager.weather >= 0 && manager.weather != (int)Viewer.Simulator.WeatherType) || manager.overcastFactor >= 0 || manager.pricipitationIntensity >= 0 || manager.fogDistance >= 0)
-                {
-                    manager.weatherChanged = false;
-                    manager.weather = -1;
-                    manager.overcastFactor = -1;
-                    manager.pricipitationIntensity = -1;
-                    manager.fogDistance = -1;
-                }
+                if (manager.windDirectionFactor > -1000)
+                    Weather.MPWindDirection = manager.windDirectionFactor;                
+
+                if (manager.snowSpeedFactor >= 0)
+                    Weather.SnowVelocityMpS = manager.snowSpeedFactor;                
             }
 
             else if (!MPManager.IsClient())
@@ -957,11 +993,7 @@ namespace Orts.Viewer3D
                     // block dynamic weather change after a manual weather change operation
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ResetWeatherTargets();
-                    UpdateWeatherParameters();
-
-                    // If we're a multiplayer server, send out the new weather to all clients.
-                    if (MPManager.IsServer())
-                        MPManager.Notify((new MSGWeather((int)Viewer.Simulator.WeatherType, -1, -1, -1)).ToString());
+                    UpdateWeatherParameters();                    
                 }
 
                 // Overcast ranges from 0 (completely clear) to 1 (completely overcast).
@@ -1084,7 +1116,7 @@ namespace Orts.Viewer3D
                     || UserInput.IsReleased(UserCommand.DebugFogIncrease) || UserInput.IsReleased(UserCommand.DebugFogDecrease))
                 {
                     manager.SetEnvInfo(Weather.OvercastFactor, Weather.FogDistance);
-                    MPManager.Notify((new MSGWeather(-1, Weather.OvercastFactor, Weather.PricipitationIntensityPPSPM2, Weather.FogDistance)).ToString());
+                    //MPManager.Notify((new MSGWeather(-1, Weather.OvercastFactor, Weather.PricipitationIntensityPPSPM2, Weather.FogDistance)).ToString());
                 }
             }
             if (Program.Simulator != null && Program.Simulator.ActivityRun != null && Program.Simulator.ActivityRun.triggeredEventWrapper != null &&
@@ -1190,6 +1222,7 @@ namespace Orts.Viewer3D
                 UpdateWeatherParameters();
             }
         }
+
 
         public class DynamicWeather
         {
@@ -1319,47 +1352,12 @@ namespace Orts.Viewer3D
                     wChangeOn = true;
                 }
                 weatherControl.weatherChangeOn = wChangeOn;
-            }
+            }            
 
             float precipitationIntensityChangeRate2 = 1;
-            public float FinishPrecipitationIntensity;
-            float MPMessageTimer;
+            public float FinishPrecipitationIntensity;            
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
-            {
-                if (MPManager.IsMultiPlayer())
-                {
-                    MPMessageTimer += elapsedTime.ClockSeconds;
-                    if (MPMessageTimer > 1.0f)
-                        MPMessageTimer = 0;
-
-                    bool Time1 = MPMessageTimer > 0.0f && MPMessageTimer < 0.1f ? true : false;
-                    bool Time2 = MPMessageTimer > 0.1f && MPMessageTimer < 0.2f ? true : false;
-                    bool Time3 = MPMessageTimer > 0.2f && MPMessageTimer < 0.3f ? true : false;
-                    bool Time4 = MPMessageTimer > 0.3f && MPMessageTimer < 0.4f ? true : false;
-                    bool Time5 = MPMessageTimer > 0.4f && MPMessageTimer < 0.5f ? true : false;
-                    bool Time6 = MPMessageTimer > 0.5f && MPMessageTimer < 0.6f ? true : false;
-                    bool Time7 = MPMessageTimer > 0.6f && MPMessageTimer < 0.7f ? true : false;
-                    bool Time8 = MPMessageTimer > 0.7f && MPMessageTimer < 0.8f ? true : false;
-                    bool Time9 = MPMessageTimer > 0.8f && MPMessageTimer < 0.9f ? true : false;
-                    bool Time10 = MPMessageTimer > 0.9f && MPMessageTimer < 1.0f ? true : false;
-
-                    if (!MPManager.IsServer()) return;
-                    if (Time1)                    
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONINTENSITY", (int)(weatherControl.Weather.PricipitationIntensityPPSPM2 * 10000f))).ToString());
-                    if (Time2)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PRECIPITATIONLIQUIDITY", (int)(weatherControl.Weather.PrecipitationLiquidity * 10000f))).ToString());
-                    if (Time3)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FOGDISTANCE", (int)weatherControl.Weather.FogDistance)).ToString());
-                    if (Time4)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OVERCASTFACTOR", (int)(weatherControl.Weather.OvercastFactor * 10000f))).ToString());
-                    if (Time5)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDSPEED", (int)((weatherControl.Weather.WindSpeed * 10f)))).ToString());
-                    if (Time6)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WINDDIRECTION", (int)((weatherControl.Weather.WindDirection * 10f)))).ToString());
-                    if (Time7)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SNOWVELOCITY", (int)((weatherControl.Weather.SnowVelocityMpS * 10f)))).ToString());                    
-                }
-
+            {                
                 var wChangeOn = false;
                 if (ORTSOvercast >= 0)
                 {

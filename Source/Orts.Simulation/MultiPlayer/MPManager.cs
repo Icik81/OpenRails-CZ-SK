@@ -72,7 +72,11 @@ namespace Orts.MultiPlayer
         public int weather = -1;
         public float fogDistance = -1f;
         public float pricipitationIntensity = -1f;
+        public float pricipitationLiquidity = -1f;
         public float overcastFactor = -1f;
+        public float windSpeedFactor = -1f;
+        public float windDirectionFactor = -1f;
+        public float snowSpeedFactor = -1f;
         public double serverTimeDifference = 0;
 
         public double lastPlayerAddedTime;
@@ -516,8 +520,7 @@ namespace Orts.MultiPlayer
         //create weather message
         public string GetEnvInfo()
         {
-            return (new MSGWeather(-1, overcastFactor, pricipitationIntensity, fogDistance)).ToString();//update weather
-
+            return (new MSGWeather(-1, overcastFactor, pricipitationIntensity, pricipitationLiquidity, fogDistance, windSpeedFactor, windDirectionFactor, snowSpeedFactor)).ToString();//update weather
         }
 
         //set weather message

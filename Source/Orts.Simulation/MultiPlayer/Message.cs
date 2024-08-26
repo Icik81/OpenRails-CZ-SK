@@ -2557,47 +2557,8 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 0) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingRunning = false;
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null && EventState == 1) ((MSTSDieselLocomotive)(t.TrainWagon)).DieselEngines[0].OilTempCoolingRunning = true;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-
-
-            // Počasí
-            else if (EventName == "PRECIPITATIONINTENSITY")
-            {
-                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.PricipitationIntensityPPSPM2 = EventState / 10000f;                
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "PRECIPITATIONLIQUIDITY")
-            {
-                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.PrecipitationLiquidity = EventState / 10000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "FOGDISTANCE")
-            {
-                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.FogDistance = EventState;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "OVERCASTFACTOR")
-            {
-                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.OvercastFactor = EventState / 10000f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "WINDSPEED")
-            {
-                if (t.LeadLocomotive != null) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.MPWindSpeed = EventState / 10f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "WINDDIRECTION")
-            {
-                if (t.LeadLocomotive != null) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.MPWindDirection = EventState / 10f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "SNOWVELOCITY")
-            {
-                if (t.LeadLocomotive != null && EventState >= 0) ((MSTSLocomotive)(t.LeadLocomotive)).Simulator.Weather.SnowVelocityMpS = EventState / 10f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            }            
             
-
             else return;
         }
 
@@ -3868,30 +3829,50 @@ namespace Orts.MultiPlayer
         public int weather;
         public float overcast;
         public float pricipitation;
+        public float liquidity;
         public float fog;
+        public float windspeed;
+        public float windDirection;
+        public float snowVelocity;
 
         public MSGWeather(string m)
         {
-            weather = -1; overcast = pricipitation = fog = -1;
+            weather = -1; overcast = pricipitation = liquidity = fog = -1;  windspeed = windDirection = -1000; snowVelocity = -1;
             var tmp = m.Split(' ');
             weather = int.Parse(tmp[0]);
             overcast = float.Parse(tmp[1], CultureInfo.InvariantCulture);
             pricipitation = float.Parse(tmp[2], CultureInfo.InvariantCulture);
-            fog = float.Parse(tmp[3], CultureInfo.InvariantCulture);
+            liquidity = float.Parse(tmp[3], CultureInfo.InvariantCulture);
+            fog = float.Parse(tmp[4], CultureInfo.InvariantCulture);
+            windspeed = float.Parse(tmp[5], CultureInfo.InvariantCulture);
+            windDirection = float.Parse(tmp[6], CultureInfo.InvariantCulture);
+            snowVelocity = float.Parse(tmp[7], CultureInfo.InvariantCulture);
         }
 
-        public MSGWeather(int w, float o, float p, float f)
+        public MSGWeather(int w, float o, float p, float l, float f, float ws, float wd, float sv)
         {
-            weather = -1; overcast = pricipitation = fog = -1;
+            weather = -1; overcast = pricipitation = liquidity = fog = -1; windspeed = windDirection = -1000; snowVelocity = -1;
             if (w >= 0) weather = w;
             if (o >= 0) overcast = o;
             if (p >= 0) pricipitation = p;
+            if (l >= 0) liquidity = l;
             if (f >= 0) fog = f;
+            if (ws > -1000) windspeed = ws;            
+            if (wd > -1000) windDirection = wd;            
+            if (sv >= 0) snowVelocity = sv;
         }
 
         public override string ToString()
         {
-            var tmp = "WEATHER " + weather + " " + overcast.ToString(CultureInfo.InvariantCulture) + " " + pricipitation.ToString(CultureInfo.InvariantCulture) + " " + fog.ToString(CultureInfo.InvariantCulture);
+            var tmp = "WEATHER " 
+                + weather 
+                + " " + overcast.ToString(CultureInfo.InvariantCulture) 
+                + " " + pricipitation.ToString(CultureInfo.InvariantCulture) 
+                + " " + liquidity.ToString(CultureInfo.InvariantCulture)
+                + " " + fog.ToString(CultureInfo.InvariantCulture)
+                + " " + windspeed.ToString(CultureInfo.InvariantCulture)
+                + " " + windDirection.ToString(CultureInfo.InvariantCulture)
+                + " " + snowVelocity.ToString(CultureInfo.InvariantCulture);
             return " " + tmp.Length + ": " + tmp;
         }
 
@@ -3910,9 +3891,25 @@ namespace Orts.MultiPlayer
             {
                 MPManager.Instance().pricipitationIntensity = pricipitation;
             }
+            if (liquidity >= 0)
+            {
+                MPManager.Instance().pricipitationLiquidity = liquidity;
+            }
             if (fog >= 0)
             {
                 MPManager.Instance().fogDistance = fog;
+            }
+            if (windspeed > -1000)
+            {
+                MPManager.Instance().windSpeedFactor = windspeed;
+            }            
+            if (windDirection > -1000)
+            {
+                MPManager.Instance().windDirectionFactor = windDirection;
+            }            
+            if (snowVelocity >= 0)
+            {
+                MPManager.Instance().snowSpeedFactor = snowVelocity;
             }
             MPManager.Instance().weatherChanged = true;
         }
