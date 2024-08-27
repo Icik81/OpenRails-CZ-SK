@@ -101,8 +101,8 @@ namespace Orts.Viewer3D.Debugging
 
         private void SetDispatchMedia()
         {
-            F.trainFont = new Font("Arial", 14, FontStyle.Bold);
-            F.sidingFont = new Font("Arial", 12, FontStyle.Bold);
+            F.trainFont = new Font("Arial", 10, FontStyle.Bold);
+            F.sidingFont = new Font("Arial", 8, FontStyle.Bold);
             F.trainBrush = new SolidBrush(Color.Red);
             F.sidingBrush = new SolidBrush(Color.Blue);
             F.pbCanvas.BackColor = Color.White;

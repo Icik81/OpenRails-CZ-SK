@@ -698,83 +698,13 @@ namespace Orts.Viewer3D.Debugging
                     }*/
                 }
 
-                switchItemsDrawn.Clear();
-                signalItemsDrawn.Clear();
                 float x, y;
                 PointF scaledItem = new PointF(0f, 0f);
                 var width = 6f * p.Width; if (width > 15) width = 15;//not to make it too large
-                for (var i = 0; i < switches.Count; i++)
-                {
-                    SwitchWidget sw = switches[i];
-
-                    x = (sw.Location.X - subX) * xScale; y = pbCanvas.Height - (sw.Location.Y - subY) * yScale;
-
-                    if (x < 0 || x > IM_Width || y > IM_Height || y < 0) continue;
-
-                    scaledItem.X = x; scaledItem.Y = y;
-
-
-                    if (sw.Item.TrJunctionNode.SelectedRoute == sw.main) g.FillEllipse(Brushes.Black, GetRect(scaledItem, width));
-                    else g.FillEllipse(Brushes.Gray, GetRect(scaledItem, width));
-
-                    //g.DrawString("" + sw.Item.TrJunctionNode.SelectedRoute, trainFont, trainBrush, scaledItem);
-
-                    sw.Location2D.X = scaledItem.X; sw.Location2D.Y = scaledItem.Y;
-#if false
-				 if (sw.main == sw.Item.TrJunctionNode.SelectedRoute)
-				 {
-					 scaledA.X = ((float)sw.mainEnd.X - minX - ViewWindow.X) * xScale; scaledA.Y = pictureBox1.Height - ((float)sw.mainEnd.Y - minY - ViewWindow.Y) * yScale;
-					 g.DrawLine(redPen, scaledA, scaledItem);
-
-				 }
-#endif
-                    switchItemsDrawn.Add(sw);
-                }
-
-                foreach (var s in signals)
-                {
-                    if (float.IsNaN(s.Location.X) || float.IsNaN(s.Location.Y)) continue;
-                    x = (s.Location.X - subX) * xScale; y = pbCanvas.Height - (s.Location.Y - subY) * yScale;
-                    if (x < 0 || x > IM_Width || y > IM_Height || y < 0) continue;
-                    scaledItem.X = x; scaledItem.Y = y;
-                    s.Location2D.X = scaledItem.X; s.Location2D.Y = scaledItem.Y;
-                    if (s.Signal.isSignalNormal())//only show nor
-                    {
-                        var color = Brushes.Green;
-                        var pen = greenPen;
-                        if (s.IsProceed == 0)
-                        {
-                        }
-                        else if (s.IsProceed == 1)
-                        {
-                            color = Brushes.Orange;
-                            pen = orangePen;
-                        }
-                        else
-                        {
-                            color = Brushes.Red;
-                            pen = redPen;
-                        }
-                        g.FillEllipse(color, GetRect(scaledItem, width));
-                        //if (s.Signal.enabledTrain != null) g.DrawString(""+s.Signal.enabledTrain.Train.Number, trainFont, Brushes.Black, scaledItem);
-                        signalItemsDrawn.Add(s);
-                        if (s.hasDir)
-                        {
-                            scaledB.X = (s.Dir.X - subX) * xScale; scaledB.Y = pbCanvas.Height - (s.Dir.Y - subY) * yScale;
-                            g.DrawLine(pen, scaledItem, scaledB);
-                        }
-                    }
-                }
-
                 if (true/*showPlayerTrain.Checked*/)
                 {
 
-                    CleanVerticalCells();//clean the drawing area for text of sidings and platforms
-                    foreach (var sw in sidings)
-                        scaledItem = DrawSiding(g, scaledItem, sw);
-                    foreach (var pw in platforms)
-                        scaledItem = DrawPlatform(g, scaledItem, pw);
-
+                    CleanVerticalCells();//clean the drawing area for text of sidings and platforms                    
                     var margin = 30 * xScale;//margins to determine if we want to draw a train
                     var margin2 = 5000 * xScale;
 
@@ -806,7 +736,7 @@ namespace Orts.Viewer3D.Debugging
                     }
 
                     //trains selected in the avatar view list will be drawn in blue, others will be drawn in red
-                    pathPen.Color = Color.Red;
+                    pathPen.Color = Color.YellowGreen;
                     var drawRed = 0;
                     int ValidTrain = selectedTrainList.Count();
                     //add trains quit into the end, will draw them in gray
@@ -818,7 +748,7 @@ namespace Orts.Viewer3D.Debugging
                     foreach (Train t in selectedTrainList)
                     {
                         drawRed++;//how many red has been drawn
-                        if (drawRed > redTrain) pathPen.Color = Color.Blue; //more than the red should be drawn, thus draw in blue
+                        if (drawRed > redTrain) pathPen.Color = Color.Orange; //more than the red should be drawn, thus draw in blue
 
                         name = "";
                         TrainCar firstCar = null;
@@ -865,6 +795,16 @@ namespace Orts.Viewer3D.Debugging
                         trainPen.Color = Color.DarkGreen;
                         foreach (var car in t.Cars)
                         {
+                            if (car is MSTSLocomotive)
+                                trainPen.Color = Color.DarkOrange; // Lokomotiva
+                            if (car == t.LeadLocomotive)                            
+                                trainPen.Color = Color.DarkGreen; // Obsazená lokomotiva                            
+                            else
+                            if (car.HasPassengerCapacity)
+                                trainPen.Color = Color.LightBlue; // Osobní vůz
+                            else
+                                trainPen.Color = Color.RosyBrown; // Nákladní vůz
+
                             Traveller t1 = new Traveller(t.RearTDBTraveller);
                             worldPos = car.WorldPosition;
                             var dist = t1.DistanceTo(worldPos.WorldLocation.TileX, worldPos.WorldLocation.TileZ, worldPos.WorldLocation.Location.X, worldPos.WorldLocation.Location.Y, worldPos.WorldLocation.Location.Z);
@@ -890,7 +830,7 @@ namespace Orts.Viewer3D.Debugging
 
                                 //g.FillEllipse(Brushes.DarkGreen, GetRect(scaledItem, car.Length * xScale));
                             }
-                        }
+                        }                        
                         worldPos = firstCar.WorldPosition;
                         scaledItem.X = (worldPos.TileX * 2048 - subX + worldPos.Location.X) * xScale;
                         scaledItem.Y = -25 + pbCanvas.Height - (worldPos.TileZ * 2048 - subY + worldPos.Location.Z) * yScale;
@@ -900,7 +840,7 @@ namespace Orts.Viewer3D.Debugging
                     }
                     if (switchPickedItemHandled) switchPickedItem = null;
                     if (signalPickedItemHandled) signalPickedItem = null;
-
+                    
 #if false
 				if (switchPickedItem != null /*&& switchPickedItemChanged == true*/ && !switchPickedItemHandled && simulator.GameTime - switchPickedTime < 5)
 				{
@@ -937,6 +877,78 @@ namespace Orts.Viewer3D.Debugging
 #endif
                 }
 
+                switchItemsDrawn.Clear();
+                signalItemsDrawn.Clear();                
+                
+                // Výhybky
+                for (var i = 0; i < switches.Count; i++)
+                {
+                    SwitchWidget sw = switches[i];
+
+                    x = (sw.Location.X - subX) * xScale; y = pbCanvas.Height - (sw.Location.Y - subY) * yScale;
+
+                    if (x < 0 || x > IM_Width || y > IM_Height || y < 0) continue;
+
+                    scaledItem.X = x; scaledItem.Y = y;
+
+
+                    if (sw.Item.TrJunctionNode.SelectedRoute == sw.main) g.FillEllipse(Brushes.Black, GetRect(scaledItem, width));
+                    else g.FillEllipse(Brushes.Gray, GetRect(scaledItem, width));
+
+                    //g.DrawString("" + sw.Item.TrJunctionNode.SelectedRoute, trainFont, trainBrush, scaledItem);
+
+                    sw.Location2D.X = scaledItem.X; sw.Location2D.Y = scaledItem.Y;
+#if false
+				 if (sw.main == sw.Item.TrJunctionNode.SelectedRoute)
+				 {
+					 scaledA.X = ((float)sw.mainEnd.X - minX - ViewWindow.X) * xScale; scaledA.Y = pictureBox1.Height - ((float)sw.mainEnd.Y - minY - ViewWindow.Y) * yScale;
+					 g.DrawLine(redPen, scaledA, scaledItem);
+
+				 }
+#endif
+                    switchItemsDrawn.Add(sw);
+                }
+
+                // Signály
+                foreach (var s in signals)
+                {
+                    if (float.IsNaN(s.Location.X) || float.IsNaN(s.Location.Y)) continue;
+                    x = (s.Location.X - subX) * xScale; y = pbCanvas.Height - (s.Location.Y - subY) * yScale;
+                    if (x < 0 || x > IM_Width || y > IM_Height || y < 0) continue;
+                    scaledItem.X = x; scaledItem.Y = y;
+                    s.Location2D.X = scaledItem.X; s.Location2D.Y = scaledItem.Y;
+                    if (s.Signal.isSignalNormal())
+                    {
+                        var color = new SolidBrush(Color.FromArgb(76, 175, 80));
+                        var pen = greenPen;
+                        if (s.IsProceed == 0)
+                        {
+                        }
+                        else if (s.IsProceed == 1)
+                        {
+                            color = new SolidBrush(Color.FromArgb(255, 235, 59));
+                            pen = orangePen;
+                        }
+                        else
+                        {
+                            color = new SolidBrush(Color.FromArgb(244, 67, 54));
+                            pen = redPen;
+                        }
+                        g.FillEllipse(color, GetRect(scaledItem, width));
+                        signalItemsDrawn.Add(s);
+                        if (s.hasDir)
+                        {
+                            scaledB.X = (s.Dir.X - subX) * xScale; scaledB.Y = pbCanvas.Height - ((s.Dir.Y - subY) * yScale);
+                            g.DrawLine(pen, scaledItem, scaledB);
+                        }
+                    }
+                }
+
+                // Popisky
+                foreach (var sw in sidings)
+                    scaledItem = DrawSiding(g, scaledItem, sw);
+                foreach (var pw in platforms)
+                    scaledItem = DrawPlatform(g, scaledItem, pw);
             }
 
             pbCanvas.Invalidate();
@@ -1085,13 +1097,21 @@ namespace Orts.Viewer3D.Debugging
             //if (Math.Abs(train.SpeedMpS) > 0.001) ok = true;
             if (ok == false) return;
 
-            var DisplayDistance = MaximumSectionDistance;             
-            
+            var DisplayDistance = MaximumSectionDistance;
+
             // Icik
-            if (MultiPlayer.MPManager.OnlineTrains.findTrain(train))
-                position = train.LeadLocomotive.Train.LocoDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);            
-            else
-                position = train.MUDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
+            //if (MultiPlayer.MPManager.OnlineTrains.findTrain(train))
+            //{            
+                if (train.LeadLocomotive.Train.LocoDirection == Direction.Forward)
+                    position = new Traveller(train.FrontTDBTraveller);
+                else
+                if (train.LeadLocomotive.Train.LocoDirection == Direction.Reverse)
+                    position = new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
+                else
+                    return;
+            //}
+            //else
+            //    position = train.MUDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
 
             var caches = new List<SignallingDebugWindow.TrackSectionCacheEntry>();
             // Work backwards until we end up on a different track section.
@@ -1625,9 +1645,9 @@ namespace Orts.Viewer3D.Debugging
                                                                                                       //boxSetSignal.Enabled = false;
             boxSetSignal.Visible = false;
             if (switchPickedItem == null) return;
-            var y = LastCursorPosition.Y + 100;
-            if (y < 140) y = 140;
-            if (y > pbCanvas.Size.Height + 100) y = pbCanvas.Size.Height + 100;
+            var y = LastCursorPosition.Y;
+            if (LastCursorPosition.Y < 100) y = 100;
+            if (LastCursorPosition.Y > pbCanvas.Size.Height - 100) y = pbCanvas.Size.Height - 100;
             boxSetSwitch.Location = new System.Drawing.Point(LastCursorPosition.X + 2, y);
             boxSetSwitch.Enabled = true;
             boxSetSwitch.Focus();
