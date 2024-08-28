@@ -248,6 +248,13 @@ namespace Orts.Viewer3D.Debugging
             if (Viewer.DebugViewerEnabled == false) { this.Visible = false; firstShow = true; return; }
             else this.Visible = true;
 
+            if (RightClick)
+            {
+                boxSetSwitch.Visible = false;
+                boxSetSignal.Visible = false;
+                LastPickedTrain = null;
+            }
+
             if (Program.Simulator.GameTime - lastUpdateTime < 1) return;
             lastUpdateTime = Program.Simulator.GameTime;            
 
@@ -744,11 +751,16 @@ namespace Orts.Viewer3D.Debugging
                         .Select((MultiPlayer.OnlinePlayer lost) => lost?.Train)
                         .Where((Train t) => t != null)
                         .Where((Train t) => !selectedTrainList.Contains(t));
-                    selectedTrainList.AddRange(quitTrains);
+                    selectedTrainList.AddRange(quitTrains);                                                           
                     foreach (Train t in selectedTrainList)
                     {
+                        if (LastPickedTrain != null && t == LastPickedTrain)
+                            pathPen.Color = Color.Orange;
+                        else
+                            pathPen.Color = Color.YellowGreen;
+
                         drawRed++;//how many red has been drawn
-                        if (drawRed > redTrain) pathPen.Color = Color.Orange; //more than the red should be drawn, thus draw in blue
+                        if (drawRed > redTrain) pathPen.Color = Color.Orange; //more than the red should be drawn, thus draw in blue                        
 
                         name = "";
                         TrainCar firstCar = null;
@@ -892,8 +904,8 @@ namespace Orts.Viewer3D.Debugging
                     scaledItem.X = x; scaledItem.Y = y;
 
 
-                    if (sw.Item.TrJunctionNode.SelectedRoute == sw.main) g.FillEllipse(Brushes.Black, GetRect(scaledItem, width));
-                    else g.FillEllipse(Brushes.Gray, GetRect(scaledItem, width));
+                    if (sw.Item.TrJunctionNode.SelectedRoute == sw.main) g.FillEllipse(Brushes.Black, GetRect(scaledItem, width * 0.5f));
+                    else g.FillEllipse(Brushes.Gray, GetRect(scaledItem, width * 0.5f));
 
                     //g.DrawString("" + sw.Item.TrJunctionNode.SelectedRoute, trainFont, trainBrush, scaledItem);
 
@@ -1352,7 +1364,7 @@ namespace Orts.Viewer3D.Debugging
         {
             get
             {
-                return ViewWindow.Width * 0.10f;
+                return ViewWindow.Width * 0.025f;
             }
         }
 
@@ -1360,7 +1372,7 @@ namespace Orts.Viewer3D.Debugging
         {
             get
             {
-                return ViewWindow.Width * 0.10f;
+                return ViewWindow.Width * 0.025f;
             }
         }
 
@@ -1383,22 +1395,40 @@ namespace Orts.Viewer3D.Debugging
                 }
                 //else if (MultiPlayer.MPManager.Instance().lostPlayer.TryGetValue(name, out MultiPlayer.OnlinePlayer lost))
                 //    player.Train.TrainHasPermission = true;
-
+                               
                 if (player != null)
                 {
                     if (player.Train.LeadLocomotive.Train.LocoDirection == Direction.Reverse)
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);                                                                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
+                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
                     }
-                    else
+                    if (player.Train.LeadLocomotive.Train.LocoDirection == Direction.Forward)
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 0)).ToString());
-                    }
+                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                    }                    
+                }
+            }
+            else
+            if (LastPickedTrain != null)
+            {
+                name = LastPickedTrain.Name;
+                if (LastPickedTrain.LocoDirection == Direction.Reverse)
+                {
+                    LastPickedTrain.RequestExplorerSignalPermission(ref LastPickedTrain.ValidRoute[1], 1);
+                    MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
                     MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
                 }
-            }            
+                if (LastPickedTrain.LocoDirection == Direction.Forward)
+                {
+                    LastPickedTrain.RequestExplorerSignalPermission(ref LastPickedTrain.ValidRoute[0], 0);
+                    MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 0)).ToString());
+                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                }                
+            }
         }
 
         private void ShiftViewUp()
@@ -1656,6 +1686,7 @@ namespace Orts.Viewer3D.Debugging
             return;
         }
 
+        Train LastPickedTrain;
         private ItemWidget findItemFromMouse(int x, int y, int range)
         {
             if (range < 5) range = 5;
@@ -1704,37 +1735,41 @@ namespace Orts.Viewer3D.Debugging
 
             //now check for trains (first car only)
             TrainCar firstCar;
-            PickedTrain = null; float tX, tY;
+            float tX, tY;
             closest = 100f;
-
+            PickedTrain = null;
             foreach (var t in Program.Simulator.Trains)
             {
-                firstCar = null;
-                if (t.LeadLocomotive != null)
+                float xSpeedCorr;
+                float ySpeedCorr;
+                firstCar = null;                
+                if (t.Cars != null && t.Cars.Count > 0)
                 {
-                    worldPos = t.LeadLocomotive.WorldPosition;
-                    firstCar = t.LeadLocomotive;
-                }
-                else if (t.Cars != null && t.Cars.Count > 0)
-                {
-                    worldPos = t.Cars[0].WorldPosition;
-                    firstCar = t.Cars[0];
+                    foreach (var car in t.Cars)
+                    {    
+                        worldPos = car.WorldPosition;
+                        tX = (worldPos.TileX * 2048 - subX + worldPos.Location.X) * xScale;
+                        tY = pbCanvas.Height - (worldPos.TileZ * 2048 - subY + worldPos.Location.Z) * yScale;
+                        xSpeedCorr = Math.Abs(t.SpeedMpS) * xScale * 1.5f;
+                        ySpeedCorr = Math.Abs(t.SpeedMpS) * yScale * 1.5f;
 
-                }
-                else continue;
-
-                worldPos = firstCar.WorldPosition;
-                tX = (worldPos.TileX * 2048 - subX + worldPos.Location.X) * xScale;
-                tY = pbCanvas.Height - (worldPos.TileZ * 2048 - subY + worldPos.Location.Z) * yScale;
-                float xSpeedCorr = Math.Abs(t.SpeedMpS) * xScale * 1.5f;
-                float ySpeedCorr = Math.Abs(t.SpeedMpS) * yScale * 1.5f;
-
-                if (tX < x - range - xSpeedCorr || tX > x + range + xSpeedCorr || tY < y - range - ySpeedCorr || tY > y + range + ySpeedCorr) continue;
-                if (PickedTrain == null) PickedTrain = t;
+                        if (tX < x - range - xSpeedCorr || tX > x + range + xSpeedCorr || tY < y - range - ySpeedCorr || tY > y + range + ySpeedCorr) continue;
+                        
+                        if (PickedTrain == null)
+                        {
+                            PickedTrain = t;                            
+                        }                                                
+                    }
+                }                    
             }
             //if a train is picked, will clear the avatar list selection
+
+            if (PickedTrain == null)
+                PickedTrain = LastPickedTrain;
+
             if (PickedTrain != null)
             {
+                LastPickedTrain = PickedTrain;
                 AvatarView.SelectedItems.Clear();
                 return new TrainWidget(PickedTrain);
             }
@@ -2007,10 +2042,11 @@ namespace Orts.Viewer3D.Debugging
             if (name == MultiPlayer.MPManager.GetUserName())
             {
                 if (Program.Simulator.PlayerLocomotive != null) PickedTrain = Program.Simulator.PlayerLocomotive.Train;
-                else if (Program.Simulator.Trains.Count > 0) PickedTrain = Program.Simulator.Trains[0];
+                else if (Program.Simulator.Trains.Count > 0) PickedTrain = Program.Simulator.Trains[0];                
             }
-            else PickedTrain = MultiPlayer.MPManager.OnlineTrains.findTrain(name);
-
+            else
+                PickedTrain = MultiPlayer.MPManager.OnlineTrains.findTrain(name);               
+            LastPickedTrain = PickedTrain;
         }
 
         private void chkDrawPathChanged(object sender, EventArgs e)
@@ -2451,7 +2487,7 @@ namespace Orts.Viewer3D.Debugging
                 output.X = input.X;
                 output.Y = input.Y;
             }
-            copyTo(v1 - Vector2.Multiply(v3, signal.direction == 0 ? 12f : -12f), ref Dir);
+            copyTo(v1 - Vector2.Multiply(v3, signal.direction == 0 ? 06f : -06f), ref Dir);
             //shift signal along the dir for 2m, so signals will not be overlapped
             copyTo(v1 - Vector2.Multiply(v3, signal.direction == 0 ? 1.5f : -1.5f), ref Location);
             hasDir = true;

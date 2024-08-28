@@ -15589,15 +15589,19 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Train.LocoDirection == Direction.Reverse)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
-                            else
+                            if (Train.LocoDirection == Direction.Forward)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
+                            if (Train.LocoDirection == Direction.N)
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 2)).ToString());
                         }
                         else
                         {
                             if (Train.LocoDirection == Direction.Reverse)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
-                            else
+                            if (Train.LocoDirection == Direction.Forward)
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                            if (Train.LocoDirection == Direction.N)
+                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 2)).ToString());
                         }
                     }
                     if (Time4)

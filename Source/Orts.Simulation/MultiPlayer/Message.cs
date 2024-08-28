@@ -2248,6 +2248,7 @@ namespace Orts.MultiPlayer
             {
                 if (t.LeadLocomotive != null && EventState == 0) ((MSTSLocomotive)(t.LeadLocomotive)).Train.LocoDirection = Direction.Forward;
                 if (t.LeadLocomotive != null && EventState == 1) ((MSTSLocomotive)(t.LeadLocomotive)).Train.LocoDirection = Direction.Reverse;
+                if (t.LeadLocomotive != null && EventState == 2) ((MSTSLocomotive)(t.LeadLocomotive)).Train.LocoDirection = Direction.N;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "MPCONTROLMODE")
