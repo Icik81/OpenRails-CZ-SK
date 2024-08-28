@@ -4783,7 +4783,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         // Parní topení počítá teplotu svým algoritmem
-                        if (Train.CarSteamHeatOn)
+                        if (Train.CarSteamHeatOn && car.DieselHeaterPower == 0)
                         {
                             if (!car.WagonHasStove && car.WagonCanEnableSteamHeating && !car.LocomotiveCab)
                             {
@@ -8705,7 +8705,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Calculate air consumption and change in main air reservoir pressure
                 float ActualAirConsumptionM3pS = TrackSanderAirComsumptionLpS * elapsedClockSeconds / 1000f;
-                float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3;
+                float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3 / 14.50377f;
                 MainResPressurePSI -= SanderPressureDiffPSI;
                 MainResPressurePSI = MathHelper.Clamp(MainResPressurePSI, 0.001f, MaxMainResPressurePSI);
                 if (IsLeadLocomotive())

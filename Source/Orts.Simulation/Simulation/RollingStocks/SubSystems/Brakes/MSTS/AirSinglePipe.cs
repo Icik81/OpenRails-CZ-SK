@@ -1247,14 +1247,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     // AI vyčerpává hlavní jímku při odbrzďování
                     if (loco != null)
-                        loco.MainResPressurePSI -= loco.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3;
+                        loco.MainResPressurePSI -= loco.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3 / 14.50377f;
                 }
                 // AI vyčerpává hlavní jímku netěstnostmi v potrubí
                 if (loco != null)
                 {
                     AITrainLeakage = 0.001f;
                     AITrainBrakePipeVolumeM3 = ((0.032f / 2f) * (0.032f / 2f) * (float)Math.PI) * (2f * Car.Train.Cars.Count + Car.Train.Length);
-                    loco.MainResPressurePSI -= AITrainLeakage * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3;
+                    loco.MainResPressurePSI -= AITrainLeakage * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3 / 14.50377f;
                 }
                 // AI spouští kompresor
                 if (loco != null && loco.BrakeSystem.PowerForWagon)
@@ -1894,8 +1894,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             T0_PipePressure += elapsedClockSeconds;            
             if (T0_PipePressure > 0.33f && T0_PipePressure < 0.43f)
             {
-                MainResChangeRate = Math.Abs(prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) * 3.33f;
-                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI) * 3.33f;
+                MainResChangeRate = Math.Abs(prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe);
+                BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI);
                 if (BrakePipeChangeRate > 1)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
                 else
@@ -1910,7 +1910,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             T0_CylinderPressure += elapsedClockSeconds;
             if (T0_CylinderPressure > 0.33f && T0_CylinderPressure < 0.43f)
             {                
-                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI) * 3.33f;
+                CylinderChangeRate = Math.Abs(prevAutoCylPressurePSI - AutoCylPressurePSI);
                 if (AutoCylPressurePSI > prevAutoCylPressurePSI)
                     CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxApplicationRatePSIpS() / 14.50377f;
 
@@ -3722,7 +3722,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply);
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                        lead.MainResPressurePSI -= dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
                         lead.BrakeSystem.MainResFlow = true;
                         if (EngineBrakeCylOffset < lead.BrakeSystem.AutoCylPressurePSI1)
                         {
@@ -3793,7 +3793,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
                         lead.BrakeSystem.MainResFlow = true;
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
@@ -3857,7 +3857,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
                         lead.BrakeSystem.MainResFlow = true;
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
@@ -3926,7 +3926,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             lead.SignalEvent(Event.TrainBrakePressureIncrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
-                            lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3;
+                            lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
                             lead.BrakeSystem.MainResFlow = true;
                         }
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
