@@ -250,9 +250,11 @@ namespace Orts.Viewer3D.Debugging
 
             if (RightClick)
             {
+                if (!boxSetSwitch.Visible && !boxSetSignal.Visible)
+                    LastPickedTrain = null; 
+                
                 boxSetSwitch.Visible = false;
-                boxSetSignal.Visible = false;
-                LastPickedTrain = null;
+                boxSetSignal.Visible = false;                                
             }
 
             if (Program.Simulator.GameTime - lastUpdateTime < 1) return;
