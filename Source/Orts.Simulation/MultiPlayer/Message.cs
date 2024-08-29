@@ -113,7 +113,7 @@ namespace Orts.MultiPlayer
         {
             m = m.Trim();
             string[] areas = m.Split(' ');
-            if (areas.Length % 13 != 0 && !(areas.Length == 1 && areas[0].Length == 0)) //check for correct formatting
+            if (areas.Length % 14 != 0 && !(areas.Length == 1 && areas[0].Length == 0)) //check for correct formatting
             {
                 throw new Exception("Parsing error " + m);
             }
@@ -122,10 +122,10 @@ namespace Orts.MultiPlayer
                 int i = 0;
                 items = new List<MSGMoveItem>();
                 if (areas.Length > 1)
-                    for (i = 0; i < areas.Length / 13; i++)
-                        items.Add(new MSGMoveItem(areas[13 * i], float.Parse(areas[13 * i + 1], CultureInfo.InvariantCulture), float.Parse(areas[13 * i + 2], CultureInfo.InvariantCulture), int.Parse(areas[13 * i + 3]),
-                            int.Parse(areas[13 * i + 4]), int.Parse(areas[13 * i + 5]), float.Parse(areas[13 * i + 6], CultureInfo.InvariantCulture), float.Parse(areas[13 * i + 7], CultureInfo.InvariantCulture),
-                            int.Parse(areas[13 * i + 8]), int.Parse(areas[13 * i + 9]), int.Parse(areas[13 * i + 10]), int.Parse(areas[13 * i + 11]), int.Parse(areas[13 * i + 12]), float.Parse(areas[13 * i + 13], CultureInfo.InvariantCulture)));
+                    for (i = 0; i < areas.Length / 14; i++)
+                        items.Add(new MSGMoveItem(areas[14 * i], float.Parse(areas[14 * i + 1], CultureInfo.InvariantCulture), float.Parse(areas[14 * i + 2], CultureInfo.InvariantCulture), int.Parse(areas[14 * i + 3]),
+                            int.Parse(areas[14 * i + 4]), int.Parse(areas[14 * i + 5]), float.Parse(areas[14 * i + 6], CultureInfo.InvariantCulture), float.Parse(areas[14 * i + 7], CultureInfo.InvariantCulture),
+                            int.Parse(areas[14 * i + 8]), int.Parse(areas[14 * i + 9]), int.Parse(areas[14 * i + 10]), int.Parse(areas[14 * i + 11]), int.Parse(areas[14 * i + 12]), float.Parse(areas[14 * i + 13], CultureInfo.InvariantCulture)));
             }
             catch (Exception e)
             {
@@ -186,7 +186,7 @@ namespace Orts.MultiPlayer
                     //if I am a remote controlled train now
                     if (MPManager.Simulator.PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.REMOTE)
                     {
-                        MPManager.Simulator.PlayerLocomotive.Train.ToDoUpdate(m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
+                        MPManager.Simulator.PlayerLocomotive.Train.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
                     }
                     found = true;/*
                     try
@@ -222,7 +222,7 @@ namespace Orts.MultiPlayer
                                 //                                {
                                 //                                    reverseTrav = true;
                                 //                                }
-                                t.ToDoUpdate(m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length, reverseTrav);
+                                t.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length, reverseTrav);
                                 break;
                             }
                         }
@@ -238,7 +238,7 @@ namespace Orts.MultiPlayer
                             MPManager.Simulator.PlayerLocomotive == MPManager.Simulator.PlayerLocomotive.Train.LeadLocomotive &&
                             t.TrainType != Train.TRAINTYPE.REMOTE && t.TrainType != Train.TRAINTYPE.STATIC) continue;
                         found = true;
-                        t.ToDoUpdate(m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
+                        t.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
                         // This is necessary as sometimes a train isn't in the Trains list
                         MPManager.Instance().AddOrRemoveTrain(t, true);
                         //                       if (MPManager.IsServer()) MPManager.Instance().AddOrRemoveLocomotives(m.user, t, true);
@@ -4148,6 +4148,7 @@ namespace Orts.MultiPlayer
         int mDirection;
         float speed;
         int tni;
+        int tvi;
         int count;
         int tdir;
         float len;
@@ -4185,6 +4186,9 @@ namespace Orts.MultiPlayer
             m = m.Remove(0, index + 1);
             index = m.IndexOf(' ');
             tni = int.Parse(m.Substring(0, index + 1));
+            m = m.Remove(0, index + 1);
+            index = m.IndexOf(' ');
+            tvi = int.Parse(m.Substring(0, index + 1));
             m = m.Remove(0, index + 1);
             index = m.IndexOf(' ');
             count = int.Parse(m.Substring(0, index + 1));
@@ -4241,6 +4245,7 @@ namespace Orts.MultiPlayer
             mDirection = (int)t.MUDirection;
             speed = t.SpeedMpS;
             tni = t.RearTDBTraveller.TrackNodeIndex;
+            tvi = t.RearTDBTraveller.TrackVectorSectionIndex;
             count = t.Cars.Count;
             tdir = (int)t.RearTDBTraveller.Direction;
             len = t.Length;
@@ -4289,7 +4294,7 @@ namespace Orts.MultiPlayer
                     Trace.TraceInformation("Changing Direction");
 #endif
                     if (realFlip)
-                        t.ToDoUpdate(tni, TileX, TileZ, X, Z, Travelled, speed, direction, tdir, len, true, reverseMU);
+                        t.ToDoUpdate(tvi, tni, TileX, TileZ, X, Z, Travelled, speed, direction, tdir, len, true, reverseMU);
                     return;
                 }
             }
@@ -4298,7 +4303,7 @@ namespace Orts.MultiPlayer
         public override string ToString()
         {
             string tmp = "FLIP " + TrainNum + " " + direction + " " + TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + Travelled.ToString(CultureInfo.InvariantCulture) + " " + mDirection + " " +
-                speed.ToString(CultureInfo.InvariantCulture) + " " + tni + " " + count + " " + tdir + " " + len.ToString(CultureInfo.InvariantCulture) + " " + reverseMU + " ";
+                speed.ToString(CultureInfo.InvariantCulture) + " " + tni + " " + tvi + " " + count + " " + tdir + " " + len.ToString(CultureInfo.InvariantCulture) + " " + reverseMU + " ";
             for (var i = 0; i < cars.Length; i++)
             {
                 var c = cars[i];

@@ -978,7 +978,7 @@ namespace Orts.Simulation.RollingStocks
                 int CarIndex = 1000;
                 for (int i = 0; i < Train.Cars.Count; i++)
                 {
-                    if (Train.Cars[i].UiD == UiD)
+                    if (Train.Cars[i].CarID == CarID)
                     {
                         CarIndex = i;
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONINDEX", CarIndex)).ToString());                        
