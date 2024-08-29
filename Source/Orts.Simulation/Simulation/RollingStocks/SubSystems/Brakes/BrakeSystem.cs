@@ -180,6 +180,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
 
         public float BrakeCylinderMaxPressureForLowState;
         public float LowStateOnSpeedEngageLevel;
+        public float LowStateOffSpeedEngageLevel;
         public float MaxReleaseRateAtHighState;
         public bool TwoStateBrake = false;
         public bool HighPressure = false;

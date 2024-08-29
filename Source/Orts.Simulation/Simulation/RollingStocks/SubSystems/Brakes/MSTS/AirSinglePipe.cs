@@ -195,6 +195,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             PressureRateFactorCharge = thiscopy.PressureRateFactorCharge;
             BrakeCylinderMaxPressureForLowState = thiscopy.BrakeCylinderMaxPressureForLowState;
             LowStateOnSpeedEngageLevel = thiscopy.LowStateOnSpeedEngageLevel;
+            LowStateOffSpeedEngageLevel = thiscopy.LowStateOffSpeedEngageLevel;
             MaxReleaseRateAtHighState = thiscopy.MaxReleaseRateAtHighState;
             TwoStateBrake = thiscopy.TwoStateBrake;
             AuxPowerOnDelayS = thiscopy.AuxPowerOnDelayS;
@@ -414,6 +415,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     stf.MustMatch("(");
                     LowStateOnSpeedEngageLevel = stf.ReadFloat(STFReader.UNITS.Speed, null);
                     TwoStateBrake = true;
+                    break;
+                
+                case "wagon(twostatebrake(lowstateoffspeedengagelevel":
+                    stf.MustMatch("(");
+                    LowStateOffSpeedEngageLevel = stf.ReadFloat(STFReader.UNITS.Speed, null);                    
                     break;
 
                 case "wagon(twostatebrake(maxreleaserateathighstate":
@@ -1376,9 +1382,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
                     }
-                    // Pod 50km/h přepne na nižší stupeň brzdění
-                    if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < 50f / 3.6f && HighPressure
-                        || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < 50f / 3.6f && HighPressure)
+                    // Default - pod 50km/h přepne na nižší stupeň brzdění
+                    if (LowStateOffSpeedEngageLevel == 0) LowStateOffSpeedEngageLevel = 50f / 3.6f;
+                    if ((Car as MSTSWagon) != null && (Car as MSTSWagon).AbsSpeedMpS < LowStateOffSpeedEngageLevel && HighPressure
+                        || (Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).AbsSpeedMpS < LowStateOffSpeedEngageLevel && HighPressure)
                         LowPressure = true;
 
                     if (LowPressure)
