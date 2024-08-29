@@ -94,17 +94,17 @@ namespace Orts.MultiPlayer
             public float speed;
             public float travelled;
             public int num, count;
-            public int TileX, TileZ, trackNodeIndex, direction, tdbDir;
+            public int TileX, TileZ, trackNodeIndex, trackVectorIndex, direction, tdbDir;
             public float X, Z;
             public float Length;
-            public MSGMoveItem(string u, float s, float t, int n, int tX, int tZ, float x, float z, int tni, int cnt, int dir, int tDir, float len)
+            public MSGMoveItem(string u, float s, float t, int n, int tX, int tZ, float x, float z, int tni, int tvi, int cnt, int dir, int tDir, float len)
             {
-                user = u; speed = s; travelled = t; num = n; TileX = tX; TileZ = tZ; X = x; Z = z; trackNodeIndex = tni; count = cnt; direction = dir; tdbDir = tDir; Length = len;
+                user = u; speed = s; travelled = t; num = n; TileX = tX; TileZ = tZ; X = x; Z = z; trackNodeIndex = tni; trackVectorIndex = tvi; count = cnt; direction = dir; tdbDir = tDir; Length = len;
             }
             public override string ToString()
             {
                 return user + " " + speed.ToString(CultureInfo.InvariantCulture) + " " + travelled.ToString(CultureInfo.InvariantCulture) + " " + num + " " +
-                    TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + trackNodeIndex + " " +
+                    TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + trackNodeIndex + " " + trackVectorIndex + " " +
                     count + " " + direction + " " + tdbDir + " " + Length.ToString(CultureInfo.InvariantCulture);
             }
         }
@@ -125,7 +125,7 @@ namespace Orts.MultiPlayer
                     for (i = 0; i < areas.Length / 13; i++)
                         items.Add(new MSGMoveItem(areas[13 * i], float.Parse(areas[13 * i + 1], CultureInfo.InvariantCulture), float.Parse(areas[13 * i + 2], CultureInfo.InvariantCulture), int.Parse(areas[13 * i + 3]),
                             int.Parse(areas[13 * i + 4]), int.Parse(areas[13 * i + 5]), float.Parse(areas[13 * i + 6], CultureInfo.InvariantCulture), float.Parse(areas[13 * i + 7], CultureInfo.InvariantCulture),
-                            int.Parse(areas[13 * i + 8]), int.Parse(areas[13 * i + 9]), int.Parse(areas[13 * i + 10]), int.Parse(areas[13 * i + 11]), float.Parse(areas[13 * i + 12], CultureInfo.InvariantCulture)));
+                            int.Parse(areas[13 * i + 8]), int.Parse(areas[13 * i + 9]), int.Parse(areas[13 * i + 10]), int.Parse(areas[13 * i + 11]), int.Parse(areas[13 * i + 12]), float.Parse(areas[13 * i + 13], CultureInfo.InvariantCulture)));
             }
             catch (Exception e)
             {
@@ -159,7 +159,7 @@ namespace Orts.MultiPlayer
         public void AddNewItem(string u, Train t)
         {
             if (items == null) items = new List<MSGMoveItem>();
-            items.Add(new MSGMoveItem(u, t.SpeedMpS, t.travelled, t.Number, t.RearTDBTraveller.TileX, t.RearTDBTraveller.TileZ, t.RearTDBTraveller.X, t.RearTDBTraveller.Z, t.RearTDBTraveller.TrackNodeIndex, t.Cars.Count, (int)t.MUDirection, (int)t.RearTDBTraveller.Direction, t.Length));
+            items.Add(new MSGMoveItem(u, t.SpeedMpS, t.travelled, t.Number, t.RearTDBTraveller.TileX, t.RearTDBTraveller.TileZ, t.RearTDBTraveller.X, t.RearTDBTraveller.Z, t.RearTDBTraveller.TrackNodeIndex, t.RearTDBTraveller.TrackVectorSectionIndex, t.Cars.Count, (int)t.MUDirection, (int)t.RearTDBTraveller.Direction, t.Length));
             t.LastReportedSpeed = t.SpeedMpS;
         }
 
