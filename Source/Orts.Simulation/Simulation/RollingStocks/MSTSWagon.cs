@@ -189,6 +189,7 @@ namespace Orts.Simulation.RollingStocks
         public float AbsWheelSpeed3MpS;
         public float AbsWheelSpeed4MpS;
         public int MPWagonLoadPercent;
+        public int MPFreightWeight;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -880,6 +881,10 @@ namespace Orts.Simulation.RollingStocks
                 {
                     WeightLoadController.CurrentValue = FreightAnimations.LoadedOne.LoadPerCent / 100;
 
+                    // Icik
+                    if (MPManager.IsMultiPlayer())
+                        WeightLoadController.CurrentValue = MPWagonLoadPercent / 100;
+
                     // Update wagon parameters sensitive to wagon mass change
                     // Calculate the difference ratio, ie how full the wagon is. This value allows the relevant value to be scaled from the empty mass to the full mass of the wagon
                     TempMassDiffRatio = WeightLoadController.CurrentValue;
@@ -992,9 +997,11 @@ namespace Orts.Simulation.RollingStocks
                     if (LastLoadPerCent != FreightAnimations.LoadedOne.LoadPerCent)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FREIGHTWEIGHT", (int)FreightAnimations.FreightWeight)).ToString());
                         LastLoadPerCent = FreightAnimations.LoadedOne.LoadPerCent;
                     }
-                }
+                }                
+
                 // Jednotlivé dveře vozů
                 if (DoorLeftOpen && !DoorLeftIsOpened)
                 {
@@ -1035,10 +1042,7 @@ namespace Orts.Simulation.RollingStocks
                 //if (Time3)
                 //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                
                 if (Time7)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
-
-                if (Time8)                                   
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CARMASSKG", (int)((this).MassKG))).ToString());                
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());                            
 
             }
         }
@@ -2423,10 +2427,22 @@ namespace Orts.Simulation.RollingStocks
             // Updates freight load animations when defined in WAG file - Locomotive and Tender load animation are done independently in UpdateTenderLoad() & UpdateLocomotiveLoadPhysics()
             if (WeightLoadController != null && WagonType != WagonTypes.Tender && AuxWagonType != "AuxiliaryTender" && WagonType != WagonTypes.Engine)
             {
+                // Icik
+                if (MPManager.IsMultiPlayer())
+                {
+                    if (MPWagonLoadPercent / 100f > WeightLoadController.CurrentValue)
+                        WeightLoadController.CurrentValue = MPWagonLoadPercent / 100f;
+                }
                 WeightLoadController.Update(elapsedClockSeconds);
+                if (MPManager.IsMultiPlayer())
+                {
+                    MPWagonLoadPercent = (int)(WeightLoadController.CurrentValue * 100f);
+                    if (FreightAnimations != null) FreightAnimations.FreightWeight = MPFreightWeight;
+                }
+
                 if (FreightAnimations.LoadedOne != null)
                 {
-                    FreightAnimations.LoadedOne.LoadPerCent = WeightLoadController.CurrentValue * 100;
+                    FreightAnimations.LoadedOne.LoadPerCent = WeightLoadController.CurrentValue * 100;                  
                     FreightAnimations.FreightWeight = WeightLoadController.CurrentValue * FreightAnimations.LoadedOne.FreightWeightWhenFull;
                     if (IsPlayerTrain)
                     {

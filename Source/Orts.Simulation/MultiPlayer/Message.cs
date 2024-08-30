@@ -2276,6 +2276,11 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && EventState > -1) ((MSTSWagon)(t.TrainWagon)).MPWagonLoadPercent = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "FREIGHTWEIGHT")
+            {
+                if (t.TrainWagon != null && EventState > -1) ((MSTSWagon)(t.TrainWagon)).MPFreightWeight = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "WAGONLEFTDOORS")
             {
                 if (t.TrainWagon != null && EventState == 0) { ((MSTSWagon)(t.TrainWagon)).DoorLeftOpen = false; ((MSTSWagon)(t.TrainWagon)).DoorLeftIsOpened = false; ((MSTSWagon)(t.TrainWagon)).SignalEvent(Event.DoorClose); }
@@ -2385,12 +2390,7 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainWagon != null) t.TrainWagon.CurveForceNFiltered = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "CARMASSKG")
-            {
-                if (t.TrainWagon != null) t.TrainWagon.MassKG = EventState;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
+            }            
             else if (EventName == "TRAINCOUPLE")
             {
                 if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.Uncouple);
