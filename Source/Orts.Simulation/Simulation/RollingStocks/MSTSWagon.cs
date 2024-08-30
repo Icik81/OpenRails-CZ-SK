@@ -1036,7 +1036,10 @@ namespace Orts.Simulation.RollingStocks
                 //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                
                 if (Time7)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
-                
+
+                if (Time8)                                   
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CARMASSKG", (int)((this).MassKG))).ToString());                
+
             }
         }
 

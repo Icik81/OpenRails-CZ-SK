@@ -1322,7 +1322,6 @@ namespace Orts.MultiPlayer
             Train train = null;
             train = new Train(MPManager.Simulator);
             train.Number = this.TrainNum;
-
             train.TrainType = Train.TRAINTYPE.REMOTE;
             train.travelled = Travelled;
             train.MUDirection = (Direction)this.mDirection;
@@ -1330,13 +1329,16 @@ namespace Orts.MultiPlayer
             //if (consistDirection != 1)
             //	train.RearTDBTraveller.ReverseDirection();
             for (var i = 0; i < cars.Length; i++)// cars.Length-1; i >= 0; i--) {
-            {
+            {                
                 string wagonFilePath = MPManager.Simulator.BasePath + @"\trains\trainset\" + cars[i];
                 TrainCar car = null;
                 try
                 {
-                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath);
-                    car.CarLengthM = lengths[i];
+                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath);                    
+                    
+                    // Icik
+                    //car.CarLengthM = lengths[i];
+                    car.CarLengthM = (car as MSTSWagon).CarLengthM0;
                 }
                 catch (Exception error)
                 {
@@ -2382,6 +2384,11 @@ namespace Orts.MultiPlayer
             else if (EventName == "CURVEFORCE")
             {
                 if (t.TrainWagon != null) t.TrainWagon.CurveForceNFiltered = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "CARMASSKG")
+            {
+                if (t.TrainWagon != null) t.TrainWagon.MassKG = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
             else if (EventName == "TRAINCOUPLE")

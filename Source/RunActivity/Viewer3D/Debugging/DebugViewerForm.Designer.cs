@@ -156,7 +156,7 @@ namespace Orts.Viewer3D.Debugging
             this.windowSizeUpDown.Size = new System.Drawing.Size(105, 26);
             this.windowSizeUpDown.TabIndex = 6;
             this.windowSizeUpDown.Value = new decimal(new int[] {
-            5000,
+            1000,
             0,
             0,
             0});
