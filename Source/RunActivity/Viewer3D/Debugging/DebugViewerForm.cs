@@ -236,6 +236,9 @@ namespace Orts.Viewer3D.Debugging
 
         private double lastUpdateTime;
 
+        float MouseClickTimer;
+        bool MouseClickEnable;
+
         /// <summary>
         /// When the user holds down the  "L", "R", "U", "D" buttons,
         /// shift the view. Avoids the case when the user has to click
@@ -248,14 +251,34 @@ namespace Orts.Viewer3D.Debugging
             if (Viewer.DebugViewerEnabled == false) { this.Visible = false; firstShow = true; return; }
             else this.Visible = true;
 
-            if (RightClick)
+
+            if (MouseClickEnable)
             {
-                if (!boxSetSwitch.Visible && !boxSetSignal.Visible)
-                    LastPickedTrain = null; 
-                
-                boxSetSwitch.Visible = false;
-                boxSetSignal.Visible = false;                                
+                if (RightClick && !LeftClick)
+                {
+                    if (!boxSetSwitch.Visible && !boxSetSignal.Visible)
+                        LastPickedTrain = null;
+
+                    boxSetSwitch.Visible = false;
+                    boxSetSignal.Visible = false;
+                }
             }
+
+            if (RightClick || LeftClick)
+            {
+                MouseClickEnable = false;
+            }
+
+            if (!MouseClickEnable && !RightClick && !LeftClick)
+            {
+                MouseClickTimer += Program.Simulator.OneSecondLoop;
+                if (MouseClickTimer > 0.25f)
+                {
+                    MouseClickEnable = true;
+                    MouseClickTimer = 0;
+                }
+            }
+            
 
             if (Program.Simulator.GameTime - lastUpdateTime < 1) return;
             lastUpdateTime = Program.Simulator.GameTime;            
@@ -655,8 +678,9 @@ namespace Orts.Viewer3D.Debugging
             catch { } //errors for avatar, just ignore
             using (Graphics g = Graphics.FromImage(pbCanvas.Image))
             {
+                g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;                
                 subX = minX + ViewWindow.X; subY = minY + ViewWindow.Y;
-                g.Clear(Color.White);
+                g.Clear(Color.WhiteSmoke);
 
                 xScale = pbCanvas.Width / ViewWindow.Width;
                 yScale = pbCanvas.Height / ViewWindow.Height;
