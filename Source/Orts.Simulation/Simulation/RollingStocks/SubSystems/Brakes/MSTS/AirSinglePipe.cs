@@ -970,7 +970,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 HandBrakeActive = false;
                                 HandBrakeDeactive = true;
                             }
-                        }                              
+                        }
+                        if ((Car as MSTSWagon).CarIsPlayerLoco)
+                        {
+                            HandBrakeActive = true;
+                            HandBrakeDeactive = false;
+                        }
                         if (HandBrakeDeactive)
                             HandbrakePercent = 0;
                         if (HandBrakeActive)
