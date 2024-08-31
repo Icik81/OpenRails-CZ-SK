@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2024-08-24 19:48:26+0200\n"
-"PO-Revision-Date: 2024-08-24 19:51+0200\n"
+"POT-Creation-Date: 2024-08-24 20:04:44+0200\n"
+"PO-Revision-Date: 2024-08-31 12:18+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -232,34 +232,30 @@ msgid "Approach_2"
 msgstr "Porucha"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
-msgid "Approach_3"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:186
 msgid "Clear_2"
 msgstr "Posun"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:187
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:186
 msgid "Stop_and_Proceed"
 msgstr "Přivolávačka"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:190
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:189
 msgid "To Main Route"
 msgstr "Přímo"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:191
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:190
 msgid "To Side Route"
 msgstr "Do odbočky"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2078
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2065
 msgid "Switching Request Sent to the Server"
 msgstr "Povel k přestavení výhybky byl odeslán serveru"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:587
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:575
 msgid "MSG to Server"
 msgstr "Zpráva serveru"
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:591
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:579
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:267
 msgid "MSG to All"
 msgstr "Zpráva všem"
@@ -295,7 +291,7 @@ msgstr "Napsat zprávu"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:293
 msgid "Res"
-msgstr "Měřítko"
+msgstr "Měř"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:305
 msgid "Reply to Selected"
@@ -399,7 +395,7 @@ msgstr "Výhybky"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:703
 msgid "To pan, drag with left mouse."
-msgstr "K natáčení táhni myší při držení levého tlačítka"
+msgstr "K pohybu po mapě táhni myší při držení LTM."
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:718
 msgid "Name"
@@ -420,15 +416,15 @@ msgstr "Stav"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:783
 msgid "To zoom, drag with left and right mouse or scroll mouse wheel."
-msgstr "Pro přiblížení stsiskni LTM+PTM a táhni myší"
+msgstr "Pro přiblížení stiskni LTM+PTM a táhni myší nebo kolečko myši."
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:795
 msgid "To zoom in to a location, press Shift and click the left mouse."
-msgstr "Pro přiblížení k oblasti stiskni Shift a klikni LTM"
+msgstr "Pro přiblížení k oblasti stiskni Shift a klikni LTM."
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:807
 msgid "To zoom out of a location, press Alt and click the left mouse."
-msgstr "Pro oodálení z oblasti stiskni Alt a klikni LTM"
+msgstr "Pro oddálení z oblasti stiskni Alt a klikni LTM."
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:822
 msgid "Platforms"
@@ -1547,7 +1543,7 @@ msgstr "Dispečer"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:539
 msgid "Push"
-msgstr "Stlačení"
+msgstr "Asistent dispečera"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:540
 #: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:382
