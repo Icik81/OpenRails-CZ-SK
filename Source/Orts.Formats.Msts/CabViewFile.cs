@@ -536,6 +536,7 @@ namespace Orts.Formats.Msts
         ARR_DRIVEOUT_BUTTON,
         ARR_PARKING_BUTTON,
         TRACTION_SWITCH,
+        TRESHOLD_INDICATOR,
 
         // ORTS
         ORTS_SCREEN_SELECT,
@@ -668,6 +669,9 @@ namespace Orts.Formats.Msts
         public float PreviousData;
         public float Precision;
         public float Vibration;
+        public string ControlVariable;
+        public float TresholdLevelOn;
+        public float TresholdLevelOff;
 
         // Jindrich
         public int ControlId = 0; // in MPC
@@ -1419,7 +1423,7 @@ namespace Orts.Formats.Msts
         public int FramesY { get; set; }
         public bool MouseControl;
         public int Orientation;
-        public int Direction;
+        public int Direction;        
 
         public List<double> Values
         {
@@ -1462,6 +1466,9 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("mousecontrol", ()=>{ MouseControl = stf.ReadBoolBlock(false); }),
                     new STFReader.TokenProcessor("orientation", ()=>{ Orientation = stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("dirincrease", ()=>{ Direction = stf.ReadIntBlock(null); }),
+                    new STFReader.TokenProcessor("controlvariable", ()=>{ ControlVariable = stf.ReadStringBlock(null); }),
+                    new STFReader.TokenProcessor("tresholdlevelon", ()=>{ TresholdLevelOn = stf.ReadFloatBlock(STFReader.UNITS.None,0); }),
+                    new STFReader.TokenProcessor("tresholdleveloff", ()=>{ TresholdLevelOff = stf.ReadFloatBlock(STFReader.UNITS.None,0); }),
 
                     new STFReader.TokenProcessor("numframes", ()=>{
                         stf.MustMatch("(");

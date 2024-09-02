@@ -22373,7 +22373,95 @@ namespace Orts.Simulation.RollingStocks
                         data = TractionSwitchPosition[LocoStation] + 1;
                         break;
                     }
-
+                case CABViewControlTypes.TRESHOLD_INDICATOR:
+                    {
+                        switch(cvc.ControlVariable.ToLower())
+                        {
+                            #region Speed
+                            case "speed":
+                                {
+                                    if (SpeedMpS >= cvc.TresholdLevelOn && SpeedMpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;                                    
+                                    break;
+                                }
+                            case "absspeed":
+                                {
+                                    if (AbsSpeedMpS >= cvc.TresholdLevelOn && AbsSpeedMpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "wheelspeed":
+                                {
+                                    if (WheelSpeedMpS >= cvc.TresholdLevelOn && WheelSpeedMpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeed":
+                                {
+                                    if (AbsWheelSpeedMpS >= cvc.TresholdLevelOn && AbsWheelSpeedMpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeed1":
+                                {
+                                    if (AbsWheelSpeed1MpS >= cvc.TresholdLevelOn && AbsWheelSpeed1MpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeed2":
+                                {
+                                    if (AbsWheelSpeed2MpS >= cvc.TresholdLevelOn && AbsWheelSpeed2MpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeed3":
+                                {
+                                    if (AbsWheelSpeed3MpS >= cvc.TresholdLevelOn && AbsWheelSpeed3MpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeed4":
+                                {
+                                    if (AbsWheelSpeed4MpS >= cvc.TresholdLevelOn && AbsWheelSpeed4MpS < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeedac":
+                                {
+                                    if (AbsWheelSpeedMpSAC >= cvc.TresholdLevelOn && AbsWheelSpeedMpSAC < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            case "abswheelspeeddc":
+                                {
+                                    if (AbsWheelSpeedMpSDC >= cvc.TresholdLevelOn && AbsWheelSpeedMpSDC < cvc.TresholdLevelOff)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                                #endregion Speed
+                        }
+                        break;
+                    }
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                     {

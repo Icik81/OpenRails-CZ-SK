@@ -3723,6 +3723,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ARR_DRIVEOUT_BUTTON:
                 case CABViewControlTypes.ARR_PARKING_BUTTON:
                 case CABViewControlTypes.TRACTION_SWITCH:
+                case CABViewControlTypes.TRESHOLD_INDICATOR:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
