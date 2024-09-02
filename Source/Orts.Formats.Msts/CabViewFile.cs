@@ -1466,9 +1466,21 @@ namespace Orts.Formats.Msts
                     new STFReader.TokenProcessor("mousecontrol", ()=>{ MouseControl = stf.ReadBoolBlock(false); }),
                     new STFReader.TokenProcessor("orientation", ()=>{ Orientation = stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("dirincrease", ()=>{ Direction = stf.ReadIntBlock(null); }),
+                    // Icik
                     new STFReader.TokenProcessor("controlvariable", ()=>{ ControlVariable = stf.ReadStringBlock(null); }),
-                    new STFReader.TokenProcessor("tresholdlevelon", ()=>{ TresholdLevelOn = stf.ReadFloatBlock(STFReader.UNITS.None,0); }),
-                    new STFReader.TokenProcessor("tresholdleveloff", ()=>{ TresholdLevelOff = stf.ReadFloatBlock(STFReader.UNITS.None,0); }),
+                    new STFReader.TokenProcessor("tresholdlevelon", ()=>
+                    {
+                        if (ControlVariable.ToLower().Contains("speed")) TresholdLevelOn = stf.ReadFloatBlock(STFReader.UNITS.Speed,0);                         
+                        else
+                            TresholdLevelOn = stf.ReadFloatBlock(STFReader.UNITS.None,0);
+                    
+                    }),
+                    new STFReader.TokenProcessor("tresholdleveloff", ()=>
+                    {
+                        if (ControlVariable.ToLower().Contains("speed")) TresholdLevelOff = stf.ReadFloatBlock(STFReader.UNITS.Speed,0);                        
+                        else
+                            TresholdLevelOff = stf.ReadFloatBlock(STFReader.UNITS.None,0);
+                    }),
 
                     new STFReader.TokenProcessor("numframes", ()=>{
                         stf.MustMatch("(");
