@@ -1139,7 +1139,9 @@ namespace Orts.Viewer3D.Debugging
 
             // Icik
             //if (MultiPlayer.MPManager.OnlineTrains.findTrain(train))
-            //{            
+            //{
+            if (train.LeadLocomotive != null)
+            {
                 if (train.LeadLocomotive.Train.LocoDirection == Direction.Forward)
                     position = new Traveller(train.FrontTDBTraveller);
                 else
@@ -1147,6 +1149,9 @@ namespace Orts.Viewer3D.Debugging
                     position = new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
                 else
                     return;
+            }
+            else
+                return;
             //}
             //else
             //    position = train.MUDirection != Direction.Reverse ? new Traveller(train.FrontTDBTraveller) : new Traveller(train.RearTDBTraveller, Traveller.TravellerDirection.Backward);
