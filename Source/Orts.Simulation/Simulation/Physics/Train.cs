@@ -4516,6 +4516,10 @@ namespace Orts.Simulation.Physics
                         index++;
                     }
                 }
+
+                if (!(Cars[LeadLocomotiveIndex] is MSTSLocomotive))
+                    return;
+
                 MSTSLocomotive lead = (MSTSLocomotive)Cars[LeadLocomotiveIndex];
                 if (lead.TrainBrakeController != null)
                     lead.TrainBrakeController.UpdatePressure(ref EqualReservoirPressurePSIorInHg, elapsedClockSeconds, ref BrakeLine4);
