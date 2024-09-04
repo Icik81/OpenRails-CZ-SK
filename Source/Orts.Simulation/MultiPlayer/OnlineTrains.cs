@@ -242,7 +242,7 @@ namespace Orts.MultiPlayer
             for (int iCar = 0; iCar < train.Cars.Count; iCar++)
             {
                 var car = train.Cars[iCar];
-                if (car.CarID == p.LeadingLocomotiveID)
+                if (car.CarID == p.LeadingLocomotiveID && train.LeadLocomotive is MSTSLocomotive)
                 {
                     train.LeadLocomotive = car;
                     (train.LeadLocomotive as MSTSLocomotive).Headlight[(train.LeadLocomotive as MSTSLocomotive).LocoStation] = player.headlight;

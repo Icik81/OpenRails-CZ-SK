@@ -22615,7 +22615,7 @@ namespace Orts.Simulation.Physics
         }
 
         //used by remote train to update location based on message received
-        public int expectedTileX, expectedTileZ, expectedTracIndex, expectedDIr, expectedTDir, expectedVectorIndex;
+        public int expectedTileX, expectedTileZ, expectedTracIndex, expectedDIr, expectedTDir, expectedVectorIndex, expectedVectorIndex2;
         public float expectedX, expectedZ, expectedTravelled, expectedLength;
         public bool updateMSGReceived;
         public bool jumpRequested; // set when a train jump has been requested by the server (when player re-enters game in old position
@@ -22623,7 +22623,7 @@ namespace Orts.Simulation.Physics
         public bool doReverseTrav; // reverse rear traveller in AI reversal points
         public int doReverseMU;
 
-        public void ToDoUpdate(int tvi, int tni, int tX, int tZ, float x, float z, float eT, float speed, int dir, int tDir, float len, bool reverseTrav = false,
+        public void ToDoUpdate(int tvi, int tvi2, int tni, int tX, int tZ, float x, float z, float eT, float speed, int dir, int tDir, float len, bool reverseTrav = false,
             int reverseMU = 0)
         {
             SpeedMpS = speed;
@@ -22634,6 +22634,7 @@ namespace Orts.Simulation.Physics
             expectedTravelled = eT;
             expectedTracIndex = tni;
             expectedVectorIndex = tvi;
+            expectedVectorIndex2 = tvi2;
             expectedDIr = dir;
             expectedTDir = tDir;
             expectedLength = len;

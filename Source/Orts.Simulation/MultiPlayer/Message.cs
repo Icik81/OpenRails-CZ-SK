@@ -94,17 +94,17 @@ namespace Orts.MultiPlayer
             public float speed;
             public float travelled;
             public int num, count;
-            public int TileX, TileZ, trackNodeIndex, trackVectorIndex, direction, tdbDir;
+            public int TileX, TileZ, trackNodeIndex, trackVectorIndex, trackVectorIndex2, direction, tdbDir;
             public float X, Z;
             public float Length;
-            public MSGMoveItem(string u, float s, float t, int n, int tX, int tZ, float x, float z, int tni, int tvi, int cnt, int dir, int tDir, float len)
+            public MSGMoveItem(string u, float s, float t, int n, int tX, int tZ, float x, float z, int tni, int tvi, int tvi2, int cnt, int dir, int tDir, float len)
             {
-                user = u; speed = s; travelled = t; num = n; TileX = tX; TileZ = tZ; X = x; Z = z; trackNodeIndex = tni; trackVectorIndex = tvi; count = cnt; direction = dir; tdbDir = tDir; Length = len;
+                user = u; speed = s; travelled = t; num = n; TileX = tX; TileZ = tZ; X = x; Z = z; trackNodeIndex = tni; trackVectorIndex = tvi; trackVectorIndex2 = tvi2; count = cnt; direction = dir; tdbDir = tDir; Length = len;
             }
             public override string ToString()
             {
                 return user + " " + speed.ToString(CultureInfo.InvariantCulture) + " " + travelled.ToString(CultureInfo.InvariantCulture) + " " + num + " " +
-                    TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + trackNodeIndex + " " + trackVectorIndex + " " +
+                    TileX + " " + TileZ + " " + X.ToString(CultureInfo.InvariantCulture) + " " + Z.ToString(CultureInfo.InvariantCulture) + " " + trackNodeIndex + " " + trackVectorIndex + " " + trackVectorIndex2 + " " +
                     count + " " + direction + " " + tdbDir + " " + Length.ToString(CultureInfo.InvariantCulture);
             }
         }
@@ -113,7 +113,7 @@ namespace Orts.MultiPlayer
         {
             m = m.Trim();
             string[] areas = m.Split(' ');
-            if (areas.Length % 14 != 0 && !(areas.Length == 1 && areas[0].Length == 0)) //check for correct formatting
+            if (areas.Length % 15 != 0 && !(areas.Length == 1 && areas[0].Length == 0)) //check for correct formatting
             {
                 throw new Exception("Parsing error " + m);
             }
@@ -122,10 +122,10 @@ namespace Orts.MultiPlayer
                 int i = 0;
                 items = new List<MSGMoveItem>();
                 if (areas.Length > 1)
-                    for (i = 0; i < areas.Length / 14; i++)
-                        items.Add(new MSGMoveItem(areas[14 * i], float.Parse(areas[14 * i + 1], CultureInfo.InvariantCulture), float.Parse(areas[14 * i + 2], CultureInfo.InvariantCulture), int.Parse(areas[14 * i + 3]),
-                            int.Parse(areas[14 * i + 4]), int.Parse(areas[14 * i + 5]), float.Parse(areas[14 * i + 6], CultureInfo.InvariantCulture), float.Parse(areas[14 * i + 7], CultureInfo.InvariantCulture),
-                            int.Parse(areas[14 * i + 8]), int.Parse(areas[14 * i + 9]), int.Parse(areas[14 * i + 10]), int.Parse(areas[14 * i + 11]), int.Parse(areas[14 * i + 12]), float.Parse(areas[14 * i + 13], CultureInfo.InvariantCulture)));
+                    for (i = 0; i < areas.Length / 15; i++)
+                        items.Add(new MSGMoveItem(areas[15 * i], float.Parse(areas[15 * i + 1], CultureInfo.InvariantCulture), float.Parse(areas[15 * i + 2], CultureInfo.InvariantCulture), int.Parse(areas[15 * i + 3]),
+                            int.Parse(areas[15 * i + 4]), int.Parse(areas[15 * i + 5]), float.Parse(areas[15 * i + 6], CultureInfo.InvariantCulture), float.Parse(areas[15 * i + 7], CultureInfo.InvariantCulture),
+                            int.Parse(areas[15 * i + 8]), int.Parse(areas[15 * i + 9]), int.Parse(areas[15 * i + 10]), int.Parse(areas[15 * i + 11]), int.Parse(areas[15 * i + 12]), int.Parse(areas[15 * i + 13]), float.Parse(areas[15 * i + 14], CultureInfo.InvariantCulture)));
             }
             catch (Exception e)
             {
@@ -159,7 +159,7 @@ namespace Orts.MultiPlayer
         public void AddNewItem(string u, Train t)
         {
             if (items == null) items = new List<MSGMoveItem>();
-            items.Add(new MSGMoveItem(u, t.SpeedMpS, t.travelled, t.Number, t.RearTDBTraveller.TileX, t.RearTDBTraveller.TileZ, t.RearTDBTraveller.X, t.RearTDBTraveller.Z, t.RearTDBTraveller.TrackNodeIndex, t.RearTDBTraveller.TrackVectorSectionIndex, t.Cars.Count, (int)t.MUDirection, (int)t.RearTDBTraveller.Direction, t.Length));
+            items.Add(new MSGMoveItem(u, t.SpeedMpS, t.travelled, t.Number, t.RearTDBTraveller.TileX, t.RearTDBTraveller.TileZ, t.RearTDBTraveller.X, t.RearTDBTraveller.Z, t.RearTDBTraveller.TrackNodeIndex, t.FrontTDBTraveller.TrackVectorSectionIndex, t.RearTDBTraveller.TrackVectorSectionIndex, t.Cars.Count, (int)t.MUDirection, (int)t.RearTDBTraveller.Direction, t.Length));
             t.LastReportedSpeed = t.SpeedMpS;
         }
 
@@ -186,7 +186,7 @@ namespace Orts.MultiPlayer
                     //if I am a remote controlled train now
                     if (MPManager.Simulator.PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.REMOTE)
                     {
-                        MPManager.Simulator.PlayerLocomotive.Train.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
+                        MPManager.Simulator.PlayerLocomotive.Train.ToDoUpdate(m.trackVectorIndex, m.trackVectorIndex2, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
                     }
                     found = true;/*
                     try
@@ -222,7 +222,7 @@ namespace Orts.MultiPlayer
                                 //                                {
                                 //                                    reverseTrav = true;
                                 //                                }
-                                t.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length, reverseTrav);
+                                t.ToDoUpdate(m.trackVectorIndex, m.trackVectorIndex2, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length, reverseTrav);
                                 break;
                             }
                         }
@@ -238,7 +238,7 @@ namespace Orts.MultiPlayer
                             MPManager.Simulator.PlayerLocomotive == MPManager.Simulator.PlayerLocomotive.Train.LeadLocomotive &&
                             t.TrainType != Train.TRAINTYPE.REMOTE && t.TrainType != Train.TRAINTYPE.STATIC) continue;
                         found = true;
-                        t.ToDoUpdate(m.trackVectorIndex, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
+                        t.ToDoUpdate(m.trackVectorIndex, m.trackVectorIndex2, m.trackNodeIndex, m.TileX, m.TileZ, m.X, m.Z, m.travelled, m.speed, m.direction, m.tdbDir, m.Length);
                         // This is necessary as sometimes a train isn't in the Trains list
                         MPManager.Instance().AddOrRemoveTrain(t, true);
                         //                       if (MPManager.IsServer()) MPManager.Instance().AddOrRemoveLocomotives(m.user, t, true);
@@ -4156,6 +4156,7 @@ namespace Orts.MultiPlayer
         float speed;
         int tni;
         int tvi;
+        int tvi2;
         int count;
         int tdir;
         float len;
@@ -4196,6 +4197,9 @@ namespace Orts.MultiPlayer
             m = m.Remove(0, index + 1);
             index = m.IndexOf(' ');
             tvi = int.Parse(m.Substring(0, index + 1));
+            m = m.Remove(0, index + 1);
+            index = m.IndexOf(' ');
+            tvi2 = int.Parse(m.Substring(0, index + 1));
             m = m.Remove(0, index + 1);
             index = m.IndexOf(' ');
             count = int.Parse(m.Substring(0, index + 1));
@@ -4252,7 +4256,8 @@ namespace Orts.MultiPlayer
             mDirection = (int)t.MUDirection;
             speed = t.SpeedMpS;
             tni = t.RearTDBTraveller.TrackNodeIndex;
-            tvi = t.RearTDBTraveller.TrackVectorSectionIndex;
+            tvi = t.FrontTDBTraveller.TrackVectorSectionIndex;
+            tvi2 = t.RearTDBTraveller.TrackVectorSectionIndex;
             count = t.Cars.Count;
             tdir = (int)t.RearTDBTraveller.Direction;
             len = t.Length;
@@ -4301,7 +4306,7 @@ namespace Orts.MultiPlayer
                     Trace.TraceInformation("Changing Direction");
 #endif
                     if (realFlip)
-                        t.ToDoUpdate(tvi, tni, TileX, TileZ, X, Z, Travelled, speed, direction, tdir, len, true, reverseMU);
+                        t.ToDoUpdate(tvi, tvi2, tni, TileX, TileZ, X, Z, Travelled, speed, direction, tdir, len, true, reverseMU);
                     return;
                 }
             }

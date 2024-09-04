@@ -653,10 +653,17 @@ namespace Orts.Viewer3D.Debugging
                     if (MultiPlayer.MPManager.OnlineTrains.Players.TryGetValue(name, out MultiPlayer.OnlinePlayer player))
                         pos = player?.Train?.Cars?.FirstOrDefault()?.WorldPosition;
                     else if (MultiPlayer.MPManager.Instance().lostPlayer.TryGetValue(name, out MultiPlayer.OnlinePlayer lost))
-                        pos = lost?.Train?.Cars?.FirstOrDefault()?.WorldPosition;
+                        pos = lost?.Train?.Cars?.FirstOrDefault()?.WorldPosition;                
                 }
-                if (pos == null)
+                else
+                if (PickedTrain != null && followTrain)
+                {
                     pos = PickedTrain?.Cars?.FirstOrDefault()?.WorldPosition;
+                }
+
+                if (pos == null)
+                    pos = PickedTrain?.Cars?.FirstOrDefault()?.WorldPosition;                                
+
                 if (pos != null)
                 {
                     var ploc = new PointF(pos.TileX * 2048 + pos.Location.X, pos.TileZ * 2048 + pos.Location.Z);
@@ -820,6 +827,7 @@ namespace Orts.Viewer3D.Debugging
                                 scaledItem.Y -= 25;
                                 DrawTrainPath(t, subX, subY, pathPen, g, scaledA, scaledB, pDist, mDist);
                             }
+                            trainBrush = new SolidBrush(Color.Red);
                             g.DrawString(name, trainFont, trainBrush, scaledItem);
                             continue;
                         }
@@ -835,13 +843,25 @@ namespace Orts.Viewer3D.Debugging
                         {
                             if (car is MSTSLocomotive)
                                 trainPen.Color = Color.DarkOrange; // Lokomotiva
-                            if (car == t.LeadLocomotive)                            
+                            if (car == t.LeadLocomotive)
                                 trainPen.Color = Color.DarkGreen; // Obsazená lokomotiva                            
                             else
                             if (car.HasPassengerCapacity)
+                            {
                                 trainPen.Color = Color.LightBlue; // Osobní vůz
+                                trainBrush = new SolidBrush(Color.LightBlue);
+                            }
                             else
+                            {
                                 trainPen.Color = Color.RosyBrown; // Nákladní vůz
+                                trainBrush = new SolidBrush(Color.RosyBrown);
+                            }
+
+                            if (car == t.LeadLocomotive)
+                                trainBrush = new SolidBrush(Color.DarkGreen);
+
+                            if (t == PickedTrain)
+                                trainBrush = new SolidBrush(Color.Red);                            
 
                             Traveller t1 = new Traveller(t.RearTDBTraveller);
                             worldPos = car.WorldPosition;
@@ -872,9 +892,8 @@ namespace Orts.Viewer3D.Debugging
                         worldPos = firstCar.WorldPosition;
                         scaledItem.X = (worldPos.TileX * 2048 - subX + worldPos.Location.X) * xScale;
                         scaledItem.Y = -25 + pbCanvas.Height - (worldPos.TileZ * 2048 - subY + worldPos.Location.Z) * yScale;
-
-                        g.DrawString(name, trainFont, trainBrush, scaledItem);
-
+                        
+                        g.DrawString(name, trainFont, trainBrush, scaledItem);                        
                     }
                     if (switchPickedItemHandled) switchPickedItem = null;
                     if (signalPickedItemHandled) signalPickedItem = null;
