@@ -416,6 +416,8 @@ namespace Orts.Simulation.RollingStocks
         public bool SlaveLoco;
         public int WagonRealPantoCount;
         public bool WagonIsStatic;
+        public int MPBrakeCarMode = 0;
+        public int MPBrakeCarModePL = 0;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

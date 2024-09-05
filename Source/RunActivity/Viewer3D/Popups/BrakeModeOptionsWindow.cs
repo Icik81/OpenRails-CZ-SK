@@ -96,6 +96,8 @@ namespace Orts.Viewer3D.Popups
 
                             (Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarMode = (Viewer.PlayerTrain.Cars[preCarID] as MSTSWagon).BrakeSystem.BrakeCarMode;
 
+                            (Viewer.PlayerTrain.Cars[i] as MSTSWagon).MPBrakeCarMode = (int)(Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarMode;
+
                             if ((Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarMode == 0)
                             {
                                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode G"));
@@ -116,7 +118,8 @@ namespace Orts.Viewer3D.Popups
                                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode R+Mg"));
                                 (Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarModeText = "R+Mg";
                             }
-                        SkipChangeBrakeMode: continue;
+                            
+                            SkipChangeBrakeMode: continue;
                         }
                     }
                 }
@@ -165,6 +168,8 @@ namespace Orts.Viewer3D.Popups
                             {
                                 (Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarModePL = (Viewer.PlayerTrain.Cars[preCarID] as MSTSWagon).BrakeSystem.BrakeCarModePL;
 
+                                (Viewer.PlayerTrain.Cars[i] as MSTSWagon).MPBrakeCarModePL = (int)(Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarModePL;
+
                                 if ((Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarModePL == 0)
                                 {
                                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Empty Car"));
@@ -174,7 +179,7 @@ namespace Orts.Viewer3D.Popups
                                 {
                                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Loaded Car"));
                                     (Viewer.PlayerTrain.Cars[i] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL = Viewer.Catalog.GetString("Loaded");
-                                }
+                                }                                
                             }
                         }
                     }
@@ -222,7 +227,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonBrakeCarMode_Click(Control arg1, Point arg2)
         {            
-            new BrakeCarModeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarMode += 1);
+            new BrakeCarModeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarMode += 1);            
 
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarMode > (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.NumberBrakeCarMode - 1)
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarMode = 0;
@@ -247,6 +252,7 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Car Mode R+Mg"));
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModeText = "R+Mg";
             }
+            (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).MPBrakeCarMode = (int)(Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarMode;
         }
         void buttonBrakeCarModeAll_Click(Control arg1, Point arg2)
         {
@@ -259,7 +265,7 @@ namespace Orts.Viewer3D.Popups
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).WagonType != TrainCar.WagonTypes.Freight)
                 return;
 
-            new BrakeCarModePLCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModePL += 1);
+            new BrakeCarModePLCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModePL += 1);            
 
             if ((Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModePL > 1) (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModePL = 0;
 
@@ -273,6 +279,7 @@ namespace Orts.Viewer3D.Popups
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Loaded Car"));
                 (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModeTextPL = Viewer.Catalog.GetString("Loaded");
             }
+            (Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).MPBrakeCarModePL = (int)(Viewer.PlayerTrain.Cars[CarID] as MSTSWagon).BrakeSystem.BrakeCarModePL;
         }
         void buttonBrakeCarModePLAll_Click(Control arg1, Point arg2)
         {

@@ -792,6 +792,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         
         public override void Update(float elapsedClockSeconds)
         {
+            if (MPManager.IsMultiPlayer())
+            {
+                if (Car.MPBrakeCarMode != BrakeCarMode)
+                    BrakeCarMode = Car.MPBrakeCarMode;
+
+                if (Car.MPBrakeCarModePL != BrakeCarModePL)
+                    BrakeCarModePL = Car.MPBrakeCarModePL;
+            }
+            
             // Ochrana proti NaN
             if (float.IsNaN(BrakeLine1PressurePSI))
             {

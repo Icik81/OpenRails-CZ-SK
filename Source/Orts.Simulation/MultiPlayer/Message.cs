@@ -26,6 +26,7 @@ using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.Signalling;
 using ORTS.Common;
 using ORTS.Scripting.Api;
@@ -2390,7 +2391,17 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainWagon != null) t.TrainWagon.CurveForceNFiltered = EventState;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
+            }
+            else if (EventName == "BRAKECARMODE")
+            {
+                if (t.TrainWagon != null) (t.TrainWagon.MPBrakeCarMode) = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
+            else if (EventName == "BRAKECARMODEPL")
+            {
+                if (t.TrainWagon != null) (t.TrainWagon.MPBrakeCarModePL) = EventState;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "TRAINCOUPLE")
             {
                 if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.Uncouple);

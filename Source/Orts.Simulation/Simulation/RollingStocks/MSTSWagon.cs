@@ -1042,7 +1042,12 @@ namespace Orts.Simulation.RollingStocks
                 //if (Time3)
                 //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                
                 if (Time7)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());                            
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
+
+                if (Time8)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODE", (int)(this).MSTSBrakeSystem.BrakeCarMode)).ToString());
+                if (Time9)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());
 
             }
         }
