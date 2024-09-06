@@ -109,6 +109,7 @@ namespace Orts.Viewer3D.Popups
                 scrollbox2.AddHorizontalSeparator();
 
                 int carPosition = 0;
+                int NrSelectedCar = 0;
                 for (int i = carPosition; i < PlayerTrain.Cars.Count; i++)
                 {
                     var car = PlayerTrain.Cars[i];
@@ -134,8 +135,13 @@ namespace Orts.Viewer3D.Popups
                     //if (car.BrakeSystem.HandBrakeActive)
                     //    carLabel.Color = Color.Orange;
 
-                    if (car.SelectedCar)
+                    if (car.SelectedCar && NrSelectedCar == 0)
+                    {
                         carLabel.Color = Color.Yellow;
+                        NrSelectedCar++;
+                    }
+                    else
+                        car.SelectedCar = false;
 
                     Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
 
