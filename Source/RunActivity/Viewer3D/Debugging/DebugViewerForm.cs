@@ -1452,17 +1452,13 @@ namespace Orts.Viewer3D.Debugging
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[1], 1);                                                                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
-                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
-                        if (name == MPManager.Server.UserName)
-                            MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());                        
                     }
                     if (player.Train.LeadLocomotive.Train.LocoDirection == Direction.Forward)
                     {
                         player.Train.RequestExplorerSignalPermission(ref player.Train.ValidRoute[0], 0);                        
                         MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 0)).ToString());
-                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
-                        if (name == MPManager.Server.UserName)
-                            MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                        MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());                        
                     }                    
                 }
             }
@@ -1474,17 +1470,13 @@ namespace Orts.Viewer3D.Debugging
                 {
                     LastPickedTrain.RequestExplorerSignalPermission(ref LastPickedTrain.ValidRoute[1], 1);
                     MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 1)).ToString());
-                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
-                    if (name == MPManager.Server.UserName)
-                        MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());                    
                 }
                 if (LastPickedTrain.LocoDirection == Direction.Forward)
                 {
                     LastPickedTrain.RequestExplorerSignalPermission(ref LastPickedTrain.ValidRoute[0], 0);
                     MPManager.Notify((new MSGEvent(name, "TRAINPERMISSION", 0)).ToString());
-                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
-                    if (name == MPManager.Server.UserName)
-                        MPManager.BroadCast((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());
+                    MPManager.Notify((new MSGMessage(name, "Info", "TRAIN PERMISSION!")).ToString());                    
                 }                
             }
         }
