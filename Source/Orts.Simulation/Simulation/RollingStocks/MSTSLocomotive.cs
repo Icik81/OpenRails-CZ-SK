@@ -15397,9 +15397,13 @@ namespace Orts.Simulation.RollingStocks
                         PowerOnIsON = false;
                     }
                     if (PowerOn && !PowerOnIsON)
-                    {
+                    {                        
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 1)).ToString());
                         PowerOnIsON = true;
+                    }
+                    if (Time10 && (this as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                    {
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                     }
                     if (!PowerOn && StartButtonPressed && !StartButtonPressedON)
                     {
