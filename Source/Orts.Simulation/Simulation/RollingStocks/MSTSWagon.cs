@@ -1048,6 +1048,8 @@ namespace Orts.Simulation.RollingStocks
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODE", (int)(this).MSTSBrakeSystem.BrakeCarMode)).ToString());
                 if (Time9)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());
+                
+                
 
             }
         }

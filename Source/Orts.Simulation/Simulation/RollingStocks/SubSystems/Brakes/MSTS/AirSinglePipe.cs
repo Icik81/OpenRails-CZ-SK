@@ -794,8 +794,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             if (MPManager.IsMultiPlayer())
             {
+                if (BrakeCarMode > Car.MPBrakeCarMode)
+                    Car.MPBrakeCarMode = (int)BrakeCarMode;
+
                 if (Car.MPBrakeCarMode != BrakeCarMode)
                     BrakeCarMode = Car.MPBrakeCarMode;
+
+                if (BrakeCarModePL > Car.MPBrakeCarModePL)
+                    Car.MPBrakeCarModePL = (int)BrakeCarModePL;
 
                 if (Car.MPBrakeCarModePL != BrakeCarModePL)
                     BrakeCarModePL = Car.MPBrakeCarModePL;
@@ -1052,31 +1058,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (ForceBrakeMode != null)
                 {
-                    switch (ForceBrakeMode)
+                    switch (ForceBrakeMode.ToLower())
                     {
-                        case "G":
+                        case "g":
                             if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Freight)
                             {
                                 BrakeCarMode = 0;
-                                BrakeCarModeText = ForceBrakeMode;
+                                BrakeCarModeText = "G";
                             }
                             break;
-                        case "P":
+                        case "p":
                             BrakeCarMode = 1;
-                            BrakeCarModeText = ForceBrakeMode;
+                            BrakeCarModeText = "P";
                             break;
-                        case "R":
+                        case "r":
                             if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Passenger)
                             {
                                 BrakeCarMode = 2;
-                                BrakeCarModeText = ForceBrakeMode;
+                                BrakeCarModeText = "R";
                             }
                             break;
-                        case "R+MG":
+                        case "r+mg":
                             if ((Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Engine || (Car as MSTSWagon).WagonType == TrainCar.WagonTypes.Passenger)
                             {
                                 BrakeCarMode = 3;
-                                BrakeCarModeText = ForceBrakeMode;
+                                BrakeCarModeText = "R+Mg";
                             }
                             break;
                     }

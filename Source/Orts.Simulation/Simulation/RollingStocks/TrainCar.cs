@@ -3230,7 +3230,7 @@ namespace Orts.Simulation.RollingStocks
         float prevDereailAbsSpeedMpS = -1;
         Matrix XNAMatrixDerailed;
         public void Derailment(float elapsedTimeS, float speedMpS)
-        {                        
+        {
             //if (!IsPlayerTrain) return;
 
             //DerailRotateCoef = 5f;
@@ -3680,6 +3680,7 @@ namespace Orts.Simulation.RollingStocks
         private void AddVibrations(float factor, float elapsedTimeS)
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
+            if (MPManager.IsMultiPlayer() && MPManager.IsServer()) return;
             if (DerailIsOn) return;
             
             if (CarLengthM >= 30.0f || Simulator.Paused || Simulator.GameSpeed != 1)
