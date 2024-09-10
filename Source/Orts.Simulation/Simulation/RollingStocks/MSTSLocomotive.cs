@@ -15386,10 +15386,19 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 }
+                
+                if (Time1)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1", (int)((this).Variable1 * 100f))).ToString());
+                if (Time2)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2", (int)((this).Variable2 * 100f))).ToString());
+                if (Time3)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE3", (int)((this).Variable3 * 100f))).ToString());
+                if (Time4)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE11", (int)((this).Variable11 * 100f))).ToString());
 
                 // Diesel
                 if (this as MSTSDieselLocomotive != null)
-                {
+                {                    
                     if (!PowerOn && PowerOnIsON)
                     {
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "POWERONOFF", 0)).ToString());
@@ -15434,10 +15443,12 @@ namespace Orts.Simulation.RollingStocks
                     if (Time8)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE4", (int)((this as MSTSDieselLocomotive).Variable4 * 100f))).ToString());
                     if (Time9)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 100f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE5", (int)((this as MSTSDieselLocomotive).Variable5 * 100f))).ToString());
                     if (Time10)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 100f))).ToString());
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE6", (int)((this as MSTSDieselLocomotive).Variable6 * 100f))).ToString());
                     if (Time1)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE7", (int)((this as MSTSDieselLocomotive).Variable7 * 100f))).ToString());
+                    if (Time2)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE8", (int)((this as MSTSDieselLocomotive).Variable8 * 100f))).ToString());
 
 
@@ -15501,38 +15512,25 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "OILCOOLING", 1)).ToString());
                         OilCoolingIsON = true;
                     }
-                }
+                }                
 
                 // Elektriky
                 if (this as MSTSElectricLocomotive != null)
                 {
-                    if (!PowerOn && Time10)                    
+                    if (!PowerOn && Time10)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 0)).ToString());
-                                        
-                    if (PowerOn && Time10)                    
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());                                              
+
+                    if (PowerOn && Time10)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEPOWERON", 1)).ToString());
+
+                    if (Time1 && (this).Variable2AC > 0)                    
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 100f))).ToString());                        
                     
-                    if ((this).Variable1AC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1AC", (int)((this).Variable1AC * 100f))).ToString());
-                    if ((this).Variable1DC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE1DC", (int)((this).Variable1DC * 100f))).ToString());
-                    if ((this).Variable2AC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 100f))).ToString());
-                    if ((this).Variable2DC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());
-                    if ((this).AbsWheelSpeedMpSAC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDAC", (int)((this).AbsWheelSpeedMpSAC * 100f))).ToString());
-                    if ((this).AbsWheelSpeedMpSDC > 0)
-                        if (Time1 || Time2 || Time3 || Time4 || Time5 || Time6 || Time7 || Time8 || Time9 || Time10)
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ABSWHEELSPEEDDC", (int)((this).AbsWheelSpeedMpSDC * 100f))).ToString());
+                    if (Time1 && (this).Variable2DC > 0)                    
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());                                            
                 }
 
-                if (Time2)
+                if (Time3)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECYLINDERPRESSURE", (int)((this).BrakeSystem.BrakeCylinderPressurePSI))).ToString());                                
 
                 if (!CompressorIsOn && CompressorIsON)
@@ -15566,7 +15564,7 @@ namespace Orts.Simulation.RollingStocks
                     AuxCompressorIsON = true;
                 }
 
-                if (Time3)
+                if (Time4)
                 {
                     if (LocoStation == 1)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 0)).ToString());
@@ -15587,7 +15585,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (IsLeadLocomotive())
                 {
-                    if (Time4)
+                    if (Time3)
                     {
                         if (UsingRearCab || Flipped)
                         {

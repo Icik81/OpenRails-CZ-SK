@@ -3231,7 +3231,7 @@ namespace Orts.Simulation.RollingStocks
         Matrix XNAMatrixDerailed;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {
-            //if (!IsPlayerTrain) return;
+            if (MPManager.IsMultiPlayer() && MPManager.IsServer()) return;
 
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;

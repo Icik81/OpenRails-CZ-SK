@@ -1029,28 +1029,27 @@ namespace Orts.Simulation.RollingStocks
                     if (Time1)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", 0)).ToString());
                     if (Time2)
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());                    
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", 0)).ToString());
+                    if (Time3)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", 0)).ToString());
                 }
                 else                
                 {
                     if (Time1)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "SPEED", (int)((this).SpeedMpS * 100f))).ToString());
                     if (Time2)                    
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).WheelSpeedMpS * 100f))).ToString());                     
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).WheelSpeedMpS * 100f))).ToString());
+                    if (Time3)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
                 }
-               
+
                 //if (Time3)
-                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                
-                if (Time7)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
+                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                                
 
                 if (Time8)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODE", (int)(this).MSTSBrakeSystem.BrakeCarMode)).ToString());
                 if (Time9)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());
-                
-                
-
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());                
             }
         }
 

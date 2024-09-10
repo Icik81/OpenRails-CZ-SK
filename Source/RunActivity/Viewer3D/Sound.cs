@@ -1502,8 +1502,8 @@ namespace Orts.Viewer3D
             switch (control)
             {
                 case Orts.Formats.Msts.VolumeCurve.Controls.DistanceControlled: return SoundSource.DistanceSquared;
-                case Orts.Formats.Msts.VolumeCurve.Controls.SpeedControlled: return car.AbsSpeedMpS;
-                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedControlled: return car.AbsWheelSpeedMpS;
+                case Orts.Formats.Msts.VolumeCurve.Controls.SpeedControlled: return Math.Abs(car.SpeedMpS);
+                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedControlled: return Math.Abs(car.WheelSpeedMpS);
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedACControlled: return car.AbsWheelSpeedMpSAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedDCControlled: return car.AbsWheelSpeedMpSDC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed1Controlled: return car.AbsWheelSpeed1MpS;

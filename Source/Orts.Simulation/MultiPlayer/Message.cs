@@ -2295,17 +2295,22 @@ namespace Orts.MultiPlayer
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 
-            // Variabilní proměnné            
-            else if (EventName == "VARIABLE1AC")
+            // Variabilní proměnné
+            else if (EventName == "VARIABLE1")
             {
-                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable1AC = EventState / 100f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) ((MSTSLocomotive)(t.TrainWagon)).Variable1 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-            else if (EventName == "VARIABLE1DC")
+            else if (EventName == "VARIABLE2")
             {
-                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable1DC = EventState / 100f;
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) ((MSTSLocomotive)(t.TrainWagon)).Variable2 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }           
+            }
+            else if (EventName == "VARIABLE3")
+            {
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) ((MSTSLocomotive)(t.TrainWagon)).Variable3 = EventState / 100f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "VARIABLE2AC")
             {
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).Variable2AC = EventState / 100f;
@@ -2320,7 +2325,12 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable4 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
+            }
+            else if (EventName == "VARIABLE5")
+            {
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable5 = EventState / 100f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "VARIABLE6")
             {
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable6 = EventState / 100f;
@@ -2335,7 +2345,12 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSDieselLocomotive) != null) ((MSTSDieselLocomotive)(t.TrainWagon)).Variable8 = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }                      
+            }
+            else if (EventName == "VARIABLE11")
+            {
+                if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) ((MSTSLocomotive)(t.TrainWagon)).Variable11 = EventState / 100f;
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
             else if (EventName == "SPEED")
             {
                 if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).SpeedMpS = EventState / 100f;
@@ -2345,17 +2360,7 @@ namespace Orts.MultiPlayer
             {
                 if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).WheelSpeedMpS = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
-            else if (EventName == "ABSWHEELSPEEDAC")
-            {
-                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).AbsWheelSpeedMpSAC = EventState / 100f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "ABSWHEELSPEEDDC")
-            {
-                if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null) ((MSTSElectricLocomotive)(t.TrainWagon)).AbsWheelSpeedMpSDC = EventState / 100f;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }            
+            }                                   
             else if (EventName == "FACTORVIBRATION")
             {
                 if (t.TrainWagon != null) t.TrainWagon.Factor_vibration = EventState;

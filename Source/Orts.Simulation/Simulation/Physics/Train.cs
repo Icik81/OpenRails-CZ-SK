@@ -22750,7 +22750,7 @@ namespace Orts.Simulation.Physics
                     if (car.IsDriveable && car is MSTSWagon)
                     {
                         (car as MSTSWagon).WheelSpeedMpS = SpeedMpS;
-                        if (car.AbsSpeedMpS > 0.5f)
+                        if (car.AbsSpeedMpS != 0f)
                         {
                             if (car is MSTSElectricLocomotive)
                             {
@@ -22759,7 +22759,15 @@ namespace Orts.Simulation.Physics
 
                                 // Icik
                                 (car as MSTSElectricLocomotive).Variable1 = 0.7f;
-                                (car as MSTSElectricLocomotive).Variable2 = 70;
+
+                                if ((car as MSTSElectricLocomotive).Variable2 > 0)
+                                    (car as MSTSElectricLocomotive).Variable2 = 70f;
+                                
+                                if ((car as MSTSElectricLocomotive).Variable2AC > 0)
+                                    (car as MSTSElectricLocomotive).Variable2 = (car as MSTSElectricLocomotive).Variable2AC;
+                                else
+                                if ((car as MSTSElectricLocomotive).Variable2DC > 0)
+                                    (car as MSTSElectricLocomotive).Variable2 = (car as MSTSElectricLocomotive).Variable2DC;                                                                
                             }
                             else if (car is MSTSDieselLocomotive)
                             {
