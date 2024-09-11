@@ -3222,6 +3222,7 @@ namespace Orts.Simulation.RollingStocks
         float DerailmentTimer3;
         float DerailmentTimer4;
         public bool DerailIsOn;
+        public bool MPDerailIsOn;
         bool SetDerailCoef;
         bool IsJunctionCase;
         bool IsCurveCase;
@@ -3231,8 +3232,12 @@ namespace Orts.Simulation.RollingStocks
         Matrix XNAMatrixDerailed;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {
+            if (MPManager.IsMultiPlayer() && MPDerailIsOn)
+                goto SkipOnDerail;
+
             if (MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
 
+        SkipOnDerail:
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;
 

@@ -7722,7 +7722,21 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         Simulator.Direction = Direction;
+                        
                         Train.LocoDirection = Direction;
+                        if (Direction != Direction.N)
+                        {
+                            if (UsingRearCab)
+                            {
+                                if (!Flipped)
+                                    Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
+                            }
+                            else
+                            {
+                                if (Flipped)
+                                    Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
+                            }
+                        }
                     }
                     if (IsLeadLocomotive() && OneCabDummyStation)
                     {
@@ -15587,24 +15601,12 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Time3)
                     {
-                        if (UsingRearCab || Flipped)
-                        {
-                            if (Train.LocoDirection == Direction.Reverse)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
-                            if (Train.LocoDirection == Direction.Forward)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
-                            if (Train.LocoDirection == Direction.N)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 2)).ToString());
-                        }
-                        else
-                        {
-                            if (Train.LocoDirection == Direction.Reverse)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());
-                            if (Train.LocoDirection == Direction.Forward)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
-                            if (Train.LocoDirection == Direction.N)
-                                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 2)).ToString());
-                        }
+                        if (Train.LocoDirection == Direction.Forward)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 0)).ToString());
+                        if (Train.LocoDirection == Direction.Reverse)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 1)).ToString());                        
+                        if (Train.LocoDirection == Direction.N)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DIRECTION", 2)).ToString());                        
                     }
                     if (Time4)
                         if (!LightFrontLW)

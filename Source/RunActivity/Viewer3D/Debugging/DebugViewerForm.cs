@@ -521,10 +521,10 @@ namespace Orts.Viewer3D.Debugging
                 i = 1;
                 foreach (var pair in avatarList)
                 {
-                    if (pair.Key == username) continue;
+                    if (pair.Key == username) continue;                    
                     if (MultiPlayer.MPManager.Instance().aiderList.Contains(pair.Key))
                     {
-                        AvatarView.Items.Add(pair.Key + " (H)");
+                        AvatarView.Items.Add(pair.Key + " (D)");
                     }
                     else if (MultiPlayer.MPManager.Instance().lostPlayer.ContainsKey(pair.Key))
                     {
@@ -555,7 +555,7 @@ namespace Orts.Viewer3D.Debugging
                 {
                     if (pair.Key == username) continue;
                     var text = pair.Key;
-                    if (MultiPlayer.MPManager.Instance().aiderList.Contains(pair.Key)) text = pair.Key + " (H)";
+                    if (MultiPlayer.MPManager.Instance().aiderList.Contains(pair.Key)) text = pair.Key + " (D)";
 
                     if (pair.Value == null) AvatarView.Items.Add(name).ImageIndex = -1;
                     else
@@ -1160,7 +1160,7 @@ namespace Orts.Viewer3D.Debugging
             //if (MultiPlayer.MPManager.OnlineTrains.findTrain(train))
             //{
             if (train.LeadLocomotive != null)
-            {
+            {                                
                 if (train.LeadLocomotive.Train.LocoDirection == Direction.Forward)
                     position = new Traveller(train.FrontTDBTraveller);
                 else

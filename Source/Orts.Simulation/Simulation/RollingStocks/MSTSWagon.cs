@@ -1049,7 +1049,10 @@ namespace Orts.Simulation.RollingStocks
                 if (Time8)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODE", (int)(this).MSTSBrakeSystem.BrakeCarMode)).ToString());
                 if (Time9)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());                
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());
+
+                if (Time10 && DerailIsOn)
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DERAILISON", 1)).ToString());
             }
         }
 

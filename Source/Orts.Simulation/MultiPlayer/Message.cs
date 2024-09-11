@@ -2414,6 +2414,11 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && EventState == 2) t.TrainWagon.SignalEvent(Event.Coupling);                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
+            else if (EventName == "DERAILISON")
+            {                
+                if (t.TrainWagon != null && EventState == 1) t.TrainWagon.MPDerailIsOn = true;                
+                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+            }
 
             // Elektriky
             else if (EventName == "ENGINEPOWERON")
