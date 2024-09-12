@@ -953,8 +953,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public bool DoorLeftIsOpened;
-        public bool DoorRightIsOpened;
-        float LastLoadPerCent;        
+        public bool DoorRightIsOpened;              
         float MPMessageTimer;
         bool SpeedSetToZero;
         int incTime1, incTime2, incTime3, incTime4, incTime5, incTime6, incTime7, incTime8, incTime9, incTime10 = 0;
@@ -992,14 +991,12 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Hodnota dynamického nákladu
-                if (Time1 && FreightAnimations != null && FreightAnimations.LoadedOne != null)
+                if (FreightAnimations != null && FreightAnimations.LoadedOne != null && MPWagonLoadPercent > 0)
                 {
-                    if (LastLoadPerCent != FreightAnimations.LoadedOne.LoadPerCent)
-                    {
+                    if (Time4)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WAGONLOADING", (int)FreightAnimations.LoadedOne.LoadPerCent)).ToString());
+                    if (Time5)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FREIGHTWEIGHT", (int)FreightAnimations.FreightWeight)).ToString());
-                        LastLoadPerCent = FreightAnimations.LoadedOne.LoadPerCent;
-                    }
                 }                
 
                 // Jednotlivé dveře vozů
@@ -1041,18 +1038,12 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "WHEELSPEED", (int)((this).WheelSpeedMpS * 100f))).ToString());
                     if (Time3)
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "CURVEFORCE", (int)((this).CurveForceNFiltered))).ToString());
-                }
-
-                //if (Time3)
-                //    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "FACTORVIBRATION", (this).Factor_vibration)).ToString());                                
+                }                         
 
                 if (Time8)
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODE", (int)(this).MSTSBrakeSystem.BrakeCarMode)).ToString());
                 if (Time9)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());
-
-                if (Time10 && DerailIsOn)
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "DERAILISON", 1)).ToString());
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKECARMODEPL", (int)(this).MSTSBrakeSystem.BrakeCarModePL)).ToString());               
             }
         }
 

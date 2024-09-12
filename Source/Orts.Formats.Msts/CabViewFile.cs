@@ -602,7 +602,10 @@ namespace Orts.Formats.Msts
         MILI_AMPS,
         RPM,
         LBS,
-        KILOMETRES
+        KILOMETRES,
+
+        // Icik
+        PERCENT
     }
 
     public class CabViewControls : List<CabViewControl>

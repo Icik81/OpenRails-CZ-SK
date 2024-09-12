@@ -1025,6 +1025,9 @@ namespace Orts.Parsers.Msts
                     case "kn": return 1e3;
                     case "lbf": return 4.44822162;
                     case "lb": return 4.44822162;
+                    // Icik
+                    // "A" budící proud závislý na throttle
+                    case "a": return 1;
                 }
             if ((validUnits & UNITS.Power) > 0)
                 switch (suffix)

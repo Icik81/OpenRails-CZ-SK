@@ -905,33 +905,13 @@ namespace Orts.Simulation.RollingStocks
                         HVOff = true;
                         if (Pantographs[1].State == PantographState.Up || Pantographs[2].State == PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph);
-                            if (MPManager.IsMultiPlayer())
-                            {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                if (Pantographs.Count == 4)
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                }
-                            }
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);                            
                             if (AcceptMUSignals)
                                 foreach (TrainCar car in Train.Cars)
                                 {
                                     if (car.AcceptMUSignals)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                        if (MPManager.IsMultiPlayer())
-                                        {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                            if (Pantographs.Count == 4)
-                                            {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                            }
-                                        }
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);                                        
                                     }
                                 }
                         }                        
@@ -976,33 +956,13 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if ((Pantograph4Enable && Pantograph4Switch[LocoStation] != 0) || (Pantograph5Enable && Pantograph5Switch[LocoStation] != 0))
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph);
-                            if (MPManager.IsMultiPlayer())
-                            {
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                if (Pantographs.Count == 4)
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                }
-                            }
+                            SignalEvent(PowerSupplyEvent.LowerPantograph);                            
                             if (AcceptMUSignals)
                                 foreach (TrainCar car in Train.Cars)
                                 {
                                     if (car.AcceptMUSignals)
                                     {
-                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                        if (MPManager.IsMultiPlayer())
-                                        {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                            if (Pantographs.Count == 4)
-                                            {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                            }
-                                        }
+                                        car.SignalEvent(PowerSupplyEvent.LowerPantograph);                                        
                                     }
                                 }
                         }
@@ -1145,33 +1105,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Pantographs[i].State == PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                if (MPManager.IsMultiPlayer())
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                    if (Pantographs.Count == 4)
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                    }
-                                }
+                                SignalEvent(PowerSupplyEvent.LowerPantograph);                                
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                            if (MPManager.IsMultiPlayer())
-                                            {
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                                if (Pantographs.Count == 4)
-                                                {
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                                }
-                                            }
+                                            car.SignalEvent(PowerSupplyEvent.LowerPantograph);                                            
                                         }
                                     }
                             }
@@ -1648,15 +1588,11 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                            if (MPManager.IsMultiPlayer())
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                            
                         }
                         if (Pantographs[2].State == PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                            if (MPManager.IsMultiPlayer())
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                            
                         }
                         HVOff = true;
                     }
@@ -1665,17 +1601,7 @@ namespace Orts.Simulation.RollingStocks
                 // Vypnutí baterií způsobí odpadnutí pantografů
                 if (!Battery && Pantograph3Switch[LocoStation] != 1)
                 {
-                    SignalEvent(PowerSupplyEvent.LowerPantograph);
-                    if (MPManager.IsMultiPlayer())
-                    {
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                        if (Pantographs.Count == 4)
-                        {
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                        }
-                    }
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);                    
                     Pantograph3Switch[LocoStation] = 1;
                 }
 
@@ -1755,24 +1681,18 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (RouteVoltageV == 3000)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);                                    
                                 }
                                 if (RouteVoltageV > 3000)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
                                 }
                             }
                             else
                             {
                                 if (RouteVoltageV > 1)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                    if (MPManager.IsMultiPlayer())
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
                                 }
                             }
                         }
@@ -1807,9 +1727,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                if (MPManager.IsMultiPlayer())
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                
                             }
 
                             if (Pantograph3Enable)
@@ -1879,17 +1797,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (RouteVoltageV == 1)
                 {
-                    SignalEvent(PowerSupplyEvent.LowerPantograph);
-                    if (MPManager.IsMultiPlayer())
-                    {
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                        if (Pantographs.Count == 4)
-                        {
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                        }
-                    }
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);                    
                 }
 
                 if (PowerOn)
@@ -1957,58 +1865,38 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (Direction == Direction.Reverse && Pantographs[3].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);                                    
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);                                   
                                 }
                                 if (Direction == Direction.Forward && Pantographs[4].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);                                    
                                 }
                                 if (Direction == Direction.Forward && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);                                   
                                 }
                             }
                             if (SwitchingVoltageMode == 2)
                             {
                                 if (Direction == Direction.Reverse && Pantographs[1].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                                   
                                 }
                                 if (Direction == Direction.Forward && Pantographs[2].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                                    
                                 }
                                 if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                                    
                                 }
                             }
                         }
@@ -2016,29 +1904,19 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Direction == Direction.Reverse && Pantographs[1].State != PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                if (MPManager.IsMultiPlayer())
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
-                                }
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                
                             }
                             if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                               
                             }
                             if (Direction == Direction.Forward && Pantographs[2].State != PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                                if (MPManager.IsMultiPlayer())
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
-                                }
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                                
                             }
                             if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                                
                             }
                         }
                     }
@@ -2050,58 +1928,38 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (Direction == Direction.Forward && Pantographs[3].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);                                    
                                 }
                                 if (Direction == Direction.Forward && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 4);                                   
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[4].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 4);                                    
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[3].State == PantographState.Up && Pantographs[4].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 3);                                    
                                 }
                             }
                             if (SwitchingVoltageMode == 2)
                             {
                                 if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
                                 }
                                 if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                                    
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
-                                    }
+                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                                    
                                 }
                                 if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                                    
                                 }
                             }
                         }
@@ -2109,29 +1967,19 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Direction == Direction.Forward && Pantographs[1].State != PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                                if (MPManager.IsMultiPlayer())
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
-                                }
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                
                             }
                             if (Direction == Direction.Forward && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                                
                             }
                             if (Direction == Direction.Reverse && Pantographs[2].State != PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);
-                                if (MPManager.IsMultiPlayer())
-                                {
-                                    MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
-                                }
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                                
                             }
                             if (Direction == Direction.Reverse && Pantographs[1].State == PantographState.Up && Pantographs[2].State == PantographState.Up)
                             {
-                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
-                                MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
+                                SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                                
                             }
                         }
                     }
@@ -2689,17 +2537,7 @@ namespace Orts.Simulation.RollingStocks
                                 T_PantoUp[i] = 0;
                                 if (!AirForPantograph)
                                 {
-                                    SignalEvent(PowerSupplyEvent.LowerPantograph);
-                                    if (MPManager.IsMultiPlayer())
-                                    {
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                                        if (Pantographs.Count == 4)
-                                        {
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                                        }
-                                    }
+                                    SignalEvent(PowerSupplyEvent.LowerPantograph);                                    
                                 }
                                 break;
                             }
@@ -2861,27 +2699,23 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
+                            SignalEvent(Event.Pantograph1UpAC);                            
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 0)).ToString());
+                            SignalEvent(Event.Pantograph1DownAC);                            
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 1)).ToString());
+                            SignalEvent(Event.Pantograph2UpAC);                           
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 0)).ToString());
+                            SignalEvent(Event.Pantograph2DownAC);                            
                             TPanto2AC = 0;
                         }
                     }
@@ -2889,27 +2723,23 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[3].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 1)).ToString());
+                            SignalEvent(Event.Pantograph1UpDC);                            
                             TPanto1DC = 1;
                         }
                         if (Pantographs[3].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 0)).ToString());
+                            SignalEvent(Event.Pantograph1DownDC);                            
                             TPanto1DC = 0;
                         }
 
                         if (Pantographs[4].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 1)).ToString());
+                            SignalEvent(Event.Pantograph2UpDC);                            
                             TPanto2DC = 1;
                         }
                         if (Pantographs[4].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 0)).ToString());
+                            SignalEvent(Event.Pantograph2DownDC);                            
                             TPanto2DC = 0;
                         }
                     }
@@ -2920,27 +2750,23 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
+                            SignalEvent(Event.Pantograph1UpAC);                            
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 0)).ToString());
+                            SignalEvent(Event.Pantograph1DownAC);                            
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1AC", 1)).ToString());
+                            SignalEvent(Event.Pantograph2UpAC);                           
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownAC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2AC", 0)).ToString());
+                            SignalEvent(Event.Pantograph2DownAC);                            
                             TPanto2AC = 0;
                         }
                     }
@@ -2948,27 +2774,23 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1DC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 1)).ToString());
+                            SignalEvent(Event.Pantograph1UpDC);                            
                             TPanto1DC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1DC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1DC", 0)).ToString());
+                            SignalEvent(Event.Pantograph1DownDC);                            
                             TPanto1DC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2DC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 1)).ToString());
+                            SignalEvent(Event.Pantograph2UpDC);                            
                             TPanto2DC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2DC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownDC);
-                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2DC", 0)).ToString());
+                            SignalEvent(Event.Pantograph2DownDC);                           
                             TPanto2DC = 0;
                         }
                     }
@@ -3239,23 +3061,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (!ToState)
                 {
-                    SignalEvent(PowerSupplyEvent.LowerPantograph);
-                    if (MPManager.IsMultiPlayer())
-                    {
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 0).ToString());
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
-                        if (Pantographs.Count == 4)
-                        {
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO3", 0).ToString());
-                            MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO4", 0).ToString());
-                        }
-                    }
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);                    
                 }
                 else
                 {
-                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                    if (MPManager.IsMultiPlayer())
-                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO1", 1).ToString());
+                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                    
                 }
             }
 

@@ -78,7 +78,7 @@ namespace Orts.MultiPlayer
             else if (key == "WEATHER") return new MSGWeather(m.Substring(index + 1));
             else if (key == "AIDER") return new MSGAider(m.Substring(index + 1));
             else if (key == "SIGNALCHANGE") return new MSGSignalChange(m.Substring(index + 1));
-            else if (key == "EXHAUST") return new MSGExhaust(m.Substring(index + 1));
+            //else if (key == "EXHAUST") return new MSGExhaust(m.Substring(index + 1));
             else if (key == "FLIP") return new MSGFlip(m.Substring(index + 1));
             else throw new Exception("Unknown Keyword" + key);
         }
@@ -2361,11 +2361,6 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null) ((MSTSWagon)(t.TrainWagon)).WheelSpeedMpS = EventState / 100f;
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }                                   
-            else if (EventName == "FACTORVIBRATION")
-            {
-                if (t.TrainWagon != null) t.TrainWagon.Factor_vibration = EventState;
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
             else if (EventName == "BRAKECYLINDERPRESSURE")
             {
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSLocomotive) != null) t.TrainWagon.BrakeSystem.BrakeCylinderPressurePSI = EventState;
@@ -2412,11 +2407,6 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && EventState == 0) t.TrainWagon.SignalEvent(Event.Uncouple);
                 if (t.TrainWagon != null && EventState == 1) t.TrainWagon.SignalEvent(Event.Couple);
                 if (t.TrainWagon != null && EventState == 2) t.TrainWagon.SignalEvent(Event.Coupling);                
-                MPManager.BroadCast(this.ToString()); //if the server, will broadcast
-            }
-            else if (EventName == "DERAILISON")
-            {                
-                if (t.TrainWagon != null && EventState == 1) t.TrainWagon.MPDerailIsOn = true;                
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
 
@@ -2472,7 +2462,6 @@ namespace Orts.MultiPlayer
                 if (t.TrainWagon != null && (t.TrainWagon as MSTSElectricLocomotive) != null && EventState == 1) ((MSTSElectricLocomotive)(t.TrainWagon)).SignalEvent(Event.Pantograph2UpAC);
                 MPManager.BroadCast(this.ToString()); //if the server, will broadcast
             }
-
 
 
             // Diesel

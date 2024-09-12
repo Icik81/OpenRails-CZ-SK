@@ -451,13 +451,13 @@ namespace Orts.MultiPlayer
             if (Client != null && Server == null)
             {
                 Client.Send((new MSGQuit(GetUserName())).ToString()); //client notify server
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 Client.Stop();
             }
             if (Server != null)
             {
                 Server.BroadCast((new MSGQuit("ServerHasToQuit\t" + GetUserName())).ToString()); //server notify everybody else
-                Thread.Sleep(1000);
+                Thread.Sleep(100);
                 if (Server.ServerComm != null) Server.Stop();
                 if (Client != null) Client.Stop();
             }

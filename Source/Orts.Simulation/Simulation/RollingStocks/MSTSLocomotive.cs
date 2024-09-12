@@ -15541,7 +15541,34 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2AC", (int)((this).Variable2AC * 100f))).ToString());                        
                     
                     if (Time1 && (this).Variable2DC > 0)                    
-                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());                                            
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "VARIABLE2DC", (int)((this).Variable2DC * 100f))).ToString());
+
+                    if (Time1 && Pantographs[1].State == PantographState.Up)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1", 1)).ToString());
+                    
+                    if (Time1 && Pantographs[1].State == PantographState.Down)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO1", 0)).ToString());
+
+                    if (Time2 && Pantographs[2].State == PantographState.Up)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2", 1)).ToString());
+
+                    if (Time2 && Pantographs[2].State == PantographState.Down)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO2", 0)).ToString());
+
+                    if (Pantographs.Count == 4)
+                    {
+                        if (Time3 && Pantographs[3].State == PantographState.Up)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO3", 1)).ToString());
+
+                        if (Time3 && Pantographs[3].State == PantographState.Down)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO3", 0)).ToString());
+
+                        if (Time4 && Pantographs[4].State == PantographState.Up)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO4", 1)).ToString());
+
+                        if (Time4 && Pantographs[4].State == PantographState.Down)
+                            MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "PANTO4", 0)).ToString());
+                    }
                 }
 
                 if (Time3)
@@ -15586,15 +15613,19 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOSTATION", 1)).ToString());
                 }
 
-                if (Battery && Time10)
+                if (Battery)
                 {
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 1)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());                    
+                    if (Time5)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 1)).ToString());
+                    if (Time6)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 1)).ToString());                    
                 }
-                if (!Battery && Time10)
+                if (!Battery)
                 {
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 0)).ToString());
-                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());                    
+                    if (Time5)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BATTERY", 0)).ToString());
+                    if (Time6)
+                        MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "LOCOLIGHTS", 0)).ToString());                    
                 }                                
 
                 if (IsLeadLocomotive())
