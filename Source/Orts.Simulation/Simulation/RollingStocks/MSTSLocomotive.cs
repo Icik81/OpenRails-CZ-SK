@@ -5573,16 +5573,32 @@ namespace Orts.Simulation.RollingStocks
                 else
                     PowerReductionResult12 = 0;
 
+                if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg == 0)
+                {
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg != 0)
+                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg;
+                    else
+                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                }
+
+                if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg == 0)
+                {
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg != 0)
+                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg;
+                    else
+                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                }
+
                 if (!HelperOverheated)
                 {
-                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg)
-                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg)
+                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg);
                 }
 
                 if (HelperOverheated)
                 {
-                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.85f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
-                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.85f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg);
+                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg);
+                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg);
                     if (HelperCoolDown)
                         HelperOverheated = false;
                 }                                

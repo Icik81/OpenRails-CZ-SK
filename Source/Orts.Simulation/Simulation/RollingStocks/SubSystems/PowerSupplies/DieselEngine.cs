@@ -582,6 +582,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             DieselMaxTemperatureDeg = copy.DieselMaxTemperatureDeg;
             DieselMaxWaterTemperatureDeg = copy.DieselMaxWaterTemperatureDeg;
             DieselMaxOilTemperatureDeg = copy.DieselMaxOilTemperatureDeg;
+            HelperDieselMaxWaterTemperatureDeg = copy.HelperDieselMaxWaterTemperatureDeg;
+            HelperDieselMaxOilTemperatureDeg = copy.HelperDieselMaxOilTemperatureDeg;
             DieselOptimalTemperatureDegC = copy.DieselOptimalTemperatureDegC;
             DieselOptimalWaterTemperatureDegC = copy.DieselOptimalWaterTemperatureDegC;
             DieselOptimalOilTemperatureDegC = copy.DieselOptimalOilTemperatureDegC;
@@ -955,6 +957,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float DieselMaxTemperatureDeg = 90;
         public float DieselMaxWaterTemperatureDeg;
         public float DieselMaxOilTemperatureDeg;
+        public float HelperDieselMaxWaterTemperatureDeg;
+        public float HelperDieselMaxOilTemperatureDeg;
         /// <summary>
         /// Time constant to heat up from zero to 63% of MaxTemperature
         /// </summary>
@@ -1106,6 +1110,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "maxtemperature": DieselMaxTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); initLevel |= SettingsFlags.MaxTemperature; break;
                     case "maxtemperaturewater": DieselMaxWaterTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); break;
                     case "maxtemperatureoil": DieselMaxOilTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); break;
+                    case "helpermaxtemperaturewatertopowerdown": HelperDieselMaxWaterTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); break;
+                    case "helpermaxtemperatureoiltopowerdown": HelperDieselMaxOilTemperatureDeg = stf.ReadFloatBlock(STFReader.UNITS.TemperatureDifference, 90); break;
                     case "cooling": EngineCooling = (Cooling)stf.ReadIntBlock((int)Cooling.Proportional); initLevel |= SettingsFlags.Cooling; break; //ReadInt changed to ReadIntBlock
                     case "temptimeconstant": DieselWaterTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 720); initLevel |= SettingsFlags.TempTimeConstant; break;
                     case "tempwatertimeconstant": DieselWaterTempTimeConstantSec = stf.ReadFloatBlock(STFReader.UNITS.Time, 720); initLevel |= SettingsFlags.TempTimeConstant; break;
