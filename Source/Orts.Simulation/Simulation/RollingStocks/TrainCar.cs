@@ -2945,11 +2945,37 @@ namespace Orts.Simulation.RollingStocks
                     p.Cos = Vector3.Dot(fwd, fwd1);
                 }
 
-                if (p.Cos >= .99999f)
-                    p.Sin = 0;
+                // Icik
+                if (p.Cos >= .9999f)
+                {
+                    if (p.Sin > 0.001)
+                    {
+                        p.Sin -= elapsedTimeS * AbsSpeedMpS * 0.001f;
+                    }
+                    else
+                    if (p.Sin < -0.001)
+                    {
+                        p.Sin += elapsedTimeS * AbsSpeedMpS * 0.001f;
+                    }
+                    else
+                        p.Sin = 0;
+                }
                 else
                 {
-                    p.Sin = (float)Math.Sqrt(1 - p.Cos * p.Cos);
+                    float SinFinal = (float)Math.Sqrt(1 - p.Cos * p.Cos);
+
+                    if (p.Sin < 0.999f * SinFinal)
+                    {
+                        p.Sin += elapsedTimeS * AbsSpeedMpS * 0.001f;
+                    }
+                    else
+                    if (p.Sin > 1.001f * SinFinal)
+                    {
+                        p.Sin -= elapsedTimeS * AbsSpeedMpS * 0.001f;
+                    }                                        
+                    else
+                        p.Sin = SinFinal;
+
                     if (fwd.X * fwd1.Z < fwd.Z * fwd1.X)
                         p.Sin = -p.Sin;
                 }
