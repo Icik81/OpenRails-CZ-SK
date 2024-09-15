@@ -2088,18 +2088,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var train = trainCar.Train;
             var lead = trainCar as MSTSLocomotive;
 
-            var brakePipeTimeFactorS = lead == null ? 0.0003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
-            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 29 : lead.BrakePipeChargingRatePSIorInHgpS;
+            var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
+            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 21 : lead.BrakePipeChargingRatePSIorInHgpS;
 
-            brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.0002f, 0.0004f);
-            BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 150);
+            //brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.002f, 0.004f);
+            //BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
 
-            float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 15f;
+            // Hodnoty neměnit!!!
+            brakePipeTimeFactorS = 0.003f;
+            BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
+
+            float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;
             float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 100f;
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.Cars.Count);
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 3f;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10f;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 

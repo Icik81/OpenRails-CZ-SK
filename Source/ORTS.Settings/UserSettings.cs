@@ -179,7 +179,7 @@ namespace ORTS.Settings
         public bool RetainersOnAllCars { get; set; }
         [Default(false)]
         public bool SuppressConfirmations { get; set; }
-        [Default(29)]
+        [Default(21)]
         public int BrakePipeChargingRate { get; set; }
         [Default("")]
         public String Language { get; set; }
