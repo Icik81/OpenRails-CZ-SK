@@ -95,7 +95,7 @@ namespace Orts.Viewer3D
             // Current solar and lunar position are calculated by interpolation in the lookup arrays.
             // The arrays have intervals of 1200 secs or 20 mins.
             // Using the Lerp() function, so need to calculate the in-between differential
-            // The rest of this increments/decrements the array indices and checks for overshoot/undershoot.
+            // The rest of this increments/decrements the array indices and checks for overshoot/undershoot.           
             if (clockTime >= (OldClockTime - DayTimeOffsetS + 1200)) // Plus key, or normal forward in time; <CSComment> better so in case of fast forward
             {
                 OldClockTime = OldClockTime + 1200;
@@ -201,14 +201,8 @@ namespace Orts.Viewer3D
                 // First time around, initialize the following items:
                 worldLoc = new WorldLatLon();
 
-                // Icik                
-                if (Viewer.Simulator.OldClockTime != 0)
-                    skySteps.OldClockTime = Viewer.Simulator.OldClockTime;
-                else
-                {
-                    skySteps.OldClockTime = Viewer.Simulator.ClockTime % 86400;
-                    while (skySteps.OldClockTime < 0) skySteps.OldClockTime += 86400;
-                }
+                skySteps.OldClockTime = Viewer.Simulator.ClockTime % 86400;
+                while (skySteps.OldClockTime < 0) skySteps.OldClockTime += 86400;                
 
                 skySteps.Step1 = skySteps.Step2 = (int)(skySteps.OldClockTime / 1200);
                 skySteps.Step2 = skySteps.Step2 < skySteps.MaxSteps - 1 ? skySteps.Step2 + 1 : 0; // limit to max. steps in case activity starts near midnight
