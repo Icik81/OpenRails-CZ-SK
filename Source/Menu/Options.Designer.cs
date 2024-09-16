@@ -128,6 +128,7 @@
             this.checkUseMSTSEnv = new System.Windows.Forms.CheckBox();
             this.checkPreferDDSTexture = new System.Windows.Forms.CheckBox();
             this.tabPageSimulation = new System.Windows.Forms.TabPage();
+            this.checkCorrectQuestionableBrakingParams = new System.Windows.Forms.CheckBox();
             this.checkBoxVibration = new System.Windows.Forms.CheckBox();
             this.label16 = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -1626,6 +1627,7 @@
             // 
             // tabPageSimulation
             // 
+            this.tabPageSimulation.Controls.Add(this.checkCorrectQuestionableBrakingParams);
             this.tabPageSimulation.Controls.Add(this.checkBoxVibration);
             this.tabPageSimulation.Controls.Add(this.label16);
             this.tabPageSimulation.Controls.Add(this.label9);
@@ -1658,6 +1660,17 @@
             this.tabPageSimulation.TabIndex = 2;
             this.tabPageSimulation.Text = "Simulation";
             this.tabPageSimulation.UseVisualStyleBackColor = true;
+            // 
+            // checkCorrectQuestionableBrakingParams
+            // 
+            this.checkCorrectQuestionableBrakingParams.AutoSize = true;
+            this.checkCorrectQuestionableBrakingParams.Location = new System.Drawing.Point(8, 376);
+            this.checkCorrectQuestionableBrakingParams.Margin = new System.Windows.Forms.Padding(4);
+            this.checkCorrectQuestionableBrakingParams.Name = "checkCorrectQuestionableBrakingParams";
+            this.checkCorrectQuestionableBrakingParams.Size = new System.Drawing.Size(250, 20);
+            this.checkCorrectQuestionableBrakingParams.TabIndex = 45;
+            this.checkCorrectQuestionableBrakingParams.Text = "Correct questionable braking params";
+            this.checkCorrectQuestionableBrakingParams.UseVisualStyleBackColor = true;            
             // 
             // checkBoxVibration
             // 
@@ -3495,5 +3508,6 @@
         private System.Windows.Forms.TrackBar trackMaxPax;
         private System.Windows.Forms.CheckBox checkOverrideActivityPaxCount;
         private System.Windows.Forms.Label label29;
+        private System.Windows.Forms.CheckBox checkCorrectQuestionableBrakingParams;
     }
 }

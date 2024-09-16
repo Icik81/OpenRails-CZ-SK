@@ -341,7 +341,7 @@ namespace ORTS
             precipitationBoxHeight.Value = Settings.PrecipitationBoxHeight;
             precipitationBoxWidth.Value = Settings.PrecipitationBoxWidth;
             precipitationBoxLength.Value = Settings.PrecipitationBoxLength;
-            //checkCorrectQuestionableBrakingParams.Checked = Settings.CorrectQuestionableBrakingParams;
+            checkCorrectQuestionableBrakingParams.Checked = Settings.CorrectQuestionableBrakingParams;
             numericActRandomizationLevel.Value = Settings.ActRandomizationLevel;
             numericActWeatherRandomizationLevel.Value = Settings.ActWeatherRandomizationLevel;
         }
@@ -576,7 +576,7 @@ namespace ORTS
             Settings.PrecipitationBoxHeight = (int)precipitationBoxHeight.Value;
             Settings.PrecipitationBoxWidth = (int)precipitationBoxWidth.Value;
             Settings.PrecipitationBoxLength = (int)precipitationBoxLength.Value;
-            //Settings.CorrectQuestionableBrakingParams = checkCorrectQuestionableBrakingParams.Checked;
+            Settings.CorrectQuestionableBrakingParams = checkCorrectQuestionableBrakingParams.Checked;
             Settings.ActRandomizationLevel = (int)numericActRandomizationLevel.Value;
             Settings.ActWeatherRandomizationLevel = (int)numericActWeatherRandomizationLevel.Value;
 
@@ -1096,5 +1096,6 @@ namespace ORTS
             string ps = Microsoft.VisualBasic.Interaction.InputBox("Heslo");
             File.WriteAllText(Application.StartupPath + "\\Menu.ini", name + "|" + ps);
         }
+       
     }
 }

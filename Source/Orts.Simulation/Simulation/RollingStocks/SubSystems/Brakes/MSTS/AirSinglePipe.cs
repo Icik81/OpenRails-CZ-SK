@@ -1102,9 +1102,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 loco.BrakeSystem.LocoAuxCylVolumeRatio = AuxCylVolumeRatioBase;
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
-                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
-                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
+                if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
+                {
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);                    
+                }
+                else
+                {
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);                    
+                }
             }
             else // Vagón
             {
@@ -1112,9 +1120,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AuxCylVolumeRatioBase = MathHelper.Clamp(AuxCylVolumeRatioBase, 0.0f, 6.0f);
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
-                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
-                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
+                if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
+                {
+                    if ((Car as MSTSWagon).HasPassengerCapacity)
+                    {
+                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);                        
+                    }
+                    else
+                    {
+                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);                        
+                    }
+                }
+                else
+                {
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);                    
+                }
             }
             //}
 
@@ -2091,14 +2115,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var lead = trainCar as MSTSLocomotive;
 
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
-            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 21 : lead.BrakePipeChargingRatePSIorInHgpS;
+            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 21 : lead.BrakePipeChargingRatePSIorInHgpS;            
 
-            //brakePipeTimeFactorS = MathHelper.Clamp(brakePipeTimeFactorS, 0.002f, 0.004f);
-            //BrakePipeChargingRatePSIorInHgpS0 = MathHelper.Clamp(BrakePipeChargingRatePSIorInHgpS0, 21, 50);
-
-            // Hodnoty neměnit!!!
-            brakePipeTimeFactorS = 0.003f;
-            BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
+            if (lead != null && lead.Simulator.Settings.CorrectQuestionableBrakingParams)
+            {
+                brakePipeTimeFactorS = 0.003f;
+                BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
+            }
 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;
             float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 100f;
@@ -2265,12 +2288,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Propagate brake line (1) data if pressure gradient disabled            
             // approximate pressure gradient in train pipe line1
             float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
-
-            // Definice limitů pro základní proměnné vzduchařiny
-            serviceTimeFactor = MathHelper.Clamp(serviceTimeFactor, 1.009f, 2.0f);
-            // Ohlídá hodnotu v hlavní jímce, aby nepřekročila limity            
-            //if (train.Simulator.Settings.CorrectQuestionableBrakingParams)
-            //{
+            
             if (lead != null)
             {
                 lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 3.0f * 14.50377f, 7.0f * 14.50377f);
@@ -2280,7 +2298,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 lead.EngineBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ReleaseRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
                 lead.EngineBrakeController.ApplyRatePSIpS = MathHelper.Clamp(lead.EngineBrakeController.ApplyRatePSIpS, 1.0f * 14.50377f, 2.5f * 14.50377f);
             }
-            //}
 
             for (int i = 0; i < nSteps; i++)
             {

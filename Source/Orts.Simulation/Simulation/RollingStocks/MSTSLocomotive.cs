@@ -2694,7 +2694,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
-                    BrakePipeTimeFactorS = 0.0015f; // Air brakes
+                    BrakePipeTimeFactorS = 0.003f; // Air brakes
                 }
             }
 

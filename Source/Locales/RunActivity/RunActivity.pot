@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-08-24 20:04:44+0200\n"
-"PO-Revision-Date: 2024-08-24 20:04:44+0200\n"
+"POT-Creation-Date: 2024-09-16 18:12:17+0200\n"
+"PO-Revision-Date: 2024-09-16 18:12:18+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -202,49 +202,49 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2484
+#: ../../RunActivity/Viewer3D/Weather.cs:2482
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:182
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:183
 msgid "System Controlled"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:183
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:184
 msgid "Stop"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:184
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
 msgid "Approach_2"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:185
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:186
 msgid "Clear_2"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:186
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:187
 msgid "Stop_and_Proceed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:189
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:190
 msgid "To Main Route"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:190
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:191
 msgid "To Side Route"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2065
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:2180
 msgid "Switching Request Sent to the Server"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:575
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:608
 msgid "MSG to Server"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:579
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:612
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:267
 msgid "MSG to All"
 msgstr ""
@@ -607,12 +607,12 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:278
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:281
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:283
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:288
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:291
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:293
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:284
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:287
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:289
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:294
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:297
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:299
 msgid "Car ID"
 msgstr ""
 
@@ -621,78 +621,78 @@ msgid "Brake Mode G/P/R/R+Mg"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:66
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:135
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:138
 msgid "Set"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:73
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:155
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:158
 msgid "Setting..."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:101
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:232
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:103
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:237
 msgid "Car Mode G"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:106
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:237
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:108
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:242
 msgid "Car Mode P"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:111
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:242
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:113
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:247
 msgid "Car Mode R"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:116
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:247
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:118
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:252
 msgid "Car Mode R+Mg"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:126
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:129
 msgid "Brake Mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:126
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:185
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:129
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:190
 msgid "for all wagons"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:134
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:137
 msgid "Car Mode Empty/Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:143
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:146
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:225
 msgid "N/A"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:170
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:268
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:175
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:274
 msgid "Empty Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:171
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:269
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:176
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:275
 msgid "Empty"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:175
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:273
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:180
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:279
 msgid "Loaded Car"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:176
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:274
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:181
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:280
 msgid "Loaded"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:185
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:190
 msgid "Car Mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:194
+#: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:199
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:230
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:106
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:73
@@ -1553,7 +1553,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:569
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:613
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:330
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:336
 msgid "Length"
 msgstr ""
 
@@ -2100,7 +2100,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1507
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1537
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:331
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:337
 msgid "Mass"
 msgstr ""
 
@@ -3234,15 +3234,15 @@ msgstr ""
 msgid "Train Operations"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:224
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:230
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:332
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:338
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:348
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:354
 msgid "Real braking percentages"
 msgstr ""
 
