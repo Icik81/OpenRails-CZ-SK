@@ -1968,14 +1968,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (AutoCylPressurePSI < prevAutoCylPressurePSI)
                     CylinderChangeRateBar = GetCylPressurePSI() / GetMaxCylPressurePSI() * GetMaxReleaseRatePSIpS() / 14.50377f;
             }
-
+           
             // Triggery pro určení velikosti hlasitosti a frekvence při změnách tlaků
             if (loco != null)
             {
                 MainResPressurePSI = loco.MainResPressurePSI;
                 MaxMainResPressurePSI = loco.MaxMainResPressurePSI;                
                 (Car as MSTSWagon).Variable12 = loco.AuxResPressurePSI / loco.MaxAuxResPressurePSI;
-            }                                   
+            }
             
             (Car as MSTSWagon).Variable10 = Math.Abs(MainResPressurePSI - BrakeLine1PressurePSI) / maxPressurePSI0;
             (Car as MSTSWagon).Variable11 = MainResPressurePSI / MaxMainResPressurePSI;
@@ -2041,23 +2041,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 Car.BrakeForceN = (fRMg * Car.RMgShoeCoefficientFrictionAdjFactor) + (f * Car.BrakeShoeCoefficientFrictionAdjFactor); // In advanced adhesion model brake shoe coefficient varies with speed, in simple model constant force applied as per value in WAG file, will vary with wheel skid.
             }
                         
-
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)
-            if (SoundTriggerCounter >= 1.0f)
+            if (SoundTriggerCounter > 1.0f)
             {
                 SoundTriggerCounter = 0f;
                 // Událost pro hodnotu tlaku v brzdovém válci
-                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 0.5f) //(AutoCylPressurePSI != prevCylPressurePSI)
-                {
+                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 0.1f) //(AutoCylPressurePSI != prevCylPressurePSI)
+                {                    
                     if (!TrainBrakePressureChanging)
-                    {
+                    {                        
                         if (AutoCylPressurePSI0 > prevCylPressurePSI)
                         {
+                            (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
                             Car.SignalEvent(Event.TrainBrakePressureIncrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
                         }
                         else
                         {
+                            (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
                             Car.SignalEvent(Event.TrainBrakePressureDecrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 0)).ToString());
                         }
@@ -2072,19 +2073,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
-                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 0.5f) //BrakeLine1PressurePSI != prevBrakePipePressurePSI
+                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.0f) //BrakeLine1PressurePSI != prevBrakePipePressurePSI
                 {                                        
                     if (!BrakePipePressureChanging)
-                    {
-                        (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
-
+                    {                        
                         if (BrakeLine1PressurePSI > prevBrakePipePressurePSI)
                         {
+                            (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
                             Car.SignalEvent(Event.BrakePipePressureIncrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 1)).ToString());
                         }
                         else
                         {
+                            (Car as MSTSWagon).Variable9 = Math.Abs(Car.Train.EqualReservoirPressurePSIorInHg - BrakeLine1PressurePSI) / maxPressurePSI0;
                             Car.SignalEvent(Event.BrakePipePressureDecrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BRAKEPIPESTATE", 0)).ToString());
                         }
@@ -2100,7 +2101,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 prevCylPressurePSI = AutoCylPressurePSI0;
                 prevBrakePipePressurePSI = BrakeLine1PressurePSI;                
             }
-            SoundTriggerCounter = SoundTriggerCounter + elapsedClockSeconds;
+            SoundTriggerCounter = SoundTriggerCounter + elapsedClockSeconds;            
         }
 
         public override void PropagateBrakePressure(float elapsedClockSeconds)
