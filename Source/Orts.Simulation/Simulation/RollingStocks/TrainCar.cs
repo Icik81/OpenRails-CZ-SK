@@ -2948,14 +2948,14 @@ namespace Orts.Simulation.RollingStocks
                 // Icik
                 if (p.Cos >= .9999f)
                 {
-                    if (p.Sin > 0.001)
+                    if (p.Sin > 0.0001)
                     {
-                        p.Sin -= elapsedTimeS * AbsSpeedMpS * 0.001f;
+                        p.Sin -= elapsedTimeS * 0.01f;
                     }
                     else
-                    if (p.Sin < -0.001)
+                    if (p.Sin < -0.0001)
                     {
-                        p.Sin += elapsedTimeS * AbsSpeedMpS * 0.001f;
+                        p.Sin += elapsedTimeS * 0.01f;
                     }
                     else
                         p.Sin = 0;
@@ -2964,20 +2964,20 @@ namespace Orts.Simulation.RollingStocks
                 {
                     float SinFinal = (float)Math.Sqrt(1 - p.Cos * p.Cos);
 
-                    if (p.Sin < 0.999f * SinFinal)
+                    if (fwd.X * fwd1.Z < fwd.Z * fwd1.X)
+                        SinFinal = -SinFinal;
+
+                    if (p.Sin < 0.9999f * SinFinal)
                     {
-                        p.Sin += elapsedTimeS * AbsSpeedMpS * 0.001f;
+                        p.Sin += elapsedTimeS * 0.01f;
                     }
                     else
-                    if (p.Sin > 1.001f * SinFinal)
+                    if (p.Sin > 1.0001f * SinFinal)
                     {
-                        p.Sin -= elapsedTimeS * AbsSpeedMpS * 0.001f;
+                        p.Sin -= elapsedTimeS * 0.01f;
                     }                                        
                     else
-                        p.Sin = SinFinal;
-
-                    if (fwd.X * fwd1.Z < fwd.Z * fwd1.X)
-                        p.Sin = -p.Sin;
+                        p.Sin = SinFinal;                    
                 }
             }
         }
