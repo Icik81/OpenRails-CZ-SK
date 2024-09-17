@@ -2289,7 +2289,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Propagate brake line (1) data if pressure gradient disabled            
             // approximate pressure gradient in train pipe line1
             float serviceTimeFactor = lead != null ? lead.TrainBrakeController != null && lead.TrainBrakeController.EmergencyBraking ? lead.BrakeEmergencyTimeFactorS : lead.BrakeServiceTimeFactorS : 0;
-            
+
             if (lead != null)
             {
                 lead.TrainBrakeController.QuickReleaseRatePSIpS = MathHelper.Clamp(lead.TrainBrakeController.QuickReleaseRatePSIpS, 3.0f * 14.50377f, 7.0f * 14.50377f);
@@ -2489,18 +2489,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             float ServiceVariationFactor = (1 - TrainPipeTimeVariationS / serviceTimeFactor);
                             ServiceVariationFactor = MathHelper.Clamp(ServiceVariationFactor, 0.05f, 1.0f); // Keep factor within acceptable limits - prevent value from going negative
-
-                            if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
-                                || lead.TrainBrakeController.TCSEmergencyBraking
-                                || lead.EmergencyButtonPressed
-                                || lead.TrainBrakeController.EmergencyBrakingPushButton)
-                                lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor / serviceTimeFactor;
-                            else lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
-
+                            lead.BrakeSystem.BrakeLine1PressurePSI *= ServiceVariationFactor;
                             if (lead.TrainBrakeController.MaxPressurePSI <= lead.BrakeSystem.maxPressurePSI0) brakePipeTimeFactorSBase = brakePipeTimeFactorS_Apply;
                         }
                     }
-
                     train.LeadPipePressurePSI = lead.BrakeSystem.BrakeLine1PressurePSI;  // Keep a record of current train pipe pressure in lead locomotive
                 }
 
