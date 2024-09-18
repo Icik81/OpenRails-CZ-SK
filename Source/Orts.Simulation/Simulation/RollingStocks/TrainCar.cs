@@ -2945,17 +2945,19 @@ namespace Orts.Simulation.RollingStocks
                     p.Cos = Vector3.Dot(fwd, fwd1);
                 }
 
+                float SinSpeedCoef = 1.0f + (AbsSpeedMpS / 10f);
+
                 // Icik
                 if (p.Cos >= .9999f)
                 {
                     if (p.Sin > 0.0001)
                     {
-                        p.Sin -= elapsedTimeS * 0.01f;
+                        p.Sin -= SinSpeedCoef * elapsedTimeS * 0.01f;
                     }
                     else
                     if (p.Sin < -0.0001)
                     {
-                        p.Sin += elapsedTimeS * 0.01f;
+                        p.Sin += SinSpeedCoef * elapsedTimeS * 0.01f;
                     }
                     else
                         p.Sin = 0;
@@ -2969,12 +2971,12 @@ namespace Orts.Simulation.RollingStocks
 
                     if (p.Sin < 0.9999f * SinFinal)
                     {
-                        p.Sin += elapsedTimeS * 0.01f;
+                        p.Sin += SinSpeedCoef * elapsedTimeS * 0.01f;
                     }
                     else
                     if (p.Sin > 1.0001f * SinFinal)
                     {
-                        p.Sin -= elapsedTimeS * 0.01f;
+                        p.Sin -= SinSpeedCoef * elapsedTimeS * 0.01f;
                     }                                        
                     else
                         p.Sin = SinFinal;                    
