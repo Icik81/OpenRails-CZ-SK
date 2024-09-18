@@ -181,7 +181,8 @@ namespace Orts.Viewer3D.Popups
                             }
                             Visible = Activity.IsActivityWindowOpen = Owner.Viewer.HelpWindow.ActivityUpdated = Owner.Viewer.Simulator.Paused = true;
                             ComposeMenu(e.ParsedObject.Name, Viewer.Catalog.GetStringFmt("This activity has ended {0}.\nFor a detailed evaluation, see the Help Window (F1).",
-                                Activity.IsSuccessful ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("without success")));
+                                Activity.IsSuccessful ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("without success")) + "\n\n" + e.ParsedObject.TextToDisplayOnCompletionIfTriggered);                           
+
                             EndMenu();
                         }
                         else
