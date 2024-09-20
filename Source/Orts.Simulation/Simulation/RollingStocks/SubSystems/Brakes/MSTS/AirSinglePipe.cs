@@ -1945,7 +1945,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             T0_PipePressure += elapsedClockSeconds;            
             if (T0_PipePressure > 0.33f && T0_PipePressure < 0.43f)
             {
-                MainResChangeRate = Math.Abs(prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe);
+                MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) > 0 ? (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) : 0;                
+
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI);
                 if (BrakePipeChangeRate > 1)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
@@ -2125,7 +2126,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;
-            float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 100f;
+            float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 1000f;
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.Length / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.Cars.Count);
@@ -2346,15 +2347,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
 
-                    float MainResChangeRateSensitivity = 0.01f * 14.50377f;
+                    float MainResChangeRateSensitivity = 0.005f * 14.50377f;
                     // Kontrolka doplňování vzduchu (průtoku)                    
                     if (lead.BrakeSystem.MainResFlow)
-                    {
-                        lead.BrakeSystem.MainResFlowTimerOff = 0;
+                    {                        
                         if (lead.BrakeSystem.MainResChangeRate > MainResChangeRateSensitivity)
                         {
                             lead.BrakeSystem.MainResFlowTimerOn += elapsedClockSeconds;
-                            if (lead.BrakeSystem.MainResFlowTimerOn > 1.0f)
+                            if (lead.BrakeSystem.MainResFlowTimerOn > 0.5f)
                             {
                                 lead.BrakeSystem.BrakePipeFlow = true;
                             }
