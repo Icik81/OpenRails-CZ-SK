@@ -4680,13 +4680,13 @@ namespace Orts.Simulation.RollingStocks
                             car.TempCDeltaAir = 0;
 
                         // Topení
-                        if (Simulator.Season == SeasonType.Spring || Simulator.Season == SeasonType.Autumn || Simulator.Season == SeasonType.Winter)
+                        if (car.CarOutsideTempC < 20)
                         {
                             float SetTempCHyst = 3.5f;                            
-                            if (car.SetTemperatureC == 0)
+                            if (car.SetTemperatureCFrost == 0)
                             {
-                                car.SetTemperatureC = Simulator.Random.Next(19, 27);
-                                car.SetTempCThreshold = car.SetTemperatureC;
+                                car.SetTemperatureCFrost = Simulator.Random.Next(19, 27);
+                                car.SetTempCThreshold = car.SetTemperatureCFrost;
                             }
 
                             MSGHeatingCycle++;
@@ -4718,16 +4718,19 @@ namespace Orts.Simulation.RollingStocks
                                     car.ThermostatOn = false;
                                 car.StatusHeatIsOn = false;
                             }
+
+                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, car.CarOutsideTempC - 1.0f, car.SetTempCThreshold + 1.0f);
+                            car.SetTemperatureCHeat = 0;
                         }
 
                         // Klimatizace
-                        if (Simulator.Season == SeasonType.Summer)
+                        if (car.CarOutsideTempC >= 20)
                         {
                             float SetTempCHyst = 2.5f;                            
-                            if (car.SetTemperatureC == 0)
+                            if (car.SetTemperatureCHeat == 0)
                             {
-                                car.SetTemperatureC = Simulator.Random.Next(17, 25);
-                                car.SetTempCThreshold = car.SetTemperatureC;
+                                car.SetTemperatureCHeat = Simulator.Random.Next(17, 25);
+                                car.SetTempCThreshold = car.SetTemperatureCHeat;
                             }
 
                             MSGHeatingCycle++;
@@ -4756,6 +4759,9 @@ namespace Orts.Simulation.RollingStocks
                                     car.ThermostatOn = false;
                                 car.StatusHeatIsOn = false;
                             }
+
+                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, car.SetTempCThreshold - 1.0f, car.CarOutsideTempC + 1.0f);
+                            car.SetTemperatureCFrost = 0;
                         }
 
                         // Kamna

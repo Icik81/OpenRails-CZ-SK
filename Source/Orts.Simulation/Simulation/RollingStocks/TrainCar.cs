@@ -344,7 +344,8 @@ namespace Orts.Simulation.RollingStocks
         public bool ThermostatOn = false;
         public float ThermostatCoef;
         public float SetTempCThreshold;
-        public float SetTemperatureC;
+        public float SetTemperatureCHeat;
+        public float SetTemperatureCFrost;
         public bool WagonHasTemperature = false;
         public float CarOutsideTempC0;
         public bool StatusHeatIsOn = false;

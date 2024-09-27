@@ -45,20 +45,20 @@ namespace Orts.Viewer3D.Popups
 
             var vbox = base.Layout(layout).AddLayoutVertical();
             
-            vbox.Add(buttonSpeedIncrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("+"), LabelAlignment.Center));
+            vbox.Add(buttonSpeedIncrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "+", LabelAlignment.Center));
             
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonSpeedIncrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("++"), LabelAlignment.Center));
+            vbox.Add(buttonSpeedIncrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "++", LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
             vbox.Add(Speed = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Speed: ") + (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive != null ? (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperSpeedPush : 0) + " km/h", LabelAlignment.Center));            
             Speed.Color = Color.Yellow;
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonSpeedDecrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("--"), LabelAlignment.Center));
+            vbox.Add(buttonSpeedDecrement2 = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "--", LabelAlignment.Center));
 
             vbox.AddHorizontalSeparator();
-            vbox.Add(buttonSpeedDecrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("-"), LabelAlignment.Center));        
+            vbox.Add(buttonSpeedDecrement = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "-", LabelAlignment.Center));        
 
             vbox.AddHorizontalSeparator();            
             vbox.Add(buttonStart = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Start"), LabelAlignment.Center));
