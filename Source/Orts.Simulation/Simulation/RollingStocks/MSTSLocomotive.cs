@@ -5579,20 +5579,23 @@ namespace Orts.Simulation.RollingStocks
                 else
                     PowerReductionResult12 = 0;
 
-                if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg == 0)
+                if (this is MSTSDieselLocomotive)
                 {
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg != 0)
-                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg;
-                    else
-                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
-                }
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg == 0)
+                    {
+                        if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg != 0)
+                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg;
+                        else
+                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                    }
 
-                if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg == 0)
-                {
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg != 0)
-                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg;
-                    else
-                        (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                    if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg == 0)
+                    {
+                        if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg != 0)
+                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg;
+                        else
+                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                    }
                 }
 
                 if (!HelperOverheated)
