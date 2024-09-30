@@ -3085,7 +3085,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if ((car as MSTSWagon).WagonIsServis14) return;
+                    if ((car as MSTSWagon).WagonIsServis14 || car.AbsSpeedMpS < 0.01f) return;
                 }
             }
 
@@ -3194,7 +3194,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 TiltingZRot = traveler.FindTiltedZ(TiltingMark * (MathHelper.Clamp(AbsSpeedMpS, 0, MaxSpeedTilting)));//rotation if tilted, an indication of centrifugal force                                
-                TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * elapsedTimeS;//smooth rotation
+                TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * (0.5f + (AbsSpeedMpS * 3.6f / 40.0f / 4.0f)) * elapsedTimeS;//smooth rotation
                 PrevTiltingZRot = TiltingZRot;
                 //if (this.Flipped) TiltingZRot *= -1f;                
                 if (this.Flipped) TiltingMark *= -1f;
@@ -3294,7 +3294,13 @@ namespace Orts.Simulation.RollingStocks
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                 }
 
-                if (PushZFinalMarker == 0) PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
+                if (PushZFinalMarker == 0)
+                {
+                    PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
+                    if ((this is MSTSLocomotive) && (this as MSTSLocomotive).UsingRearCab)
+                        PushZFinalMarker = -PushZFinalMarker;
+                }
+
                 if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)
                 {
                     prevDereailAbsSpeedMpS = Math.Abs(prevSpeedMpS);
@@ -3304,8 +3310,8 @@ namespace Orts.Simulation.RollingStocks
                 if (prevDereailAbsSpeedMpS == -1)
                 {
                     VibrationRotationRad.X -= Math.Abs(prevSpeedMpS * 3.6f) / 10f * elapsedTimeS;
-                    SpeedMpS = -0.01f * PushZFinalMarker;
-                    Train.TrainEndOfRoute = false;
+                    SpeedMpS = -0.01f * PushZFinalMarker;                                        
+                    Train.TrainEndOfRoute = false;                    
                 }
             }
 
@@ -3762,12 +3768,28 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain && AbsSpeedMpS == 0)
                     CyklusCouplerImpact = 0;
 
-                // Vibrace při zastavení
-                if (IsPlayerTrain && AccelerationMpSS < -0.5f && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
+                // Vibrace při zastavení                
+                if (IsPlayerTrain && Math.Abs(AccelerationMpSS) > 0.5f && Math.Abs(SpeedMpS) < 0.1f && !WheelSlip)
                 {
                     VibrationSpringConstantPrimepSpS = 50 / 0.2f;
                     VibratioDampingCoefficient = 0.3f;
-                    VibrationRotationVelocityRadpS.X += (VibrationIntroductionStrength * AccelerationMpSS * 1.5f * VibrationMassKG) / x;
+                    if (this is MSTSLocomotive)
+                    {
+                        if (Flipped)
+                        {
+                            if ((this as MSTSLocomotive).UsingRearCab)
+                                VibrationRotationVelocityRadpS.X -= VibrationIntroductionStrength * AccelerationMpSS * 0.25f;
+                            else
+                                VibrationRotationVelocityRadpS.X += VibrationIntroductionStrength * AccelerationMpSS * 0.25f;
+                        }
+                        else
+                        {
+                            if ((this as MSTSLocomotive).UsingRearCab)
+                                VibrationRotationVelocityRadpS.X += VibrationIntroductionStrength * AccelerationMpSS * 0.25f;
+                            else
+                                VibrationRotationVelocityRadpS.X -= VibrationIntroductionStrength * AccelerationMpSS * 0.25f;
+                        }
+                    }
                 }
 
                 //Vibrace náhodné nerovnosti
@@ -3814,8 +3836,25 @@ namespace Orts.Simulation.RollingStocks
                         VibrationRotationVelocityRadpS.X -= (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;
 
                     if (force == 0) force = 1;
-                    if (force < 4)                    
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.25f * VibrationMassKG) / x;                                                
+
+                    float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 2.0f);
+                    if (force < 3)
+                    {
+                        switch (WagonNumAxles)
+                        {
+                            case 0:
+                            case 1:
+                            case 2:
+                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.185f;
+                                break;
+                            case 4:                                                            
+                            case 6:
+                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.005f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.085f;
+                                break;
+                        }
+                    }                                                                                  
                 }
 
                 if (VibrationType_2)   //Vibrace v oblouku
