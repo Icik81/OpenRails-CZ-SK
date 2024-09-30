@@ -3850,8 +3850,8 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             case 4:                                                            
                             case 6:
-                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.005f;
-                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.085f;
+                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.050f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
                                 break;
                         }
                     }                                                                                  
