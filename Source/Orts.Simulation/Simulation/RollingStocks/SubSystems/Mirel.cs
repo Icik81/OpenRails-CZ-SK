@@ -466,12 +466,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (!Locomotive.Train.IsPlayerDriven) return;
 
-                if (Locomotive.AbsSpeedMpS == 0 && initTest == InitTest.Passed && MirelType == Type.Full)
+                if (Locomotive.AbsSpeedMpS < 0.01f && initTest == InitTest.Passed && MirelType == Type.Full)
                 {
                     StartReducingSpeed = true;
                     modelingSpeedCurve = false;
                 }
-                if (Locomotive.AbsSpeedMpS > 0 && !modelingSpeedCurve)
+                if (Locomotive.AbsSpeedMpS > 0.01f && !modelingSpeedCurve)
                 {
                     StartReducingSpeed = false;
                 }
@@ -706,7 +706,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (Test1 && Test2 && Test3 && Test4 && Test5 && Test6 && Test7 && initTest != InitTest.Passed)
                 {
-                    if (Locomotive.AbsSpeedMpS == 0)
+                    if (Locomotive.AbsSpeedMpS < 0.01f)
                         BlueLight = true;
                     initTest = InitTest.Passed;
                     operationalState = OperationalState.Normal;
@@ -1177,7 +1177,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (initTest != InitTest.Passed)
                 return;
-            if (Locomotive.AbsSpeedMpS > 0)
+            if (Locomotive.AbsSpeedMpS > 0.01f)
             {
                 if (selectedDriveMode != DriveMode.Normal && selectedDriveMode != DriveMode.Trailing)
                     return;
@@ -1264,7 +1264,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.SignalEvent(Common.Event.KeyboardBeep);
             }
 
-            if (Locomotive.AbsSpeedMpS > 0 && selectedDriveMode != DriveMode.Trailing)
+            if (Locomotive.AbsSpeedMpS > 0.01f && selectedDriveMode != DriveMode.Trailing)
             {
                 if (!ReducedSpeed)
                 {
@@ -1355,7 +1355,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (initTest != InitTest.Passed)
                 return;
-            if (Locomotive.AbsSpeedMpS == 0)
+            if (Locomotive.AbsSpeedMpS < 0.01f)
             {
                 if (driveModeSetup)
                 {
@@ -1398,7 +1398,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
             if (selectedDriveMode != DriveMode.Normal) operationalState = OperationalState.Normal;
-            if (operationalState == OperationalState.Restricting && !ManualMode && Locomotive.AbsSpeedMpS > 0 && !NZOK)
+            if (operationalState == OperationalState.Restricting && !ManualMode && Locomotive.AbsSpeedMpS > 0.01f && !NZOK)
             {
                 ManualMode = ManualModeDisplay = true;
             }
@@ -1518,11 +1518,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (previousTrackMonitorSignalAspect == TrackMonitorSignalAspect.None)
                 previousTrackMonitorSignalAspect = Locomotive.TrainControlSystem.CabSignalAspect;
-            if (Locomotive.AbsSpeedMpS == 0 && previousDistanceToSignal > 0)
+            if (Locomotive.AbsSpeedMpS < 0.01f && previousDistanceToSignal > 0)
                 previousDistanceToSignal = 0;
             Physics.Train train = Locomotive.Train;
             Signalling.ObjectItemInfo firstObject = null;
-            if (train.SignalObjectItems.Count > 0 && Locomotive.AbsSpeedMpS > 0 && true == false)
+            if (train.SignalObjectItems.Count > 0 && Locomotive.AbsSpeedMpS > 0.01f && true == false)
             {
                 int i = 0;
                 firstObject = train.SignalObjectItems[i];
@@ -1748,7 +1748,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (Locomotive.AbsSpeedMpS == 0)
+            if (Locomotive.AbsSpeedMpS < 0.01f)
                 vigilanceAfterZeroSpeedConfirmed = false;
             if (MirelType == Type.LS90)
                 vigilanceAfterZeroSpeedConfirmed = true;
@@ -1818,7 +1818,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             if (selectedDriveMode == DriveMode.Shunting)
             {
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (!vigilanceAfterZeroSpeedConfirmed)
                     {
@@ -1904,7 +1904,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ApplyNZ1();
                     }
                 }
-                if (emergency && Locomotive.AbsSpeedMpS == 0)
+                if (emergency && Locomotive.AbsSpeedMpS < 0.01f)
                 {
                     emergency = false;
                     Locomotive.SignalEvent(Common.Event.MirelOff);
@@ -1915,7 +1915,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 /* if ((recieverState == RecieverState.Off || !RecievingRepeaterSignal) && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119.9f)
                  {
-                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0 && ManualMode)
+                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0.01f && ManualMode)
                          StartReducingSpeed = false;
                      operationalState = OperationalState.Restricting;
                      if (ManualMode)
@@ -1924,7 +1924,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                      }
                      if (stopInterventingUntilNextSignal)
                      {
-                         if (Locomotive.AbsSpeedMpS == 0)
+                         if (Locomotive.AbsSpeedMpS < 0.01f)
                              StartReducingSpeed = true;
                          else
                              StartReducingSpeed = false;
@@ -2019,16 +2019,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 // Cyklická kontrola bdělosti
                 bool vigilanceActive = true;
-                if (Locomotive.AbsSpeedMpS == 0)
+                if (Locomotive.AbsSpeedMpS < 0.01f)
                     vigilanceActive = false;
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
                     if (RecievingRepeaterSignal)
                         vigilanceActive = false;
                 }
-                if (MirelType == Type.LS90 && (operationalState == OperationalState.Restricting || recieverState == RecieverState.Off) && Locomotive.AbsSpeedMpS > 0)
+                if (MirelType == Type.LS90 && (operationalState == OperationalState.Restricting || recieverState == RecieverState.Off) && Locomotive.AbsSpeedMpS > 0.01f)
                     vigilanceActive = true;
                 if (vigilanceActive)
                 {
@@ -2059,11 +2059,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     vigilanceActive = true;
                 else
                     vigilanceActive = false;
-                if (Locomotive.AbsSpeedMpS == 0)
+                if (Locomotive.AbsSpeedMpS < 0.01f)
                     vigilanceActive = false;
                 if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                     NoAlertOnRestrictedSignal = true;
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
@@ -2101,7 +2101,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 // Jednorázová kontrola po uvedení HDV do pohybu
-                if (Locomotive.AbsSpeedMpS > 0 && initTest == InitTest.Passed)
+                if (Locomotive.AbsSpeedMpS > 0.01f && initTest == InitTest.Passed)
                 {
                     if (!vigilanceAfterZeroSpeedConfirmed)
                     {
@@ -2216,7 +2216,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             operationalState = OperationalState.Normal;
                             MirelMaximumSpeed = MaxSelectedSpeed;
-                            if (Locomotive.AbsSpeedMpS > 0) StartReducingSpeed = false;
+                            if (Locomotive.AbsSpeedMpS > 0.01f) StartReducingSpeed = false;
                             distanceAndSpeed = null;
                             break;
                         }
@@ -2233,7 +2233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 CheckSpeed(elapsedTimeSeconds);
                                 return;
                             }
-                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0 && ManualMode)
+                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0.01f && ManualMode)
                                 StartReducingSpeed = false;
                             operationalState = OperationalState.Restricting;
                             if (ManualMode)
@@ -2244,7 +2244,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
                             }
-                            if (Locomotive.AbsSpeedMpS == 0)
+                            if (Locomotive.AbsSpeedMpS < 0.01f)
                             {
                                 stopInterventingUntilNextSignal = true;
                                 if (selectedApproachSpeed == 40)
@@ -2252,7 +2252,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                             if (stopInterventingUntilNextSignal)
                             {
-                                if (Locomotive.AbsSpeedMpS == 0)
+                                if (Locomotive.AbsSpeedMpS < 0.01f)
                                     StartReducingSpeed = true;
                                 else
                                     StartReducingSpeed = false;
@@ -2364,7 +2364,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 CheckSpeed(elapsedTimeSeconds);
                                 return;
                             }
-                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0)
+                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0.01f)
                                 if (!modelingSpeedCurve)
                                     StartReducingSpeed = false;
                             operationalState = OperationalState.Restricting;
@@ -2374,7 +2374,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 stopInterventingUntilNextSignal = true;
                             }
 
-                            if (Locomotive.AbsSpeedMpS == 0)
+                            if (Locomotive.AbsSpeedMpS < 0.01f)
                             {
                                 MirelMaximumSpeed = 120;
                                 stopInterventingUntilNextSignal = true;
@@ -2385,7 +2385,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 MirelMaximumSpeed = MaxSelectedSpeed;
                             if (stopInterventingUntilNextSignal)
                             {
-                                if (Locomotive.AbsSpeedMpS == 0)
+                                if (Locomotive.AbsSpeedMpS < 0.01f)
                                     StartReducingSpeed = true;
                                 else
                                     StartReducingSpeed = false;
@@ -2492,7 +2492,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 CheckSpeed(elapsedTimeSeconds);
                                 return;
                             }
-                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0 && MirelType == Type.Full)
+                            if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < MirelMaximumSpeed && Locomotive.AbsSpeedMpS > 0.01f && MirelType == Type.Full)
                                 if (!modelingSpeedCurve)
                                     StartReducingSpeed = false;
                             operationalState = OperationalState.Restricting;
@@ -2502,7 +2502,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 stopInterventingUntilNextSignal = true;
                             }
 
-                            if (Locomotive.AbsSpeedMpS == 0)
+                            if (Locomotive.AbsSpeedMpS < 0.01f)
                             {
                                 MirelMaximumSpeed = 40;
                                 stopInterventingUntilNextSignal = true;
@@ -2512,7 +2512,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MirelMaximumSpeed > MaxSelectedSpeed) MirelMaximumSpeed = MaxSelectedSpeed;
                             if (stopInterventingUntilNextSignal)
                             {
-                                if (Locomotive.AbsSpeedMpS == 0)
+                                if (Locomotive.AbsSpeedMpS < 0.01f)
                                     StartReducingSpeed = true;
                                 else
                                     StartReducingSpeed = false;
@@ -2622,9 +2622,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 MirelMaximumSpeed = maxSpeed;
 
                 bool vigilanceActive = true;
-                if (Locomotive.AbsSpeedMpS == 0)
+                if (Locomotive.AbsSpeedMpS < 0.01f)
                     vigilanceActive = false;
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
@@ -2648,9 +2648,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 // Zvýšená cyklická kontrola bdělosti
                 vigilanceActive = true;
-                if (Locomotive.AbsSpeedMpS == 0)
+                if (Locomotive.AbsSpeedMpS < 0.01f)
                     vigilanceActive = false;
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (MpS.ToKpH(Locomotive.AbsSpeedMpS) < 15 && Locomotive.EngineBrakeController.CurrentValue > 0)
                         vigilanceActive = false;
@@ -2675,7 +2675,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 // Jednorázová kontrola po uvedení HDV do pohybu
-                if (Locomotive.AbsSpeedMpS > 0)
+                if (Locomotive.AbsSpeedMpS > 0.01f)
                 {
                     if (!vigilanceAfterZeroSpeedConfirmed)
                     {
@@ -3006,7 +3006,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         private void CheckNZ5(float ElapsedClockSeconds)
         {
             if (NZOK) NZ5timer = 0;
-            if ((Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f || Locomotive.MUCylPressureMirelOk || Locomotive.AbsSpeedMpS > 0) && !NZ5)
+            if ((Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f || Locomotive.MUCylPressureMirelOk || Locomotive.AbsSpeedMpS > 0.01f) && !NZ5)
             {
                 if (!zs3 && nz5zs3) Locomotive.SignalEvent(Common.Event.MirelZS3Off);
                 nz5zs3 = false;

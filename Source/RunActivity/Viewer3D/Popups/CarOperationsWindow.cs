@@ -74,8 +74,14 @@ namespace Orts.Viewer3D.Popups
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonHandbrake = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Handbrake"), LabelAlignment.Center));
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
-                buttonHandbrake.Color = Color.LightGreen;
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HandBrakePresent)
+            {
+                buttonHandbrake.Color = Color.White;
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
+                    buttonHandbrake.Color = Color.LightGreen;
+            }
+            else
+                buttonHandbrake.Color = Color.Gray;
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonTogglePower = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Toggle Power"), LabelAlignment.Center));
@@ -281,11 +287,14 @@ namespace Orts.Viewer3D.Popups
 
         void buttonHandbrake_Click(Control arg1, Point arg2)
         {
-            new WagonHandbrakeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus());
-            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake set"));
-            else
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake off"));            
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HandBrakePresent)
+            {
+                new WagonHandbrakeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus());
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus())
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake set"));
+                else
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Handbrake off"));
+            }
         }
 
         void buttonTogglePower_Click(Control arg1, Point arg2)

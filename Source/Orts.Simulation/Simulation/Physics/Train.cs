@@ -4562,8 +4562,8 @@ namespace Orts.Simulation.Physics
                         int HandBrakeTotalCount = (int)(Cars.Count / 2f) == 0 ? 1 : (int)(Cars.Count / 2f);
                         CurrentCar++;
                         if (HandBrakeCount <= HandBrakeTotalCount)
-                        {
-                            if (Simulator.Random.Next(0, 2) == 1)
+                        {                            
+                            if (Simulator.Random.Next(0, 2) == 1 && (car as MSTSWagon).HandBrakePresent)
                             {
                                 HandBrakeCount++;
                                 car.BrakeSystem.HandBrakeActive = true;
@@ -4571,7 +4571,7 @@ namespace Orts.Simulation.Physics
                                 car.BrakeSystem.SetHandbrakePercent(Simulator.Random.Next(90, 101));
                             }
                         }   
-                        if (Cars.Count - CurrentCar <= HandBrakeTotalCount - HandBrakeCount)
+                        if (Cars.Count - CurrentCar <= HandBrakeTotalCount - HandBrakeCount && (car as MSTSWagon).HandBrakePresent)
                         {
                             HandBrakeCount++;
                             car.BrakeSystem.HandBrakeActive = true;
@@ -17028,7 +17028,7 @@ namespace Orts.Simulation.Physics
                             remainingPax = MaxPaxCapacity * (trainOccupancyPercent / 100);
                         else
                             remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count);
-                        float byPlatform = ss.PlatformItem.Length / 25.0f;
+                        float byPlatform = ss.PlatformItem.Length / 50.0f;
                         if (index > 0 && MaxPaxCapacity != 0)
                             remainingPax += (int)Math.Round(byPlatform, 0);
 

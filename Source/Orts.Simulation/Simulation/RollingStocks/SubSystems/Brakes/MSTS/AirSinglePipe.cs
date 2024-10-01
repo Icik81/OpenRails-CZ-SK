@@ -864,7 +864,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 IsAirEmpty = true;
                 IsAirFull = false;
-                HandBrakeActive = true;
+                if (loco.HandBrakePresent) HandBrakeActive = true;
                 ForceTwoPipesConnection = false;
                 AngleCockAOpen = false;
                 AngleCockBOpen = false;
