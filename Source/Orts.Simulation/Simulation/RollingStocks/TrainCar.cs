@@ -3837,7 +3837,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force == 0) force = 1;
 
-                    float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 2.0f);
+                    float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 1.3f);
                     if (force < 3)
                     {
                         switch (WagonNumAxles)
@@ -3850,8 +3850,8 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             case 4:                                                            
                             case 6:
-                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.050f;
-                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
+                                VibrationRotationVelocityRadpS.Y += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.025f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
                                 break;
                         }
                     }                                                                                  
