@@ -283,7 +283,7 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName == null)
                     Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
                 else 
-                if(car.BrakeSystem.HandBrakeActive)
+                if((car as MSTSWagon).HandBrakePresent && car.BrakeSystem.HandBrakeActive)
                     Text = TextGap + "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
                 else                
                     Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocomotiveName;
@@ -293,7 +293,7 @@ namespace Orts.Viewer3D.Popups
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName == null)
                     Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID;
                 else
-                if (car.BrakeSystem.HandBrakeActive)
+                if ((car as MSTSWagon).HandBrakePresent && car.BrakeSystem.HandBrakeActive)
                     Text = TextGap + "(P)  " + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
                 else
                     Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;

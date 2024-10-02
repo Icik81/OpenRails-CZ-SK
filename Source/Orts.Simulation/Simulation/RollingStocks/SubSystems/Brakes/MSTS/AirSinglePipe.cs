@@ -898,7 +898,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
 
-            if (!StartOn)
+            if (!StartOn && wagon.HandBrakePresent)
             {                
                 if (HandbrakePercent > 0) { HandBrakeActive = true; HandBrakeDeactive = false; }
                 else { HandBrakeActive = false; HandBrakeDeactive = true; }
