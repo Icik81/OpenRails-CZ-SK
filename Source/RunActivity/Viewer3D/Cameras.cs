@@ -2142,7 +2142,7 @@ namespace Orts.Viewer3D
             // Icik                
             if (loco != null)
             {
-                if (loco.CabViewList.Count > 0)
+                if (loco.CabViewList.Count > 0 || Viewer.PlayerLocomotive.HasFront3DCab || Viewer.PlayerLocomotive.HasRear3DCab)
                 {
                     if (loco.UsingRearCab)
                         loco.LocoStation = 2;
@@ -2163,11 +2163,15 @@ namespace Orts.Viewer3D
                         if (loco.UsingRearCab)
                         {
                             if (HeadOutZ[1] > 0 && HeadOutZ[2] < 0)
+                            {
                                 if (attachedLocation.Z != 0)
                                     attachedLocation.Z = (attachedLocation.Z / Math.Abs(attachedLocation.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
+                            }
                             else
-                                if (attachedLocation.Z != 0)
-                                    attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
+                            if (attachedLocation.Z != 0)
+                            {
+                                attachedLocation.Z = (attachedLocation.Z / -Math.Abs(attachedLocation.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));
+                            }
                         }
                     }                    
                 }
