@@ -363,9 +363,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Visibility[(int)VisibleFrom.Outside] = true;
                             break;
                         case "cab2d":
-                            Visibility[(int)VisibleFrom.Cab2D] = true;
-                            // Nutné kvůli synchronizaci animace 
-                            Visibility[(int)VisibleFrom.Outside] = true;
+                            Visibility[(int)VisibleFrom.Cab2D] = true;                            
                             break;
                         case "cab3d":
                             Visibility[(int)VisibleFrom.Cab3D] = true;

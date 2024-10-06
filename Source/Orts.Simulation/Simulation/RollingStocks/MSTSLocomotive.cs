@@ -6283,6 +6283,17 @@ namespace Orts.Simulation.RollingStocks
                                 }                                
                             }
 
+                            if (!CircuitBreakerOn && PantographDown && HvPantoTimer < 5)
+                            {
+                                HvPantoTimer += elapsedClockSeconds;
+                                SystemAnnunciator = 4;
+                            }
+
+                            if (!CircuitBreakerOn && PantographDown && HvPantoTimer >= 5)
+                            {
+                                SystemAnnunciator = 1;
+                            }
+
                             if (Pantographs.Count == 4)
                             {
                                 if (!CircuitBreakerOn
@@ -6300,13 +6311,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     SystemAnnunciator = 3;
                                 }
-                            }
-
-                            if (!CircuitBreakerOn && PantographDown && HvPantoTimer < 5)
-                            {
-                                HvPantoTimer += elapsedClockSeconds;
-                                SystemAnnunciator = 4;
-                            }
+                            }                            
 
                             if (Pantographs.Count == 4)
                             {
@@ -6331,12 +6336,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 HvPantoTimer += elapsedClockSeconds;
                                 SystemAnnunciator = 4;
-                            }
-
-                            if (!CircuitBreakerOn && PantographDown && HvPantoTimer >= 5)
-                            {
-                                SystemAnnunciator = 1;
-                            }
+                            }                            
 
                             if (CircuitBreakerOn)
                             {
@@ -11603,7 +11603,7 @@ namespace Orts.Simulation.RollingStocks
                     if (!StationIsActivated[1])
                         LapActive[1] = true;
                     if (!StationIsActivated[2])
-                        LapActive[2] = true;
+                        LapActive[2] = true; 
                 }
 
                 if (LocoStation == 1)
