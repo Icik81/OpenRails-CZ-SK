@@ -1718,9 +1718,9 @@ namespace Orts.Simulation.RollingStocks
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
             DieselStartDelay = locoCopy.DieselStartDelay;
             MUCableEquipment = locoCopy.MUCableEquipment;
-            DoorSwitch = locoCopy.DoorSwitch;
+            DoorSwitch[LocoStation] = locoCopy.DoorSwitch[LocoStation];            
             PrevDoorSwitch = locoCopy.PrevDoorSwitch;
-            LapActive = locoCopy.LapActive;
+            LapActive[LocoStation] = locoCopy.LapActive[LocoStation];            
             PantoCanHVOffSpeedKpH = locoCopy.PantoCanHVOffSpeedKpH;
             CarIsPlayerLocoSet = locoCopy.CarIsPlayerLocoSet;
             BreakPowerButton_Activated = locoCopy.BreakPowerButton_Activated;
