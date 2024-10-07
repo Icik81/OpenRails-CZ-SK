@@ -3880,15 +3880,15 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                         case 2:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.05f;
+                            VibratioDampingCoefficient = 0.10f;
                             break;
                         case 4:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.05f;
+                            VibratioDampingCoefficient = 0.15f;
                             break;
                         case 6:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.05f;
+                            VibratioDampingCoefficient = 0.15f;
                             break;
                     }
 
@@ -3898,7 +3898,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force != 0)
                     {
-                        VibrationSpringConstantPrimepSpS = (12 + (force * 2)) / 0.2f;
+                        VibrationSpringConstantPrimepSpS = (52 + (force * 2)) / 0.2f;
                         for (int i = 0; i < TrackFactorX * force * 10 + 5; i++) Factor_vibration = i;
                     }
                     else
