@@ -144,6 +144,10 @@ namespace Orts.Viewer3D
         float GameTimeToHoursLowBorder;
         float GameTimeToHoursHighBorder;
         float DayTimeAmbientLightChangeCoef;
+        float MorningFogDistance;
+        float MorningFogHour;
+        float EveningFogHour;
+        bool MorningFogFirstRun = true;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -161,7 +165,9 @@ namespace Orts.Viewer3D
             float GameTimeToHours = (float)Program.Simulator.ClockTime / 60f / 60f;             
             while (GameTimeToHours > 24f) GameTimeToHours = GameTimeToHours - 24f;
 
-            //Program.Simulator.Confirmer.Information("DayTimeAmbientLightCoef = " + Program.Simulator.DayTimeAmbientLightCoef);
+            //Program.Simulator.Confirmer.Information("DayTimeAmbientLightCoef = " + Program.Simulator.DayTimeAmbientLightCoef);            
+            
+            Program.Simulator.SeasonAmbientLightCoef = SeasonAmbientLightCoef;
             switch (Program.Simulator.Season)
             {
                 case SeasonType.Spring:
@@ -170,6 +176,9 @@ namespace Orts.Viewer3D
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 12f;
                         DayTimeAmbientLightChangeCoef = 1f;
+                        MorningFogDistance = 1000f;
+                        MorningFogHour = 7f;
+                        EveningFogHour = 21f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -185,6 +194,9 @@ namespace Orts.Viewer3D
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 15f;
                         DayTimeAmbientLightChangeCoef = 3f;
+                        MorningFogDistance = 2000f;
+                        MorningFogHour = 6f;
+                        EveningFogHour = 22f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -200,6 +212,9 @@ namespace Orts.Viewer3D
                         GameTimeToHoursLowBorder = 12f;
                         GameTimeToHoursHighBorder = 13f;
                         DayTimeAmbientLightChangeCoef = 1f;
+                        MorningFogDistance = 200f;
+                        MorningFogHour = 7f;
+                        EveningFogHour = 21f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -215,6 +230,9 @@ namespace Orts.Viewer3D
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 12f;
                         DayTimeAmbientLightChangeCoef = 1f;
+                        MorningFogDistance = 500f;
+                        MorningFogHour = 8f;
+                        EveningFogHour = 20f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -225,6 +243,28 @@ namespace Orts.Viewer3D
                     }
                     break;
             }
+
+            // Ranní mlha
+            if (GameTimeToHours < MorningFogHour || GameTimeToHours > EveningFogHour)
+            {
+                if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
+                    Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop;
+                if (Program.Simulator.Weather.FogDistance < MorningFogDistance)
+                    Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop;
+                if (MorningFogFirstRun)                
+                    Program.Simulator.Weather.FogDistance = MorningFogDistance;                        
+            }
+            else
+            {
+                if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
+                    Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop;
+                if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
+                    Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop;
+            }
+            MorningFogFirstRun = false;
+
+            // Mění intenzitu okolního světla v závislosti na zatažení oblohy
+            Program.Simulator.OvercastAmbientLightCoef = 1.0f - (Program.Simulator.Weather.OvercastFactor / 3.0f);
 
             if (!NightBrightnessSet)
             {
@@ -286,8 +326,9 @@ namespace Orts.Viewer3D
                 vIn = Program.Simulator.Settings.DayAmbientLight;
                 Program.Simulator.CabInDarkTunnel = false;                
             }
-
-            float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef;
+            
+            float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;            
+            NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
 
             if (_imageTextureIsNight)
             {
@@ -812,7 +853,7 @@ namespace Orts.Viewer3D
         float CabnightColorModifierValue;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
-            nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)));
+            nightColorModifier.SetValue(MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)) * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
             CabnightColorModifierValue = nightColorModifier.GetValueSingle();
 
             lightOn.SetValue(isDashLight);

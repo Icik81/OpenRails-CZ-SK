@@ -522,6 +522,7 @@ namespace Orts.Viewer3D
                     Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 1;
                     break;
             }
+            Program.Simulator.FogDistanceFinal = Weather.FogDistance;
         }
 
         public void UpdateWeatherParameters()
@@ -915,7 +916,7 @@ namespace Orts.Viewer3D
 
             MP_Messages(elapsedTime, this);
 
-            // Icik
+            // Icik           
             if (Viewer.Simulator.GameTimeCyklus10 == 10)
             {
                 DayNightTimeChangeCyklus();
@@ -1378,11 +1379,12 @@ namespace Orts.Viewer3D
                     {
                         var fogTimerDifference = ORTSFogTransitionTimeS - fogTimer;
                         weatherControl.Weather.FogDistance = ORTSFog - fogTimerDifference * fogTimerDifference * fogChangeRate;
-                    }
+                    }                    
                     if (fogTimer == 0) ORTSFog = -1;
                 }
 
-                // Icik                
+                // Icik
+                Program.Simulator.FogDistanceFinal = weatherControl.Weather.FogDistance;
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {

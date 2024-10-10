@@ -263,7 +263,10 @@ namespace Orts.Simulation
         public bool WireHeightSwitch62;
         public bool WireHeightSwitchHidden;
         public bool WireHeightDoNothing;
+        public float SeasonAmbientLightCoef;
         public float DayTimeAmbientLightCoef;
+        public float OvercastAmbientLightCoef;
+        public float FogDistanceFinal;
         public bool HandBrakeStatusChange;
         public int TrainOperationsMenuTextWidth;
         public int TrainOperationsMenuMinimumTextWidth;
