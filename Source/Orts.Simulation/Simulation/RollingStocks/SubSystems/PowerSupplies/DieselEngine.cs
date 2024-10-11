@@ -378,10 +378,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             //result.Append("\t");
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0}", FormatStrings.FormatTemperature(eng.RealDieselWaterTemperatureDeg, Locomotive.IsMetric, false));
+                result.AppendFormat("\t{0}", (float)(Math.Round(eng.RealDieselWaterTemperatureDeg, 2)) + " °C");
 
             foreach (var eng in DEList)
-                result.AppendFormat("\t{0}", FormatStrings.FormatTemperature(eng.RealDieselOilTemperatureDeg, Locomotive.IsMetric, false));
+                result.AppendFormat("\t{0}", (float)(Math.Round(eng.RealDieselOilTemperatureDeg, 2)) + " °C");
 
             //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Oil"));
             foreach (var eng in DEList)
@@ -2244,7 +2244,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.DieselEngines[0].Stop();
                     }
 
-                    //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + FakeDieselWaterTemperatureDeg));
+                    //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + Math.Round(RealDieselWaterTemperatureDeg, 2)));
                     //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
                 }
             }
