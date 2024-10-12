@@ -9603,7 +9603,7 @@ namespace Orts.Simulation.RollingStocks
 
             TractionBlocked = true;
 
-            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -9631,7 +9631,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopTrainBrakeIncrease(int from)
         {
-            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -9654,7 +9654,7 @@ namespace Orts.Simulation.RollingStocks
             if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
                 return;
 
-            if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
@@ -9674,10 +9674,10 @@ namespace Orts.Simulation.RollingStocks
         public void StopTrainBrakeDecrease(int from)
         {
             if (CruiseControl != null)
-                if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
+                if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
                     Mirel.AlerterPressed(true);
                 else
-                if (Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
+                if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
                     Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
