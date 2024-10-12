@@ -887,7 +887,7 @@ namespace Orts.Viewer3D
 
             if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate || isNightTexture)
             {                
-                nightColorModifier.SetValue((0.5f + (Program.Simulator.CabLightActivate ? 0.5f : 0)));
+                nightColorModifier.SetValue((0.5f + (Program.Simulator.CabLightActivate ? 0.5f : 0) + (Program.Simulator.CabFloodLightActivate ? 0.2f : 0)));
             }
             
             isNightTexture = false;

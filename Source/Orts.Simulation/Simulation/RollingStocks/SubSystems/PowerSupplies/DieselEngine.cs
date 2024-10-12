@@ -2244,7 +2244,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.DieselEngines[0].Stop();
                     }
 
-                    //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + Math.Round(RealDieselWaterTemperatureDeg, 2)));
+                    //if (i == 0)
+                    //    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + Math.Round(RealDieselWaterTemperatureDeg, 2)));
                     //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
                 }
             }
