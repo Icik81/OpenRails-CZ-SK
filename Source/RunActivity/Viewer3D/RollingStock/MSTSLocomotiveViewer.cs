@@ -480,6 +480,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("Handbrake") + ": " + Locomotive.HandBrakePercent.ToString("0") + " %");
                     Locomotive.SignalEvent(Event.ToggleHandBrakeUp);
                 }
+                else
                 if (Locomotive.HandBrakePercent > 0f && UserInput.IsDown(UserCommand.ControlPlayerLocomotiveHandbrakeDown))
                 {
                     Locomotive.HandBrakePercent -= 10.0f * Locomotive.Simulator.OneSecondLoop;                    
