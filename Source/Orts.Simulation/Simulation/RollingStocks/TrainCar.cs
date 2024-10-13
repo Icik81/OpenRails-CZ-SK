@@ -463,12 +463,12 @@ namespace Orts.Simulation.RollingStocks
 
         static float[] WorldTemperatureAutumn = new float[]
         {
-            7.5f, 13.7f, 18.8f, 22.0f, 24.0f, 26.0f, 25.0f, 21.6f, 21.0f, 14.3f, 8.0f, 3.8f
+            7.5f, 13.7f, 18.8f, 22.0f, 24.0f, 26.0f, 25.0f, 21.6f, 18.0f, 15.3f, 13.0f, 8.8f
          };
 
         static float[] WorldTemperatureSpring = new float[]
         {
-            8.5f, 13.1f, 17.6f, 18.6f, 24.6f, 25.9f, 26.8f, 23.4f, 18.5f, 12.6f, 6.1f, 1.7f
+            8.5f, 13.1f, 17.6f, 18.6f, 24.6f, 25.9f, 26.8f, 23.4f, 20.5f, 18.6f, 15.5f, 10.7f
          };
 
         static float[] WorldTemperatureSummer = new float[]
@@ -1041,7 +1041,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }        
         }
-
+        
         // called when it's time to update the MotiveForce and FrictionForce
         public virtual void Update(float elapsedClockSeconds)
         {
@@ -1236,75 +1236,78 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Update temperature variation for height of car above sea level
-                // Typically in clear conditions there is a 9.8 DegC variation for every 1000m (1km) rise, in snow/rain there is approx 5.5 DegC variation for every 1000m (1km) rise
                 float TemperatureHeightVariationDegC = 0;
-                const float DryLapseTemperatureC = 9.8f;
-                const float WetLapseTemperatureC = 5.5f;
-
-                if (Simulator.WeatherType == WeatherType.Rain || Simulator.WeatherType == WeatherType.Snow) // Apply snow/rain height variation
-                {
-                    TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * WetLapseTemperatureC;
-                }
-                else  // Apply dry height variation
-                {
-                    TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * DryLapseTemperatureC;
-                }
-
+                TemperatureHeightVariationDegC = Me.ToKiloM(CarHeightAboveSeaLevelM) * 5.5f;
                 TemperatureHeightVariationDegC = MathHelper.Clamp(TemperatureHeightVariationDegC, 0.00f, 30.0f);
 
                 float TClock = (float)Simulator.ClockTime / 60 / 60;
-                if (Simulator.ClockTime > 24 * 60 * 60)
-                    TClock = ((float)Simulator.ClockTime - (24 * 60 * 60)) / 60 / 60;
+                while (TClock > 24) TClock = TClock - 24;
+
+                float[] TimeOfDayCoef = new float[7];
+                switch (Simulator.Season)
+                {
+                    //  Hodiny                           0        3       6       9      12      15      18      21
+                    case SeasonType.Spring:
+                        TimeOfDayCoef = new float[] { -0.30f, -0.35f, -0.30f, -0.20f, +0.10f, +0.20f, -0.10f, -0.20f };
+                        break;
+                    case SeasonType.Summer:
+                        TimeOfDayCoef = new float[] { -0.30f, -0.35f, -0.25f, -0.10f, +0.10f, +0.20f, -0.10f, -0.20f };
+                        break;
+                    case SeasonType.Autumn:
+                        TimeOfDayCoef = new float[] { -0.40f, -0.60f, -0.50f, -0.30f, +0.10f, +0.20f, -0.20f, -0.30f };
+                        break;
+                    case SeasonType.Winter:
+                        TimeOfDayCoef = new float[] { -0.40f, -0.50f, -0.60f, -0.40f, +0.10f, +0.20f, -0.10f, -0.30f };
+                        break;
+                }
 
                 // Přírůstek teploty v závislosti na denním čase
                 if (TClock > 0 && TClock <= 3)
-                    TempCClockDelta = -5;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[0]);
                 if (TClock > 3 && TClock <= 6)
-                    TempCClockDelta = -7;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[1]);
                 if (TClock > 6 && TClock <= 9)
-                    TempCClockDelta = 0;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[2]);
                 if (TClock > 9 && TClock <= 12)
-                    TempCClockDelta = +3;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[3]);
                 if (TClock > 12 && TClock <= 15)
-                    TempCClockDelta = +5;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[4]);
                 if (TClock > 15 && TClock <= 18)
-                    TempCClockDelta = +3;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[5]);
                 if (TClock > 18 && TClock <= 21)
-                    TempCClockDelta = 0;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[6]);
                 if (TClock > 21 && TClock <= 24)
-                    TempCClockDelta = -3;
+                    TempCClockDelta = (Math.Abs(InitialCarOutsideTempC) * TimeOfDayCoef[7]);
 
-                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));
-                if (CarOutsideTempCBase == -1000)                
-                    CarOutsideTempCBase = InitialCarOutsideTempC;                
-
-                CarOutsideTempCBaseFinish = InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta;
+                // Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("TClock " + TClock));                            
+                CarOutsideTempCBaseFinish = (InitialCarOutsideTempC - TemperatureHeightVariationDegC + TempCClockDelta) * Simulator.OvercastAmbientLightCoef;
                 CarOutsideTempCBaseFinish = MathHelper.Clamp(CarOutsideTempCBaseFinish, -25, 40);
 
+                //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("CarOutsideTempCBaseFinish " + CarOutsideTempCBaseFinish));
+
+                if (CarOutsideTempCBase == -1000)
+                    CarOutsideTempCBase = CarOutsideTempCBaseFinish;
+
                 if (CarOutsideTempCBase > CarOutsideTempCBaseFinish)
-                    CarOutsideTempCBase -= 0.01f * elapsedClockSeconds;
+                    CarOutsideTempCBase -= 0.01f * elapsedClockSeconds * Simulator.TimeSpeedCoef;
                 else
                 if (CarOutsideTempCBase < CarOutsideTempCBaseFinish)
-                    CarOutsideTempCBase += 0.01f * elapsedClockSeconds;
+                    CarOutsideTempCBase += 0.01f * elapsedClockSeconds * Simulator.TimeSpeedCoef;
 
                 // Okolní teplota závisí na podmínkách (oblačno, déšť, mlha)
                 switch (Simulator.Season)
                 {
                     case SeasonType.Spring:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (Simulator.Weather.OvercastFactor * 2) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
-                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 5, 40);
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (1 - (Simulator.Weather.FogDistance / 100000 * 15));                        
                         break;
                     case SeasonType.Summer:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 3) - (Simulator.Weather.OvercastFactor * 3) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
-                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 12, 40);
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 2) - (1 - (Simulator.Weather.FogDistance / 100000 * 15));                        
                         break;
                     case SeasonType.Autumn:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (Simulator.Weather.OvercastFactor * 1) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
-                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, 1, 40);
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (1 - (Simulator.Weather.FogDistance / 100000 * 15));                        
                         break;
                     case SeasonType.Winter:
-                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (Simulator.Weather.OvercastFactor * 1) - (3 - (Simulator.Weather.FogDistance / 100000 * 15));
-                        CarOutsideTempC = MathHelper.Clamp(CarOutsideTempC, -25, 40);
+                        CarOutsideTempC = CarOutsideTempCBase - (Simulator.Weather.PricipitationIntensityPPSPM2 * 1) - (1 - (Simulator.Weather.FogDistance / 100000 * 15));                        
                         break;
                 }
             }
@@ -1387,15 +1390,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Summer temps
                 InitialCarOutsideTempC = OutsideSummerTempbyLatitudeC[LatitudeDeg];
-            }
-
-            // If weather is freezing. Snow will only be produced when temp is between 0 and 2 Deg C. Adjust temp as appropriate
-            const float SnowTemperatureC = 2;
-
-            if (Simulator.WeatherType == WeatherType.Snow && InitialCarOutsideTempC > SnowTemperatureC)
-            {
-                InitialCarOutsideTempC = 0;  // Weather snowing - freezing conditions. 
-            }
+            }            
 
             // Initialise wheel bearing temperature to ambient temperature
             if (WheelBearingTemperatureDegC == 0)

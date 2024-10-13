@@ -1106,8 +1106,17 @@ namespace Orts.Viewer3D
             if (!Orts.MultiPlayer.MPManager.IsMultiPlayer())
             {
                 // Shift the clock forwards or backwards at 1h-per-second.
-                if (UserInput.IsDown(UserCommand.DebugClockForwards)) Viewer.Simulator.ClockTime += elapsedTime.RealSeconds * 3600;
-                if (UserInput.IsDown(UserCommand.DebugClockBackwards)) Viewer.Simulator.ClockTime -= elapsedTime.RealSeconds * 3600;
+                Viewer.Simulator.TimeSpeedCoef = 1.0f;
+                if (UserInput.IsDown(UserCommand.DebugClockForwards))
+                {
+                    Viewer.Simulator.ClockTime += elapsedTime.RealSeconds * 3600;
+                    Viewer.Simulator.TimeSpeedCoef = 3600f;
+                }
+                if (UserInput.IsDown(UserCommand.DebugClockBackwards))
+                {
+                    Viewer.Simulator.ClockTime -= elapsedTime.RealSeconds * 3600;
+                    Viewer.Simulator.TimeSpeedCoef = 3600f;
+                }
             }
 
             // If we're a multiplayer server, send out the new overcastFactor, pricipitationIntensity and fogDistance to all clients.
