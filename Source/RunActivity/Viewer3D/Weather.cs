@@ -263,6 +263,7 @@ namespace Orts.Viewer3D
             }
 
             Weather.FogDistance = inf.ReadSingle();
+            Program.Simulator.FogDistanceFinal = Weather.FogDistance;
             Weather.OvercastFactor = inf.ReadSingle();
             Weather.PricipitationIntensityPPSPM2 = inf.ReadSingle();
             Weather.PrecipitationLiquidity = inf.ReadSingle();
@@ -519,9 +520,9 @@ namespace Orts.Viewer3D
                     }
                     break;
                 case 7: // Náhodné
-                    Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 1;
+                    Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 1;                    
                     break;
-            }
+            }            
             Program.Simulator.FogDistanceFinal = Weather.FogDistance;
         }
 
