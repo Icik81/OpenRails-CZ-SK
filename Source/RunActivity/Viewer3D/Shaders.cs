@@ -246,7 +246,7 @@ namespace Orts.Viewer3D
             }
 
             // Ranní mlha
-            if (GameTimeToHours < MorningFogHour || GameTimeToHours > EveningFogHour)
+            if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
             {
                 if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
                     Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
