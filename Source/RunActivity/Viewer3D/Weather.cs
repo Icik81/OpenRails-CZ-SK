@@ -1092,12 +1092,14 @@ namespace Orts.Viewer3D
                     Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance - elapsedTime.RealSeconds * Weather.FogDistance, 10, 100000);
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ORTSFog = -1;
+                    Program.Simulator.FogDistanceFinal = Weather.FogDistance;
                 }
                 if (UserInput.IsDown(UserCommand.DebugFogDecrease))
                 {
                     Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance + elapsedTime.RealSeconds * Weather.FogDistance, 10, 100000);
                     if (dynamicWeather != null) dynamicWeather.ORTSFog = -1;
                     weatherChangeOn = false;
+                    Program.Simulator.FogDistanceFinal = Weather.FogDistance;
                 }
 
                 UpdateWind(elapsedTime);

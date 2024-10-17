@@ -275,9 +275,7 @@ namespace Orts.Viewer3D
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
 
-            // Icik
-            var newCarIsPlayerLoco = Car.Train != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive;            
-
+            // Icik                        
             var newCarLightFrontLW = Car.LightFrontLW;
             var newCarLightFrontRW = Car.LightFrontRW;
             var newCarLightRearLW = Car.LightRearLW;
@@ -301,7 +299,7 @@ namespace Orts.Viewer3D
                 newCarLightFrontLR = false;
                 newCarLightFrontRR = false;
                 newCarLightRearLR = false;
-                newCarLightRearRR = false;                                
+                newCarLightRearRR = false;
             }
 
             if (LightCycle < 1 && Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)

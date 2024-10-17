@@ -5244,7 +5244,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                         || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
-                        || (this as MSTSLocomotive).LocoIsStatic)
+                        || (this as MSTSLocomotive).LocoIsStatic)                        
                     {
                         if (this.BrakeSystem.PowerForWagon == true)
                         {
@@ -5257,7 +5257,8 @@ namespace Orts.Simulation.RollingStocks
                     else
                     if (((this as MSTSElectricLocomotive) != null && !(this as MSTSElectricLocomotive).AIPantoDownStop)
                         || ((this as MSTSDieselLocomotive) != null && !(this as MSTSDieselLocomotive).AIMotorStop)
-                        )
+                        || (this as MSTSControlUnit) != null
+                        || (this as MSTSSteamLocomotive) != null)
                     {
                         if (this.BrakeSystem.PowerForWagon == false)
                         {

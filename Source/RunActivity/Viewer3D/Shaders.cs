@@ -179,7 +179,7 @@ namespace Orts.Viewer3D
                         DayTimeAmbientLightChangeCoef = 1f;
                         MorningFogDistance = 1000f;
                         MorningFogHour = 7f;
-                        EveningFogHour = 21f;
+                        EveningFogHour = 5f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -197,7 +197,7 @@ namespace Orts.Viewer3D
                         DayTimeAmbientLightChangeCoef = 3f;
                         MorningFogDistance = 2000f;
                         MorningFogHour = 6f;
-                        EveningFogHour = 22f;
+                        EveningFogHour = 5f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -215,7 +215,7 @@ namespace Orts.Viewer3D
                         DayTimeAmbientLightChangeCoef = 1f;
                         MorningFogDistance = 200f;
                         MorningFogHour = 7f;
-                        EveningFogHour = 21f;
+                        EveningFogHour = 5f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
@@ -233,7 +233,7 @@ namespace Orts.Viewer3D
                         DayTimeAmbientLightChangeCoef = 1f;
                         MorningFogDistance = 500f;
                         MorningFogHour = 8f;
-                        EveningFogHour = 20f;
+                        EveningFogHour = 4f;
 
                         if (GameTimeToHours > GameTimeToHoursHighBorder)
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
