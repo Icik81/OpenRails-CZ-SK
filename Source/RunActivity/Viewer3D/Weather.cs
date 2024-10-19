@@ -1173,9 +1173,12 @@ namespace Orts.Viewer3D
                     }
                 }
                 else
-                {                    
+                {
                     Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Viewer.SoundProcess.AddSoundSources(this, ClearSound);
+                    if (NightTime)                    
+                        Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                    else
+                        Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                 }
             }
 
@@ -1209,7 +1212,10 @@ namespace Orts.Viewer3D
                 {
                     Viewer.SoundProcess.RemoveSoundSources(this);                    
                     Viewer.Simulator.WeatherType = WeatherType.Clear;
-                    Viewer.SoundProcess.AddSoundSources(this, ClearSound);                                        
+                    if (NightTime)
+                        Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
+                    else
+                        Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                 }
             }
             
