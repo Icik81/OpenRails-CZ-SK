@@ -5421,12 +5421,18 @@ namespace Orts.Simulation.RollingStocks
                             float GameClock = AIActionPoint0.Delay - 30000;
                             int GameClockHour = (int)(GameClock / 100);
                             int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
-                            float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
+                            float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);                            
 
                             if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait)
                             {
                                 (Train as AITrain).DontStopABSWP = true;
-                            }
+                                
+                                // Půlnoční AI
+                                if (Simulator.ClockTime - GameClockToWait > 3600)
+                                {
+                                    (Train as AITrain).DontStopABSWP = false;
+                                }
+                            }                            
                         }
                     }
                 }
