@@ -14080,7 +14080,7 @@ namespace Orts.Simulation.Physics
 
             int iColumn = 0;
 
-            string[] statusString = new string[13];
+            string[] statusString = new string[15];
 
             //  0, "Train"
             statusString[iColumn] = Number.ToString();
@@ -14404,18 +14404,25 @@ namespace Orts.Simulation.Physics
             iColumn++;
             //  10, "Consist"
             statusString[iColumn] = "PLAYER";
-            if (!Simulator.TimetableMode && this != Simulator.OriginalPlayerTrain) statusString[iColumn] = Name.Substring(0, Math.Min(Name.Length, 7));
+            //if (!Simulator.TimetableMode && this != Simulator.OriginalPlayerTrain) statusString[iColumn] = Name.Substring(0, Math.Min(Name.Length, 7));
+            if (!Simulator.TimetableMode && this != Simulator.OriginalPlayerTrain) statusString[iColumn] = Name;
             if (TrainType == TRAINTYPE.REMOTE)
             {
                 var trainName = "";
                 if (LeadLocomotive != null) trainName = GetTrainName(LeadLocomotive.CarID);
                 else if (Cars != null && Cars.Count > 0) trainName = GetTrainName(Cars[0].CarID);
                 else trainName = "REMOTE";
-                statusString[iColumn] = trainName.Substring(0, Math.Min(trainName.Length, 7));
-            }
+                //statusString[iColumn] = trainName.Substring(0, Math.Min(trainName.Length, 7));
+                statusString[iColumn] = trainName;
+            }            
+            
+            iColumn++;
+            //  11, ""
+            iColumn++;
+            //  12, ""
 
             iColumn++;
-            //  11, "Path"
+            //  13, "Path"
             string circuitString = String.Empty;
 
             if ((ControlMode != TRAIN_CONTROL.MANUAL && ControlMode != TRAIN_CONTROL.EXPLORER) || ValidRoute[1] == null)

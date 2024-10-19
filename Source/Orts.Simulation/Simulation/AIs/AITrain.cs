@@ -6436,7 +6436,8 @@ namespace Orts.Simulation.AIs
                 }
             }
 
-            string nameString = Name.Substring(0, Math.Min(Name.Length, 7));
+            //string nameString = Name.Substring(0, Math.Min(Name.Length, 7));
+            string nameString = Name;
 
             string actString = "";
 

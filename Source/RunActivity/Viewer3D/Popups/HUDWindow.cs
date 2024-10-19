@@ -1655,6 +1655,8 @@ namespace Orts.Viewer3D.Popups
                     Viewer.Catalog.GetString("Signal"),
                     Viewer.Catalog.GetString("Distance"),
                     Viewer.Catalog.GetString("Consist"),
+                    Viewer.Catalog.GetString(""),
+                    Viewer.Catalog.GetString(""),
                     Viewer.Catalog.GetString("Path"));
                 //New added items, here
 
