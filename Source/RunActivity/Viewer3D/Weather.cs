@@ -1158,18 +1158,24 @@ namespace Orts.Viewer3D
             // Icik            
             if (Viewer.Simulator.GameTime < 0.5f)
             {
-                if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
-                {
-                    Viewer.Simulator.WeatherType = WeatherType.Rain;
+                Viewer.SoundProcess.RemoveSoundSources(this);
+                if (Weather.PricipitationIntensityPPSPM2 >= 0.25f)
+                {                    
+                    if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f && Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold)
+                    {
+                        Viewer.SoundProcess.AddSoundSources(this, RainSound);
+                        Viewer.Simulator.WeatherType = WeatherType.Rain;
+                    }                    
+                    else
+                    {
+                        Viewer.SoundProcess.AddSoundSources(this, SnowSound);
+                        Viewer.Simulator.WeatherType = WeatherType.Snow;
+                    }
                 }
                 else
-                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-                {
-                    Viewer.Simulator.WeatherType = WeatherType.Rain;
-                }
-                else
-                {
-                    Viewer.Simulator.WeatherType = WeatherType.Snow;
+                {                    
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                 }
             }
 
@@ -1183,6 +1189,27 @@ namespace Orts.Viewer3D
                 if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
                 {
                     dynamicWeather.FinishPrecipitationIntensity = MathHelper.Clamp(dynamicWeather.FinishPrecipitationIntensity, 0, 0.3f);
+                }
+                
+                if (Viewer.Simulator.WeatherType == WeatherType.Clear && Weather.PricipitationIntensityPPSPM2 >= 0.25f)
+                {
+                    Viewer.SoundProcess.RemoveSoundSources(this);
+                    if (Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold)
+                    {
+                        Viewer.Simulator.WeatherType = WeatherType.Rain;
+                        Viewer.SoundProcess.AddSoundSources(this, RainSound);
+                    }
+                    else
+                    {
+                        Viewer.Simulator.WeatherType = WeatherType.Snow;
+                        Viewer.SoundProcess.AddSoundSources(this, SnowSound);
+                    }
+                }
+                if ((Viewer.Simulator.WeatherType == WeatherType.Rain || Viewer.Simulator.WeatherType == WeatherType.Snow) && Weather.PricipitationIntensityPPSPM2 < 0.25f)
+                {
+                    Viewer.SoundProcess.RemoveSoundSources(this);                    
+                    Viewer.Simulator.WeatherType = WeatherType.Clear;
+                    Viewer.SoundProcess.AddSoundSources(this, ClearSound);                                        
                 }
             }
             
@@ -1219,15 +1246,10 @@ namespace Orts.Viewer3D
             {
                 //Viewer.Simulator.WeatherType = Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold ? WeatherType.Rain : WeatherType.Snow;
                 // Icik
-                if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f && Weather.PrecipitationLiquidity > DynamicWeather.RainSnowLiquidityThreshold)
                 {                    
                     Viewer.Simulator.WeatherType = WeatherType.Rain;
-                }
-                else
-                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-                {
-                    Viewer.Simulator.WeatherType = WeatherType.Rain;
-                }
+                }                
                 else
                 {                 
                     Viewer.Simulator.WeatherType = WeatherType.Snow;
