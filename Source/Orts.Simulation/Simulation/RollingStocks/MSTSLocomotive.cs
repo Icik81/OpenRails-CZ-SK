@@ -5977,6 +5977,36 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            if (AcceptMUSignals && IsLeadLocomotive())
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car.AcceptMUSignals && (car as MSTSElectricLocomotive != null) && !car.CarIsPlayerLoco)
+                    {
+                        if (UsingRearCab)
+                        {
+                            (car as MSTSWagon).Pantographs.List[1].State = p1.State;
+                            (car as MSTSWagon).Pantographs.List[0].State = p2.State;
+
+                            if ((car as MSTSWagon).Pantographs.Count == 4)
+                            {
+                                (car as MSTSWagon).Pantographs.List[3].State = p3.State;
+                                (car as MSTSWagon).Pantographs.List[2].State = p4.State;
+                            }
+                        }
+                        else
+                        {
+                            (car as MSTSWagon).Pantographs.List[0].State = p1.State;
+                            (car as MSTSWagon).Pantographs.List[1].State = p2.State;
+
+                            if ((car as MSTSWagon).Pantographs.Count == 4)
+                            {
+                                (car as MSTSWagon).Pantographs.List[2].State = p3.State;
+                                (car as MSTSWagon).Pantographs.List[3].State = p4.State;
+                            }
+                        }                        
+                    }
+                }
+
             switch (PantoMode)
             {
                 case PantoModes.Auto:
@@ -5993,7 +6023,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (p3.State == PantographState.Up)
                                     p3.State = PantographState.Lowering;
                                 if (p4.State == PantographState.Up)
-                                    p4.State = PantographState.Lowering;
+                                    p4.State = PantographState.Lowering;                                                                
                             }
                             if (SwitchingVoltageMode == 0)
                             {
@@ -6013,7 +6043,7 @@ namespace Orts.Simulation.RollingStocks
                                 p1.State = PantographState.Raising;
                             if (p2.State == PantographState.Up && p1.State == PantographState.Up)
                                 p2.State = PantographState.Lowering;
-                        }
+                        }                        
                     }
                     break;
                 case PantoModes.Both:
@@ -12899,6 +12929,12 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+
+                                            if (Pantographs.Count == 4)
+                                            {
+                                                if (Pantographs[p3].State != PantographState.Down || Pantographs[p4].State != PantographState.Down)
+                                                    car.SignalEvent(PowerSupplyEvent.LowerPantograph);
+                                            }
 
                                             if (MPManager.IsMultiPlayer())
                                             {
