@@ -451,24 +451,26 @@ namespace Orts.Simulation.RollingStocks
             {
                 OverridenControllerVolts = Locomotive.ControllerVolts;
 
-                if (Locomotive.ForceHandleValue == 0)
+                if (Locomotive.IsLeadLocomotive())
                 {
-                    Locomotive.ControllerVolts = 0;
+                    if (Locomotive.ForceHandleValue == 0)
+                    {
+                        Locomotive.ControllerVolts = 0;
+                    }
+                    if (Locomotive.ForceHandleValue == 0 && Locomotive.DynamicBrakePercent == -1)
+                    {
+                        Locomotive.DynamicBrakeForceN = 0;
+                    }
+                    if (Locomotive.DynamicBrakePercent > 0)
+                    {
+                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
+                    }
+                    if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
+                    {
+                        Locomotive.DynamicBrakePercent = 1f;
+                        Locomotive.TractionBlocked = true;
+                    }
                 }
-                if (Locomotive.ForceHandleValue == 0 && Locomotive.DynamicBrakePercent == -1)
-                {
-                    Locomotive.DynamicBrakeForceN = 0;
-                }
-                if (Locomotive.DynamicBrakePercent > 0)
-                {
-                    Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
-                }
-                if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
-                {
-                    Locomotive.DynamicBrakePercent = 1f;
-                    Locomotive.TractionBlocked = true;
-                }                
-
                 // Funkce EDB při blokování generátorického režimu Vectrona při staženém sběrači                
                 if (!Locomotive.PowerOn)
                 {

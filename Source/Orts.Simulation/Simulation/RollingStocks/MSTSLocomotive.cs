@@ -5561,12 +5561,9 @@ namespace Orts.Simulation.RollingStocks
                 CarPowerKey = true;
 
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
-                
-                float LocoHelperSlipSpeedPercent = AbsSpeedMpS > 0.01f ? (Math.Abs(WheelSpeedMpS) / AbsSpeedMpS * 100f) : 0;                                                
-                bool LocoHelperSlipSpeedPercentCritical = LocoHelperSlipSpeedPercent > 115.0f ? true : false;                                
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;                         
 
-                if (LocoHelperSlipSpeedPercent > 110.0f)
+                if (WheelSlipWarning)
                 {
                     AntiSlip = true;                    
                     Sander = true;                    
@@ -5624,14 +5621,14 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult12 = 0;
                     if (AbsSpeedMpS * 3.6 > HelperSpeedPush
                         || !HelperPushStart
-                        || WheelSlipWarning
                         || WheelSlip
                         || MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f)
                         || Simulator.ControllerVoltsLocoHelper < -1.5f
                         || Direction == Direction.N
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower
-                        || HelperOverheated)                        
+                        || HelperOverheated
+                        )                        
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.05f)
@@ -5683,10 +5680,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1
-                        && HelperPushStart
-                        && !WheelSlipWarning
-                        && !WheelSlip
-                        && !LocoHelperSlipSpeedPercentCritical
+                        && HelperPushStart                      
+                        && !WheelSlip                        
                         && MSTSBrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
@@ -5763,10 +5758,10 @@ namespace Orts.Simulation.RollingStocks
 
                     if (ThrottlePercent > Simulator.ThrottleLocoHelper
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
-                        || PowerCurrent1 > 0.95f * MaxCurrentPower
-                        || WheelSlipWarning
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower                        
                         || WheelSlip
-                        || HelperOverheated)
+                        || HelperOverheated
+                        )
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
@@ -5816,7 +5811,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     if (ThrottlePercent < Simulator.ThrottleLocoHelper
-                        && !LocoHelperSlipSpeedPercentCritical)
+                        && !WheelSlip)
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
