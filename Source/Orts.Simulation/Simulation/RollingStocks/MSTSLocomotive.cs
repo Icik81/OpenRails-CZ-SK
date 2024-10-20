@@ -5977,11 +5977,17 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (AcceptMUSignals && IsLeadLocomotive())
+            // Master - Slave
+            if (Train.MasterSlaveCarsFound && (this as MSTSLocomotive).MasterLoco && AcceptMUSignals)
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car.AcceptMUSignals && (car as MSTSElectricLocomotive != null) && !car.CarIsPlayerLoco)
+                    if (car.AcceptMUSignals && (car as MSTSElectricLocomotive != null) && car.SlaveLoco)
                     {
+                        (car as MSTSElectricLocomotive).SelectedPowerSystem = SelectedPowerSystem;
+                        (car as MSTSElectricLocomotive).SelectingPowerSystem = SelectingPowerSystem;
+                        (car as MSTSElectricLocomotive).Loco15kV = Loco15kV;
+                        (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
+                        
                         if (UsingRearCab)
                         {
                             (car as MSTSWagon).Pantographs.List[1].State = p1.State;
@@ -6003,7 +6009,8 @@ namespace Orts.Simulation.RollingStocks
                                 (car as MSTSWagon).Pantographs.List[2].State = p3.State;
                                 (car as MSTSWagon).Pantographs.List[3].State = p4.State;
                             }
-                        }                        
+                        }
+                        break;
                     }
                 }
 

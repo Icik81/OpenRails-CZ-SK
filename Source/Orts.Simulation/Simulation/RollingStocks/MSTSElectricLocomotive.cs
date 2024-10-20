@@ -510,7 +510,7 @@ namespace Orts.Simulation.RollingStocks
             }            
 
             if (RouteVoltageV == 0)
-                RouteVoltageV = 25000;
+                RouteVoltageV = 25000;            
 
             bool my = IsPlayerTrain;
             if (!my)
@@ -634,6 +634,8 @@ namespace Orts.Simulation.RollingStocks
                 RouteVoltageV = 1;
                 Amps = 0;
             }
+
+            //RouteVoltageV = 15000;
 
             foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
             {
@@ -1834,20 +1836,33 @@ namespace Orts.Simulation.RollingStocks
                     if (RouteVoltageV > 3000)
                         HV5Switch[LocoStation] = 3;
                 }
-
+                
                 switch (RouteVoltageV)
                 {
                     case 3000:
                         SwitchingVoltageMode = 0;
                         SwitchingVoltageMode_OffDC = true;
                         SwitchingVoltageMode_OffAC = false;
+                        SelectedPowerSystem = PowerSystem.CZ3kV;
                         break;
                     case 15000:
                     case 25000:
                         SwitchingVoltageMode = 2;
                         SwitchingVoltageMode_OffDC = false;
                         SwitchingVoltageMode_OffAC = true;
+                        SelectedPowerSystem = PowerSystem.CZ25kV;                                               
                         break;
+                }
+
+                if (LocoType == LocoTypes.Vectron)
+                {
+                    if (RouteVoltageV == 15000)
+                    {
+                        Loco15kV = true;
+                        SelectedPowerSystem = PowerSystem.DE15kV;
+                    }
+                    else
+                        Loco15kV = false;
                 }
 
                 if (RouteVoltageV > 1 && !UserPowerOff)
