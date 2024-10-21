@@ -122,9 +122,11 @@ namespace Orts.Simulation.Physics
         public bool MasterSlaveCarsFound;
         public bool AcceptPowerSignalsChange;        
         public int MasterCarNumber;
-        public int SlaveCarNumber;
+        public int SlaveCarNumber1;
+        public int SlaveCarNumber2;
         public TrainCar MasterLoco;
-        public TrainCar SlaveLoco;
+        public TrainCar SlaveLoco1;
+        public TrainCar SlaveLoco2;
         public float TrainDistanceTravelledM;
         public float TrainAISeasonWaitTimeOff;
         public float TrainAITogglePanto2Up;

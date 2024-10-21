@@ -3201,30 +3201,70 @@ namespace Orts.Simulation.RollingStocks
                     car.MasterLoco = false;
                     car.SlaveLoco = false;
                 }
-                Train.MasterLoco = null; Train.SlaveLoco = null;
+                Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null;
                 Train.MasterSlaveCarsFound = false;
-                int CarNumber = 0;
+                
+                // Master
+                int MasterCarNumber = 0;
                 foreach (TrainCar car in Train.Cars)
                 {                    
                     if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
                     {
-                        if (Train.MasterLoco == null)
+                        if (Train.MasterLoco == null && car.CarIsPlayerLoco)
                         {
                             Train.MasterLoco = car;
-                            Train.MasterCarNumber = CarNumber;
+                            Train.MasterCarNumber = MasterCarNumber;
                             car.MasterLoco = true;
-                        }
-                        else
+                            break;
+                        }                                                                            
+                    }
+                    MasterCarNumber++;
+                }
+
+                // Slave 1
+                int SlaveCarNumber1 = 0;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
+                    {
+                        if (Train.SlaveLoco1 == null && !car.CarIsPlayerLoco && (SlaveCarNumber1 == MasterCarNumber + 1 || SlaveCarNumber1 == MasterCarNumber - 1))
                         {
-                            Train.SlaveLoco = car;
-                            Train.SlaveCarNumber = CarNumber;
+                            Train.SlaveLoco1 = car;
+                            Train.SlaveCarNumber1 = SlaveCarNumber1;
+                            car.SlaveLoco = true;
+                            break;
+                        }                        
+                    }
+                    SlaveCarNumber1++;
+                }
+
+                // Slave 2
+                int SlaveCarNumber2 = 0;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
+                    {
+                        if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
+                        {
+                            Train.SlaveLoco2 = car;
+                            Train.SlaveCarNumber2 = SlaveCarNumber2;
                             car.SlaveLoco = true;
                             break;
                         }
                     }
-                    CarNumber++;
+                    SlaveCarNumber2++;
                 }
-                if (Train.MasterLoco != null && Train.SlaveLoco != null)
+
+                if (Train.SlaveLoco1 == null)
+                {
+                    Train.SlaveCarNumber1 = -1;
+                }
+                if (Train.SlaveLoco2 == null)
+                {
+                    Train.SlaveCarNumber2 = -1;
+                }
+
+                if (Train.MasterLoco != null && Train.SlaveLoco1 != null)
                 {
                     Train.MasterSlaveCarsFound = true;
                 }                
