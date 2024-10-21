@@ -5978,16 +5978,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Master - Slave
-            if (Train.MasterSlaveCarsFound && (this as MSTSLocomotive).MasterLoco && AcceptMUSignals)
+            if (Train.MasterSlaveCarsFound && MasterLoco && AcceptMUSignals)
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car.AcceptMUSignals && (car as MSTSElectricLocomotive != null) && car.SlaveLoco)
+                    if (car.AcceptMUSignals && car.SlaveLoco)
                     {
                         (car as MSTSElectricLocomotive).SelectedPowerSystem = SelectedPowerSystem;
                         (car as MSTSElectricLocomotive).SelectingPowerSystem = SelectingPowerSystem;
                         (car as MSTSElectricLocomotive).Loco15kV = Loco15kV;
                         (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
-                        
+                        (car as MSTSElectricLocomotive).PantoMode = PantoMode;
+
                         if (UsingRearCab)
                         {
                             (car as MSTSWagon).Pantographs.List[1].State = p1.State;
@@ -6156,7 +6157,7 @@ namespace Orts.Simulation.RollingStocks
                             p1.State = PantographState.Lowering;
                     }                    
                     break;
-            }
+            }            
         }
 
 
@@ -12934,6 +12935,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
+                                            (car as MSTSElectricLocomotive).PantoCommandDown = true;
                                             if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
