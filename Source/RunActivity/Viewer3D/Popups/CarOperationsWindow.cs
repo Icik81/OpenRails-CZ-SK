@@ -355,7 +355,7 @@ namespace Orts.Viewer3D.Popups
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptCableSignals)
                 {
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU disconnected"));
-                    (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals = false;
+                    //(Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).AcceptPowerSignals = false;
                 }
                 else
                     Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Cable MU connected"));
