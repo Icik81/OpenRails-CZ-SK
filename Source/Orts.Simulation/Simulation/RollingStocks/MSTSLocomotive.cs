@@ -3253,7 +3253,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
                 {
-                    if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
+                    if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 1 || SlaveCarNumber2 == SlaveCarNumber1 + 2 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
                     {
                         Train.SlaveLoco2 = car;
                         Train.SlaveCarNumber2 = SlaveCarNumber2;
