@@ -2872,11 +2872,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 if (SlaveCar1.AcceptCableSignals)
                                 {
-                                    SlaveCar1.AuxCompressorNoActiveStation = false;
+                                    SlaveCar1.AuxCompressorNoActiveStation = true;
                                     if (MasterCar.AuxCompressorMode_OffOn[loco.LocoStation])
                                     {
-                                        SlaveCar1.AuxCompressor = MasterCar.AuxCompressor;
-                                        SlaveCar1.AuxCompressorNoActiveStation = true;
+                                        SlaveCar1.AuxCompressor = MasterCar.AuxCompressor;                                        
                                         SlaveCar1.AuxCompressorMode_OffOn[loco.LocoStation] = true;
                                     }
                                     else
@@ -2884,11 +2883,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         SlaveCar1.AuxCompressorMode_OffOn[loco.LocoStation] = false;
                                     }
 
-                                    SlaveCar1.StationIsActivated[SlaveCar1.LocoStation] = false;
+                                    SlaveCar1.StationIsActivated[SlaveCar1.LocoStation] = true;
                                     if (MasterCar.CompressorIsOn)
                                     {
-                                        SlaveCar1.Compressor_I = MasterCar.Compressor_I;
-                                        SlaveCar1.StationIsActivated[SlaveCar1.LocoStation] = true;
+                                        SlaveCar1.Compressor_I = MasterCar.Compressor_I;                                        
                                         SlaveCar1.CompressorMode_OffAuto[SlaveCar1.LocoStation] = true;
                                         if (MasterCar.Compressor_I_HandMode[MasterCar.LocoStation])
                                         {
@@ -2902,8 +2900,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     }
                                     if (MasterCar.Compressor2IsOn)
                                     {
-                                        SlaveCar1.Compressor_II = MasterCar.Compressor_II;
-                                        SlaveCar1.StationIsActivated[SlaveCar1.LocoStation] = true;
+                                        SlaveCar1.Compressor_II = MasterCar.Compressor_II;                                        
                                         SlaveCar1.CompressorMode2_OffAuto[SlaveCar1.LocoStation] = true;
                                         if (MasterCar.Compressor_II_HandMode[MasterCar.LocoStation])
                                         {
@@ -2934,11 +2931,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 if (SlaveCar2.AcceptCableSignals)
                                 {
-                                    SlaveCar2.AuxCompressorNoActiveStation = false;
+                                    SlaveCar2.AuxCompressorNoActiveStation = true;
                                     if (MasterCar.AuxCompressorMode_OffOn[loco.LocoStation])
                                     {
-                                        SlaveCar2.AuxCompressor = MasterCar.AuxCompressor;
-                                        SlaveCar2.AuxCompressorNoActiveStation = true;
+                                        SlaveCar2.AuxCompressor = MasterCar.AuxCompressor;                                        
                                         SlaveCar2.AuxCompressorMode_OffOn[loco.LocoStation] = true;
                                     }
                                     else
@@ -2946,11 +2942,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                         SlaveCar2.AuxCompressorMode_OffOn[loco.LocoStation] = false;
                                     }
 
-                                    SlaveCar2.StationIsActivated[SlaveCar2.LocoStation] = false;
+                                    SlaveCar2.StationIsActivated[SlaveCar2.LocoStation] = true;
                                     if (MasterCar.CompressorIsOn)
                                     {
-                                        SlaveCar2.Compressor_I = MasterCar.Compressor_I;
-                                        SlaveCar2.StationIsActivated[SlaveCar2.LocoStation] = true;
+                                        SlaveCar2.Compressor_I = MasterCar.Compressor_I;                                        
                                         SlaveCar2.CompressorMode_OffAuto[SlaveCar2.LocoStation] = true;
                                         if (MasterCar.Compressor_I_HandMode[MasterCar.LocoStation])
                                         {
@@ -2964,8 +2959,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     }
                                     if (MasterCar.Compressor2IsOn)
                                     {
-                                        SlaveCar2.Compressor_II = MasterCar.Compressor_II;
-                                        SlaveCar2.StationIsActivated[SlaveCar2.LocoStation] = true;
+                                        SlaveCar2.Compressor_II = MasterCar.Compressor_II;                                        
                                         SlaveCar2.CompressorMode2_OffAuto[SlaveCar2.LocoStation] = true;
                                         if (MasterCar.Compressor_II_HandMode[MasterCar.LocoStation])
                                         {
