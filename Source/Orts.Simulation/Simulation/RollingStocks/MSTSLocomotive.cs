@@ -6002,27 +6002,64 @@ namespace Orts.Simulation.RollingStocks
         
         public void CheckPantos()
         {
-            Pantograph p1 = Pantographs.List[0];
-            Pantograph p2 = Pantographs.List[1];
-            Pantograph p3 = Pantographs.List[0];
-            Pantograph p4 = Pantographs.List[1];
-            if (Pantographs.Count == 4)
-            {
-                p3 = Pantographs.List[2];
-                p4 = Pantographs.List[3];
-            }            
+            Pantograph p1;
+            Pantograph p2;
+            Pantograph p3;
+            Pantograph p4;
 
-            if (UsingRearCab)
+            if (Flipped)
             {
-                p1 = Pantographs.List[1];
-                p2 = Pantographs.List[0];
-                p3 = Pantographs.List[1];
-                p4 = Pantographs.List[0];
-                if (Pantographs.Count == 4)
+                if (UsingRearCab)
                 {
-                    p3 = Pantographs.List[3];
-                    p4 = Pantographs.List[2];
+                    p1 = Pantographs.List[0];
+                    p2 = Pantographs.List[1];
+                    p3 = Pantographs.List[0];
+                    p4 = Pantographs.List[1];
+                    if (Pantographs.Count == 4)
+                    {
+                        p3 = Pantographs.List[2];
+                        p4 = Pantographs.List[3];
+                    }
                 }
+                else
+                {
+                    p1 = Pantographs.List[1];
+                    p2 = Pantographs.List[0];
+                    p3 = Pantographs.List[1];
+                    p4 = Pantographs.List[0];
+                    if (Pantographs.Count == 4)
+                    {
+                        p3 = Pantographs.List[3];
+                        p4 = Pantographs.List[2];
+                    }
+                }
+            }
+            else
+            {
+                if (UsingRearCab)
+                {
+                    p1 = Pantographs.List[1];
+                    p2 = Pantographs.List[0];
+                    p3 = Pantographs.List[1];
+                    p4 = Pantographs.List[0];
+                    if (Pantographs.Count == 4)
+                    {
+                        p3 = Pantographs.List[3];
+                        p4 = Pantographs.List[2];
+                    }
+                }
+                else
+                {
+                    p1 = Pantographs.List[0];
+                    p2 = Pantographs.List[1];
+                    p3 = Pantographs.List[0];
+                    p4 = Pantographs.List[1];
+                    if (Pantographs.Count == 4)
+                    {
+                        p3 = Pantographs.List[2];
+                        p4 = Pantographs.List[3];
+                    }
+                }                
             }
 
             // Master - Slave
@@ -6037,32 +6074,60 @@ namespace Orts.Simulation.RollingStocks
                         (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
                         (car as MSTSElectricLocomotive).PantoMode = PantoMode;
 
-                        if (UsingRearCab)
+                        if (car.Flipped)
                         {
-                            (car as MSTSWagon).Pantographs.List[1].State = p1.State;
-                            (car as MSTSWagon).Pantographs.List[0].State = p2.State;
-
-                            if ((car as MSTSWagon).Pantographs.Count == 4)
+                            if (UsingRearCab)
                             {
-                                (car as MSTSWagon).Pantographs.List[3].State = p3.State;
-                                (car as MSTSWagon).Pantographs.List[2].State = p4.State;
+                                (car as MSTSWagon).Pantographs.List[0].State = p1.State;
+                                (car as MSTSWagon).Pantographs.List[1].State = p2.State;
+
+                                if ((car as MSTSWagon).Pantographs.Count == 4)
+                                {
+                                    (car as MSTSWagon).Pantographs.List[2].State = p3.State;
+                                    (car as MSTSWagon).Pantographs.List[3].State = p4.State;
+                                }
+                            }
+                            else
+                            {
+                                (car as MSTSWagon).Pantographs.List[1].State = p1.State;
+                                (car as MSTSWagon).Pantographs.List[0].State = p2.State;
+
+                                if ((car as MSTSWagon).Pantographs.Count == 4)
+                                {
+                                    (car as MSTSWagon).Pantographs.List[3].State = p3.State;
+                                    (car as MSTSWagon).Pantographs.List[2].State = p4.State;
+                                }
                             }
                         }
                         else
                         {
-                            (car as MSTSWagon).Pantographs.List[0].State = p1.State;
-                            (car as MSTSWagon).Pantographs.List[1].State = p2.State;
-
-                            if ((car as MSTSWagon).Pantographs.Count == 4)
+                            if (UsingRearCab)
                             {
-                                (car as MSTSWagon).Pantographs.List[2].State = p3.State;
-                                (car as MSTSWagon).Pantographs.List[3].State = p4.State;
+                                (car as MSTSWagon).Pantographs.List[1].State = p1.State;
+                                (car as MSTSWagon).Pantographs.List[0].State = p2.State;
+
+                                if ((car as MSTSWagon).Pantographs.Count == 4)
+                                {
+                                    (car as MSTSWagon).Pantographs.List[3].State = p3.State;
+                                    (car as MSTSWagon).Pantographs.List[2].State = p4.State;
+                                }
+                            }
+                            else
+                            {
+                                (car as MSTSWagon).Pantographs.List[0].State = p1.State;
+                                (car as MSTSWagon).Pantographs.List[1].State = p2.State;
+
+                                if ((car as MSTSWagon).Pantographs.Count == 4)
+                                {
+                                    (car as MSTSWagon).Pantographs.List[2].State = p3.State;
+                                    (car as MSTSWagon).Pantographs.List[3].State = p4.State;
+                                }
                             }
                         }
                         break;
                     }
                 }
-
+            
             switch (PantoMode)
             {
                 case PantoModes.Auto:
@@ -6335,7 +6400,7 @@ namespace Orts.Simulation.RollingStocks
                 WheelSpeedMpS = 0;
             if (IsPlayerTrain)
             {
-                if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
+                if (LocoType == LocoTypes.Vectron && !PantoCommandDown && !SlaveLoco)
                     CheckPantos();
                 if (IsPlayerTrain && !Simulator.Paused)
                 {
@@ -6478,7 +6543,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
 
-                            if (SystemAnnunciator == 0 && TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                            if (!SlaveLoco && SystemAnnunciator == 0 && TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
                             {
                                 SystemAnnunciator = 6;
                             }

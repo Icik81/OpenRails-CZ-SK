@@ -451,6 +451,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 OverridenControllerVolts = Locomotive.ControllerVolts;
 
+                if (Locomotive.SlaveLoco && Locomotive.TractionBlocked) Locomotive.TractionBlocked = false;
+
                 if (Locomotive.IsLeadLocomotive())
                 {
                     if (Locomotive.ForceHandleValue == 0)
