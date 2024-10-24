@@ -3217,7 +3217,7 @@ namespace Orts.Simulation.RollingStocks
             int MasterCarNumber = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
                 {
                     if (Train.MasterLoco == null && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2]))
                     {
@@ -3234,7 +3234,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber1 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
                 {
                     if (Train.SlaveLoco1 == null && (SlaveCarNumber1 == MasterCarNumber + 1 || SlaveCarNumber1 == MasterCarNumber - 1))
                     {
@@ -3251,7 +3251,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber2 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
                 {
                     if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 1 || SlaveCarNumber2 == SlaveCarNumber1 + 2 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
                     {
@@ -6607,7 +6607,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.Auto && CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.AVV)
                             {
-                                if (ForceHandleValue == 0 && !LocoHelperOn)
+                                if (ForceHandleValue == 0 && !LocoHelperOn && !SlaveLoco)
                                 {
                                     ThrottlePercent = 0;
                                     if (DynamicBrakePercent >= 0)
@@ -6662,7 +6662,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         speedDiff = Math.Abs(speedDiff);
 
-                        if (IsLeadLocomotive() || LocoHelperOn || AcceptCableSignals)
+                        if (IsLeadLocomotive() || LocoHelperOn || AcceptCableSignals || SlaveLoco)
                         {
                             if (speedDiff > AntiWheelSpinSpeedDiffThreshold || (AbsWheelSpeedMpS - AbsSpeedMpS) > AntiWheelSpinSpeedDiffThreshold)
                             {
