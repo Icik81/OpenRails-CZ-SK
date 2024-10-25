@@ -5895,7 +5895,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Připojený MU kabel
-            if (AcceptCableSignals)
+            if (AcceptCableSignals && Simulator.LocoCount > 1)
             {
                 AcceptMUSignals = true;
             }
@@ -10613,10 +10613,7 @@ namespace Orts.Simulation.RollingStocks
 
         internal void ToggleMUCommand(bool ToState)
         {
-            //AcceptMUSignals = ToState;
-            //AcceptPowerSignals = ToState;
-            if (Simulator.LocoCount > 1)
-                AcceptCableSignals = ToState;
+            AcceptCableSignals = ToState;
         }
 
         // Icik
@@ -11286,8 +11283,9 @@ namespace Orts.Simulation.RollingStocks
                         if (IsLeadLocomotive())
                             Simulator.LeadAuxResVolumeM3 = AuxResVolumeM3;
 
+                        MUCableLogic();
                         // Osobní vlak s elektrickou lokomotivou                                                            
-                        if (Simulator.TrainIsPassenger)
+                        if (Simulator.TrainIsPassenger && Simulator.LocoCount > 1)
                             foreach (var car in Train.Cars)
                             {
                                 if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
@@ -11296,7 +11294,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
-                        if (this.MUCableCanBeUsed)
+                        if (this.MUCableCanBeUsed && Simulator.LocoCount > 1)
                         {
                             if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                             {
