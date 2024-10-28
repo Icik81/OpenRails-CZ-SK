@@ -1997,6 +1997,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
@@ -2023,10 +2024,14 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Dec_Past:                                                    
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Dec_Past:
@@ -2046,6 +2051,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
@@ -2072,10 +2078,14 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Inc_Past:                                
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Inc_Past:
@@ -2104,16 +2114,21 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_Equals_To:
@@ -2146,16 +2161,21 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.EngineBrakeController_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.BrakeCyl_NEquals_To:
@@ -2294,6 +2314,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
                     return car.Variable2;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_NEquals_To:
+                    return car.Variable22;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Equals_To:
@@ -2324,6 +2349,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                     return car.Variable4;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_NEquals_To:
+                    return car.Variable42;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable5_Equals_To:
@@ -2334,16 +2364,31 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable6_NEquals_To:
                     return car.Variable6;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable62_NEquals_To:
+                    return car.Variable62;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable7_NEquals_To:
                     return car.Variable7;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable72_NEquals_To:
+                    return car.Variable72;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable8_NEquals_To:
                     return car.Variable8;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable82_NEquals_To:
+                    return car.Variable82;
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.TrainBrakeController_Equals_To:
