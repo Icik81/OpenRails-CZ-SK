@@ -68,7 +68,9 @@ namespace Orts.Common
         EngineBrakePressureDecrease,
         EngineBrakePressureIncrease,
         EnginePowerOff,
+        EnginePowerOff2,
         EnginePowerOn,
+        EnginePowerOn2,
         FireboxDoorChange,
         FireboxDoorOpen,
         FireboxDoorClose,
@@ -302,9 +304,13 @@ namespace Orts.Common
         DieselDirectionControllerIn,
         DieselDirectionControllerOut,
         StartUpMotor,
+        StartUpMotor2,
         StartUpMotorStop,
+        StartUpMotorStop2,
         StartUpMotorBreak,
+        StartUpMotorBreak2,
         InitMotorIdle,
+        InitMotorIdle2,
         DieselMotorTempWarning,
         DieselMotorTempWarningOff,
         DieselMotorTempDefected,
@@ -327,6 +333,7 @@ namespace Orts.Common
         BreakEDBButton,
         BreakEDBButtonRelease,
         MotorStopBreak,
+        MotorStopBreak2,
         BrakeSkidStart,
         BrakeSkidStop,
         CouplerPull,
@@ -705,9 +712,9 @@ namespace Orts.Common
                         case 20055: return Event.TrainBrakeEmergencyActivated;
                         case 20056: return Event.DieselDirectionControllerIn;
                         case 20057: return Event.DieselDirectionControllerOut;
-                        case 20058: return Event.StartUpMotor;
-                        case 20059: return Event.StartUpMotorStop;
-                        case 20060: return Event.StartUpMotorBreak;
+                        case 20058: return Event.StartUpMotor;                        
+                        case 20059: return Event.StartUpMotorStop;                        
+                        case 20060: return Event.StartUpMotorBreak;                        
                         case 20061: return Event.InitMotorIdle;
                         case 20062: return Event.DieselMotorTempWarning;
                         case 20063: return Event.DieselMotorTempWarningOff;
@@ -792,6 +799,14 @@ namespace Orts.Common
                         case 20142: return Event.ToggleTractionSwitchDown;
                         case 20143: return Event.ToggleTractionOn;
                         case 20144: return Event.ToggleTractionOff;
+                            // nové
+                        case 20145: return Event.InitMotorIdle2;
+                        case 20146: return Event.StartUpMotor2;
+                        case 20147: return Event.StartUpMotorStop2;
+                        case 20148: return Event.StartUpMotorBreak2;
+                        case 20149: return Event.EnginePowerOn2;
+                        case 20150: return Event.EnginePowerOff2;
+                        case 20151: return Event.MotorStopBreak2;
 
                         default: return 0;
                     }

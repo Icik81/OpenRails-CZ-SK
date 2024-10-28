@@ -27,6 +27,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
@@ -329,10 +330,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// Updates each auxiliary on the list
         /// </summary>
         /// <param name="elapsedClockSeconds">Time span within the simulation cycle</param>
+        public bool DieselEngine1;
+        public bool DieselEngine2;
+        int DieselEngineCounter;
         public void Update(float elapsedClockSeconds)
         {
             foreach (DieselEngine de in DEList)
             {
+                DieselEngineCounter++;                
+                switch (DieselEngineCounter)
+                {
+                    case 1:
+                        DieselEngine1 = true; DieselEngine2 = false; break;
+                    case 2:
+                        DieselEngine1 = false; DieselEngine2 = true; break;
+                }
+                if (DieselEngineCounter == DEList.Count)
+                    DieselEngineCounter = 0;
+
                 de.Update(elapsedClockSeconds);
             }
         }
@@ -347,69 +362,61 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             return new DieselEnum(DEList.ToArray());
         }
 
+        public string[] GetStatusDieselEngine = new string[10];
         public string GetStatus()
         {
             var result = new StringBuilder();
 
             //result.AppendFormat(Simulator.Catalog.GetString("Status"));
-            foreach (var eng in DEList)
-            switch (GetStringAttribute.GetPrettyName(eng.EngineStatus))
+            for (int i = 0; i < DEList.Count; i++)
+            {   
+                result.Clear();
+                var eng = DEList[i];
+                switch (GetStringAttribute.GetPrettyName(eng.EngineStatus))
                 {
                     case "Starting": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Starting")); break;
                     case "Stopping": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Stopping")); break;
                     case "Running": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Running")); break;
                     case "Stopped": result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Stopped")); break;
-                }                
+                }
 
-            //result.AppendFormat("\t{0}\t{1}", Simulator.Catalog.GetParticularString("HUD", "Power"), FormatStrings.FormatPower(MaxOutputPowerW, Locomotive.IsMetric, false, false));
-            foreach (var eng in DEList)
+                //result.AppendFormat("\t{0}\t{1}", Simulator.Catalog.GetParticularString("HUD", "Power"), FormatStrings.FormatPower(MaxOutputPowerW, Locomotive.IsMetric, false, false));                
                 result.AppendFormat("\t{0}", FormatStrings.FormatPower(eng.CurrentDieselInputPowerW, Locomotive.IsMetric, false, false));
 
-            //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Load"));
-            foreach (var eng in DEList)
+                //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Load"));                
                 result.AppendFormat("\t{0:F1}%", eng.LoadPercent);
-
-            foreach (var eng in DEList)
                 result.AppendFormat("\t{0:F0} {1}", eng.RealRPM, FormatStrings.rpm);
-            
-            //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Flow"));
-            foreach (var eng in DEList)
+
+                //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Flow"));
                 result.AppendFormat("\t{0}/{1}", FormatStrings.FormatFuelVolume(pS.TopH(eng.DieselFlowLps), Locomotive.IsMetric, Locomotive.IsUK), FormatStrings.h);
 
-            //result.Append("\t");
-            foreach (var eng in DEList)
+                //result.Append("\t");
                 result.AppendFormat("\t{0}", (float)(Math.Round(eng.RealDieselWaterTemperatureDeg, 2)) + " °C");
 
-            foreach (var eng in DEList)
                 result.AppendFormat("\t{0}", (float)(Math.Round(eng.RealDieselOilTemperatureDeg, 2)) + " °C");
 
-            //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Oil"));
-            foreach (var eng in DEList)
+                //result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Oil"));
                 result.AppendFormat("\t{0}", FormatStrings.FormatPressure(eng.DieselOilPressurePSI, PressureUnit.PSI, Locomotive.MainPressureUnit, true));
 
-            // Icik
-            if (Locomotive.PowerUnit && !Locomotive.LocoHelperOn && !Locomotive.ControlUnit)
-                foreach (var eng in DEList)
+                // Icik
+                if (Locomotive.PowerUnit && !Locomotive.LocoHelperOn && !Locomotive.ControlUnit)
                     result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Engine"));
-            
-            if (Locomotive.LocoHelperOn)
-                foreach (var eng in DEList)
+
+                if (Locomotive.LocoHelperOn)
                     result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Helper"));
 
-            if (Locomotive.ControlUnit)
-                foreach (var eng in DEList)
+                if (Locomotive.ControlUnit)
                     result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Control"));
 
-            foreach (var eng in DEList)
                 result.AppendFormat("\t{0:F0} {1}", Locomotive.Variable8, FormatStrings.rpm);
 
-            foreach (var eng in DEList)
                 result.AppendFormat("\t {0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
 
-            foreach (var eng in DEList)
                 result.AppendFormat("\t {0:F1}%", Locomotive.Variable7);
-
-            return result.ToString();
+                
+                GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
+            }
+            return GetStatusDieselEngine[0];
         }
 
         public int NumOfActiveEngines
@@ -882,7 +889,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {
                 // Icik
                 // Tlakování mazacího čerpadla při spouštění motoru
-                if (locomotive.DieselStartDelay > 0.1f)
+                if (locomotive.DieselEngines.DieselEngine1 && locomotive.DieselStartDelay > 0.1f)
                 {
                     if (locomotive.StopButtonReleased || ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime > 0))
                     {
@@ -891,6 +898,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                     else
                     if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
+                    {
+                        if (RealRPM0 > 0)
+                            RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
+                    }
+                }
+                else
+                if (locomotive.DieselEngines.DieselEngine2 && locomotive.DieselStartDelay2 > 0.1f)
+                {
+                    if (locomotive.StopButtonReleased2 || ((locomotive.StartButtonPressed2 || locomotive.StartLooseCon || OnePushStartButton) && locomotive.DieselStartTime2 > 0))
+                    {
+                        if (RealRPM0 < IdleRPM)
+                            RealRPM0 += IdleRPM / locomotive.DieselStartDelay * locomotive.Simulator.OneSecondLoop;
+                    }
+                    else
+                    if ((!locomotive.StartButtonPressed2 && !locomotive.StartLooseCon && !OnePushStartButton) && (EngineStatus == Status.Stopped || EngineStatus == Status.Stopping))
                     {
                         if (RealRPM0 > 0)
                             RealRPM0 -= IdleRPM / (IdleRPM / StoppingRateOfChangeDownRPMpSS) * locomotive.Simulator.OneSecondLoop / 3;
@@ -1256,9 +1278,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public bool RPMOverkill;
         bool RPMgrowth;
         float DeltaUpRPMpS;
-        bool RegulatorStandChange;
+        bool RegulatorStandChange;        
         public void Update(float elapsedClockSeconds)
-        {
+        {                    
             locomotive.DieselOilPressurePSI = DieselOilPressurePSI;
 
             // Inicializace AI
@@ -1360,16 +1382,26 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             else
             {
                 // Spustí volnoběh při dosažení volnoběžných otáček při přerušeném stopování motoru
-                if (locomotive.StopButtonReleased && RealRPM > 0.999f * IdleRPM)
+                if (locomotive.DieselEngines.DieselEngine1 && locomotive.StopButtonReleased && RealRPM > 0.999f * IdleRPM)
                 {                    
                     locomotive.StopButtonReleased = false;
                     locomotive.SignalEvent(Event.InitMotorIdle);
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                 }
-                if (locomotive.StopButtonReleased && RealRPM == 0)
+                if (locomotive.DieselEngines.DieselEngine2 && locomotive.StopButtonReleased2 && RealRPM > 0.999f * IdleRPM)
+                {
+                    locomotive.StopButtonReleased2 = false;
+                    locomotive.SignalEvent(Event.InitMotorIdle);
+                    MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
+                }
+                if (locomotive.DieselEngines.DieselEngine1 && locomotive.StopButtonReleased && RealRPM == 0)
                 {
                     locomotive.StopButtonReleased = false;
-                }                
+                }
+                if (locomotive.DieselEngines.DieselEngine2 && locomotive.StopButtonReleased2 && RealRPM == 0)
+                {
+                    locomotive.StopButtonReleased2 = false;
+                }
                 if (RealRPM < DemandedRPM)
                 {                    
                     dRPM = (float)Math.Min(Math.Sqrt(2 * RateOfChangeUpRPMpSS * (DemandedRPM - RealRPM)), ChangeUpRPMpS);
@@ -1717,11 +1749,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         // Vypnutí motoru při přetočení
                         if (RPMOverkill)
                         {
-                            locomotive.DieselEngines[0].Stop();
+                            if (locomotive.DieselEngines.DieselEngine1)
+                                locomotive.DieselEngines[0].Stop();
+                            if (locomotive.DieselEngines.DieselEngine2)
+                                locomotive.DieselEngines[1].Stop();
                             if (RealRPM < IdleRPM)
                             {
-                                locomotive.SignalEvent(Event.EnginePowerOff);
-                                RPMOverkill = false;
+                                if (locomotive.DieselEngines.DieselEngine1)
+                                {
+                                    locomotive.SignalEvent(Event.EnginePowerOff);
+                                    RPMOverkill = false;
+                                }
+                                if (locomotive.DieselEngines.DieselEngine2)
+                                {
+                                    locomotive.SignalEvent(Event.EnginePowerOff2);
+                                    RPMOverkill = false;
+                                }
                             }
                         }
                     }
@@ -1770,22 +1813,42 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             if (EngineStatus == Status.Starting)
             {
-                // Icik
-                if ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
+                // Icik                
+                if (locomotive.DieselEngines.DieselEngine1)
                 {
-                    if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                    if ((locomotive.StartButtonPressed || locomotive.StartLooseCon || OnePushStartButton) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
                     {
-                        DemandedRPM = 1.1f * StartingConfirmationRPM;
-                        ExhaustColor = ExhaustTransientColor;
-                        ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                        if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                        {
+                            DemandedRPM = 1.1f * StartingConfirmationRPM;
+                            ExhaustColor = ExhaustTransientColor;
+                            ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                        }
+                    }
+                    if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
+                    {
+                        locomotive.DieselEngines[0].Stop();
+                        locomotive.SignalEvent(Event.StartUpMotorBreak);
                     }
                 }
-                if ((!locomotive.StartButtonPressed && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
+                if (locomotive.DieselEngines.DieselEngine2)
                 {
-                    locomotive.DieselEngines[0].Stop();
-                    locomotive.SignalEvent(Event.StartUpMotorBreak);                    
+                    if ((locomotive.StartButtonPressed2 || locomotive.StartLooseCon || OnePushStartButton) && (locomotive.DieselDirection_Start || locomotive.StartLooseCon))
+                    {
+                        if ((RealRPM > (0.9f * StartingRPM)) && (RealRPM < StartingRPM))
+                        {
+                            DemandedRPM = 1.1f * StartingConfirmationRPM;
+                            ExhaustColor = ExhaustTransientColor;
+                            ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
+                        }
+                    }                                    
+                    if ((!locomotive.StartButtonPressed2 && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
+                    {
+                        locomotive.DieselEngines[1].Stop();
+                        locomotive.SignalEvent(Event.StartUpMotorBreak2);
+                    }
                 }
-
+                                
                 if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
                 {
                     EngineStatus = Status.Running;
@@ -1795,7 +1858,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         locomotive.Variable2 = 0.01f;
                 }
             }
-            
+
             if ((EngineStatus == Status.Stopped) || (EngineStatus == Status.Stopping) || ((EngineStatus == Status.Starting) && (RealRPM < StartingRPM)))
             {
                 ExhaustParticles = 0;
@@ -2071,6 +2134,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         RealDieselOilTemperatureDeg = DieselIdleTemperatureDegC - 5;
                     
                     locomotive.DieselLocoTempReady = true;
+                    locomotive.DieselLocoTempReady2 = true;
                 }
                 else
                 {
@@ -2115,24 +2179,48 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Fáze zahřívání motoru
             locomotive.PowerReductionResult6 = 0;
-            if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady)
+            if (locomotive.DieselEngines.DieselEngine1)
             {
-                ExhaustColor = Color.TransparentBlack;
-                //ExhaustParticles *= 2;
-                ExhaustMagnitude *= 2;
-                
+                if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady)
+                {
+                    ExhaustColor = Color.TransparentBlack;
+                    //ExhaustParticles *= 2;
+                    ExhaustMagnitude *= 2;
+
+                    if (DieselIdleWaterTemperatureDegC != 0)
+                        DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
+                    locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
+
+                    if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
+                        locomotive.DieselLocoTempReady = true;
+                }
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-                locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
+                if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
+                    locomotive.DieselLocoTempReady = false;
+            }
 
-                if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
-                    locomotive.DieselLocoTempReady = true;
-            }            
-            if (DieselIdleWaterTemperatureDegC != 0)
-                DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-            if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
-                locomotive.DieselLocoTempReady = false;
-            
+            if (locomotive.DieselEngines.DieselEngine2)
+            {
+                if (EngineStatus == Status.Running && !locomotive.DieselLocoTempReady2)
+                {
+                    ExhaustColor = Color.TransparentBlack;
+                    //ExhaustParticles *= 2;
+                    ExhaustMagnitude *= 2;
+
+                    if (DieselIdleWaterTemperatureDegC != 0)
+                        DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
+                    locomotive.PowerReductionResult6 = MathHelper.Clamp(1 - (RealDieselWaterTemperatureDeg / (0.90f * DieselIdleTemperatureDegC)), 0, 0.5f);
+
+                    if (RealDieselWaterTemperatureDeg > 0.90f * DieselIdleTemperatureDegC)
+                        locomotive.DieselLocoTempReady2 = true;
+                }
+                if (DieselIdleWaterTemperatureDegC != 0)
+                    DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
+                if (RealDieselWaterTemperatureDeg < DieselIdleTemperatureDegC * 0.75f)
+                    locomotive.DieselLocoTempReady2 = false;
+            }
+
             //CoolingFlowBase = 2.0f;
             // Průtok čerpadla zvyšuje chlazení při vyšších otáčkách
             if (CoolingFlowBase == 0) CoolingFlowBase = 2.0f;            
@@ -2201,13 +2289,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     else
                     {
                         OverHeatTimer[i] = 0;
-                        locomotive.DieselMotorTempWarning = false;
+                        
+                        if (locomotive.DieselEngines.DieselEngine1)
+                            locomotive.DieselMotorTempWarning = false;
+
+                        if (locomotive.DieselEngines.DieselEngine2)
+                            locomotive.DieselMotorTempWarning2 = false;
+
                         locomotive.SignalEvent(Event.DieselMotorTempWarningOff);
                     }
 
                     if (OverHeatTimer[i] > 120)
                     {
-                        locomotive.DieselMotorDefected = true;
+                        if (locomotive.DieselEngines.DieselEngine1)
+                            locomotive.DieselMotorDefected = true;
+
+                        if (locomotive.DieselEngines.DieselEngine2)
+                            locomotive.DieselMotorDefected2 = true;
+
                         if (EngineStatus == Status.Running && OverHeatTimer2 == 0)
                             locomotive.SignalEvent(Event.DieselMotorTempDefected);
                         locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's wrecked!"));
@@ -2215,13 +2314,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     else
                     if (OverHeatTimer[i] > 60)
                     {
-                        locomotive.DieselMotorPowerLost = true;
+                        if (locomotive.DieselEngines.DieselEngine1)
+                            locomotive.DieselMotorPowerLost = true;
+
+                        if (locomotive.DieselEngines.DieselEngine2)
+                            locomotive.DieselMotorPowerLost2 = true;
+                        
                         locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine's damaged!"));
                     }
                     else
                     if (OverHeatTimer[i] > 1)
                     {
-                        locomotive.DieselMotorTempWarning = true;
+                        if (locomotive.DieselEngines.DieselEngine1)
+                            locomotive.DieselMotorTempWarning = true;
+
+                        if (locomotive.DieselEngines.DieselEngine2)
+                            locomotive.DieselMotorTempWarning2 = true;
+
                         locomotive.SignalEvent(Event.DieselMotorTempWarning);
                         if (i == 0 && RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
                             locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:") + " " + Math.Round(RealDieselWaterTemperatureDeg, 2) + "°C");
@@ -2229,12 +2338,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Oil temperature:") + " " + Math.Round(RealDieselOilTemperatureDeg, 2) + "°C");
                     }
 
-                    if (locomotive.DieselMotorPowerLost)
+                    if (locomotive.DieselMotorPowerLost || locomotive.DieselMotorPowerLost2)
                     {
-                        locomotive.PowerReductionResult9 = 0.25f;
+                        if (locomotive.DieselMotorPowerLost && locomotive.DieselMotorPowerLost2)
+                            locomotive.PowerReductionResult9 = 0.50f;
+                        else
+                            locomotive.PowerReductionResult9 = 0.25f;
                         ExhaustColor = Color.DarkGray;
                     }
-                    if (locomotive.DieselMotorDefected && EngineStatus == Status.Running)
+                    
+                    if (locomotive.DieselEngines.DieselEngine1 && locomotive.DieselMotorDefected && EngineStatus == Status.Running)
                     {
                         OverHeatTimer2 += elapsedClockSeconds;
                         ExhaustColor = Color.Black;
@@ -2243,11 +2356,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         if (OverHeatTimer2 > 10)
                             locomotive.DieselEngines[0].Stop();
                     }
+                    if (locomotive.DieselEngines.DieselEngine2 && locomotive.DieselMotorDefected2 && EngineStatus == Status.Running)
+                    {
+                        OverHeatTimer2 += elapsedClockSeconds;
+                        ExhaustColor = Color.Black;
+                        ExhaustParticles = 4f;
+                        ExhaustMagnitude = InitialMagnitude * 10;
+                        if (OverHeatTimer2 > 10)
+                            locomotive.DieselEngines[1].Stop();
+                    }
 
                     //if (i == 0)
                     //    locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Teplota motoru: " + Math.Round(RealDieselWaterTemperatureDeg, 2)));
                     //locomotive.Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Power reduction: " + locomotive.PowerReduction));
-                }
+                }              
             }
         }
 
@@ -2259,32 +2381,64 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 case Status.Stopped:
                 case Status.Stopping:
                     // Icik
-                    if (locomotive.DieselMotorDefected || RPMOverkill) 
+                    if (locomotive.DieselEngines.DieselEngine1 && locomotive.DieselMotorDefected || RPMOverkill) 
                     {
                         DemandedRPM = 0;
                         EngineStatus = Status.Stopped;                                                   
                     }
                     else
-                    if (locomotive.StopButtonReleased) // Přerušený stop motoru
+                    if (locomotive.DieselEngines.DieselEngine2 && locomotive.DieselMotorDefected2 || RPMOverkill)
+                    {
+                        DemandedRPM = 0;
+                        EngineStatus = Status.Stopped;
+                    }
+                    else
+                    if (locomotive.DieselEngines.DieselEngine1 && locomotive.StopButtonReleased) // Přerušený stop motoru
                     {                        
                         DemandedRPM = IdleRPM;
                         EngineStatus = Status.Running;
                         locomotive.SignalEvent(Event.MotorStopBreak);
                     }
                     else
+                    if (locomotive.DieselEngines.DieselEngine2 && locomotive.StopButtonReleased2) // Přerušený stop motoru
+                    {
+                        DemandedRPM = IdleRPM;
+                        EngineStatus = Status.Running;
+                        locomotive.SignalEvent(Event.MotorStopBreak2);
+                    }
+                    else
                     if ((locomotive.DieselDirectionController || locomotive.DieselDirectionController2 || locomotive.DieselDirectionController3 || locomotive.DieselDirectionController4) && locomotive.DieselDirection_Start)
                     {
-                        locomotive.StopButtonReleased = false;
-                        DemandedRPM = StartingRPM;
-                        EngineStatus = Status.Starting;
-                        locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
-                    }
+                        if (locomotive.DieselEngines.DieselEngine1)
+                        {
+                            locomotive.StopButtonReleased = false;
+                            DemandedRPM = StartingRPM;
+                            EngineStatus = Status.Starting;
+                            locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
+                        }
+                        if (locomotive.DieselEngines.DieselEngine2)
+                        {
+                            locomotive.StopButtonReleased2 = false;
+                            DemandedRPM = StartingRPM;
+                            EngineStatus = Status.Starting;
+                            locomotive.SignalEvent(Event.EnginePowerOn2); // power on sound hook
+                        }
+                    }                    
                     else
                     if (locomotive.CarFrameUpdateState > 9 && !locomotive.DieselDirectionController && !locomotive.DieselDirectionController2 && !locomotive.DieselDirectionController3 && !locomotive.DieselDirectionController4)
                     {
-                        DemandedRPM = StartingRPM;
-                        EngineStatus = Status.Starting;
-                        locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
+                        if (locomotive.DieselEngines.DieselEngine1)
+                        {
+                            DemandedRPM = StartingRPM;
+                            EngineStatus = Status.Starting;
+                            locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
+                        }
+                        if (locomotive.DieselEngines.DieselEngine2)
+                        {
+                            DemandedRPM = StartingRPM;
+                            EngineStatus = Status.Starting;
+                            locomotive.SignalEvent(Event.EnginePowerOn2); // power on sound hook
+                        }
                     }
                     break;
                 default:
@@ -2301,8 +2455,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 EngineStatus = Status.Stopping;
                 if (RealRPM <= 0)
                     EngineStatus = Status.Stopped;                
-                if (!RPMOverkill)
-                    locomotive.SignalEvent(Event.EnginePowerOff); // power off sound hook
+                
+                if (locomotive.DieselEngines.DieselEngine1 && !RPMOverkill)
+                    locomotive.SignalEvent(Event.EnginePowerOff);
+                
+                if (locomotive.DieselEngines.DieselEngine2 && !RPMOverkill)
+                    locomotive.SignalEvent(Event.EnginePowerOff2);
             }
             return EngineStatus;
         }

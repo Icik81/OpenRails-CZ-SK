@@ -174,6 +174,7 @@
         [GetString("Control_Classic Circuit Breaker Opening Order")] ControlCircuitBreakerOpeningOrder,
         [GetString("Control_Classic Circuit Breaker Closing Authorization")] ControlCircuitBreakerClosingAuthorization,
         [GetString("Control_Classic Diesel Player")] ControlDieselPlayer,
+        [GetString("Control_Classic Diesel Player 2")] ControlDieselPlayer2,
         [GetString("Control_Classic Diesel Helper")] ControlDieselHelper,
         [GetString("Control_Classic Headlight Increase")] ControlHeadlightIncrease,
         [GetString("Control_Classic Headlight Decrease")] ControlHeadlightDecrease,

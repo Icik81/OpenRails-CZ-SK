@@ -624,16 +624,27 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselDirectionController_Out = true;
         public bool DieselDirectionControllerInOut = false;
         public float DieselStartDelay;
+        public float DieselStartDelay2;
         public float DieselStartTime;
+        public float DieselStartTime2;
         public bool DieselStartDelayDone;
+        public bool DieselStartDelayDone2;
         public bool StartButtonPressed;
+        public bool StartButtonPressed2;
         public bool StopButtonPressed;
+        public bool StopButtonPressed2;
         public bool StopButtonReleased;
+        public bool StopButtonReleased2;
         public bool DieselCheckPowerMotorLamp;
+        public bool DieselCheckPowerMotorLamp2;
         public bool DieselMotorDefected;
+        public bool DieselMotorDefected2;
         public bool DieselMotorTempWarning;
+        public bool DieselMotorTempWarning2;
         public bool DieselMotorPowerLost;
+        public bool DieselMotorPowerLost2;
         public bool DieselLocoTempReady;
+        public bool DieselLocoTempReady2;
         public bool RDSTBreakerRDSTEnable;
         public bool RDSTBreakerVZEnable;
         public bool RDSTBreakerPowerEnable;
@@ -1430,6 +1441,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(maxauxresoverpressure": MaxAuxResOverPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(heatingmaxcurrent": HeatingMaxCurrentA = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
                 case "engine(dieselstartdelay": DieselStartDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
+                case "engine(dieselstartdelay2": DieselStartDelay2 = stf.ReadFloatBlock(STFReader.UNITS.Time, 10); break;
                 case "engine(mucableequipment": MUCableEquipment = stf.ReadBoolBlock(false); break;
                 case "engine(pantocanhvoff": PantoCanHVOffSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(maxtrainbrakepressure": BrakeSystem.MCP_TrainBrake = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
@@ -1717,6 +1729,7 @@ namespace Orts.Simulation.RollingStocks
             MaxAuxResOverPressurePSI = locoCopy.MaxAuxResOverPressurePSI;
             HeatingMaxCurrentA = locoCopy.HeatingMaxCurrentA;
             DieselStartDelay = locoCopy.DieselStartDelay;
+            DieselStartDelay2 = locoCopy.DieselStartDelay2;
             MUCableEquipment = locoCopy.MUCableEquipment;
             DoorSwitch[LocoStation] = locoCopy.DoorSwitch[LocoStation];
             PrevDoorSwitch = locoCopy.PrevDoorSwitch;
@@ -1941,8 +1954,11 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DieselDirectionController_Out);
             outf.Write(DieselDirectionControllerInOut);
             outf.Write(DieselMotorDefected);
+            outf.Write(DieselMotorDefected2);
             outf.Write(DieselMotorPowerLost);
+            outf.Write(DieselMotorPowerLost2);
             outf.Write(DieselLocoTempReady);
+            outf.Write(DieselLocoTempReady2);
             outf.Write(PrevDoorSwitch);
             outf.Write(LapActive[1]);
             outf.Write(LapActive[2]);
@@ -2198,8 +2214,11 @@ namespace Orts.Simulation.RollingStocks
             DieselDirectionController_Out = inf.ReadBoolean();
             DieselDirectionControllerInOut = inf.ReadBoolean();
             DieselMotorDefected = inf.ReadBoolean();
+            DieselMotorDefected2 = inf.ReadBoolean();
             DieselMotorPowerLost = inf.ReadBoolean();
+            DieselMotorPowerLost2 = inf.ReadBoolean();
             DieselLocoTempReady = inf.ReadBoolean();
+            DieselLocoTempReady2 = inf.ReadBoolean();
             PrevDoorSwitch = inf.ReadSingle();
             LapActive[1] = inf.ReadBoolean();
             LapActive[2] = inf.ReadBoolean();
@@ -20965,6 +20984,28 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER2:
+                    {
+                        data = 0;
+                        if (this is MSTSDieselLocomotive)
+                        {
+                            var dieselLoco = this as MSTSDieselLocomotive;
+                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
+                            data = StartButtonPressed2 ? 1 : 0;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER2:
+                    {
+                        data = 0;
+                        if (this is MSTSDieselLocomotive)
+                        {
+                            var dieselLoco = this as MSTSDieselLocomotive;
+                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;
+                            data = StopButtonPressed2 ? 1 : 0;
+                        }
+                        break;
+                    }
                 case CABViewControlTypes.ORTS_CABLIGHT:
                     data = CabLightOn[LocoStation] ? 1 : 0;
                     break;
@@ -21899,11 +21940,31 @@ namespace Orts.Simulation.RollingStocks
                             data = 0;
                         break;
                     }
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2:
+                    {
+                        if (DieselCheckPowerMotorLamp2)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines[1] != null)
+                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -21923,9 +21984,29 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines[1] != null)
+                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselOilTemperatureDeg;
+
+                        break;
+                    }
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
                     {
                         if (DieselMotorTempWarning)
+                            data = 1;
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2:
+                    {
+                        if (DieselMotorTempWarning2)
                             data = 1;
                         else
                             data = 0;

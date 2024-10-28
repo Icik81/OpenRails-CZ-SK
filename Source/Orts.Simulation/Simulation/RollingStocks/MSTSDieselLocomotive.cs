@@ -69,7 +69,7 @@ namespace Orts.Simulation.RollingStocks
         public float MaxMagnitude = 1.5f;
         public float EngineRPMderivation;
         float EngineRPMold;
-        float EngineRPMRatio; // used to compute Variable1 and Variable2
+        float EngineRPMRatio; // used to compute Variable1 and Variable2        
         public float MaximumDieselEnginePowerW;
 
         public MSTSNotchController FuelController = new MSTSNotchController(0, 1, 0.0025f);
@@ -524,12 +524,21 @@ namespace Orts.Simulation.RollingStocks
         protected override void UpdatePowerSupply(float elapsedClockSeconds)
         {
             DieselEngines.Update(elapsedClockSeconds);
+            
             ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[0].ExhaustParticles);
             ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[0].ExhaustMagnitude);
             ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.R);
             ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
             ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
 
+            if (DieselEngines[1] != null)
+            {
+                ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[1].ExhaustParticles);
+                ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[1].ExhaustMagnitude);
+                ExhaustColorR.Update(elapsedClockSeconds, DieselEngines[1].ExhaustColor.R);
+                ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[1].ExhaustColor.G);
+                ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[1].ExhaustColor.B);
+            }
             PowerOn = DieselEngines.PowerOn;
             AuxPowerOn = DieselEngines.PowerOn;
         }
@@ -574,10 +583,21 @@ namespace Orts.Simulation.RollingStocks
             // With Advanced adhesion the raw motive force is fed into the advanced (axle) adhesion model, and is corrected for wheel slip and rail adhesion
 
             // Icik
-            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+            if (DieselEngines[1] != null)
             {
-                TractiveForceN = 0;
-                return;
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped)
+                {
+                    TractiveForceN = 0;
+                    return;
+                }
+            }
+            else
+            {
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                {
+                    TractiveForceN = 0;
+                    return;
+                }
             }
 
             if (PowerOn)
@@ -659,7 +679,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                 {
                     // Tractive force is read from Table using the apparent throttle setting, and then reduced by the number of engines running (power ratio)
-
+                   
                     TractiveForceN = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * DieselEngineFractionPower * (1 - PowerReduction);
 
                     if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
@@ -667,10 +687,13 @@ namespace Orts.Simulation.RollingStocks
 
                     // Icik
                     // Ohraničení trakční síly dle vstupního výkonu motoru
-                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower;
-                    
+                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW;
+
+                    if (DieselEngines[1] != null)
+                        maxPowerW += DieselEngines[1].CurrentDieselOutputPowerW;                    
+
                     if (TractiveForceN * AbsSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
-                        TractiveForceN = (0.88f * DieselEngines[0].CurrentDieselOutputPowerW * DieselEngineFractionPower * (1 - PowerReduction)) / AbsTractionSpeedMpS;
+                        TractiveForceN = (0.88f * maxPowerW * (1 - PowerReduction)) / AbsTractionSpeedMpS;
                 }
 
                 DieselFlowLps = DieselEngines.DieselFlowLps;
@@ -684,6 +707,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     PowerOn = false;
                     SignalEvent(Event.EnginePowerOff);
+                    SignalEvent(Event.EnginePowerOff2);
                     foreach (DieselEngine de in DieselEngines)
                     {
                         if (de.EngineStatus != DieselEngine.Status.Stopping || de.EngineStatus != DieselEngine.Status.Stopped)
@@ -707,8 +731,6 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>        
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
-            EngineRPMRatio = (DieselEngines[0].RealRPM - DieselEngines[0].IdleRPM) / (DieselEngines[0].MaxRPM - DieselEngines[0].IdleRPM);
-
             // Aripot
             if (CruiseControl != null && (CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.AVV) && CruiseControl.AripotEquipment)
             {
@@ -720,6 +742,7 @@ namespace Orts.Simulation.RollingStocks
             // allows for motor volume proportional to effort.
 
             // Refined Variable2 setting to graduate
+            EngineRPMRatio = (DieselEngines[0].RealRPM - DieselEngines[0].IdleRPM) / (DieselEngines[0].MaxRPM - DieselEngines[0].IdleRPM);
             if (Variable2 != EngineRPMRatio)
             {
                 // We must avoid Variable2 to run outside of [0, 1] range, even temporarily (because of multithreading)
@@ -728,7 +751,6 @@ namespace Orts.Simulation.RollingStocks
                     Math.Min(Math.Min(Variable2 + elapsedClockSeconds * PercentChangePerSec, EngineRPMRatio), 1);
             }
 
-            // Icik
             if (DieselEngines[0].IdleRPM != 0)
                 IdleRPM = DieselEngines[0].IdleRPM;
             if (DieselEngines[0].MaxRPM != 0)
@@ -740,6 +762,30 @@ namespace Orts.Simulation.RollingStocks
             Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
             Variable7 = (float)Math.Round(DieselEngines[0].TurboLoad);
             Variable8 = (float)Math.Round(DieselEngines[0].TurboRPM);
+
+            // 2. motor
+            if (DieselEngines[1] != null)
+            {
+                EngineRPMRatio = (DieselEngines[1].RealRPM - DieselEngines[1].IdleRPM) / (DieselEngines[1].MaxRPM - DieselEngines[1].IdleRPM);
+                if (Variable22 != EngineRPMRatio)
+                {
+                    Variable22 = EngineRPMRatio < Variable22 ?
+                        Math.Max(Math.Max(Variable22 - elapsedClockSeconds * PercentChangePerSec, EngineRPMRatio), 0) :
+                        Math.Min(Math.Min(Variable22 + elapsedClockSeconds * PercentChangePerSec, EngineRPMRatio), 1);
+                }
+
+                if (DieselEngines[1].IdleRPM != 0)
+                    IdleRPM = DieselEngines[1].IdleRPM;
+                if (DieselEngines[1].MaxRPM != 0)
+                    MaxRPM = DieselEngines[1].MaxRPM;
+
+                EngineRPM = Variable22 * (MaxRPM - IdleRPM) + IdleRPM;
+
+                Variable42 = (float)Math.Round(DieselEngines[1].RealRPM);
+                Variable62 = (float)Math.Round(DieselEngines[1].LoadPercent);
+                Variable72 = (float)Math.Round(DieselEngines[1].TurboLoad);
+                Variable82 = (float)Math.Round(DieselEngines[1].TurboRPM);
+            }
 
             if (DynamicBrakePercent > 0)
             {
@@ -759,15 +805,16 @@ namespace Orts.Simulation.RollingStocks
 
             // Hack pro start zvuku motoru JV ladění
             if (JVSetUp)
-            {                
-                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                {
-                    SignalEvent(Event.EnginePowerOn);
-                }
+            {
                 if (!this.BrakeSystem.PowerForWagon && AITimeMotorRunning > preAITimeMotorRunning)
                 {
                     SignalEvent(Event.EnginePowerOff);
                 }
+                else
+                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer < 1f)
+                {
+                    SignalEvent(Event.EnginePowerOn);
+                }                
                 preAITimeMotorRunning = AITimeMotorRunning;
             }
         }
@@ -1066,6 +1113,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AIMotorStart;
         float MotorSoundStopCycle;
         bool DERunningStatus;
+        bool DERunningStatus2;
         float AITimeToMotorStop;
         float AITimeMotorRunning;
         float preAITimeMotorRunning;
@@ -1119,17 +1167,25 @@ namespace Orts.Simulation.RollingStocks
                 {
                     AITimeMotorRunning += elapsedClockSeconds;                    
                     SignalEvent(Event.InitMotorIdle);
+                    SignalEvent(Event.InitMotorIdle2);
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                 }
 
                 if (AIMotorStop && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
+                    DieselEngines.DieselEngine1 = true;
                     DieselEngines[0].Stop();
+                    if (DieselEngines[1] != null)
+                    {
+                        DieselEngines.DieselEngine2 = true;
+                        DieselEngines[1].Stop();
+                    }
                     MotorSoundStopCycle = 0;
                 }
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && MotorSoundStopCycle == 0)
                 {
                     SignalEvent(Event.EnginePowerOff);
+                    SignalEvent(Event.EnginePowerOff2);
                     MotorSoundStopCycle++;
                 }
 
@@ -1149,12 +1205,20 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselEngines[0].AIStartTimeToGo == 10)
                     {
                         SignalEvent(Event.InitMotorIdle);
+                        SignalEvent(Event.InitMotorIdle2);
                         MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
                     }
                     DieselEngines[0].AIStartTimeToGo -= elapsedClockSeconds;
                     DieselEngines[0].ExhaustColor = Color.TransparentBlack;
                     //ExhaustParticles *= 2;
                     DieselEngines[0].ExhaustMagnitude *= 2;
+
+                    if (DieselEngines[1] != null)
+                    {
+                        DieselEngines[1].ExhaustColor = Color.TransparentBlack;
+                        //ExhaustParticles *= 2;
+                        DieselEngines[1].ExhaustMagnitude *= 2;
+                    }
                     AIMotorStart = false;
                 }
                 if (DieselEngines[0].AIStartTimeToGo < 1)
@@ -1163,12 +1227,14 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 StartButtonPressed = false;
+                StartButtonPressed2 = false;
                 if (DieselEngines[0].EngineStatus != DieselEngine.Status.Running && AIMotorStart)
                 {
                     CarLightsPowerOn = true;
                     DieselEngines[0].AIStartTimeToGo = 10;
                     this.AIStart = true;
                     StartButtonPressed = true;
+                    StartButtonPressed2 = true;
                     DieselDirection_Start = true;
                     if (!DieselDirection_Start)
                         DieselDirection_Start = true;
@@ -1188,6 +1254,7 @@ namespace Orts.Simulation.RollingStocks
                             if (DieselStartTime == 0)
                             {
                                 SignalEvent(Event.StartUpMotor);
+                                SignalEvent(Event.StartUpMotor2);
                                 SignalEvent(Event.MirrorOpen);                                
                             }
                             //Simulator.Confirmer.Information("Motor se startuje..." + UiD);
@@ -1196,13 +1263,23 @@ namespace Orts.Simulation.RollingStocks
                         if (DieselStartTime > DieselStartDelayTempAI)
                         {
                             DieselStartDelayDone = true;
+                            DieselStartDelayDone2 = true;
                             SignalEvent(Event.StartUpMotorStop);
+                            SignalEvent(Event.StartUpMotorStop2);
                             DieselStartTime = 0;
                             if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
                             {
+                                DieselEngines.DieselEngine1 = true;                                
                                 DieselEngines[0].Start();
+                                if (DieselEngines[1] != null)
+                                {
+                                    DieselEngines.DieselEngine2 = true;
+                                    DieselEngines[1].Start();
+                                }
                                 DieselStartDelayDone = false;
+                                DieselStartDelayDone2 = false;
                                 SignalEvent(Event.EnginePowerOn);
+                                SignalEvent(Event.EnginePowerOn2);
                             }
                         }
                     }
@@ -1211,6 +1288,7 @@ namespace Orts.Simulation.RollingStocks
                         if (DieselStartTime != 0)
                         {
                             SignalEvent(Event.StartUpMotorStop);
+                            SignalEvent(Event.StartUpMotorStop2);
                         }
                         DieselStartTime = 0;
                     }
@@ -1236,8 +1314,16 @@ namespace Orts.Simulation.RollingStocks
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
             }
 
+            // Spustí inicializační trigger zvuku volnoběhu
+            if (DieselEngines[1] != null && LocoSetUpTimer < 0.5f && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+            {
+                SignalEvent(Event.InitMotorIdle2);
+                MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
+            }
+
             // Při vypnutí baterií motor vypne
             if (LocoSetUpTimer > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
+            if (DieselEngines[1] != null && LocoSetUpTimer > 0.5f && !Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running) DieselEngines[1].Stop();
 
             // Kompatibilita se standardními směrovými pákami OR/MSTS
             if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction == Direction.N)
@@ -1252,13 +1338,28 @@ namespace Orts.Simulation.RollingStocks
             if (Battery && DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
                 DieselCheckPowerMotorLamp = true;
             else
+            if (DieselEngines[1] != null && Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+                DieselCheckPowerMotorLamp2 = false;
+            else
+            if (DieselEngines[1] != null && Battery && DieselEngines[1].EngineStatus != DieselEngine.Status.Running)
+                DieselCheckPowerMotorLamp2 = true;
+            else
             if (!Battery)
+            {
                 DieselCheckPowerMotorLamp = false;
+                DieselCheckPowerMotorLamp2 = false;
+            }
 
             if (DieselStartDelay == 0) DieselStartDelay = 10f; // Default 10s pro mazání motoru
+            if (DieselStartDelay2 == 0) DieselStartDelay2 = 10f; // Default 10s pro mazání motoru
+            
             float DieselStartDelayTemp = DieselStartDelay;
             if (DieselEngines[0].RealDieselWaterTemperatureDeg > 50)
                 DieselStartDelayTemp = DieselStartDelay / 2;
+
+            float DieselStartDelayTemp2 = DieselStartDelay2;
+            if (DieselEngines[1].RealDieselWaterTemperatureDeg > 50)
+                DieselStartDelayTemp2 = DieselStartDelay2 / 2;
 
             if (StartLooseCon)
             {
@@ -1266,6 +1367,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             }
             
+            // První motor
             // Spustí mazací čerpadlo při startu
             if ((StartButtonPressed || StartLooseCon || DieselEngines[0].OnePushStartButton)
                 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped 
@@ -1273,7 +1375,7 @@ namespace Orts.Simulation.RollingStocks
                 && Battery
                 && PowerUnit
                 )
-            {    
+            {                
                 if (DieselEngines[0].OnePushStart)
                     DieselEngines[0].OnePushStartButton = true;
 
@@ -1294,6 +1396,8 @@ namespace Orts.Simulation.RollingStocks
                     DieselStartTime = 0;
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected)
                     {
+                        DieselEngines.DieselEngine1 = true;
+                        DieselEngines.DieselEngine2 = false;
                         DieselEngines[0].Start();
                         DieselStartDelayDone = false;
                         SignalEvent(Event.EnginePowerOn);
@@ -1318,21 +1422,89 @@ namespace Orts.Simulation.RollingStocks
             // Předčasně uvolněné stop tlačítko
             if (Battery && DERunningStatus && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
             {
-                StopButtonReleased = true;
-                DieselEngines[0].Start();                
+                DieselEngines.DieselEngine1 = true;
+                DieselEngines.DieselEngine2 = false;
+                StopButtonReleased = true;                
+                DieselEngines[0].Start();
             }
+
+            // Druhý motor
+            if (DieselEngines[1] != null)
+            {
+                // Spustí mazací čerpadlo při startu
+                if ((StartButtonPressed2 || StartLooseCon || DieselEngines[1].OnePushStartButton)
+                    && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped
+                    && DieselDirection_Start
+                    && Battery
+                    && PowerUnit
+                    )
+                {                    
+                    if (DieselEngines[1].OnePushStart)
+                        DieselEngines[1].OnePushStartButton = true;
+
+                    if (DieselStartTime2 < DieselStartDelayTemp2 - 1)
+                    {
+                        if (DieselStartTime2 == 0)
+                        {
+                            SignalEvent(Event.StartUpMotor2);
+                            SignalEvent(Event.MirrorOpen);
+                        }
+                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine is starting…"));
+                    }
+                    DieselStartTime2 += elapsedClockSeconds;
+                    if (DieselStartTime2 > DieselStartDelayTemp2)
+                    {
+                        DieselStartDelayDone2 = true;
+                        SignalEvent(Event.StartUpMotorStop2);
+                        DieselStartTime2 = 0;
+                        if (DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped && !DieselMotorDefected2)
+                        {
+                            DieselEngines.DieselEngine1 = false;
+                            DieselEngines.DieselEngine2 = true;
+                            DieselEngines[1].Start();
+                            DieselStartDelayDone2 = false;
+                            SignalEvent(Event.EnginePowerOn2);
+                            StartLooseCon = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (DieselStartTime2 != 0)
+                    {
+                        SignalEvent(Event.StartUpMotorStop2);
+                    }
+                    DieselStartTime2 = 0;
+                }
+
+                if (DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+                    DERunningStatus2 = true;
+                if (DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped)
+                    DERunningStatus2 = false;
+
+                // Předčasně uvolněné stop tlačítko
+                if (Battery && DERunningStatus2 && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed2 && !DieselEngines[1].OnePushStop)
+                {
+                    DieselEngines.DieselEngine1 = false;
+                    DieselEngines.DieselEngine2 = true;
+                    StopButtonReleased2 = true;
+                    DieselEngines[1].Start();
+                }
+            }            
         }
 
 
         public void TogglePlayerEngine()
         {
-            if (ThrottlePercent < 1 || StopButtonPressed)
+            if (ThrottlePercent < 1 || StopButtonPressed || StopButtonPressed2)
             {
-                // Icik                
+                // Icik
                 if (DieselStartDelayDone
                     || DieselEngines[0].EngineStatus == DieselEngine.Status.Running
                     || StopButtonPressed)
                 {
+                    DieselEngines.DieselEngine1 = true;
+                    DieselEngines.DieselEngine2 = false;
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed && Battery && !DieselMotorDefected)
                     {
                         DieselEngines[0].Start();
@@ -1341,8 +1513,27 @@ namespace Orts.Simulation.RollingStocks
                     if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && StopButtonPressed)
                     {
                         DieselEngines[0].Stop();
-                    }                    
-                }                
+                    }
+                }
+                if (DieselEngines[1] != null)
+                {
+                    if (DieselStartDelayDone2
+                    || DieselEngines[1].EngineStatus == DieselEngine.Status.Running
+                    || StopButtonPressed2)
+                    {
+                        DieselEngines.DieselEngine1 = false;
+                        DieselEngines.DieselEngine2 = true;
+                        if (DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped && !StopButtonPressed2 && Battery && !DieselMotorDefected2)
+                        {
+                            DieselEngines[1].Start();
+                            DieselStartDelayDone2 = false;
+                        }
+                        if (DieselEngines[1].EngineStatus == DieselEngine.Status.Running && StopButtonPressed2)
+                        {
+                            DieselEngines[1].Stop();
+                        }
+                    }
+                }
                 Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
             }
             else

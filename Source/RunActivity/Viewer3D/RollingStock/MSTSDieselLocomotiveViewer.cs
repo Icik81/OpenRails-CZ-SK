@@ -76,6 +76,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             UserInputCommands.Add(UserCommand.ControlVacuumExhausterPressed, new Action[] { () => new VacuumExhausterCommand(Viewer.Log, false), () => new VacuumExhausterCommand(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlDieselPlayer, new Action[] { Noop, () => new TogglePlayerEngineCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlDieselPlayer2, new Action[] { Noop, () => new TogglePlayerEngineCommand(Viewer.Log) });
             base.InitializeUserInputCommands();
         }
 
@@ -93,6 +94,10 @@ namespace Orts.Viewer3D.RollingStock
             //var exhaustParticles = car.Train != null && car.Train.TrainType == Train.TRAINTYPE.STATIC ? 0 : car.ExhaustParticles.SmoothedValue;
             // Ošetření kouře pro Static, pokud je NaN
             var exhaustParticles = car.ExhaustParticles.SmoothedValue;
+
+            if (car.DieselEngines[1] != null && car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                exhaustParticles *= 0.5f;
+
             if ((float.IsNaN(exhaustParticles) || exhaustParticles == 0) && car.PowerOn)
             {
                 foreach (var drawer in Exhaust)
@@ -105,13 +110,41 @@ namespace Orts.Viewer3D.RollingStock
             }
             else
             {
-                foreach (var drawer in Exhaust)
-                {
-                    var colorR = car.ExhaustColorR.SmoothedValue / 255f;
-                    var colorG = car.ExhaustColorG.SmoothedValue / 255f;
-                    var colorB = car.ExhaustColorB.SmoothedValue / 255f;
-                    drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
-                }
+                // Icik
+                for (int i = 0; i < Exhaust.Count; i++)
+                {                    
+                    var drawer = Exhaust[i];                    
+                    
+                    if (i == 0 && car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    {
+                        var colorR = car.ExhaustColorR.SmoothedValue / 255f;
+                        var colorG = car.ExhaustColorG.SmoothedValue / 255f;
+                        var colorB = car.ExhaustColorB.SmoothedValue / 255f;
+                        drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                    }
+                    if (i == 0 && car.DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    {
+                        var colorR = car.ExhaustColorR.SmoothedValue / 255f;
+                        var colorG = car.ExhaustColorG.SmoothedValue / 255f;
+                        var colorB = car.ExhaustColorB.SmoothedValue / 255f;
+                        drawer.SetOutput(0, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                    }
+
+                    if (i == 1 && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    {
+                        var colorR = car.ExhaustColorR.SmoothedValue / 255f;
+                        var colorG = car.ExhaustColorG.SmoothedValue / 255f;
+                        var colorB = car.ExhaustColorB.SmoothedValue / 255f;
+                        drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                    }
+                    if (i == 1 && car.DieselEngines[1].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    {
+                        var colorR = car.ExhaustColorR.SmoothedValue / 255f;
+                        var colorG = car.ExhaustColorG.SmoothedValue / 255f;
+                        var colorB = car.ExhaustColorB.SmoothedValue / 255f;
+                        drawer.SetOutput(0, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
+                    }
+                }                
             }
 
             base.PrepareFrame(frame, elapsedTime);

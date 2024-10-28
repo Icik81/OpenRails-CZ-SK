@@ -90,6 +90,7 @@ namespace Orts.Simulation.RollingStocks
         // simulation parameters
         public float Variable1 = 0;  // used to convey status to soundsource
         public float Variable2 = 0;
+        public float Variable22 = 0;
         public float Variable3 = 0;
 
         // wag file data
@@ -143,10 +144,14 @@ namespace Orts.Simulation.RollingStocks
         public float DavisCoefficientC_3;
         Interpolator RMgShoeFrictionFactor;
         public float Variable4;
+        public float Variable42;
         public float Variable5;
         public float Variable6;
+        public float Variable62;
         public float Variable7;
+        public float Variable72;
         public float Variable8;
+        public float Variable82;
         public float Variable9;
         public float Variable10;
         public float Variable11;

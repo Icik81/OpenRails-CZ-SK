@@ -371,6 +371,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlDamperIncrease] = new UserCommandKeyInput(0x32);
             Commands[(int)UserCommand.ControlDieselHelper] = new UserCommandKeyInput(0x15, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlDieselPlayer] = new UserCommandKeyInput(0x15, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlDieselPlayer2] = new UserCommandKeyInput(0x15, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlDoorLeft] = new UserCommandKeyInput(0x10);
             Commands[(int)UserCommand.ControlDoorRight] = new UserCommandKeyInput(0x10, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlDynamicBrakeDecrease] = new UserCommandKeyInput(0x33);

@@ -209,13 +209,17 @@ namespace Orts.Formats.Msts
             SlipSpeedControlled,
             VibrationControlled,
             Variable1Controlled, Variable1ACControlled, Variable1DCControlled,
-            Variable2Controlled, Variable2ACControlled, Variable2DCControlled,
+            Variable2Controlled, Variable2ACControlled, Variable2DCControlled, Variable22Controlled,
             Variable3Controlled, Variable3ACControlled, Variable3DCControlled,
             Variable4Controlled,
+            Variable42Controlled,
             Variable5Controlled,
             Variable6Controlled,
+            Variable62Controlled,
             Variable7Controlled,
+            Variable72Controlled,
             Variable8Controlled,
+            Variable82Controlled,
             Variable9Controlled,
             Variable10Controlled,
             Variable11Controlled,
@@ -260,16 +264,21 @@ namespace Orts.Formats.Msts
                 case "variable1accontrolled": Control = Controls.Variable1ACControlled; break;
                 case "variable1dccontrolled": Control = Controls.Variable1DCControlled; break;
                 case "variable2controlled": Control = Controls.Variable2Controlled; break;
+                case "variable22controlled": Control = Controls.Variable22Controlled; break;
                 case "variable2accontrolled": Control = Controls.Variable2ACControlled; break;
                 case "variable2dccontrolled": Control = Controls.Variable2DCControlled; break;
                 case "variable3controlled": Control = Controls.Variable3Controlled; break;
                 case "variable3accontrolled": Control = Controls.Variable3ACControlled; break;
                 case "variable3dccontrolled": Control = Controls.Variable3DCControlled; break;
                 case "variable4controlled": Control = Controls.Variable4Controlled; break;
+                case "variable42controlled": Control = Controls.Variable42Controlled; break;
                 case "variable5controlled": Control = Controls.Variable5Controlled; break;
                 case "variable6controlled": Control = Controls.Variable6Controlled; break;
+                case "variable62controlled": Control = Controls.Variable62Controlled; break;
                 case "variable7controlled": Control = Controls.Variable7Controlled; break;
+                case "variable72controlled": Control = Controls.Variable72Controlled; break;
                 case "variable8controlled": Control = Controls.Variable8Controlled; break;
+                case "variable82controlled": Control = Controls.Variable82Controlled; break;
                 case "variable9controlled": Control = Controls.Variable9Controlled; break;
                 case "variable10controlled": Control = Controls.Variable10Controlled; break;
                 case "variable11controlled": Control = Controls.Variable11Controlled; break;
@@ -423,16 +432,21 @@ namespace Orts.Formats.Msts
             Variable1AC_Inc_Past, Variable1AC_Dec_Past, Variable1AC_Equals_To, Variable1AC_NEquals_To,
             Variable1DC_Inc_Past, Variable1DC_Dec_Past, Variable1DC_Equals_To, Variable1DC_NEquals_To,
             Variable2_Inc_Past, Variable2_Dec_Past, Variable2_Equals_To, Variable2_NEquals_To,
+            Variable22_Inc_Past, Variable22_Dec_Past, Variable22_Equals_To, Variable22_NEquals_To,
             Variable2AC_Inc_Past, Variable2AC_Dec_Past, Variable2AC_Equals_To, Variable2AC_NEquals_To,
             Variable2DC_Inc_Past, Variable2DC_Dec_Past, Variable2DC_Equals_To, Variable2DC_NEquals_To,
             Variable3_Inc_Past, Variable3_Dec_Past, Variable3_Equals_To, Variable3_NEquals_To,
             Variable3AC_Inc_Past, Variable3AC_Dec_Past, Variable3AC_Equals_To, Variable3AC_NEquals_To,
             Variable3DC_Inc_Past, Variable3DC_Dec_Past, Variable3DC_Equals_To, Variable3DC_NEquals_To,
             Variable4_Inc_Past, Variable4_Dec_Past, Variable4_Equals_To, Variable4_NEquals_To, // DieselMotor RPM
+            Variable42_Inc_Past, Variable42_Dec_Past, Variable42_Equals_To, Variable42_NEquals_To, // DieselMotor 2 RPM
             Variable5_Inc_Past, Variable5_Dec_Past, Variable5_Equals_To, Variable5_NEquals_To, // DieselMotor vstupní síla kN
             Variable6_Inc_Past, Variable6_Dec_Past, Variable6_Equals_To, Variable6_NEquals_To, // DieselMotor zátěž %
+            Variable62_Inc_Past, Variable62_Dec_Past, Variable62_Equals_To, Variable62_NEquals_To, // DieselMotor 2 zátěž %
             Variable7_Inc_Past, Variable7_Dec_Past, Variable7_Equals_To, Variable7_NEquals_To, // DieselMotor turbo zátěž %
+            Variable72_Inc_Past, Variable72_Dec_Past, Variable72_Equals_To, Variable72_NEquals_To, // DieselMotor 2 turbo zátěž %
             Variable8_Inc_Past, Variable8_Dec_Past, Variable8_Equals_To, Variable8_NEquals_To, // DieselMotor turbo RPM
+            Variable82_Inc_Past, Variable82_Dec_Past, Variable82_Equals_To, Variable82_NEquals_To, // DieselMotor 2 turbo RPM
             TrainBrakeController_Inc_Past, TrainBrakeController_Dec_Past, TrainBrakeController_Equals_To, TrainBrakeController_NEquals_To,
             EngineBrakeController_Inc_Past, EngineBrakeController_Dec_Past, EngineBrakeController_Equals_To, EngineBrakeController_NEquals_To,
             BrakeCyl_Inc_Past, BrakeCyl_Dec_Past, BrakeCyl_Equals_To, BrakeCyl_NEquals_To,
@@ -534,6 +548,10 @@ namespace Orts.Formats.Msts
                 case "variable2_dec_past": Event = Events.Variable2_Dec_Past; break;
                 case "variable2_equals_to": Event = Events.Variable2_Equals_To; break;
                 case "variable2_nequals_to": Event = Events.Variable2_NEquals_To; break;
+                case "variable22_inc_past": Event = Events.Variable22_Inc_Past; break;
+                case "variable22_dec_past": Event = Events.Variable22_Dec_Past; break;
+                case "variable22_equals_to": Event = Events.Variable22_Equals_To; break;
+                case "variable22_nequals_to": Event = Events.Variable22_NEquals_To; break;
                 case "variable2ac_inc_past": Event = Events.Variable2AC_Inc_Past; break;
                 case "variable2ac_dec_past": Event = Events.Variable2AC_Dec_Past; break;
                 case "variable2ac_equals_to": Event = Events.Variable2AC_Equals_To; break;
@@ -558,6 +576,10 @@ namespace Orts.Formats.Msts
                 case "variable4_dec_past": Event = Events.Variable4_Dec_Past; break;
                 case "variable4_equals_to": Event = Events.Variable4_Equals_To; break;
                 case "variable4_nequals_to": Event = Events.Variable4_NEquals_To; break;
+                case "variable42_inc_past": Event = Events.Variable42_Inc_Past; break;
+                case "variable42_dec_past": Event = Events.Variable42_Dec_Past; break;
+                case "variable42_equals_to": Event = Events.Variable42_Equals_To; break;
+                case "variable42_nequals_to": Event = Events.Variable42_NEquals_To; break;
                 case "variable5_inc_past": Event = Events.Variable5_Inc_Past; break;
                 case "variable5_dec_past": Event = Events.Variable5_Dec_Past; break;
                 case "variable5_equals_to": Event = Events.Variable5_Equals_To; break;
@@ -566,14 +588,26 @@ namespace Orts.Formats.Msts
                 case "variable6_dec_past": Event = Events.Variable6_Dec_Past; break;
                 case "variable6_equals_to": Event = Events.Variable6_Equals_To; break;
                 case "variable6_nequals_to": Event = Events.Variable6_NEquals_To; break;
+                case "variable62_inc_past": Event = Events.Variable62_Inc_Past; break;
+                case "variable62_dec_past": Event = Events.Variable62_Dec_Past; break;
+                case "variable62_equals_to": Event = Events.Variable62_Equals_To; break;
+                case "variable62_nequals_to": Event = Events.Variable62_NEquals_To; break;
                 case "variable7_inc_past": Event = Events.Variable7_Inc_Past; break;
                 case "variable7_dec_past": Event = Events.Variable7_Dec_Past; break;
                 case "variable7_equals_to": Event = Events.Variable7_Equals_To; break;
                 case "variable7_nequals_to": Event = Events.Variable7_NEquals_To; break;
+                case "variable72_inc_past": Event = Events.Variable72_Inc_Past; break;
+                case "variable72_dec_past": Event = Events.Variable72_Dec_Past; break;
+                case "variable72_equals_to": Event = Events.Variable72_Equals_To; break;
+                case "variable72_nequals_to": Event = Events.Variable72_NEquals_To; break;
                 case "variable8_inc_past": Event = Events.Variable8_Inc_Past; break;
                 case "variable8_dec_past": Event = Events.Variable8_Dec_Past; break;
                 case "variable8_equals_to": Event = Events.Variable8_Equals_To; break;
                 case "variable8_nequals_to": Event = Events.Variable8_NEquals_To; break;
+                case "variable82_inc_past": Event = Events.Variable82_Inc_Past; break;
+                case "variable82_dec_past": Event = Events.Variable82_Dec_Past; break;
+                case "variable82_equals_to": Event = Events.Variable82_Equals_To; break;
+                case "variable82_nequals_to": Event = Events.Variable82_NEquals_To; break;
                 case "trainbrakecontroller_inc_past": Event = Events.TrainBrakeController_Inc_Past; break;
                 case "trainbrakecontroller_dec_past": Event = Events.TrainBrakeController_Dec_Past; break;
                 case "trainbrakecontroller_equals_to": Event = Events.TrainBrakeController_Equals_To; break;
