@@ -130,14 +130,14 @@ namespace Orts.Viewer3D.RollingStock
                         drawer.SetOutput(0, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                     }
 
-                    if (i == 1 && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    if (i == 1 && car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
                     {
                         var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                         var colorG = car.ExhaustColorG.SmoothedValue / 255f;
                         var colorB = car.ExhaustColorB.SmoothedValue / 255f;
                         drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                     }
-                    if (i == 1 && car.DieselEngines[1].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                    if (i == 1 && car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
                     {
                         var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                         var colorG = car.ExhaustColorG.SmoothedValue / 255f;
