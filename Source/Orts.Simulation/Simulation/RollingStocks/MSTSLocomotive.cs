@@ -21963,7 +21963,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[1] != null)
+                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
                             data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
 
                         var mstsControlUnit = this as MSTSControlUnit;
@@ -21987,7 +21987,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[1] != null)
+                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
                             data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
 
                         var mstsControlUnit = this as MSTSControlUnit;

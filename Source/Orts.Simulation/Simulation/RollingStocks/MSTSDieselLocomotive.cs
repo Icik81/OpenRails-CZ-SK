@@ -531,7 +531,7 @@ namespace Orts.Simulation.RollingStocks
             ExhaustColorG.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.G);
             ExhaustColorB.Update(elapsedClockSeconds, DieselEngines[0].ExhaustColor.B);
 
-            if (DieselEngines[1] != null)
+            if (DieselEngines.Count > 1)
             {
                 ExhaustParticles.Update(elapsedClockSeconds, DieselEngines[1].ExhaustParticles);
                 ExhaustMagnitude.Update(elapsedClockSeconds, DieselEngines[1].ExhaustMagnitude);
@@ -583,7 +583,7 @@ namespace Orts.Simulation.RollingStocks
             // With Advanced adhesion the raw motive force is fed into the advanced (axle) adhesion model, and is corrected for wheel slip and rail adhesion
 
             // Icik
-            if (DieselEngines[1] != null)
+            if (DieselEngines.Count > 1)
             {
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped)
                 {
@@ -689,7 +689,7 @@ namespace Orts.Simulation.RollingStocks
                     // Ohraničení trakční síly dle vstupního výkonu motoru
                     maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW;
 
-                    if (DieselEngines[1] != null)
+                    if (DieselEngines.Count > 1)
                         maxPowerW += DieselEngines[1].CurrentDieselOutputPowerW;                    
 
                     if (TractiveForceN * AbsSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
@@ -764,7 +764,7 @@ namespace Orts.Simulation.RollingStocks
             Variable8 = (float)Math.Round(DieselEngines[0].TurboRPM);
 
             // 2. motor
-            if (DieselEngines[1] != null)
+            if (DieselEngines.Count > 1)
             {
                 EngineRPMRatio = (DieselEngines[1].RealRPM - DieselEngines[1].IdleRPM) / (DieselEngines[1].MaxRPM - DieselEngines[1].IdleRPM);
                 if (Variable22 != EngineRPMRatio)
@@ -1175,7 +1175,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     DieselEngines.DieselEngine1 = true;
                     DieselEngines[0].Stop();
-                    if (DieselEngines[1] != null)
+                    if (DieselEngines.Count > 1)
                     {
                         DieselEngines.DieselEngine2 = true;
                         DieselEngines[1].Stop();
@@ -1213,7 +1213,7 @@ namespace Orts.Simulation.RollingStocks
                     //ExhaustParticles *= 2;
                     DieselEngines[0].ExhaustMagnitude *= 2;
 
-                    if (DieselEngines[1] != null)
+                    if (DieselEngines.Count > 1)
                     {
                         DieselEngines[1].ExhaustColor = Color.TransparentBlack;
                         //ExhaustParticles *= 2;
@@ -1271,7 +1271,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 DieselEngines.DieselEngine1 = true;                                
                                 DieselEngines[0].Start();
-                                if (DieselEngines[1] != null)
+                                if (DieselEngines.Count > 1)
                                 {
                                     DieselEngines.DieselEngine2 = true;
                                     DieselEngines[1].Start();
@@ -1315,7 +1315,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Spustí inicializační trigger zvuku volnoběhu
-            if (DieselEngines[1] != null && LocoSetUpTimer < 0.5f && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+            if (DieselEngines.Count > 1 && LocoSetUpTimer < 0.5f && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
             {
                 SignalEvent(Event.InitMotorIdle2);
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "INITMOTORIDLE", 1).ToString()));
@@ -1323,7 +1323,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Při vypnutí baterií motor vypne
             if (LocoSetUpTimer > 0.5f && !Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running) DieselEngines[0].Stop();
-            if (DieselEngines[1] != null && LocoSetUpTimer > 0.5f && !Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running) DieselEngines[1].Stop();
+            if (DieselEngines.Count > 1 && LocoSetUpTimer > 0.5f && !Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running) DieselEngines[1].Stop();
 
             // Kompatibilita se standardními směrovými pákami OR/MSTS
             if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction == Direction.N)
@@ -1338,10 +1338,10 @@ namespace Orts.Simulation.RollingStocks
             if (Battery && DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
                 DieselCheckPowerMotorLamp = true;
             else
-            if (DieselEngines[1] != null && Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
                 DieselCheckPowerMotorLamp2 = false;
             else
-            if (DieselEngines[1] != null && Battery && DieselEngines[1].EngineStatus != DieselEngine.Status.Running)
+            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].EngineStatus != DieselEngine.Status.Running)
                 DieselCheckPowerMotorLamp2 = true;
             else
             if (!Battery)
@@ -1358,7 +1358,7 @@ namespace Orts.Simulation.RollingStocks
                 DieselStartDelayTemp = DieselStartDelay / 2;
 
             float DieselStartDelayTemp2 = DieselStartDelay2;
-            if (DieselEngines[1].RealDieselWaterTemperatureDeg > 50)
+            if (DieselEngines.Count > 1 && DieselEngines[1].RealDieselWaterTemperatureDeg > 50)
                 DieselStartDelayTemp2 = DieselStartDelay2 / 2;
 
             if (StartLooseCon)
@@ -1429,7 +1429,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Druhý motor
-            if (DieselEngines[1] != null)
+            if (DieselEngines.Count > 1)
             {
                 // Spustí mazací čerpadlo při startu
                 if ((StartButtonPressed2 || StartLooseCon || DieselEngines[1].OnePushStartButton)
@@ -1515,7 +1515,7 @@ namespace Orts.Simulation.RollingStocks
                         DieselEngines[0].Stop();
                     }
                 }
-                if (DieselEngines[1] != null)
+                if (DieselEngines.Count > 1)
                 {
                     if (DieselStartDelayDone2
                     || DieselEngines[1].EngineStatus == DieselEngine.Status.Running

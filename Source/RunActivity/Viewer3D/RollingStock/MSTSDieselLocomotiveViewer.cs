@@ -95,7 +95,7 @@ namespace Orts.Viewer3D.RollingStock
             // Ošetření kouře pro Static, pokud je NaN
             var exhaustParticles = car.ExhaustParticles.SmoothedValue;
 
-            if (car.DieselEngines[1] != null && car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+            if (car.DieselEngines.Count > 1 && car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
                 exhaustParticles *= 0.5f;
 
             if ((float.IsNaN(exhaustParticles) || exhaustParticles == 0) && car.PowerOn)
