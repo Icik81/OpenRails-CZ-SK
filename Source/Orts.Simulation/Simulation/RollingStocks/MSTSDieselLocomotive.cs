@@ -608,14 +608,16 @@ namespace Orts.Simulation.RollingStocks
 
                 if (IsPlayerTrain)
                 {
-                    LocomotiveApparentThrottleSetting = Math.Min(t, DieselEngines.ApparentThrottleSetting / 100.0f);
+                    //LocomotiveApparentThrottleSetting = Math.Min(t, DieselEngines.ApparentThrottleSetting / 100.0f);
+                    // Icik ????
+                    LocomotiveApparentThrottleSetting = ThrottlePercent / 100.0f;
                 }
                 else // For AI trains, just use the throttle setting
                 {
                     LocomotiveApparentThrottleSetting = t;
                 }
 
-                LocomotiveApparentThrottleSetting = MathHelper.Clamp(LocomotiveApparentThrottleSetting, 0.0f, 1.0f);  // Clamp decay within bounds
+                LocomotiveApparentThrottleSetting = MathHelper.Clamp(LocomotiveApparentThrottleSetting, 0.0f, 1.0f);  // Clamp decay within bounds                
 
                 // If there is more then one diesel engine, and one or more engines is stopped, then the Fraction Power will give a fraction less then 1 depending upon power definitions of engines.
                 float DieselEngineFractionPower = 1.0f;
