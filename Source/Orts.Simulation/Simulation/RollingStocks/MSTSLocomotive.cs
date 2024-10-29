@@ -20073,10 +20073,39 @@ namespace Orts.Simulation.RollingStocks
                                 if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                     data = BrakeCurrent1;
 
+                                if (this is MSTSDieselLocomotive)
+                                {
+                                    var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                        if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;
+
+                                        float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                        float DriveForceN_Motor1 = this.DriveForceN * DriveForceN_Ratio;                                                                                
+                                        data = DriveForceN_Motor1 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;                                                                                
+
+                                        //Simulator.Confirmer.MSG2("DriveForceN_Motor1 " + DriveForceN_Motor1);
+                                    }
+                                }
+
                                 if (cvc.ControlType == CABViewControlTypes.AMMETER_ABS) data = Math.Abs(data);
                                 break;
                             }
                             data = this.DriveForceN / MaxForceN * MaxCurrentA;
+                            if (this is MSTSDieselLocomotive)
+                            {
+                                var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                                if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                {
+                                    float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                    if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;
+
+                                    float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                    float DriveForceN_Motor1 = this.DriveForceN * DriveForceN_Ratio;
+                                    data = DriveForceN_Motor1 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;      
+                                }
+                            }
 
                             // Icik
                             if (ThrottlePercent > 0 && (CurrentForceStep1Curves != null || CurrentForceCurves != null || CurrentSpeedStepACCurves != null || CurrentSpeedStepDCCurves != null))
@@ -20100,7 +20129,23 @@ namespace Orts.Simulation.RollingStocks
                         if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
-                        {                            
+                        {
+                            if (this is MSTSDieselLocomotive)
+                            {
+                                var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                                if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                {
+                                    float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                    if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;                                                                       
+
+                                    float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                    float DriveForceN_Motor2 = this.DriveForceN * DriveForceN_Ratio;                                                                        
+                                    data = DriveForceN_Motor2 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;
+                                   
+                                    //Simulator.Confirmer.MSG3("DriveForceN_Motor2 " + DriveForceN_Motor2);
+                                }
+                            }
+
                             if (ThrottlePercent > 0 && CurrentForceStep2Curves != null)
                                 data = FakePowerCurrent2;
                             if (DynamicBrakeForceN != 0 && CurrentBrakeForce2Curves != null)
