@@ -20585,11 +20585,35 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
+                case CABViewControlTypes.RPM2:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            data = mstsDieselLocomotive.DieselEngines[1].RealRPM;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.RealRPM;
+
+                        break;
+                    }
                 case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
                         if (mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+
+                        var mstsControlUnit = this as MSTSControlUnit;
+                        if (mstsControlUnit != null)
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -20616,6 +20640,46 @@ namespace Orts.Simulation.RollingStocks
                                     FakeOilPressure -= 100f * Simulator.OneSecondLoop;
                                 if (FakeOilPressure < 0.99f * FakeOilPressureBase)
                                     FakeOilPressure = 0.99f * FakeOilPressureBase;                                
+                            }
+                            else
+                            {
+                                if (VibrationTimer < 0.10f)
+                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                    FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                if (VibrationTimer > 0.10f)
+                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                    FakeOilPressure = 0.995f * FakeOilPressureBase;
+                            }
+
+                            if (VibrationTimer > 0.2f)
+                                VibrationTimer = 0;
+
+                            data = ConvertFromPSI(cvc, FakeOilPressure);
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_OIL_PRESSURE2:
+                    {
+                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                        {
+                            FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
+                            VibrationTimer += Simulator.OneSecondLoop;
+
+                            if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                            {
+                                if (VibrationTimer < 0.10f)
+                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                    FakeOilPressure = 1.01f * FakeOilPressureBase;
+
+                                if (VibrationTimer > 0.10f)
+                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                    FakeOilPressure = 0.99f * FakeOilPressureBase;
                             }
                             else
                             {

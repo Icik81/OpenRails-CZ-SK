@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-09-16 18:12:10+0200\n"
-"PO-Revision-Date: 2024-09-16 18:12:11+0200\n"
+"POT-Creation-Date: 2024-10-29 10:46:45+0100\n"
+"PO-Revision-Date: 2024-10-29 10:46:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -822,654 +822,658 @@ msgid "Control_Classic Diesel Player"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:177
-msgid "Control_Classic Diesel Helper"
+msgid "Control_Classic Diesel Player 2"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:178
-msgid "Control_Classic Headlight Increase"
+msgid "Control_Classic Diesel Helper"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:179
-msgid "Control_Classic Headlight Decrease"
+msgid "Control_Classic Headlight Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:180
-msgid "Control_Classic Injector 1 Increase"
+msgid "Control_Classic Headlight Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:181
-msgid "Control_Classic Injector 1 Decrease"
+msgid "Control_Classic Injector 1 Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:182
-msgid "Control_Classic Injector 1"
+msgid "Control_Classic Injector 1 Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:183
-msgid "Control_Classic Injector 2 Increase"
+msgid "Control_Classic Injector 1"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:184
-msgid "Control_Classic Injector 2 Decrease"
+msgid "Control_Classic Injector 2 Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:185
-msgid "Control_Classic Injector 2"
+msgid "Control_Classic Injector 2 Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:186
-msgid "Control_Classic Blowdown Valve"
+msgid "Control_Classic Injector 2"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:187
-msgid "Control_Classic Blower Increase"
+msgid "Control_Classic Blowdown Valve"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:188
-msgid "Control_Classic Blower Decrease"
+msgid "Control_Classic Blower Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:189
-msgid "Control_Classic Steam Heat Increase"
+msgid "Control_Classic Blower Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:190
-msgid "Control_Classic Steam Heat Decrease"
+msgid "Control_Classic Steam Heat Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:191
-msgid "Control_Classic Damper Increase"
+msgid "Control_Classic Steam Heat Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:192
-msgid "Control_Classic Damper Decrease"
+msgid "Control_Classic Damper Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:193
-msgid "Control_Classic Firebox Open"
+msgid "Control_Classic Damper Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:194
-msgid "Control_Classic Firebox Close"
+msgid "Control_Classic Firebox Open"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:195
-msgid "Control_Classic Firing Rate Increase"
+msgid "Control_Classic Firebox Close"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:196
-msgid "Control_Classic Firing Rate Decrease"
+msgid "Control_Classic Firing Rate Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:197
-msgid "Control_Classic Fire Shovel Full"
+msgid "Control_Classic Firing Rate Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:198
-msgid "Control_Classic Cylinder Cocks"
+msgid "Control_Classic Fire Shovel Full"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:199
-msgid "Control_Classic Large Ejector Increase"
+msgid "Control_Classic Cylinder Cocks"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:200
-msgid "Control_Classic Large Ejector Decrease"
+msgid "Control_Classic Large Ejector Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:201
-msgid "Control_Classic Small Ejector Increase"
+msgid "Control_Classic Large Ejector Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:202
-msgid "Control_Classic Small Ejector Decrease"
+msgid "Control_Classic Small Ejector Increase"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:203
-msgid "Control_Classic Vacuum Exhauster"
+msgid "Control_Classic Small Ejector Decrease"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:204
-msgid "Control_Classic Cylinder Compound"
+msgid "Control_Classic Vacuum Exhauster"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:205
-msgid "Control_Classic Firing"
+msgid "Control_Classic Cylinder Compound"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:206
-msgid "Control_Classic Refill"
+msgid "Control_Classic Firing"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:207
-msgid "Control_Classic Water Scoop"
+msgid "Control_Classic Refill"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:208
-msgid "Control_Classic ImmediateRefill"
+msgid "Control_Classic Water Scoop"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:209
-msgid "Control_Classic Turntable Clockwise"
+msgid "Control_Classic ImmediateRefill"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:210
-msgid "Control_Classic Turntable Counterclockwise"
+msgid "Control_Classic Turntable Clockwise"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:211
-msgid "Control_Classic Cab Radio"
+msgid "Control_Classic Turntable Counterclockwise"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:212
-msgid "Control_Classic AI Fire On"
+msgid "Control_Classic Cab Radio"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:213
-msgid "Control_Classic AI Fire Off"
+msgid "Control_Classic AI Fire On"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:214
-msgid "Control_Classic AI Fire Reset"
+msgid "Control_Classic AI Fire Off"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:215
+msgid "Control_Classic AI Fire Reset"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:216
 msgid "Control_Classic Battery"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:219
+#: ../../ORTS.Common/Input/UserCommand.cs:220
 msgid "Control_CZSK Mirel Off"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:220
+#: ../../ORTS.Common/Input/UserCommand.cs:221
 msgid "Control_CZSK Mirel On"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:221
+#: ../../ORTS.Common/Input/UserCommand.cs:222
 msgid "Control_CZSK Speed Regulator Mode Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:222
+#: ../../ORTS.Common/Input/UserCommand.cs:223
 msgid "Control_CZSK Speed Regulator Mode Descrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:223
+#: ../../ORTS.Common/Input/UserCommand.cs:224
 msgid "Control_CZSK Selected Speed Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:224
+#: ../../ORTS.Common/Input/UserCommand.cs:225
 msgid "Control_CZSK Selected Speed Decrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:225
+#: ../../ORTS.Common/Input/UserCommand.cs:226
 msgid "Control_CZSK Speed Regulator Max Acceleration Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:226
+#: ../../ORTS.Common/Input/UserCommand.cs:227
 msgid "Control_CZSK Speed Regulator Max Acceleration Decrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:227
+#: ../../ORTS.Common/Input/UserCommand.cs:228
 msgid "Control_CZSK Number Of Axles Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:228
+#: ../../ORTS.Common/Input/UserCommand.cs:229
 msgid "Control_CZSK Number Of Axles Decrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:229
+#: ../../ORTS.Common/Input/UserCommand.cs:230
 msgid "Control_CZSK Restricted Speed Zone Active"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:230
+#: ../../ORTS.Common/Input/UserCommand.cs:231
 msgid "Control_CZSK Cruise Control Mode Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:231
+#: ../../ORTS.Common/Input/UserCommand.cs:232
 msgid "Control_CZSK Cruise Control Mode Decrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:232
+#: ../../ORTS.Common/Input/UserCommand.cs:233
 msgid "Control_CZSK Confirm Selected Speed"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:233
+#: ../../ORTS.Common/Input/UserCommand.cs:234
 msgid "Control_CZSK Train Type Change (Passenger/Cargo)"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:234
+#: ../../ORTS.Common/Input/UserCommand.cs:235
 msgid "Control_CZSK Select Speed 10 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:235
+#: ../../ORTS.Common/Input/UserCommand.cs:236
 msgid "Control_CZSK Select Speed 20 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:236
+#: ../../ORTS.Common/Input/UserCommand.cs:237
 msgid "Control_CZSK Select Speed 30 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:237
+#: ../../ORTS.Common/Input/UserCommand.cs:238
 msgid "Control_CZSK Select Speed 40 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:238
+#: ../../ORTS.Common/Input/UserCommand.cs:239
 msgid "Control_CZSK Select Speed 50 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:239
+#: ../../ORTS.Common/Input/UserCommand.cs:240
 msgid "Control_CZSK Select Speed 60 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:240
+#: ../../ORTS.Common/Input/UserCommand.cs:241
 msgid "Control_CZSK Select Speed 70 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:241
+#: ../../ORTS.Common/Input/UserCommand.cs:242
 msgid "Control_CZSK Select Speed 80 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:242
+#: ../../ORTS.Common/Input/UserCommand.cs:243
 msgid "Control_CZSK Select Speed 90 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:243
+#: ../../ORTS.Common/Input/UserCommand.cs:244
 msgid "Control_CZSK Select Speed 100 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:244
+#: ../../ORTS.Common/Input/UserCommand.cs:245
 msgid "Control_CZSK Select Speed 110 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:245
+#: ../../ORTS.Common/Input/UserCommand.cs:246
 msgid "Control_CZSK Select Speed 120 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:246
+#: ../../ORTS.Common/Input/UserCommand.cs:247
 msgid "Control_CZSK Select Speed 130 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:247
+#: ../../ORTS.Common/Input/UserCommand.cs:248
 msgid "Control_CZSK Select Speed 140 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:248
+#: ../../ORTS.Common/Input/UserCommand.cs:249
 msgid "Control_CZSK Select Speed 150 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:249
+#: ../../ORTS.Common/Input/UserCommand.cs:250
 msgid "Control_CZSK Select Speed 160 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:250
+#: ../../ORTS.Common/Input/UserCommand.cs:251
 msgid "Control_CZSK Select Speed 170 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:251
+#: ../../ORTS.Common/Input/UserCommand.cs:252
 msgid "Control_CZSK Select Speed 180 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:252
+#: ../../ORTS.Common/Input/UserCommand.cs:253
 msgid "Control_CZSK Select Speed 190 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:253
+#: ../../ORTS.Common/Input/UserCommand.cs:254
 msgid "Control_CZSK Select Speed 200 kph/mph"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:254
+#: ../../ORTS.Common/Input/UserCommand.cs:255
 msgid "Control_CZSK Mirel Key Plus"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:255
+#: ../../ORTS.Common/Input/UserCommand.cs:256
 msgid "Control_CZSK Mirel Key Minus"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:256
+#: ../../ORTS.Common/Input/UserCommand.cs:257
 msgid "Control_CZSK Mirel Key Enter"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:257
+#: ../../ORTS.Common/Input/UserCommand.cs:258
 msgid "Control_CZSK Cab Select Increase"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:258
+#: ../../ORTS.Common/Input/UserCommand.cs:259
 msgid "Control_CZSK Cab Select Decrease"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:259
+#: ../../ORTS.Common/Input/UserCommand.cs:260
 msgid "Control_CZSK Display Key Position"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:260
+#: ../../ORTS.Common/Input/UserCommand.cs:261
 msgid "Control_CZSK Change Key Position"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:263
+#: ../../ORTS.Common/Input/UserCommand.cs:264
 msgid "Control_CZSK HV2 1-system +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:264
+#: ../../ORTS.Common/Input/UserCommand.cs:265
 msgid "Control_CZSK HV3 2-system +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:265
+#: ../../ORTS.Common/Input/UserCommand.cs:266
 msgid "Control_CZSK HV3 2-system -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:266
+#: ../../ORTS.Common/Input/UserCommand.cs:267
 msgid "Control_CZSK HV4 2-system +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:267
+#: ../../ORTS.Common/Input/UserCommand.cs:268
 msgid "Control_CZSK HV4 2-system -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:268
+#: ../../ORTS.Common/Input/UserCommand.cs:269
 msgid "Control_CZSK HV5 2-system +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:269
+#: ../../ORTS.Common/Input/UserCommand.cs:270
 msgid "Control_CZSK HV5 2-system -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:270
+#: ../../ORTS.Common/Input/UserCommand.cs:271
 msgid "Control_CZSK Pantograph3 +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:271
+#: ../../ORTS.Common/Input/UserCommand.cs:272
 msgid "Control_CZSK Pantograph3 -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:272
+#: ../../ORTS.Common/Input/UserCommand.cs:273
 msgid "Control_CZSK Pantograph4 +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:273
+#: ../../ORTS.Common/Input/UserCommand.cs:274
 msgid "Control_CZSK Pantograph4 -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:274
+#: ../../ORTS.Common/Input/UserCommand.cs:275
 msgid "Control_CZSK Pantograph5 +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:275
+#: ../../ORTS.Common/Input/UserCommand.cs:276
 msgid "Control_CZSK Pantograph5 -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:276
+#: ../../ORTS.Common/Input/UserCommand.cs:277
 msgid "Control_CZSK Compressor I Combined +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:277
+#: ../../ORTS.Common/Input/UserCommand.cs:278
 msgid "Control_CZSK Compressor I Combined -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:278
+#: ../../ORTS.Common/Input/UserCommand.cs:279
 msgid "Control_CZSK Compressor II Combined +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:279
+#: ../../ORTS.Common/Input/UserCommand.cs:280
 msgid "Control_CZSK Compressor II Combined -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:280
+#: ../../ORTS.Common/Input/UserCommand.cs:281
 msgid "Control_CZSK AuxCompressor Off/On"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:281
+#: ../../ORTS.Common/Input/UserCommand.cs:282
 msgid "Control_CZSK Compressor I Mode Off/Auto"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:282
+#: ../../ORTS.Common/Input/UserCommand.cs:283
 msgid "Control_CZSK Compressor II Mode Off/Auto"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:283
+#: ../../ORTS.Common/Input/UserCommand.cs:284
 msgid "Control_CZSK Heating Off/On"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:284
+#: ../../ORTS.Common/Input/UserCommand.cs:285
 msgid "Control_CZSK Heating in Cab Off/On"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:285
+#: ../../ORTS.Common/Input/UserCommand.cs:286
 msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:286
+#: ../../ORTS.Common/Input/UserCommand.cs:287
 msgid "Control_CZSK Quickrelease button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:287
+#: ../../ORTS.Common/Input/UserCommand.cs:288
 msgid "Control_CZSK Lowpressurerelease button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:288
+#: ../../ORTS.Common/Input/UserCommand.cs:289
 msgid "Control_CZSK Breakpower button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:289
+#: ../../ORTS.Common/Input/UserCommand.cs:290
 msgid "Control_CZSK Diesel Controller +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:290
+#: ../../ORTS.Common/Input/UserCommand.cs:291
 msgid "Control_CZSK Diesel Controller -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:291
+#: ../../ORTS.Common/Input/UserCommand.cs:292
 msgid "Control_CZSK Diesel Controller In/Out"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:292
+#: ../../ORTS.Common/Input/UserCommand.cs:293
 msgid "Control_CZSK RDST Breaker"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:293
+#: ../../ORTS.Common/Input/UserCommand.cs:294
 msgid "Control_CZSK Lap button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:294
+#: ../../ORTS.Common/Input/UserCommand.cs:295
 msgid "Control_CZSK Disabling EDB button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:295
+#: ../../ORTS.Common/Input/UserCommand.cs:296
 msgid "Control_CZSK Frontlight left white"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:296
+#: ../../ORTS.Common/Input/UserCommand.cs:297
 msgid "Control_CZSK Frontlight left red"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:297
+#: ../../ORTS.Common/Input/UserCommand.cs:298
 msgid "Control_CZSK Frontlight right white"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:298
+#: ../../ORTS.Common/Input/UserCommand.cs:299
 msgid "Control_CZSK Frontlight right red"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:299
+#: ../../ORTS.Common/Input/UserCommand.cs:300
 msgid "Control_CZSK Rearlight left white"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:300
+#: ../../ORTS.Common/Input/UserCommand.cs:301
 msgid "Control_CZSK Rearlight left red"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:301
+#: ../../ORTS.Common/Input/UserCommand.cs:302
 msgid "Control_CZSK Rearlight right white"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:302
+#: ../../ORTS.Common/Input/UserCommand.cs:303
 msgid "Control_CZSK Rearlight right red"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:303
+#: ../../ORTS.Common/Input/UserCommand.cs:304
 msgid "Control_CZSK Season heating switch"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:304
+#: ../../ORTS.Common/Input/UserCommand.cs:305
 msgid "Control_CZSK Mirer +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:305
+#: ../../ORTS.Common/Input/UserCommand.cs:306
 msgid "Control_CZSK Mirer -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:306
+#: ../../ORTS.Common/Input/UserCommand.cs:307
 msgid "Control_CZSK Powerkey +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:307
+#: ../../ORTS.Common/Input/UserCommand.cs:308
 msgid "Control_CZSK Powerkey -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:308
+#: ../../ORTS.Common/Input/UserCommand.cs:309
 msgid "Control_CZSK Ventilator +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:309
+#: ../../ORTS.Common/Input/UserCommand.cs:310
 msgid "Control_CZSK Ventilator -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:310
+#: ../../ORTS.Common/Input/UserCommand.cs:311
 msgid "Control_CZSK Automatic start-up button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:311
+#: ../../ORTS.Common/Input/UserCommand.cs:312
 msgid "Control_CZSK Automatic start-up SpeedSelector +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:312
+#: ../../ORTS.Common/Input/UserCommand.cs:313
 msgid "Control_CZSK Automatic start-up SpeedSelector -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:313
+#: ../../ORTS.Common/Input/UserCommand.cs:314
 msgid "Control_CZSK Axle Counter +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:314
+#: ../../ORTS.Common/Input/UserCommand.cs:315
 msgid "Control_CZSK Axle Counter -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:315
+#: ../../ORTS.Common/Input/UserCommand.cs:316
 msgid "Control_CZSK Axle Counter Confirmer"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:316
+#: ../../ORTS.Common/Input/UserCommand.cs:317
 msgid "Control_CZSK Axle Counter Restricted speed zone active button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:317
+#: ../../ORTS.Common/Input/UserCommand.cs:318
 msgid "Control_CZSK Horn 2"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:318
+#: ../../ORTS.Common/Input/UserCommand.cs:319
 msgid "Control_CZSK Horn 1 + 2"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:319
+#: ../../ORTS.Common/Input/UserCommand.cs:320
 msgid "Control_CZSK Panto Activation +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:320
+#: ../../ORTS.Common/Input/UserCommand.cs:321
 msgid "Control_CZSK Panto Activation -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:321
+#: ../../ORTS.Common/Input/UserCommand.cs:322
 msgid "Control_CZSK Voltage Selection +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:322
+#: ../../ORTS.Common/Input/UserCommand.cs:323
 msgid "Control_CZSK Voltage Selection -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:323
+#: ../../ORTS.Common/Input/UserCommand.cs:324
 msgid "Control_CZSK HV3NA +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:324
+#: ../../ORTS.Common/Input/UserCommand.cs:325
 msgid "Control_CZSK HV3NA -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:325
+#: ../../ORTS.Common/Input/UserCommand.cs:326
 msgid "Control_CZSK Switch5Light +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:326
+#: ../../ORTS.Common/Input/UserCommand.cs:327
 msgid "Control_CZSK Switch5Light -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:327
+#: ../../ORTS.Common/Input/UserCommand.cs:328
 msgid "Control_CZSK Switch6Light +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:328
+#: ../../ORTS.Common/Input/UserCommand.cs:329
 msgid "Control_CZSK Switch6Light -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:329
+#: ../../ORTS.Common/Input/UserCommand.cs:330
 msgid "Control_CZSK ARR Confirm Button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:330
+#: ../../ORTS.Common/Input/UserCommand.cs:331
 msgid "Control_CZSK ARR DriveOut Button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:331
+#: ../../ORTS.Common/Input/UserCommand.cs:332
 msgid "Control_CZSK ARR Parking Button"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:332
+#: ../../ORTS.Common/Input/UserCommand.cs:333
 msgid "Control_CZSK PlayerLoco Handbrake +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:333
+#: ../../ORTS.Common/Input/UserCommand.cs:334
 msgid "Control_CZSK PlayerLoco Handbrake -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:334
+#: ../../ORTS.Common/Input/UserCommand.cs:335
 msgid "Control_CZSK Traction Switch +"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:335
+#: ../../ORTS.Common/Input/UserCommand.cs:336
 msgid "Control_CZSK Traction Switch -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:338
+#: ../../ORTS.Common/Input/UserCommand.cs:339
 msgid "Set Power Supply Station Location"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:339
+#: ../../ORTS.Common/Input/UserCommand.cs:340
 msgid "Set Voltage 25k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:340
+#: ../../ORTS.Common/Input/UserCommand.cs:341
 msgid "Set Voltage 15k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:341
+#: ../../ORTS.Common/Input/UserCommand.cs:342
 msgid "Set Voltage 3k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:342
+#: ../../ORTS.Common/Input/UserCommand.cs:343
 msgid "Set Voltage 0"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:343
+#: ../../ORTS.Common/Input/UserCommand.cs:344
 msgid "Set Delete Voltage Marker"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:345
+#: ../../ORTS.Common/Input/UserCommand.cs:346
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:346
+#: ../../ORTS.Common/Input/UserCommand.cs:347
 msgid "Control_CZSK Reload Cab Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:347
+#: ../../ORTS.Common/Input/UserCommand.cs:348
 msgid "Control_CZSK Reload Wire Object"
 msgstr ""
 
