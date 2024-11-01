@@ -20021,6 +20021,7 @@ namespace Orts.Simulation.RollingStocks
 
                 case CABViewControlTypes.AMMETER: // Current not modelled yet to ammeter shows tractive effort until then.
                 case CABViewControlTypes.AMMETER_ABS:
+                case CABViewControlTypes.AMMETER_SLAVE:
                     {
                         if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         cvc.ElapsedTime += elapsedTime;
@@ -20073,6 +20074,30 @@ namespace Orts.Simulation.RollingStocks
                                 if (DynamicBrakeForceN != 0 && CurrentBrakeForce1Curves != null)
                                     data = BrakeCurrent1;
 
+                                if (cvc.ControlType == CABViewControlTypes.AMMETER_SLAVE)
+                                {
+                                    foreach (TrainCar car in Train.Cars)
+                                    {
+                                        if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                        {
+                                            var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                            {
+                                                float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                                if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;
+
+                                                float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                                float DriveForceN_Motor2 = this.DriveForceN * DriveForceN_Ratio;
+                                                data = DriveForceN_Motor2 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;
+
+                                                //Simulator.Confirmer.MSG3("DriveForceN_Motor2 " + DriveForceN_Motor2);
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                                else
                                 if (this is MSTSDieselLocomotive)
                                 {
                                     var mstsDieselLocomotive = this as MSTSDieselLocomotive;
@@ -20093,6 +20118,31 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             }
                             data = this.DriveForceN / MaxForceN * MaxCurrentA;
+
+                            if (cvc.ControlType == CABViewControlTypes.AMMETER_SLAVE)
+                            {
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                    {
+                                        var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                        {
+                                            float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                            if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;
+
+                                            float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                            float DriveForceN_Motor2 = this.DriveForceN * DriveForceN_Ratio;
+                                            data = DriveForceN_Motor2 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;
+
+                                            //Simulator.Confirmer.MSG3("DriveForceN_Motor2 " + DriveForceN_Motor2);
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            else
                             if (this is MSTSDieselLocomotive)
                             {
                                 var mstsDieselLocomotive = this as MSTSDieselLocomotive;
@@ -20125,11 +20175,36 @@ namespace Orts.Simulation.RollingStocks
                 // Icik
                 case CABViewControlTypes.AMMETER2:
                 case CABViewControlTypes.AMMETER2_ABS:
+                case CABViewControlTypes.AMMETER2_SLAVE:
                     {
                         if (cvc.MaxNeedleSpeedUp == 0 && cvc.MaxNeedleSpeedDown == 0 && cvc.MaxNeedleSpeed == 0) cvc.MaxNeedleSpeed = 5.0f;
                         cvc.ElapsedTime += elapsedTime;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
+                            if (cvc.ControlType == CABViewControlTypes.AMMETER2_SLAVE)
+                            {
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                    {
+                                        var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                        {
+                                            float DriveForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW / (mstsDieselLocomotive.DieselEngines[0].CurrentDieselInputPowerW + mstsDieselLocomotive.DieselEngines[1].CurrentDieselInputPowerW);
+                                            if (DriveForceN_Ratio == 0 || float.IsNaN(DriveForceN_Ratio)) DriveForceN_Ratio = 0.0001f;
+
+                                            float MaxForceN_Ratio = mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW / (mstsDieselLocomotive.DieselEngines[0].MaximumDieselPowerW + mstsDieselLocomotive.DieselEngines[1].MaximumDieselPowerW);
+                                            float DriveForceN_Motor2 = this.DriveForceN * DriveForceN_Ratio;
+                                            data = DriveForceN_Motor2 / (MaxForceN * MaxForceN_Ratio) * MaxCurrentA;
+
+                                            //Simulator.Confirmer.MSG3("DriveForceN_Motor2 " + DriveForceN_Motor2);
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            else
                             if (this is MSTSDieselLocomotive)
                             {
                                 var mstsDieselLocomotive = this as MSTSDieselLocomotive;
@@ -20619,10 +20694,28 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.RPM:
+                case CABViewControlTypes.RPM_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].RealRPM;
+                        if (cvc.ControlType == CABViewControlTypes.RPM_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                        data = mstsDieselLocomotive.DieselEngines[0].RealRPM;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                data = mstsDieselLocomotive.DieselEngines[0].RealRPM;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -20631,10 +20724,30 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.RPM2:
+                case CABViewControlTypes.RPM2_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
-                            data = mstsDieselLocomotive.DieselEngines[1].RealRPM;
+                        if (cvc.ControlType == CABViewControlTypes.RPM2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        data = mstsDieselLocomotive.DieselEngines[1].RealRPM;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                data = mstsDieselLocomotive.DieselEngines[1].RealRPM;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -20643,10 +20756,28 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE:
+                case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.ORTS_DIESEL_TEMPERATURE_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                        data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -20655,10 +20786,30 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2:
+                case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
-                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -20667,84 +20818,186 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.ORTS_OIL_PRESSURE:
+                case CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
+                        if (cvc.ControlType == CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE)
                         {
-                            FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[0].DieselOilPressurePSI;
-                            VibrationTimer += Simulator.OneSecondLoop;
-
-                            if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[0].DieselMaxOilPressurePSI)
+                            foreach (TrainCar car in Train.Cars)
                             {
-                                if (VibrationTimer < 0.10f)
-                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure > 1.01f * FakeOilPressureBase)
-                                    FakeOilPressure = 1.01f * FakeOilPressureBase;
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                    {
+                                        FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[0].DieselOilPressurePSI;
+                                        VibrationTimer += Simulator.OneSecondLoop;
 
-                                if (VibrationTimer > 0.10f)
-                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure < 0.99f * FakeOilPressureBase)
-                                    FakeOilPressure = 0.99f * FakeOilPressureBase;                                
+                                        if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[0].DieselMaxOilPressurePSI)
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.01f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                        }
+                                        else
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.995f * FakeOilPressureBase;
+                                        }
+
+                                        if (VibrationTimer > 0.2f)
+                                            VibrationTimer = 0;
+
+                                        data = ConvertFromPSI(cvc, FakeOilPressure);
+                                        break;
+                                    }
+                                }
                             }
-                            else
-                            {
-                                if (VibrationTimer < 0.10f)
-                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                    FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                if (VibrationTimer > 0.10f)
-                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                    FakeOilPressure = 0.995f * FakeOilPressureBase;
-                            }
-
-                            if (VibrationTimer > 0.2f)
-                                VibrationTimer = 0;
-
-                            data = ConvertFromPSI(cvc, FakeOilPressure);
+                            break;
                         }
-                        break;
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            {
+                                FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[0].DieselOilPressurePSI;
+                                VibrationTimer += Simulator.OneSecondLoop;
+
+                                if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[0].DieselMaxOilPressurePSI)
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.01f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                }
+                                else
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.995f * FakeOilPressureBase;
+                                }
+
+                                if (VibrationTimer > 0.2f)
+                                    VibrationTimer = 0;
+
+                                data = ConvertFromPSI(cvc, FakeOilPressure);
+                            }
+                            break;
+                        }
                     }
                 case CABViewControlTypes.ORTS_OIL_PRESSURE2:
+                case CABViewControlTypes.ORTS_OIL_PRESSURE2_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                        if (cvc.ControlType == CABViewControlTypes.ORTS_OIL_PRESSURE2_SLAVE)
                         {
-                            FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
-                            VibrationTimer += Simulator.OneSecondLoop;
-
-                            if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                            foreach (TrainCar car in Train.Cars)
                             {
-                                if (VibrationTimer < 0.10f)
-                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure > 1.01f * FakeOilPressureBase)
-                                    FakeOilPressure = 1.01f * FakeOilPressureBase;
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
+                                        VibrationTimer += Simulator.OneSecondLoop;
 
-                                if (VibrationTimer > 0.10f)
-                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure < 0.99f * FakeOilPressureBase)
-                                    FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                        if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.01f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                        }
+                                        else
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.995f * FakeOilPressureBase;
+                                        }
+
+                                        if (VibrationTimer > 0.2f)
+                                            VibrationTimer = 0;
+
+                                        data = ConvertFromPSI(cvc, FakeOilPressure);
+                                        break;
+                                    }
+                                }
                             }
-                            else
-                            {
-                                if (VibrationTimer < 0.10f)
-                                    FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                    FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                if (VibrationTimer > 0.10f)
-                                    FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                    FakeOilPressure = 0.995f * FakeOilPressureBase;
-                            }
-
-                            if (VibrationTimer > 0.2f)
-                                VibrationTimer = 0;
-
-                            data = ConvertFromPSI(cvc, FakeOilPressure);
+                            break;
                         }
-                        break;
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            {
+                                FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
+                                VibrationTimer += Simulator.OneSecondLoop;
+
+                                if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.01f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.01f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.99f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                }
+                                else
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.005f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.005f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.995f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.995f * FakeOilPressureBase;
+                                }
+
+                                if (VibrationTimer > 0.2f)
+                                    VibrationTimer = 0;
+
+                                data = ConvertFromPSI(cvc, FakeOilPressure);
+                            }
+                            break;
+                        }
                     }
                 case CABViewControlTypes.THROTTLE:
                 case CABViewControlTypes.THROTTLE_DISPLAY:
@@ -22042,26 +22295,84 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP_SLAVE:
                     {
-                        if (DieselCheckPowerMotorLamp)
-                            data = 1;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselCheckPowerMotorLamp)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         else
-                            data = 0;
-                        break;
+                        {
+                            if (DieselCheckPowerMotorLamp)
+                                data = 1;
+                            else
+                                data = 0;
+                            break;
+                        }
                     }
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2:
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2_SLAVE:
                     {
-                        if (DieselCheckPowerMotorLamp2)
-                            data = 1;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselCheckPowerMotorLamp2)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         else
-                            data = 0;
-                        break;
+                        {
+                            if (DieselCheckPowerMotorLamp2)
+                                data = 1;
+                            else
+                                data = 0;
+                            break;
+                        }
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                        data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -22070,10 +22381,30 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2:
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
-                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -22082,10 +22413,28 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
-                            data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                        data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                                data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -22094,10 +22443,30 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2:
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2_SLAVE:
                     {
-                        var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines.Count > 1)
-                            data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                    {
+                                        data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
+                                        break;
+                                    }
+                                }
+                            }
+                            break;
+                        }
+                        else
+                        {
+                            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                                data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
+                        }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
@@ -22106,20 +22475,60 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING_SLAVE:
                     {
-                        if (DieselMotorTempWarning)
-                            data = 1;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselMotorTempWarning)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         else
-                            data = 0;
-                        break;
+                        {
+                            if (DieselMotorTempWarning)
+                                data = 1;
+                            else
+                                data = 0;
+                            break;
+                        }
                     }
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2:
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2_SLAVE:
                     {
-                        if (DieselMotorTempWarning2)
-                            data = 1;
+                        if (cvc.ControlType == CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2_SLAVE)
+                        {
+                            foreach (TrainCar car in Train.Cars)
+                            {
+                                if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                                {
+                                    var mstsDieselLocomotive = car as MSTSDieselLocomotive;
+                                    if (mstsDieselLocomotive.DieselMotorTempWarning2)
+                                        data = 1;
+                                    else
+                                        data = 0;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                         else
-                            data = 0;
-                        break;
+                        {
+                            if (DieselMotorTempWarning2)
+                                data = 1;
+                            else
+                                data = 0;
+                            break;
+                        }
                     }
                 case CABViewControlTypes.RDST_BREAKER_RDST:
                     {
