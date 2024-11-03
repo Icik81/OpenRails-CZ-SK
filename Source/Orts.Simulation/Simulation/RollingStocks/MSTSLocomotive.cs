@@ -22872,8 +22872,8 @@ namespace Orts.Simulation.RollingStocks
                                     else
                                     if (AbsWheelSpeedMpS >= 25f / 3.6f && AbsWheelSpeedMpS < 52f / 3.6f)
                                         cvc.PreviousData = 65; // -3  
-                                    else
-                                    if (AbsWheelSpeedMpS < 25f / 3.6f)
+                                    
+                                    if (DynamicBrakeForceN < 1000)
                                         cvc.PreviousData = 1; // -0                                                                     
                                 }
                                 else
@@ -22889,8 +22889,9 @@ namespace Orts.Simulation.RollingStocks
                                 else
                                 if (DynamicBrakePercent > 0)
                                 {
-                                    cvc.PreviousData = 0;                                    
-                                    if (AbsWheelSpeedMpS < 25f / 3.6f)
+                                    cvc.PreviousData = 0;
+
+                                    if (DynamicBrakeForceN < 1000)
                                         cvc.PreviousData = 1; // -0
                                 }
                                 else
