@@ -22857,16 +22857,48 @@ namespace Orts.Simulation.RollingStocks
                         if (cvc.ElapsedTime > cvc.UpdateTime)
                         {
                             cvc.ElapsedTime = 0;
-                            if (DynamicBrakePercent == 0)                                                            
-                               cvc.PreviousData = 1;
+                            if (LocomotiveTypeNumber == 151)
+                            {
+                                if (DynamicBrakePercent == 0)
+                                    cvc.PreviousData = 1;
+                                else
+                                if (DynamicBrakePercent > 0)
+                                {
+                                    if (AbsWheelSpeedMpS > 75f / 3.6f)
+                                        cvc.PreviousData = 0; // -1
+                                    else
+                                    if (AbsWheelSpeedMpS >= 52f / 3.6f && AbsWheelSpeedMpS <= 75f / 3.6f)
+                                        cvc.PreviousData = 64; // -2
+                                    else
+                                    if (AbsWheelSpeedMpS >= 25f / 3.6f && AbsWheelSpeedMpS < 52f / 3.6f)
+                                        cvc.PreviousData = 65; // -3  
+                                    else
+                                    if (AbsWheelSpeedMpS < 25f / 3.6f)
+                                        cvc.PreviousData = 1; // -0                                                                     
+                                }
+                                else
+                                if (HS198ControllerDisplayBlink)
+                                    cvc.PreviousData = 59;
+                                else
+                                    cvc.PreviousData = HS198ControllerDisplayValue + 2;
+                            }
                             else
-                            if (DynamicBrakePercent > 0)
-                                cvc.PreviousData = 0;
-                            else
-                            if (HS198ControllerDisplayBlink)
-                                cvc.PreviousData = 59;
-                            else
-                                cvc.PreviousData = HS198ControllerDisplayValue + 2;                            
+                            {
+                                if (DynamicBrakePercent == 0)
+                                    cvc.PreviousData = 1;
+                                else
+                                if (DynamicBrakePercent > 0)
+                                {
+                                    cvc.PreviousData = 0;                                    
+                                    if (AbsWheelSpeedMpS < 25f / 3.6f)
+                                        cvc.PreviousData = 1; // -0
+                                }
+                                else
+                                if (HS198ControllerDisplayBlink)
+                                    cvc.PreviousData = 59;
+                                else
+                                    cvc.PreviousData = HS198ControllerDisplayValue + 2;
+                            }
                         }
                         break;
                     }
