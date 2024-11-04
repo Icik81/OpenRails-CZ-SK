@@ -4417,7 +4417,8 @@ namespace Orts.Simulation.RollingStocks
         public bool HeatingOverCurrent = false;
         public bool HeatingIsOn = false;
         public float MSGHeatingCycle;
-        public int HeatingIsOnLocoCount;        
+        public int HeatingIsOnLocoCount;
+        public bool CarWindowsIsOpened;
         public void ElevatedConsumptionOnLocomotive(float elapsedClockSeconds)
         {
             Train.HeatingIsOn = false;
@@ -4732,10 +4733,25 @@ namespace Orts.Simulation.RollingStocks
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0;
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0)
-                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (2500 / 3.6f)))) * elapsedClockSeconds;
+
+                        // Otevření oken vozu                                                
+                        if (car.WagonTemperature > 28f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
+                            CarWindowsIsOpened = true;
+
+                        if (car.WagonTemperature < 24f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
+                            CarWindowsIsOpened = false;
+
+                        if (car is MSTSLocomotive && !(car as MSTSLocomotive).PowerOn)
+                            CarWindowsIsOpened = false;
+
+                        float OpenWindowsCoef = 0f;
+                        if (CarWindowsIsOpened)                        
+                            OpenWindowsCoef = car.CarOutsideTempC0 * 0.2f; // Otevřená okna
+                        
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 - OpenWindowsCoef)
+                            car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (500 / 3.6f)))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0)
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 - OpenWindowsCoef)
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (2500 / 3.6f))) * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0)
