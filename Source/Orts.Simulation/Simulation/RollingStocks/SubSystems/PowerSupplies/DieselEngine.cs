@@ -1434,11 +1434,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //                dRPM = (CurrentDieselOutputPowerW - OutputPowerW) / MaximumDieselPowerW * 0.01f * RateOfChangeDownRPMpSS;
             //            }
             // Deleted to see what impact it has - was holding rpm artificialy high - http://www.elvastower.com/forums/index.php?/topic/33739-throttle-bug-in-recent-or-builds/page__gopid__256086#entry256086
-
-
+            
             // Icik
             // Zvýší otáčky motoru při větším odběru proudu                     
-            if (locomotive.HeatingIsOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical))
+            if (locomotive.HeatingIsOn || ((locomotive.CompressorIsOn || locomotive.Compressor2IsOn) && locomotive.AirBrakesIsCompressorElectricOrMechanical && EngineStatus == Status.Running))
             {
                 //ElevatedConsumptionIdleRPM = 650;
                 ElevatedConsumptionMode = true;

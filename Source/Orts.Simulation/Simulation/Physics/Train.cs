@@ -17225,7 +17225,7 @@ namespace Orts.Simulation.Physics
                 }
             }
         }
-
+        
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
             if (train.Simulator.Paused)
@@ -17304,7 +17304,7 @@ namespace Orts.Simulation.Physics
                             }
                         }
                     }
-                }
+                }                
             }
 
             if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)

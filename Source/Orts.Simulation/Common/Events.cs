@@ -396,6 +396,8 @@ namespace Orts.Common
         ToggleTractionSwitchDown,
         ToggleTractionOn,
         ToggleTractionOff,
+        DoorLocked,
+        DoorUnlocked,
     }
 
     public static class Events
@@ -799,7 +801,6 @@ namespace Orts.Common
                         case 20142: return Event.ToggleTractionSwitchDown;
                         case 20143: return Event.ToggleTractionOn;
                         case 20144: return Event.ToggleTractionOff;
-                            // nové
                         case 20145: return Event.InitMotorIdle2;
                         case 20146: return Event.StartUpMotor2;
                         case 20147: return Event.StartUpMotorStop2;
@@ -807,6 +808,8 @@ namespace Orts.Common
                         case 20149: return Event.EnginePowerOn2;
                         case 20150: return Event.EnginePowerOff2;
                         case 20151: return Event.MotorStopBreak2;
+                        case 20152: return Event.DoorLocked;
+                        case 20153: return Event.DoorUnlocked;
 
                         default: return 0;
                     }

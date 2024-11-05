@@ -75,6 +75,7 @@ using System.Xml;
 using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.RollingStocks
@@ -3987,6 +3988,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        bool DoorLockedSoundEventProcessed = false;
         public void DoorSwitchLogic()
         {
             if (IsLeadLocomotive())
@@ -4011,6 +4013,27 @@ namespace Orts.Simulation.RollingStocks
                         case 2:
                             Simulator.DoorSwitchDoorUnLockedSignal = true;
                             break;
+                    }
+
+                    if (Simulator.DoorSwitchDoorUnLockedSignal && !DoorLockedSoundEventProcessed)
+                    {
+                        for (int i = 0; i < Train.Cars.Count; i++)
+                        {
+                            var wagon = (Train.Cars[i] as MSTSWagon);
+                            if (wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
+                                wagon.SignalEvent(Event.DoorUnlocked);
+                        }
+                        DoorLockedSoundEventProcessed = true;
+                    }
+                    if (!Simulator.DoorSwitchDoorUnLockedSignal && DoorLockedSoundEventProcessed)
+                    {
+                        for (int i = 0; i < Train.Cars.Count; i++)
+                        {
+                            var wagon = (Train.Cars[i] as MSTSWagon);
+                            if (wagon.AutomaticDoors && wagon.BrakeSystem.AirOK_DoorCanManipulate)
+                                wagon.SignalEvent(Event.DoorLocked);
+                        }
+                        DoorLockedSoundEventProcessed = false;
                     }
 
                     Simulator.DoorSwitchDoorOpened = false;
