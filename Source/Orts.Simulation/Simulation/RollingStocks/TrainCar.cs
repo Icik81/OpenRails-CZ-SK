@@ -1225,8 +1225,8 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Výpočet pro ruční brzdu
-                MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
-
+                if (InitialMaxHandbrakeForceN == 0)
+                    MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
 
                 // Initialise ambient temperatures on first initial loop, then ignore
                 if (!AmbientTemperatureInitialised)
