@@ -1226,7 +1226,12 @@ namespace Orts.Simulation.RollingStocks
 
                 // Výpočet pro ruční brzdu
                 if (InitialMaxHandbrakeForceN == 0)
-                    MaxHandbrakeForceN = CoefHB * (MassKG / 6.4f) * 9.964016384f * 0.31f;
+                {
+                    if (PassengerCapacity > 0 || BrakeSystem.BrakeCarModePL == 1 || (this is MSTSLocomotive))
+                        MaxHandbrakeForceN = 0.04f * MassKG * 9.81f;
+                    else
+                        MaxHandbrakeForceN = 0.1f * MassKG * 9.81f;
+                }                
 
                 // Initialise ambient temperatures on first initial loop, then ignore
                 if (!AmbientTemperatureInitialised)
