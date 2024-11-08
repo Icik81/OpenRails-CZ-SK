@@ -3081,7 +3081,7 @@ namespace Orts.Simulation.RollingStocks
             if (CarLengthM < 2.5f || (this as MSTSWagon).WagonIsServis) return;
 
             // Vyloučí z vibrací AI vlaky obsahující servis1 nebo servis4
-            if (!IsPlayerTrain)
+            if (!IsPlayerTrain && !DerailIsOn)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -3258,12 +3258,16 @@ namespace Orts.Simulation.RollingStocks
         float prevSpeedMpS;
         float prevDereailAbsSpeedMpS = -1;
         Matrix XNAMatrixDerailed;
+        float RealSpeedMarker;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {
             if (MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
 
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;
+            int XDynamicMarker = Simulator.Random.Next(-1, 2);
+            int YDynamicMarker = Simulator.Random.Next(-1, 2);
+            float ZRotDynamic = Simulator.Random.Next(0, 11) / 10f;
 
             if (ResetAllDerailmentCoef)
             {
@@ -3313,16 +3317,16 @@ namespace Orts.Simulation.RollingStocks
                     SpeedMpS = -0.01f * PushZFinalMarker;                                        
                     Train.TrainEndOfRoute = false;                    
                 }
-            }
+            }            
 
             if (Train.TrainIsDerailed || prevDereailAbsSpeedMpS > 0 || Train.TrainEndOfRoute)
             {
                 DerailIsOn = true;
                 // Vypnutí HV na elektrické lokomotivě
-                if (this as MSTSElectricLocomotive != null && this is MSTSElectricLocomotive)
+                if (this is MSTSElectricLocomotive)
                     (this as MSTSElectricLocomotive).HVOff = true;
 
-                if (this as MSTSLocomotive != null && this is MSTSLocomotive)
+                if (this is MSTSLocomotive)
                     (this as MSTSLocomotive).ThrottleToZero();
                                                 
                 // Vyšinutí vozu na konci trati
@@ -3331,26 +3335,26 @@ namespace Orts.Simulation.RollingStocks
                     prevDereailAbsSpeedMpS = Math.Abs(SpeedMpS);
                     PushZ = prevDereailAbsSpeedMpS * elapsedTimeS;
                     PushZFinal = PushZ;
-                    VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                    VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
+                    VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
+                    VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                     VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
 
-                    (this as MSTSWagon).DavisAN = MassKG / 24000f * 120000f;
-                    (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 120000f;
+                    (this as MSTSWagon).DavisAN = MassKG / (MassKG / 3f) * 60000f;
 
                     SignalEvent(Event.Derail1);
                     SignalEvent(Event.Derail2);
                     SignalEvent(Event.Derail3);
-                }                
+                }            
 
                 if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
                 var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
                 var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
                 var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
                 var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
+                var DerailTranslationY = Matrix.CreateTranslation(0, PushY, 0);
                 var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
                 if (prevDereailAbsSpeedMpS != 0)
-                    XNAMatrixDerailed = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * XNAMatrixDerailed;
+                    XNAMatrixDerailed = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationY * DerailTranslationZ * XNAMatrixDerailed;
                 WorldPosition.XNAMatrix = XNAMatrixDerailed;
             }
             else
@@ -3442,53 +3446,53 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (Train.IsActualPlayerTrain && Train.TrainDerailmentTimer == 0) Train.TrainDerailmentTimer = 0.01f;
                     VibrationSpringConstantPrimepSpS = 14f / 0.2f;
-                    VibratioDampingCoefficient = 0.04f;
+                    VibratioDampingCoefficient = 0.04f;                    
                     if (IsJunctionCase)
                     {
                         if (DerailRotateCoef > DerailRotateCoefDelta)
                         {
                             TiltingXRot -= 0.1f * elapsedTimeS;
                             TiltingYRot += 0.5f * elapsedTimeS;
-                            ZRot += 1.0f * elapsedTimeS;
-                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                            VibrationRotationRad.Y += 0.1f * elapsedTimeS;
+                            ZRot += ZRotDynamic * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
+                            VibrationRotationRad.Y += 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
-                            DerailRotateCoefDelta++;
+                            DerailRotateCoefDelta += 0.1f * elapsedTimeS;
                         }
                         else
                         if (DerailRotateCoef < DerailRotateCoefDelta)
                         {
                             TiltingXRot -= 0.1f * elapsedTimeS;
                             TiltingYRot -= 0.5f * elapsedTimeS;
-                            ZRot -= 1.0f * elapsedTimeS;
-                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
+                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
-                            DerailRotateCoefDelta--;
+                            DerailRotateCoefDelta -= 0.1f * elapsedTimeS;
                         }
                     }
                     if (IsCurveCase)
-                    {
+                    {                        
                         if (DerailRotateCoef > DerailRotateCoefDelta)
-                        {
+                        {                            
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot += 0.01f * elapsedTimeS;
-                            ZRot += 4.0f * elapsedTimeS;
-                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                            VibrationRotationRad.Y += 0.1f * elapsedTimeS;
+                            ZRot += ZRotDynamic * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
+                            VibrationRotationRad.Y += 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
-                            DerailRotateCoefDelta++;
+                            DerailRotateCoefDelta += 0.1f * elapsedTimeS;
                         }
                         else
-                            if (DerailRotateCoef < DerailRotateCoefDelta)
+                        if (DerailRotateCoef < DerailRotateCoefDelta)
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot -= 0.01f * elapsedTimeS;
-                            ZRot -= 4.0f * elapsedTimeS;
-                            VibrationRotationRad.X -= 0.1f * elapsedTimeS;
-                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS;
+                            VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
+                            VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
-                            DerailRotateCoefDelta--;
+                            DerailRotateCoefDelta -= 0.1f * elapsedTimeS;
                         }
                     }
 
@@ -3503,13 +3507,13 @@ namespace Orts.Simulation.RollingStocks
                         YRotFinal = Math.Max(YRotFinal, Math.Abs(YRot));
                     }
 
-                    if (ZRotFinal > 0.5f && AbsSpeedMpS > 1.0f)
+                    if (ZRotFinal > 1.0f && AbsSpeedMpS > 1.0f)
                     {
                         HasZRotFinalMarker = ZRotFinalMarker;
                         PushX += AbsSpeedMpS * 0.1f * elapsedTimeS;
                         if (CarIsDecoupled) XRot += AbsSpeedMpS * 0.001f * elapsedTimeS; // Náchylné na mizení vozů!
                         YRot += AbsSpeedMpS * 0.001f * elapsedTimeS;
-                        PushY += 0.0f * elapsedTimeS;
+                        PushY += 0.1f * elapsedTimeS * ZRotFinal;
                         if (XRotFinalMarker == 0) XRotFinalMarker = Simulator.Random.Next(-1, 2);
                         if (YRotFinalMarker == 0) YRotFinalMarker = Simulator.Random.Next(-1, 2);
                     }                    
@@ -3519,14 +3523,14 @@ namespace Orts.Simulation.RollingStocks
                     var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
                     var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
                     var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
+                    var DerailTranslationY = Matrix.CreateTranslation(0, PushY, 0);
                     var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
-                    WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationZ * WorldPosition.XNAMatrix;                    
+                    WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationY * DerailTranslationZ * WorldPosition.XNAMatrix;                    
 
                     // Zpomalení díky vykolejení
                     if (IsJunctionCase)
                     {
-                        (this as MSTSWagon).DavisAN = MassKG / 24000f * 60000f;
-                        (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 60000f;
+                        (this as MSTSWagon).DavisAN = MassKG / (MassKG / 3f) * 25000f;                        
 
                         if (Math.Abs(DerailRotateCoef) > 4 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
@@ -3548,17 +3552,20 @@ namespace Orts.Simulation.RollingStocks
                     if (IsCurveCase)
                     {
                         // Vypnutí HV na elektrické lokomotivě
-                        if (this as MSTSElectricLocomotive != null && this is MSTSElectricLocomotive)
+                        if (this is MSTSElectricLocomotive)
                             (this as MSTSElectricLocomotive).HVOff = true;
 
-                        if (this as MSTSLocomotive != null && this is MSTSLocomotive)
+                        if (this is MSTSLocomotive)
+                        {
                             (this as MSTSLocomotive).ThrottleToZero();
+                         }
 
                         if (Math.Abs(DerailRotateCoef) > 19 || ZRotFinal > 0.5f || PushXFinal > 0.5f)
                         {
                             DerailmentTimer4 += elapsedTimeS;
                             if (DerailmentTimer4 > 1.0f)
                             {
+                                (this as MSTSWagon).DavisAN = MassKG * Simulator.Random.Next(0, 20);
                                 DerailmentTimer4 = 0;
                                 CarIsDecoupled = true;
                                 Train.TrainIsDerailing = true;
@@ -3568,20 +3575,28 @@ namespace Orts.Simulation.RollingStocks
                                     Simulator.UncoupleBehind(uncoupleBehindCar, false);                                    
                                 }
                             }
-                        }                                                                     
-
-                        (this as MSTSWagon).DavisAN = MassKG / 24000f * 120000f;
-                        (this as MSTSWagon).StandstillFrictionN = MassKG / 24000f * 120000f;
+                        }                                           
 
                         SignalEvent(Event.Derail1);
                         SignalEvent(Event.Derail2);
                         SignalEvent(Event.Derail3);
-                    }
+
+                        if (this is MSTSDieselLocomotive)
+                        {
+                            if ((this as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                                (this as MSTSDieselLocomotive).DieselEngines[0].Stop();
+
+                            if ((this as MSTSDieselLocomotive).DieselEngines.Count > 1 && (this as MSTSDieselLocomotive).DieselEngines[1].EngineStatus != SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                                (this as MSTSDieselLocomotive).DieselEngines[1].Stop();
+                        }
+                    }                    
 
                     if (AbsSpeedMpS < 0.1f)
                     {
                         SpeedMpS = 0;
-                        Train.TrainIsDerailed = true;                        
+                        Train.TrainIsDerailed = true;
+                        WheelSlip = false;
+                        WheelSkid = false;
                     }
 
                     // Vibrace po pražcích                
@@ -3609,8 +3624,14 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }                               
-            }            
-            prevSpeedMpS = SpeedMpS;
+            }
+            if (!DerailIsOn)
+                RealSpeedMarker = SpeedMpS != 0 ? SpeedMpS / Math.Abs(SpeedMpS) : 1;
+            else
+            if (SpeedMpS != 0 && RealSpeedMarker != SpeedMpS / Math.Abs(SpeedMpS))
+                SpeedMpS = Math.Abs(SpeedMpS) * RealSpeedMarker;
+
+            prevSpeedMpS = SpeedMpS;            
         }
 
         // Úprava síly vibrací dle rychlostníků na trati
