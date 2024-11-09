@@ -6287,6 +6287,11 @@ namespace Orts.Viewer3D.RollingStock
             locomotive.WipersWindowTimeClean = CycleTimeS;
         }
 
+        int WipersFrameIndex = 0;
+        float WipersFrameTimer;
+        float FinalCycleTimeS;
+        int WipersFrameCount;
+        int WipersFrameCounter;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             bool display = false;
@@ -6318,54 +6323,106 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         if (Locomotive.Wipers3ActivationEnable)
                         {
-                            AnimationOn = true;
+                            CVCWithFrames cVCWithFrames = (CVCWithFrames)Control;
+                            WipersFrameCount = cVCWithFrames.FramesCount;
+                            WipersFrameTimer += elapsedTime.ClockSeconds;
                             switch (Locomotive.Wipers3SpeedSwitch[Locomotive.LocoStation])
                             {
                                 case 0:
                                     {
+                                        FinalCycleTimeS = CycleTimeS / 2f;
                                         Locomotive.WipersWindowTimeClean = 0;
-                                        index = 0;
+
+                                        if (WipersFrameCounter > WipersFrameCount * 2f)
+                                        {
+                                            WipersFrameCounter = 0;
+                                            WipersFrameIndex = 0;
+                                        }
+
+                                        if (WipersFrameIndex == 0)
+                                            break;
+
+                                        if (WipersFrameTimer > FinalCycleTimeS / WipersFrameCount)
+                                        {
+                                            if (WipersFrameCounter < WipersFrameCount)
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex++;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
+                                            else
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex--;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
+                                        }
                                         break;
                                     }
                                 case 1:
                                     {
-                                        float FinalCycleTimeS = CycleTimeS;
-                                        Locomotive.WipersWindowTimeClean = FinalCycleTimeS;
-                                        var halfCycleS = FinalCycleTimeS / 2f;
-                                        if (AnimationOn)
-                                        {
-                                            CumulativeTime += elapsedTime.ClockSeconds;
-                                            if (CumulativeTime > FinalCycleTimeS && !animate)
-                                                AnimationOn = false;
-                                            CumulativeTime %= FinalCycleTimeS;
+                                        FinalCycleTimeS = CycleTimeS / 2f;
+                                        Locomotive.WipersWindowTimeClean = CycleTimeS;
 
-                                            if (CumulativeTime < halfCycleS)
-                                                index = PercentToIndex(CumulativeTime / halfCycleS);
+                                        if (WipersFrameCounter > WipersFrameCount * 2f)
+                                        {
+                                            WipersFrameCounter = 0;
+                                            WipersFrameIndex = 0;
+                                        }
+
+                                        if (WipersFrameTimer > FinalCycleTimeS / WipersFrameCount)
+                                        {
+                                            if (WipersFrameCounter < WipersFrameCount)
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex++;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
                                             else
-                                                index = PercentToIndex((FinalCycleTimeS - CumulativeTime) / halfCycleS);
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex--;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
                                         }
                                         break;
                                     }
                                 case 2:
                                     {
-                                        float FinalCycleTimeS = CycleTimeS2;
-                                        Locomotive.WipersWindowTimeClean = FinalCycleTimeS;
-                                        var halfCycleS = FinalCycleTimeS / 2f;
-                                        if (AnimationOn)
-                                        {
-                                            CumulativeTime += elapsedTime.ClockSeconds;
-                                            if (CumulativeTime > FinalCycleTimeS && !animate)
-                                                AnimationOn = false;
-                                            CumulativeTime %= FinalCycleTimeS;
+                                        FinalCycleTimeS = CycleTimeS2 / 2f;
+                                        Locomotive.WipersWindowTimeClean = CycleTimeS2;
 
-                                            if (CumulativeTime < halfCycleS)
-                                                index = PercentToIndex(CumulativeTime / halfCycleS);
+                                        if (WipersFrameCounter > WipersFrameCount * 2f)
+                                        {
+                                            WipersFrameCounter = 0;
+                                            WipersFrameIndex = 0;
+                                        }
+
+                                        if (WipersFrameTimer > FinalCycleTimeS / WipersFrameCount)
+                                        {
+                                            if (WipersFrameCounter < WipersFrameCount)
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex++;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
                                             else
-                                                index = PercentToIndex((FinalCycleTimeS - CumulativeTime) / halfCycleS);
+                                            {
+                                                WipersFrameCounter++;
+                                                WipersFrameIndex--;
+                                                WipersFrameTimer = 0;
+                                                break;
+                                            }
                                         }
                                         break;
                                     }
                             }
+                            index = WipersFrameIndex;
                         }
                         else
                         {

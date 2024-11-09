@@ -11258,7 +11258,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (Wipers3ActivationEnable)
             {
-                if (Wipers3ActivationSwitch[LocoStation] < 3)
+                if (Wipers3ActivationSwitch[LocoStation] < 2)
                 {
                     Wipers3ActivationSwitch[LocoStation]++;
                     ToggleWipers3ActivationSwitch();
