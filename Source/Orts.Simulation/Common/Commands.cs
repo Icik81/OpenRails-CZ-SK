@@ -3151,4 +3151,37 @@ namespace Orts.Common
             // Report();
         }
     }
+    [Serializable()]
+    public sealed class ToggleWipers3ActivationSwitchUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleWipers3ActivationSwitchUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+
+            Receiver.ToggleWipers3ActivationSwitchUp();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleWipers3ActivationSwitchDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleWipers3ActivationSwitchDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleWipers3ActivationSwitchDown();
+        }
+    }
 }

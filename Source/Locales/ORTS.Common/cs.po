@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2024-10-29 10:46:45+0100\n"
-"PO-Revision-Date: 2024-10-29 10:49+0100\n"
+"POT-Creation-Date: 2024-11-09 14:25:35+0100\n"
+"PO-Revision-Date: 2024-11-09 14:28+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1451,39 +1451,47 @@ msgstr "Ovládání_CZSK Přepínač trakce +"
 msgid "Control_CZSK Traction Switch -"
 msgstr "Ovládání_CZSK Přepínač trakce -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:339
+#: ../../ORTS.Common/Input/UserCommand.cs:337
+msgid "Control_CZSK Wipers Switch +"
+msgstr "Ovládání_CZSK Přepínač stěrače +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:338
+msgid "Control_CZSK Wipers Switch -"
+msgstr "Ovládání_CZSK Přepínač stěrače -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:340
 msgid "Set Power Supply Station Location"
 msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:340
+#: ../../ORTS.Common/Input/UserCommand.cs:341
 msgid "Set Voltage 25k"
 msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:341
+#: ../../ORTS.Common/Input/UserCommand.cs:342
 msgid "Set Voltage 15k"
 msgstr "Nastavit napětí 15kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:342
+#: ../../ORTS.Common/Input/UserCommand.cs:343
 msgid "Set Voltage 3k"
 msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:343
+#: ../../ORTS.Common/Input/UserCommand.cs:344
 msgid "Set Voltage 0"
 msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:344
+#: ../../ORTS.Common/Input/UserCommand.cs:345
 msgid "Set Delete Voltage Marker"
 msgstr "Smazat napěťový marker (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:346
+#: ../../ORTS.Common/Input/UserCommand.cs:347
 msgid "Control_CZSK Reload World Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů světa"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:347
+#: ../../ORTS.Common/Input/UserCommand.cs:348
 msgid "Control_CZSK Reload Cab Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů kabiny"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:348
+#: ../../ORTS.Common/Input/UserCommand.cs:349
 msgid "Control_CZSK Reload Wire Object"
 msgstr "Ovládání_CZSK Znovunačtení trolejového vedení"
 

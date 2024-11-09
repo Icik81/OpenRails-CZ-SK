@@ -398,6 +398,9 @@ namespace Orts.Common
         ToggleTractionOff,
         DoorLocked,
         DoorUnlocked,
+        Wipers3SpeedOff,
+        Wipers3Speed1,
+        Wipers3Speed2,
     }
 
     public static class Events
@@ -810,6 +813,9 @@ namespace Orts.Common
                         case 20151: return Event.MotorStopBreak2;
                         case 20152: return Event.DoorLocked;
                         case 20153: return Event.DoorUnlocked;
+                        case 20154: return Event.Wipers3SpeedOff;
+                        case 20155: return Event.Wipers3Speed1;
+                        case 20156: return Event.Wipers3Speed2;
 
                         default: return 0;
                     }

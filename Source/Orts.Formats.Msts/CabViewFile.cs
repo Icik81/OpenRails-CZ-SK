@@ -562,6 +562,7 @@ namespace Orts.Formats.Msts
         ARR_PARKING_BUTTON,
         TRACTION_SWITCH,
         TRESHOLD_INDICATOR,
+        WIPERS3_ACTIVATION_SWITCH,
 
         // ORTS
         ORTS_SCREEN_SELECT,
@@ -1936,6 +1937,7 @@ namespace Orts.Formats.Msts
     {
         public List<double> MSStyles = new List<double>();
         public float CycleTimeS;
+        public float CycleTimeS2;
 
         public CVCAnimatedDisplay(STFReader stf, string basepath)
         {
@@ -1950,6 +1952,8 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("units", ()=>{ ParseUnits(stf); }),
                 new STFReader.TokenProcessor("ortscycletime", ()=>{
                     CycleTimeS = stf.ReadFloatBlock(STFReader.UNITS.Time, null); }),
+                new STFReader.TokenProcessor("ortscycletime2", ()=>{
+                    CycleTimeS2 = stf.ReadFloatBlock(STFReader.UNITS.Time, null); }),
                 new STFReader.TokenProcessor("states", ()=>{
                     stf.MustMatch("(");
                     FramesCount = stf.ReadInt(null);

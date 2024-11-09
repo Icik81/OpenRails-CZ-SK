@@ -40,6 +40,7 @@ using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -418,6 +419,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlRefreshWire, new Action[] { Noop, () => new ToggleRefreshWireCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlTractionSwitchUp, new Action[] { Noop, () => new ToggleTractionSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlTractionSwitchDown, new Action[] { Noop, () => new ToggleTractionSwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlWipers3ActivationSwitchUp, new Action[] { Noop, () => new ToggleWipers3ActivationSwitchUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlWipers3ActivationSwitchDown, new Action[] { Noop, () => new ToggleWipers3ActivationSwitchDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -3752,6 +3755,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ARR_PARKING_BUTTON:
                 case CABViewControlTypes.TRACTION_SWITCH:
                 case CABViewControlTypes.TRESHOLD_INDICATOR:
+                case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4215,6 +4219,21 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
                 case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
+
+                case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
+                    {                        
+                        if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleWipers3ActivationSwitchUpCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        if (!IsChanged && ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new ToggleWipers3ActivationSwitchDownCommand(Viewer.Log);
+                            IsChanged = true;
+                        }
+                        break;
+                    }
 
                 case CABViewControlTypes.SWITCH5_LIGHT:
                     if (ChangedValue(0) < 0 && !IsChanged)
@@ -6256,12 +6275,14 @@ namespace Orts.Viewer3D.RollingStock
     {
         private float CumulativeTime;
         private readonly float CycleTimeS;
+        private readonly float CycleTimeS2;
         private bool AnimationOn = false;
 
         public CabViewAnimationsRenderer(Viewer viewer, MSTSLocomotive locomotive, CVCAnimatedDisplay control, CabShader shader)
             : base(viewer, locomotive, control, shader)
         {
             CycleTimeS = control.CycleTimeS;
+            CycleTimeS2 = control.CycleTimeS2;
             // Icik
             locomotive.WipersWindowTimeClean = CycleTimeS;
         }
@@ -6289,25 +6310,81 @@ namespace Orts.Viewer3D.RollingStock
             var animate = Locomotive.GetDataOf(Control) != 0;
             if (animate)
                 AnimationOn = true;
-
+            
             int index = 0;
             switch (ControlDiscrete.ControlType)
             {
                 case CABViewControlTypes.ORTS_2DEXTERNALWIPERS:
-                    var halfCycleS = CycleTimeS / 2f;
-                    if (AnimationOn)
                     {
-                        CumulativeTime += elapsedTime.ClockSeconds;
-                        if (CumulativeTime > CycleTimeS && !animate)
-                            AnimationOn = false;
-                        CumulativeTime %= CycleTimeS;
+                        if (Locomotive.Wipers3ActivationEnable)
+                        {
+                            AnimationOn = true;
+                            switch (Locomotive.Wipers3SpeedSwitch[Locomotive.LocoStation])
+                            {
+                                case 0:
+                                    {
+                                        Locomotive.WipersWindowTimeClean = 0;
+                                        index = 0;
+                                        break;
+                                    }
+                                case 1:
+                                    {
+                                        float FinalCycleTimeS = CycleTimeS;
+                                        Locomotive.WipersWindowTimeClean = FinalCycleTimeS;
+                                        var halfCycleS = FinalCycleTimeS / 2f;
+                                        if (AnimationOn)
+                                        {
+                                            CumulativeTime += elapsedTime.ClockSeconds;
+                                            if (CumulativeTime > FinalCycleTimeS && !animate)
+                                                AnimationOn = false;
+                                            CumulativeTime %= FinalCycleTimeS;
 
-                        if (CumulativeTime < halfCycleS)
-                            index = PercentToIndex(CumulativeTime / halfCycleS);
+                                            if (CumulativeTime < halfCycleS)
+                                                index = PercentToIndex(CumulativeTime / halfCycleS);
+                                            else
+                                                index = PercentToIndex((FinalCycleTimeS - CumulativeTime) / halfCycleS);
+                                        }
+                                        break;
+                                    }
+                                case 2:
+                                    {
+                                        float FinalCycleTimeS = CycleTimeS2;
+                                        Locomotive.WipersWindowTimeClean = FinalCycleTimeS;
+                                        var halfCycleS = FinalCycleTimeS / 2f;
+                                        if (AnimationOn)
+                                        {
+                                            CumulativeTime += elapsedTime.ClockSeconds;
+                                            if (CumulativeTime > FinalCycleTimeS && !animate)
+                                                AnimationOn = false;
+                                            CumulativeTime %= FinalCycleTimeS;
+
+                                            if (CumulativeTime < halfCycleS)
+                                                index = PercentToIndex(CumulativeTime / halfCycleS);
+                                            else
+                                                index = PercentToIndex((FinalCycleTimeS - CumulativeTime) / halfCycleS);
+                                        }
+                                        break;
+                                    }
+                            }
+                        }
                         else
-                            index = PercentToIndex((CycleTimeS - CumulativeTime) / halfCycleS);
-                    }
-                    break;
+                        {
+                            var halfCycleS = CycleTimeS / 2f;
+                            if (AnimationOn)
+                            {
+                                CumulativeTime += elapsedTime.ClockSeconds;
+                                if (CumulativeTime > CycleTimeS && !animate)
+                                    AnimationOn = false;
+                                CumulativeTime %= CycleTimeS;
+
+                                if (CumulativeTime < halfCycleS)
+                                    index = PercentToIndex(CumulativeTime / halfCycleS);
+                                else
+                                    index = PercentToIndex((CycleTimeS - CumulativeTime) / halfCycleS);
+                            }                           
+                        }
+                        break;
+                    }                
             }
 
             PrepareFrameForIndex(frame, elapsedTime, index);

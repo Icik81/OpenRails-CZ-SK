@@ -2119,6 +2119,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Switch6LightPosition[2]);
             outf.Write(TractionSwitchPosition[1]);
             outf.Write(TractionSwitchPosition[2]);
+            outf.Write(Wipers3ActivationSwitch[1]);
+            outf.Write(Wipers3ActivationSwitch[2]);
             #endregion
 
             base.Save(outf);
@@ -2379,6 +2381,8 @@ namespace Orts.Simulation.RollingStocks
             Switch6LightPosition[2] = inf.ReadInt32();
             TractionSwitchPosition[1] = inf.ReadInt32();
             TractionSwitchPosition[2] = inf.ReadInt32();
+            Wipers3ActivationSwitch[1] = inf.ReadInt32();
+            Wipers3ActivationSwitch[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -7059,7 +7063,8 @@ namespace Orts.Simulation.RollingStocks
                 DoorSwitchLogic();
                 TrainBrakePercent();                
                 WireHeightSwitching();
-                TractionSwitch();                
+                TractionSwitch();
+                ToggleWipers3ActivationSwitch();
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -11142,9 +11147,10 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleWipers(bool newState)
         {
+            if (Wipers3ActivationEnable) return;
             SignalEvent(Event.PantographToggle);
             LocoWiper[LocoStation] = !LocoWiper[LocoStation];
-        }
+        }        
 
         public void SetBailOff(bool bailOff)
         {
@@ -11244,6 +11250,76 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+        public bool Wipers3ActivationEnable;
+        public int[] Wipers3ActivationSwitch = new int[3];
+        public int[] LastStateWipers3Activation = new int[3];
+        public int[] Wipers3SpeedSwitch = new int[3];
+        public void ToggleWipers3ActivationSwitchUp()
+        {
+            if (Wipers3ActivationEnable)
+            {
+                if (Wipers3ActivationSwitch[LocoStation] < 3)
+                {
+                    Wipers3ActivationSwitch[LocoStation]++;
+                    ToggleWipers3ActivationSwitch();
+                    SignalEvent(Event.ToggleUpNA); // Zvuk přepínače
+                }
+                Wipers3ActivationSwitch[LocoStation] = MathHelper.Clamp(Wipers3ActivationSwitch[LocoStation], 0, 2);
+            }
+        }
+        public void ToggleWipers3ActivationSwitchDown()
+        {
+            if (Wipers3ActivationEnable)
+            {
+                if (Wipers3ActivationSwitch[LocoStation] > 0)
+                {
+                    Wipers3ActivationSwitch[LocoStation]--;
+                    ToggleWipers3ActivationSwitch();
+                    SignalEvent(Event.ToggleDownNA); // Zvuk přepínače
+                }
+                Wipers3ActivationSwitch[LocoStation] = MathHelper.Clamp(Wipers3ActivationSwitch[LocoStation], 0, 2);
+            }
+        }
+
+        public void ToggleWipers3ActivationSwitch()
+        {
+            if (!IsLeadLocomotive())
+                return;
+            if (Wipers3ActivationEnable)
+            {
+                if (!Battery || !StationIsActivated[LocoStation])
+                {
+                    Wipers3SpeedSwitch[LocoStation] = 0;
+                }
+
+                if (LastStateWipers3Activation[LocoStation] != Wipers3ActivationSwitch[LocoStation])
+                {
+                    switch (Wipers3ActivationSwitch[LocoStation])
+                    {
+                        case 0: // Wipers3 deaktivovat                            
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Wipers off"));
+                            Wipers3SpeedSwitch[LocoStation] = 0;
+                            break;
+                        case 1: // 1.rychlost
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Wipers speed 1"));
+                            if (Battery && StationIsActivated[LocoStation])
+                            {
+                                Wipers3SpeedSwitch[LocoStation] = 1;
+                            }
+                            break;
+                        case 2:// 2.rychlost
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Wipers speed 2"));
+                            if (Battery && StationIsActivated[LocoStation])
+                            {
+                                Wipers3SpeedSwitch[LocoStation] = 2;
+                            }
+                            break;
+                    }
+                }
+                LastStateWipers3Activation[LocoStation] = Wipers3ActivationSwitch[LocoStation];
+            }
+        }
+
         public void ToggleHeadLightsUp()
         {
             if (HeadLightPosition[LocoStation] < 3)
@@ -11532,21 +11608,53 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        bool WiperSpeed0;
+        bool WiperSpeed1;
+        bool WiperSpeed2;
         public void WipersLogic()
         {
-            if (!LocoWiper[LocoStation] && Wiper)
-                SignalEvent(Event.WiperOff);
-
-            if (LocoWiper[LocoStation] && !Wiper && Battery)
-                SignalEvent(Event.WiperOn);
-
-            if (Wiper && !Battery)
-                SignalEvent(Event.WiperOff);
-
-            if (LocoWiper[LocoStation] && Battery)
-                Wiper = true;
+            if (Wipers3ActivationEnable)
+            {
+                if (Wipers3SpeedSwitch[LocoStation] == 0 && !WiperSpeed0)
+                {
+                    SignalEvent(Event.Wipers3SpeedOff);
+                    WiperSpeed0 = true;
+                    WiperSpeed1 = false;
+                    WiperSpeed2 = false;
+                }
+                if (Wipers3SpeedSwitch[LocoStation] == 1 && !WiperSpeed1)
+                {
+                    SignalEvent(Event.Wipers3SpeedOff);
+                    SignalEvent(Event.Wipers3Speed1);
+                    WiperSpeed0 = false;                    
+                    WiperSpeed1 = true;
+                    WiperSpeed2 = false;
+                }
+                if (Wipers3SpeedSwitch[LocoStation] == 2 && !WiperSpeed2)
+                {
+                    SignalEvent(Event.Wipers3SpeedOff);
+                    SignalEvent(Event.Wipers3Speed2);
+                    WiperSpeed0 = false;
+                    WiperSpeed1 = false;
+                    WiperSpeed2 = true;
+                }
+            }
             else
-                Wiper = false;
+            {
+                if (!LocoWiper[LocoStation] && Wiper)
+                    SignalEvent(Event.WiperOff);
+
+                if (LocoWiper[LocoStation] && !Wiper && Battery)
+                    SignalEvent(Event.WiperOn);
+
+                if (Wiper && !Battery)
+                    SignalEvent(Event.WiperOff);
+
+                if (LocoWiper[LocoStation] && Battery)
+                    Wiper = true;
+                else
+                    Wiper = false;
+            }
         }
 
         float EngineBrakeValueR;
@@ -23353,6 +23461,12 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 #endregion Speed
                         }
+                        break;
+                    }
+                case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
+                    {
+                        Wipers3ActivationEnable = true;
+                        data = Wipers3ActivationSwitch[LocoStation];
                         break;
                     }
 

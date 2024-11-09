@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2024-10-29 10:46:45+0100\n"
-"PO-Revision-Date: 2024-10-29 10:46:45+0100\n"
+"POT-Creation-Date: 2024-11-09 14:25:35+0100\n"
+"PO-Revision-Date: 2024-11-09 14:25:35+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1441,39 +1441,47 @@ msgstr ""
 msgid "Control_CZSK Traction Switch -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:339
-msgid "Set Power Supply Station Location"
+#: ../../ORTS.Common/Input/UserCommand.cs:337
+msgid "Control_CZSK Wipers Switch +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:338
+msgid "Control_CZSK Wipers Switch -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:340
-msgid "Set Voltage 25k"
+msgid "Set Power Supply Station Location"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:341
-msgid "Set Voltage 15k"
+msgid "Set Voltage 25k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:342
-msgid "Set Voltage 3k"
+msgid "Set Voltage 15k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:343
-msgid "Set Voltage 0"
+msgid "Set Voltage 3k"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:344
+msgid "Set Voltage 0"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:345
 msgid "Set Delete Voltage Marker"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:346
+#: ../../ORTS.Common/Input/UserCommand.cs:347
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:347
+#: ../../ORTS.Common/Input/UserCommand.cs:348
 msgid "Control_CZSK Reload Cab Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:348
+#: ../../ORTS.Common/Input/UserCommand.cs:349
 msgid "Control_CZSK Reload Wire Object"
 msgstr ""
 
