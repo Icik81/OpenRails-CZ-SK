@@ -11611,12 +11611,17 @@ namespace Orts.Simulation.RollingStocks
         bool WiperSpeed0;
         bool WiperSpeed1;
         bool WiperSpeed2;
+        float Wipers3SoundSpeedTimer;
+        bool Wipers3SoundSpeed0;
+        bool Wipers3SoundSpeed1;
+        bool Wipers3SoundSpeed2;
         public void WipersLogic()
         {
             if (Wipers3ActivationEnable)
             {
                 if (Wipers3SpeedSwitch[LocoStation] == 0 && !WiperSpeed0)
                 {
+                    Wipers3SoundSpeed0 = true;
                     SignalEvent(Event.Wipers3SpeedOff);
                     WiperSpeed0 = true;
                     WiperSpeed1 = false;
@@ -11624,19 +11629,56 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (Wipers3SpeedSwitch[LocoStation] == 1 && !WiperSpeed1)
                 {
+                    Wipers3SoundSpeed1 = true;
                     SignalEvent(Event.Wipers3SpeedOff);
-                    SignalEvent(Event.Wipers3Speed1);
                     WiperSpeed0 = false;                    
                     WiperSpeed1 = true;
                     WiperSpeed2 = false;
                 }
                 if (Wipers3SpeedSwitch[LocoStation] == 2 && !WiperSpeed2)
                 {
+                    Wipers3SoundSpeed2 = true;
                     SignalEvent(Event.Wipers3SpeedOff);
-                    SignalEvent(Event.Wipers3Speed2);
                     WiperSpeed0 = false;
                     WiperSpeed1 = false;
                     WiperSpeed2 = true;
+                }
+
+                if ((Wipers3SoundSpeed1 && Wipers3SoundSpeed2) || (Wipers3SoundSpeed0 && Wipers3SoundSpeed1))
+                {                    
+                    Wipers3SoundSpeed1 = false;                    
+                    Wipers3SoundSpeedTimer = 0;
+                }
+
+                if (Wipers3SoundSpeed0)
+                {
+                    Wipers3SoundSpeedTimer += elapsedTime;
+                    if (Wipers3SoundSpeedTimer > 0.0f)
+                    {
+                        SignalEvent(Event.Wipers3SpeedOff);
+                        Wipers3SoundSpeedTimer = 0;
+                        Wipers3SoundSpeed0 = false;
+                    }
+                }
+                if (Wipers3SoundSpeed1)
+                {
+                    Wipers3SoundSpeedTimer += elapsedTime;
+                    if (Wipers3SoundSpeedTimer > 0.5f)
+                    {
+                        SignalEvent(Event.Wipers3Speed1);
+                        Wipers3SoundSpeedTimer = 0;
+                        Wipers3SoundSpeed1 = false;
+                    }
+                }
+                if (Wipers3SoundSpeed2)
+                {
+                    Wipers3SoundSpeedTimer += elapsedTime;
+                    if (Wipers3SoundSpeedTimer > 0.5f)
+                    {
+                        SignalEvent(Event.Wipers3Speed2);
+                        Wipers3SoundSpeedTimer = 0;
+                        Wipers3SoundSpeed2 = false;
+                    }
                 }
             }
             else
