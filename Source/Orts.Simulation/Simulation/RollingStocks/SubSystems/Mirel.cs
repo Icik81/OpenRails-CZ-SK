@@ -239,7 +239,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool was15kV = false;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
-            if (Locomotive.RouteVoltageV == 15000)
+            if (Locomotive.RouteVoltageV == 15000 && initTest == InitTest.Passed)
             {
                 driveMode = DriveMode.Trailing;
                 selectedDriveMode = DriveMode.Trailing;
@@ -772,7 +772,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void UpdateDisplay()
         {
-            if (Locomotive.RouteVoltageV == 15000)
+            if (Locomotive.RouteVoltageV == 15000 && initTest == InitTest.Passed)
             {
                 Display = "   ";
                 return;
@@ -1581,7 +1581,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void UpdateSpeedNumbers(int Speed, bool NoSpeedDisplayed)
         {
-            if (Locomotive.RouteVoltageV == 15000)
+            if (Locomotive.RouteVoltageV == 15000 && initTest == InitTest.Passed)  
             {
                 MirelSpeedNum1 = 0;
                 MirelSpeedNum2 = 0;
@@ -1718,7 +1718,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected float lengthPassedWithoutSignal = 0;        
         protected void MirelCheck(float elapsedTimeSeconds)
         {
-            if (Locomotive.RouteVoltageV == 15000)
+            if (Locomotive.RouteVoltageV == 15000 && initTest == InitTest.Passed)
             {
                 BlueLight = false;
                 UpdateSpeedNumbers(0, true);
