@@ -16802,6 +16802,7 @@ namespace Orts.Simulation.Physics
         public int ActualPassengerCountAtStation1;
         public int MaxStationCountFromStart = -1;
         public bool TrainIsPaxFull;
+        public bool TrainHasPaxCapacity;
 
         public List<Passenger> exitPaxList = new List<Passenger>();
 
@@ -17531,7 +17532,24 @@ namespace Orts.Simulation.Physics
                                         if (Simulator.Random.Next(0, 5) == 0)
                                             break;
                                     }
-                                }    
+                                }
+
+                                // Test najíždějící solo mašiny na odstavené vozy na nástupišti
+                                TrainHasPaxCapacity = false;
+                                for (int j = 0; j < train.Cars.Count; j++)
+                                {
+                                    if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0)
+                                    {
+                                        TrainHasPaxCapacity = true;
+                                        break;
+                                    }                               
+                                }
+                                if (!TrainHasPaxCapacity)
+                                {
+                                    enterTimesCalculated = false;
+                                    return;
+                                }
+
                                 if (pax.WagonIndex == -1)
                                 {
                                     TrainIsPaxFull = true;
