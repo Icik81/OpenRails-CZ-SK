@@ -17625,9 +17625,25 @@ namespace Orts.Simulation.Physics
                 {
                     PeopleWantToEntry = false;
                 }
-
                 bool closeDoor = false;
                 bool haveCentralDoors = false;
+
+                foreach (TrainCar tc in train.Cars)
+                {
+                    MSTSWagon wagon = (MSTSWagon)tc;
+                    haveCentralDoors = loco.CentralHandlingDoors;
+                    
+                    if (wagon is MSTSLocomotive
+                        && ((wagon as MSTSLocomotive).LocomotiveTypeNumber == 810 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 809) // Motorák 809 - 810 zavírá dveře strojvedoucí 
+                        && (wagon as MSTSLocomotive).IsLeadLocomotive() && haveCentralDoors)
+                    {
+                        train.BoardingComplete = true;
+                        enterTimesCalculated = false;
+                        return;
+                    }
+                }
+                       
+                // Ostatní zavírají dveře cestující
                 foreach (TrainCar tc in train.Cars)
                 {
                     MSTSWagon wagon = (MSTSWagon)tc;
@@ -17644,7 +17660,7 @@ namespace Orts.Simulation.Physics
                     }
 
                     if (closeDoor && (!haveCentralDoors || !Simulator.DoorSwitchDoorLocked) && wagon.TimeToCloseDoor == wagon.TimeToCloseDoorGenerate)
-                    {
+                    {                        
                         train.ToggleDoorsPeople(true, false, wagon);
                         train.ToggleDoorsPeople(false, false, wagon);
                         wagon.TimeToCloseDoor = 0;
