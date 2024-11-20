@@ -980,7 +980,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 }
                             }
                             Car.Train.HandBrakeNum++;
-                            if (Car.Train.HandBrakeNum == 1 && Car.Train.Cars.Count > 1)
+                            if (Car.Train.HandBrakeNum == 1 && Car.Train.Cars.Count > 1 && HandBrakeTotalCount > 1)
                             {
                                 HandBrakeActive = false;
                                 HandBrakeDeactive = true;
