@@ -3997,7 +3997,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
-                if (DoorSwitchEnable)
+                if (DoorSwitchEnable && Battery && StationIsActivated[LocoStation])
                 {
                     foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                     {
@@ -22789,7 +22789,9 @@ namespace Orts.Simulation.RollingStocks
                                     data = Simulator.DoorSwitchDoorLocked ? 0 : 1;
                                 }
                             }
-                        }                                               
+                        }
+                        if (!Battery || !StationIsActivated[LocoStation])
+                            data = 0;
                         break;
                     }
                 case CABViewControlTypes.LAP_BUTTON:

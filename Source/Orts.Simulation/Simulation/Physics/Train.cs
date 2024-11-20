@@ -66,6 +66,7 @@ using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16700,21 +16701,26 @@ namespace Orts.Simulation.Physics
 
                 if (!wagon.FreightDoors)
                 {
-                    if (!wagon.Flipped && right || wagon.Flipped && !right)
-                    {
-                        wagon.DoorRightOpen = open;
-                        // Icik
-                        if (open)
-                            wagon.BrakeSystem.RightDoorIsOpened = true;
-                        else wagon.BrakeSystem.RightDoorIsOpened = false;
-                    }
-                    else
-                    {
+                    if (!wagon.Flipped && right || wagon.Flipped && !right)                    
+                        wagon.DoorRightOpen = open;                    
+                    else                    
                         wagon.DoorLeftOpen = open;
-                        // Icik
-                        if (open)
+                    
+                    wagon.BrakeSystem.RightDoorIsOpened = false;
+                    wagon.BrakeSystem.LeftDoorIsOpened = false;                    
+                    if (wagon.DoorLeftOpen)
+                    {
+                        if (TrainLeadUseRearCab)                        
+                            wagon.BrakeSystem.RightDoorIsOpened = true;                        
+                        else
+                            wagon.BrakeSystem.LeftDoorIsOpened = true;                        
+                    }
+                    if (wagon.DoorRightOpen)
+                    {
+                        if (TrainLeadUseRearCab)
                             wagon.BrakeSystem.LeftDoorIsOpened = true;
-                        else wagon.BrakeSystem.LeftDoorIsOpened = false;
+                        else
+                            wagon.BrakeSystem.RightDoorIsOpened = true;
                     }
                 }
             }
@@ -16803,6 +16809,9 @@ namespace Orts.Simulation.Physics
         public int MaxStationCountFromStart = -1;
         public bool TrainIsPaxFull;
         public bool TrainHasPaxCapacity;
+        public bool DoorCanBeOpenned;
+        public bool TrainLeadUseRearCab;
+        public bool TrainLeadIsFlipped;
 
         public List<Passenger> exitPaxList = new List<Passenger>();
 
@@ -17248,64 +17257,129 @@ namespace Orts.Simulation.Physics
 
             if (Simulator.DoorSwitchEnable)
             {
-                if (!Simulator.DoorSwitchDoorLocked)
+                if (!Simulator.DoorSwitchDoorLocked && loco.Battery && loco.StationIsActivated[loco.LocoStation])
                 {
-                    Simulator.DoorSwitchDoorLocked = true;
-                    if (loco.Flipped)
+                    Simulator.DoorSwitchDoorLocked = true;                    
+                    if (!loco.UsingRearCab)
                     {
-                        if (ReverseAtStation)
+                        if (loco.Flipped)
                         {
-                            switch (loco.DoorSwitch[loco.LocoStation])
+                            if (ReverseAtStation)
                             {
-                                case 0:
-                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                    break;
-                                case 2:
-                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                    break;
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                }
                             }
                         }
                         else
                         {
-                            switch (loco.DoorSwitch[loco.LocoStation])
+                            if (ReverseAtStation)
                             {
-                                case 2:
-                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                    break;
-                                case 0:
-                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                    break;
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                }
                             }
                         }
                     }
                     else
                     {
-                        if (ReverseAtStation)
+                        if (loco.Flipped)
                         {
-                            switch (loco.DoorSwitch[loco.LocoStation])
+                            if (ReverseAtStation)
                             {
-                                case 2:
-                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                    break;
-                                case 0:
-                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                    break;
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                }
                             }
                         }
                         else
                         {
-                            switch (loco.DoorSwitch[loco.LocoStation])
+                            if (ReverseAtStation)
                             {
-                                case 0:
-                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                    break;
-                                case 2:
-                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                    break;
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                }
+                            }
+                            else
+                            {
+                                switch (loco.DoorSwitch[loco.LocoStation])
+                                {
+                                    case 0:
+                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                        break;
+                                    case 2:
+                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                        break;
+                                }
                             }
                         }
                     }
-                }                
+                }
+                if (Simulator.DoorSwitchDoorLocked)
+                {
+                    enterTimesCalculated = false;
+                    exitTimesCalculated = false;
+                }
             }
 
             if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)
@@ -17639,6 +17713,8 @@ namespace Orts.Simulation.Physics
                     {
                         train.BoardingComplete = true;
                         enterTimesCalculated = false;
+                        exitTimesCalculated = false;
+                        DoorCanBeOpenned = true;
                         return;
                     }
                 }
@@ -17669,6 +17745,7 @@ namespace Orts.Simulation.Physics
                 }
                 train.BoardingComplete = true;                
                 enterTimesCalculated = false;
+                exitTimesCalculated = false;
             }
         }
 

@@ -3925,8 +3925,23 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleDoorsCarOperationsWindow()
         {
+            Train.TrainLeadUseRearCab = false;
+            Train.TrainLeadIsFlipped = false;
             foreach (var car in Train.Cars)
             {
+                if (car.CarIsPlayerLoco)
+                {
+                    if ((car as MSTSLocomotive).UsingRearCab)                    
+                        Train.TrainLeadUseRearCab = true;                                            
+
+                    if ((car as MSTSLocomotive).Flipped)
+                        Train.TrainLeadIsFlipped = true;
+
+                    break;
+                }
+            }
+            foreach (var car in Train.Cars)
+            {                                                
                 var mstsWagon = car as MSTSWagon;
                 if (car.BrakeSystem.LeftDoorIsOpened)
                 {
@@ -3935,6 +3950,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
+                    mstsWagon.LeftDoorOpenOverride = false;
                     car.BrakeSystem.LeftDoorMenu = 1;
                     car.BrakeSystem.LeftDoorText = Simulator.Catalog.GetString("closed");
                 }
@@ -3946,6 +3962,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                 {
+                    mstsWagon.RightDoorOpenOverride = false;
                     car.BrakeSystem.RightDoorMenu = 1;
                     car.BrakeSystem.RightDoorText = Simulator.Catalog.GetString("closed");
                 }
@@ -3955,17 +3972,35 @@ namespace Orts.Simulation.RollingStocks
                     switch (car.BrakeSystem.LeftDoorMenu)
                     {
                         case 0:
-                            if (!car.Flipped ^ Flipped)
-                                mstsWagon.DoorLeftOpen = false;
-                            else mstsWagon.DoorRightOpen = false;
+                            if (Train.TrainLeadUseRearCab)
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorRightOpen = false;
+                                else mstsWagon.DoorLeftOpen = false;
+                            }
+                            else
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorLeftOpen = false;
+                                else mstsWagon.DoorRightOpen = false;
+                            }
                             car.BrakeSystem.LeftDoorIsOpened = false;
                             mstsWagon.SignalEvent(Event.DoorClose);
                             mstsWagon.LeftDoorOpenOverride = false;
                             break;
                         case 1:
-                            if (!car.Flipped ^ Flipped)
-                                mstsWagon.DoorLeftOpen = true;
-                            else mstsWagon.DoorRightOpen = true;
+                            if (Train.TrainLeadUseRearCab)
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorRightOpen = true;
+                                else mstsWagon.DoorLeftOpen = true;
+                            }
+                            else
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorLeftOpen = true;
+                                else mstsWagon.DoorRightOpen = true;
+                            }                            
                             car.BrakeSystem.LeftDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
                             mstsWagon.LeftDoorOpenOverride = true;
@@ -3978,17 +4013,35 @@ namespace Orts.Simulation.RollingStocks
                     switch (car.BrakeSystem.RightDoorMenu)
                     {
                         case 0:
-                            if (!car.Flipped ^ Flipped)
-                                mstsWagon.DoorRightOpen = false;
-                            else mstsWagon.DoorLeftOpen = false;
+                            if (Train.TrainLeadUseRearCab)
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorLeftOpen = false;
+                                else mstsWagon.DoorRightOpen = false;
+                            }
+                            else
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorRightOpen = false;
+                                else mstsWagon.DoorLeftOpen = false;
+                            }
                             car.BrakeSystem.RightDoorIsOpened = false;
                             mstsWagon.SignalEvent(Event.DoorClose);
                             mstsWagon.RightDoorOpenOverride = false;
                             break;
                         case 1:
-                            if (!car.Flipped ^ Flipped)
-                                mstsWagon.DoorRightOpen = true;
-                            else mstsWagon.DoorLeftOpen = true;
+                            if (Train.TrainLeadUseRearCab)
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorLeftOpen = true;
+                                else mstsWagon.DoorRightOpen = true;
+                            }
+                            else
+                            {
+                                if (!car.Flipped ^ Flipped)
+                                    mstsWagon.DoorRightOpen = true;
+                                else mstsWagon.DoorLeftOpen = true;
+                            }
                             car.BrakeSystem.RightDoorIsOpened = true;
                             mstsWagon.SignalEvent(Event.DoorOpen);
                             mstsWagon.RightDoorOpenOverride = true;
@@ -4006,19 +4059,31 @@ namespace Orts.Simulation.RollingStocks
             var loco = this as MSTSLocomotive;
             if (loco.DoorSwitchEnable)
             {
-                loco.DoorSwitch[loco.LocoStation]--;
-                if (loco.DoorSwitch[loco.LocoStation] < 0)
+                if (!loco.UsingRearCab)
                 {
-                    loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
-                    return;
+                    loco.DoorSwitch[loco.LocoStation]--;
+                    if (loco.DoorSwitch[loco.LocoStation] < 0)
+                    {
+                        loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
+                        return;
+                    }
+                }
+                else
+                {
+                    loco.DoorSwitch[loco.LocoStation]++;
+                    if (loco.DoorSwitch[loco.LocoStation] > 2)
+                    {
+                        loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
+                        return;
+                    }
                 }
                 if (loco.PrevDoorSwitch != loco.DoorSwitch[loco.LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
                 loco.PrevDoorSwitch = loco.DoorSwitch[loco.LocoStation];
 
-                if (loco.DoorSwitch[loco.LocoStation] == 1)
+                if (loco.DoorSwitch[loco.LocoStation] == 1 && loco.Battery && loco.StationIsActivated[loco.LocoStation])
                 {
-                    Simulator.DoorSwitchDoorLocked = true;
+                    Simulator.DoorSwitchDoorLocked = true;                    
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
@@ -4054,6 +4119,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 return;
             }
+
+            if (loco.DoorSwitchEnable && (!loco.Battery || !loco.StationIsActivated[loco.LocoStation]))
+                return;
 
             int DoorsCycle = 0;
             if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains
@@ -4106,17 +4174,29 @@ namespace Orts.Simulation.RollingStocks
             var loco = this as MSTSLocomotive;            
             if (loco.DoorSwitchEnable)
             {
-                loco.DoorSwitch[loco.LocoStation]++;
-                if (loco.DoorSwitch[loco.LocoStation] > 2)
+                if (!loco.UsingRearCab)
                 {
-                    loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
-                    return;
+                    loco.DoorSwitch[loco.LocoStation]++;
+                    if (loco.DoorSwitch[loco.LocoStation] > 2)
+                    {
+                        loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
+                        return;
+                    }
+                }
+                else
+                {
+                    loco.DoorSwitch[loco.LocoStation]--;
+                    if (loco.DoorSwitch[loco.LocoStation] < 0)
+                    {
+                        loco.DoorSwitch[loco.LocoStation] = MathHelper.Clamp(loco.DoorSwitch[loco.LocoStation], 0, 2);
+                        return;
+                    }
                 }
                 if (loco.PrevDoorSwitch != loco.DoorSwitch[loco.LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače 
                 loco.PrevDoorSwitch = loco.DoorSwitch[loco.LocoStation];
 
-                if (loco.DoorSwitch[loco.LocoStation] == 1)
+                if (loco.DoorSwitch[loco.LocoStation] == 1 && loco.Battery && loco.StationIsActivated[loco.LocoStation])
                 {
                     Simulator.DoorSwitchDoorLocked = true;
                     foreach (var car in Train.Cars)
@@ -4154,6 +4234,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 return;
             }
+
+            if (loco.DoorSwitchEnable && (!loco.Battery || !loco.StationIsActivated[loco.LocoStation]))
+                return;
 
             int DoorsCycle = 0;
             if (Simulator.PlayerLocomotive == this || Train.LeadLocomotive == this) // second part for remote trains

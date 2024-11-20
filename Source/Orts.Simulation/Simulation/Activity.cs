@@ -1163,7 +1163,7 @@ namespace Orts.Simulation
                         {
                             // check if passenger on board - if not, do not allow depart
                             if (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0
-                                || (!MyPlayerTrain.PeopleWantToEntry && MyPlayerTrain.TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
+                                || (!MyPlayerTrain.PeopleWantToEntry && MyPlayerTrain.TrainDoorsOpen && !MyPlayerTrain.DoorCanBeOpenned && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
                             {
                                 if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && !MyPlayerTrain.PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
@@ -1174,7 +1174,7 @@ namespace Orts.Simulation
                             }
                             else
                             if ((!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked))
-                                || (!MyPlayerTrain.PeopleWantToEntry && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked))
+                                || (!MyPlayerTrain.PeopleWantToEntry && loco.CentralHandlingDoors && (Simulator.DoorSwitchDoorLocked || MyPlayerTrain.DoorCanBeOpenned)))
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
@@ -1205,7 +1205,8 @@ namespace Orts.Simulation
                                         {
                                             if (loco.IsLeadLocomotive())
                                                 loco.SignalEvent(Event.AIPermissionToDepart);
-                                        }                                        
+                                        }
+                                        MyPlayerTrain.DoorCanBeOpenned = false;
                                     }
                                     else
                                     {
