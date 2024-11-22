@@ -17499,7 +17499,10 @@ namespace Orts.Simulation.Physics
                       
             for (int i = 0; i < train.Cars.Count; i++)
             {
-                var wagon = (train.Cars[i] as MSTSWagon);                
+                var wagon = (train.Cars[i] as MSTSWagon);
+
+                // Automatické dveře na vzduch se bez vzduchu neotevřou a paxové nevystoupí
+                if (wagon.AutomaticDoors && !wagon.BrakeSystem.AirOK_DoorCanManipulate) break;
 
                 if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger || wagon.NoPaxsMode) && !wagon.FreightDoors)
                 {
@@ -17514,7 +17517,7 @@ namespace Orts.Simulation.Physics
                     if (wagon.UnboardingComplete)
                         continue;
                     foreach (Passenger pax in exitPaxList)
-                    {
+                    {                        
                         if (((train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock) || EndStationTT)
                         {
                             if (pax.WagonName == Cars[i].CarID)
@@ -17592,7 +17595,10 @@ namespace Orts.Simulation.Physics
                         for (int i = 0; i < train.Cars.Count; i++)
                         {
                             var wagon = (train.Cars[i] as MSTSWagon);
-                            
+
+                            // Automatické dveře na vzduch se bez vzduchu neotevřou a paxové nenastoupí
+                            if (wagon.AutomaticDoors && !wagon.BrakeSystem.AirOK_DoorCanManipulate) break;
+
                             // Pax hledá náhradní vůz, pokud chtěl původně do vyřazeného vozu nebo už neexistujícího vozu
                             if (wagon.NoPaxsMode || !pax.Boarded || pax.WagonIndex > train.Cars.Count - 1 || pax.WagonIndex < 0 || wagon.PassengerList.Count >= 1.2f * wagon.PassengerCapacity)
                             {                                
