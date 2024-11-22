@@ -7075,6 +7075,9 @@ namespace Orts.Simulation.RollingStocks
                 ToggleARRDriveOutButton();
                 ToggleARRParkingButton();
 
+                // 809-810
+                MotorIdleHandling();
+
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;
@@ -11120,6 +11123,52 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        bool MotorIdleHandlingOn;
+        bool MotorIdleHandlingTractionIsBlocked;
+        public void MotorIdleHandling() // Pro motoráky 809-810
+        {
+            var mstsDieselLocomotive = this as MSTSDieselLocomotive;
+            if (mstsDieselLocomotive == null) return;
+
+            if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810)
+            {                
+                if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                {
+                    if (TractionOn && MotorIdleHandlingOn && LocalThrottlePercent > 5 && AbsWheelSpeedMpS > 0.01f)
+                    {
+                        SignalEvent(Event.ToggleTractionOn);
+                    }
+                    if (!MotorIdleHandlingOn && LocalThrottlePercent <= 5)
+                    {
+                        SignalEvent(Event.ToggleTractionOff);
+                    }
+
+                    if (MotorIdleHandlingTractionIsBlocked)
+                    {
+                        PowerReductionResult14 = 1.0f;
+                        if (MotorIdleHandlingOn)
+                        {
+                            MotorIdleHandlingTractionIsBlocked = false;
+                        }
+                    }
+
+                    if (!TractionOn && AbsWheelSpeedMpS > 0.01f && LocalThrottlePercent > 5)
+                    {
+                        MotorIdleHandlingTractionIsBlocked = true;
+                    }
+
+                    if (LocalThrottlePercent <= 5f)
+                    {
+                        PowerReductionResult14 = 1.0f;
+                        MotorIdleHandlingOn = true;
+                    }
+                    else
+                        MotorIdleHandlingOn = false;
+                }
+            }
+        }
+
+
         public bool CabRadioTriggerOn = false;
         public void CabRadioOnOff()
         {
@@ -12136,7 +12185,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car is MSTSLocomotive)
                         {
-                            Direction = Direction.N;
+                            //Direction = Direction.N;
                             car.DirectionControllerBlocked = true;
                         }
                     }
@@ -17080,7 +17129,7 @@ namespace Orts.Simulation.RollingStocks
                         if (!TractionOn)
                         {
                             TractionOn = true;
-                            SignalEvent(Event.ToggleTractionOn);
+                            //SignalEvent(Event.ToggleTractionOn);
                         }
                         break;
                 }
@@ -17093,7 +17142,7 @@ namespace Orts.Simulation.RollingStocks
                     TractionOn = false;
                     SignalEvent(Event.ToggleTractionOff);
                 }
-            }
+            }            
         }
         #endregion Traction Switch
 
@@ -23420,7 +23469,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.TRESHOLD_INDICATOR:
                     {
-                        switch(cvc.ControlVariable.ToLower())
+                        switch (cvc.ControlVariable.ToLower())
                         {
                             #region Speed
                             case "speed":
@@ -23428,7 +23477,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (SpeedMpS >= cvc.TresholdLevelOn && SpeedMpS < cvc.TresholdLevelOff)
                                         data = 1;
                                     else
-                                        data = 0;                                    
+                                        data = 0;
                                     break;
                                 }
                             case "absspeed":
@@ -23503,8 +23552,9 @@ namespace Orts.Simulation.RollingStocks
                                         data = 0;
                                     break;
                                 }
-                                #endregion Speed
+                                #endregion Speed                                
                         }
+                        if (MotorIdleHandlingOn || MotorIdleHandlingTractionIsBlocked) data = 0; // Motoráky 809-810
                         break;
                     }
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
