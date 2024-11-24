@@ -11125,6 +11125,9 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         bool MotorIdleHandlingOn;
         bool MotorIdleHandlingTractionIsBlocked;
+        bool MotorIdleHandlingOverride;
+        float MotorIdleHandlingRPM;
+        bool MotorIdleHandlingOverrideNoTraction;
         public void MotorIdleHandling() // Pro motoráky 809-810
         {
             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
@@ -11134,11 +11137,22 @@ namespace Orts.Simulation.RollingStocks
             {                
                 if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
-                    if (TractionOn && MotorIdleHandlingOn && LocalThrottlePercent > 5 && AbsWheelSpeedMpS > 0.01f)
+                    if (!TractionOn && MotorIdleHandlingOverride)
+                    {
+                        MotorIdleHandlingOverrideNoTraction = true;
+                    }
+
+                    if (TractionOn && MotorIdleHandlingOverride && MotorIdleHandlingOverrideNoTraction)
+                    {
+                        SignalEvent(Event.ToggleTractionOn);
+                        MotorIdleHandlingOverrideNoTraction = false;
+                    }
+
+                    if (TractionOn && MotorIdleHandlingOn && LocalThrottlePercent > 5 && AbsWheelSpeedMpS > 0.01f && !MotorIdleHandlingOverride)
                     {
                         SignalEvent(Event.ToggleTractionOn);
                     }
-                    if (!MotorIdleHandlingOn && LocalThrottlePercent <= 5)
+                    if (!MotorIdleHandlingOn && LocalThrottlePercent <= 5 && !MotorIdleHandlingOverride)
                     {
                         SignalEvent(Event.ToggleTractionOff);
                     }
@@ -11152,15 +11166,28 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (!TractionOn && AbsWheelSpeedMpS > 0.01f && LocalThrottlePercent > 5)
+                    if (!TractionOn && AbsWheelSpeedMpS > 0.01f && LocalThrottlePercent > 5 && !MotorIdleHandlingOverride)
                     {
                         MotorIdleHandlingTractionIsBlocked = true;
                     }
 
-                    if (LocalThrottlePercent <= 5f)
+                    MotorIdleHandlingOverride = false;
+                    if (AbsSpeedMpS > 15f / 3.6f) // Nad 15 km/h se převodovka neodpojuje
+                    {
+                        MotorIdleHandlingOverride = true;
+                        if (!MotorIdleHandlingOn)
+                            MotorIdleHandlingRPM = mstsDieselLocomotive.DieselEngines[0].RealRPM;
+                    }                    
+
+                    if (TractionOn && MotorIdleHandlingOverride && MotorIdleHandlingOn)
+                    {
+                        //mstsDieselLocomotive.DieselEngines[0].RealRPM = MotorIdleHandlingRPM;
+                    }
+
+                    if (LocalThrottlePercent <= 5f || AbsWheelSpeedMpS >= 90f / 3.6f) // Odepnutí výkonu v neutrálu a nad 90 km/h
                     {
                         PowerReductionResult14 = 1.0f;
-                        MotorIdleHandlingOn = true;
+                        MotorIdleHandlingOn = true;                        
                     }
                     else
                         MotorIdleHandlingOn = false;
@@ -23554,7 +23581,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 #endregion Speed                                
                         }
-                        if (MotorIdleHandlingOn || MotorIdleHandlingTractionIsBlocked) data = 0; // Motoráky 809-810
+                        if ((MotorIdleHandlingOn && !MotorIdleHandlingOverride) || MotorIdleHandlingTractionIsBlocked) data = 0; // Motoráky 809-810
                         break;
                     }
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:

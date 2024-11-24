@@ -17660,15 +17660,15 @@ namespace Orts.Simulation.Physics
                                 {
                                     if (pax.WagonName == Cars[i].CarID)
                                     {
-                                        if (!platformSide && !loco.DoorLeftOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
+                                        if (!platformSide && !wagon.DoorLeftOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                         {
                                             train.ToggleDoorsPeople(false, true, wagon);
                                         }
-                                        if (platformSide && !loco.DoorRightOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
+                                        if (platformSide && !wagon.DoorRightOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && wagon.PassengerCapacity > 0)
                                         {
                                             train.ToggleDoorsPeople(true, true, wagon);
                                         }
-                                        if (!loco.DoorLeftOpen && !loco.DoorRightOpen && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && wagon.PassengerCapacity > 0)
+                                        if (!wagon.DoorLeftOpen && !wagon.DoorRightOpen && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && wagon.PassengerCapacity > 0)
                                             continue;
                                         wagon.PassengerList.Add(pax);
                                         pax.Boarded = true;
