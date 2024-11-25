@@ -1703,6 +1703,7 @@ namespace Orts.Simulation.RollingStocks
                         Pantograph3Switch[LocoStation] = 2;
                         Pantograph4Switch[LocoStation] = 1;                        
                         Pantograph5Switch[LocoStation] = 1;
+
                         if (RouteVoltageV == 3000)
                         {
                             HV5Switch[LocoStation] = 1;
@@ -1730,19 +1731,14 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                             {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                             }
 
-                            if (Pantograph3Enable)
-                            {
-                                Pantograph3Switch[LocoStation] = 2;
-                                Pantograph3CanOn = true;
-                            }
-                            if (Pantograph4Enable)                            
-                                Pantograph4Switch[LocoStation] = 1;
-                            if (Pantograph5Enable)
-                                Pantograph5Switch[LocoStation] = 1;
-                            
+                            Pantograph3Switch[LocoStation] = 2;
+                            Pantograph3CanOn = true;
+                            Pantograph4Switch[LocoStation] = 1;
+                            Pantograph5Switch[LocoStation] = 1;
+
                             if (PowerOn)
                                 LocoReadyToGo = false;
                         }

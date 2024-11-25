@@ -6394,7 +6394,7 @@ namespace Orts.Simulation.RollingStocks
                     // LS90
                     Mirel.ls90tested = true;
                     Mirel.Ls90power[LocoStation] = LS90power.On;
-                }
+                }                                
             }
             
             if (firstFrame && BrakeSystem.StartOn)
@@ -6996,12 +6996,14 @@ namespace Orts.Simulation.RollingStocks
                 AcceptMUSignals = true;
                 PowerReduction = 0;
 
+                SignalEvent(Event.WiperOff);
                 if (this.PowerOn)
                 {
                     LocoReadyToGo = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
+                    LocoSetUpTimer = 0;                    
                     foreach (TrainCar car in Train.Cars.Where(car => car is MSTSControlUnit))
                     {
                         if (Train.FirstCar == car)
