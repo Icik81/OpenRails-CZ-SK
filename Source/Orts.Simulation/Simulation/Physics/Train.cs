@@ -17719,6 +17719,7 @@ namespace Orts.Simulation.Physics
                     
                     if (wagon is MSTSLocomotive
                         && ((wagon as MSTSLocomotive).LocomotiveTypeNumber == 810 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 809) // Motorák 809 - 810 zavírá dveře strojvedoucí 
+                        || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 152 // Motorák M152 zavírá dveře strojvedoucí 
                         && (wagon as MSTSLocomotive).IsLeadLocomotive() && haveCentralDoors)
                     {
                         train.BoardingComplete = true;
