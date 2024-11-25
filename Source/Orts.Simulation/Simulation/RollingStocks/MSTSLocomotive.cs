@@ -11185,12 +11185,12 @@ namespace Orts.Simulation.RollingStocks
         bool MotorIdleHandlingOverride;
         float MotorIdleHandlingRPM;
         bool MotorIdleHandlingOverrideNoTraction;
-        public void MotorIdleHandling() // Pro motoráky 809-810-M152
+        public void MotorIdleHandling() // Pro motoráky 809-810-M151-M152-811-812
         {
             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
             if (mstsDieselLocomotive == null) return;
 
-            if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810 || LocomotiveTypeNumber == 152)
+            if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810 || LocomotiveTypeNumber == 151 || LocomotiveTypeNumber == 152 || LocomotiveTypeNumber == 811 || LocomotiveTypeNumber == 812)
             {                
                 if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 {
