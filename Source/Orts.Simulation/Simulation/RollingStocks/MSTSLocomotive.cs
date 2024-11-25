@@ -758,6 +758,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Switch6LightEnable;
         public int[] DriveAxleNumber = new int[7];
         public bool DriverUsingRearCab;
+        public bool AIPowerOnSet;
 
 
         // Jindrich
@@ -6351,6 +6352,51 @@ namespace Orts.Simulation.RollingStocks
         protected bool firstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
+            if (IsPlayerTrain && LocoReadyToGo)
+            {
+                Train.LocoCount = 0;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
+                    {
+                        Train.TrainIsFreight = true;
+                    }
+                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
+                    {
+                        Train.TrainIsPassenger = true;
+                    }
+                    if (car is MSTSLocomotive)
+                    {
+                        Train.LocoCount++;
+                    }
+                }
+
+                if (Train.TrainIsPassenger && Train.LocoCount > 1)
+                    foreach (var car in Train.Cars)
+                    {
+                        if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Train.LeadAuxResVolumeM3)
+                            car.AcceptCableSignals = true;
+                        car.BrakeSystem.TwoPipesConnection = true;
+                        car.BrakeSystem.TwoPipesConnectionMenu = 1;                        
+                    }
+
+                if (Mirel != null)
+                {
+                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                    if (Flipped)
+                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
+                    // Mirel                   
+                    Mirel.initTest = InitTest.Passed;
+                    Mirel.selectedDriveMode = DriveMode.Normal;
+                    Mirel.driveMode = DriveMode.Normal;
+                    Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
+                    Mirel.BlueLight = true;
+                    // LS90
+                    Mirel.ls90tested = true;
+                    Mirel.Ls90power[LocoStation] = LS90power.On;
+                }
+            }
+            
             if (firstFrame && BrakeSystem.StartOn)
             {
                 HV5Switch[1] = HV5Switch[2] = 2;
@@ -6402,26 +6448,7 @@ namespace Orts.Simulation.RollingStocks
                     if (!LocoIsStatic)
                     {                        
                         Battery = true;
-                        ToggleCabRadio(true);
-                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                        if (Flipped)
-                            ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
-                        // Mirel
-                        Mirel.Test1 = true;
-                        Mirel.Test2 = true;
-                        Mirel.Test3 = true;
-                        Mirel.Test4 = true;
-                        Mirel.Test5 = true;
-                        Mirel.Test6 = true;
-                        Mirel.Test7 = true;
-                        Mirel.initTest = SubSystems.Mirel.InitTest.Passed;
-                        Mirel.BlueLight = true;
-                        Mirel.selectedDriveMode = SubSystems.Mirel.DriveMode.Normal;
-                        Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
-                        Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
-                        // LS90
-                        Mirel.ls90tested = true;
-                        Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.On;
+                        ToggleCabRadio(true);                        
                         HV4Switch[LocoStation] = 1;                        
 
                         LocoStation = 1;
@@ -6962,12 +6989,40 @@ namespace Orts.Simulation.RollingStocks
                         wagon.WagonCanEnableSteamHeating = true;
                 }
             }
-
+            
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
                 PowerReduction = 0;
+
+                if (this.PowerOn)
+                {
+                    LocoReadyToGo = true;
+                    BrakeSystem.IsAirFull = true;
+                    PowerKeyPosition[LocoStation] = 2;
+                    AuxResPressurePSI = MaxAuxResPressurePSI;
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSControlUnit))
+                    {
+                        if (Train.FirstCar == car)
+                        {
+                            (car as MSTSControlUnit).LocoReadyToGo = true;
+                            (car as MSTSControlUnit).BrakeSystem.IsAirFull = true;
+                            (car as MSTSControlUnit).PowerKeyPosition[(car as MSTSControlUnit).LocoStation] = 2;
+                            (car as MSTSControlUnit).AuxResPressurePSI = MaxAuxResPressurePSI;
+                            PowerKeyPosition[LocoStation] = 0;
+                            break;
+                        }
+                    }                    
+                }
+                else
+                {
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        (car as MSTSLocomotive).LocoReadyToGo = false;
+                        (car as MSTSLocomotive).PowerKeyPosition[LocoStation] = 0;
+                    }                    
+                }
 
                 // Automatický přechod řidiče v kabině loko AI                            
                 if (Direction == Direction.Reverse)
