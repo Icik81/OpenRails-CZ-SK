@@ -286,24 +286,27 @@ namespace Orts.Simulation.RollingStocks
         }        
 
         public void ResetControlUnitParameters()
-        {                        
-            DriveForceN = 0;
-            DynamicBrakeForceN = 0;            
-            FakePowerCurrent1 = 0;
-            BrakeCurrent1 = 0;
-            FakePowerCurrent2 = 0;
-            BrakeCurrent2 = 0;
-            PantographVoltageV = 0;
-            PowerSupply.PantographVoltageV = 0;
-            VoltageAC = 0;
-            VoltageDC = 0;
-            preVoltageDC = 0;
-            SwitchingVoltageMode = 0;
-            PowerOn = false;
-            AuxPowerOn = false;
-            PantoCanHVOffon = false;
-            SwitchingVoltageMode_OffAC = false;
-            SwitchingVoltageMode_OffDC = false;            
+        {
+            if (IsPlayerTrain)
+            {
+                DriveForceN = 0;
+                DynamicBrakeForceN = 0;
+                FakePowerCurrent1 = 0;
+                BrakeCurrent1 = 0;
+                FakePowerCurrent2 = 0;
+                BrakeCurrent2 = 0;
+                PantographVoltageV = 0;
+                PowerSupply.PantographVoltageV = 0;
+                VoltageAC = 0;
+                VoltageDC = 0;
+                preVoltageDC = 0;
+                SwitchingVoltageMode = 0;
+                PowerOn = false;
+                AuxPowerOn = false;
+                PantoCanHVOffon = false;
+                SwitchingVoltageMode_OffAC = false;
+                SwitchingVoltageMode_OffDC = false;
+            }
         }
 
         public override float GetDataOf(CabViewControl cvc)

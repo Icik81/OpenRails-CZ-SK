@@ -149,11 +149,8 @@ namespace Orts.Simulation.Physics
         public float TrainDerailmentTimer;
         public int WagonIndex = -1;
         public int LocoIndex = -1;
-        public Direction LocoDirection = Direction.N;
-        public bool TrainIsFreight;
-        public bool TrainIsPassenger;
-        public int LocoCount;
-        public float LeadAuxResVolumeM3;
+        public Direction LocoDirection = Direction.N;        
+        public bool AITrainSetUp;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

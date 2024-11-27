@@ -6353,33 +6353,7 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && LocoReadyToGo)
-            {
-                Train.LocoCount = 0;
-                foreach (TrainCar car in Train.Cars)
-                {
-                    if (car is MSTSWagon && car.WagonType == WagonTypes.Freight)
-                    {
-                        Train.TrainIsFreight = true;
-                    }
-                    if (car.WagonType == WagonTypes.Passenger || car.HasPassengerCapacity)
-                    {
-                        Train.TrainIsPassenger = true;
-                    }
-                    if (car is MSTSLocomotive)
-                    {
-                        Train.LocoCount++;
-                    }
-                }
-
-                if (Train.TrainIsPassenger && Train.LocoCount > 1)
-                    foreach (var car in Train.Cars)
-                    {
-                        if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Train.LeadAuxResVolumeM3)
-                            car.AcceptCableSignals = true;
-                        car.BrakeSystem.TwoPipesConnection = true;
-                        car.BrakeSystem.TwoPipesConnectionMenu = 1;                        
-                    }
-
+            {                
                 if (Mirel != null)
                 {
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
@@ -6396,7 +6370,9 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.Ls90power[LocoStation] = LS90power.On;
                 }                                
             }
-            
+            else
+                Train.AITrainSetUp = false;
+
             if (firstFrame && BrakeSystem.StartOn)
             {
                 HV5Switch[1] = HV5Switch[2] = 2;
@@ -6999,31 +6975,39 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.WiperOff);
                 if (this.PowerOn)
                 {
+                    Train.AITrainSetUp = true;
                     LocoReadyToGo = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
-                    LocoSetUpTimer = 0;                    
-                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSControlUnit))
+                    LocoSetUpTimer = 0;
+
+                    TrainCar AIFirstLocomotive = null;
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        if (Train.FirstCar == car)
+                        if (car is MSTSLocomotive)
                         {
-                            (car as MSTSControlUnit).LocoReadyToGo = true;
-                            (car as MSTSControlUnit).BrakeSystem.IsAirFull = true;
-                            (car as MSTSControlUnit).PowerKeyPosition[(car as MSTSControlUnit).LocoStation] = 2;
-                            (car as MSTSControlUnit).AuxResPressurePSI = MaxAuxResPressurePSI;
-                            PowerKeyPosition[LocoStation] = 0;
-                            break;
+                            if (AIFirstLocomotive == null)
+                                AIFirstLocomotive = car;
+
+                            if (car != AIFirstLocomotive)
+                                car.PowerKeyPosition[(car as MSTSLocomotive).LocoStation] = 0;
+
+                            if (car is MSTSControlUnit)
+                                (car as MSTSControlUnit).PowerOn = true;
                         }
-                    }                    
+                    }
                 }
                 else
                 {
-                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
+                    LocoReadyToGo = false;
+                    BrakeSystem.IsAirFull = false;
+                    PowerKeyPosition[LocoStation] = 0;
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        (car as MSTSLocomotive).LocoReadyToGo = false;
-                        (car as MSTSLocomotive).PowerKeyPosition[LocoStation] = 0;
-                    }                    
+                        if (car is MSTSControlUnit)
+                            (car as MSTSControlUnit).PowerOn = false;
+                    }
                 }
 
                 // Automatický přechod řidiče v kabině loko AI                            
@@ -7132,7 +7116,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleARRDriveOutButton();
                 ToggleARRParkingButton();
 
-                // 809-810
+                // 809-810-M151-M152-811-812
                 MotorIdleHandling();
 
                 BatterySetOn = false;
@@ -11514,7 +11498,7 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate(float elapsedClockSeconds)
         {            
             // První průběh - inicializace hodnot
-            if (this.CarFrameUpdateState == 1)
+            if (this.CarFrameUpdateState == 1 || Train.AITrainSetUp)
             {
                 EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();
@@ -11524,8 +11508,8 @@ namespace Orts.Simulation.RollingStocks
                     TM_Temperature(elapsedClockSeconds);
                     DriveResistance_Temperature(elapsedClockSeconds);
 
-                    if (BrakeSystem.StartOn && !Simulator.Settings.AirEmpty)
-                    {
+                    if ((BrakeSystem.StartOn && !Simulator.Settings.AirEmpty) || Train.AITrainSetUp)
+                    {                        
                         foreach (TrainCar car in Train.Cars)
                         {
                             // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
@@ -11558,6 +11542,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                                     car.AcceptCableSignals = true;
                                 car.BrakeSystem.ForceTwoPipesConnection = true;
+                                car.BrakeSystem.TwoPipesConnectionMenu = 1;
                             }
 
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
@@ -11610,7 +11595,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Druhý průběh má všechny kabinové prvky načteny
-            if (this.CarFrameUpdateState == 2)
+            if (this.CarFrameUpdateState == 2 || Train.AITrainSetUp)
             {
                 if (FirstCabLoaded)
                 {

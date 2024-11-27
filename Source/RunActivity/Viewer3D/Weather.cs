@@ -909,6 +909,7 @@ namespace Orts.Viewer3D
             }
         }
 
+        float PrePricipitationIntensityPPSPM2;
         [CallOnThread("Updater")]
         public virtual void Update(ElapsedTime elapsedTime)
         {
@@ -917,7 +918,18 @@ namespace Orts.Viewer3D
 
             MP_Messages(elapsedTime, this);
 
-            // Icik           
+            // Icik
+            // V tunelu nebude pršet
+            if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0f && Program.Simulator.PlayerCarIsInTunnelEndM > 0f && Program.Simulator.PlayerCarIsInTunnel)
+            {
+                if (Weather.PricipitationIntensityPPSPM2 != 0)
+                    PrePricipitationIntensityPPSPM2 = Weather.PricipitationIntensityPPSPM2;
+                Weather.PricipitationIntensityPPSPM2 = 0;
+            }
+            else
+            if (Weather.PricipitationIntensityPPSPM2 == 0)
+                Weather.PricipitationIntensityPPSPM2 = PrePricipitationIntensityPPSPM2;
+            
             if (Viewer.Simulator.GameTimeCyklus10 == 10)
             {
                 DayNightTimeChangeCyklus();
@@ -1518,7 +1530,18 @@ namespace Orts.Viewer3D
                 if (FinishPrecipitationIntensity > weatherControl.Weather.PricipitationIntensityPPSPM2)
                     weatherControl.Weather.PricipitationIntensityPPSPM2 += 0.01f * elapsedTime.ClockSeconds;
                 if (FinishPrecipitationIntensity < weatherControl.Weather.PricipitationIntensityPPSPM2)
-                    weatherControl.Weather.PricipitationIntensityPPSPM2 -= 0.01f * elapsedTime.ClockSeconds;                
+                    weatherControl.Weather.PricipitationIntensityPPSPM2 -= 0.01f * elapsedTime.ClockSeconds;
+
+                // V tunelu nebude pršet
+                if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0f && Program.Simulator.PlayerCarIsInTunnelEndM > 0f && Program.Simulator.PlayerCarIsInTunnel)
+                {
+                    if (weatherControl.Weather.PricipitationIntensityPPSPM2 != 0)
+                        weatherControl.PrePricipitationIntensityPPSPM2 = FinishPrecipitationIntensity;
+                    weatherControl.Weather.PricipitationIntensityPPSPM2 = 0;
+                }
+                else
+                if (weatherControl.Weather.PricipitationIntensityPPSPM2 == 0)
+                    weatherControl.Weather.PricipitationIntensityPPSPM2 = FinishPrecipitationIntensity;
 
                 if (ORTSPrecipitationIntensity >= 0 && precipitationIntensityDelayTimer == -1)
                 {
