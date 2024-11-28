@@ -72,6 +72,12 @@ namespace Orts.Viewer3D
 
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            // Nebudou šrážky v tunelu
+            if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0f && Program.Simulator.PlayerCarIsInTunnelEndM > 0f && Program.Simulator.PlayerCarIsInTunnel)
+            {
+                return;
+            }
+
             var gameTime = (float)Viewer.Simulator.GameTime;
             Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
             Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (2f / 3f), Viewer);
