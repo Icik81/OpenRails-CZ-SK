@@ -6979,6 +6979,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
+                    PowerKey = true;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
                     LocoSetUpTimer = 0;
 
@@ -6991,7 +6992,10 @@ namespace Orts.Simulation.RollingStocks
                                 AIFirstLocomotive = car;
 
                             if (car != AIFirstLocomotive)
+                            {
                                 car.PowerKeyPosition[(car as MSTSLocomotive).LocoStation] = 0;
+                                (car as MSTSLocomotive).PowerKey = false;
+                            }
 
                             if (car is MSTSControlUnit)
                                 (car as MSTSControlUnit).PowerOn = true;
@@ -7003,6 +7007,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = false;
                     BrakeSystem.IsAirFull = false;
                     PowerKeyPosition[LocoStation] = 0;
+                    PowerKey = false;
                     foreach (TrainCar car in Train.Cars)
                     {
                         if (car is MSTSControlUnit)
@@ -7213,7 +7218,7 @@ namespace Orts.Simulation.RollingStocks
                 UpdateCarSteamHeat(elapsedClockSeconds);
             }
             checkParkingBrakeCount++;
-            if (AutomaticParkingBrake && IsPlayerTrain && checkParkingBrakeCount == 10)
+            if (AutomaticParkingBrake && IsPlayerTrain && checkParkingBrakeCount >= 10)
             {
                 checkParkingBrakeCount = 0;
                 if (CruiseControl != null)
@@ -11232,7 +11237,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                         MotorIdleHandlingOn = false;
-                }
+                }                
             }
         }
 
@@ -11257,6 +11262,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleCabRadio(bool newState)
         {
+            if (this is MSTSSteamLocomotive) return;
             //CabRadioOn = newState;
             CabRadio[LocoStation] = !CabRadio[LocoStation];
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabRadio, CabRadio[LocoStation] ? CabSetting.On : CabSetting.Off);
@@ -21638,7 +21644,14 @@ namespace Orts.Simulation.RollingStocks
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
                             //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
-                            data = StartButtonPressed ? 1 : 0;
+                            if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810
+                            || LocomotiveTypeNumber == 811 || LocomotiveTypeNumber == 812
+                            || LocomotiveTypeNumber == 151 || LocomotiveTypeNumber == 152)
+                            {
+                                if (StartButtonPressed || StopButtonPressed) data = 1;                                
+                            }
+                            else
+                                data = StartButtonPressed ? 1 : 0;
                         }
                         break;
                     }

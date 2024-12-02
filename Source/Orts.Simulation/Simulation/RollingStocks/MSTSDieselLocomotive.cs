@@ -1333,6 +1333,9 @@ namespace Orts.Simulation.RollingStocks
             if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction != Direction.N)
                 DieselDirection_Start = false;
 
+            if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810 || LocomotiveTypeNumber == 151 || LocomotiveTypeNumber == 152 || LocomotiveTypeNumber == 811 || LocomotiveTypeNumber == 812)
+                DieselDirection_Start = true;
+
             // Kontrolní žárovka pro dobíjení baterií
             if (Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 DieselCheckPowerMotorLamp = false;
