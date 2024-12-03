@@ -8465,6 +8465,11 @@ namespace Orts.Simulation.RollingStocks
 
         public void SimpleAdhesion()
         {
+            if (PowerUnit)
+            {
+                DriveForceN = LocomotiveAxle.DriveForceN;
+                LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
+            }
 
             // Check if the following few lines are required???
             if (LocoNumDrvAxles <= 0)
@@ -10828,22 +10833,22 @@ namespace Orts.Simulation.RollingStocks
         public bool TwoCab;
         public void LocomotiveTypeDefinition()
         {
-            if (IsPlayerTrain)
+            switch (EngineType)
             {
-                switch (EngineType)
-                {
-                    case EngineTypes.Electric:
-                    case EngineTypes.Diesel:
-                    case EngineTypes.Steam:
-                        PowerUnit = true;
-                        ControlUnit = false;
-                        break;
-                    case EngineTypes.Control:
-                        PowerUnit = false;
-                        ControlUnit = true;
-                        break;
-                }
+                case EngineTypes.Electric:
+                case EngineTypes.Diesel:
+                case EngineTypes.Steam:
+                    PowerUnit = true;
+                    ControlUnit = false;
+                    break;
+                case EngineTypes.Control:
+                    PowerUnit = false;
+                    ControlUnit = true;
+                    break;
+            }
 
+            if (IsPlayerTrain)
+            {                
                 Simulator.ControlUnitInTrain = false;
                 foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                 {
