@@ -734,7 +734,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultLapBrakeValue;
                         else
                         if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                        {
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
+                            loco.LapButtonEnable = true;
+                        }
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)
                         {
@@ -751,7 +754,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultLapBrakeValue;
                         else
                         if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
+                        {
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
+                            loco.LapButtonEnable = true;
+                        }
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)
                         {
@@ -759,7 +765,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.LapButtonEnable = true;
                         }
                     }
-                }
+                }                
 
                 if (loco.Battery && loco.LapButtonEnable && !(loco is MSTSSteamLocomotive))
                 {

@@ -628,6 +628,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             CoolingFlowBase = copy.CoolingFlowBase;
             IndependentWaterPlates = copy.IndependentWaterPlates;
             IndependentOilPlates = copy.IndependentOilPlates;
+            WaterTempCoolingOffAnimationDelay = copy.WaterTempCoolingOffAnimationDelay;
+            OilTempCoolingOffAnimationDelay = copy.OilTempCoolingOffAnimationDelay;
 
             if (copy.GearBox != null)
             {
@@ -1022,6 +1024,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float CoolingFlowBase;
         public bool IndependentWaterPlates;
         public bool IndependentOilPlates;
+        public float WaterTempCoolingOffAnimationDelay;
+        public float OilTempCoolingOffAnimationDelay;
 
         /// <summary>
         /// Load of the engine
@@ -1173,6 +1177,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
                     case "independentwaterplates": IndependentWaterPlates = stf.ReadBoolBlock(false); break;
                     case "independentoilplates": IndependentOilPlates = stf.ReadBoolBlock(false); break;
+                    case "watertempcoolingoffanimationdelay": WaterTempCoolingOffAnimationDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
+                    case "oiltempcoolingoffanimationdelay": OilTempCoolingOffAnimationDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
 
                     default:
                         end = true;
