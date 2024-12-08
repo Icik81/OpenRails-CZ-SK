@@ -17222,7 +17222,10 @@ namespace Orts.Simulation.RollingStocks
                     TractionOn = false;
                     SignalEvent(Event.ToggleTractionOff);
                 }
-            }            
+            }      
+            
+            if ((this as MSTSWagon).LocoHelperOn)
+                PowerReductionResult14 = 0.0f;
         }
         #endregion Traction Switch
 
