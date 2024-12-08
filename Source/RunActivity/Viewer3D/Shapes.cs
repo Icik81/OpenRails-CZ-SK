@@ -511,9 +511,12 @@ namespace Orts.Viewer3D
                                 }
                                 if (!TestCondition1 && !DLoco.DieselEngines[0].WaterTempCoolingRunning)
                                 {
-                                    TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                    if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
+                                    {
+                                        TimeAction[2] += 0.01f * elapsedTime.ClockSeconds;
+                                        if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                            TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                    }
                                 }
                             }
                             else
@@ -556,9 +559,12 @@ namespace Orts.Viewer3D
                                 }
                                 if (!TestCondition2 && !DLoco.DieselEngines[0].OilTempCoolingRunning)
                                 {
-                                    TimeAction[3] += 0.01f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                    if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
+                                    {
+                                        TimeAction[3] += 0.01f * elapsedTime.ClockSeconds;
+                                        if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                            TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                    }
                                 }
                             }
                             else
