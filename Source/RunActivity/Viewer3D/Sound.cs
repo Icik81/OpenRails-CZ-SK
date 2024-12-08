@@ -1863,8 +1863,8 @@ namespace Orts.Viewer3D
                 // Nepřehraje inicializační trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
                 if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                     return;
-                if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
-                    return;
+                //if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
+                //    return;
                 
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
