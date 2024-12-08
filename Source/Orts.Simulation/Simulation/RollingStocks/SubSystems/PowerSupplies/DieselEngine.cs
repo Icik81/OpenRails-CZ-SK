@@ -628,8 +628,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             CoolingFlowBase = copy.CoolingFlowBase;
             IndependentWaterPlates = copy.IndependentWaterPlates;
             IndependentOilPlates = copy.IndependentOilPlates;
-            WaterTempCoolingOffAnimationDelay = copy.WaterTempCoolingOffAnimationDelay;
-            OilTempCoolingOffAnimationDelay = copy.OilTempCoolingOffAnimationDelay;
+            WaterTempCoolingOffAnimationDelayS = copy.WaterTempCoolingOffAnimationDelayS;
+            OilTempCoolingOffAnimationDelayS = copy.OilTempCoolingOffAnimationDelayS;
 
             if (copy.GearBox != null)
             {
@@ -1024,8 +1024,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float CoolingFlowBase;
         public bool IndependentWaterPlates;
         public bool IndependentOilPlates;
-        public float WaterTempCoolingOffAnimationDelay;
-        public float OilTempCoolingOffAnimationDelay;
+        public float WaterTempCoolingOffAnimationDelayS;
+        public float OilTempCoolingOffAnimationDelayS;
+        public float WaterTempCoolingOffAnimDelayTimer;
+        public float OilTempCoolingOffAnimDelayTimer;
 
         /// <summary>
         /// Load of the engine
@@ -1177,8 +1179,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "coolingflow": CoolingFlowBase = stf.ReadFloatBlock(STFReader.UNITS.None, 1f); CoolingFlowBase = MathHelper.Clamp(CoolingFlowBase, 0.0f, 5.0f); break;
                     case "independentwaterplates": IndependentWaterPlates = stf.ReadBoolBlock(false); break;
                     case "independentoilplates": IndependentOilPlates = stf.ReadBoolBlock(false); break;
-                    case "watertempcoolingoffanimationdelay": WaterTempCoolingOffAnimationDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
-                    case "oiltempcoolingoffanimationdelay": OilTempCoolingOffAnimationDelay = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
+                    case "watertempcoolingoffanimationdelay": WaterTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
+                    case "oiltempcoolingoffanimationdelay": OilTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
 
                     default:
                         end = true;
@@ -1960,18 +1962,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.SignalEvent(Event.DieselMotorOilLowCooling);
                         }
                     }
-
-
+                    
                     // Velký chladící okruh
                     // Chlazení vody
                     if (DieselTempWaterCoolingHyst != 0)
                         DieselTempCoolingHyst = DieselTempWaterCoolingHyst;
                     if (DieselOptimalWaterTemperatureDegC != 0)
-                        DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
+                        DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;                    
 
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
+                    {
                         WaterTempCoolingRunning = true;
+                        WaterTempCoolingOffAnimDelayTimer = 0;
+                    }
 
                     if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM < CoolingEnableRPM)
@@ -1980,7 +1984,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         if (WaterTempCoolingRunning)
                             locomotive.SignalEvent(Event.DieselMotorWaterCoolingOff);
                         WaterTempCoolingRunning = false;
-                        MSGWaterOn = false;                        
+                        MSGWaterOn = false;
+                        if (WaterTempCoolingOffAnimDelayTimer < WaterTempCoolingOffAnimationDelayS)
+                            WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;                        
                     }
 
                     if (WaterTempCoolingRunning)
@@ -2000,7 +2006,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         DieselOptimalTemperatureDegC = DieselOptimalOilTemperatureDegC;
 
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
+                    {
                         OilTempCoolingRunning = true;
+                        OilTempCoolingOffAnimDelayTimer = 0;
+                    }
 
                     if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
@@ -2008,7 +2017,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         if (OilTempCoolingRunning)
                             locomotive.SignalEvent(Event.DieselMotorOilCoolingOff);
                         OilTempCoolingRunning = false;
-                        MSGOilOn = false;                        
+                        MSGOilOn = false;
+                        if (OilTempCoolingOffAnimDelayTimer < OilTempCoolingOffAnimationDelayS)
+                            OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
                     }
 
                     if (OilTempCoolingRunning)

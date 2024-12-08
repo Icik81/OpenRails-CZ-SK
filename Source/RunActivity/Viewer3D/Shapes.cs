@@ -421,9 +421,7 @@ namespace Orts.Viewer3D
         float[] TimeAction = new float[10] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};        
         float TCoef;
         bool TestCondition1;
-        bool TestCondition2;
-        float WaterTempCoolingOffAnimDelayTimer;
-        float OilTempCoolingOffAnimDelayTimer;
+        bool TestCondition2;        
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             var ELoco = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
@@ -433,8 +431,8 @@ namespace Orts.Viewer3D
 
             if (Viewer.Simulator.MSTSWagon as MSTSWagon != null)
             {
-                TestCondition1 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen =*/ false;
-                TestCondition2 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen =*/ false;
+                TestCondition1 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorLeftOpen*/ false;
+                TestCondition2 = /*(Viewer.Simulator.MSTSWagon as MSTSWagon).DoorRightOpen*/ false;
             }
 
             // if the shape has animations
@@ -448,8 +446,7 @@ namespace Orts.Viewer3D
                         if (DLoco != null)
                         {
                             if (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning || (DLoco.DieselEngines[0].IndependentWaterPlates && DLoco.DieselEngines[0].WaterTempCoolingLowRunning))
-                            {
-                                WaterTempCoolingOffAnimDelayTimer = 0;
+                            {                                
                                 TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
@@ -457,9 +454,8 @@ namespace Orts.Viewer3D
                             }
 
                             if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].WaterTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].WaterTempCoolingLowRunning)))
-                            {
-                                WaterTempCoolingOffAnimDelayTimer += elapsedTime.ClockSeconds;
-                                if (WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelay)
+                            {                                                                
+                                if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
                                 {
                                     TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
                                     TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
@@ -476,8 +472,7 @@ namespace Orts.Viewer3D
                         if (DLoco != null)
                         {
                             if (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentOilPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning))
-                            {
-                                OilTempCoolingOffAnimDelayTimer = 0;
+                            {                                
                                 TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
                                 TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
                                 if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
@@ -485,9 +480,8 @@ namespace Orts.Viewer3D
                             }
 
                             if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].OilTempCoolingRunning) || (DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
-                            {
-                                OilTempCoolingOffAnimDelayTimer += elapsedTime.ClockSeconds;
-                                if (OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelay)
+                            {                                
+                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
                                 {
                                     TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
                                     TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
@@ -602,10 +596,13 @@ namespace Orts.Viewer3D
 
                             if (!TestCondition1 && !DLoco.DieselEngines[0].WaterTempCoolingRunning)
                             {
-                                TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
-                                if (AnimationKey[4] > 0)
-                                    AnimationKey[4] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
+                                {
+                                    TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
+                                    TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
+                                    if (AnimationKey[4] > 0)
+                                        AnimationKey[4] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                }
                             }
                             AnimateMatrix(matrix, AnimationKey[4]);
                         }
@@ -625,10 +622,13 @@ namespace Orts.Viewer3D
 
                             if (!TestCondition2 && !DLoco.DieselEngines[0].OilTempCoolingRunning)
                             {
-                                TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
-                                if (AnimationKey[5] > 0)
-                                    AnimationKey[5] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
+                                {
+                                    TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
+                                    TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
+                                    if (AnimationKey[5] > 0)
+                                        AnimationKey[5] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                }
                             }
                             AnimateMatrix(matrix, AnimationKey[5]);
                         }
