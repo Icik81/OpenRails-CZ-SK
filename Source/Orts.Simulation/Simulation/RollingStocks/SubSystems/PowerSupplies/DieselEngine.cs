@@ -1985,7 +1985,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.SignalEvent(Event.DieselMotorWaterCoolingOff);
                         WaterTempCoolingRunning = false;
                         MSGWaterOn = false;
-                        if (WaterTempCoolingOffAnimDelayTimer < WaterTempCoolingOffAnimationDelayS)
+                        if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS)
                             WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;                        
                     }
 
@@ -2018,7 +2018,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.SignalEvent(Event.DieselMotorOilCoolingOff);
                         OilTempCoolingRunning = false;
                         MSGOilOn = false;
-                        if (OilTempCoolingOffAnimDelayTimer < OilTempCoolingOffAnimationDelayS)
+                        if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS)
                             OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
                     }
 
