@@ -11181,6 +11181,15 @@ namespace Orts.Simulation.RollingStocks
         bool MotorIdleHandlingOverrideNoTraction;
         public void MotorIdleHandling() // Pro motoráky 809-810-M151-M152-811-812
         {
+            if (LocoHelperOn)
+            {
+                PowerReductionResult14 = 0.0f;
+                TractionOn = true;
+                MotorIdleHandlingTractionIsBlocked = false;
+                MotorIdleHandlingOn = false;
+                return;
+            }
+
             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
             if (mstsDieselLocomotive == null) return;
 
@@ -17189,7 +17198,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void TractionSwitch()
         {
-            if (!TractionSwitchEnable) return;
+            if (!TractionSwitchEnable || LocoHelperOn) return;
 
             if (Battery && PowerKeyPosition[LocoStation] == 2)
             {
@@ -17222,10 +17231,7 @@ namespace Orts.Simulation.RollingStocks
                     TractionOn = false;
                     SignalEvent(Event.ToggleTractionOff);
                 }
-            }      
-            
-            if ((this as MSTSWagon).LocoHelperOn)
-                PowerReductionResult14 = 0.0f;
+            }                 
         }
         #endregion Traction Switch
 
