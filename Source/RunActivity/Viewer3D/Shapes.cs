@@ -456,7 +456,7 @@ namespace Orts.Viewer3D
                                     
                                     // Testovací čas přehrátí animace
                                     TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate;
-                                    DLoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
+                                    //DLoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
                                 }
                                 else
                                     TimeTest = 0;
@@ -474,7 +474,7 @@ namespace Orts.Viewer3D
 
                                         // Testovací čas přehrátí animace
                                         TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate;
-                                        DLoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
+                                        //DLoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
                                     }
                                     else
                                         TimeTest = 0;
