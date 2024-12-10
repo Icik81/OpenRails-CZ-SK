@@ -742,8 +742,8 @@ namespace Orts.Viewer3D
                         }
 
                         // Smyčka pro obecné animace světa
-                        TCoef = 0.15f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[9] == 0 ? 0.1f : TimeAction[9]);
-                        AnimationKey[9] += elapsedTime.ClockSeconds * TCoef;
+                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[9] == 0 ? 0.2f : TimeAction[9]);
+                        AnimationKey[9] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                         while (AnimationKey[9] > SharedShape.Animations[0].FrameCount) AnimationKey[9] -= SharedShape.Animations[0].FrameCount;
                         while (AnimationKey[9] < 0) AnimationKey[9] += SharedShape.Animations[0].FrameCount;
                         AnimateMatrix(matrix, AnimationKey[9]);
