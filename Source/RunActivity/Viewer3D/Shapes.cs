@@ -663,20 +663,27 @@ namespace Orts.Viewer3D
                             if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
                             {
                                 TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] < 1)
                                 {
                                     AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                                    ELoco.Pantographs[3].State = PantographState.Raising; 
+                                    ELoco.Pantographs[3].State = PantographState.Raising;
+
+                                    // Testovací čas přehrátí animace
+                                    TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
+                                    //ELoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
                                 }
                                 else
+                                {
                                     ELoco.Pantographs[3].State = PantographState.Up;
+                                    TimeTest = 0;
+                                }
                             }
                             
                             if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
                             {
                                 TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] > 0)
                                 {
                                     AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
@@ -696,7 +703,7 @@ namespace Orts.Viewer3D
                             if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
                             {
                                 TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] < 1)
                                 {
                                     AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
@@ -709,7 +716,7 @@ namespace Orts.Viewer3D
                             if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
                             {
                                 TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] > 0)
                                 {
                                     AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
@@ -735,7 +742,7 @@ namespace Orts.Viewer3D
                         }
 
                         // Smyčka pro obecné animace světa
-                        TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[9] == 0 ? 0.1f : TimeAction[9]);
+                        TCoef = 0.15f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[9] == 0 ? 0.1f : TimeAction[9]);
                         AnimationKey[9] += elapsedTime.ClockSeconds * TCoef;
                         while (AnimationKey[9] > SharedShape.Animations[0].FrameCount) AnimationKey[9] -= SharedShape.Animations[0].FrameCount;
                         while (AnimationKey[9] < 0) AnimationKey[9] += SharedShape.Animations[0].FrameCount;
