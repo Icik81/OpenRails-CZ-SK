@@ -1968,13 +1968,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselTempWaterCoolingHyst != 0)
                         DieselTempCoolingHyst = DieselTempWaterCoolingHyst;
                     if (DieselOptimalWaterTemperatureDegC != 0)
-                        DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;                    
+                        DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
+
+                    //DieselOptimalTemperatureDegC = 100;
+                    //WaterTempCoolingOffAnimationDelayS = 10;
+                    //WaterCoolingPlatesUpS = 5;
 
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
                     {
-                        WaterTempCoolingRunning = true;
-                        WaterTempCoolingOffAnimDelayTimer = 0;
+                        WaterTempCoolingRunning = true;                        
+                        if (WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS)
+                            WaterTempCoolingOffAnimDelayTimer = 0;
                     }
 
                     if ((CoolingEnableRPM == 0 && RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC)
@@ -1987,6 +1992,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         MSGWaterOn = false;
                         if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS)
                             WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;                        
+                    }
+
+                    if (WaterTempCoolingOffAnimDelayTimer > 0 && WaterTempCoolingRunning)
+                    {
+                        if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS)
+                            WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
                     }
 
                     if (WaterTempCoolingRunning)
@@ -2008,7 +2019,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
                     {
                         OilTempCoolingRunning = true;
-                        OilTempCoolingOffAnimDelayTimer = 0;
+                        if (OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS)
+                            OilTempCoolingOffAnimDelayTimer = 0;
                     }
 
                     if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
@@ -2018,6 +2030,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.SignalEvent(Event.DieselMotorOilCoolingOff);
                         OilTempCoolingRunning = false;
                         MSGOilOn = false;
+                        if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS)
+                            OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
+                    }
+
+                    if (OilTempCoolingOffAnimDelayTimer > 0 && OilTempCoolingRunning)
+                    {
                         if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS)
                             OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
                     }
