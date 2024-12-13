@@ -1028,6 +1028,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OilTempCoolingOffAnimationDelayS;
         public float WaterTempCoolingOffAnimDelayTimer;
         public float OilTempCoolingOffAnimDelayTimer;
+        public bool TopWaterPlatesOpened;
+        public bool TopOilPlatesOpened;
 
         /// <summary>
         /// Load of the engine
@@ -1916,7 +1918,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
                     if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)
+                    {
                         WaterTempCoolingLowRunning = true;
+                        
+                        // Vynulování časovače zpoždění animace
+                        if (IndependentWaterPlates && WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS + WaterCoolingPlatesDownS)
+                            WaterTempCoolingOffAnimDelayTimer = 0;
+                    }
 
                     if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
@@ -1941,7 +1949,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalOilTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalOilTemperatureDegC;
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC)
+                    {
                         OilTempCoolingLowRunning = true;
+                        
+                        // Vynulování časovače zpoždění animace
+                        if (IndependentWaterPlates && OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS + OilCoolingPlatesDownS)
+                            OilTempCoolingOffAnimDelayTimer = 0;
+                    }
 
                     if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
                         || EngineStatus != Status.Running)
@@ -1970,9 +1984,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
 
-                    //DieselOptimalTemperatureDegC = 10;
-                    //WaterTempCoolingOffAnimationDelayS = 10;
-                    //WaterCoolingPlatesUpS = 5;
+                    //DieselOptimalWaterTemperatureDegC = 54;
+                    //DieselOptimalTemperatureDegC = 100;
+                    //WaterTempCoolingOffAnimationDelayS = 5;
+                    //WaterCoolingPlatesUpS = 1;
+                    //IndependentWaterPlates = false;
 
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
@@ -1980,7 +1996,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         WaterTempCoolingRunning = true;
 
                         // Vynulování časovače zpoždění animace
-                        if (WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS + WaterCoolingPlatesDownS)
+                        if (WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS)
                             WaterTempCoolingOffAnimDelayTimer = 0;
                     }
 
@@ -1993,17 +2009,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         WaterTempCoolingRunning = false;
                         MSGWaterOn = false;
 
-                        // Časovač pro doběh zpoždění animace 
-                        if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS + WaterCoolingPlatesDownS)
-                            WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;                        
+                        // Aktivace časovače pro doběh zpoždění animace 
+                        if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS)
+                            WaterTempCoolingOffAnimDelayTimer += 0.0001f;  
+                        
+                        if (IndependentWaterPlates && WaterTempCoolingLowRunning && !TopWaterPlatesOpened)                        
+                            WaterTempCoolingOffAnimDelayTimer = 0;                        
                     }
 
-                    // Časovač pro doběh zpoždění animace při opětovném rozběhu chlazení
-                    if (WaterTempCoolingOffAnimDelayTimer > 0 && WaterTempCoolingRunning)
+                    // Časovač pro doběh zpoždění animace 
+                    if (WaterTempCoolingOffAnimDelayTimer > 0)
                     {
                         if (WaterTempCoolingOffAnimDelayTimer <= WaterTempCoolingOffAnimationDelayS + WaterCoolingPlatesDownS)
                             WaterTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
-                    }
+                    }                    
 
                     if (WaterTempCoolingRunning)
                     {
@@ -2026,7 +2045,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         OilTempCoolingRunning = true;
                         
                         // Vynulování časovače zpoždění animace
-                        if (OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS + OilCoolingPlatesDownS)
+                        if (OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS)
                             OilTempCoolingOffAnimDelayTimer = 0;
                     }
 
@@ -2038,13 +2057,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         OilTempCoolingRunning = false;
                         MSGOilOn = false;
 
-                        // Časovač pro doběh zpoždění animace 
-                        if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS + OilCoolingPlatesDownS)
-                            OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;
+                        // Aktivace časovače pro doběh zpoždění animace 
+                        if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS)
+                            OilTempCoolingOffAnimDelayTimer += 0.0001f; 
+
+                        if (IndependentOilPlates && OilTempCoolingLowRunning && !TopOilPlatesOpened)
+                            OilTempCoolingOffAnimDelayTimer = 0;
                     }
 
-                    // Časovač pro doběh zpoždění animace při opětovném rozběhu chlazení
-                    if (OilTempCoolingOffAnimDelayTimer > 0 && OilTempCoolingRunning)
+                    // Časovač pro doběh zpoždění animace 
+                    if (OilTempCoolingOffAnimDelayTimer > 0)
                     {
                         if (OilTempCoolingOffAnimDelayTimer <= OilTempCoolingOffAnimationDelayS + OilCoolingPlatesDownS)
                             OilTempCoolingOffAnimDelayTimer += elapsedClockSeconds;

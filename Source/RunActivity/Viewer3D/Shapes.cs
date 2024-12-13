@@ -462,7 +462,7 @@ namespace Orts.Viewer3D
                                     TimeTest = 0;
                             }
                             
-                            if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentWaterPlates && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentWaterPlates && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingLowRunning))))
+                            if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentWaterPlates && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].TopWaterPlatesOpened && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingLowRunning))))
                             {                                
                                 if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
                                 {
@@ -487,7 +487,7 @@ namespace Orts.Viewer3D
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
                     {
                         if (DLoco != null)
-                        {
+                        {                                                        
                             if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentOilPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
                             {                                
                                 TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
@@ -496,7 +496,7 @@ namespace Orts.Viewer3D
                                     AnimationKey[1] += elapsedTime.ClockSeconds * TCoef;
                             }
 
-                            if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentOilPlates && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingLowRunning))))
+                            if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].TopOilPlatesOpened && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingLowRunning))))
                             {                                
                                 if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
                                 {
@@ -609,6 +609,8 @@ namespace Orts.Viewer3D
                     {
                         if (DLoco != null)
                         {
+                            DLoco.DieselEngines[0].TopWaterPlatesOpened = AnimationKey[4] <= 0 ? false : true;                                
+
                             if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
                             {
                                 TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
@@ -635,6 +637,8 @@ namespace Orts.Viewer3D
                     {
                         if (DLoco != null)
                         {
+                            DLoco.DieselEngines[0].TopOilPlatesOpened = AnimationKey[5] <= 0 ? false : true;
+
                             if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
                             {
                                 TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
