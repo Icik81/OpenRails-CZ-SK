@@ -673,7 +673,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (initTest == InitTest.Running && !Test5 && Locomotive.ActiveStation != MSTSLocomotive.DriverStation.None)
                 {
-                    if (Locomotive.EngineBrakeController.CurrentValue > 0.95f)
+                    if (Locomotive.EngineBrakeController.CurrentValue > 0.90f)
                         engineBrakeApplied = true;
                     if (Locomotive.EngineBrakeController.CurrentValue < 0.05f)
                         engineBrakeReleased = true;
