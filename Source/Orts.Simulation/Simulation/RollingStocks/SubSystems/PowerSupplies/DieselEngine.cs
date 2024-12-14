@@ -1920,10 +1920,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)
                     {
                         WaterTempCoolingLowRunning = true;
-                        
+
+                        if (IndependentWaterPlates && !WaterTempCoolingRunning && TopWaterPlatesOpened)
+                            WaterTempCoolingOffAnimDelayTimer += 0.0001f;
+
                         // Vynulování časovače zpoždění animace
                         if (IndependentWaterPlates && WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS + WaterCoolingPlatesDownS)
-                            WaterTempCoolingOffAnimDelayTimer = 0;
+                            WaterTempCoolingOffAnimDelayTimer = 0;                        
                     }
 
                     if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC
@@ -1951,7 +1954,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC)
                     {
                         OilTempCoolingLowRunning = true;
-                        
+
+                        if (IndependentWaterPlates && !OilTempCoolingRunning && TopOilPlatesOpened)
+                            OilTempCoolingOffAnimDelayTimer += 0.0001f;
+
                         // Vynulování časovače zpoždění animace
                         if (IndependentWaterPlates && OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS + OilCoolingPlatesDownS)
                             OilTempCoolingOffAnimDelayTimer = 0;
@@ -1993,10 +1999,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
                     {
-                        WaterTempCoolingRunning = true;
+                        if (!WaterTempCoolingRunning && !TopWaterPlatesOpened)
+                            WaterTempCoolingRunning = true;
 
                         // Vynulování časovače zpoždění animace
-                        if (WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS)
+                        if (WaterTempCoolingRunning && WaterTempCoolingOffAnimDelayTimer > WaterTempCoolingOffAnimationDelayS)
                             WaterTempCoolingOffAnimDelayTimer = 0;
                     }
 
@@ -2042,10 +2049,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst)
                     {
-                        OilTempCoolingRunning = true;
+                        if (!OilTempCoolingRunning && !TopOilPlatesOpened)
+                            OilTempCoolingRunning = true;
                         
                         // Vynulování časovače zpoždění animace
-                        if (OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS)
+                        if (OilTempCoolingRunning && OilTempCoolingOffAnimDelayTimer > OilTempCoolingOffAnimationDelayS)
                             OilTempCoolingOffAnimDelayTimer = 0;
                     }
 
