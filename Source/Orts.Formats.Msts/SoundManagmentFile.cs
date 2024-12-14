@@ -235,7 +235,9 @@ namespace Orts.Formats.Msts
             WheelDamageValueControlled,
             PullPushValueControlled,
             TrackFactorValueControlled,
-            PricipitationIntensityControlled,            
+            PricipitationIntensityControlled,   
+            SeasonsControlled,
+            DayTimeControlled,
         };
 
         public Controls Control = Controls.None;
@@ -295,6 +297,8 @@ namespace Orts.Formats.Msts
                 case "pullpushvaluecontrolled": Control = Controls.PullPushValueControlled; break;
                 case "trackfactorvaluecontrolled": Control = Controls.TrackFactorValueControlled; break;
                 case "pricipitationintensitycontrolled": Control = Controls.PricipitationIntensityControlled; break;
+                case "seasonscontrolled": Control = Controls.SeasonsControlled; break;
+                case "daytimecontrolled": Control = Controls.DayTimeControlled; break;
                 default: STFException.TraceWarning(stf, "Crash expected: Skipped unknown VolumeCurve/Frequencycurve type " + type); stf.SkipRestOfBlock(); return;
             }
             stf.ParseBlock(new STFReader.TokenProcessor[] {

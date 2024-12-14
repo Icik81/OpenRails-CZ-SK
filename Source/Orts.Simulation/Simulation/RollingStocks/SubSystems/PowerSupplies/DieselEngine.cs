@@ -2299,6 +2299,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -5f , 5f);
 
+            //CoolingFlow = 10;
+            //CoolingFlowBase = 0.1f;
+
             // Voda
             // Teplotu zvyšují otáčky a zátěž motoru
             if (EngineStatus == Status.Running)

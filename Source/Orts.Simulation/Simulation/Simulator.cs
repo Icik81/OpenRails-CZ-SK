@@ -273,6 +273,7 @@ namespace Orts.Simulation
         public int TrainOperationsMenuMinimumTextWidth;
         public bool CarPositionChanged;
         public int TrainOperationsMenuSetScrollPosition;
+        public float GameTimeHours;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

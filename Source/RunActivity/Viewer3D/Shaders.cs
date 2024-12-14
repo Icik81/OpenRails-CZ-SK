@@ -165,6 +165,7 @@ namespace Orts.Viewer3D
             // Mění intenzitu okolního světla v závislosti na ročním období a denní době
             float GameTimeToHours = (float)Program.Simulator.ClockTime / 60f / 60f;             
             while (GameTimeToHours > 24f) GameTimeToHours = GameTimeToHours - 24f;
+            Program.Simulator.GameTimeHours = GameTimeToHours;
 
             //Program.Simulator.Confirmer.Information("DayTimeAmbientLightCoef = " + Program.Simulator.DayTimeAmbientLightCoef);            
             
