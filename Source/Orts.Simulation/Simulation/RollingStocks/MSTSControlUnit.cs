@@ -42,6 +42,9 @@ namespace Orts.Simulation.RollingStocks
         public float FakeDieselWaterTemperatureDeg;
         public float FakeDieselOilTemperatureDeg;
         public float RealRPM;
+        public float FakeDieselWaterTemperatureDeg2;
+        public float FakeDieselOilTemperatureDeg2;
+        public float RealRPM2;
 
         public MSTSControlUnit(Simulator simulator, string wagFile) :
             base(simulator, wagFile)
@@ -270,10 +273,51 @@ namespace Orts.Simulation.RollingStocks
                     {
                         ControlUnitType = ControlUnitTypes.Diesel;
                         var PU = car as MSTSDieselLocomotive;
+                        
+                        DriveForceN = PU.DriveForceN;
+                        MaxCurrentA = PU.MaxCurrentA;
+                        MaxForceN = PU.MaxForceN;
+                        DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
+                        DynamicBrakeForceN = PU.DynamicBrakeForceN;
+                        MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
+                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
+                        FakePowerCurrent1 = PU.FakePowerCurrent1;
+                        BrakeCurrent1 = PU.BrakeCurrent1;
+                        FakePowerCurrent2 = PU.FakePowerCurrent2;
+                        BrakeCurrent2 = PU.BrakeCurrent2;                                                
+                        PowerOn = PU.PowerOn;
+                        AuxPowerOn = PU.AuxPowerOn;                        
+                        AuxResPressurePSI = PU.AuxResPressurePSI;
 
-                        FakeDieselWaterTemperatureDeg = PU.FakeDieselWaterTemperatureDeg;
+                        FakeDieselWaterTemperatureDeg = PU.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         FakeDieselOilTemperatureDeg = PU.DieselEngines[0].FakeDieselOilTemperatureDeg;
                         RealRPM = PU.DieselEngines[0].RealRPM;
+
+                        if (PU.DieselEngines.Count > 1)
+                        {
+                            FakeDieselWaterTemperatureDeg2 = PU.DieselEngines[1].FakeDieselWaterTemperatureDeg;
+                            FakeDieselOilTemperatureDeg2 = PU.DieselEngines[1].FakeDieselOilTemperatureDeg;
+                            RealRPM2 = PU.DieselEngines[1].RealRPM;
+                        }
+
+                        // Řídící jednotka je obsazená
+                        if (IsLeadLocomotive() && !PU.LocoReadyToGo)
+                        {
+                            LocoReadyToGo = false;
+                            if (StationIsActivated[LocoStation])
+                                Simulator.ControlUnitIsLead = true;
+
+                            PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
+                            PU.PowerKey = PowerKey;
+                           
+                            PU.BreakPowerButton = BreakPowerButton;
+
+                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;
+                            PU.CompressorMode_OffAuto[LocoStation] = CompressorMode_OffAuto[LocoStation];
+                            PU.Compressor_I_HandMode[LocoStation] = Compressor_I_HandMode[LocoStation];
+                            PU.CompressorMode2_OffAuto[LocoStation] = CompressorMode2_OffAuto[LocoStation];
+                            PU.Compressor_II_HandMode[LocoStation] = Compressor_II_HandMode[LocoStation];
+                        }
 
                         break;
                     }
@@ -802,15 +846,12 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerReductionResult10 == 1)
                                 data = 1;
                         }
-                        break;
-
-                    default:
-                        data = base.GetDataOf(cvc);
-                        break;
+                        break;                                                                
                 }
             }
             #endregion Electric
 
+            data = base.GetDataOf(cvc);
             return data;
         }
 
@@ -902,6 +943,43 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Off")));
             }
             #endregion Electric
+
+            #region Diesel
+            if (ControlUnitType == ControlUnitTypes.Diesel)
+            {                
+                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    if (car.PowerUnitWithControl && car is MSTSDieselLocomotive)
+                    {                        
+                        status.AppendLine();
+                        if (Battery)
+                            status.AppendFormat("{0} = {1}",
+                            Simulator.Catalog.GetString("Battery"),
+                            Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("On")));
+                        else
+                            status.AppendFormat("{0} = {1}",
+                            Simulator.Catalog.GetString("Battery"),
+                            Simulator.Catalog.GetParticularString("Battery", Simulator.Catalog.GetString("Off")));
+
+                        break;
+                    }
+                }
+                status.AppendLine();
+                if (PowerKeyPosition[LocoStation] == 0)
+                    status.AppendFormat("{0} = {1}",
+                    Simulator.Catalog.GetString("PowerKey"),
+                    Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("No Powerkey")));
+                else
+                if (StationIsActivated[LocoStation])
+                    status.AppendFormat("{0} = {1}",
+                    Simulator.Catalog.GetString("PowerKey"),
+                    Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("On")));
+                else
+                    status.AppendFormat("{0} = {1}",
+                    Simulator.Catalog.GetString("PowerKey"),
+                    Simulator.Catalog.GetParticularString("PowerKey", Simulator.Catalog.GetString("Off")));
+            }
+            #endregion Diesel
 
             return status.ToString();
         }

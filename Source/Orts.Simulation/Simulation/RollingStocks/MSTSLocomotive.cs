@@ -8456,6 +8456,11 @@ namespace Orts.Simulation.RollingStocks
                     SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - extendedPhysics.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
 
+                if (ControlUnit)
+                {
+                    WheelSpeedMpS = SpeedMpS;
+                }
+
                 if (Simulator.GameSpeed > 1)
                 {
                     WheelSpeedMpS = SpeedMpS;
@@ -21078,7 +21083,7 @@ namespace Orts.Simulation.RollingStocks
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
-                            data = mstsControlUnit.RealRPM;
+                            data = mstsControlUnit.RealRPM2;
 
                         break;
                     }
@@ -21140,7 +21145,7 @@ namespace Orts.Simulation.RollingStocks
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
-                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg2;
 
                         break;
                     }
@@ -22804,7 +22809,7 @@ namespace Orts.Simulation.RollingStocks
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
-                            data = mstsControlUnit.FakeDieselOilTemperatureDeg;
+                            data = mstsControlUnit.FakeDieselOilTemperatureDeg2;
 
                         break;
                     }
