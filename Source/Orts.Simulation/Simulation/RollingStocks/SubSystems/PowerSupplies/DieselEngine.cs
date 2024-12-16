@@ -1913,10 +1913,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 //    break;
 
                 case Cooling.Hysteresis:
+                    
                     // Malý chladící okruh
                     // Chlazení vody
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
+
                     if (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC)
                     {
                         WaterTempCoolingLowRunning = true;
@@ -1929,7 +1931,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             WaterTempCoolingOffAnimDelayTimer = 0;                        
                     }
 
-                    if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC
+                    if (RealDieselWaterTemperatureDeg < DieselOptimalTemperatureDegC - 2.0f
                         || EngineStatus != Status.Running)
                     {
                         if (WaterTempCoolingLowRunning)
@@ -1948,9 +1950,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             locomotive.SignalEvent(Event.DieselMotorWaterLowCooling);
                         }
                     }
+
                     // Chlazení oleje
                     if (DieselOptimalOilTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalOilTemperatureDegC;
+
                     if (RealDieselOilTemperatureDeg > DieselOptimalTemperatureDegC)
                     {
                         OilTempCoolingLowRunning = true;
@@ -1963,7 +1967,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             OilTempCoolingOffAnimDelayTimer = 0;
                     }
 
-                    if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC
+                    if (RealDieselOilTemperatureDeg < DieselOptimalTemperatureDegC - 2.0f
                         || EngineStatus != Status.Running)
                     {
                         if (OilTempCoolingLowRunning)
