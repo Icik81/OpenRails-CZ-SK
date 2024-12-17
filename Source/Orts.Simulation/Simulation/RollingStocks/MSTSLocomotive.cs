@@ -21045,7 +21045,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                                 data = mstsDieselLocomotive.DieselEngines[0].RealRPM;
                         }
 
@@ -21077,7 +21077,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                                 data = mstsDieselLocomotive.DieselEngines[1].RealRPM;
                         }
 
@@ -21107,7 +21107,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                                 data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         }
 
@@ -21139,7 +21139,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                                 data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
                         }
 
@@ -21202,7 +21202,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                             {
                                 FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[0].DieselOilPressurePSI;
                                 VibrationTimer += Simulator.OneSecondLoop;
@@ -21293,7 +21293,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                             {
                                 FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
                                 VibrationTimer += Simulator.OneSecondLoop;
@@ -22709,7 +22709,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                                 data = mstsDieselLocomotive.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         }
 
@@ -22741,13 +22741,13 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                                 data = mstsDieselLocomotive.DieselEngines[1].FakeDieselWaterTemperatureDeg;
                         }
 
                         var mstsControlUnit = this as MSTSControlUnit;
                         if (mstsControlUnit != null)
-                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg;
+                            data = mstsControlUnit.FakeDieselWaterTemperatureDeg2;
 
                         break;
                     }
@@ -22771,7 +22771,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines[0] != null)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                                 data = mstsDieselLocomotive.DieselEngines[0].FakeDieselOilTemperatureDeg;
                         }
 
@@ -22803,7 +22803,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                            if (mstsDieselLocomotive.DieselEngines.Count > 1)
+                            if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                                 data = mstsDieselLocomotive.DieselEngines[1].FakeDieselOilTemperatureDeg;
                         }
 
@@ -23009,7 +23009,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.TURBO_PRESSURE:
                     {
                         var mstsDieselLocomotive = this as MSTSDieselLocomotive;
-                        if (mstsDieselLocomotive.DieselEngines[0] != null)
+                        if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0] != null)
                             data = mstsDieselLocomotive.DieselEngines[0].TurboPressureBar;
                         break;
                     }
@@ -23655,7 +23655,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 #endregion Speed                                
                         }
-                        if ((MotorIdleHandlingOn && !MotorIdleHandlingOverride) || MotorIdleHandlingTractionIsBlocked) data = 0; // Motoráky 809-810
+                        if ((MotorIdleHandlingOn && !MotorIdleHandlingOverride) || MotorIdleHandlingTractionIsBlocked) data = 0; // Motoráky 809-810-M151-M152-811-812
                         break;
                     }
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
