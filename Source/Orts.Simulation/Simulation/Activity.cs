@@ -33,6 +33,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using static Orts.Simulation.Physics.Train;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation
@@ -1109,6 +1110,16 @@ namespace Orts.Simulation
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {
+                    // Některé vozy nemusí mít automatické dveře a dveře si cestující otevírají sami
+                    for (int i = 0; i < MyPlayerTrain.Cars.Count; i++)
+                    {
+                        MSTSWagon wagonNoAutomaticDoors = (MSTSWagon)MyPlayerTrain.Cars[i];
+                        if (!wagonNoAutomaticDoors.AutomaticDoors)
+                        {
+                            goto SkipToArrived;
+                        }
+                    }
+
                     // Automatické centrální dveře
                     if (!maydepart && arrived && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
                         && (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0))
@@ -1117,8 +1128,9 @@ namespace Orts.Simulation
                         DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
                         Simulator.DoorSwitchPaxRequest = true;                       
                         return;
-                    } 
+                    }
 
+                SkipToArrived:
                     // Waiting at a station
                     if (arrived)
                     {

@@ -6782,6 +6782,15 @@ namespace Orts.Simulation.AIs
                     }
                     else
                     {
+                        // Některé vozy nemusí mít automatické dveře a dveře si cestující otevírají sami
+                        for (int i = 0; i < this.Cars.Count; i++)
+                        {
+                            MSTSWagon wagonNoAutomaticDoors = (MSTSWagon)this.Cars[i];
+                            if (!wagonNoAutomaticDoors.AutomaticDoors)
+                            {
+                                goto SkipToArrived;
+                            }
+                        }
                         // Automatické centrální dveře
                         if (!MayDepart && AtStation && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor
                             && (PeopleWantToEntry || PeopleWantToLeaveCount > 0))
@@ -6792,6 +6801,7 @@ namespace Orts.Simulation.AIs
                             return;
                         }
 
+                    SkipToArrived:    
                         int remaining;
                         if (StationStops.Count == 0)
                         {
