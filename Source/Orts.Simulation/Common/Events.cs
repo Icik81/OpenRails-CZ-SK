@@ -401,6 +401,8 @@ namespace Orts.Common
         Wipers3SpeedOff,
         Wipers3Speed1,
         Wipers3Speed2,
+        WheelPulse,        
+        WheelHalfPulse,        
     }
 
     public static class Events
@@ -816,6 +818,8 @@ namespace Orts.Common
                         case 20154: return Event.Wipers3SpeedOff;
                         case 20155: return Event.Wipers3Speed1;
                         case 20156: return Event.Wipers3Speed2;
+                        case 20157: return Event.WheelHalfPulse;
+                        case 20158: return Event.WheelPulse;                        
 
                         default: return 0;
                     }

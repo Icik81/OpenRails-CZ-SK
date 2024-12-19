@@ -1420,8 +1420,9 @@ namespace Orts.Simulation.RollingStocks
         float PulseTracker;
         int NextPulse = 1;
         public float TrackFactor = 1;
+        float WheelDrivedLength;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
-        {
+        {                        
             // WheelDamage 
             if (this is MSTSSteamLocomotive)
             {
@@ -1429,24 +1430,29 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
+                //WheelDamageValue = 10;
                 if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
                 {
-                    // Variable1 is proportional to angular speed, value of 10 means 1 rotation/second.                                        
-                    var variable1 = Math.Abs((this as MSTSWagon).WheelSpeedMpS / DriverWheelRadiusM / MathHelper.Pi * 5);
-                    const int rotations = 2;
-                    const int fullLoop = 10 * rotations;
-                    int numPulses = 4 * 2 * rotations;
-                    var dPulseTracker = variable1 / fullLoop * numPulses * elapsedClockSeconds;
-                    PulseTracker += dPulseTracker;
-                    if (PulseTracker > (float)NextPulse - dPulseTracker / 2)
+                    float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
+                    float Wheel_s = 2.0f * MathHelper.Pi * DriverWheelRadiusM;
+                    WheelDrivedLength += Math.Abs((this as MSTSWagon).WheelSpeedMpS) * elapsedClockSeconds / Wheel_sCoef;
+
+                    // Trigger 20158
+                    if (WheelDrivedLength > Wheel_s && WheelDrivedLength < Wheel_sCoef * Wheel_s)
                     {
-                        SignalEvent((Event)((int)Event.SteamPulse1 + NextPulse - 1));
-                        PulseTracker %= numPulses;
-                        NextPulse %= numPulses;
-                        NextPulse++;
+                        WheelDrivedLength = 0;
+                        SignalEvent(Event.WheelPulse);
+                    }
+
+                    // Trigger 20157
+                    if (WheelDrivedLength > Wheel_s / 2f && WheelDrivedLength < Wheel_sCoef * Wheel_s / 2f)
+                    {
+                        SignalEvent(Event.WheelHalfPulse);
                     }
                 }
-            }
+                else
+                    WheelDrivedLength = 0;
+            }            
 
             // Only apply slide, and advanced brake friction, if advanced adhesion is selected, and it is a Player train
             if (Simulator.UseAdvancedAdhesion && IsPlayerTrain)
