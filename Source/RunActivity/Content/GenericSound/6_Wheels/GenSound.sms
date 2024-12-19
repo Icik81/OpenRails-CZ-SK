@@ -16,7 +16,7 @@ Tr_SMS (
 		)
 		Stereo ()
 		Volume (0.6)
-		Streams (11
+		Streams (10
 		
 			Stream (
 				Skip (** Prokluz **)
@@ -308,26 +308,7 @@ Tr_SMS (
 				Priority ( 6 )
 				Volume (1.0)
 				Triggers ( 1
-					Discrete_Trigger ( 121 PlayOneShot ( 1 	File ( "../4_Wheels/obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
-				)
-				VolumeCurve(
-					WheelDamageValueControlled
-					CurvePoints ( 4
-					0			0.0
-					2			0.3
-					5			0.7
-					10			1.0
-					)
-					Granularity ( 0.05 )
-				)
-			)
-			
-			Stream (
-				Skip(** Bouchani - "dupot" v dusledku "obuti" kol. 2. otacka kola **)
-				Priority ( 6 )
-				Volume (1.0)
-				Triggers ( 1
-					Discrete_Trigger ( 129 PlayOneShot ( 1 	File ( "../4_Wheels/obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+					Discrete_Trigger ( 20158 PlayOneShot ( 1 	File ( "../4_Wheels/obuti.wav" -1 ) SelectionMethod (SequentialSelection) ) )
 				)
 				VolumeCurve(
 					WheelDamageValueControlled
