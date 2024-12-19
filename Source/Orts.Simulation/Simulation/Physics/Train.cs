@@ -17707,13 +17707,39 @@ namespace Orts.Simulation.Physics
                     PeopleWantToEntry = false;
                 }
                 bool closeDoor = false;
-                bool haveCentralDoors = false;
+                bool haveCentralDoors = false;                
 
                 foreach (TrainCar tc in train.Cars)
                 {
                     MSTSWagon wagon = (MSTSWagon)tc;
                     haveCentralDoors = loco.CentralHandlingDoors;
                     
+                    // Některé vozy nemusí mít automatické dveře a dveře zavírají cestující
+                    for (int i = 0; i < train.Cars.Count; i++)
+                    {
+                        MSTSWagon wagonNoAutomaticDoors = (MSTSWagon)train.Cars[i];
+                        if (!wagonNoAutomaticDoors.AutomaticDoors)
+                        {
+                            if (wagonNoAutomaticDoors.TimeToCloseDoorGenerate == 0)
+                                wagonNoAutomaticDoors.TimeToCloseDoorGenerate = Simulator.Random.Next(5, 11) * 30;
+
+                            if (wagonNoAutomaticDoors.DoorLeftOpen || wagonNoAutomaticDoors.DoorRightOpen)
+                            {
+                                closeDoor = true;
+                                wagonNoAutomaticDoors.TimeToCloseDoor++;
+                            }
+
+                            if (closeDoor && (!haveCentralDoors || !Simulator.DoorSwitchDoorLocked) && wagonNoAutomaticDoors.TimeToCloseDoor == wagonNoAutomaticDoors.TimeToCloseDoorGenerate)
+                            {
+                                train.ToggleDoorsPeople(true, false, wagonNoAutomaticDoors);
+                                train.ToggleDoorsPeople(false, false, wagonNoAutomaticDoors);
+                                wagonNoAutomaticDoors.TimeToCloseDoor = 0;
+                                wagonNoAutomaticDoors.TimeToCloseDoorGenerate = 0;
+                            }
+                        }
+                    }
+
+                    // Detekce příznaku pro automatické dveře motoráku
                     if (wagon is MSTSLocomotive
                         && ((wagon as MSTSLocomotive).LocomotiveTypeNumber == 810 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 809 // Motorák 809 - 810 zavírá dveře strojvedoucí 
                         || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 151 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 152 // Motorák M151 - M152 zavírá dveře strojvedoucí
