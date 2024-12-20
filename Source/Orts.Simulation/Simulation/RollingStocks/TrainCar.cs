@@ -1416,25 +1416,45 @@ namespace Orts.Simulation.RollingStocks
         /// ii) force on the wheel due to braking, and whether sliding will occur.
         /// 
         /// </summary>
-
-        float PulseTracker;
-        int NextPulse = 1;
+        
         public float TrackFactor = 1;
         float WheelDrivedLength;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
-        {                        
-            // WheelDamage 
-            if (this is MSTSSteamLocomotive)
+        {                
+            // AI parní lokomotivy si počítají pulsy neustále
+            if (this is MSTSSteamLocomotive && !IsPlayerTrain)
             {
-                // Pro parní trakci nepočítej pulsy
+                if ((this as MSTSWagon).AbsWheelSpeedMpS > 0)
+                {
+                    float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
+                    float Wheel_s = 2.0f * MathHelper.Pi * (this as MSTSWagon).DriverWheelRadiusM;
+                    WheelDrivedLength += Math.Abs((this as MSTSWagon).WheelSpeedMpS) * elapsedClockSeconds / Wheel_sCoef;
+
+                    // Trigger 20158
+                    if (WheelDrivedLength > Wheel_s && WheelDrivedLength < Wheel_sCoef * Wheel_s)
+                    {
+                        WheelDrivedLength = 0;
+                        SignalEvent(Event.WheelPulse);
+                    }
+
+                    // Trigger 20157
+                    if (WheelDrivedLength > Wheel_s / 2f && WheelDrivedLength < Wheel_sCoef * Wheel_s / 2f)
+                    {
+                        SignalEvent(Event.WheelHalfPulse);
+                    }
+                }
+                else
+                    WheelDrivedLength = 0;
             }
-            else
+
+            // WheelDamage 
+            if (!(this is MSTSSteamLocomotive))            
             {
                 //WheelDamageValue = 10;
                 if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
                 {
                     float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
-                    float Wheel_s = 2.0f * MathHelper.Pi * DriverWheelRadiusM;
+                    float Wheel_s = 2.0f * MathHelper.Pi * (this as MSTSWagon).WheelRadiusM;
                     WheelDrivedLength += Math.Abs((this as MSTSWagon).WheelSpeedMpS) * elapsedClockSeconds / Wheel_sCoef;
 
                     // Trigger 20158

@@ -703,6 +703,8 @@ namespace Orts.Viewer3D.RollingStock
 
         float[] AxleWheelSpeedMpS = new float[7];
         int AxleNum = 0;
+        float WheelDrivedLength;
+        bool FirstTimeWheelPulse;
         private void UpdateAnimation(RenderFrame frame, ElapsedTime elapsedTime)
         {
             float distanceTravelledM = 0.0f; // Distance travelled by non-driven wheels
@@ -788,7 +790,7 @@ namespace Orts.Viewer3D.RollingStock
                             AxleNum++;
 
                             AxleWheelSpeedMpS[AxleNum] = MSTSWagon.Train.SpeedMpS;
-                            for (int i = 1; i < 7; i++)
+                            for (int i = 1; i < 11; i++)
                             {
                                 if ((Car as MSTSLocomotive).DriveAxleNumber[i] == AxleNum)
                                 {
@@ -821,15 +823,40 @@ namespace Orts.Viewer3D.RollingStock
                             if (AxleNum >= (Car as MSTSLocomotive).WagonNumAxles)
                             {
                                 AxleNum = 0;
+                                FirstTimeWheelPulse = false;
                             }
                             AxleNum++;
 
-                            AxleWheelSpeedMpS[AxleNum] = MSTSWagon.Train.SpeedMpS;
-                            for (int i = 1; i < 7; i++) 
+                            AxleWheelSpeedMpS[AxleNum] = MSTSWagon.Train.SpeedMpS;                            
+                            for (int i = 1; i < 11; i++) 
                             {
                                 if ((Car as MSTSLocomotive).DriveAxleNumber[i] == AxleNum)
                                 {
                                     AxleWheelSpeedMpS[AxleNum] = (Car as MSTSLocomotive).WheelSpeedMpS;
+                                    
+                                    // Parní lokomotivy - počítání pulsů na otáčku kola jen pro jednu nápravu
+                                    if (Car is MSTSSteamLocomotive && Math.Abs((Car as MSTSLocomotive).WheelSpeedMpS) > 0 && !FirstTimeWheelPulse)
+                                    {
+                                        FirstTimeWheelPulse = true;
+                                        float Wheel_sCoef = (1f + (Math.Abs((Car as MSTSLocomotive).WheelSpeedMpS) / 60f));
+                                        float Wheel_s = 2.0f * MathHelper.Pi * (Car as MSTSLocomotive).DriverWheelRadiusM;
+                                        WheelDrivedLength += Math.Abs((Car as MSTSLocomotive).WheelSpeedMpS) * elapsedTime.ClockSeconds / Wheel_sCoef;
+
+                                        // Trigger 20158
+                                        if (WheelDrivedLength > Wheel_s && WheelDrivedLength < Wheel_sCoef * Wheel_s)
+                                        {
+                                            WheelDrivedLength = 0;
+                                            (Car as MSTSLocomotive).SignalEvent(Event.WheelPulse);
+                                        }
+
+                                        // Trigger 20157
+                                        if (WheelDrivedLength > Wheel_s / 2f && WheelDrivedLength < Wheel_sCoef * Wheel_s / 2f)
+                                        {
+                                            (Car as MSTSLocomotive).SignalEvent(Event.WheelHalfPulse);
+                                        }
+                                    }
+                                    else
+                                        WheelDrivedLength = 0;
                                 }                                
                             }                                                                                                                    
 

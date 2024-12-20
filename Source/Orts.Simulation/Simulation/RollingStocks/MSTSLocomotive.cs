@@ -756,7 +756,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] Switch6LightPosition = new int[3];
         public bool Switch5LightEnable;
         public bool Switch6LightEnable;
-        public int[] DriveAxleNumber = new int[7];
+        public int[] DriveAxleNumber = new int[11];
         public bool DriverUsingRearCab;
         public bool AIPowerOnSet;
 
@@ -1488,6 +1488,10 @@ namespace Orts.Simulation.RollingStocks
                     DriveAxleNumber[4] = stf.ReadInt(null);
                     DriveAxleNumber[5] = stf.ReadInt(null);
                     DriveAxleNumber[6] = stf.ReadInt(null);
+                    DriveAxleNumber[7] = stf.ReadInt(null);
+                    DriveAxleNumber[8] = stf.ReadInt(null);
+                    DriveAxleNumber[9] = stf.ReadInt(null);
+                    DriveAxleNumber[10] = stf.ReadInt(null);
                     stf.SkipRestOfBlock();
                     break;
 
@@ -8365,6 +8369,13 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
 
+            // Default pro nezadání hnacích náprav
+            for (int i = 1; i < 11; i++)
+            {
+                if (DriveAxleNumber[i] != 0) break;
+                if (i == 10) for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+            }
+
             //Curtius-Kniffler computation for the basic model
             //        float max0 = 1.0f;  //Adhesion conditions [N]
 
@@ -8372,6 +8383,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Steam locomotive details updated in UpdateTractiveForce method, and inserted into adhesion module
                 // ****************  NB WheelSpeed updated within Steam Locomotive module at the moment - to be fixed to prevent discrepancies ******************
+                // Default pro nezadání hnacích náprav                
             }
 
             else
@@ -8409,14 +8421,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
-                }
-
-                // Default pro nezadání hnacích náprav
-                for (int i = 1; i < 7; i++)
-                {
-                    if (DriveAxleNumber[i] != 0) break;                    
-                    if (i == 6) for (int j = 1; j < 7; j++) DriveAxleNumber[j] = j;                                            
-                }
+                }                
 
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
                 LocomotiveAxle.FrictionN = MassKG / 100.0f;
