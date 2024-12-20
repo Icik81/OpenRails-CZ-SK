@@ -2569,7 +2569,7 @@ namespace Orts.Simulation.RollingStocks
             // Ensure Drive Axles is set with a default value if user doesn't supply an OR value in ENG file
             if (LocoNumDrvAxles == 0)
             {
-                if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 6)
+                if (MSTSLocoNumDrvWheels != 0 && MSTSLocoNumDrvWheels <= 10)
                 {
                     LocoNumDrvAxles = (int)MSTSLocoNumDrvWheels;
                 }
@@ -2745,6 +2745,12 @@ namespace Orts.Simulation.RollingStocks
             base.Initialize();
             if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;
 
+            // Icik
+            if (InitialDrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.
+            {
+                InitialDrvWheelWeightKg = MassKG / LocoNumDrvAxles;
+            }
+            
             DrvWheelWeightKg = InitialDrvWheelWeightKg;
         }
 
@@ -8382,10 +8388,8 @@ namespace Orts.Simulation.RollingStocks
             if (EngineType == EngineTypes.Steam && SteamEngineType != MSTSSteamLocomotive.SteamEngineTypes.Geared)
             {
                 // Steam locomotive details updated in UpdateTractiveForce method, and inserted into adhesion module
-                // ****************  NB WheelSpeed updated within Steam Locomotive module at the moment - to be fixed to prevent discrepancies ******************
-                // Default pro nezadání hnacích náprav                
+                // ****************  NB WheelSpeed updated within Steam Locomotive module at the moment - to be fixed to prevent discrepancies ******************                
             }
-
             else
             {
 

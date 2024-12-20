@@ -253,14 +253,7 @@ namespace Orts.Simulation.RollingStocks
             PowerSupply.Initialize();
 
             base.Initialize();
-
-            // If DrvWheelWeight is not in ENG file, then calculate drivewheel weight freom FoA
-
-            if (DrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.
-            {
-                DrvWheelWeightKg = MassKG; // set Drive wheel weight to total wagon mass if not in ENG file
-            }
-
+                        
             // Initialise water level in steam heat boiler
             if (CurrentLocomotiveSteamHeatBoilerWaterCapacityL == 0 && IsSteamHeatFitted)
             {

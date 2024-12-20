@@ -1420,33 +1420,7 @@ namespace Orts.Simulation.RollingStocks
         public float TrackFactor = 1;
         float WheelDrivedLength;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
-        {                
-            // AI parní lokomotivy si počítají pulsy neustále
-            if (this is MSTSSteamLocomotive && !IsPlayerTrain)
-            {
-                if ((this as MSTSWagon).AbsWheelSpeedMpS > 0)
-                {
-                    float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
-                    float Wheel_s = 2.0f * MathHelper.Pi * (this as MSTSWagon).DriverWheelRadiusM;
-                    WheelDrivedLength += Math.Abs((this as MSTSWagon).WheelSpeedMpS) * elapsedClockSeconds / Wheel_sCoef;
-
-                    // Trigger 20158
-                    if (WheelDrivedLength > Wheel_s && WheelDrivedLength < Wheel_sCoef * Wheel_s)
-                    {
-                        WheelDrivedLength = 0;
-                        SignalEvent(Event.WheelPulse);
-                    }
-
-                    // Trigger 20157
-                    if (WheelDrivedLength > Wheel_s / 2f && WheelDrivedLength < Wheel_sCoef * Wheel_s / 2f)
-                    {
-                        SignalEvent(Event.WheelHalfPulse);
-                    }
-                }
-                else
-                    WheelDrivedLength = 0;
-            }
-
+        {                            
             // WheelDamage 
             if (!(this is MSTSSteamLocomotive))            
             {
