@@ -130,9 +130,9 @@ namespace ORTS
             Font = SystemFonts.MessageBoxFont;
 
             // Set title to show revision or build info.
-            if (File.Exists(Application.StartupPath + @"\Version18.ini"))
+            if (File.Exists(Application.StartupPath + @"\Version19.ini"))
             {
-                Text = "Open Rails CZ/SK v" + File.ReadAllText(Application.StartupPath + @"\Version18.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
+                Text = "Open Rails CZ/SK v" + File.ReadAllText(Application.StartupPath + @"\Version19.ini").Replace("Aktualizován patch ", "").Replace("Aktualizována verze ", "");
             }
             else
             {
