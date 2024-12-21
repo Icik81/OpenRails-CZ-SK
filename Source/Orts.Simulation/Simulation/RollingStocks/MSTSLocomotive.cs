@@ -2743,15 +2743,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             base.Initialize();
-            if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;
-
-            // Icik
-            if (InitialDrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.
-            {
-                InitialDrvWheelWeightKg = MassKG / LocoNumDrvAxles;
-            }
-            
-            DrvWheelWeightKg = InitialDrvWheelWeightKg;
+            if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;            
         }
 
         public float DistanceToPowerSupplyStationM(int PowerSystem, out PowerSupplyStation myStation)
@@ -8366,6 +8358,8 @@ namespace Orts.Simulation.RollingStocks
         public float WheelSpeedDirectionMarkerEP;
         public float AxleSpeedMpSEP;
         public float AxleForceN;
+        public int DriveAxleCount;
+        bool DriveAxleNumberFirstRun = true;
         public void AdvancedAdhesion(float elapsedClockSeconds)
         {
 
@@ -8376,14 +8370,20 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Default pro nezadání hnacích náprav
-            for (int i = 1; i < 11; i++)
+            if (DriveAxleNumberFirstRun)
             {
-                if (DriveAxleNumber[i] != 0) break;
-                if (i == 10) for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+                for (int i = 1; i < 11; i++)
+                {
+                    if (DriveAxleNumber[i] != 0) break;
+                    if (i == 10) for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+                }
+                DriveAxleCount = 0;
+                for (int i = 1; i < 11; i++)
+                {
+                    if (DriveAxleNumber[i] != 0) DriveAxleCount++;
+                }
+                DriveAxleNumberFirstRun = false;
             }
-
-            //Curtius-Kniffler computation for the basic model
-            //        float max0 = 1.0f;  //Adhesion conditions [N]
 
             if (EngineType == EngineTypes.Steam && SteamEngineType != MSTSSteamLocomotive.SteamEngineTypes.Geared)
             {
@@ -8392,7 +8392,6 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-
                 //Compute axle inertia from parameters if possible
                 if (AxleInertiaKgm2 > 10000.0f) // if axleinertia value supplied in ENG file, then use in calculations
                 {
@@ -8425,7 +8424,18 @@ namespace Orts.Simulation.RollingStocks
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
-                }                
+                }
+
+                // Výpočet celkové tíhy na hnací nápravy
+                if (InitialDrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.                
+                {
+                    if (DriveAxleCount > 0)                    
+                        DrvWheelWeightKg = MassKG * DriveAxleCount / WagonNumAxles;                    
+                    else
+                        DrvWheelWeightKg = MassKG * LocoNumDrvAxles / WagonNumAxles;
+                }
+                else
+                    DrvWheelWeightKg = InitialDrvWheelWeightKg * MassKG / InitialMassKG;
 
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
                 LocomotiveAxle.FrictionN = MassKG / 100.0f;
