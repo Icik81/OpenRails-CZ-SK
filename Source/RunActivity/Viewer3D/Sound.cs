@@ -1443,6 +1443,10 @@ namespace Orts.Viewer3D
                     else
                         x = SoundSource.DistanceSquared;
 
+                    // Externí zvuky mimo vůz
+                    if (SoundSource.IsExternal)
+                        x = ReadValue(MSTSStream.VolumeCurves[i].Control, SoundSource.Car);
+
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
 
