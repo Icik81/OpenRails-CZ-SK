@@ -766,9 +766,16 @@ namespace Orts.Simulation.AIs
                 {
                     var isRainingOrSnowing = Simulator.Weather.PricipitationIntensityPPSPM2 > 0;
                     if (leadingLoco.Wiper && !isRainingOrSnowing)
+                    {
                         leadingLoco.SignalEvent(Event.WiperOff);
-                    else if (!leadingLoco.Wiper && isRainingOrSnowing)
+                        leadingLoco.Wiper = false;
+                    }
+                    else
+                    if (!leadingLoco.Wiper && isRainingOrSnowing)
+                    {
                         leadingLoco.SignalEvent(Event.WiperOn);
+                        leadingLoco.Wiper = true;
+                    }
                 }
             }
 

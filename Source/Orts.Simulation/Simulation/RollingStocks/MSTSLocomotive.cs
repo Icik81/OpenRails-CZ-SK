@@ -6355,7 +6355,8 @@ namespace Orts.Simulation.RollingStocks
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && LocoReadyToGo)
-            {                
+            {
+                if (Wiper) SignalEvent(Event.WiperOff);
                 if (Mirel != null)
                 {
                     ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
@@ -6973,8 +6974,7 @@ namespace Orts.Simulation.RollingStocks
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
                 PowerReduction = 0;
-
-                SignalEvent(Event.WiperOff);
+                                
                 if (this.PowerOn)
                 {
                     Train.AITrainSetUp = true;

@@ -1444,8 +1444,8 @@ namespace Orts.Viewer3D
                         x = SoundSource.DistanceSquared;
 
                     // Externí zvuky mimo vůz
-                    if (SoundSource.IsExternal)
-                        x = ReadValue(MSTSStream.VolumeCurves[i].Control, SoundSource.Car);
+                    if (SoundSource.Car == null && (MSTSStream.VolumeCurves[i].Control != VolumeCurve.Controls.DistanceControlled))
+                        x = ReadValue(MSTSStream.VolumeCurves[i].Control, null);
 
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
@@ -1550,7 +1550,7 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelDamageValueControlled: return car.WheelDamageValue;
                 case Orts.Formats.Msts.VolumeCurve.Controls.PullPushValueControlled: return car.PullPushValue;
                 case Orts.Formats.Msts.VolumeCurve.Controls.TrackFactorValueControlled: return car.TrackFactorValue;
-                case Orts.Formats.Msts.VolumeCurve.Controls.PricipitationIntensityControlled: return Program.Simulator.Weather.PrecipitationLiquidity > 0.5f && car.CarOutsideTempC > 5.0f ? Program.Simulator.Weather.PricipitationIntensityPPSPM2 : 0;
+                case Orts.Formats.Msts.VolumeCurve.Controls.PricipitationIntensityControlled: return Program.Simulator.Weather.PrecipitationLiquidity > 0.5f && Program.Viewer.PlayerLocomotive.Train.TrainOutsideTempC > 5.0f ? Program.Simulator.Weather.PricipitationIntensityPPSPM2 : 0;
                 case Orts.Formats.Msts.VolumeCurve.Controls.SeasonsControlled: return (float)Program.Simulator.Season;
                 case Orts.Formats.Msts.VolumeCurve.Controls.DayTimeControlled: return Program.Simulator.GameTimeHours;
                 default: return 0;
