@@ -8375,13 +8375,19 @@ namespace Orts.Simulation.RollingStocks
                 for (int i = 1; i < 11; i++)
                 {
                     if (DriveAxleNumber[i] != 0) break;
-                    if (i == 10) for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+                    if (i == 10)
+                    {
+                        for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+                        goto SkipToZeroDriveAxleCount;
+                    }
                 }
                 DriveAxleCount = 0;
                 for (int i = 1; i < 11; i++)
                 {
                     if (DriveAxleNumber[i] != 0) DriveAxleCount++;
                 }
+
+            SkipToZeroDriveAxleCount:
                 DriveAxleNumberFirstRun = false;
             }
 
