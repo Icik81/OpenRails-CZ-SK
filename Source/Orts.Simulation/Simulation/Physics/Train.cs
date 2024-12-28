@@ -16838,7 +16838,7 @@ namespace Orts.Simulation.Physics
             if (statCount != StationStops.Count)
             {
                 Random rnd = new Random();
-                actualRandom = rnd.Next(2, 5);                
+                actualRandom = rnd.Next(1, 3);                
                 statCount = StationStops.Count;
             }
 
@@ -16876,7 +16876,7 @@ namespace Orts.Simulation.Physics
                             freeSeatsNextStation++;                        
                     }
                 }
-                freeSeatsNextStation = MathHelper.Clamp(freeSeatsNextStation, 0, 10);
+                freeSeatsNextStation = MathHelper.Clamp(freeSeatsNextStation, 0, 3);
 
                 ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
