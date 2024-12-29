@@ -213,6 +213,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         // Icik
         public float AnimCorrectTimeCoefUp = 1.0f;
         public float AnimCorrectTimeCoefDown = 1.0f;
+        public float Panto57HeightCorrection;
+        public bool PantoIs62;
 
         public bool CommandUp
         {
@@ -276,6 +278,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         () => {
                             AnimCorrectTimeCoefDown = stf.ReadFloatBlock(STFReader.UNITS.Time, null);
                         }),
+                     new STFReader.TokenProcessor(
+                        "panto57heightcorrection",
+                        () => {
+                            Panto57HeightCorrection = stf.ReadFloatBlock(STFReader.UNITS.None, null);
+                            PantoIs62 = true;
+                        }),
                 }
             );
         }        
@@ -287,6 +295,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             TimeS = pantograph.TimeS;
             AnimCorrectTimeCoefUp = pantograph.AnimCorrectTimeCoefUp;
             AnimCorrectTimeCoefDown = pantograph.AnimCorrectTimeCoefDown;
+            Panto57HeightCorrection = pantograph.Panto57HeightCorrection;
+            PantoIs62 = pantograph.PantoIs62;
         }
 
         public void Restore(BinaryReader inf)

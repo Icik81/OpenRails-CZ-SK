@@ -148,7 +148,20 @@ namespace Orts.Viewer3D
             if (ELoco != null)
             {
                 if (state)
-                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
+                {
+                    if (ELoco.Pantographs[1].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                    {
+                        float Panto57HeightCorrection = ELoco.Pantographs[1].Panto57HeightCorrection / 100f;
+                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                        if (AnimationKey < 0.99f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
+                        else
+                        if (AnimationKey > 1.01f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
+                    }
+                    else
+                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
+                }
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
             }            
@@ -157,9 +170,22 @@ namespace Orts.Viewer3D
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
-            {               
+            {
                 if (state)
-                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
+                {
+                    if (ELoco.Pantographs[2].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                    {
+                        float Panto57HeightCorrection = ELoco.Pantographs[2].Panto57HeightCorrection / 100f;
+                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                        if (AnimationKey < 0.99f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
+                        else
+                        if (AnimationKey > 1.01f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
+                    }
+                    else
+                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
+                }
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
             }            
@@ -170,7 +196,20 @@ namespace Orts.Viewer3D
             if (ELoco != null)
             {
                 if (state)
-                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
+                {
+                    if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                    {
+                        float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
+                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                        if (AnimationKey < 0.99f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
+                        else
+                        if (AnimationKey > 1.01f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
+                    }
+                    else
+                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
+                }
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
             }            
@@ -181,7 +220,20 @@ namespace Orts.Viewer3D
             if (ELoco != null)
             {
                 if (state)
-                    SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
+                {
+                    if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                    {
+                        float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
+                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                        if (AnimationKey < 0.99f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
+                        else
+                        if (AnimationKey > 1.01f * LimitPantoHeight)
+                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
+                    }
+                    else
+                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
+                }                
                 else
                     SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
             }            

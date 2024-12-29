@@ -670,8 +670,29 @@ namespace Orts.Viewer3D
                                 TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
                                 if (AnimationKey[6] < 1)
                                 {
-                                    AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                                    ELoco.Pantographs[3].State = PantographState.Raising;
+                                    if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                                    {
+                                        float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
+                                        float LimitPantoHeight = (float)SharedShape.Animations[0].FrameCount * (1f + Panto57HeightCorrection);
+                                        if (AnimationKey[6] < 0.99f * LimitPantoHeight)
+                                        {
+                                            AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                                            ELoco.Pantographs[3].State = PantographState.Raising;
+                                        }
+                                        else
+                                        if (AnimationKey[6] > 1.01f * LimitPantoHeight)
+                                        {
+                                            AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
+                                            ELoco.Pantographs[3].State = PantographState.Lowering;
+                                        }
+                                        else
+                                            ELoco.Pantographs[3].State = PantographState.Up;
+                                    }
+                                    else
+                                    {
+                                        AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                                        ELoco.Pantographs[3].State = PantographState.Raising;
+                                    }
 
                                     // Testovací čas přehrátí animace
                                     TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
@@ -710,8 +731,29 @@ namespace Orts.Viewer3D
                                 TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
                                 if (AnimationKey[7] < 1)
                                 {
-                                    AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
-                                    ELoco.Pantographs[4].State = PantographState.Raising;
+                                    if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                                    {
+                                        float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
+                                        float LimitPantoHeight = (float)SharedShape.Animations[0].FrameCount * (1f + Panto57HeightCorrection);
+                                        if (AnimationKey[7] < 0.99f * LimitPantoHeight)
+                                        {
+                                            AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                                            ELoco.Pantographs[4].State = PantographState.Raising;
+                                        }
+                                        else
+                                        if (AnimationKey[7] > 1.01f * LimitPantoHeight)
+                                        {
+                                            AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
+                                            ELoco.Pantographs[4].State = PantographState.Lowering;
+                                        }
+                                        else
+                                            ELoco.Pantographs[4].State = PantographState.Up;
+                                    }
+                                    else
+                                    {
+                                        AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                                        ELoco.Pantographs[4].State = PantographState.Raising;
+                                    }
                                 }
                                 else
                                     ELoco.Pantographs[4].State = PantographState.Up;
