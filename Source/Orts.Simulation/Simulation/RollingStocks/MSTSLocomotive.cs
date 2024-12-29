@@ -5625,7 +5625,9 @@ namespace Orts.Simulation.RollingStocks
         bool HelperStartOn;
         float HelperBellTimer;
         bool HelperOverheated;
+        bool HelperOverheatedCritical;
         bool HelperCoolDown = true;
+        bool HelperCoolDownCritical = true;
         public void SetHelperLoco(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive() && (AcceptHelperSignals || PowerReductionResult12 > 0))
@@ -5645,8 +5647,8 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (IsLeadLocomotive())
-            {
-                Simulator.ThrottleLocoHelper = LocalThrottlePercent;
+            {                
+                Simulator.ThrottleLocoHelper = (float)Math.Round(LocalThrottlePercent, 0);
                 Simulator.DynamicBrakeLocoHelper = 0; // Postrk nebrzdí EDB
                 Simulator.ControllerVoltsLocoHelper = ControllerVolts;
                 if (MSTSBrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
@@ -5696,39 +5698,103 @@ namespace Orts.Simulation.RollingStocks
                 else
                     PowerReductionResult12 = 0;
 
+                #region Helper DieselEngine Overheating
                 if (this is MSTSDieselLocomotive)
                 {
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg == 0)
+                    var Motor1 = (this as MSTSDieselLocomotive).DieselEngines[0];
+                    var Motor2 = Motor1;
+                    if ((this as MSTSDieselLocomotive).DieselEngines.Count > 1)
                     {
-                        if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg != 0)
-                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxWaterTemperatureDeg;
-                        else
-                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                        Motor2 = (this as MSTSDieselLocomotive).DieselEngines[1];
+
+                        if (HelperOverheatedCritical && Motor1.EngineStatus == DieselEngine.Status.Running && Motor2.EngineStatus == DieselEngine.Status.Running)
+                        {
+                            // Při přehřátí motoru 1 dojde k jeho stopnutí
+                            if ((Motor1.RealDieselOilTemperatureDeg > 1.1f * Motor1.HelperDieselMaxOilTemperatureDeg || Motor1.RealDieselWaterTemperatureDeg > 1.1f * Motor1.HelperDieselMaxWaterTemperatureDeg)
+                                && (Motor2.RealDieselOilTemperatureDeg < 1.1f * Motor2.HelperDieselMaxOilTemperatureDeg && Motor2.RealDieselWaterTemperatureDeg < 1.1f * Motor2.HelperDieselMaxWaterTemperatureDeg))
+                            {
+                                if (Motor1.EngineStatus == DieselEngine.Status.Running)
+                                    Motor1.Stop(); 
+                            }
+                            // Při přehřátí motoru 2 dojde k jeho stopnutí
+                            if ((Motor2.RealDieselOilTemperatureDeg > 1.1f * Motor2.HelperDieselMaxOilTemperatureDeg || Motor2.RealDieselWaterTemperatureDeg > 1.1f * Motor2.HelperDieselMaxWaterTemperatureDeg)
+                                && (Motor1.RealDieselOilTemperatureDeg < 1.1f * Motor1.HelperDieselMaxOilTemperatureDeg && Motor1.RealDieselWaterTemperatureDeg < 1.1f * Motor1.HelperDieselMaxWaterTemperatureDeg))
+                            {
+                                if (Motor2.EngineStatus == DieselEngine.Status.Running)
+                                    Motor2.Stop();
+                            }
+                        }
                     }
 
-                    if ((this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg == 0)
+                    if (Motor1.HelperDieselMaxWaterTemperatureDeg == 0)
                     {
-                        if ((this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg != 0)
-                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxOilTemperatureDeg;
+                        if (Motor1.DieselMaxWaterTemperatureDeg != 0)
+                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor1.DieselMaxWaterTemperatureDeg;
                         else
-                            (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg = 0.90f * (this as MSTSDieselLocomotive).DieselEngines[0].DieselMaxTemperatureDeg;
+                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor1.DieselMaxTemperatureDeg;
+                    }
+                    if (Motor2.HelperDieselMaxWaterTemperatureDeg == 0)
+                    {
+                        if (Motor2.DieselMaxWaterTemperatureDeg != 0)
+                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor2.DieselMaxWaterTemperatureDeg;
+                        else
+                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor2.DieselMaxTemperatureDeg;
+                    }
+
+                    if (Motor1.HelperDieselMaxOilTemperatureDeg == 0)
+                    {
+                        if (Motor1.DieselMaxOilTemperatureDeg != 0)
+                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor1.DieselMaxOilTemperatureDeg;
+                        else
+                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor1.DieselMaxTemperatureDeg;
+                    }
+                    if (Motor2.HelperDieselMaxOilTemperatureDeg == 0)
+                    {
+                        if (Motor2.DieselMaxOilTemperatureDeg != 0)
+                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor2.DieselMaxOilTemperatureDeg;
+                        else
+                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor2.DieselMaxTemperatureDeg;
+                    }
+
+                    if (!HelperOverheated)
+                    {
+                        HelperOverheated = (Motor1.RealDieselOilTemperatureDeg > Motor1.HelperDieselMaxOilTemperatureDeg)
+                        || (Motor1.RealDieselWaterTemperatureDeg > Motor1.HelperDieselMaxWaterTemperatureDeg)
+                        || (Motor2.RealDieselOilTemperatureDeg > Motor2.HelperDieselMaxOilTemperatureDeg)
+                        || (Motor2.RealDieselWaterTemperatureDeg > Motor2.HelperDieselMaxWaterTemperatureDeg);
+                    }
+
+                    if (HelperOverheated)
+                    {
+                        HelperCoolDown = (Motor1.RealDieselOilTemperatureDeg < 0.95f * Motor1.HelperDieselMaxOilTemperatureDeg);
+                        HelperCoolDown &= (Motor1.RealDieselWaterTemperatureDeg < 0.95f * Motor1.HelperDieselMaxWaterTemperatureDeg);
+                        HelperCoolDown &= (Motor2.RealDieselOilTemperatureDeg < 0.95f * Motor2.HelperDieselMaxOilTemperatureDeg);                        
+                        HelperCoolDown &= (Motor2.RealDieselWaterTemperatureDeg < 0.95f * Motor2.HelperDieselMaxWaterTemperatureDeg);
+                        if (HelperCoolDown)
+                            HelperOverheated = false;
+                    }
+
+                    if (!HelperOverheatedCritical)
+                    {
+                        HelperOverheatedCritical = (Motor1.RealDieselOilTemperatureDeg > 1.1f * Motor1.HelperDieselMaxOilTemperatureDeg)
+                        || (Motor1.RealDieselWaterTemperatureDeg > 1.1f * Motor1.HelperDieselMaxWaterTemperatureDeg)
+                        || (Motor2.RealDieselOilTemperatureDeg > 1.1f * Motor2.HelperDieselMaxOilTemperatureDeg)
+                        || (Motor2.RealDieselWaterTemperatureDeg > 1.1f * Motor2.HelperDieselMaxWaterTemperatureDeg);
+                    }
+
+                    if (HelperOverheatedCritical)
+                    {
+                        HelperCoolDownCritical = (Motor1.RealDieselOilTemperatureDeg < 1.05f * Motor1.HelperDieselMaxOilTemperatureDeg);                        
+                        HelperCoolDownCritical &= (Motor1.RealDieselWaterTemperatureDeg < 1.05f * Motor1.HelperDieselMaxWaterTemperatureDeg);
+                        HelperCoolDownCritical &= (Motor2.RealDieselOilTemperatureDeg < 1.05f * Motor2.HelperDieselMaxOilTemperatureDeg);
+                        HelperCoolDownCritical &= (Motor2.RealDieselWaterTemperatureDeg < 1.05f * Motor2.HelperDieselMaxWaterTemperatureDeg);
+                        if (HelperCoolDownCritical)
+                            HelperOverheatedCritical = false;
                     }
                 }
+                #endregion Helper DieselEngine Overheating
 
-                if (!HelperOverheated)
-                {
-                    HelperOverheated = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg > (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg)
-                    || (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg > (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg);
-                }
-
-                if (HelperOverheated)
-                {
-                    HelperCoolDown = (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselOilTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxOilTemperatureDeg);
-                    HelperCoolDown &= (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].RealDieselWaterTemperatureDeg < 0.95f * (this as MSTSDieselLocomotive).DieselEngines[0].HelperDieselMaxWaterTemperatureDeg);
-                    if (HelperCoolDown)
-                        HelperOverheated = false;
-                }                                
-
+                # region HelperLocoPush
                 if (HelperLocoPush)
                 {
                     PowerReductionResult12 = 0;
@@ -5740,7 +5806,8 @@ namespace Orts.Simulation.RollingStocks
                         || Direction == Direction.N
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower
-                        || HelperOverheated
+                        || (HelperOverheated && ThrottlePercent > 80f)
+                        || HelperOverheatedCritical
                         )                        
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -5769,7 +5836,18 @@ namespace Orts.Simulation.RollingStocks
                                         LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
                                         HelperTimerDecrease = 0;
                                     }
-                                }   
+                                }
+                                else
+                                if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
                                 else
                                 {
                                     if (HelperTimerDecrease > 1.0f)
@@ -5783,9 +5861,45 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {
-                                if (LocalThrottlePercent > 0)
-                                    LocalThrottlePercent--;
-                                HelperTimerDecrease = 0;
+                                if (WheelSlipWarning
+                                    || WheelSlip)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheated)
+                                {
+                                    if (ThrottlePercent > 80f && HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }                                
                             }
                             if (LocalThrottlePercent == 0)
                                 WheelSpeedMpS = SpeedMpS;
@@ -5835,7 +5949,9 @@ namespace Orts.Simulation.RollingStocks
                         }                        
                     }                    
                 }
+                #endregion HelperLocoPush
 
+                #region HelperLocoDontPush
                 if (HelperLocoDontPush)
                 {
                     if (Simulator.ThrottleLocoHelper != 0)
@@ -5855,7 +5971,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            if (LocalThrottlePercent > 0)
+                            if (LocalThrottlePercent > 0 && HelperTimerDecrease > 0.2f)
                                 LocalThrottlePercent--;
                             HelperTimerDecrease = 0;
                         }
@@ -5863,7 +5979,9 @@ namespace Orts.Simulation.RollingStocks
                             WheelSpeedMpS = SpeedMpS;
                     }
                 }
+                #endregion HelperLocoDontPush
 
+                #region HelperLocoFollow
                 if (HelperLocoFollow)
                 {
                     if (Simulator.ThrottleLocoHelper != 0)
@@ -5873,7 +5991,7 @@ namespace Orts.Simulation.RollingStocks
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
                         || PowerCurrent1 > 0.95f * MaxCurrentPower                        
                         || WheelSlip
-                        || HelperOverheated
+                        || (HelperOverheated && ThrottlePercent > 80f)
                         )
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -5881,6 +5999,14 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
                             {
+                                if (ThrottlePercent > 1.2f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
+                                {
+                                    ThrottleController.StartDecrease();
+                                    ThrottleController.StopIncrease();
+                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                    HelperTimerDecrease = 0;
+                                }
+                                else
                                 if (WheelSlipWarning
                                     || WheelSlip)
                                 {
@@ -5904,19 +6030,56 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 }
                                 else
-                                if (ThrottlePercent > 1.2f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
+                                if (HelperOverheatedCritical)
                                 {
-                                    ThrottleController.StartDecrease();
-                                    ThrottleController.StopIncrease();
-                                    LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
-                                    HelperTimerDecrease = 0;
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
                                 }
                             }
                             else
                             {
-                                if (LocalThrottlePercent > 0)
-                                    LocalThrottlePercent--;
-                                HelperTimerDecrease = 0;
+                                if (ThrottlePercent > Simulator.ThrottleLocoHelper && HelperTimerDecrease > 0.2f)
+                                {
+                                    if (LocalThrottlePercent > 0)
+                                        LocalThrottlePercent--;
+                                    HelperTimerDecrease = 0;
+                                }
+                                else
+                                if (WheelSlipWarning
+                                    || WheelSlip)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheated)
+                                {
+                                    if (ThrottlePercent > 80f && HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
                             }
                             if (LocalThrottlePercent == 0)
                                 WheelSpeedMpS = SpeedMpS;
@@ -5948,6 +6111,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
+                #endregion HelperLocoFollow
 
                 LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);                
                 StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);

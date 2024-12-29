@@ -16838,7 +16838,7 @@ namespace Orts.Simulation.Physics
             if (statCount != StationStops.Count)
             {
                 Random rnd = new Random();
-                actualRandom = rnd.Next(1, 3);                
+                actualRandom = rnd.Next(1, 2);                
                 statCount = StationStops.Count;
             }
 
@@ -16873,10 +16873,13 @@ namespace Orts.Simulation.Physics
                     foreach (Passenger pax in tc.PassengerList)
                     {
                         if (ss.PlatformItem.Name == pax.ArrivalStationName)
-                            freeSeatsNextStation++;                        
+                        {
+                            freeSeatsNextStation++;
+                            break;
+                        }
                     }
                 }
-                freeSeatsNextStation = MathHelper.Clamp(freeSeatsNextStation, 0, 3);
+                //freeSeatsNextStation = MathHelper.Clamp(freeSeatsNextStation, 0, 3);                
 
                 ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
@@ -16961,7 +16964,7 @@ namespace Orts.Simulation.Physics
                     {
                         ss.PlatformItem.PassengerList.Add(ss.PlatformItem.PassengerListBuffer[0]);
                         ss.PlatformItem.PassengerListBuffer.RemoveAt(0);
-                        ss.PlatformItem.SecondToAdd.Remove(sec);
+                        ss.PlatformItem.SecondToAdd.Remove(sec);           
                         goto goagain;
                     }
                 }
