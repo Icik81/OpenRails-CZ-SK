@@ -2642,7 +2642,7 @@ namespace Orts.Simulation.RollingStocks
 
         /// <summary>
         /// This function updates periodically the locomotive's sound variables.
-        /// </summary>
+        /// </summary>        
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             if (MaxForceN == 0)  // Default 300kN
@@ -2662,15 +2662,30 @@ namespace Orts.Simulation.RollingStocks
 
             if (!IsPlayerTrain)
             {
-                Variable2 *= 2f;                
+                Variable2 *= 2f;   
+                // AI EDB brždění
                 if (DynamicBrakeController != null)
                 {
-                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 15.0f / 3.6f) ? 1f : (1.0f - ((15.0f - (AbsSpeedMpS / 3.6f)) / 13f));
+                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 20.0f / 3.6f) ? 1f : (1.0f - ((20.0f - (AbsSpeedMpS * 3.6f)) / 10f));
                     if (CoefSpeedMpSCutOff < 0) CoefSpeedMpSCutOff = 0;
-                    if (AccelerationMpSS < -0.1f && Train.AITrainBrakePercent > 0f && AbsSpeedMpS > 2.0f / 3.6f)
-                        Variable3 = Math.Abs(AccelerationMpSS) * CoefSpeedMpSCutOff * 2f;
-                    else
-                        Variable3 = 0;
+
+                    float AccelerationCoef = (AbsSpeedMpS < 10f / 3.6f) ? 0 : Math.Abs(AccelerationMpSS);
+                    if (SpeedMpS < 0)
+                    {
+                        if (AccelerationMpSS > 0.1f && AccelerationCoef > 0)
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
+                        else
+                        if (Variable3 > 0)
+                            Variable3 -= 0.1f * elapsedClockSeconds;
+                    }
+                    if (SpeedMpS > 0)
+                    {
+                        if (AccelerationMpSS < -0.1f && AccelerationCoef > 0)
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
+                        else
+                        if (Variable3 > 0)
+                            Variable3 -= 0.1f * elapsedClockSeconds;
+                    }
                 }
             }
             else            
