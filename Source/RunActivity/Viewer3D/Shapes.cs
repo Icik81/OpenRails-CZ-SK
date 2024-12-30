@@ -673,7 +673,7 @@ namespace Orts.Viewer3D
                                     if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                                     {
                                         float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
-                                        float LimitPantoHeight = (float)SharedShape.Animations[0].FrameCount * (1f + Panto57HeightCorrection);
+                                        float LimitPantoHeight = 1f + Panto57HeightCorrection;
                                         if (AnimationKey[6] < 0.99f * LimitPantoHeight)
                                         {
                                             AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
@@ -734,7 +734,7 @@ namespace Orts.Viewer3D
                                     if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                                     {
                                         float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
-                                        float LimitPantoHeight = (float)SharedShape.Animations[0].FrameCount * (1f + Panto57HeightCorrection);
+                                        float LimitPantoHeight = 1f + Panto57HeightCorrection;
                                         if (AnimationKey[7] < 0.99f * LimitPantoHeight)
                                         {
                                             AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
