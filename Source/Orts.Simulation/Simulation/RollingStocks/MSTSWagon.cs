@@ -164,10 +164,13 @@ namespace Orts.Simulation.RollingStocks
         public float AbsWheelSpeedMpSAC;
         public float AbsWheelSpeedMpSDC;
         public float Variable1AC;
+        public float Variable115kVAC;
         public float Variable1DC;
         public float Variable2AC;
+        public float Variable215kVAC;
         public float Variable2DC;
         public float Variable3AC;
+        public float Variable315kVAC;
         public float Variable3DC;
         public bool LeftDoorOpenOverride;
         public bool RightDoorOpenOverride;

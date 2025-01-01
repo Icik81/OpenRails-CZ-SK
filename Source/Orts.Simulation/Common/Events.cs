@@ -402,7 +402,12 @@ namespace Orts.Common
         Wipers3Speed1,
         Wipers3Speed2,
         WheelPulse,        
-        WheelHalfPulse,        
+        WheelHalfPulse,
+        PowerOn15kVAC,
+        PowerOff15kVAC,        
+        CircuitBreakerOpen15kVAC,
+        CircuitBreakerClosing15kVAC,
+        CircuitBreakerClosed15kVAC,
     }
 
     public static class Events
@@ -819,7 +824,12 @@ namespace Orts.Common
                         case 20155: return Event.Wipers3Speed1;
                         case 20156: return Event.Wipers3Speed2;
                         case 20157: return Event.WheelHalfPulse;
-                        case 20158: return Event.WheelPulse;                        
+                        case 20158: return Event.WheelPulse;
+                        case 20159: return Event.PowerOn15kVAC;
+                        case 20160: return Event.PowerOff15kVAC;
+                        case 20161: return Event.CircuitBreakerOpen15kVAC;
+                        case 20162: return Event.CircuitBreakerClosing15kVAC;
+                        case 20163: return Event.CircuitBreakerClosed15kVAC;
 
                         default: return 0;
                     }

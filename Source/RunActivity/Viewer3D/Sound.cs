@@ -1518,13 +1518,16 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.VibrationControlled: return car.Factor_vibration;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1Controlled: return car.Variable1;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1ACControlled: return car.Variable1AC;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable115kVACControlled: return car.Variable115kVAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1DCControlled: return car.Variable1DC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable2Controlled: return car.Variable2;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable22Controlled: return car.Variable22;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable2ACControlled: return car.Variable2AC;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable215kVACControlled: return car.Variable215kVAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable2DCControlled: return car.Variable2DC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3Controlled: return car.Variable3;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3ACControlled: return car.Variable3AC;
+                case Orts.Formats.Msts.VolumeCurve.Controls.Variable315kVACControlled: return car.Variable315kVAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable3DCControlled: return car.Variable3DC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable4Controlled: return car.Variable4;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable42Controlled: return car.Variable42;
@@ -2001,13 +2004,16 @@ namespace Orts.Viewer3D
                 // LooseConsist nebude používat kontroler pro zvuk
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Dec_Past:
                     if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                         break;
@@ -2055,13 +2061,16 @@ namespace Orts.Viewer3D
                 // LooseConsist nebude používat kontroler pro zvuk
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Inc_Past:
                     if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
                         break;
@@ -2118,13 +2127,16 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_Equals_To:
@@ -2165,13 +2177,16 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Vibration_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable22_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_NEquals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable4_NEquals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable42_NEquals_To:
@@ -2310,6 +2325,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1AC_NEquals_To:
                     return car.Variable1AC;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable115kVAC_NEquals_To:
+                    return car.Variable115kVAC;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable1DC_Equals_To:
@@ -2330,6 +2350,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2AC_NEquals_To:
                     return car.Variable2AC;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable215kVAC_NEquals_To:
+                    return car.Variable215kVAC;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable2DC_Equals_To:
@@ -2345,6 +2370,11 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3AC_NEquals_To:
                     return car.Variable3AC;
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Dec_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Inc_Past:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_Equals_To:
+                case Orts.Formats.Msts.Variable_Trigger.Events.Variable315kVAC_NEquals_To:
+                    return car.Variable315kVAC;
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.Variable3DC_Equals_To:

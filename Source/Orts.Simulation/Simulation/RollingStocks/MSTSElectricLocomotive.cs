@@ -2824,31 +2824,46 @@ namespace Orts.Simulation.RollingStocks
             // Power
             if (PowerOn && TPowerOnAC == 0)
             {
-                SignalEvent(Event.PowerOnAC);
+                if (RouteVoltageV == 15000)
+                    SignalEvent(Event.PowerOn15kVAC);
+                else
+                    SignalEvent(Event.PowerOnAC);
                 TPowerOnAC = 1;
             }
             if (!PowerOn && TPowerOnAC == 1)
             {
-                SignalEvent(Event.PowerOffAC);
+                if (RouteVoltageV == 15000)
+                    SignalEvent(Event.PowerOff15kVAC);
+                else
+                    SignalEvent(Event.PowerOffAC);
                 TPowerOnAC = 0;
             }
 
             // CircuitBreaker
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Open && TCircuitBreakerAC == 2)
             {
-                SignalEvent(Event.CircuitBreakerOpenAC);
+                if (RouteVoltageV == 15000)
+                    SignalEvent(Event.CircuitBreakerOpen15kVAC);
+                else
+                    SignalEvent(Event.CircuitBreakerOpenAC);
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 0)).ToString());
                 TCircuitBreakerAC = 0;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing && TCircuitBreakerAC == 0)
             {
-                SignalEvent(Event.CircuitBreakerClosingAC);
+                if (RouteVoltageV == 15000)
+                    SignalEvent(Event.CircuitBreakerClosing15kVAC);
+                else
+                    SignalEvent(Event.CircuitBreakerClosingAC);
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 1)).ToString());
                 TCircuitBreakerAC = 1;
             }
             if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed && TCircuitBreakerAC == 1)
             {
-                SignalEvent(Event.CircuitBreakerClosedAC);
+                if (RouteVoltageV == 15000)
+                    SignalEvent(Event.CircuitBreakerClosed15kVAC);
+                else
+                    SignalEvent(Event.CircuitBreakerClosedAC);
                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HVAC", 2)).ToString());
                 TCircuitBreakerAC = 2;
             }
@@ -2866,26 +2881,68 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // **** Variable Triggers ****
-            Variable1AC = ThrottlePercent;
-            Variable1DC = 0;
-
-            if (ThrottlePercent == 0f) Variable2AC = 0;
+            if (RouteVoltageV == 15000)
+            { 
+                Variable115kVAC = ThrottlePercent;
+                Variable1AC = 0;
+                Variable1DC = 0;
+            }
             else
             {
-                float dV2;
-                dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2AC;
-                float max = 2f;
-                if (dV2 > max) dV2 = max;
-                else if (dV2 < -max) dV2 = -max;
-                Variable2AC += dV2;
+                Variable1AC = ThrottlePercent;
+                Variable115kVAC = 0;
+                Variable1DC = 0;
             }
-            Variable2DC = 0;
 
-            if (DynamicBrakePercent > 0)
-                Variable3AC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+            if (RouteVoltageV == 15000)
+            {
+                if (ThrottlePercent == 0f) Variable215kVAC = 0;
+                else
+                {
+                    float dV2;
+                    dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable215kVAC;
+                    float max = 2f;
+                    if (dV2 > max) dV2 = max;
+                    else if (dV2 < -max) dV2 = -max;
+                    Variable215kVAC += dV2;
+                }
+                Variable2AC = 0;
+                Variable2DC = 0;
+            }
             else
+            {
+                if (ThrottlePercent == 0f) Variable2AC = 0;
+                else
+                {
+                    float dV2;
+                    dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2AC;
+                    float max = 2f;
+                    if (dV2 > max) dV2 = max;
+                    else if (dV2 < -max) dV2 = -max;
+                    Variable2AC += dV2;
+                }
+                Variable215kVAC = 0;
+                Variable2DC = 0;
+            }
+
+            if (RouteVoltageV == 15000)
+            {
+                if (DynamicBrakePercent > 0)
+                    Variable315kVAC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                else
+                    Variable315kVAC = 0;
                 Variable3AC = 0;
-            Variable3DC = 0;
+                Variable3DC = 0;
+            }
+            else
+            {
+                if (DynamicBrakePercent > 0)
+                    Variable3AC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                else
+                    Variable3AC = 0;
+                Variable315kVAC = 0;
+                Variable3DC = 0;
+            }
         }
 
         public void DC_Triggers()
@@ -2937,7 +2994,8 @@ namespace Orts.Simulation.RollingStocks
 
             // **** Variable Triggers ****
             Variable1DC = ThrottlePercent;
-            Variable1AC = 0;
+            Variable115kVAC = 0;
+            Variable1AC = 0;            
 
             if (ThrottlePercent == 0f) Variable2DC = 0;
             else
@@ -2949,12 +3007,14 @@ namespace Orts.Simulation.RollingStocks
                 else if (dV2 < -max) dV2 = -max;
                 Variable2DC += dV2;
             }
+            Variable215kVAC = 0;
             Variable2AC = 0;
 
             if (DynamicBrakePercent > 0)
                 Variable3DC = MaxDynamicBrakeForceN == 0 ? DynamicBrakePercent / 100f : DynamicBrakeForceN / MaxDynamicBrakeForceN;
             else
                 Variable3DC = 0;
+            Variable315kVAC = 0;
             Variable3AC = 0;
         }
 
