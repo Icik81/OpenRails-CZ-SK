@@ -1858,7 +1858,7 @@ namespace Orts.Simulation.AIs
                                 movementState = AITrain.AI_MOVEMENT_STATE.INIT_ACTION;
                             }
                         }
-                        else if (distanceToGoM < AITrain.signalApproachDistanceM && Math.Abs(aiTrain.SpeedMpS) <= 0.1f)
+                        else if (distanceToGoM < AITrain.signalApproachDistanceM && Math.Abs(aiTrain.SpeedMpS) <= 0.1f && !aiTrain.TrainIsServis)
                         {
                             aiTrain.AdjustControlsBrakeMore(aiTrain.MaxDecelMpSS, elapsedClockSeconds, 100);
                             movementState = AITrain.AI_MOVEMENT_STATE.INIT_ACTION;

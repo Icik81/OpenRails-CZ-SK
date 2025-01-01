@@ -151,6 +151,7 @@ namespace Orts.Simulation.Physics
         public int LocoIndex = -1;
         public Direction LocoDirection = Direction.N;        
         public bool AITrainSetUp;
+        public bool TrainIsServis;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
