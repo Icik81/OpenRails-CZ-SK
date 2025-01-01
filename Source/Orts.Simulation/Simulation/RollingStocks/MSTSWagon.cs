@@ -1098,8 +1098,8 @@ namespace Orts.Simulation.RollingStocks
                 preMassKG = MassKG;
             }                                    
 
-            if (StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
-                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
+            //if (StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
+            //    DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
             
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
