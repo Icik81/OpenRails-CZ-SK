@@ -781,15 +781,45 @@ namespace Orts.Simulation.RollingStocks
                 Variable82 = (float)Math.Round(DieselEngines[1].TurboRPM);
             }
 
-            if (DynamicBrakePercent > 0)
-            {
-                if (MaxDynamicBrakeForceN == 0)
-                    Variable3 = DynamicBrakePercent / 100f;
-                else
-                    Variable3 = DynamicBrakeForceN / MaxDynamicBrakeForceN;
+            if (!IsPlayerTrain)
+            {                
+                // AI EDB brždění
+                if (DynamicBrakeController != null)
+                {
+                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 20.0f / 3.6f) ? 1f : (1.0f - ((20.0f - (AbsSpeedMpS * 3.6f)) / 10f));
+                    if (CoefSpeedMpSCutOff < 0) CoefSpeedMpSCutOff = 0;
+
+                    float AccelerationCoef = (AbsSpeedMpS < 10f / 3.6f) ? 0 : Math.Abs(AccelerationMpSS);
+                    if (SpeedMpS < 0)
+                    {
+                        if (AccelerationMpSS > 0.1f && AccelerationCoef > 0)
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
+                        else
+                        if (Variable3 > 0)
+                            Variable3 -= 0.1f * elapsedClockSeconds;
+                    }
+                    if (SpeedMpS > 0)
+                    {
+                        if (AccelerationMpSS < -0.1f && AccelerationCoef > 0)
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
+                        else
+                        if (Variable3 > 0)
+                            Variable3 -= 0.1f * elapsedClockSeconds;
+                    }
+                }
             }
             else
-                Variable3 = 0;
+            {
+                if (DynamicBrakePercent > 0)
+                {
+                    if (MaxDynamicBrakeForceN == 0)
+                        Variable3 = DynamicBrakePercent / 100f;
+                    else
+                        Variable3 = DynamicBrakeForceN / MaxDynamicBrakeForceN;
+                }
+                else
+                    Variable3 = 0;
+            }
 
             if (elapsedClockSeconds > 0.0f)
             {
