@@ -1073,6 +1073,7 @@ namespace Orts.Simulation.RollingStocks
                     InitialMassKG = MassKG = 1000f;
                 }
                 if (CarLengthM < 0.1f) CarLengthM = 0.1f;
+                DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
                 if (loco != null && Simulator.Settings.MSTSCompatibilityMode)
                 {
                     var AITrain = Train as AITrain; 
@@ -1080,8 +1081,7 @@ namespace Orts.Simulation.RollingStocks
                     MaxSpeedServis = loco.Train.AllowedMaxSpeedMpS <= 0 ? (50f / 3.6f) : loco.Train.AllowedMaxSpeedMpS /** AITrain.EfficiencyServis*/;
                     float SpeedCoef = loco.SpeedMpS == 0 ? 1 : MaxSpeedServis / Math.Abs(loco.SpeedMpS);                    
                     //loco.SpeedMpS = loco.Train.AITrainThrottlePercent > 1f && loco.SpeedMpS != 0 && Math.Abs(loco.SpeedMpS) < MaxSpeedServis ? loco.SpeedMpS *= SpeedCoef : loco.SpeedMpS;                                         
-                }
-                return;
+                }                
             }
 
             float G = MassKG / 1000 * 9.81f;
