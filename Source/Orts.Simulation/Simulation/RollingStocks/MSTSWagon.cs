@@ -1064,7 +1064,6 @@ namespace Orts.Simulation.RollingStocks
             {                
                 var loco = this as MSTSLocomotive;
                 WagonIsServis = true;
-                Train.TrainIsServis = true;
                 if (MainShapeFileName.ToLower().Contains("servis1") || MainShapeFileName.ToLower().Contains("servis4"))
                 {
                     WagonIsServis14 = true;
