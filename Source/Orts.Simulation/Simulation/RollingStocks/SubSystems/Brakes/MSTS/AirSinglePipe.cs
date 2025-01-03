@@ -1203,7 +1203,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjednodušený model pro AI
             #region AI
             if (!Car.IsPlayerTrain)
-            {                          
+            {   
                 if (loco != null)
                 {
                     loco.EmergencyButtonPressed = false;

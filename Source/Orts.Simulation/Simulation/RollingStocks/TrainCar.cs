@@ -3172,7 +3172,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Naklápění skříně vozu
-            if (Train != null && AbsSpeedMpS > 0.1f && !DerailIsOn)
+            if (Train != null && AbsSpeedMpS > 5f && !DerailIsOn)
             {
                 float MaxSpeedTilting = 60.0f / 3.6f;
                 float TiltingMark = AbsSpeedMpS / SpeedMpS;
@@ -3191,7 +3191,7 @@ namespace Orts.Simulation.RollingStocks
                     case 6:
                         MaxSpeedTilting = 80.0f / 3.6f;
                         break;
-                }
+                }                
 
                 TiltingZRot = traveler.FindTiltedZ(TiltingMark * (MathHelper.Clamp(AbsSpeedMpS, 0, MaxSpeedTilting)));//rotation if tilted, an indication of centrifugal force                                
                 TiltingZRot = PrevTiltingZRot + (TiltingZRot - PrevTiltingZRot) * (0.5f + (AbsSpeedMpS * 3.6f / 40.0f / 4.0f)) * elapsedTimeS;//smooth rotation
@@ -3201,26 +3201,29 @@ namespace Orts.Simulation.RollingStocks
                 if (TiltingMark < 0) TiltingZRot *= -1f;
             }
 
-            //if (Simulator.Settings.CarVibratingLevel != 0)
-            //{
             TrackFactorXYZ(elapsedTimeS);
-            Derailment(elapsedTimeS, speedMpS);            
+            Derailment(elapsedTimeS, speedMpS);
+
+            if (AbsSpeedMpS < 5f)
+            {
+                if (TiltingZRot > 0)
+                {
+                    TiltingZRot -= 0.01f * elapsedTimeS;
+                    if (TiltingZRot < 0) TiltingZRot = 0;
+                }
+                if (TiltingZRot < 0)
+                {
+                    TiltingZRot += 0.01f * elapsedTimeS;
+                    if (TiltingZRot > 0) TiltingZRot = 0;
+                }
+                PrevTiltingZRot = TiltingZRot;
+            }
 
             var rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y + TiltingYRot, VibrationRotationRad.X + TiltingXRot, VibrationRotationRad.Z + TiltingZRot * 0.5f);
             if (Train.IsTilting && AbsSpeedMpS > 50 / 3.6f) rotation = Matrix.CreateFromYawPitchRoll(VibrationRotationRad.Y, VibrationRotationRad.X, VibrationRotationRad.Z + TiltingZRot * 0.8f);
             var translation = Matrix.CreateTranslation(VibrationTranslationM.X, VibrationTranslationM.Y, 0);
             WorldPosition.XNAMatrix = rotation * translation * WorldPosition.XNAMatrix;
             VibrationInverseMatrix = Matrix.Invert(rotation * translation);
-
-            if (AbsSpeedMpS < 0.1f)
-            {
-                if (TiltingZRot > 0)
-                    TiltingZRot -= 0.001f * elapsedTimeS;
-                if (TiltingZRot < 0)
-                    TiltingZRot += 0.001f * elapsedTimeS;
-                PrevTiltingZRot = TiltingZRot;
-            }                
-            //}
         }
 
         // Vykolejení vlaku        
