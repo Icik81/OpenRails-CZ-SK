@@ -2719,23 +2719,35 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph1Up15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph1UpAC);
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph1Down15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph1DownAC);
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpAC);                           
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph2Up15kVAC);                           
+                            else
+                                SignalEvent(Event.Pantograph2UpAC);
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph2Down15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph2DownAC);
                             TPanto2AC = 0;
                         }
                     }
@@ -2770,23 +2782,35 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Raising && TPanto1AC == 0) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1UpAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph1Up15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph1UpAC);
                             TPanto1AC = 1;
                         }
                         if (Pantographs[1].State == PantographState.Lowering && TPanto1AC == 1) // Zadní panto
                         {
-                            SignalEvent(Event.Pantograph1DownAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph1Down15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph1DownAC);
                             TPanto1AC = 0;
                         }
 
                         if (Pantographs[2].State == PantographState.Raising && TPanto2AC == 0) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2UpAC);                           
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph2Up15kVAC);                           
+                            else
+                                SignalEvent(Event.Pantograph2UpAC);
                             TPanto2AC = 1;
                         }
                         if (Pantographs[2].State == PantographState.Lowering && TPanto2AC == 1) // Přední panto
                         {
-                            SignalEvent(Event.Pantograph2DownAC);                            
+                            if (Loco15kV)
+                                SignalEvent(Event.Pantograph2Down15kVAC);                            
+                            else
+                                SignalEvent(Event.Pantograph2DownAC);
                             TPanto2AC = 0;
                         }
                     }

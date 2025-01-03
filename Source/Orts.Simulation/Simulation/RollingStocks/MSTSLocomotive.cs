@@ -4504,17 +4504,17 @@ namespace Orts.Simulation.RollingStocks
             }
             Train.TrainHeatingStartOn = false;            
 
-            // Spustí zvuk topení v kabině při inicializaci loko
-            if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn)
+            // Aktivuje topení stanoviště při zapnutí baterií a nahození napájení
+            if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn && Battery && PowerOn)
             {
                 SignalEvent(Event.CabHeating_OffOnOn);
                 CarCabHeatingIsSetOn = true;
             }
-            // Deaktivuje vytápění stanoviště při shozeném jističi topení nebo baterií
-            if (CabHeating_OffOn[LocoStation] && (!BrakeSystem.HeatingIsOn || !Battery) && !DieselDirectionController && !DieselDirectionController2)
-            {
-                CabHeating_OffOn[LocoStation] = false;
+            // Deaktivuje vytápění stanoviště při shozených baterií nebo napájení
+            if (CabHeating_OffOn[LocoStation] && CarCabHeatingIsSetOn && (!Battery || !PowerOn))
+            {                
                 SignalEvent(Event.CabHeating_OffOnOff);
+                CarCabHeatingIsSetOn = false;
             }
 
             // Ochrana při nadproudu topení/klimatizace jen pro hráče

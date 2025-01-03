@@ -408,6 +408,10 @@ namespace Orts.Common
         CircuitBreakerOpen15kVAC,
         CircuitBreakerClosing15kVAC,
         CircuitBreakerClosed15kVAC,
+        Pantograph1Up15kVAC,
+        Pantograph1Down15kVAC,
+        Pantograph2Up15kVAC,
+        Pantograph2Down15kVAC,
     }
 
     public static class Events
@@ -830,6 +834,10 @@ namespace Orts.Common
                         case 20161: return Event.CircuitBreakerOpen15kVAC;
                         case 20162: return Event.CircuitBreakerClosing15kVAC;
                         case 20163: return Event.CircuitBreakerClosed15kVAC;
+                        case 20164: return Event.Pantograph1Up15kVAC; 
+                        case 20165: return Event.Pantograph1Down15kVAC; 
+                        case 20166: return Event.Pantograph2Up15kVAC; 
+                        case 20167: return Event.Pantograph2Down15kVAC; 
 
                         default: return 0;
                     }
