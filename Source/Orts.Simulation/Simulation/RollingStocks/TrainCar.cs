@@ -915,6 +915,8 @@ namespace Orts.Simulation.RollingStocks
                 BrakeSystem.BleedOffValveOpen = true;
                 return;
             }
+            else
+                BrakeSystem.BleedOffValveOpen = false;            
 
             if (BrakeSystem.TwoStateBrake)  // Pokud bude TwoState brzda, použije se brzdící váha pro režim R
                 BrakeSystem.BrakeMassKG_TwoStateBrake = BrakeSystem.BrakeMassR;
