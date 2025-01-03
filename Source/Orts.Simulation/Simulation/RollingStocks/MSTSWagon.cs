@@ -198,6 +198,7 @@ namespace Orts.Simulation.RollingStocks
         public float AbsWheelSpeed4MpS;
         public int MPWagonLoadPercent;
         public int MPFreightWeight;
+        public bool JVSetup;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1100,10 +1101,14 @@ namespace Orts.Simulation.RollingStocks
 
                 preMassKG = MassKG;
             }                                    
-
-            //if (StartOn && DavisBNSpM / G0 > 0.00002f) // Pokud jsou zadány nesprávné Davis hodnoty, tak je resetuje do 0            
-            //    DavisAN = DavisBNSpM = DavisCNSSpMM = 0;
             
+            if (StartOn && JVSetup) // JV zadává B a C v m/s
+            {
+                DavisAN = DavisAN;
+                DavisBNSpM = DavisBNSpM / 3.6f;
+                DavisCNSSpMM = DavisCNSSpMM / 3.6f / 3.6f;
+            }
+          
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
                 case 2:
@@ -1456,7 +1461,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(maxhandbrakeforce": InitialMaxHandbrakeForceN = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
                 case "wagon(maxbrakeforce": InitialMaxBrakeForceN = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
                 case "wagon(ortsdavis_a": DavisAN = stf.ReadFloatBlock(STFReader.UNITS.Force, null); break;
-                case "wagon(ortsdavis_b": DavisBNSpM = stf.ReadFloatBlock(STFReader.UNITS.Resistance, null); break;
+                case "wagon(ortsdavis_b": DavisBNSpM = stf.ReadFloatBlock(STFReader.UNITS.Resistance, null); if (DavisBNSpM > 0.1f) JVSetup = true; break;
                 case "wagon(ortsdavis_c": DavisCNSSpMM = stf.ReadFloatBlock(STFReader.UNITS.ResistanceDavisC, null); break;
                 case "wagon(ortsdavisdragconstant": DavisDragConstant = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
                 case "wagon(ortswagonfrontalarea": WagonFrontalAreaM2 = stf.ReadFloatBlock(STFReader.UNITS.AreaDefaultFT2, null); break;
