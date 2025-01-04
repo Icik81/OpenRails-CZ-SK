@@ -2661,8 +2661,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (!IsPlayerTrain)
-            {
-                Variable2 *= 2f;   
+            {                 
                 // AI EDB brždění
                 if (DynamicBrakeController != null)
                 {
