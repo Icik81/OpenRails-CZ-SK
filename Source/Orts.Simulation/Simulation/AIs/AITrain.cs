@@ -3895,6 +3895,8 @@ namespace Orts.Simulation.AIs
         bool AIStayToRollOn;
         float AIRollOnTimer;
         float AIRollOnThrottle;
+        float AIRollOnTime;
+        float AIRollOnCutOffSpeed;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -3958,25 +3960,58 @@ namespace Orts.Simulation.AIs
 
             if (AIRollOnThrottle == 0)
             {
-                AIRollOnThrottle = Simulator.Random.Next(2, 6);
-                AIRollOnThrottle *= 10f;
+                foreach (TrainCar car in Cars)
+                {
+                    if (car is MSTSLocomotive)
+                    {
+                        if (car is MSTSDieselLocomotive)
+                        {
+                            AIRollOnThrottle = Simulator.Random.Next(20, 36);
+                            AIRollOnTime = Simulator.Random.Next(2, 5);
+                            AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
+                            break;
+                        }
+                        else
+                        if (car is MSTSElectricLocomotive)
+                        {
+                            AIRollOnThrottle = Simulator.Random.Next(5, 11);
+                            AIRollOnTime = Simulator.Random.Next(1, 3);
+                            AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
+                            break;
+                        }
+                        else
+                        if (car is MSTSSteamLocomotive)
+                        {
+                            AIRollOnThrottle = Simulator.Random.Next(20, 41);
+                            AIRollOnTime = Simulator.Random.Next(3, 5);
+                            AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
+                            break;
+                        }
+                    }
+                }
+                AIRollOnCutOffSpeed += Cars.Count * (0.25f / 3.6f);
             }
 
             if (AIRollOn)
             {
-                if (Math.Abs(SpeedMpS) < 3f / 3.6f)
+                if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed)
                 {
                     AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, AIRollOnThrottle);
+                    
+                    if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 10f)                                                                
+                        AITSethrottlePercent += Math.Abs(SpeedMpS * 3.6f * SpeedMpS * 3.6f) * 4f; 
+                                            
+                    reqAccelMpSS = MathHelper.Clamp(reqAccelMpSS, 0, reqAccelMpSS * (AITSethrottlePercent / 100f));
                 }
                 else                
                 {
                     AIRollOn = false;
                 }
 
-                if (AITSethrottlePercent == AIRollOnThrottle)
+                if (Math.Round(AITrainThrottlePercent, 0) == AIRollOnThrottle)
                 {
                     AIRollOnTimer += timeS;
-                    if (AIRollOnTimer > 5f + (AIRollOnThrottle / 10f))
+                    if (AIRollOnTimer > AIRollOnTime)
                     {
                         AIStayToRollOn = false;
                         AIRollOnTimer = 0f;
