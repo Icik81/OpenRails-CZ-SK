@@ -2642,26 +2642,47 @@ namespace Orts.Simulation.RollingStocks
 
         /// <summary>
         /// This function updates periodically the locomotive's sound variables.
-        /// </summary>        
+        /// </summary> 
+        float AIVariable2;
+        float PlayerVariable2;        
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
-            if (MaxForceN == 0)  // Default 300kN
-                MaxForceN = 300000;
-            
+            if (MaxForceN == 0)
+                MaxForceN = 300000; // default 300kN
+
             Variable1 = ThrottlePercent;
-            if (ThrottlePercent == 0f) Variable2 = 0;
-            else
+            
+            if (IsPlayerTrain)
             {
-                float dV2;
-                dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - Variable2;
-                float max = 2f;
-                if (dV2 > max) dV2 = max;
-                else if (dV2 < -max) dV2 = -max;
-                Variable2 += dV2;
+                if (ThrottlePercent == 0f) PlayerVariable2 = 0;
+                else
+                {
+                    float dV2;
+                    dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - PlayerVariable2;
+                    float max = 2f;
+                    if (dV2 > max) dV2 = max;
+                    else if (dV2 < -max) dV2 = -max;
+                    PlayerVariable2 += dV2;
+                }                
+                Variable2 = MathHelper.Clamp(PlayerVariable2, 0f, 100f);
             }
 
             if (!IsPlayerTrain)
-            {                 
+            {
+                if (ThrottlePercent == 0f) AIVariable2 = 0;
+                else
+                {
+                    float dV2;
+                    dV2 = Math.Abs(TractiveForceN) / MaxForceN * 100f - AIVariable2;
+                    float max = 2f;
+                    if (dV2 > max) dV2 = max;
+                    else if (dV2 < -max) dV2 = -max;
+                    AIVariable2 += dV2;
+                }
+                // Zesílení zvuku při rozjezdu
+                float SndBoost = (Train as AITrain).AIRollOn ? (1f + (1f - (AbsWheelSpeedMpS * 3.6f / 10f))) : 1f;                 
+                Variable2 = MathHelper.Clamp(AIVariable2 * SndBoost, 0f, 100f);                
+
                 // AI EDB brždění
                 if (DynamicBrakeController != null)
                 {

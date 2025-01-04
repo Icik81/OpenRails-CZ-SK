@@ -3891,7 +3891,7 @@ namespace Orts.Simulation.AIs
         }
 
         bool AIThrottleDownMode;
-        bool AIRollOn;
+        public bool AIRollOn;
         bool AIStayToRollOn;
         float AIRollOnTimer;
         float AIRollOnThrottle;
@@ -4008,7 +4008,7 @@ namespace Orts.Simulation.AIs
                     AIRollOn = false;
                 }
 
-                if (Math.Round(AITrainThrottlePercent, 0) == AIRollOnThrottle)
+                if (Math.Round(AITrainThrottlePercent, 0) > 0.99f * AIRollOnThrottle)
                 {
                     AIRollOnTimer += timeS;
                     if (AIRollOnTimer > AIRollOnTime)
@@ -4032,7 +4032,7 @@ namespace Orts.Simulation.AIs
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
-
+            
             if (!AIStayToRollOn)
             {
                 if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
