@@ -20942,13 +20942,11 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 maxForce += eaa.ForceNFiltered;
                             }
-                        }                        
-                        if (maxForce < 0)
-                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
-                        else
-                            maxForce = (maxForce / MaxForceN) * 100;
-                        data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (Math.Abs(ForceHandleValue) < Math.Abs(maxForce) ? ForceHandleValue : maxForce);
-                        break;
+                        }
+                        if (maxForce < 0)                        
+                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;                        
+                        else                        
+                            maxForce = (maxForce / MaxForceN) * 100;                                                                            
                     }
                     data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
                     break;
