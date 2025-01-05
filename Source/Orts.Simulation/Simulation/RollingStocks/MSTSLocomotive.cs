@@ -20878,24 +20878,25 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.REQUESTED_FORCE:
-                    float maxForce = (extendedPhysics.TotalMaxForceN / MaxForceN) * 100;
-                    if (CruiseControl != null)
+                    float maxForce = 0;
+                    if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
-                        if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
+                        maxForce = 0;
+                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
-                            maxForce = 0;
-                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            foreach (ExtendedAxle ea in uc.Axles)
                             {
-                                foreach (ExtendedAxle ea in uc.Axles)
-                                {
-                                    maxForce += ea.maxForceN;
-                                }
+                                maxForce += ea.ForceNFiltered;
                             }
-                            maxForce = (maxForce / MaxForceN) * 100;
                         }
-                        if (maxForce > CruiseControl.controllerVolts)
-                            maxForce = CruiseControl.controllerVolts;
+                        if (maxForce < 0)
+                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
+                        else
+                            maxForce = (maxForce / MaxForceN) * 100;
                     }
+                    if (maxForce > CruiseControl.controllerVolts)
+                        maxForce = CruiseControl.controllerVolts;
+
                     if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         float diff = CruiseControl.SelectedSpeedMpS - AbsSpeedMpS;
@@ -20913,10 +20914,13 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 foreach (ExtendedAxle eaa in ucc.Axles)
                                 {
-                                    maxForce += eaa.ForceN;
+                                    maxForce += eaa.ForceNFiltered;
                                 }
                             }
-                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
+                            if (maxForce < 0)
+                                maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
+                            else
+                                maxForce = (maxForce / MaxForceN) * 100;
                         }
                     }
                     if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
@@ -20926,7 +20930,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             requestedForce.RemoveAt(0);
                         }
-                        maxForce = requestedForce.Average();
+                        maxForce = requestedForce.Average();                        
                     }
                     if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
                     {
@@ -20936,12 +20940,17 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (ExtendedAxle eaa in ucc.Axles)
                             {
-                                maxForce += eaa.ForceN;
+                                maxForce += eaa.ForceNFiltered;
                             }
-                        }
-                        maxForce = (maxForce / MaxForceN) * 100;
+                        }                        
+                        if (maxForce < 0)
+                            maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;
+                        else
+                            maxForce = (maxForce / MaxForceN) * 100;
+                        data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (Math.Abs(ForceHandleValue) < Math.Abs(maxForce) ? ForceHandleValue : maxForce);
+                        break;
                     }
-                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : (maxForce < ForceHandleValue ? maxForce : ForceHandleValue);                    
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:                    
                     data = 0.0f;

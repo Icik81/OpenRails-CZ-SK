@@ -1016,11 +1016,11 @@ namespace Orts.Simulation.RollingStocks
                         float mMass = Mass;
                         Mass *= 1000;
                         float addMass = (Locomotive.MassKG / totalMotors) - Mass;
-                        Mass += addMass * 2;
+                        Mass += addMass;
                         if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
                             reducedForceN = 0;
                         else if (Locomotive.ControllerVolts != 0)
-                            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
+                            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 600;
                         else
                             reducedForceN = 0;
                         Mass = mMass;
