@@ -1503,7 +1503,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 CylVolumeM3 = EmergResVolumeM3 / EmergAuxVolumeRatio / AuxCylVolumeRatioBase;
                 AuxBrakeLineVolumeRatio = EmergResVolumeM3 / EmergAuxVolumeRatio / BrakePipeVolumeM3;
 
-                if (BleedOffValveOpen)
+                if (BleedOffValveOpen || BrakeCarDeactivate)
                 {
                     if (AuxResPressurePSI < 0.01f && AutoCylPressurePSI0 < 0.01f && BrakeLine1PressurePSI < 0.01f && (EmergResPressurePSI < 0.01f || !(Car as MSTSWagon).EmergencyReservoirPresent))
                     {

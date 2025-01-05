@@ -516,7 +516,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             else
             {
 
-                if (BleedOffValveOpen)
+                if (BleedOffValveOpen || BrakeCarDeactivate)
                 {
                     // the following reduces the brake cylinder and vacuum reservoir to 0inHg if the bleed valve is operated
                     float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
