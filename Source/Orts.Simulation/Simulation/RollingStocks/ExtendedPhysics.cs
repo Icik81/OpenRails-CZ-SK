@@ -1011,24 +1011,17 @@ namespace Orts.Simulation.RollingStocks
                     || (ForceN < 0 && Locomotive.CruiseControl.PreciseSpeedControl)
                     || Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                 {
-                    if (!Locomotive.BrakeSystem.EmerBrakeTriggerActive)
-                    {
-                        float mMass = Mass;
-                        Mass *= 1000;
-                        float addMass = (Locomotive.MassKG / totalMotors) - Mass;
-                        Mass += addMass;
-                        if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
-                            reducedForceN = 0;
-                        else if (Locomotive.ControllerVolts != 0)
-                            reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 600;
-                        else
-                            reducedForceN = 0;
-                        Mass = mMass;
-                    }
+                    float mMass = Mass;
+                    Mass *= 1000;
+                    float addMass = (Locomotive.MassKG / totalMotors) - Mass;
+                    Mass += addMass;
+                    if (Math.Abs(WheelSpeedMpS) < 0.95f * Locomotive.AbsSpeedMpS)
+                        reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 750;
+                    else if (Locomotive.ControllerVolts != 0)
+                        reducedForceN = -((WheelSpeedMpS - (Locomotive.AbsSpeedMpS + 0.1f)) * (Mass / 1000)) * 600;
                     else
-                    {
                         reducedForceN = 0;
-                    }
+                    Mass = mMass;
                 }
                 else
                     reducedForceN = 0;

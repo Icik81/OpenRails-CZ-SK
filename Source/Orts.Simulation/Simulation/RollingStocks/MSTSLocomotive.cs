@@ -9909,7 +9909,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                     {
                         if (UsingForceHandle)
-                            return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * ForceHandleValue / 100;
+                            return (CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * ForceHandleValue / 100) * 100;
                         else
                             return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? -DynamicBrakeController.IntermediateValue : -DynamicBrakeController.CurrentValue);
                     }
@@ -21046,7 +21046,7 @@ namespace Orts.Simulation.RollingStocks
                                 data = 100;
                         }
                     }
-                    if (ControllerVolts > -0.1f && ControllerVolts < 0.1f)
+                    if (ControllerVolts > -0.05f && ControllerVolts < 0.05f)
                     {
                         ControllerVoltsDetectorTimer = 0;                        
                     }
