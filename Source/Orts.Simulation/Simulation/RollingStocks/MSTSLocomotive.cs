@@ -759,6 +759,8 @@ namespace Orts.Simulation.RollingStocks
         public int[] DriveAxleNumber = new int[11];
         public bool DriverUsingRearCab;
         public bool AIPowerOnSet;
+        public bool AILocoSetUp;
+        public bool PlayerLocoSetUp;
 
 
         // Jindrich
@@ -6518,30 +6520,30 @@ namespace Orts.Simulation.RollingStocks
         protected bool firstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain && LocoReadyToGo)
+            if (IsPlayerTrain && PlayerLocoSetUp)
             {
                 if (Wiper) SignalEvent(Event.WiperOff);
+                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                if (Flipped)
+                    ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
+                // Mirel                   
                 if (Mirel != null)
                 {
-                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                    if (Flipped)
-                        ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
-                    // Mirel                   
                     Mirel.initTest = InitTest.Passed;
                     Mirel.selectedDriveMode = DriveMode.Normal;
-                    Mirel.driveMode = DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     Mirel.BlueLight = true;
                     // LS90
                     Mirel.ls90tested = true;
                     Mirel.Ls90power[LocoStation] = LS90power.On;
-                }                                
+                }
+                PlayerLocoSetUp = false;
             }
             else
-                Train.AITrainSetUp = false;
+                AILocoSetUp = false;
 
             if (firstFrame && BrakeSystem.StartOn)
-            {
+            {                
                 HV5Switch[1] = HV5Switch[2] = 2;
                 LastStateHV5[1] = LastStateHV5[2] = 2;
                 HV4Switch[1] = HV4Switch[2] = -1;
@@ -6589,14 +6591,15 @@ namespace Orts.Simulation.RollingStocks
                 else
                 {
                     if (!LocoIsStatic)
-                    {                        
+                    {
+                        PlayerLocoSetUp = true;
                         Battery = true;
                         ToggleCabRadio(true);                        
                         HV4Switch[LocoStation] = 1;                        
 
                         LocoStation = 1;
                         if (UsingRearCab)
-                            LocoStation = 2;
+                            LocoStation = 2;                        
 
                         // ARR
                         if (CruiseControl != null)                        
@@ -7141,7 +7144,8 @@ namespace Orts.Simulation.RollingStocks
                                 
                 if (this.PowerOn)
                 {
-                    Train.AITrainSetUp = true;
+                    AILocoSetUp = true;
+                    PlayerLocoSetUp = true;
                     LocoReadyToGo = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
@@ -11712,7 +11716,7 @@ namespace Orts.Simulation.RollingStocks
         public void CarFrameUpdate(float elapsedClockSeconds)
         {            
             // První průběh - inicializace hodnot
-            if (this.CarFrameUpdateState == 1 || Train.AITrainSetUp)
+            if (this.CarFrameUpdateState == 1 || AILocoSetUp)
             {
                 EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();
@@ -11722,7 +11726,7 @@ namespace Orts.Simulation.RollingStocks
                     TM_Temperature(elapsedClockSeconds);
                     DriveResistance_Temperature(elapsedClockSeconds);
 
-                    if ((BrakeSystem.StartOn && !Simulator.Settings.AirEmpty) || Train.AITrainSetUp)
+                    if ((BrakeSystem.StartOn && !Simulator.Settings.AirEmpty) || AILocoSetUp)
                     {                        
                         foreach (TrainCar car in Train.Cars)
                         {
@@ -11809,7 +11813,7 @@ namespace Orts.Simulation.RollingStocks
             }
             
             // Druhý průběh má všechny kabinové prvky načteny
-            if (this.CarFrameUpdateState == 2 || Train.AITrainSetUp)
+            if (this.CarFrameUpdateState == 2 || AILocoSetUp)
             {
                 if (FirstCabLoaded)
                 {
@@ -13590,7 +13594,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            (car as MSTSElectricLocomotive).PantoCommandDown = true;
+                                            (car as MSTSLocomotive).PantoCommandDown = true;
                                             if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 

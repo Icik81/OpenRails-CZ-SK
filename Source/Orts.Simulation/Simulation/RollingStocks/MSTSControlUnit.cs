@@ -846,8 +846,13 @@ namespace Orts.Simulation.RollingStocks
                             if (PowerReductionResult10 == 1)
                                 data = 1;
                         }
-                        break;                                                                
+                        break;
+                    
+                    default:
+                        data = base.GetDataOf(cvc);
+                        break;
                 }
+                return data;
             }
             #endregion Electric
 
