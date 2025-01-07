@@ -408,11 +408,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if (Locomotive.ControlUnit)
                     result.AppendFormat("\t{0}", Simulator.Catalog.GetString("Control"));
 
-                result.AppendFormat("\t{0:F0} {1}", Locomotive.Variable8, FormatStrings.rpm);
+                result.AppendFormat("\t{0:F0} {1}", eng.TurboRPM, FormatStrings.rpm);
 
                 result.AppendFormat("\t {0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
 
-                result.AppendFormat("\t {0:F1}%", Locomotive.Variable7);
+                result.AppendFormat("\t {0:F1}%", eng.TurboLoad);
                 
                 GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
             }
@@ -885,6 +885,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// <summary>
         /// Current Engine oil pressure in PSI
         /// </summary>
+        float res;
+        float resCoef;
+        float preresCoef;
+        float resCoefRate;
+        float resCoefRateTimer;
         public float DieselOilPressurePSI
         {
             get
@@ -930,6 +935,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
 
+                if (EngineStatus == Status.Stopped)
+                {
+                    RealRPM0 = 0;                    
+                }                
+
                 if (RealRPM0 == 0 && EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
@@ -952,9 +962,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
-                float res = k * RealRPM0 + q - dieseloilfailurePSI;
+                
+                if (RealRPM0 > 0)
+                {
+                    resCoef = k * RealRPM0 + q - dieseloilfailurePSI;
+                    resCoefRateTimer += locomotive.Simulator.OneSecondLoop;
+                    if (resCoefRateTimer > 0.5f)
+                    {
+                        resCoefRate = Math.Abs(resCoef - preresCoef);
+                        resCoefRateTimer = 0;
+                        preresCoef = resCoef;
+                    }
+                    res = resCoef;
+                }
+                else
+                {
+                    resCoef = 0;
+                    resCoefRate = MathHelper.Clamp(resCoefRate, 1f, 3f);
+                    if (resCoef < res)
+                        res -= resCoefRate * locomotive.Simulator.OneSecondLoop / 2f;
+                    if (resCoef > res)
+                        res += resCoefRate * locomotive.Simulator.OneSecondLoop / 2f;
+                }                
+
                 if (res < 0f)
-                    res = 0f;
+                    res = 0f;                                
+
                 return res;
             }
         }
