@@ -8537,7 +8537,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
 
-            // Default pro nezadání hnacích náprav
+            // Default pro nezadání hnacích náprav            
             if (DriveAxleNumberFirstRun)
             {
                 for (int i = 1; i < 11; i++)
@@ -8599,6 +8599,9 @@ namespace Orts.Simulation.RollingStocks
                     DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
+
+                // Nikdy nedovolí, aby počet hnacích náprav byl 1 při celkovém počtu náprav větší než 2 - kvůli výpočtu adhezní tíhy hnací nápravy
+                if (WagonNumAxles > 2 && LocoNumDrvAxles == 1) LocoNumDrvAxles = WagonNumAxles;
 
                 // Výpočet celkové tíhy na hnací nápravy
                 if (InitialDrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.                

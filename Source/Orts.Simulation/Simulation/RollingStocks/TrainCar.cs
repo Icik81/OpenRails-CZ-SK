@@ -266,6 +266,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Train == null)
                     Train = Simulator.playerTTTrain;
+                if (Train == null)
+                    return false;
                 return Train.IsPlayerDriven;
             }
             set { }

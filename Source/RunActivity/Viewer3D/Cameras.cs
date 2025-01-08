@@ -2150,12 +2150,12 @@ namespace Orts.Viewer3D
                         loco.LocoStation = 1;                    
                     HeadOutZ[loco.LocoStation] = attachedLocation.Z;
                    
-                    if (!Viewer.PlayerLocomotive.HasFront3DCab || !Viewer.PlayerLocomotive.HasRear3DCab)
+                    if (!Viewer.PlayerLocomotive.HasFront3DCab && !Viewer.PlayerLocomotive.HasRear3DCab)
                     {
                         var viewpoints = (loco.UsingRearCab)
                         ? loco.CabViewList[(int)CabViewType.Rear].ViewPointList
                         : loco.CabViewList[(int)CabViewType.Front].ViewPointList;                        
-                        if (attachedLocation.Z != 0)
+                        if (attachedLocation.Z != 0 && viewpoints[sideLocation].Location.Z != 0)
                             attachedLocation.Z = (viewpoints[sideLocation].Location.Z / Math.Abs(viewpoints[sideLocation].Location.Z) * Math.Abs(HeadOutZ[loco.LocoStation]));                        
                     }
                     else

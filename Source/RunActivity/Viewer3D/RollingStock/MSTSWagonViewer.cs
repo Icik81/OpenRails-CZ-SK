@@ -703,6 +703,9 @@ namespace Orts.Viewer3D.RollingStock
 
         float[] AxleWheelSpeedMpS = new float[11];
         int AxleNum = 0;
+        float wheelCircumferenceM;
+        float rotationalDistanceR;        
+        Matrix wheelRotationMatrix;
         private void UpdateAnimation(RenderFrame frame, ElapsedTime elapsedTime)
         {
             float distanceTravelledM = 0.0f; // Distance travelled by non-driven wheels
@@ -769,16 +772,29 @@ namespace Orts.Viewer3D.RollingStock
             // Wheel rotation (animation) - for non-drive wheels in steam locomotives and all wheels in other stock
             if (WheelPartIndexes.Count > 0)
             {
-                var wheelCircumferenceM = MathHelper.TwoPi * AnimationWheelRadiusM;
-                var rotationalDistanceR = MathHelper.TwoPi * distanceTravelledM / wheelCircumferenceM;  // in radians
-                WheelRotationR = MathHelper.WrapAngle(WheelRotationR - rotationalDistanceR);
-                var wheelRotationMatrix = Matrix.CreateRotationX(WheelRotationR);
-                foreach (var iMatrix in WheelPartIndexes)
+                // Icik
+                (Car as MSTSWagon).WagonNumAxles = (Car as MSTSWagon).WheelAxles.Count;
+
+                // Parní lokomotivy
+                if (Car is MSTSSteamLocomotive || !(Car is MSTSLocomotive) || !(Car as MSTSLocomotive).IsPlayerTrain)
                 {
-                    // Icik
-                    // Počítání rychlosti animace jednotlivých náprav 
-                    if ((Car as MSTSLocomotive) != null && (Car as MSTSLocomotive).Train != null && (Car as MSTSLocomotive).IsPlayerTrain)
+                    wheelCircumferenceM = MathHelper.TwoPi * AnimationWheelRadiusM;
+                    rotationalDistanceR = MathHelper.TwoPi * distanceTravelledM / wheelCircumferenceM;  // in radians
+                    WheelRotationR = MathHelper.WrapAngle(WheelRotationR - rotationalDistanceR);
+                    wheelRotationMatrix = Matrix.CreateRotationX(WheelRotationR);
+
+                    foreach (var iMatrix in WheelPartIndexes)
                     {
+                        TrainCarShape.XNAMatrices[iMatrix] = wheelRotationMatrix * TrainCarShape.SharedShape.Matrices[iMatrix];
+                    }
+                }      
+                // Lokomotiva hráče
+                else
+                {
+                    foreach (var iMatrix in WheelPartIndexes)
+                    {
+                        // Icik
+                        // Počítání rychlosti animace jednotlivých náprav                         
                         if ((Car as MSTSLocomotive).extendedPhysics != null)
                         {
                             if (AxleNum >= (Car as MSTSLocomotive).WagonNumAxles)
@@ -800,7 +816,7 @@ namespace Orts.Viewer3D.RollingStock
                                     AxleWheelSpeedMpS[5] = Math.Abs((Car as MSTSLocomotive).extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS);
                                     AxleWheelSpeedMpS[6] = Math.Abs((Car as MSTSLocomotive).extendedPhysics.Undercarriages[1].Axles[1].WheelSpeedMpS);
                                 }
-                            }                            
+                            }
 
                             distanceTravelledM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * (AxleWheelSpeedMpS[AxleNum] * (Car as MSTSLocomotive).WheelSpeedDirectionMarkerEP) * elapsedTime.ClockSeconds;
                             distanceTravelledDrivenM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * (AxleWheelSpeedMpS[AxleNum] * (Car as MSTSLocomotive).WheelSpeedDirectionMarkerEP) * elapsedTime.ClockSeconds;
@@ -820,18 +836,18 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (AxleNum >= (Car as MSTSLocomotive).WagonNumAxles)
                             {
-                                AxleNum = 0;                                
+                                AxleNum = 0;
                             }
                             AxleNum++;
 
-                            AxleWheelSpeedMpS[AxleNum] = MSTSWagon.Train.SpeedMpS;                            
-                            for (int i = 1; i < 11; i++) 
+                            AxleWheelSpeedMpS[AxleNum] = MSTSWagon.Train.SpeedMpS;
+                            for (int i = 1; i < 11; i++)
                             {
                                 if ((Car as MSTSLocomotive).DriveAxleNumber[i] == AxleNum)
-                                {                                    
-                                    AxleWheelSpeedMpS[AxleNum] = (Car as MSTSLocomotive).WheelSpeedMpS;                                                                                                            
+                                {
+                                    AxleWheelSpeedMpS[AxleNum] = (Car as MSTSLocomotive).WheelSpeedMpS;
                                 }
-                            }                                                                                                                    
+                            }
 
                             distanceTravelledM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * AxleWheelSpeedMpS[AxleNum] * elapsedTime.ClockSeconds;
                             distanceTravelledDrivenM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * AxleWheelSpeedMpS[AxleNum] * elapsedTime.ClockSeconds;
@@ -847,8 +863,8 @@ namespace Orts.Viewer3D.RollingStock
                             LocoWheelRotationR[AxleNum] = MathHelper.WrapAngle(LocoWheelRotationR[AxleNum] - rotationalDistanceR);
                             wheelRotationMatrix = Matrix.CreateRotationX(LocoWheelRotationR[AxleNum]);
                         }
-                    }                    
-                    TrainCarShape.XNAMatrices[iMatrix] = wheelRotationMatrix * TrainCarShape.SharedShape.Matrices[iMatrix];
+                        TrainCarShape.XNAMatrices[iMatrix] = wheelRotationMatrix * TrainCarShape.SharedShape.Matrices[iMatrix];
+                    }
                 }
             }
 
