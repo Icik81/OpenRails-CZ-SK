@@ -21368,6 +21368,18 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (VibrationTimer < 0.10f)
                                                 FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.015f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.015f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.985f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                        }
+                                        else
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
                                             if (FakeOilPressure > 1.01f * FakeOilPressureBase)
                                                 FakeOilPressure = 1.01f * FakeOilPressureBase;
 
@@ -21375,18 +21387,6 @@ namespace Orts.Simulation.RollingStocks
                                                 FakeOilPressure -= 100f * Simulator.OneSecondLoop;
                                             if (FakeOilPressure < 0.99f * FakeOilPressureBase)
                                                 FakeOilPressure = 0.99f * FakeOilPressureBase;
-                                        }
-                                        else
-                                        {
-                                            if (VibrationTimer < 0.10f)
-                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                                FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                            if (VibrationTimer > 0.10f)
-                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                                FakeOilPressure = 0.995f * FakeOilPressureBase;
                                         }
 
                                         if (VibrationTimer > 0.2f)
@@ -21411,6 +21411,18 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (VibrationTimer < 0.10f)
                                         FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.015f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.015f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.985f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                }
+                                else
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
                                     if (FakeOilPressure > 1.01f * FakeOilPressureBase)
                                         FakeOilPressure = 1.01f * FakeOilPressureBase;
 
@@ -21418,18 +21430,6 @@ namespace Orts.Simulation.RollingStocks
                                         FakeOilPressure -= 100f * Simulator.OneSecondLoop;
                                     if (FakeOilPressure < 0.99f * FakeOilPressureBase)
                                         FakeOilPressure = 0.99f * FakeOilPressureBase;
-                                }
-                                else
-                                {
-                                    if (VibrationTimer < 0.10f)
-                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                        FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                    if (VibrationTimer > 0.10f)
-                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                        FakeOilPressure = 0.995f * FakeOilPressureBase;
                                 }
 
                                 if (VibrationTimer > 0.2f)
@@ -21459,6 +21459,18 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (VibrationTimer < 0.10f)
                                                 FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure > 1.015f * FakeOilPressureBase)
+                                                FakeOilPressure = 1.015f * FakeOilPressureBase;
+
+                                            if (VibrationTimer > 0.10f)
+                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure < 0.985f * FakeOilPressureBase)
+                                                FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                        }
+                                        else
+                                        {
+                                            if (VibrationTimer < 0.10f)
+                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
                                             if (FakeOilPressure > 1.01f * FakeOilPressureBase)
                                                 FakeOilPressure = 1.01f * FakeOilPressureBase;
 
@@ -21466,18 +21478,6 @@ namespace Orts.Simulation.RollingStocks
                                                 FakeOilPressure -= 100f * Simulator.OneSecondLoop;
                                             if (FakeOilPressure < 0.99f * FakeOilPressureBase)
                                                 FakeOilPressure = 0.99f * FakeOilPressureBase;
-                                        }
-                                        else
-                                        {
-                                            if (VibrationTimer < 0.10f)
-                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                                FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                            if (VibrationTimer > 0.10f)
-                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                                FakeOilPressure = 0.995f * FakeOilPressureBase;
                                         }
 
                                         if (VibrationTimer > 0.2f)
@@ -21502,6 +21502,18 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (VibrationTimer < 0.10f)
                                         FakeOilPressure += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure > 1.015f * FakeOilPressureBase)
+                                        FakeOilPressure = 1.015f * FakeOilPressureBase;
+
+                                    if (VibrationTimer > 0.10f)
+                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure < 0.985f * FakeOilPressureBase)
+                                        FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                }
+                                else
+                                {
+                                    if (VibrationTimer < 0.10f)
+                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
                                     if (FakeOilPressure > 1.01f * FakeOilPressureBase)
                                         FakeOilPressure = 1.01f * FakeOilPressureBase;
 
@@ -21509,18 +21521,6 @@ namespace Orts.Simulation.RollingStocks
                                         FakeOilPressure -= 100f * Simulator.OneSecondLoop;
                                     if (FakeOilPressure < 0.99f * FakeOilPressureBase)
                                         FakeOilPressure = 0.99f * FakeOilPressureBase;
-                                }
-                                else
-                                {
-                                    if (VibrationTimer < 0.10f)
-                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure > 1.005f * FakeOilPressureBase)
-                                        FakeOilPressure = 1.005f * FakeOilPressureBase;
-
-                                    if (VibrationTimer > 0.10f)
-                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure < 0.995f * FakeOilPressureBase)
-                                        FakeOilPressure = 0.995f * FakeOilPressureBase;
                                 }
 
                                 if (VibrationTimer > 0.2f)

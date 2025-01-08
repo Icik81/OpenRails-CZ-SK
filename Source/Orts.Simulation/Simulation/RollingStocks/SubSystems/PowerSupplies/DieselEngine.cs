@@ -886,10 +886,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         /// Current Engine oil pressure in PSI
         /// </summary>
         float res;
-        float resCoef;
-        float preresCoef;
-        float resCoefRate;
-        float resCoefRateTimer;
+        float resCoef;        
         public float DieselOilPressurePSI
         {
             get
@@ -935,7 +932,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
 
-                if (EngineStatus == Status.Stopped)
+                if (EngineStatus == Status.Stopped && (locomotive.StopButtonReleased || locomotive.StopButtonReleased2))
                 {
                     RealRPM0 = 0;                    
                 }                
@@ -966,23 +963,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if (RealRPM0 > 0)
                 {
                     resCoef = k * RealRPM0 + q - dieseloilfailurePSI;
-                    resCoefRateTimer += locomotive.Simulator.OneSecondLoop;
-                    if (resCoefRateTimer > 0.5f)
-                    {
-                        resCoefRate = Math.Abs(resCoef - preresCoef);
-                        resCoefRateTimer = 0;
-                        preresCoef = resCoef;
-                    }
-                    res = resCoef;
+                                                           
+                    if (resCoef < res)
+                        res -= (Math.Abs(resCoef - res) / 10f) * locomotive.Simulator.OneSecondLoop;
+                    if (resCoef > res)
+                        res += (Math.Abs(resCoef - res) / 10f) * locomotive.Simulator.OneSecondLoop;
                 }
                 else
                 {
-                    resCoef = 0;
-                    resCoefRate = MathHelper.Clamp(resCoefRate, 1f, 3f);
+                    resCoef = 0;                    
                     if (resCoef < res)
-                        res -= resCoefRate * locomotive.Simulator.OneSecondLoop / 2f;
+                        res -= (Math.Abs(resCoef - res) / 10f) * locomotive.Simulator.OneSecondLoop / 10f;
                     if (resCoef > res)
-                        res += resCoefRate * locomotive.Simulator.OneSecondLoop / 2f;
+                        res += (Math.Abs(resCoef - res) / 10f) * locomotive.Simulator.OneSecondLoop / 10f;
                 }                
 
                 if (res < 0f)
