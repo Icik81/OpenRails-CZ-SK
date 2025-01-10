@@ -2680,7 +2680,7 @@ namespace Orts.Simulation.RollingStocks
                     AIVariable2 += dV2;
                 }
                 // Zesílení zvuku při rozjezdu
-                float SndBoost = (Train as AITrain).AIRollOn ? (1f + (1f - (AbsWheelSpeedMpS * 3.6f / 10f))) : 1f;                 
+                float SndBoost = (Train as AITrain != null) ? (Train as AITrain).AIRollOn ? (1f + (1f - (AbsWheelSpeedMpS * 3.6f / 10f))) : 1f : 1f;                 
                 Variable2 = MathHelper.Clamp(AIVariable2 * SndBoost, 0f, 100f);                
 
                 // AI EDB brždění

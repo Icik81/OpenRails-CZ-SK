@@ -775,7 +775,7 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 (Car as MSTSWagon).WagonNumAxles = (Car as MSTSWagon).WheelAxles.Count;
 
-                // Parní lokomotivy
+                // Parní lokomotivy, vozy a AI
                 if (Car is MSTSSteamLocomotive || !(Car is MSTSLocomotive) || !(Car as MSTSLocomotive).IsPlayerTrain)
                 {
                     wheelCircumferenceM = MathHelper.TwoPi * AnimationWheelRadiusM;
