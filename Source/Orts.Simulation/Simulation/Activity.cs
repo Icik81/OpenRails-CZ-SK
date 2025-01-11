@@ -926,15 +926,12 @@ namespace Orts.Simulation
         }
 
         ElapsedTime et = new ElapsedTime();
-
-        bool TrainStartHold;
-        public bool TrainStopHoldDelayedTime;
-        bool TrainStartHoldFirstScanDone;
+        
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
 
-            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0 && !TrainStartHold)
+            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0 && !MyPlayerTrain.TrainStartHold)
             {
                 if (MyPlayerTrain.PlayerTrainStartTime > Simulator.ClockTime)
                 {
@@ -1034,28 +1031,28 @@ namespace Orts.Simulation
 
                 }
             }
-            else if (EventType == ActivityEventType.TrainStart || TrainStartHold)
+            else if (EventType == ActivityEventType.TrainStart || MyPlayerTrain.TrainStartHold)
             {
-                TrainStartHold = true;
+                MyPlayerTrain.TrainStartHold = true;
                 
-                if (TrainStartHold && !TrainStartHoldFirstScanDone)
+                if (MyPlayerTrain.TrainStartHold && !MyPlayerTrain.TrainStartHoldFirstScanDone)
                 {
                     // Test reversního bodu kvůli pravděpodobné detekce posunu lokomotivy (obrat)
                     if (MyPlayerTrain.ReverseAtStationTest(MyPlayerTrain))
-                        TrainStopHoldDelayedTime = true;
-                    TrainStartHoldFirstScanDone = true;
+                        MyPlayerTrain.TrainStopHoldDelayedTime = true;
+                    MyPlayerTrain.TrainStartHoldFirstScanDone = true;
                 }
 
-                if (TrainStopHoldDelayedTime)
+                if (MyPlayerTrain.TrainStopHoldDelayedTime)
                 {
                     MyPlayerTrain.Delay = TimeSpan.FromSeconds(0);
                 }
 
-                if (arrived && ((TrainStopHoldDelayedTime && MyPlayerTrain.IsOutOfStation(500.0f)) || !TrainStopHoldDelayedTime))
+                if (arrived && ((MyPlayerTrain.TrainStopHoldDelayedTime && MyPlayerTrain.IsOutOfStation(500.0f)) || !MyPlayerTrain.TrainStopHoldDelayedTime))
                 {
-                    TrainStartHold = false;
-                    TrainStopHoldDelayedTime = false;
-                    TrainStartHoldFirstScanDone = false;
+                    MyPlayerTrain.TrainStartHold = false;
+                    MyPlayerTrain.TrainStopHoldDelayedTime = false;
+                    MyPlayerTrain.TrainStartHoldFirstScanDone = false;
                     MyPlayerTrain.ActualStationNumber++;                    
                     
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
@@ -1373,9 +1370,7 @@ namespace Orts.Simulation
 
             // Icik
             outf.Write(BoardingCompleted);
-            outf.Write(RestOfPax);
-            outf.Write(TrainStartHold);
-            outf.Write(TrainStopHoldDelayedTime);
+            outf.Write(RestOfPax);            
         }
 
         public override void Restore(BinaryReader inf)
@@ -1401,9 +1396,7 @@ namespace Orts.Simulation
 
             // Icik
             BoardingCompleted = inf.ReadBoolean();
-            RestOfPax = inf.ReadInt32();  
-            TrainStartHold = inf.ReadBoolean();
-            TrainStopHoldDelayedTime = inf.ReadBoolean();
+            RestOfPax = inf.ReadInt32();              
         }
     }
 

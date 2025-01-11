@@ -149,7 +149,10 @@ namespace Orts.Simulation.Physics
         public float TrainDerailmentTimer;
         public int WagonIndex = -1;
         public int LocoIndex = -1;
-        public Direction LocoDirection = Direction.N;        
+        public Direction LocoDirection = Direction.N;
+        public bool TrainStartHold;
+        public bool TrainStopHoldDelayedTime;
+        public bool TrainStartHoldFirstScanDone;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -735,6 +738,8 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            TrainStartHold = inf.ReadBoolean();
+            TrainStopHoldDelayedTime = inf.ReadBoolean();
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
@@ -1112,6 +1117,8 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(TrainStartHold);
+            outf.Write(TrainStopHoldDelayedTime);
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
