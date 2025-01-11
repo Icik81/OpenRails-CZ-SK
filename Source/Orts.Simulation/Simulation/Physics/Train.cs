@@ -16801,6 +16801,19 @@ namespace Orts.Simulation.Physics
                 ReverseAtStation = true;
         }
 
+        public bool ReverseAtStationTest(Train train)
+        {
+            float distanceToReversalPoint = 100;
+
+            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+                distanceToReversalPoint = ComputeDistanceToReversalPoint();
+
+            bool ReverseAtStation = false;
+            if (distanceToReversalPoint < 500)
+                ReverseAtStation = true;
+            return ReverseAtStation;
+        }
+
 
         public bool BoardingComplete;
         public int TotalOnBoard = 0;

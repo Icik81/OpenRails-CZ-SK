@@ -928,6 +928,8 @@ namespace Orts.Simulation
         ElapsedTime et = new ElapsedTime();
 
         bool TrainStartHold;
+        public bool TrainStopHoldDelayedTime;
+        bool TrainStartHoldFirstScanDone;
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
@@ -1035,9 +1037,25 @@ namespace Orts.Simulation
             else if (EventType == ActivityEventType.TrainStart || TrainStartHold)
             {
                 TrainStartHold = true;
-                if (arrived && MyPlayerTrain.IsOutOfStation(500.0f))
+                
+                if (TrainStartHold && !TrainStartHoldFirstScanDone)
+                {
+                    // Test reversního bodu kvůli pravděpodobné detekce posunu lokomotivy (obrat)
+                    if (MyPlayerTrain.ReverseAtStationTest(MyPlayerTrain))
+                        TrainStopHoldDelayedTime = true;
+                    TrainStartHoldFirstScanDone = true;
+                }
+
+                if (TrainStopHoldDelayedTime)
+                {
+                    MyPlayerTrain.Delay = TimeSpan.FromSeconds(0);
+                }
+
+                if (arrived && ((TrainStopHoldDelayedTime && MyPlayerTrain.IsOutOfStation(500.0f)) || !TrainStopHoldDelayedTime))
                 {
                     TrainStartHold = false;
+                    TrainStopHoldDelayedTime = false;
+                    TrainStartHoldFirstScanDone = false;
                     MyPlayerTrain.ActualStationNumber++;                    
                     
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
@@ -1357,6 +1375,7 @@ namespace Orts.Simulation
             outf.Write(BoardingCompleted);
             outf.Write(RestOfPax);
             outf.Write(TrainStartHold);
+            outf.Write(TrainStopHoldDelayedTime);
         }
 
         public override void Restore(BinaryReader inf)
@@ -1384,6 +1403,7 @@ namespace Orts.Simulation
             BoardingCompleted = inf.ReadBoolean();
             RestOfPax = inf.ReadInt32();  
             TrainStartHold = inf.ReadBoolean();
+            TrainStopHoldDelayedTime = inf.ReadBoolean();
         }
     }
 
