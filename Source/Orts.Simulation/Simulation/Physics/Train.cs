@@ -13723,6 +13723,28 @@ namespace Orts.Simulation.Physics
             return false;
         }
 
+        public bool IsOutOfStation(float thresholdDistance)
+        {
+            // check if station missed
+
+            int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
+
+            if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
+            {
+                if (stationRouteIndex < 0)
+                {
+                    return true;
+                }
+                else if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                {
+                    var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
+                    var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
+                    return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
+                }
+            }
+            return false;
+        }
+
         //================================================================================================//
         /// <summary>
         /// Check vicinity of reversal point to Platform

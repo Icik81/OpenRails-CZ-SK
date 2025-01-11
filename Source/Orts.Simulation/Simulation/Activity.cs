@@ -926,12 +926,13 @@ namespace Orts.Simulation
         }
 
         ElapsedTime et = new ElapsedTime();
-        
+
+        bool TrainStartHold;
         public override void NotifyEvent(ActivityEventType EventType)
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
 
-            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0)
+            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0 && !TrainStartHold)
             {
                 if (MyPlayerTrain.PlayerTrainStartTime > Simulator.ClockTime)
                 {
@@ -1020,10 +1021,10 @@ namespace Orts.Simulation
                             BoardingEndS -= sinceActArriveS;
                             double SchDepartS = SchDepart.Subtract(new DateTime()).TotalSeconds;
                             //BoardingEndS = CompareTimes.LatestTime((int)SchDepartS, (int)BoardingEndS);
-                            
+
                             // Icik
                             // Čas pro pobyt ve stanici je vždy ten plánovaný jízdním řádem
-                            BoardingEndS = SchDepartS;                            
+                            BoardingEndS = SchDepartS;
                         }
                     }
                     if (MyPlayerTrain.NextSignalObject[0] != null)
@@ -1031,20 +1032,24 @@ namespace Orts.Simulation
 
                 }
             }
-            else if (EventType == ActivityEventType.TrainStart)
+            else if (EventType == ActivityEventType.TrainStart || TrainStartHold)
             {
-                // Train has started, we have things to do if we arrived before
-                if (arrived)
+                TrainStartHold = true;
+                if (arrived && MyPlayerTrain.IsOutOfStation(500.0f))
                 {
+                    TrainStartHold = false;
                     MyPlayerTrain.ActualStationNumber++;                    
+                    
+                    if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
+                        MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
+                                        
+                    //MyPlayerTrain.Simulator.Confirmer.Information("Station leave!");
+               
+                    // Train has started, we have things to do if we arrived before                                                     
                     TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
-                    // Completeness depends on the elapsed waiting time
                     IsCompleted = maydepart;
-                    if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
-                        MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
-
                     if (LogStationStops)
                     {
                         StringBuilder stringBuild = new StringBuilder();
@@ -1078,7 +1083,7 @@ namespace Orts.Simulation
 
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
-                    MyPlayerTrain.BoardingComplete = false;                    
+                    MyPlayerTrain.BoardingComplete = false;
                 }
 
                 double clock = MyPlayerTrain.Simulator.GameTime;
@@ -1095,15 +1100,15 @@ namespace Orts.Simulation
                     }
                     else
                     {
-                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;                        
+                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                     }
-                }                                                
+                }
 
                 if (IsAtStation(MyPlayerTrain))
                     MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
-                
+
                 MyPlayerTrain.CheckPaxToLeaveCount(MyPlayerTrain);
                 MyPlayerTrain.CheckPaxToEntry(MyPlayerTrain);
 
@@ -1121,24 +1126,24 @@ namespace Orts.Simulation
                     }
 
                     // Automatické centrální dveře
-                    if (!maydepart && arrived && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor 
+                    if (!maydepart && arrived && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor
                         && (MyPlayerTrain.PeopleWantToEntry || MyPlayerTrain.PeopleWantToLeaveCount > 0))
-                    {                        
+                    {
                         DisplayColor = Color.Yellow;
                         DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
-                        Simulator.DoorSwitchPaxRequest = true;                       
+                        Simulator.DoorSwitchPaxRequest = true;
                         return;
                     }
 
-                SkipToArrived:
+                    SkipToArrived:
                     // Waiting at a station
                     if (arrived)
                     {
                         var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                        else DisplayColor = Color.White;                        
-                        
+                        else DisplayColor = Color.White;
+
                         if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWantToLeaveCount > 0)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
 
@@ -1153,7 +1158,7 @@ namespace Orts.Simulation
                             BoardingCompleted = false;
 
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;                                                
+                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
 
                         // Still have to wait
                         if (remaining > 0)
@@ -1222,7 +1227,7 @@ namespace Orts.Simulation
                                     }
                                     else
                                     {
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");                                        
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                                     }
                                 }
                                 else
@@ -1235,7 +1240,7 @@ namespace Orts.Simulation
                                         DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
                                     }
                                     else
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");                                  
+                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                                 }
                             }
 
@@ -1286,7 +1291,7 @@ namespace Orts.Simulation
                         {
                             MyPlayerTrain.ToggleDoors(true, false);
                             MyPlayerTrain.ToggleDoors(false, false);
-                        }                                                    
+                        }
                     }
 
                     else
@@ -1350,7 +1355,8 @@ namespace Orts.Simulation
 
             // Icik
             outf.Write(BoardingCompleted);
-            outf.Write(RestOfPax);            
+            outf.Write(RestOfPax);
+            outf.Write(TrainStartHold);
         }
 
         public override void Restore(BinaryReader inf)
@@ -1376,7 +1382,8 @@ namespace Orts.Simulation
 
             // Icik
             BoardingCompleted = inf.ReadBoolean();
-            RestOfPax = inf.ReadInt32();            
+            RestOfPax = inf.ReadInt32();  
+            TrainStartHold = inf.ReadBoolean();
         }
     }
 
