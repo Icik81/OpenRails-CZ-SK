@@ -10349,7 +10349,7 @@ namespace Orts.Simulation.Timetables
             if (loco != null)
             {
                 // Waiting at a station
-                if (AtStation || this.TrainStartHold)
+                if (AtStation)
                 {
                     int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                     int eightHundredHours = 8 * 3600;
@@ -10358,39 +10358,18 @@ namespace Orts.Simulation.Timetables
                     // if moving, set departed
                     if (Math.Abs(SpeedMpS) > 1.5f)
                     {
-                        this.TrainStartHold = true;
-
-                        if (this.TrainStartHold && !this.TrainStartHoldFirstScanDone)
+                        ActualStationNumber++;
+                        if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
-                            // Test reversního bodu kvůli pravděpodobné detekce posunu lokomotivy (obrat)
-                            if (this.ReverseAtStationTest(this))
-                                this.TrainStopHoldDelayedTime = true;
-                            this.TrainStartHoldFirstScanDone = true;
+                            StationStops[0].ActualDepart = presentTime;
+                            StationStops[0].Passed = true;
+                            Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
+                            PreviousStop = StationStops[0].CreateCopy();
+                            StationStops.RemoveAt(0);
                         }
-
-                        if (this.TrainStopHoldDelayedTime)
-                        {
-                            this.Delay = TimeSpan.FromSeconds(0);
-                        }
-
-                        if ((this.TrainStopHoldDelayedTime && this.IsOutOfStation(500.0f)) || !this.TrainStopHoldDelayedTime)
-                        {
-                            this.TrainStartHold = false;
-                            this.TrainStopHoldDelayedTime = false;
-                            this.TrainStartHoldFirstScanDone = false;
-                            this.ActualStationNumber++;
-                            if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
-                            {
-                                StationStops[0].ActualDepart = presentTime;
-                                StationStops[0].Passed = true;
-                                Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
-                                PreviousStop = StationStops[0].CreateCopy();
-                                StationStops.RemoveAt(0);
-                            }
-                            AtStation = false;
-                            MayDepart = false;
-                            DisplayMessage = "";                            
-                        }
+                        AtStation = false;
+                        MayDepart = false;
+                        DisplayMessage = "";
                     }
                     else
                     {
@@ -10413,7 +10392,7 @@ namespace Orts.Simulation.Timetables
                             return;
                         }
 
-                     SkipToArrived:
+                        SkipToArrived:
                         int remaining;
                         if (StationStops.Count == 0)
                         {

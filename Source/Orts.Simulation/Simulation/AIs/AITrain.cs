@@ -6867,7 +6867,7 @@ namespace Orts.Simulation.AIs
             if (loco != null)
             {
                 // Waiting at a station
-                if (AtStation || this.TrainStartHold)
+                if (AtStation)
                 {
                     int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                     int eightHundredHours = 8 * 3600;
@@ -6876,39 +6876,18 @@ namespace Orts.Simulation.AIs
                     // if moving, set departed
                     if (Math.Abs(SpeedMpS) > 1.5f)
                     {
-                        this.TrainStartHold = true;
-
-                        if (this.TrainStartHold && !this.TrainStartHoldFirstScanDone)
+                        ActualStationNumber++;
+                        if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
-                            // Test reversního bodu kvůli pravděpodobné detekce posunu lokomotivy (obrat)
-                            if (this.ReverseAtStationTest(this))
-                                this.TrainStopHoldDelayedTime = true;
-                            this.TrainStartHoldFirstScanDone = true;
+                            StationStops[0].ActualDepart = presentTime;
+                            StationStops[0].Passed = true;
+                            Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
+                            PreviousStop = StationStops[0].CreateCopy();
+                            StationStops.RemoveAt(0);
                         }
-
-                        if (this.TrainStopHoldDelayedTime)
-                        {
-                            this.Delay = TimeSpan.FromSeconds(0);
-                        }
-
-                        if ((this.TrainStopHoldDelayedTime && this.IsOutOfStation(500.0f)) || !this.TrainStopHoldDelayedTime)
-                        {
-                            this.TrainStartHold = false;
-                            this.TrainStopHoldDelayedTime = false;
-                            this.TrainStartHoldFirstScanDone = false;
-                            this.ActualStationNumber++;
-                            if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
-                            {
-                                StationStops[0].ActualDepart = presentTime;
-                                StationStops[0].Passed = true;
-                                Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
-                                PreviousStop = StationStops[0].CreateCopy();
-                                StationStops.RemoveAt(0);
-                            }
-                            AtStation = false;
-                            MayDepart = false;
-                            DisplayMessage = "";                            
-                        }
+                        AtStation = false;
+                        MayDepart = false;
+                        DisplayMessage = "";
                     }
                     else
                     {
@@ -6931,7 +6910,7 @@ namespace Orts.Simulation.AIs
                             return;
                         }
 
-                    SkipToArrived:    
+                        SkipToArrived:
                         int remaining;
                         if (StationStops.Count == 0)
                         {
@@ -6952,7 +6931,7 @@ namespace Orts.Simulation.AIs
                         else DisplayColor = Color.White;
 
                         if (!BoardingCompleted || EndStation || PeopleWantToLeaveCount > 0)
-                            UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);                       
+                            UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
 
                         if (!PeopleWantToEntry && !TrainDoorsOpen && PeopleWantToLeaveCount == 0)
                             BoardingCompleted = true;
@@ -7008,7 +6987,7 @@ namespace Orts.Simulation.AIs
                                         DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
                                         BoardingCompleted = false;
                                         TimeToClearForDepart = 0;
-                                        ClearForDepartGenerate = 0;                                        
+                                        ClearForDepartGenerate = 0;
                                         if (Simulator.Settings.TrainDepartSound == 0)
                                             Simulator.SoundNotify = Event.PermissionToDepart;
                                         if (Simulator.Settings.TrainDepartSound == 1)

@@ -150,9 +150,7 @@ namespace Orts.Simulation.Physics
         public int WagonIndex = -1;
         public int LocoIndex = -1;
         public Direction LocoDirection = Direction.N;
-        public bool TrainStartHold;
-        public bool TrainStopHoldDelayedTime;
-        public bool TrainStartHoldFirstScanDone;
+
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -738,8 +736,6 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
-            TrainStartHold = inf.ReadBoolean();
-            TrainStopHoldDelayedTime = inf.ReadBoolean();
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
@@ -1117,8 +1113,6 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
-            outf.Write(TrainStartHold);
-            outf.Write(TrainStopHoldDelayedTime);
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
@@ -13710,27 +13704,30 @@ namespace Orts.Simulation.Physics
 
         public bool IsMissedPlatform(float thresholdDistance)
         {
-            // check if station missed
+            if (IsInStationCircuit(250.0f))
+            {                            
+                // check if station missed
 
-            int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
+                int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
 
-            if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
-            {
-                if (stationRouteIndex < 0)
+                if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
                 {
-                    return true;
-                }
-                else if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
-                {
-                    var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
-                    var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
-                    return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
+                    if (stationRouteIndex < 0)
+                    {
+                        return true;
+                    }
+                    else if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                    {
+                        var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
+                        var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
+                        return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
+                    }
                 }
             }
             return false;
         }
 
-        public bool IsOutOfStation(float thresholdDistance)
+        public bool IsInStationCircuit(float thresholdDistance)
         {
             // check if station missed
 
@@ -13738,15 +13735,12 @@ namespace Orts.Simulation.Physics
 
             if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
             {
-                if (stationRouteIndex < 0)
-                {
-                    return true;
-                }
-                else if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
                 {
                     var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
                     var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
-                    return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
+                    float DistanceToStation = Math.Abs(ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef));
+                    return DistanceToStation < thresholdDistance;
                 }
             }
             return false;
@@ -16806,21 +16800,7 @@ namespace Orts.Simulation.Physics
             ReverseAtStation = false;
             if (distanceToReversalPoint < 50)
                 ReverseAtStation = true;
-        }
-
-        public bool ReverseAtStationTest(Train train)
-        {
-            float distanceToReversalPoint = 10000;
-
-            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
-                distanceToReversalPoint = ComputeDistanceToReversalPoint();
-
-            bool ReverseAtStation = false;
-            if (distanceToReversalPoint < 500)
-                ReverseAtStation = true;
-            return ReverseAtStation;
-        }
-
+        }        
 
         public bool BoardingComplete;
         public int TotalOnBoard = 0;

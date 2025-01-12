@@ -931,7 +931,7 @@ namespace Orts.Simulation
         {
             MyPlayerTrain = Simulator.OriginalPlayerTrain;
 
-            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0 && !MyPlayerTrain.TrainStartHold)
+            if (Math.Abs(MyPlayerTrain.SpeedMpS) > 1.5f && MyPlayerTrain.StationStops.Count > 0)
             {
                 if (MyPlayerTrain.PlayerTrainStartTime > Simulator.ClockTime)
                 {
@@ -1031,35 +1031,15 @@ namespace Orts.Simulation
 
                 }
             }
-            else if (EventType == ActivityEventType.TrainStart || MyPlayerTrain.TrainStartHold)
-            {
-                MyPlayerTrain.TrainStartHold = true;
-                
-                if (MyPlayerTrain.TrainStartHold && !MyPlayerTrain.TrainStartHoldFirstScanDone)
+            else if (EventType == ActivityEventType.TrainStart)
+            {                                                                
+                if (arrived)
                 {
-                    // Test reversního bodu kvůli pravděpodobné detekce posunu lokomotivy (obrat)
-                    if (MyPlayerTrain.ReverseAtStationTest(MyPlayerTrain))
-                        MyPlayerTrain.TrainStopHoldDelayedTime = true;
-                    MyPlayerTrain.TrainStartHoldFirstScanDone = true;
-                }
-
-                if (MyPlayerTrain.TrainStopHoldDelayedTime)
-                {
-                    MyPlayerTrain.Delay = TimeSpan.FromSeconds(0);
-                }
-
-                if (arrived && ((MyPlayerTrain.TrainStopHoldDelayedTime && MyPlayerTrain.IsOutOfStation(500.0f)) || !MyPlayerTrain.TrainStopHoldDelayedTime))
-                {
-                    MyPlayerTrain.TrainStartHold = false;
-                    MyPlayerTrain.TrainStopHoldDelayedTime = false;
-                    MyPlayerTrain.TrainStartHoldFirstScanDone = false;
                     MyPlayerTrain.ActualStationNumber++;                    
                     
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
                         MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
-                                        
-                    //MyPlayerTrain.Simulator.Confirmer.Information("Station leave!");
-               
+                                                                         
                     // Train has started, we have things to do if we arrived before                                                     
                     TimeForOpenDoors = 0;
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
