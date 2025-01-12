@@ -16798,7 +16798,7 @@ namespace Orts.Simulation.Physics
 
         public void ReverseAtStationStopTest(Train train)
         {
-            float distanceToReversalPoint = 100;
+            float distanceToReversalPoint = 10000;
 
             if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
                 distanceToReversalPoint = ComputeDistanceToReversalPoint();
@@ -16810,7 +16810,7 @@ namespace Orts.Simulation.Physics
 
         public bool ReverseAtStationTest(Train train)
         {
-            float distanceToReversalPoint = 100;
+            float distanceToReversalPoint = 10000;
 
             if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
                 distanceToReversalPoint = ComputeDistanceToReversalPoint();
