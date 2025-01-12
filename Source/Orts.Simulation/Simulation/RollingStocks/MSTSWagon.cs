@@ -1108,6 +1108,12 @@ namespace Orts.Simulation.RollingStocks
                 DavisBNSpM = DavisBNSpM / 3.6f;
                 DavisCNSSpMM = DavisCNSSpMM / 3.6f / 3.6f;
             }
+
+            // Pro AI budou brány default hodnoty
+            if (!Train.IsActualPlayerTrain)
+            {
+                DavisAN = DavisBNSpM = DavisCNSSpMM = 0f;
+            }
           
             switch (WagonNumAxles) // Definice Davis-default hodnot, pokud nejsou přesně definovány uživatelem 
             {
