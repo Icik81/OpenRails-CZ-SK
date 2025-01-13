@@ -13712,11 +13712,12 @@ namespace Orts.Simulation.Physics
 
                 if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
                 {
-                    if (stationRouteIndex < 0)
-                    {
-                        return true;
-                    }
-                    else if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                    //if (stationRouteIndex < 0)
+                    //{
+                    //    return true;
+                    //}
+                    //else
+                    if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
                     {
                         var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
                         var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;

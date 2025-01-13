@@ -3936,19 +3936,20 @@ namespace Orts.Simulation.AIs
             }
 
             // Icik
+            float AbsAllowedMaxSpeed = Math.Abs(AllowedMaxSpeedMpS);
             float AITSethrottlePercent = 0;
             if (!AIThrottleDownMode)
             {
                 AITSethrottlePercent = 100f;                
-                if (Math.Abs(SpeedMpS) > 0.90f * AllowedMaxSpeedMpS)
+                if (Math.Abs(SpeedMpS) > 0.90f * AbsAllowedMaxSpeed)
                     AIThrottleDownMode = true;
             }
-            if (AIThrottleDownMode)
+            if (AIThrottleDownMode && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
             {
-                AITSethrottlePercent = (1f - (Math.Abs(SpeedMpS) / AllowedMaxSpeedMpS - 0.60f)) * 100f;                
-                if (Math.Abs(SpeedMpS) < 0.80f * AllowedMaxSpeedMpS)
+                AITSethrottlePercent = (1f - (Math.Abs(SpeedMpS) / AbsAllowedMaxSpeed - 0.60f)) * 100f;
+                if (Math.Abs(SpeedMpS) < 0.80f * AbsAllowedMaxSpeed)
                     AIThrottleDownMode = false;
-            }
+            }            
 
             // Rozjezd AI
             if (Math.Abs(SpeedMpS) < 0.01f / 3.6f && !AIRollOn)
@@ -3994,7 +3995,7 @@ namespace Orts.Simulation.AIs
 
             if (AIRollOn)
             {
-                if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed)
+                if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
                 {
                     AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, AIRollOnThrottle);
                     
@@ -4017,7 +4018,7 @@ namespace Orts.Simulation.AIs
                         AIRollOnTimer = 0f;
                     }
                 }
-            }
+            }            
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
             {
@@ -4031,8 +4032,8 @@ namespace Orts.Simulation.AIs
                 AITrainThrottlePercent += stepSize * timeS;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
-            }
-            
+            }            
+
             if (!AIStayToRollOn)
             {
                 if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
@@ -4053,6 +4054,12 @@ namespace Orts.Simulation.AIs
                     }
 
                 }
+            }
+
+            if (Math.Abs(SpeedMpS) > AbsAllowedMaxSpeed)
+            {
+                AITSethrottlePercent = 0;
+                AITrainThrottlePercent = 0;
             }
 
             SetPercentsFromTrainToTrainset();
