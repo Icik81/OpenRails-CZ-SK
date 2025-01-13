@@ -3961,6 +3961,9 @@ namespace Orts.Simulation.AIs
 
             if (AIRollOnThrottle == 0)
             {
+                AIRollOnThrottle = Simulator.Random.Next(20, 36);
+                AIRollOnTime = Simulator.Random.Next(2, 5);
+                AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
                 foreach (TrainCar car in Cars)
                 {
                     if (car is MSTSLocomotive)
