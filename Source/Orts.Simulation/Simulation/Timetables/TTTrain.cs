@@ -10359,6 +10359,7 @@ namespace Orts.Simulation.Timetables
                     if (Math.Abs(SpeedMpS) > 1.5f)
                     {
                         ActualStationNumber++;
+                        TrainComesToStation = false;
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
                             StationStops[0].ActualDepart = presentTime;
@@ -10529,6 +10530,7 @@ namespace Orts.Simulation.Timetables
                             if (missedStation)
                             {
                                 ActualStationNumber++;
+                                TrainComesToStation = false;
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);
                             }
