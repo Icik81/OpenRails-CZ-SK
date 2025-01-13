@@ -1035,7 +1035,6 @@ namespace Orts.Simulation
             {                                                                
                 if (arrived)
                 {
-                    MyPlayerTrain.TrainComesToStation = false;
                     MyPlayerTrain.ActualStationNumber++;                    
                     
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
@@ -1301,7 +1300,6 @@ namespace Orts.Simulation
                                 MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
                                 IsCompleted = false;
                                 MyPlayerTrain.ActualStationNumber++;
-                                MyPlayerTrain.TrainComesToStation = false;
 
                                 if (LogStationStops)
                                 {

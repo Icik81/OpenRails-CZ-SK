@@ -13701,51 +13701,51 @@ namespace Orts.Simulation.Physics
         /// Check whether train has missed platform
         /// returns true if yes
         /// </summary>
-        public bool TrainComesToStation;
-        float TrainMissedStationLength;
-        float DirectionMarker = 1;
+
         public bool IsMissedPlatform(float thresholdDistance)
         {
-            if (IsAtPlatform() && !TrainComesToStation)
-            {
-                TrainComesToStation = true;
-                DirectionMarker = SpeedMpS > 0f ? SpeedMpS / Math.Abs(SpeedMpS) : 0f;
-            }
+            if (IsInStationCircuit(250.0f))
+            {                            
+                // check if station missed
 
-            if (TrainComesToStation)
-            {
-                if (!IsAtPlatform())
+                int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
+
+                if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
                 {
-                    TrainMissedStationLength += DirectionMarker * SpeedMpS * Simulator.OneSecondLoop; 
+                    //if (stationRouteIndex < 0)
+                    //{
+                    //    return true;
+                    //}
+                    //else
+                    if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                    {
+                        var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
+                        var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
+                        return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
+                    }
                 }
-
-                if (TrainMissedStationLength > 100f)
-                    return true;
             }
-
-            //if (TrainComesToStation)
-            //{                            
-            //    // check if station missed
-
-            //    int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
-
-            //    if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
-            //    {
-            //        //if (stationRouteIndex < 0)
-            //        //{
-            //        //    return true;
-            //        //}
-            //        //else
-            //        if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
-            //        {
-            //            var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
-            //            var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
-            //            return ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef) > thresholdDistance;
-            //        }
-            //    }
-            //}
             return false;
-        }        
+        }
+
+        public bool IsInStationCircuit(float thresholdDistance)
+        {
+            // check if station missed
+
+            int stationRouteIndex = ValidRoute[0].GetRouteIndex(StationStops[0].TCSectionIndex, 0);
+
+            if (StationStops[0].SubrouteIndex == TCRoute.activeSubpath)
+            {
+                if (stationRouteIndex <= PresentPosition[1].RouteListIndex)
+                {
+                    var platformSection = signalRef.TrackCircuitList[StationStops[0].TCSectionIndex];
+                    var platformReverseStopOffset = platformSection.Length - StationStops[0].StopOffset;
+                    float DistanceToStation = Math.Abs(ValidRoute[0].GetDistanceAlongRoute(stationRouteIndex, platformReverseStopOffset, PresentPosition[1].RouteListIndex, PresentPosition[1].TCOffset, true, signalRef));
+                    return DistanceToStation < thresholdDistance;
+                }
+            }
+            return false;
+        }
 
         //================================================================================================//
         /// <summary>

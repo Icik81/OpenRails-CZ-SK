@@ -6886,7 +6886,6 @@ namespace Orts.Simulation.AIs
                     // if moving, set departed
                     if (Math.Abs(SpeedMpS) > 1.5f)
                     {
-                        TrainComesToStation = false;
                         ActualStationNumber++;
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
@@ -7057,7 +7056,6 @@ namespace Orts.Simulation.AIs
                             
                             if (missedStation)
                             {
-                                TrainComesToStation = false;
                                 ActualStationNumber++;
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);                                
