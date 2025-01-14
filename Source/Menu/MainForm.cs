@@ -478,7 +478,7 @@ namespace ORTS
                         {
                             if (!File.Exists(SelectedRoute.Path + "\\MirelDb.xml") && File.Exists(SelectedRoute.Path + "\\MirelDbVersion.ini"))
                                 File.Delete(SelectedRoute.Path + "\\MirelDbVersion.ini");
-                            
+
                             FileInfo fileInfo = new FileInfo(SelectedRoute.Path + "\\MirelDbVersion.ini");
                             if (!fileInfo.Exists)
                             {
@@ -489,6 +489,22 @@ namespace ORTS
                             if (string.IsNullOrEmpty(version)) version = "0";
                             cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
                             string verRemote = ws.GetLastVersion(SelectedRoute.ToString());
+                            
+                            if (verRemote == null)
+                            {
+                                sw.Close();                                
+                                SplashWindow swError = new SplashWindow();                                
+                                Button button2 = new Button();
+                                button2.Text = "OK";
+                                button2.Location = new Point(button2.Left + 150, button2.Height + button2.Top + 100);
+                                swError.CancelButton = button2;
+                                swError.Controls.Add(button2);
+                                swError.Message = "Chyba stahování souboru! Chyba na serveru! (Esc pro zavření)";                                                                
+                                swError.UpdateProgress();
+                                swError.ShowDialog();
+                                return;
+                            }
+
                             if (verRemote == version && File.Exists(SelectedRoute.Path + "\\MirelDb.xml"))
                             {
                                 sw.Close();
@@ -586,6 +602,11 @@ namespace ORTS
                             }
 
                             DataTable dt = ws.GetPowerSupplyStations(comboBoxRoute.Text, "0");
+                            if (dt == null)
+                            {
+                                sw.Close();
+                                return;
+                            }
                             int currentRow = 0;
                             
                             WebClient webClient = new WebClient();
@@ -674,7 +695,7 @@ namespace ORTS
                             if (string.IsNullOrEmpty(version)) version = "0";
                             cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
                             string verRemote = ws.GetPowerSuplyMarkerVersion(SelectedRoute.ToString());
-                            if (verRemote == version && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
+                            if (verRemote == null || verRemote == version && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
                             {
                                 sw.Close();
                                 return;

@@ -201,10 +201,17 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetPowerSupplyStations", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public System.Data.DataTable GetPowerSupplyStations(string TrackName, string Version) {
-            object[] results = this.Invoke("GetPowerSupplyStations", new object[] {
+            try
+            {
+                object[] results = this.Invoke("GetPowerSupplyStations", new object[] {
                         TrackName,
                         Version});
-            return ((System.Data.DataTable)(results[0]));
+                return ((System.Data.DataTable)(results[0]));
+            }
+            catch (System.Exception e)
+            {
+                return null;
+            }            
         }
         
         /// <remarks/>
@@ -263,9 +270,16 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetLastVersion", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string GetLastVersion(string Track) {
-            object[] results = this.Invoke("GetLastVersion", new object[] {
+            try
+            {
+                object[] results = this.Invoke("GetLastVersion", new object[] {
                         Track});
-            return ((string)(results[0]));
+                return ((string)(results[0]));
+            }
+            catch (System.Exception e)
+            {
+                return null;
+            }            
         }
         
         /// <remarks/>
@@ -321,9 +335,16 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetPowerSuplyMarkerVersion", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string GetPowerSuplyMarkerVersion(string Track) {
-            object[] results = this.Invoke("GetPowerSuplyMarkerVersion", new object[] {
+            try
+            {
+                object[] results = this.Invoke("GetPowerSuplyMarkerVersion", new object[] {
                         Track});
-            return ((string)(results[0]));
+                return ((string)(results[0]));
+            }
+            catch (System.Exception e)
+            {
+                return null;
+            }
         }
         
         /// <remarks/>
