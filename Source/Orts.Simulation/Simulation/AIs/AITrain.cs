@@ -81,6 +81,18 @@ namespace Orts.Simulation.AIs
         // Icik
         public bool DontStopABSWP;
         public float EfficiencyServis;
+        public bool AIUnprotectedLevelCrossWarningRunning;
+        public bool AIUnprotectedLevelCrossSetup;
+        public float AIUnprotectedLevelCrossWarningDistance;
+        public float AIUnprotectedLevelCrossTimer1;
+        public float AIUnprotectedLevelCrossTimer2;
+        public float AIUnprotectedLevelCrossTime;
+        public bool AIUnprotectedLevelCrossHornOn;
+        public int AIUnprotectedLevelCrossWarningCount;
+        public bool AIUnprotectedLevelCrossBellOn;
+        public int AIUnprotectedLevelCrossWarningType;
+        public bool AIUnprotectedLevelCrossWarningCutOff;
+        public bool AIUnprotectedLevelCrossWarningCanEnable;
 
         public enum AI_MOVEMENT_STATE
         {

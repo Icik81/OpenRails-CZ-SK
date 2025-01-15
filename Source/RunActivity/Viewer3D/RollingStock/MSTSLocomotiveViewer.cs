@@ -460,6 +460,31 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             DoublePressedKeyTest();
 
+            // Kontrola zvukového znamení hráče před nechráněným přejezdem
+            if (Locomotive.Train.UnprotectedLevelCrossWarningCanEnable)
+            {
+                Locomotive.UnprotectedLevelCrossWarningRequest = true;
+                if (UserInput.IsPressed(UserCommand.ControlHorn)
+                    || UserInput.IsPressed(UserCommand.ControlHorn2)
+                    || UserInput.IsPressed(UserCommand.ControlHorn12)
+                    || UserInput.IsPressed(UserCommand.ControlBell))
+                {
+                    Locomotive.UnprotectedLevelCrossWarningOk = true;
+                }
+            }
+            else
+            {
+                if (Locomotive.UnprotectedLevelCrossWarningRequest)
+                {
+                    if (!Locomotive.UnprotectedLevelCrossWarningOk)
+                    {
+                        Locomotive.Simulator.Confirmer.Information(Simulator.Catalog.GetString("You didn't give a corresponding sound sign at an unprotected crossing!"));
+                    }
+                    Locomotive.UnprotectedLevelCrossWarningOk = false;
+                    Locomotive.UnprotectedLevelCrossWarningRequest = false;
+                }
+            }
+
             // Ovládání TRACTION_SWITCH aretované pozice
             if (Locomotive.TractionSwitchEnable)
             {                

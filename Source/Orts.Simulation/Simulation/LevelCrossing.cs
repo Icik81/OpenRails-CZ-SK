@@ -17,9 +17,12 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
+using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
+using Orts.Simulation.RollingStocks;
+using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -67,7 +70,7 @@ namespace Orts.Simulation
         /// <param name="warningTime">Time that gates should be closed prior to a train arriving (seconds).</param>
         /// <param name="minimumDistance">Minimum distance from the gates that a train is allowed to stop and have the gates open (meters).</param>
         /// <returns>The level crossing object comprising of the specified track and road items plus warning and distance configuration.</returns>
-        public LevelCrossing CreateLevelCrossing(WorldPosition position, IEnumerable<int> trackIDs, IEnumerable<int> roadIDs, float warningTime, float minimumDistance)
+        public LevelCrossing CreateLevelCrossing(WorldPosition position, IEnumerable<int> trackIDs, IEnumerable<int> roadIDs, float warningTime, float minimumDistance, int crashProbability)
         {
             var trackItems = trackIDs.Select(id => TrackCrossingItems[id]).ToArray();
             var roadItems = roadIDs.Select(id => RoadCrossingItems[id]).ToArray();
@@ -77,7 +80,7 @@ namespace Orts.Simulation
                 for (var i = 0; i < roadItems.Length; i++)
                     if (!RoadToTrackCrossingItems.ContainsKey(roadItems[i]))
                         RoadToTrackCrossingItems.Add(roadItems[i], trackItems[i]);
-            return new LevelCrossing(trackItems.Union(roadItems), warningTime, minimumDistance);
+            return new LevelCrossing(trackItems.Union(roadItems), warningTime, minimumDistance, crashProbability);
         }
 
         [CallOnThread("Updater")]
@@ -87,7 +90,7 @@ namespace Orts.Simulation
                 UpdateCrossings(train, elapsedClockSeconds);
         }
 
-        [CallOnThread("Updater")]
+        [CallOnThread("Updater")]        
         void UpdateCrossings(Train train, float elapsedTime)
         {
             var speedMpS = train.SpeedMpS;
@@ -110,6 +113,8 @@ namespace Orts.Simulation
 
             foreach (var crossing in TrackCrossingItems.Values.Where(ci => ci.CrossingGroup != null))
             {
+                bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
+                
                 var predictedDist = crossing.CrossingGroup.WarningTime * absSpeedMpS;
                 var maxPredictedDist = crossing.CrossingGroup.WarningTime * (maxSpeedMpS - absSpeedMpS) / 2; // added distance if train accelerates to maxspeed
                 var minimumDist = crossing.CrossingGroup.MinimumDistance;
@@ -117,8 +122,7 @@ namespace Orts.Simulation
                 var totalMaxDist = predictedDist + maxPredictedDist + minimumDist + 1;
 
                 var reqDist = 0f; // actual used distance
-                var adjustDist = 0f;
-
+                var adjustDist = 0f;                
 
                 //  The first 2 tests are critical for STATIC CONSISTS, but at the same time should be mandatory since there should always be checks for any null situation.
                 //  The first 2 tests cover a situation where a STATIC consist is found on a crossing attached to a road where other crossings are attached to the same road.
@@ -146,6 +150,118 @@ namespace Orts.Simulation
                 {
                     validTrain = true;
                     reqDist = totalDist;
+
+                    // Hráč
+                    if (train.IsActualPlayerTrain)
+                    {
+                        // Startovní pravidlo
+                        if (UnprotectedLevelCross)
+                        {
+                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, 500);
+                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, 500);
+
+                            if (frontDistance > 0 && Math.Abs(train.SpeedMpS) > 0)
+                                train.UnprotectedLevelCrossWarningCanEnable = true;
+                            else
+                                train.UnprotectedLevelCrossWarningCanEnable = false;                            
+                        }
+                        else
+                            train.UnprotectedLevelCrossWarningCanEnable = false;
+                    }
+
+                    // AI
+                    if (train is AITrain && !train.IsActualPlayerTrain)
+                    {
+                        var AItrain = train as AITrain;
+
+                        // AI LvlCr Setup
+                        if (!AItrain.AIUnprotectedLevelCrossSetup)
+                        {
+                            AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                            AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
+                            AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 5);
+                            AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
+                            AItrain.AIUnprotectedLevelCrossSetup = true;
+                        }
+
+                        // Startovní pravidlo
+                        if (UnprotectedLevelCross)
+                        {
+                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
+                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
+                            
+                            if (frontDistance > 0 && Math.Abs(AItrain.SpeedMpS) > 0)
+                                AItrain.AIUnprotectedLevelCrossWarningCanEnable = true;
+                            else
+                                AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+                        }
+                        else
+                            AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+
+                        if (AItrain.AIUnprotectedLevelCrossWarningRunning || AItrain.AIUnprotectedLevelCrossWarningCanEnable)
+                        {
+                            AItrain.AIUnprotectedLevelCrossWarningRunning = true;
+                            if (AItrain.AIUnprotectedLevelCrossWarningCount > 1 && WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, 50))
+                            {
+                                if (AItrain.AIUnprotectedLevelCrossHornOn)
+                                    AItrain.AIUnprotectedLevelCrossWarningCount = 1;
+                                else
+                                    AItrain.AIUnprotectedLevelCrossWarningCount = 0;
+                            }                                                       
+
+                            if (AItrain.AIUnprotectedLevelCrossWarningCount > 0)
+                            {
+                                AItrain.AIUnprotectedLevelCrossTimer1 += elapsedTime;
+                                if (AItrain.AIUnprotectedLevelCrossTimer1 < AItrain.AIUnprotectedLevelCrossTime)
+                                {
+                                    if (!AItrain.AIUnprotectedLevelCrossHornOn)
+                                    {
+                                        foreach (var car in train.Cars)
+                                        {
+                                            if (car is MSTSLocomotive)
+                                            {
+                                                if (AItrain.AIUnprotectedLevelCrossWarningType == 1)
+                                                    car.SignalEvent(Common.Event.HornOn);
+                                                if (AItrain.AIUnprotectedLevelCrossWarningType == 2)
+                                                    car.SignalEvent(Common.Event.BellOn);
+                                                AItrain.AIUnprotectedLevelCrossHornOn = true;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    if (AItrain.AIUnprotectedLevelCrossHornOn)
+                                    {
+                                        foreach (var car in train.Cars)
+                                        {
+                                            if (car is MSTSLocomotive)
+                                            {
+                                                car.SignalEvent(Common.Event.HornOff);
+                                                car.SignalEvent(Common.Event.BellOff);
+                                                AItrain.AIUnprotectedLevelCrossHornOn = false;
+                                            }
+                                        }
+                                    }
+                                    AItrain.AIUnprotectedLevelCrossTimer2 += elapsedTime;
+                                    if (AItrain.AIUnprotectedLevelCrossTimer2 > AItrain.AIUnprotectedLevelCrossTime + 2)
+                                    {
+                                        AItrain.AIUnprotectedLevelCrossWarningCount--;
+                                        AItrain.AIUnprotectedLevelCrossTimer1 = 0;
+                                        AItrain.AIUnprotectedLevelCrossTimer2 = 0;
+                                        AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
+                                        AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                AItrain.AIUnprotectedLevelCrossWarningRunning = false;
+                                AItrain.AIUnprotectedLevelCrossSetup = false;
+                            }
+                        }                        
+                    }
                 }
 
                 else if ((train.TrainType != Train.TRAINTYPE.STATIC) && WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, totalMaxDist) || WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, totalMaxDist))
@@ -183,7 +299,7 @@ namespace Orts.Simulation
                 {
                     //  Add generic actions if needed
                     aiTrain.AuxActionsContain.CheckGenActions(this.GetType(), crossing.Location, rearDist, frontDist, crossing.TrackIndex, aiTrain.LevelCrossingHornPattern);
-                }
+                }                
 
                 // The tests below is to allow the crossings operate like the crossings under MSTS
                 // Tests as follows
@@ -292,7 +408,7 @@ namespace Orts.Simulation
                 else
                 {
                     crossing.RemoveTrain(train);
-                }
+                }                
             }
         }
 
@@ -431,12 +547,14 @@ namespace Orts.Simulation
         internal readonly List<LevelCrossingItem> Items;
         internal readonly float WarningTime;
         internal readonly float MinimumDistance;
+        internal readonly int CrashProbability;
 
-        public LevelCrossing(IEnumerable<LevelCrossingItem> items, float warningTime, float minimumDistance)
+        public LevelCrossing(IEnumerable<LevelCrossingItem> items, float warningTime, float minimumDistance, int crashProbability)
         {
             Items = new List<LevelCrossingItem>(items);
             WarningTime = warningTime;
             MinimumDistance = minimumDistance;
+            CrashProbability = crashProbability;
             foreach (var item in items)
                 item.CrossingGroup = this;
         }

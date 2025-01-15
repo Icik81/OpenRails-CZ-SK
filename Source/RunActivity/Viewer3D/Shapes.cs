@@ -1223,7 +1223,8 @@ namespace Orts.Viewer3D
                 from tid in CrossingObj.trItemIDList where tid.db == 0 select tid.dbID,
                 from tid in CrossingObj.trItemIDList where tid.db == 1 select tid.dbID,
                 CrossingObj.levelCrParameters.warningTime,
-                CrossingObj.levelCrParameters.minimumDistance);
+                CrossingObj.levelCrParameters.minimumDistance,
+                CrossingObj.crashProbability);
             // If there are no animations, we leave the frame count and speed at 0 and nothing will try to animate.
             if (SharedShape.Animations != null && SharedShape.Animations.Count > 0)
             {
