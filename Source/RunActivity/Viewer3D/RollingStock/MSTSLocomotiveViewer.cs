@@ -478,7 +478,8 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     if (!Locomotive.UnprotectedLevelCrossWarningOk)
                     {
-                        Locomotive.Simulator.Confirmer.Information(Simulator.Catalog.GetString("You didn't give a corresponding sound sign at an unprotected crossing!"));
+                        //Locomotive.Simulator.Confirmer.Information(Simulator.Catalog.GetString("You didn't give a corresponding sound sign at an unprotected crossing!"));                        
+                        Locomotive.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Nedali jste odpovídající zvukové znamení před nechráněným přejezdem!"));
                     }
                     Locomotive.UnprotectedLevelCrossWarningOk = false;
                     Locomotive.UnprotectedLevelCrossWarningRequest = false;

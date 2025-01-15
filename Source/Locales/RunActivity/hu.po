@@ -1,0 +1,4597 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: RunActivity\n"
+"POT-Creation-Date: 2022-06-05 16:32:03+0200\n"
+"PO-Revision-Date: \n"
+"Last-Translator: Péter Gulyás <pzgulyas@gmail.com>\n"
+"Language-Team: Open Rails Dev Team\n"
+"Language: hu\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.0.1\n"
+
+#: ../../RunActivity/Viewer3D/ALSoundHelper.cs:536
+#, fuzzy, csharp-format
+#| msgid "{0:F0} tile"
+#| msgid_plural "{0:F0} tiles"
+msgid "{0:F0} wav"
+msgid_plural "{0:F0} wavs"
+msgstr[0] "{0:F0} mező"
+msgstr[1] "{0:F0} mező"
+
+#: ../../RunActivity/Viewer3D/ALSoundHelper.cs:1281
+#, csharp-format
+msgid "{0:F0} AL sound sources"
+msgid_plural "{0:F0} AL sound sources"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:621
+msgid "Free"
+msgstr "Szabadmozgatású "
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1023
+msgid "Outside Front"
+msgstr "Elülső külső "
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1023
+msgid "Outside Rear"
+msgstr "Hátsó külső "
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1545
+msgid "Brakeman"
+msgstr "Fékezőállás"
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1801
+msgid "Passenger"
+msgstr "Utas"
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1879
+msgid "3D Cab"
+msgstr "3D vezérállás"
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:1980
+msgid "Head out"
+msgstr "Kihajolt "
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:2040
+msgid "Cab"
+msgstr "Vezérállás"
+
+#: ../../RunActivity/Viewer3D/Cameras.cs:2304
+msgid "Trackside"
+msgstr "Pályamenti "
+
+#: ../../RunActivity/Viewer3D/Materials.cs:229
+#, csharp-format
+msgid "{0:F0} texture"
+msgid_plural "{0:F0} textures"
+msgstr[0] "{0: F0} textúra"
+msgstr[1] "{0: F0} textúra"
+
+#: ../../RunActivity/Viewer3D/Materials.cs:490
+#, csharp-format
+msgid "{0:F0} material"
+msgid_plural "{0:F0} materials"
+msgstr[0] "{0: F0} anyag"
+msgstr[1] "{0: F0} anyag"
+
+#: ../../RunActivity/Viewer3D/Shapes.cs:121
+#, csharp-format
+msgid "{0:F0} shape"
+msgid_plural "{0:F0} shapes"
+msgstr[0] "{0:F0} modell"
+msgstr[1] "{0:F0} modell"
+
+#: ../../RunActivity/Viewer3D/Terrain.cs:158
+#, csharp-format
+msgid "{0:F0} tile"
+msgid_plural "{0:F0} tiles"
+msgstr[0] "{0:F0} mező"
+msgstr[1] "{0:F0} mező"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:899
+#: ../../RunActivity/Viewer3D/Viewer.cs:1096
+msgid "Cab view not available"
+msgstr "Vezérállás nem elérhető"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:984
+msgid "In MP, use Alt-F4 to quit directly"
+msgstr "Többrésztvevős módól csak Alt+F4 -gyel lehet kilépni."
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1022
+msgid "Automatic platform and siding labels visible."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1025
+msgid "Platform and siding labels visible."
+msgstr "Fő- és mellékvágányok nevei láthatóak"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1028
+msgid "Platform labels visible."
+msgstr "Fővágányok nevei láthatóak"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1031
+msgid "Siding labels visible."
+msgstr "Mellékvágányok nevei láthatóak"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1037
+msgid "Platform and siding labels hidden."
+msgstr "Fő- és mellékvágányok nevei elrejtve"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1048
+msgid "Train labels visible."
+msgstr "Vonatok nevei láthatóak"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1051
+msgid "Car labels visible."
+msgstr "Kocsik nevei láthatóak"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1057
+msgid "Train and car labels hidden."
+msgstr "Vonatok és kocsik nevei elrejtve"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1138
+#, fuzzy
+#| msgid "Simulation Speed"
+msgid "Confirmations suppressed"
+msgstr "Időgyorsítás"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1140
+msgid "Confirmations visible"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1307
+msgid "Switched to player control"
+msgstr "Robotpilóta kikapcsolva"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1314
+msgid "You can't switch from manual to autopilot mode"
+msgstr "Helyi forgalomirányításból nem lehet robotpilótára váltani"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1320
+msgid "Switched to autopilot"
+msgstr "Robotpilóta bekapcsolva"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1929
+msgid "Game saved"
+msgstr "A játékállás elmentve."
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:329
+#, csharp-format
+msgid "Allowed speed raised to {0}"
+msgstr "A megengedett sebesség {0}-ra emelkedett"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1129
+#, csharp-format
+msgid "Vibrating at level {0}"
+msgstr "Vibrálás szintje: {0}"
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1338
+#, csharp-format
+msgid "Keyboard map list saved to '{0}'."
+msgstr "Billentyűzetkiosztási lista mentve: '{0}'."
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1342
+#, csharp-format
+msgid "Keyboard map image saved to '{0}'."
+msgstr "Billentyűzetkiosztási ábra mentve: '{0}'."
+
+#: ../../RunActivity/Viewer3D/Viewer.cs:1176
+#, csharp-format
+msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
+msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
+msgstr[0] ""
+"{0} nézőpont van eltárolva. Használd a Shift+B -t a visszaállításhoz."
+msgstr[1] ""
+"{0} nézőpont van eltárolva. Használd a Shift+B -t a visszaállításhoz."
+
+#: ../../RunActivity/Viewer3D/Weather.cs:240
+msgid ""
+"Restoring wrong weather type : trying to restore dynamic weather but save "
+"contains user controlled weather"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Weather.cs:1946
+msgid ""
+"Restoring wrong weather type : trying to restore user controlled weather but "
+"save contains dynamic weather"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:1994
+msgid "Switching Request Sent to the Server"
+msgstr "A vágányútállítási kérelem el lett küldve az irányítónak"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:566
+msgid "MSG to Server"
+msgstr "Üzenet a kiszolgálónak"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.cs:570
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:256
+msgid "MSG to All"
+msgstr "Ózenet mindenkinek"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:121
+msgid "View Train"
+msgstr "Vonat megtekintése"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:164
+msgid "m"
+msgstr "m"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:185
+msgid "Remove"
+msgstr "Eltávolítás"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:199
+msgid "Auto Switch"
+msgstr "Auto váltás"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:213
+msgid "Show Avatars"
+msgstr "Avatárok megjelenítése"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:241
+msgid "MSG to Selected"
+msgstr "Üzenet a kiválasztottnak"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:270
+#: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:88
+msgid "Compose MSG"
+msgstr "Üzenet szerkesztése"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:282
+msgid "Res"
+msgstr "Res"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:295
+msgid "Reply to Selected"
+msgstr "Válasz a kiválasztottnak"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:309
+msgid "Draw Path"
+msgstr "Útvonal megjelnítése"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:356
+msgid "Pick Signals"
+msgstr "Jelzők kiválaszthatók"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:369
+msgid "Pick Switches"
+msgstr "Váltók kiválaszthatók"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:382
+msgid "Can Join"
+msgstr "Csatlakozhat"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:405
+msgid "Assist"
+msgstr "Segítő"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:417
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:861
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:875
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:649
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:692
+msgid "Normal"
+msgstr "Normál"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:429
+msgid "Follow"
+msgstr "Követés"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:443
+msgid "Penalty"
+msgstr "Büntetés"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:457
+msgid "Prefer Green"
+msgstr "Zöld előnyben részesítése"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:470
+msgid "See in Game"
+msgstr "Megtekintés játékban"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:482
+msgid "Simulation Time"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:493
+msgid "SimulationTime"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:505
+msgid "Show:"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:517
+msgid "Platform labels"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:530
+msgid "Siding labels"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:543
+#, fuzzy
+#| msgid "Signal"
+msgid "Signals"
+msgstr "Jelző"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:556
+#, fuzzy
+#| msgid "Signal mode"
+msgid "Signal state"
+msgstr "Forgalomirányítás"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:572
+#, fuzzy
+#| msgid "Train brake"
+msgid "Train labels"
+msgstr "Vonatfék"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:583
+msgid "Key"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:597
+#, fuzzy
+#| msgid "Active sounds"
+msgid "Active only"
+msgstr "Aktív hangok"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:608
+msgid "All"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:643
+msgid "Daylight offset (hrs)"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:659
+msgid "Background color"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:673
+#, fuzzy
+#| msgid "Switch"
+msgid "Switches"
+msgstr "Váltó"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:685
+msgid "To pan, drag with left mouse."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:699
+msgid "Name"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:722
+#, fuzzy
+#| msgid "Dispatcher"
+msgid "Dispatch"
+msgstr "Irányító"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:733
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
+msgid "Timetable"
+msgstr "Menetrend"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:745
+#, fuzzy
+#| msgid "Status"
+msgid "State"
+msgstr "Állapot"
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:757
+msgid "To zoom, drag with left and right mouse or scroll mouse wheel."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:768
+msgid "To zoom in to a location, press Shift and click the left mouse."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:779
+msgid "To zoom out of a location, press Alt and click the left mouse."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:793
+msgid "Platforms"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:852
+msgid "Map Window"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:46
+msgid "Clear All"
+msgstr "Összes törlése"
+
+#: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:57
+msgid "Reply Selected"
+msgstr "Válasz a kiválasztottnak"
+
+#: ../../RunActivity/Viewer3D/Debugging/MessageViewer.Designer.cs:102
+msgid "MessageViewer"
+msgstr "Üzenetablak"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:157
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:189
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:190
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:191
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:192
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:201
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:202
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:203
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:204
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:205
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:206
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:356
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:864
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:658
+msgid "-"
+msgstr "-"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:149
+msgid "Active sounds"
+msgstr "Aktív hangok"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:160
+msgid "Inactive sounds"
+msgstr "Inaktív hangok"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:192
+msgid "Sound cache"
+msgstr "Hangok gyorsítótára"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:204
+msgid "Selected sound"
+msgstr "Kiválasztott hang"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:216
+msgid "3D"
+msgstr "3D"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:284
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:470
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:810
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1593
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:313
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:121
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:519
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:290
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:105
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:211
+msgid "Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:312
+msgid "Variable 2"
+msgstr "Variable 2"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:331
+msgid "Variable 3"
+msgstr "Variable 3"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:341
+msgid "Variable 1"
+msgstr "Variable 1"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:351
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1599
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1601
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:80
+msgid "Distance"
+msgstr "Távolság"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:361
+msgid "Volume"
+msgstr "Hangerő"
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:429
+msgid "WavCache"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:484
+msgid "AL Sources"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:513
+msgid "Sound Debug"
+msgstr "Hang hibakeresés"
+
+#: ../../RunActivity/Viewer3D/Debugging/TimetableWindow.cs:87
+msgid "View Self"
+msgstr "Saját vonat megtekintése"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:44
+msgid "Activity Events"
+msgstr "Szolgálat eseményei"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:177
+msgid "without success"
+msgstr "sikertelenül"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:293
+msgid "Resume"
+msgstr "Folytatás"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:293
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:323
+msgid "Pause"
+msgstr "Szünet"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:294
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:315
+msgid "Resume and close box"
+msgstr "Folytatás és bezárás"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:294
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:306
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:324
+msgid "Close box"
+msgstr "Ablak bezárása"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:295
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:307
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:325
+msgid "Quit activity"
+msgstr "Szolgálat befejezése"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:296
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:317
+msgid "Status: Activity paused"
+msgstr "Állapot: Szolgálat szüneteltetve"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:296
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:308
+msgid "Status: Activity resumed"
+msgstr "Állapot: Szolgálat folytatva"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:316
+msgid "End Activity"
+msgstr "Szolgálat vége"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:326
+msgid "Status: Activity running"
+msgstr "Állapot: Activity fut"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:176
+#, csharp-format
+msgid ""
+"This activity has ended {0}.\n"
+"For a detailed evaluation, see the Help Window (F1)."
+msgstr ""
+"A szolgálat {0} ért véget.Részletes kiértékelésért lásd a Súgóablakot <F1>."
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:332
+#, csharp-format
+msgid "Event: {0}"
+msgstr "Esemény: {0}"
+
+#: ../../RunActivity/Viewer3D/Popups/ActivityWindow.cs:340
+#, csharp-format
+msgid "Train: {0}"
+msgstr "Vonat: {0}"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:40
+#, fuzzy
+#| msgid "Car Operation Menu"
+msgid "*** Car Operation Menu ***"
+msgstr "Kocsivizsgálat"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:54
+msgid "Car ID"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:57
+msgid "Toggle Handbrake"
+msgstr "Kézifék átállítása"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:61
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:92
+msgid "N/A"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:64
+msgid "Toggle Power"
+msgstr "Gép indítása/leállítása"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:66
+msgid "Connect/Unmount Helper"
+msgstr "Távvezérlési kábel csatlakoztatása"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:68
+msgid "Toggle Brake Hose Connection"
+msgstr "Féktömlő (szét)csatolása"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:70
+msgid "Open/Close Front Angle Cock"
+msgstr "Első végelzárószelep nyit/zár"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:72
+msgid "Open/Close Rear Angle Cock"
+msgstr "Hátsó végelzárószelep nyit/zár"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:74
+msgid "Open/Close Bleed Off Valve"
+msgstr "Kieresztőszelep nyit/zár"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:76
+msgid "Brake Mode G/P/R/R+Mg"
+msgstr "Vonatnemváltó G/P/R/R+Mg"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:76
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:83
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:100
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:104
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:107
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:110
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:115
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:118
+#, fuzzy
+#| msgid "Safety"
+msgid "Set"
+msgstr "Beállítva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:83
+msgid "Car Mode Empty/Loaded"
+msgstr "Raksúlyváltó Üres/Rakott"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:100
+#, fuzzy
+#| msgid "Brake"
+msgid "Car Brake"
+msgstr "Fékező"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:104
+msgid "Air Twin Pipe Hoses"
+msgstr "Főlégtartály tömlő"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:107
+#, fuzzy
+#| msgid "Left"
+msgid "Left Door"
+msgstr "Bal"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:110
+#, fuzzy
+#| msgid "Right"
+msgid "Right Door"
+msgstr "Jobb"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:115
+#, fuzzy
+#| msgid "Diesel Tank"
+msgid "Diesel Heating"
+msgstr "Dízel üzemanyagtartály"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:118
+msgid "Electric Heating/Air"
+msgstr "Villamos Hűtés/Fűtés"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:121
+msgid "Close window"
+msgstr "Ablak bezárása"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:163
+msgid "Handbrake set"
+msgstr "Kézifék: be"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:165
+msgid "Handbrake off"
+msgstr "Kézifék: ki"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:182
+msgid "Power OFF command sent"
+msgstr "Leállítási parancs elküldve"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:192
+msgid "Power ON command sent"
+msgstr "Elindítási parancs elküldve"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:204
+msgid "No power command for this type of car!"
+msgstr "Ezt a típusú kocsit nem lehet gépként elindítani!"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:218
+#, fuzzy
+#| msgid "disconnect"
+msgid "Helper disconnected"
+msgstr "szétkötés"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:220
+#, fuzzy
+#| msgid "MU signal connected"
+msgid "Helper connected"
+msgstr "Távvezérlő kábel csatlakoztatva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:223
+msgid "No MU command for this type of car!"
+msgstr "Távvezérlés nem lehetséges ennél a típusú kocsinál."
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:230
+msgid "Front brake hose connected"
+msgstr "Első féktömlők csatolva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:232
+msgid "Front brake hose disconnected"
+msgstr "Első féktömlők szétcsatolva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:239
+msgid "Front angle cock opened"
+msgstr "Első végelzáró kinyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:241
+msgid "Front angle cock closed"
+msgstr "Első végelzáró lezárva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:248
+msgid "Rear angle cock opened"
+msgstr "Hátsó végelzáró kinyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:250
+msgid "Rear angle cock closed"
+msgstr "Hátsó végelzáró lezárva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:260
+msgid "Bleed off valve opened"
+msgstr "Kieresztőszelep nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:262
+msgid "Bleed off valve closed"
+msgstr "Kieresztőszelep lezárva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:277
+#, fuzzy
+#| msgid "Control Mode"
+msgid "Car Mode G"
+msgstr "Vonatnemváltó G állásban"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:282
+#, fuzzy
+#| msgid "Control Mode"
+msgid "Car Mode P"
+msgstr "Vonatnemváltó P állásban"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:287
+#, fuzzy
+#| msgid "Control Mode"
+msgid "Car Mode R"
+msgstr "Vonatnemváltó R állásban"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:292
+msgid "Car Mode R+Mg"
+msgstr "Vonatnemváltó R+Mg állásban"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:307
+msgid "Empty Car"
+msgstr "Üres kocsi"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:308
+msgid "Empty"
+msgstr "Üres"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:312
+msgid "Loaded Car"
+msgstr "Rakott kocsi"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:313
+#, fuzzy
+#| msgid "Load"
+msgid "Loaded"
+msgstr "Terhelés"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:328
+#, fuzzy
+#| msgid "Front brake hose disconnected"
+msgid "Air Twin Pipe Hoses disconnected"
+msgstr "Első féktömlők szétcsatolva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:329
+msgid "disconnect"
+msgstr "szétkötés"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:333
+#, fuzzy
+#| msgid "Front brake hose connected"
+msgid "Air Twin Pipe Hoses connected"
+msgstr "Első féktömlők csatolva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:334
+msgid "connect"
+msgstr "csatlakoztatás"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:346
+#, fuzzy
+#| msgid "Train Brake"
+msgid "Car Brake On"
+msgstr "Átmenőfék"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:347
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1015
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1024
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1026
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1030
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1039
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1041
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1049
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1051
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1078
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1080
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1082
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1103
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1105
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1107
+msgid "on"
+msgstr "be"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:352
+#, fuzzy
+#| msgid "Handbrake off"
+msgid "Car Brake Off"
+msgstr "Kézifék: ki"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:353
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:781
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1015
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1024
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1026
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1030
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1039
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1041
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1049
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1051
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1078
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1080
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1082
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1103
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1105
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1107
+msgid "off"
+msgstr "ki"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:366
+msgid "Left Door Closed"
+msgstr "Bal ajtók zárva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:367
+#, fuzzy
+#| msgid "close"
+msgid "closed"
+msgstr "zárás"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:371
+#, fuzzy
+#| msgid "Doors open"
+msgid "Left Door Opened"
+msgstr "Ajtók nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:372
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:669
+#, fuzzy
+#| msgid "open"
+msgid "opened"
+msgstr "nyitás"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:385
+msgid "Right Door Closed"
+msgstr "Jobb ajtók zárva"
+
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:390
+msgid "Right Door Opened"
+msgstr "Jobb ajtók nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/CompassWindow.cs:35
+msgid "Compass"
+msgstr "Iránytű"
+
+#: ../../RunActivity/Viewer3D/Popups/CompassWindow.cs:46
+msgid "Lat:"
+msgstr "Szél:"
+
+#: ../../RunActivity/Viewer3D/Popups/CompassWindow.cs:49
+msgid "Lon:"
+msgstr "Hossz:"
+
+#: ../../RunActivity/Viewer3D/Popups/ComposeMessage.cs:32
+msgid "Compose Message (e.g.   receiver1, receiver2: message body)"
+msgstr "Üzenet beírása (pl. címzett1, címzett2: üenet szövege)"
+
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:30
+#, fuzzy
+#| msgid "Emergency"
+msgid "Emergency Event"
+msgstr "Gyorsfék"
+
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:43
+msgid "Train derailed! You caused an emergency event!"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:51
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:46
+#, csharp-format
+msgid "Quit {1} ({0})"
+msgstr "Kilépés {1}ből ({0})"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:78
+msgid "Help"
+msgstr "Súgó"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:80
+msgid "Key Commands"
+msgstr "Billentyűparancsok"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:106
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1053
+msgid "Briefing"
+msgstr "Eligazítás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:122
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:408
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:79
+msgid "Station"
+msgstr "Állomás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:123
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:81
+msgid "Arrive"
+msgstr "Érkezés"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:124
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:126
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:82
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:84
+msgid "Actual"
+msgstr "Tényleges"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:125
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:83
+msgid "Depart"
+msgstr "Indulás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:141
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:143
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:401
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:414
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:284
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:504
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:582
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:585
+msgid "(missed)"
+msgstr "(kihagyva)"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:150
+msgid "Work Orders"
+msgstr "Menetutasítás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:155
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:581
+#, fuzzy
+#| msgid "Task"
+msgid "Task"
+msgid_plural "Tasks"
+msgstr[0] "Feladat"
+msgstr[1] "Feladat"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:156
+msgid "Car(s)"
+msgstr "Kocsi"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:157
+msgid "Location"
+msgstr "Állomás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:158
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:607
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:824
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:193
+msgid "Status"
+msgstr "Állapot"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:178
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:453
+msgid "Assemble Train"
+msgstr "Kocsirendezés"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:182
+msgid "At Location"
+msgstr "Állomás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:186
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:460
+msgid "Drop Off"
+msgstr "Lecsatolás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:190
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:464
+msgid "Pick Up"
+msgstr "Rácsatolás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:283
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:491
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:524
+msgid "Done"
+msgstr "Kész"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:297
+#, fuzzy
+#| msgid "Radiation"
+msgid "Evaluation"
+msgstr "Sugárz"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:336
+#, fuzzy
+#| msgid "Status: Activity paused"
+msgid "This Activity has ended."
+msgstr "Állapot: Szolgálat szüneteltetve"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:345
+#, fuzzy
+#| msgid "Timetable"
+msgid "Timetable:"
+msgstr "Menetrend"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:380
+msgid "- Station stops: "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:391
+msgid "- Remaining station stops: "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:406
+msgid "- Missed station stops: "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:416
+msgid " "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:430
+#, fuzzy
+#| msgid "Work Orders"
+msgid "Work orders:"
+msgstr "Menetutasítás"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:456
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:851
+#, fuzzy
+#| msgid "Assemble Train"
+msgid "Assemble Train At Location"
+msgstr "Kocsirendezés"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:517
+#, fuzzy
+#| msgid "Task"
+msgid "- Tasks: "
+msgstr "Feladat"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:529
+msgid "- Accomplished: "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:531
+msgid "- Coupling speed limits: "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:539
+msgid "  The Debrief evaluation report is disabled."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:594
+#, fuzzy
+#| msgid "-"
+msgid "- "
+msgstr "-"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:595
+msgid "= "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:667
+msgid "A report file was created:"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+#, fuzzy
+#| msgid "Diesel Tank"
+msgid "Diesel."
+msgstr "Dízel üzemanyagtartály"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+#, fuzzy
+#| msgid "Steam"
+msgid "Steam."
+msgstr "Gőz"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+msgid "Electric."
+msgstr "Villany"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1062
+msgid "Procedures"
+msgstr "Eljárások"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1141
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1168
+msgid " = "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:394
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:136
+#, csharp-format
+msgid "Current Delay: {0} minute"
+msgid_plural "Current Delay: {0} minutes"
+msgstr[0] "Pillanatnyi késés: {0} perc"
+msgstr[1] "Pillanatnyi késés: {0} perc"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:582
+msgid "Task accomplished"
+msgid_plural "Tasks accomplished"
+msgstr[0] ""
+msgstr[1] ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:595
+#, fuzzy, csharp-format
+#| msgid "{0} meter"
+#| msgid_plural "{0} meters"
+msgid "{0} minute"
+msgid_plural "{0} minutes"
+msgstr[0] "{0} méter"
+msgstr[1] "{0} méter"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:37
+msgid "HUD Scroll"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:137
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:147
+msgid "▼ Page Down"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:138
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:151
+msgid "▲ Page Up"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:147
+msgid "▼ Page Down ("
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:151
+msgid "▲ Page Up ("
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:156
+msgid "◄ Page Left"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:160
+msgid "► Page Right"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:165
+msgid "▼ Next Loco ("
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:169
+msgid "▲ Prev. Loco"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDScrollWindow.cs:165
+#, fuzzy
+#| msgid "Simple locomotive"
+msgid "= One Locomotive."
+msgid_plural "= All Locomotives."
+msgstr[0] "Egyszerű mozdony"
+msgstr[1] "Egyszerű mozdony"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:160
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:473
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:771
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:808
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:123
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:588
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:107
+msgid "Throttle"
+msgstr "Menetszabályzó"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:161
+msgid "Power In/Out"
+msgstr "Teljesítmény Be/Ki"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:165
+msgid "Motive force"
+msgstr "Mozgatóerő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:167
+msgid "Num of substeps"
+msgstr "Allépések száma"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:170
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1845
+msgid "Memory"
+msgstr "Memória"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:171
+msgid "GCs"
+msgstr "GC-k"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:172
+msgid "Frame time"
+msgstr "Frame idő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:173
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1859
+msgid "Render process"
+msgstr "Render folyamat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:174
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+msgid "Updater process"
+msgstr "Updater folyamat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:175
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1861
+msgid "Loader process"
+msgstr "Loader folyamat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:176
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1862
+msgid "Sound process"
+msgstr "Sound folyamat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:312
+#, fuzzy
+#| msgid "Open"
+msgid "en"
+msgstr "Nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:459
+msgid "Version"
+msgstr "Verzió"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:463
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:465
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:193
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:199
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:364
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:367
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:124
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:508
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:511
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:108
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:188
+msgid "Time"
+msgstr "Idő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:468
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:117
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:515
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:101
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:195
+msgid "Replay"
+msgstr "Visszajátszás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:471
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1453
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1483
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:345
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:352
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:357
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:112
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:541
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:321
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:96
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:229
+msgid "Gradient"
+msgstr "Pályaemelkedés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:472
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:767
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:802
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:364
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:103
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:568
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:331
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:87
+msgid "Direction"
+msgstr "Irány"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:473
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:771
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:116
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:588
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:100
+msgid "Regulator"
+msgstr "Töltésszabályzó"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:475
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:125
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:635
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:669
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:692
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:109
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:363
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:408
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:442
+msgid "Train brake"
+msgstr "Vonatfék"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:477
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:118
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:705
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:102
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:459
+msgid "Retainers"
+msgstr "Visszatartó szelepek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:479
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:106
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:714
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:721
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:90
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:468
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:483
+msgid "Engine brake"
+msgstr "Mozdonyfék"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:481
+#, fuzzy
+#| msgid "Train brake"
+msgid "Brakemen brake"
+msgstr "Vonatfék"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:483
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:773
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:105
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:732
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:737
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:742
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:758
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:762
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:89
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:494
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:502
+msgid "Dynamic brake"
+msgstr "Dinamikus fék"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:497
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:830
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:619
+msgid "FPS"
+msgstr "FPS"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:501
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:97
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:839
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:844
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:847
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:81
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:629
+msgid "Autopilot"
+msgstr "Robotpilóta"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:504
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1392
+msgid "Wheel slip"
+msgstr "Kerékmegperdülés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:506
+msgid "Wheel slip warning"
+msgstr "Kerékmegperdülési figyelmeztetés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:509
+#, fuzzy
+#| msgid "Wheel slip"
+msgid "Wheel skid"
+msgstr "Kerékmegperdülés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:515
+msgid "Sander blocked"
+msgstr "Homokoló letiltva"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:517
+msgid "Amount of sand"
+msgstr "Homok mennyisége"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:530
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:104
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:889
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:892
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:88
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:709
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:717
+msgid "Doors open"
+msgstr "Ajtók nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:536
+msgid "MultiPlayerStatus: "
+msgstr "MultiPlayer Állapot: "
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:537
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:380
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:387
+msgid "Dispatcher"
+msgstr "Irányító"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:538
+msgid "Push"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:539
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:382
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:389
+msgid "Client"
+msgstr "Résztvevő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:548
+msgid "CONSIST INFORMATION"
+msgstr "SZERELVÉNY INFORMÁCIÓI"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:565
+msgid "Player"
+msgstr "Játékos"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:566
+msgid "Tilted"
+msgstr "Dönthető"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:567
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:605
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1132
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1163
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1190
+msgid "Type"
+msgstr "Típus"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:568
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:612
+msgid "Length"
+msgstr "Hossz"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:569
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:613
+msgid "Weight"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:570
+msgid "Tonnage"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:571
+msgid "Control Mode"
+msgstr "Irányítási mód"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:572
+msgid "Out of Control"
+msgstr "Irányítás nélkül"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:573
+msgid "Cab Aspect"
+msgstr "Jelzéskép"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:580
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:662
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1518
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1550
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:461
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:486
+msgid "Yes"
+msgstr "Igen"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:580
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:662
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1550
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
+msgid "No"
+msgstr "Nem"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:581
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:663
+msgid "Freight"
+msgstr "Teher"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:581
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:663
+msgid "Pass"
+msgstr "Személy"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:603
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1130
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1161
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1188
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1449
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1470
+msgid "Car"
+msgstr "Kocsi"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:604
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:804
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1528
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1552
+msgid "Flipped"
+msgstr "Fordított"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:606
+msgid "InterT"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:608
+msgid "H/AUnit"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:609
+#, fuzzy
+#| msgid "Type"
+msgid "HeatType"
+msgstr "Típus"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:610
+#, fuzzy
+#| msgid "Diesel Tank"
+msgid "DieselVol"
+msgstr "Dízel üzemanyagtartály"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:611
+#, fuzzy
+#| msgid "Doors open"
+msgid "Doors"
+msgstr "Ajtók nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:614
+msgid "Drv/Cabs"
+msgstr "Vezethető"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:615
+msgid "Wheels"
+msgstr "Tengelyek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:616
+#, fuzzy
+#| msgid "Mass"
+msgid "A1 Mass"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:617
+#, fuzzy
+#| msgid "Mass"
+msgid "A2 Mass"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:618
+#, fuzzy
+#| msgid "Mass"
+msgid "A3 Mass"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:619
+#, fuzzy
+#| msgid "Mass"
+msgid "A4 Mass"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:620
+#, fuzzy
+#| msgid "Speed"
+msgid "A1 Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:621
+#, fuzzy
+#| msgid "Speed"
+msgid "A2 Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:622
+#, fuzzy
+#| msgid "Speed"
+msgid "A3 Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:623
+#, fuzzy
+#| msgid "Speed"
+msgid "A4 Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:624
+#, fuzzy
+#| msgid "Speed"
+msgid "A5 Speed"
+msgstr "Sebesség"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:642
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:651
+#, fuzzy
+#| msgid "Diesel Tank"
+msgid "DieselHeat"
+msgstr "Dízel üzemanyagtartály"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:645
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:657
+#, fuzzy
+#| msgid "Heat"
+msgid "ElecHeat"
+msgstr "Vill.fűtés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:648
+#, fuzzy
+#| msgid "Steam"
+msgid "SteamHeat"
+msgstr "Gőz"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:654
+msgid "Calorifer"
+msgstr "Kalorifer"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:665
+#, fuzzy
+#| msgid "Inactive"
+msgid "Active"
+msgstr "Inaktív"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:666
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:611
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:839
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:320
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:630
+msgid "On"
+msgstr "Be"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:666
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:762
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:844
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:847
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:330
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:503
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:630
+msgid "Off"
+msgstr "Ki"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:732
+msgid "LOCOMOTIVE INFORMATION"
+msgstr "MOZDONY INFORMÁCIÓI"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:783
+msgid "Route Voltage"
+msgstr "Felsővezeték fesz."
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:785
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1013
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1022
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1037
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1047
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1074
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:2097
+msgid "PlayerLoco"
+msgstr "VezetettGép"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:800
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1098
+msgid "Loco"
+msgstr "Mozdony"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:806
+msgid "MU'd"
+msgstr "Távvez"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:812
+#, fuzzy
+#| msgid "Power"
+msgid "TracPower"
+msgstr "Főmegszakító "
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:814
+#, fuzzy
+#| msgid "Force"
+msgid "TracForce"
+msgstr "Erők"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:817
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:111
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:799
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:95
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:548
+msgid "Gear"
+msgstr "Seb.fokozat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:820
+msgid "Fuel"
+msgstr "Üzemanyag"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:821
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:101
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:85
+msgid "Circuit breaker"
+msgstr "Főmegszakító"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:825
+msgid "TCS"
+msgstr "VB"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:828
+#, fuzzy
+#| msgid "Power"
+msgid "PowerDE"
+msgstr "Főmegszakító "
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:829
+msgid "Driver"
+msgstr "Vezető"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:832
+#, fuzzy
+#| msgid "Load"
+msgid "LoadDE"
+msgstr "Terhelés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:833
+#, fuzzy
+#| msgid "Auxiliary power"
+msgid "Auxiliar power"
+msgstr "Segédáram"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:836
+msgid "RpmDE"
+msgstr "Fordulat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:837
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:852
+#, fuzzy
+#| msgid "Type"
+msgid "CarType"
+msgstr "Típus"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:840
+#, fuzzy
+#| msgid "Consist"
+msgid "ConsDE"
+msgstr "Szerelv"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:844
+#, fuzzy
+#| msgid "Temp:"
+msgid "TempDE"
+msgstr "Hőmérs:"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:845
+msgid "PantoVoltage"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:848
+#, fuzzy
+#| msgid "Press"
+msgid "OilPressDE"
+msgstr "Nyom"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:996
+msgid "BRAKE INFORMATION"
+msgstr "FÉKINFORMÁCIÓK"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1014
+#, fuzzy
+#| msgid "Exhaust"
+msgid "Exhauster"
+msgstr "Kiiktatva"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1023
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1038
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1048
+msgid "Large Ejector"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1025
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1050
+msgid "Small Ejector"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1027
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1052
+#, fuzzy
+#| msgid "Low Pressure"
+msgid "Pressure"
+msgstr "Alacsony nyomáson tartás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1029
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1040
+msgid "Vacuum Pump"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1058
+#, fuzzy
+#| msgid "Brakes"
+msgid "Brake Sys Vol"
+msgstr "Fékek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1059
+#, fuzzy
+#| msgid "Train List"
+msgid "Train Pipe"
+msgstr "Vonatok listája"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1061
+#, fuzzy
+#| msgid "Brake"
+msgid "Brake Cyl"
+msgstr "Fékező"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1063
+msgid "Air Vol"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1075
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1100
+msgid "Main reservoir"
+msgstr "Főlégtartály"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1077
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1102
+#, fuzzy
+#| msgid "Compressor"
+msgid "Compressor I"
+msgstr "Légsűrítő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1079
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1104
+#, fuzzy
+#| msgid "Compressor"
+msgid "Compressor II"
+msgstr "Légsűrítő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1081
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1106
+#, fuzzy
+#| msgid "Compressor"
+msgid "AuxCompressor"
+msgstr "Segédégsűrítő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1134
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1192
+msgid "BrkCyl"
+msgstr "Fékheng"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1136
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1194
+msgid "BrkPipe"
+msgstr "Fővez"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1138
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1251
+msgid "VacRes"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1149
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1181
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1208
+msgid "Handbrk"
+msgstr "Kézifék"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1151
+msgid "Conn"
+msgstr "Csatlás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1153
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1212
+msgid "AnglCock"
+msgstr "Végelzáró"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1165
+#, fuzzy
+#| msgid "Brake"
+msgid "Brk"
+msgstr "Fékező"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1196
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1257
+msgid "AuxRes"
+msgstr "KészlLT"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1204
+msgid "TripleValve"
+msgstr "Kormányszelep"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1210
+msgid "AirHoses"
+msgstr "Tömlők"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1214
+msgid "BleedOff"
+msgstr "KieresztőSz"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1216
+msgid "AntiSkid"
+msgstr "Csúszásv."
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1218
+#, fuzzy
+#| msgid "BrkPipe"
+msgid "LeakBrkPipes"
+msgstr "Fővez"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1222
+#, fuzzy
+#| msgid "BrkPipe"
+msgid "VolBrkPipes"
+msgstr "Fővez"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1224
+#, fuzzy
+#| msgid "BrkCyl"
+msgid "VolBrkCyl"
+msgstr "Fékheng"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1226
+msgid "VolMainRes"
+msgstr "Főlégt"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1228
+#, fuzzy
+#| msgid "Mode"
+msgid "BrkMode"
+msgstr "Mód"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1230
+#, fuzzy
+#| msgid "Mass"
+msgid "BrkMass"
+msgstr "Féktömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1364
+msgid "FORCE INFORMATION"
+msgstr "ERŐINFORMÁCIÓK"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1382
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1391
+#, fuzzy
+#| msgid "(Advanced adhesion model disabled)"
+msgid "(Advanced adhesion model)"
+msgstr "(Fejlett csúszási modell kikapcsolva)"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1383
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1408
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1416
+msgid "Loco Adhesion"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1384
+msgid "Wag Adhesion"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1385
+#, fuzzy
+#| msgid "Force"
+msgid "Tang. Force"
+msgstr "Erők"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1386
+#, fuzzy
+#| msgid "Static"
+msgid "Static Force"
+msgstr "Statikus"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1393
+msgid "Conditions"
+msgstr "Csúszási állapot"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1394
+msgid "Axle drive force"
+msgstr "Tengely hajtóerő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1396
+msgid "Axle brake force"
+msgstr "Tengely fékezőerő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1397
+msgid "Number of substeps"
+msgstr "Allépések száma"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1399
+msgid "Solver"
+msgstr "Számítóképlet"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1400
+msgid "Stability correction"
+msgstr "Stabilitási korrekció"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1401
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1415
+msgid "Axle out force"
+msgstr "Tengely eredő erő"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1404
+#, fuzzy
+#| msgid "Wheel slip"
+msgid "Wheel Speed"
+msgstr "Kerékmegperdülés"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1409
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1417
+msgid "Wagon Adhesion"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1414
+#, fuzzy
+#| msgid "(Advanced adhesion model disabled)"
+msgid "(Simple adhesion model)"
+msgstr "(Fejlett csúszási modell kikapcsolva)"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1427
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1436
+msgid "ResWind:"
+msgstr "Szél"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1428
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1437
+#, fuzzy
+#| msgid "Speed:"
+msgid "ResSpeed:"
+msgstr "Sebesség:"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1433
+#, fuzzy
+#| msgid "Speed:"
+msgid "Wind Speed:"
+msgstr "Sebesség:"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1434
+#, fuzzy
+#| msgid "Direction"
+msgid "Wind Direction:"
+msgstr "Irány"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1435
+#, fuzzy
+#| msgid "Direction"
+msgid "Train Direction:"
+msgstr "Irány"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1450
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1479
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1480
+msgid "Coupler"
+msgstr "Vonókész"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1451
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1481
+msgid "Slack"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1452
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1482
+msgid "Mass"
+msgstr "Tömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1454
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1476
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1484
+msgid "Curve"
+msgstr "Ívellenáll"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1455
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1485
+msgid "Brk Frict."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1456
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1486
+msgid "Brk Slide"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1457
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1487
+#, fuzzy
+#| msgid "Temp"
+msgid "Bear Temp"
+msgstr "Hőm"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1471
+msgid "Total"
+msgstr "Össz"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1472
+msgid "Motive"
+msgstr "Mozgató"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1473
+msgid "Brake"
+msgstr "Fékező"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1474
+msgid "Friction"
+msgstr "Súrlód"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1475
+msgid "Gravity"
+msgstr "Gravit"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1477
+msgid "Tunnel"
+msgstr "Alagút"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1478
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1825
+msgid "Wind"
+msgstr "Szél"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1573
+#, fuzzy
+#| msgid "DISPATCHER INFORMATION"
+msgid "DISPATCHER INFORMATION : active trains : "
+msgstr "FORGALOMIRÁNYÍTÁSI INFORMÁCIÓK"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1581
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1591
+msgid "Train"
+msgstr "Vonat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1582
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1602
+msgid "Consist"
+msgstr "Szerelv"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1583
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1603
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1887
+msgid "Path"
+msgstr "Útvonal"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1592
+msgid "Travelled"
+msgstr "MegtettÚt"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1594
+msgid "Max"
+msgstr "Max"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1595
+msgid "AI mode"
+msgstr "AI mód"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1596
+msgid "AI data"
+msgstr "AI adatok"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1597
+msgid "Mode"
+msgstr "Mód"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1598
+msgid "Auth"
+msgstr "Engedély"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1600
+msgid "Signal"
+msgstr "Jelző"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1813
+#, fuzzy
+#| msgid "DISPATCHER INFORMATION"
+msgid "WEATHER INFORMATION"
+msgstr "FORGALOMIRÁNYÍTÁSI INFORMÁCIÓK"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1821
+msgid "Visibility"
+msgstr "Láthatótávolság"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1822
+msgid "Cloud cover"
+msgstr "Felhőtakaró"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1823
+msgid "Intensity"
+msgstr "Intenzitás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1824
+msgid "Liquidity"
+msgstr "Csapadék halmazállapota"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1826
+#, fuzzy
+#| msgid "Temp"
+msgid "Amb Temp"
+msgstr "Hőm"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1831
+msgid "DEBUG INFORMATION"
+msgstr "HIBAKERESÉSI INFORMÁCIÓK"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1843
+msgid "Logging enabled"
+msgstr "Naplózás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1844
+msgid "Build"
+msgstr "Fordítás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1846
+msgid "CPU"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1847
+msgid "GPU"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1848
+msgid "Adapter"
+msgstr "Adapter"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1853
+msgid "Shadow maps"
+msgstr "Árnyéktérképek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1855
+msgid "Shadow primitives"
+msgstr "Árnyék primitívek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1858
+msgid "Render primitives"
+msgstr "Render primitívek"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1859
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1861
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1862
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+msgid "wait"
+msgstr "várakozás"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+msgid "Total process"
+msgstr "Összes folyamat"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1864
+msgid "Camera"
+msgstr "Kamera"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1398
+#, csharp-format
+msgid "filtered by {0:F0}"
+msgstr "szűrő: {0:F0}"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1821
+#, fuzzy, csharp-format
+#| msgid "{0:F0} material"
+#| msgid_plural "{0:F0} materials"
+msgid "{0:N0} m"
+msgstr "{0: F0} anyag"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1822
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1824
+#, fuzzy, csharp-format
+#| msgid "{0:F0} tile"
+#| msgid_plural "{0:F0} tiles"
+msgid "{0:F0} %"
+msgstr "{0:F0} mező"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1823
+#, csharp-format
+msgid "{0:F4} p/s/m^2"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1825
+#, csharp-format
+msgid "{0:F1},{1:F1} m/s"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1845
+#, csharp-format
+msgid ""
+"{0:F0} MB ({5}, {6}, {7}, {8}, {9}, {10}, {1:F0} MB managed, {11:F0} kB/"
+"frame allocated, {2:F0}/{3:F0}/{4:F0} GCs)"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1846
+#, csharp-format
+msgid "{0:F0}% ({1})"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1847
+#, csharp-format
+msgid "{0:F0} FPS (50th/95th/99th percentiles {1:F1} / {2:F1} / {3:F1} ms) "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1848
+#, csharp-format
+msgid "{0} ({1:F0} MB) ({2:F0} pixels x {3:F0} pixels)"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1851
+#, csharp-format
+msgid "{0}/{1}"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1852
+#, csharp-format
+msgid "({0}x{0})"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1855
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1858
+#, csharp-format
+msgid "{0:F0}"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1859
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1860
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1861
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1862
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1863
+#, csharp-format
+msgid "{0:F0}% ({1:F0}% {2})"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1846
+#, csharp-format
+msgid "{0} logical processor"
+msgid_plural "{0} logical processors"
+msgstr[0] "{0} logikai processzor"
+msgstr[1] "{0} logikai processzor"
+
+#. Context: Cab
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:579
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:672
+#, fuzzy
+#| msgid "R"
+msgctxt "Cab"
+msgid "R"
+msgstr "B"
+
+#. Context: Cab
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:579
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:672
+#, fuzzy
+#| msgid "F"
+msgctxt "Cab"
+msgid "F"
+msgstr "A"
+
+#. Context: Cab
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:672
+#, fuzzy
+#| msgid "3D"
+msgctxt "Cab"
+msgid "D"
+msgstr "3D"
+
+#. Context: Steam
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:769
+msgctxt "Steam"
+msgid "Reverser"
+msgstr "Vezérmű"
+
+#. Context: NonSteam
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:769
+msgctxt "NonSteam"
+msgid "Reverser"
+msgstr "Irányváltó"
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:86
+#, fuzzy
+#| msgid "MultiPlayerStatus: "
+msgid "MultiPlayer Info"
+msgstr "MultiPlayer Állapot: "
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:136
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:196
+msgid "NwLn"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:378
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:325
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:359
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:371
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:373
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:410
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:279
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:167
+msgid "Sprtr"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:379
+#, fuzzy
+#| msgid "MultiPlayerStatus: "
+msgid "MultiPlayerStatus:"
+msgstr "MultiPlayer Állapot: "
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:381
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:388
+msgid "Helper"
+msgstr "Segéd"
+
+#: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:386
+msgid "Status:"
+msgstr "Állapot:"
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:62
+msgid "Next Station"
+msgstr "Menetrend"
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:85
+#, fuzzy
+#| msgid "Max"
+msgid "Pax"
+msgstr "Max"
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:195
+msgid "Waiting for train to attach"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:201
+msgid "Waiting for train to attach : "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:214
+msgid "Waiting for transfer"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:230
+#, fuzzy
+#| msgid "Train not active."
+msgid "Train inactive."
+msgstr "A vonat inaktív."
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:234
+#, fuzzy
+#| msgid "Train not active."
+msgid "Train static."
+msgstr "A vonat inaktív."
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:238
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:464
+msgid "Train not active."
+msgstr "A vonat inaktív."
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:244
+msgid " Activated by other train."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:248
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:473
+msgid " Activation time : "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:253
+#, fuzzy
+#| msgid "Your train has overturned."
+msgid "Train has terminated."
+msgstr "A vonat felborult."
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:306
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:526
+msgid "No more stations."
+msgstr "Nincs több állomás."
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:356
+msgid "Transfer units at next station with train "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:366
+msgid "Transfer units with train "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:398
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:404
+msgid "Train is to attach to : "
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:406
+msgid " ; other train not yet ready"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:415
+msgid "Train is to pickup train at end of path"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:420
+msgid "Pick up train ahead"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:430
+msgid "Transfer units with train ahead"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:668
+msgid "Activity completed."
+msgstr "Szolgálat teljesítve."
+
+#: ../../RunActivity/Viewer3D/Popups/NoticeWindow.cs:96
+#, csharp-format
+msgid "Odometer {0}"
+msgstr "Útmérő {0}"
+
+#: ../../RunActivity/Viewer3D/Popups/NoticeWindow.cs:111
+#, csharp-format
+msgid "FOV: {0:F0}°"
+msgstr "Látószög: {0:F0}°"
+
+#: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:25
+#, fuzzy
+#| msgid "Passenger"
+msgid "Passenger Info"
+msgstr "Utas"
+
+#: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:37
+msgid "Jméno"
+msgstr "Név"
+
+#: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:38
+#, fuzzy
+#| msgid "Distance"
+msgid "Ze stanice"
+msgstr "Távolság"
+
+#: ../../RunActivity/Viewer3D/Popups/PaxWindow.cs:39
+#, fuzzy
+#| msgid "Distance"
+msgid "Do stanice"
+msgstr "Távolság"
+
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:32
+msgid "Pause Menu"
+msgstr "Szünet"
+
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:51
+#, csharp-format
+msgid "Save your game ({0})"
+msgstr "Játék mentése ({0})"
+
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:59
+#, csharp-format
+msgid "Continue playing ({0})"
+msgstr "Játék folytatása ({0})"
+
+#: ../../RunActivity/Viewer3D/Popups/SwitchWindow.cs:50
+msgid "Switch"
+msgstr "Váltó"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:236
+msgid "Track Monitor"
+msgstr "Pályafigyelő"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:240
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:231
+msgid "Auto Signal"
+msgstr "KÖFI"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:241
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:232
+msgid "Node"
+msgstr "Csomóponti"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:242
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:233
+msgid "Manual"
+msgstr "Kézi forgalomirányítás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:243
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:234
+msgid "Explorer"
+msgstr "Vonalbejárás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:244
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:235
+msgid "OutOfControl : "
+msgstr "Irányítás nélkül : "
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:245
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:236
+msgid "Inactive"
+msgstr "Inaktív"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:246
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:237
+#, fuzzy
+#| msgid "Timetable"
+msgid "Turntable"
+msgstr "Menetrend"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:247
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:238
+msgid "Unknown"
+msgstr "Ismeretlen"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:264
+msgid "Speed:"
+msgstr "Sebesség:"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:269
+msgid "Projected:"
+msgstr "Előrejelzett:"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:274
+msgid "Limit:"
+msgstr "Megengedett:"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:287
+msgid " Milepost   Limit     Dist"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:320
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:297
+#, fuzzy
+#| msgid "Projected:"
+msgid "Projected"
+msgstr "Előrejelzett:"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:324
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:409
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:304
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:361
+#, fuzzy
+#| msgid "Limit:"
+msgid "Limit"
+msgstr "Megengedett:"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:364
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:119
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:568
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:331
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:103
+#, fuzzy
+#| msgctxt "Steam"
+#| msgid "Reverser"
+msgid "Reverser"
+msgstr "Vezérmű"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:368
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:338
+msgid "Cab ORIEN"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:368
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:339
+#, fuzzy
+#| msgid "forward"
+msgid "Forward"
+msgstr "előremenet"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:368
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:339
+#, fuzzy
+#| msgid "Back"
+msgid "Backward"
+msgstr "EllenNy"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:409
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:360
+msgid "Milepost"
+msgstr "Szelvény"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:409
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:362
+#, fuzzy
+#| msgid "Distance"
+msgid "Dist"
+msgstr "Távolság"
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:840
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:976
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:992
+#: ../../RunActivity/Viewer3D/WebServices/TrackMonitorDisplay.cs:606
+msgid "SprtrDarkGray"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:847
+msgid "SprtrRed"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:1611
+#: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:1620
+#, fuzzy
+#| msgid "Activity completed."
+msgid "Completed."
+msgstr "Szolgálat teljesítve."
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:97
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:81
+msgid "AUTO"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:98
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:781
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:792
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:82
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:517
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:535
+msgid "Boiler pressure"
+msgstr "Kazánnyomás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:98
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:82
+msgid "PRES"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:99
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:83
+#, fuzzy
+#| msgid "Boiler water level"
+msgid "Boiler water glass"
+msgstr "Kazánvízszint"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:99
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:83
+msgid "WATR"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:100
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:84
+msgid "Boiler water level"
+msgstr "Kazánvízszint "
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:100
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:84
+msgid "LEVL"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:101
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:85
+msgid "CIRC"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:102
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:595
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:86
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:305
+#, fuzzy
+#| msgid "Cylinder Cocks"
+msgid "Cylinder cocks"
+msgstr "Hengercsapok"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:102
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:86
+msgid "CCOK"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:103
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:87
+msgid "DIRC"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:104
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:88
+msgid "DOOR"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:105
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:89
+msgid "BDYN"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:106
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:90
+msgid "BLOC"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:107
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:811
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:91
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:594
+msgid "Engine"
+msgstr "Gép"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:107
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:91
+msgid "ENGN"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:108
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:92
+msgid "Fire mass"
+msgstr "Tűztömeg"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:108
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:92
+msgid "FIRE"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:109
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:93
+msgid "Fixed gear"
+msgstr "Rögzített seb.fokozat"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:109
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:111
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:93
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:95
+msgid "GEAR"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:110
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:794
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:94
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:540
+msgid "Fuel levels"
+msgstr "Készletszintek"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:110
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:94
+msgid "FUEL"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:112
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:96
+msgid "GRAD"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:113
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:858
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:861
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:864
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:97
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:640
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:648
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:657
+#, fuzzy
+#| msgid "Grate"
+msgid "Grate limit"
+msgstr "Rostély"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:113
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:97
+msgid "GRAT"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:114
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:805
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:98
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:572
+msgid "Pantographs"
+msgstr "Áramszedők"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:114
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:98
+msgid "PANT"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:115
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:99
+msgid "Power"
+msgstr "Főmegszakító "
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:115
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:99
+msgid "POWR"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:116
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:100
+msgid "REGL"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:117
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:101
+msgid "RPLY"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:118
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:102
+msgid "RETN"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:119
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:103
+msgid "REVR"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:120
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:605
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:611
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:618
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:104
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:319
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:329
+msgid "Sander"
+msgstr "Homokoló"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:120
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:104
+msgid "SAND"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:121
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:105
+msgid "SPED"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:122
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:778
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:106
+msgid "Steam usage"
+msgstr "Gőzfelhasználás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:122
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:106
+msgid "STEM"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:123
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:107
+msgid "THRO"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:124
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:108
+msgid "TIME"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:125
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:109
+msgid "BTRN"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:126
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:869
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:871
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:873
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:875
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:110
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:667
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:675
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:683
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:691
+#, fuzzy
+#| msgid "Wheels"
+msgid "Wheel"
+msgstr "Tengelyek"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:126
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:110
+msgid "WHEL"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:131
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:115
+#, fuzzy
+#| msgid "Full Service"
+msgid "apply Service"
+msgstr "Teljes üzem"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:131
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:115
+msgid "Apply"
+msgstr "Működtetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:132
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:116
+#, fuzzy
+#| msgid "Apply"
+msgid "Apply Quick"
+msgstr "Működtetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:132
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:116
+#, fuzzy
+#| msgid "Apply"
+msgid "ApplQ"
+msgstr "Működtetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:133
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:117
+msgid "Apply Slow"
+msgstr "Működtetés "
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:133
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:117
+#, fuzzy
+#| msgid "Apply"
+msgid "ApplS"
+msgstr "Működtetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:813
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
+msgid "coal"
+msgstr "szén"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
+msgid "c"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:135
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:119
+msgid "Emergency Braking Push Button"
+msgstr "Vészfék ütőgomb"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:135
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:119
+msgid "EmerBPB"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:136
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:120
+msgid "Lap Self"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:136
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:120
+msgid "LapS"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:137
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:121
+msgid "Minimum Reduction"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:137
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:121
+msgid "MRedc"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:138
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:122
+#, fuzzy
+#| msgid "(safe range)"
+msgid "safe range"
+msgstr "(biztonságos)"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:138
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:122
+msgid "safe"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:139
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:873
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:123
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:684
+msgid "skid"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:139
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:123
+msgid "Skid"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:140
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:871
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:124
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:676
+#, fuzzy
+#| msgid "Wheel slip warning"
+msgid "slip warning"
+msgstr "Kerékmegperdülési figyelmeztetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:140
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:124
+msgid "Warning"
+msgstr "Figyelmeztetés"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:141
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:869
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:125
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:668
+msgid "slip"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:141
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:125
+msgid "Slip"
+msgstr "Csúszás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:812
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
+msgid "water"
+msgstr "víz"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
+msgid "w"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:146
+msgid "Train Driving Info"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:491
+#, fuzzy
+#| msgid "Car"
+msgid "bar"
+msgstr "Kocsi"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:492
+msgid "inHg"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:493
+msgid "kgf/cm²"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:494
+msgid "kPa"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:495
+msgid "psi"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:496
+msgid "lib./pal."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:497
+msgid "pal.rtuti"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:595
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:295
+msgid "Open"
+msgstr "Nyitva"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:595
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:892
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:300
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:718
+msgid "Closed"
+msgstr "Zárva"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:605
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:320
+msgid "Blocked"
+msgstr "Blokkolva"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:632
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:634
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:637
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:345
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:360
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:369
+msgid "EQ"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:638
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:645
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:658
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:689
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:691
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:695
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:712
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:716
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:370
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:379
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:394
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:437
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:439
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:446
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:464
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:471
+msgid "BC"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:642
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:644
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:646
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:650
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:673
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:675
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:679
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:376
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:378
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:380
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:385
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:413
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:415
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:421
+msgid "EOT"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:665
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:667
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:668
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:672
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:402
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:404
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:405
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:412
+msgid "Lead"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:732
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:742
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:495
+#, fuzzy
+#| msgid "setup"
+msgid "Setup"
+msgstr "beállítás"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:807
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:578
+#, fuzzy
+#| msgctxt "Pantograph"
+#| msgid "Up"
+msgid "Up"
+msgstr "Fent"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:858
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:641
+msgid "Exceeded"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:884
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:886
+msgid "Right"
+msgstr "Jobb"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:884
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:886
+msgid "Left"
+msgstr "Bal"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:32
+msgid "Train List"
+msgstr "Vonatok listája"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:44
+msgid "Number"
+msgstr "Szám"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:45
+msgid "Service Name"
+msgstr "Szervíznév"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:46
+msgid "Viewed"
+msgstr "Figyelt"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:165
+msgid "Train in turntable not aligned to a track can't be selected"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:170
+msgid "Player train can't be switched when in turntable not aligned to a track"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:39
+msgid "Train Operations"
+msgstr "Vonatvizsgálat"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:127
+msgid "In Timetable Mode uncoupling using this window is not allowed"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:42
+#, fuzzy
+#| msgid "Timetable"
+msgid "Timetable Detach Menu"
+msgstr "Menetrend"
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:52
+msgid "This train is about to split."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:61
+msgid "Use 'cab switch' command to select cab in required portion."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:67
+#, fuzzy
+#| msgid "Performance"
+msgid "Perform Detach"
+msgstr "Teljesítmény"
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:91
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:96
+msgid "static consist"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:100
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:105
+msgid "Rear"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:101
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:104
+msgid "Front"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:110
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:115
+#, fuzzy, csharp-format
+#| msgid "Held for connecting train : "
+msgid "This portion will continue as train : {0}"
+msgstr "Várakoztatás csatlakozó vonat miatt: "
+
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:111
+#: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:116
+#, fuzzy, csharp-format
+#| msgid "Held for connecting train : "
+msgid "{0} portion will form train : {1}"
+msgstr "Várakoztatás csatlakozó vonat miatt: "
+
+#: ../../RunActivity/Viewer3D/Popups/WindowText.cs:152
+msgid ""
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 \",.-+|!$%&/"
+"()=?;:'_[]"
+msgstr ""
+"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 \",.-+|!$%&/"
+"()=?;:'_[] ÁÍŰŐÜÖÚÓÉáíűőüöúóé"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:1206
+#, csharp-format
+msgid "Activity Save file '*.save' not found in folder {0}"
+msgstr "A {0} könyvtár nem tartalmaz '*.save' mentést"
+
+#: ../../RunActivity/Viewer3D/Processes/SoundProcess.cs:358
+#, fuzzy, csharp-format
+#| msgid "{0:F0} texture"
+#| msgid_plural "{0:F0} textures"
+msgid "{0:F0} sound source"
+msgid_plural "{0:F0} sound sources"
+msgstr[0] "{0: F0} textúra"
+msgstr[1] "{0: F0} textúra"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:808
+msgid "freight-grain"
+msgstr "szemestermény"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:809
+msgid "freight-coal"
+msgstr "szén"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:810
+msgid "freight-gravel"
+msgstr "kavics"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:811
+msgid "freight-sand"
+msgstr "homok"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:814
+msgid "diesel oil"
+msgstr "dízelolaj"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:815
+msgid "wood"
+msgstr "fa"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:816
+msgid "sand"
+msgstr "homok"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:817
+#, fuzzy
+#| msgid "freight-gravel"
+msgid "freight-general"
+msgstr "kavics"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:818
+#, fuzzy
+#| msgid "freight-gravel"
+msgid "freight-livestock"
+msgstr "Élőállat"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:819
+#, fuzzy
+#| msgid "freight-gravel"
+msgid "freight-fuel"
+msgstr "Üzemanyag"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:820
+#, fuzzy
+#| msgid "freight-coal"
+msgid "freight-milk"
+msgstr "Tej"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:821
+msgid "mail"
+msgstr "Posta"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:950
+msgid "Refill: Immediate refill process selected, refilling immediately."
+msgstr "Feltöltés: Azonnali feltöltés aktiválva."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:971
+msgid "Refill: Electric loco and no pickup. Command rejected"
+msgstr "Feltöltés: Villanymozdony üzemanyag nélkül. Parancs visszautasítva"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1087
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1106
+msgid "Incompatible pickup type"
+msgstr "Nem megfelelő üzemanyag"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1093
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1111
+msgid "Starting refill"
+msgstr "A feltöltés megkezdődött"
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:978
+#, csharp-format
+msgid "Refill: Distance to {0} supply is {1}."
+msgstr "Feltöltés: A {0} töltőhelyétől való távolság {1}."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:986
+#, csharp-format
+msgid "Refill: Loco must be stationary to refill {0}."
+msgstr ""
+"Feltöltés: A mozdonynak álló helyzetben kell lennie a {0} feltöltéséhez."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:992
+#, csharp-format
+msgid "Refill: Loco speed must exceed {0}."
+msgstr "Feltöltés: A mozdony sebességének magasabbnak kell lennie {0}-nál."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:999
+#, csharp-format
+msgid "Refill: Loco speed must not exceed {0}."
+msgstr "Feltöltés: A mozdony sebessége nem lehet több {0}-nál."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1017
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1038
+#, csharp-format
+msgid "Refill: {0} supply now replenished."
+msgstr "Feltöltés: A {0} feltöltve a vételezési helyen."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1044
+#, fuzzy, csharp-format
+#| msgid "Refill: {0} fuel or freight now unloaded."
+msgid "Unload: {0} fuel or freight now unloaded."
+msgstr "Feltöltés: {0} vagy teher kirakodva."
+
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:979
+#, csharp-format
+msgid "{0} meter"
+msgid_plural "{0} meters"
+msgstr[0] "{0} méter"
+msgstr[1] "{0} méter"
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:503
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:513
+msgid "Next"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DriverMachineInterface.cs:530
+#, fuzzy
+#| msgid "Closed"
+msgid "Close"
+msgstr "Zárva"
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/PlanningWindow.cs:95
+msgid "Scale Up"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/PlanningWindow.cs:96
+msgid "Scale Down"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/TextMessages.cs:57
+#, fuzzy
+#| msgid "acknowledge"
+msgid "Acknowledge"
+msgstr "törölve"
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/TextMessages.cs:66
+msgid "Scroll Up"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/TextMessages.cs:74
+msgid "Scroll Down"
+msgstr ""
+
+#~ msgid "3D Cab view not available"
+#~ msgstr "3D vezérállásnézet nem elérhető"
+
+#~ msgid "DispatchViewer"
+#~ msgstr "Irányítóablak"
+
+#~ msgid "Toggle MU Connection"
+#~ msgstr "Távvezérlőkábel (szét)csatolása"
+
+#~ msgid "MU signal disconnected"
+#~ msgstr "Távvezérlő kábel szétcsatolva"
+
+#~ msgid "Sander on"
+#~ msgstr "Homokoló üzemben"
+
+#~ msgid "Flow"
+#~ msgstr "Fogyaszt."
+
+#~ msgid "Oil"
+#~ msgstr "Olaj"
+
+#~ msgid "ErgRes"
+#~ msgstr "VészLT"
+
+#~ msgid "MRPipe"
+#~ msgstr "FőlégVez"
+
+#~ msgid "RetValve"
+#~ msgstr "Visszat"
+
+#~ msgid "Will not rotate cab and land"
+#~ msgstr "Nincs vezérállás-elforgatás"
+
+#, csharp-format
+#~ msgid "Rotating cab {0}/4, rotating land {1}/4"
+#~ msgstr "Vezérállás elforgatása {0}/4, horizont elforgatása {1}/4"
+
+#~ msgid "0"
+#~ msgstr "0"
+
+#, csharp-format
+#~ msgid "Camera: {0}"
+#~ msgstr "{0}nézet"
+
+#~ msgid " Dist      Speed   Aspect"
+#~ msgstr " Táv.      Sebesség  Kép"
+
+#~ msgid "No scoop in this loco"
+#~ msgstr "Nincs merítő a mozdonyban"
+
+#~ msgid "Scoop is broken, can't refill"
+#~ msgstr "A merítő törött, nem lehet feltölteni"
+
+#~ msgid "Scoop broken because activated outside through"
+#~ msgstr "A merítő eltörött, mert a vályún kívül lett alkalmazva"
+
+#~ msgid "Release"
+#~ msgstr "Töltés/Oldás"
+
+#~ msgid "Quick Release"
+#~ msgstr "Gyorsoldás"
+
+#~ msgid "Neutral"
+#~ msgstr "Semleges állás"
+
+#~ msgid "EPApply"
+#~ msgstr "EP alkalmazása"
+
+#~ msgid "Lap"
+#~ msgstr "Fékhatárolás"
+
+#~ msgid "Service"
+#~ msgstr "Üzemben"
+
+#~ msgid "Suppression"
+#~ msgstr "Nyomás allatt"
+
+#~ msgid "Cont. Service"
+#~ msgstr "Folyamatos üzem"
+
+#~ msgid "Overcharge"
+#~ msgstr "Túltöltés"
+
+#~ msgid "TCS Emergency Braking"
+#~ msgstr "Vészfékbeavatkozás"
+
+#~ msgid "TCS Full Service Braking"
+#~ msgstr "Vészfékbeavatkozás 1. szint - Teljes üzem"
+
+#~ msgctxt "Brake Controller"
+#~ msgid "Running"
+#~ msgstr "Menet"
+
+#~ msgctxt "PowerSupply"
+#~ msgid "Off"
+#~ msgstr "Nincs"
+
+#~ msgctxt "PowerSupply"
+#~ msgid "On ongoing"
+#~ msgstr "(Be)"
+
+#~ msgctxt "PowerSupply"
+#~ msgid "On"
+#~ msgstr "Van"
+
+#~ msgctxt "Pantograph"
+#~ msgid "Down"
+#~ msgstr "Lent"
+
+#~ msgctxt "Pantograph"
+#~ msgid "Lowering"
+#~ msgstr "Le"
+
+#~ msgctxt "Pantograph"
+#~ msgid "Raising"
+#~ msgstr "Fel"
+
+#~ msgctxt "CircuitBraker"
+#~ msgid "Open"
+#~ msgstr "Nyitva"
+
+#~ msgctxt "CircuitBraker"
+#~ msgid "Closing"
+#~ msgstr "Zárás folyamatban"
+
+#~ msgctxt "CircuitBraker"
+#~ msgid "Closed"
+#~ msgstr "Zárva"
+
+#~ msgid "Connection to the server is lost, will play as single mode"
+#~ msgstr ""
+#~ "A kiszolgálóval való kapcsolat megszakadt, egyrésztvevős módban "
+#~ "folytatódik a játék"
+
+#~ msgid "Alt-E to gain control of your train"
+#~ msgstr "Alt+E -vel lehet visszavenni a vezérlést a vonat fölött"
+
+#~ msgid "Dispatcher does not allow hand throw at this time"
+#~ msgstr "A forgalomirányító nem engedi a váltó kézi állítását pillanatnyilag"
+
+#~ msgid "main route"
+#~ msgstr "fővágány"
+
+#~ msgid "side route"
+#~ msgstr "mellékvágány"
+
+#~ msgid "You are the new dispatcher. Enjoy!"
+#~ msgstr "Te vagy az új forgalomirányító. Élvezd!"
+
+#~ msgid "Name conflicted with people in the game, will play in single mode"
+#~ msgstr ""
+#~ "A név ütközik másik játékoséval, ezért egyrésztvevős módban folytatódik a "
+#~ "játék."
+
+#~ msgid "You gained back the control of your train"
+#~ msgstr "Visszakaptad a vezérlést a vonatod fölött."
+
+#~ msgid "Server quits, will play as single mode"
+#~ msgstr "A szerver kilépett, egyrésztvevő üzemmódban folytatódik a játék."
+
+#~ msgid "Trains uncoupled, gain back control by Alt-E"
+#~ msgstr "A vonatok szétcsatolva, Alt+E -vel lehet visszavenni a vezérlést"
+
+#~ msgid "Trains coupled, hit \\ then Shift-? to release brakes"
+#~ msgstr ""
+#~ "A vonatok összecsatolva, nyomd meg a \\-t, majd a Shift+? -t a fékek "
+#~ "oldásához."
+
+#~ msgid ""
+#~ "You are an assistant now, will be able to handle switches and signals."
+#~ msgstr ""
+#~ "Mostantól alirányító vagy, képes leszel kezelni a váltókat és jelzőket."
+
+#~ msgid "You are no longer an assistant."
+#~ msgstr "Nem vagy többé alirányító"
+
+#~ msgid "Switched, current route is {0}"
+#~ msgstr "Átváltva, a beállított vágány a {0}"
+
+#~ msgid "New dispatcher is {0}"
+#~ msgstr "Az új irányító {0}"
+
+#~ msgid "{0} quit."
+#~ msgstr "{0} kilépett."
+
+#~ msgid "{0} lost."
+#~ msgstr "{0} elveszett."
+
+#~ msgid " From {0}: {1}"
+#~ msgstr " Feladó {0}: {1}"
+
+#~ msgid "Missing car, have substituted with other one."
+#~ msgstr "Hiányzó kocsi, helyettesítve egy másikkal."
+
+#~ msgid "Cannot decouple: train has {0} player, need to completely stop."
+#~ msgid_plural ""
+#~ "Cannot decouple: train has {0} players, need to completely stop."
+#~ msgstr[0] ""
+#~ "Nem lehet szétcsatolni: a vonatnak {0} vezetője van, teljesen meg kell "
+#~ "állítani."
+#~ msgstr[1] ""
+#~ "Nem lehet szétcsatolni: a vonatnak {0} vezetője van, teljesen meg kell "
+#~ "állítani."
+
+#~ msgid "Passenger boarding completed. Waiting for signal ahead to clear."
+#~ msgstr ""
+#~ "Az utasok le- és felszállása befejeződött. Várakozás szabad kijáratra."
+
+#~ msgid "Passenger boarding completed. You may depart now."
+#~ msgstr "Az utasok le- és felszállása befejeződött. A vonat indítható."
+
+#~ msgid "Passenger boarding completes in {0:D2}:{1:D2}"
+#~ msgstr ""
+#~ "Az utasok le- és felszállása {0:D2}:{1:D2} másodpercen belül befejeződik."
+
+#~ msgid "None"
+#~ msgstr "Nincs"
+
+#~ msgid "Information"
+#~ msgstr "Tájékoztatás"
+
+#~ msgid "Error"
+#~ msgstr "Hiba"
+
+#~ msgid "MSG"
+#~ msgstr "Üzenet"
+
+#~ msgid "<none>"
+#~ msgstr "<nincs>"
+
+#~ msgid "reverse"
+#~ msgstr "hátramenet"
+
+#~ msgid "neutral"
+#~ msgstr "semleges állás"
+
+#~ msgid "locked. Close throttle, stop train then re-try."
+#~ msgstr "letiltva. Előbb zárd le a menetszabályzót és állítsd meg a vonatot."
+
+#~ msgid "locked. Release dynamic brake then re-try."
+#~ msgstr "letiltva. Előbb kapcsold ki a dinamikus féket."
+
+#~ msgid "Wheel-slip"
+#~ msgstr "Kerékmegperdülés"
+
+#~ msgid "over"
+#~ msgstr "vége"
+
+#~ msgid "occurring. Tractive power greatly reduced."
+#~ msgstr "folyamatban. A vonóerő nagymértékben lecsökkent."
+
+#~ msgid "warning"
+#~ msgstr "figyelmeztetőjel"
+
+#~ msgid "Pantograph 1"
+#~ msgstr "1-es áramszedő"
+
+#~ msgid "lower"
+#~ msgstr "le"
+
+#~ msgid "raise"
+#~ msgstr "fel"
+
+#~ msgid "Pantograph 2"
+#~ msgstr "2-es áramszedő"
+
+#~ msgid "Player Diesel Power"
+#~ msgstr "Vonógép dízelmotor"
+
+#~ msgid "locked. Close throttle then re-try."
+#~ msgstr "indítás/leállítás letiltva. Előbb zárd le a menetszabályzót."
+
+#~ msgid "Helper Diesel Power"
+#~ msgstr "Segédgép dízelmotor"
+
+#~ msgid "re-fueled"
+#~ msgstr "újratöltve"
+
+#~ msgid "level"
+#~ msgstr "szintje"
+
+#~ msgid "Injector 1"
+#~ msgstr "Baloldali gőzsugárszivattyú"
+
+#~ msgid "Injector 2"
+#~ msgstr "Jobboldali gőzsugárszivattyú"
+
+#~ msgid "Blower"
+#~ msgstr "Segédfúvó"
+
+#~ msgid "decrease"
+#~ msgstr "csökkentés"
+
+#~ msgid "increase"
+#~ msgstr "növelés"
+
+#~ msgid "Damper"
+#~ msgstr "Légcsappantyú"
+
+#~ msgid "Firebox Door"
+#~ msgstr "Tűzszekrényajtó"
+
+#~ msgid "Firing Rate"
+#~ msgstr "Tüzelőanyag-adagolás"
+
+#~ msgid "Manual Firing"
+#~ msgstr "Kézi tüzelés"
+
+#~ msgid "Fire"
+#~ msgstr "Tűz"
+
+#~ msgid "add shovel-full"
+#~ msgstr "egy egész lapát szén rádobása"
+
+#~ msgid "Cylinder Compound"
+#~ msgstr "Gőzhenger Kompaund"
+
+#~ msgid "Tender"
+#~ msgstr "Szerkocsi"
+
+#~ msgid "Coal re-filled"
+#~ msgstr "szénkészlet újratöltve"
+
+#~ msgid "Coal level"
+#~ msgstr "szénmennyiség"
+
+#~ msgid "Water re-filled"
+#~ msgstr "vízkészlet újratöltve"
+
+#~ msgid "Water level"
+#~ msgstr "vízszint"
+
+#~ msgid "release"
+#~ msgstr "oldás"
+
+#~ msgid "apply"
+#~ msgstr "alkalmazás"
+
+#~ msgid "Engine Brake"
+#~ msgstr "Kiegészítő fék"
+
+#~ msgid "Dynamic Brake"
+#~ msgstr "Dinamikus fék"
+
+#~ msgid "Emergency Brake"
+#~ msgstr "Gyorsfék"
+
+#~ msgid "Bail Off"
+#~ msgstr "Fékoldás"
+
+#~ msgid "disengage"
+#~ msgstr "befejezve"
+
+#~ msgid "engage"
+#~ msgstr "folyamatban"
+
+#~ msgid "initialize"
+#~ msgstr "üzembe helyezés"
+
+#~ msgid "cannot initialize. Stop train then re-try."
+#~ msgstr "nem üzembehelyezhetők. Előbb állítsd meg a vonatot."
+
+#~ msgid "Handbrake"
+#~ msgstr "Kézifék"
+
+#~ msgid "none"
+#~ msgstr "ki"
+
+#~ msgid "full"
+#~ msgstr "teljes üzem"
+
+#~ msgid "High Pressure"
+#~ msgstr "Magas nyomáson tartás"
+
+#~ msgid "Slow Direct"
+#~ msgstr "Elnyújtott kiömlés"
+
+#~ msgid "Brake Hose"
+#~ msgstr "Légvezetékek"
+
+#~ msgid "Alerter"
+#~ msgstr "Éberségjelzés"
+
+#~ msgid "Horn"
+#~ msgstr "Kürt"
+
+#~ msgid "Whistle"
+#~ msgstr "Mozdonysíp"
+
+#~ msgid "blow"
+#~ msgstr "megszólaltatás"
+
+#~ msgid "Bell"
+#~ msgstr "Harang"
+
+#~ msgid "ring"
+#~ msgstr "megszólaltatás"
+
+#~ msgid "Headlight"
+#~ msgstr "Homlokfény"
+
+#~ msgid "dim"
+#~ msgstr "tompított"
+
+#~ msgid "bright"
+#~ msgstr "távolsági"
+
+#~ msgid "Cab Light"
+#~ msgstr "Vezérállás világítása"
+
+#~ msgid "Wipers"
+#~ msgstr "Ablaktörlő"
+
+#~ msgid "changing is not available"
+#~ msgstr "váltás nem lehetséges"
+
+#~ msgid ""
+#~ "changing disabled. Close throttle, set reverser to neutral, stop train "
+#~ "then re-try."
+#~ msgstr ""
+#~ "váltás letiltva. Előbb zárd le a menetszabályzót, az irányváltót tedd "
+#~ "üresbe és állítsd meg a vonatot."
+
+#~ msgid "Odometer"
+#~ msgstr "Útmérő"
+
+#~ msgid "Doors Left"
+#~ msgstr "Baloldali ajtók"
+
+#~ msgid "Doors Right"
+#~ msgstr "Jobboldali ajtók"
+
+#~ msgid "Mirror"
+#~ msgstr "Tükrök"
+
+#~ msgid "retract"
+#~ msgstr "behajtás"
+
+#~ msgid "extend"
+#~ msgstr "kihajtás"
+
+#~ msgid "Switch Ahead"
+#~ msgstr "Vágányútállítás a vonat előtt"
+
+#~ msgid "locked. Use Control+M to change signals to manual mode then re-try."
+#~ msgstr ""
+#~ "letiltva. Előbb nyomj <Ctrl+M>-et a kézi forgalomirányításra váltáshoz."
+
+#~ msgid "Switch Behind"
+#~ msgstr "Vágányútállítás a vonat mögött"
+
+#~ msgid "reset"
+#~ msgstr "alaphelyzetbe állítás"
+
+#~ msgid "Uncouple After"
+#~ msgstr "Szétcsatolás hátul"
+
+#~ msgid "Activity"
+#~ msgstr "Szolgálat"
+
+#~ msgid "quit"
+#~ msgstr "befejezés"
+
+#~ msgid "resume"
+#~ msgstr "folytatás"
+
+#~ msgid "Overriding camera replay. Press Escape to resume camera replay."
+#~ msgstr ""
+#~ "Kameranézet visszajátszásának felülbírálása. Nyomd meg az <Escape>-et a "
+#~ "visszatéréshez."
+
+#~ msgid "Gearbox"
+#~ msgstr "Sebességváltó"
+
+#~ msgid "down"
+#~ msgstr "le"
+
+#~ msgid "up"
+#~ msgstr "fel"
+
+#~ msgid "locked. Use shaft before changing gear."
+#~ msgstr "lezárva. Használd a tengelykapcsolót sebességváltás előtt."
+
+#~ msgid "manual"
+#~ msgstr "kézi"
+
+#~ msgid "auto"
+#~ msgstr "központi"
+
+#~ msgid "locked. Stop train, then re-try."
+#~ msgstr "váltás letiltva. Előbb állítsd meg a vonatot."
+
+#~ msgid "Wagon"
+#~ msgstr "Vagon"
+
+#~ msgid "Wagon fully unloaded"
+#~ msgstr "A vagon teljesen kirakodva"
+
+#~ msgid "Wagon fully loaded"
+#~ msgstr "A vagon teljesen berakodva"
+
+#~ msgid "Freight load"
+#~ msgstr "Árurakodás"
+
+#~ msgid "{0} {1}"
+#~ msgstr "{0} {1}"
+
+#~ msgid "{0}"
+#~ msgstr "{0}"
+
+#~ msgid "{0} to {1:0}%"
+#~ msgstr "{0} {1:0}%-ra"
+
+#~ msgid "{0} {1:0}% {2}"
+#~ msgstr "{0} {1:0}% {2}"
+
+#~ msgid "{0:0}% {1}"
+#~ msgstr "{0:0}% {1}"
+
+#~ msgid "{0:0}%"
+#~ msgstr "{0:0}%"
+
+#~ msgid "{0} {1:0}%"
+#~ msgstr "{0} {1:0}%"
+
+#~ msgctxt "Alerter"
+#~ msgid "sound"
+#~ msgstr "megszólalt"
+
+#~ msgctxt "Horn"
+#~ msgid "sound"
+#~ msgstr "meszólaltatás"
+
+#~ msgctxt "Cab"
+#~ msgid "change"
+#~ msgstr "váltás megtörtént"
+
+#~ msgctxt "Odometer"
+#~ msgid "reset"
+#~ msgstr "nullázva"
+
+#~ msgctxt "Odometer"
+#~ msgid "counting down"
+#~ msgstr "előre számlálás"
+
+#~ msgctxt "Odometer"
+#~ msgid "counting up"
+#~ msgstr "visszafelé számlálás"
+
+#~ msgctxt "Switch"
+#~ msgid "change"
+#~ msgstr " "
+
+#~ msgid "Train can't be suspended with speed not equal 0"
+#~ msgstr "A vonat nem hagyható el nullánál nagyobb sebességnél"
+
+#~ msgid "To return to static train speed must be = 0"
+#~ msgstr ""
+#~ "Statikus vonattá való visszaalakításhoz a sebességnek nullának kell lennie"
+
+#~ msgid ""
+#~ "Player train has been included into train {0} service {1}, that "
+#~ "automatically becomes the new player train"
+#~ msgstr ""
+#~ "A vezetett vonat hozzá lett csatolva ehhez a {0}. sz. vonat {1} "
+#~ "szervízhez. Ez lesz automatikusan az új vezetett vonat"
+
+#~ msgid ""
+#~ "Join success: Train {0} service {1} has been incorporated into train {2} "
+#~ "service {3}"
+#~ msgstr ""
+#~ "Sikeres összecsatolás: {0}. sz. vonat {1} szerviz hozzá lett csatolva a "
+#~ "{2}. sz. vonat {3} szervízhez"
+
+#~ msgid "Coupler broken!"
+#~ msgstr "Vonatszakadás!"
+
+#~ msgid "Coupler overloaded!"
+#~ msgstr "A kapcsoló túlterhelt!"
+
+#~ msgid "Other train is blocking path"
+#~ msgstr "Másik vonat foglalja a vágányt"
+
+#~ msgid "Stopped due to errors in route setting"
+#~ msgstr "Pályával kapcsolatos hiba miatt megállítva"
+
+#~ msgid "No signal in train's path"
+#~ msgstr "Nincs jelző a vonat vágányútján"
+
+#~ msgid "Next signal already allocated to other train"
+#~ msgstr "A következő jelző már másik vonatnak lett beállítve"
+
+#~ msgid "Request to clear signal cannot be processed"
+#~ msgstr "A kérelem a jelző szabaddá tételére nem értelmezhető"
+
+#~ msgid "No switch found"
+#~ msgstr "Nem található váltó"
+
+#~ msgid "You cannot enter manual mode when autopiloted"
+#~ msgstr "Nem lehet helyi forgalomirányításra váltani robotpilótával."
+
+#~ msgid "You cannot use this command for pathless trains"
+#~ msgstr "Ez a parancs nem használható útvonal nélküli vonatokhoz"
+
+#~ msgid "Train is not back on original route"
+#~ msgstr "A vonat még nem tért vissza az eredeti útvonalára"
+
+#~ msgid ""
+#~ "Original route is reverse from present direction, stop train before "
+#~ "switching"
+#~ msgstr ""
+#~ "Az eredeti útvonal az ellenkező irányba vezet, állítsd meg a vonatot a "
+#~ "váltás előtt"
+
+#~ msgid "Cannot change to Manual Mode while in Explorer Mode"
+#~ msgstr "Nem lehet helyi forgalomirányításra váltani vonalbejárás közben"
+
+#~ msgid "Reversal required and rear of train not on required route"
+#~ msgstr ""
+#~ "Visszafogás lenne szükséges, de a vonat vége nincs a megfelelő vágányúton"
+
+#~ msgid "Cannot clear signal behind train while in AUTO mode"
+#~ msgstr ""
+#~ "Nem lehet a vonat mögötti jelzőt szabaddá tenni központi "
+#~ "forgalomirányítás felügyelete alatt"
+
+#~ msgid ""
+#~ "Train stopped due to problems with other train: train {0} , reason: {1}"
+#~ msgstr ""
+#~ "A vonat a {0}. sz. vonattal kapcsolatos probléma miatt lett megállítva, "
+#~ "oka: {1}"
+
+#~ msgctxt "Gear"
+#~ msgid "N"
+#~ msgstr "Üres"
+
+#~ msgid "No power line!"
+#~ msgstr "Nincs felsővezeték!"
+
+#~ msgid "Power line condition overridden."
+#~ msgstr "Felsővezeték hiánya felülbírálva."
+
+#~ msgid "OK"
+#~ msgstr "rendben"
+
+#~ msgid "NOT OK"
+#~ msgstr "letiltva"
+
+#~ msgctxt "PowerSupply"
+#~ msgid "Power"
+#~ msgstr "Feszültség"
+
+#~ msgid "Tender coal supply is empty. Your loco will fail."
+#~ msgstr "A szerkocsi szénkészlete kifogyott. A mozdony meg fog állni."
+
+#~ msgid "Tender water supply is empty. Your loco will fail."
+#~ msgstr "A szerkocsi vízkészlete kifogyott. A mozdony meg fog állni."
+
+#~ msgid "Fire has dropped too far. Your loco will fail."
+#~ msgstr "A tűz túl kicsire esett össze. A mozdony meg fog állni."
+
+#~ msgid ""
+#~ "FireMass is getting low. Your fireman will shovel faster, but don't wear "
+#~ "him out."
+#~ msgstr ""
+#~ "A tűz túl kicsi. A fűtő gyorsabban fog lapátolni, de ne fáraszd ki őt!"
+
+#~ msgid ""
+#~ "FireMass is back within limits. Your fireman will shovel as per normal."
+#~ msgstr ""
+#~ "A tűz mérete újra megfelelő határok között van. A fűtő normál tempóban "
+#~ "fog lapátolni."
+
+#~ msgid "Water level dropped too far. Plug has fused and loco has failed."
+#~ msgstr ""
+#~ "A vízszint túl alacsonyra esett vissza. A kazán kilágyult, és a mozdony "
+#~ "meghibásodott."
+
+#~ msgid "Boiler overfull and priming."
+#~ msgstr "A kazán túltöltődött, és a hengertérbe víz került."
+
+#~ msgid "Boiler no longer priming."
+#~ msgstr "A vízszint ismét megfelelő."
+
+#~ msgid "Carriage temperature is too hot, the passengers are sweating."
+#~ msgstr "A kocsikban lévő hőmérséklet túl magas, az utasoknak melegük van."
+
+#~ msgid "Carriage temperature is too cold, the passengers are freezing."
+#~ msgstr "A kocsikban lévő hőmérséklet túl alacsony, az utasok fáznak."
+
+#~ msgid "(absolute)"
+#~ msgstr "(abszolút)"
+
+#~ msgid "Fire ratio"
+#~ msgstr "Tüzelési arány"
+
+#~ msgid "Key Inputs"
+#~ msgstr "Fő bemenetek"
+
+#~ msgid "Locomotive Type:"
+#~ msgstr "Mozdonytípus:"
+
+#~ msgid "Input:"
+#~ msgstr "Bemenet:"
+
+#~ msgid "Evap"
+#~ msgstr "Elgőz"
+
+#~ msgid "Boiler"
+#~ msgstr "Kazán"
+
+#~ msgid "SuperHr"
+#~ msgstr "Túlhev"
+
+#~ msgid "FuelCal"
+#~ msgstr "Fűtőért"
+
+#~ msgid "Adj:"
+#~ msgstr "Továbbá:"
+
+#~ msgid "CylEff"
+#~ msgstr "HengHatF"
+
+#~ msgid "CylExh"
+#~ msgstr "HengNy"
+
+#~ msgid "PortOpen"
+#~ msgstr "HBeöml"
+
+#~ msgid "Steam Production"
+#~ msgstr "Gőzfejlesztés"
+
+#~ msgid "Boiler:"
+#~ msgstr "Kazán:"
+
+#~ msgid "MaxOutp"
+#~ msgstr "MaxTerm"
+
+#~ msgid "BoilerEff"
+#~ msgstr "KazHatF"
+
+#~ msgid "Heat:"
+#~ msgstr "Hő:"
+
+#~ msgid "In"
+#~ msgstr "Be"
+
+#~ msgid "Out"
+#~ msgstr "Ki"
+
+#~ msgid "Stored"
+#~ msgstr "Tárolt"
+
+#~ msgid "Flue"
+#~ msgstr "Füstgáz"
+
+#~ msgid "Water"
+#~ msgstr "Víz"
+
+#~ msgid "MaxSupH"
+#~ msgstr "TúlhMax"
+
+#~ msgid "CurSupH"
+#~ msgstr "TúlhPill"
+
+#~ msgid "Steam Usage"
+#~ msgstr "Gőzfelhasználás"
+
+#~ msgid "Usage:"
+#~ msgstr "Felhaszn:"
+
+#~ msgid "Cyl"
+#~ msgstr "Henger"
+
+#~ msgid "Comprsr"
+#~ msgstr "Légsűrítő"
+
+#~ msgid "SafetyV"
+#~ msgstr "BiztSz"
+
+#~ msgid "CylCock"
+#~ msgstr "HCsap"
+
+#~ msgid "Genertr"
+#~ msgstr "Genertr"
+
+#~ msgid "Stoker"
+#~ msgstr "Stoker"
+
+#~ msgid "MaxSafe"
+#~ msgstr "MaxBizt"
+
+#~ msgid "PressHP:"
+#~ msgstr "NyomHP:"
+
+#~ msgid "Chest"
+#~ msgstr "Kamra"
+
+#~ msgid "Initial"
+#~ msgstr "Belép"
+
+#~ msgid "Cutoff"
+#~ msgstr "Töltés"
+
+#~ msgid "PreComp"
+#~ msgstr "PreKomp"
+
+#~ msgid "MEP"
+#~ msgstr "PEffKöz"
+
+#~ msgid "PressLP:"
+#~ msgstr "NyomLP:"
+
+#~ msgid "PreAdm"
+#~ msgstr "PreBeöm"
+
+#~ msgid "Press:"
+#~ msgstr "Nyomás:"
+
+#~ msgid "Plug"
+#~ msgstr "OlvBizt"
+
+#~ msgid "Prime"
+#~ msgstr "Áradás"
+
+#~ msgid "Comp"
+#~ msgstr "Komp"
+
+#~ msgid "Fireman"
+#~ msgstr "Fűtő"
+
+#~ msgid "Fire:"
+#~ msgstr "Tűz:"
+
+#~ msgid "Ideal"
+#~ msgstr "Ideális"
+
+#~ msgid "MaxFireR"
+#~ msgstr "MaxTüz"
+
+#~ msgid "FeedRate"
+#~ msgstr "Táplálás"
+
+#~ msgid "BurnRate"
+#~ msgstr "Égés"
+
+#~ msgid "Combust"
+#~ msgstr "Tüzelés"
+
+#~ msgid "Injector:"
+#~ msgstr "Gőzsugár:"
+
+#~ msgid "Inj1"
+#~ msgstr "Gőzsug1"
+
+#~ msgid "Temp1"
+#~ msgstr "Hőm1"
+
+#~ msgid "Inj2"
+#~ msgstr "Gőzsug2"
+
+#~ msgid "Temp2"
+#~ msgstr "Hőm2"
+
+#~ msgid "Tender:"
+#~ msgstr "Szerkocsi:"
+
+#~ msgid "Coal"
+#~ msgstr "Szén"
+
+#~ msgid "CoalOut"
+#~ msgstr "NincsSzn"
+
+#~ msgid "WaterOut"
+#~ msgstr "NincsVíz"
+
+#~ msgid "FireOut"
+#~ msgstr "NincsTűz"
+
+#~ msgid "Boost"
+#~ msgstr "GyLapát"
+
+#~ msgid "Power:"
+#~ msgstr "Teljesítm:"
+
+#~ msgid "MaxInd"
+#~ msgstr "MaxMért"
+
+#~ msgid "Ind"
+#~ msgstr "Mért"
+
+#~ msgid "Drawbar"
+#~ msgstr "VonóRúd"
+
+#~ msgid "Force:"
+#~ msgstr "Erők:"
+
+#~ msgid "TheorTE"
+#~ msgstr "ElmVont"
+
+#~ msgid "StartTE"
+#~ msgstr "KezdVnt"
+
+#~ msgid "TE"
+#~ msgstr "Vontat"
+
+#~ msgid "Draw"
+#~ msgstr "Húz"
+
+#~ msgid "CritSpTE"
+#~ msgstr "KritSVT"
+
+#~ msgid "CritSpeed"
+#~ msgstr "KritSeb"
+
+#~ msgid "Move:"
+#~ msgstr "Mozgás:"
+
+#~ msgid "Piston"
+#~ msgstr "Dugattyú"
+
+#~ msgid "SpdFact"
+#~ msgstr "SebTény"
+
+#~ msgid "DrvWhl"
+#~ msgstr "HajtKer"
+
+#~ msgid "MF-Gear"
+#~ msgstr "Erő/SFok"
+
+#~ msgid "Experimental"
+#~ msgstr "Kísérleti"
+
+#~ msgid "Slip Monitor"
+#~ msgstr "Csúszásfigyelés"
+
+#~ msgid "Slip:"
+#~ msgstr "Csúszás:"
+
+#~ msgid "Tang(c)"
+#~ msgstr "TanForg"
+
+#~ msgid "Tang(t)"
+#~ msgstr "TanFutó"
+
+#~ msgid "Coeff"
+#~ msgstr "Együtth"
+
+#~ msgid "WheelM"
+#~ msgstr "KerékTm"
+
+#~ msgid "FoA"
+#~ msgstr "SúrlTény"
+
+#~ msgid "Gears can't be changed unless throttle is at zero."
+#~ msgstr ""
+#~ "Nem lehet sebességfokozatot váltani, csak ha a menetszabályzó le van "
+#~ "zárva."
+
+#~ msgctxt "HUD"
+#~ msgid "Power"
+#~ msgstr "Teljstm"
+
+#~ msgid "Starting unload"
+#~ msgstr "A kirakodás megkezdődött"
+
+#~ msgid "Incompatible data"
+#~ msgstr "Inkompatibilis adat"
+
+#~ msgid "Preparing for unload"
+#~ msgstr "Kirakodás előkészítése"
+
+#~ msgid ""
+#~ "You are travelling too fast for this curve. Slow down, your freight may "
+#~ "be damaged and your train may break a coupling or airhose."
+#~ msgstr ""
+#~ "Ehhez az ívhez túl nagy a sebesség. Lassíts, a rakomány megsérülhet, vagy "
+#~ "a vonat szétszakadhat."
+
+#~ msgid ""
+#~ "You are travelling too fast for this curve. Slow down, your passengers "
+#~ "are feeling uncomfortable and your train may break a coupling or airhose."
+#~ msgstr ""
+#~ "Ehhez az ívhez túl nagy a sebesség. Lassíts, az utasok kellemetlenül "
+#~ "érzik magukat, és a vonat szétszakadhat."
+
+#~ msgid ""
+#~ "You were travelling too fast for this curve, and have snapped a brake "
+#~ "hose. You will need to repair the hose and restart."
+#~ msgstr ""
+#~ "Túl nagy volt a sebesség ehhez az ívhez, és a fékvezeték szétszakadt. Meg "
+#~ "kell javítani a tömlőt, és újraindulni."
+
+#~ msgid ""
+#~ "Your train has overturned, and this is simulated by a broken coupler."
+#~ msgstr ""
+#~ "A vonat kiborult a sínről, és ez szétszakadt csatlással van szimulálva."
+
+#~ msgid "(flipped)"
+#~ msgstr "(ford.)"
+
+#~ msgid "Single"
+#~ msgstr "Önálló"
+
+#~ msgctxt "Engine"
+#~ msgid "Stopped"
+#~ msgstr "Leállítva"
+
+#~ msgctxt "Engine"
+#~ msgid "Starting"
+#~ msgstr "Indul"
+
+#~ msgctxt "Engine"
+#~ msgid "Running"
+#~ msgstr "Üzemben"
+
+#~ msgctxt "Engine"
+#~ msgid "Stopping"
+#~ msgstr "Leáll"
+
+#~ msgid "Compound locomotive"
+#~ msgstr "Kompaund mozdony"
+
+#~ msgid "Fixed Geared locomotive"
+#~ msgstr "Fix sebességes mozdony"
+
+#~ msgid "Selectable Geared locomotive"
+#~ msgstr "Választható sebességes mozdony"
+
+#~ msgid "Unknown Geared locomotive"
+#~ msgstr "Ismeretlen sebességes mozdony"
+
+#~ msgid "Not defined (assumed simple)"
+#~ msgstr "Nem beállított (egyszerű feltételezve)"
+
+#~ msgid "Superheater"
+#~ msgstr "Túlhevített gőz"
+
+#~ msgid "Saturated"
+#~ msgstr "Telített gőz"
+
+#~ msgid "Not defined (assumed saturated)"
+#~ msgstr "Nem meghatározott (telített gőz feltételezve)"
+
+#~ msgid "SupFact"
+#~ msgstr "TúlhAr"
+
+#~ msgid "BoilHeat"
+#~ msgstr "MaxHő"
+
+#~ msgid "BstReset"
+#~ msgstr "GyReset"
+
+#~ msgid ""
+#~ "You are traveling too fast for this curve. Slow down, your freight may be "
+#~ "damaged and your train may derail."
+#~ msgstr ""
+#~ "A vonat sebessége túl nagy ehhez az ívhez. A szállított áru megsérülhet, "
+#~ "a vonat meg esetleg kisiklik."
+
+#~ msgid ""
+#~ "You are travelling too fast for this curve. Slow down, your passengers "
+#~ "are feeling uncomfortable and your train may derail."
+#~ msgstr ""
+#~ "A vonat sebessége túl nagy ehhez az ívhez. Az utasok kényelmetlenül érzik "
+#~ "magukat, a vonat meg esetleg kisiklik."
+
+#~ msgid "Will not ratate cab and land"
+#~ msgstr "Nincs sem a vezérállás, sem a horizont elforgatva."
+
+#~ msgid "MULTI-PLAYER INFORMATION"
+#~ msgstr "TÖBBJÁTÉKOS INFORMÁCIÓK"
+
+#~ msgid ""
+#~ "Refill: No suitable pick-up point anywhere, so refilling immediately."
+#~ msgstr ""
+#~ "Feltöltés: Nincs megfelelő töltőhely a közelben, úgyhogy a feltöltés "
+#~ "végrehajtva."
+
+#~ msgid "successfully"
+#~ msgstr "sikeresen"
+
+#~ msgid "End"
+#~ msgstr "Vonatvég"
+
+#~ msgid "and"
+#~ msgstr "és"
+
+#~ msgid "SupHVol"
+#~ msgstr "TúlhTf"
+
+#~ msgid "SuperH"
+#~ msgstr "VanTúlh"
+
+#~ msgid "Geared"
+#~ msgstr "VanSebv"
+
+#~ msgid "Input"
+#~ msgstr "Bemenet"
+
+#~ msgid "Adj"
+#~ msgstr "Továbbá"
+
+#~ msgid "Usage"
+#~ msgstr "Felhasznált"
+
+#~ msgid "Injector"
+#~ msgstr "Gőzsug"
+
+#~ msgid "Move"
+#~ msgstr "Mozgás"
+
+#~ msgid "RPM"
+#~ msgstr "ford/perc"
+
+#~ msgid "Grad"
+#~ msgstr "Emelk"
+
+#~ msgid "Notes"
+#~ msgstr "Megjegyz"
+
+#~ msgid "Coupler overloaded"
+#~ msgstr "Vonókészülék túlterhelve"
