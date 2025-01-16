@@ -483,8 +483,9 @@ namespace ORTS.Settings
 
         // Icik
         [Default(new[] { 50, 25 })]
-        public int[] WindowPosition_Derail { get; set; }
-
+        public int[] WindowPosition_Derail { get; set; }        
+        [Default(new[] { 50, 25 })]
+        public int[] WindowPosition_UnprotectedLvlCrossWindow { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_HelperOptions { get; set; }
         [Default(new[] { 50, 25 })]

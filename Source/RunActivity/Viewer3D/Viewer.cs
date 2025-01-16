@@ -101,7 +101,8 @@ namespace Orts.Viewer3D
         public TrainListWindow TrainListWindow { get; private set; } // for switching driven train
         public TTDetachWindow TTDetachWindow { get; private set; } // for detaching player train in timetable mode
         public PaxWindow PaxWindow { get; private set; }
-        public DerailWindow DerailWindow { get; private set; } // Escape window
+        public DerailWindow DerailWindow { get; private set; } // Derail window
+        public UnprotectedLvlCrossWindow UnprotectedLvlCrossWindow { get; private set; } // UnprotectedLvlCross window
         public HelperOptionsWindow HelperOptionsWindow { get; private set; } // Helper Options window
         public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
         public BrakeModeOptionsWindow BrakeModeOptionsWindow { get; private set; } // Brake Mode Options window
@@ -487,6 +488,7 @@ namespace Orts.Viewer3D
             TTDetachWindow = new TTDetachWindow(WindowManager);
             PaxWindow = new PaxWindow(WindowManager);
             DerailWindow = new DerailWindow(WindowManager);
+            UnprotectedLvlCrossWindow = new UnprotectedLvlCrossWindow(WindowManager);
             HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
             HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
             BrakeModeOptionsWindow = new BrakeModeOptionsWindow(WindowManager);
@@ -1069,12 +1071,14 @@ namespace Orts.Viewer3D
             if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible ? true : false;
             if (UserInput.IsPressed(UserCommand.GamePauseMenu))
             {                
-                if (ActivityWindow.Visible)
+                if (ActivityWindow.Visible || UnprotectedLvlCrossWindow.Visible)
                 {
                     Simulator.ESCKeyActivated = true;                   
                 }
                 else
-                    QuitWindow.Visible = Simulator.Paused = !QuitWindow.Visible;                
+                    QuitWindow.Visible = Simulator.Paused = !QuitWindow.Visible;                    
+
+                if (UnprotectedLvlCrossWindow.Visible) UnprotectedLvlCrossWindow.Visible = false;
             }
             if (MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu)) { if (Simulator.Confirmer != null) Simulator.Confirmer.Information(Viewer.Catalog.GetString("In MP, use Alt-F4 to quit directly")); }
 

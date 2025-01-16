@@ -113,8 +113,10 @@ namespace Orts.Simulation
 
             foreach (var crossing in TrackCrossingItems.Values.Where(ci => ci.CrossingGroup != null))
             {
-                bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
-                
+                bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability > 0f ? true : false;
+                bool UnprotectedLevelCross1 = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
+                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability == 2f ? true : false;
+
                 var predictedDist = crossing.CrossingGroup.WarningTime * absSpeedMpS;
                 var maxPredictedDist = crossing.CrossingGroup.WarningTime * (maxSpeedMpS - absSpeedMpS) / 2; // added distance if train accelerates to maxspeed
                 var minimumDist = crossing.CrossingGroup.MinimumDistance;
@@ -172,31 +174,51 @@ namespace Orts.Simulation
                     // AI
                     if (train is AITrain && !train.IsActualPlayerTrain)
                     {
-                        var AItrain = train as AITrain;
+                        var AItrain = train as AITrain;                        
 
                         // AI LvlCr Setup
                         if (!AItrain.AIUnprotectedLevelCrossSetup)
                         {
-                            AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
-                            AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
-                            AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 5);
-                            AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
-                            AItrain.AIUnprotectedLevelCrossSetup = true;
+                            if (UnprotectedLevelCross1)
+                            {
+                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                                AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 4);
+                                AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(1, 3);
+                                AItrain.AIUnprotectedLevelCrossWarningType = (int)Math.Round(Simulator.Random.Next(14, 20) / 10f, 0); // 1 - Horn, 2 - Bell
+                                AItrain.AIUnprotectedLevelCrossSetup = true;
+                            }
+                            if (UnprotectedLevelCross2)
+                            {
+                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                                AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
+                                AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 5);
+                                AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
+                                AItrain.AIUnprotectedLevelCrossSetup = true;
+                            }
                         }
 
                         // Startovní pravidlo
                         if (UnprotectedLevelCross)
                         {
                             float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
-                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
-                            
+                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);                            
+
                             if (frontDistance > 0 && Math.Abs(AItrain.SpeedMpS) > 0)
                                 AItrain.AIUnprotectedLevelCrossWarningCanEnable = true;
                             else
+                            {
                                 AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+                                AItrain.AIUnprotectedLevelCrossWarningRunning = false;
+                                if (rearDistance < 0)
+                                    AItrain.AIUnprotectedLevelCrossSetup = false;
+                            }
                         }
                         else
+                        {
                             AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+                            AItrain.AIUnprotectedLevelCrossWarningRunning = false;
+                            AItrain.AIUnprotectedLevelCrossSetup = false;
+                        }
 
                         if (AItrain.AIUnprotectedLevelCrossWarningRunning || AItrain.AIUnprotectedLevelCrossWarningCanEnable)
                         {
@@ -245,21 +267,24 @@ namespace Orts.Simulation
                                         }
                                     }
                                     AItrain.AIUnprotectedLevelCrossTimer2 += elapsedTime;
-                                    if (AItrain.AIUnprotectedLevelCrossTimer2 > AItrain.AIUnprotectedLevelCrossTime + 2)
+                                    if (AItrain.AIUnprotectedLevelCrossTimer2 > AItrain.AIUnprotectedLevelCrossTime + 5)
                                     {
                                         AItrain.AIUnprotectedLevelCrossWarningCount--;
                                         AItrain.AIUnprotectedLevelCrossTimer1 = 0;
-                                        AItrain.AIUnprotectedLevelCrossTimer2 = 0;
-                                        AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
-                                        AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
+                                        AItrain.AIUnprotectedLevelCrossTimer2 = 0;                                        
+                                        if (UnprotectedLevelCross1)
+                                        {
+                                            AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 4);
+                                            AItrain.AIUnprotectedLevelCrossWarningType = (int)Math.Round(Simulator.Random.Next(14, 20) / 10f, 0); // 1 - Horn, 2 - Bell
+                                        }
+                                        if (UnprotectedLevelCross2)
+                                        {
+                                            AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
+                                            AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
+                                        }
                                     }
                                 }
-                            }
-                            else
-                            {
-                                AItrain.AIUnprotectedLevelCrossWarningRunning = false;
-                                AItrain.AIUnprotectedLevelCrossSetup = false;
-                            }
+                            }                            
                         }                        
                     }
                 }

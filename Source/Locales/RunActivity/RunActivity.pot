@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-01-15 19:39:02+0100\n"
-"PO-Revision-Date: 2025-01-15 19:39:03+0100\n"
+"POT-Creation-Date: 2025-01-16 20:46:14+0100\n"
+"PO-Revision-Date: 2025-01-16 20:46:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -101,95 +101,95 @@ msgid_plural "{0:F0} tiles"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:972
-#: ../../RunActivity/Viewer3D/Viewer.cs:1270
+#: ../../RunActivity/Viewer3D/Viewer.cs:974
+#: ../../RunActivity/Viewer3D/Viewer.cs:1274
 msgid "Cab view not available"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1079
+#: ../../RunActivity/Viewer3D/Viewer.cs:1083
 msgid "In MP, use Alt-F4 to quit directly"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1117
+#: ../../RunActivity/Viewer3D/Viewer.cs:1121
 msgid "Automatic platform and siding labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1120
+#: ../../RunActivity/Viewer3D/Viewer.cs:1124
 msgid "Platform and siding labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1123
+#: ../../RunActivity/Viewer3D/Viewer.cs:1127
 msgid "Platform labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1126
+#: ../../RunActivity/Viewer3D/Viewer.cs:1130
 msgid "Siding labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1132
+#: ../../RunActivity/Viewer3D/Viewer.cs:1136
 msgid "Platform and siding labels hidden."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1143
+#: ../../RunActivity/Viewer3D/Viewer.cs:1147
 msgid "Train labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1146
+#: ../../RunActivity/Viewer3D/Viewer.cs:1150
 msgid "Car labels visible."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1152
+#: ../../RunActivity/Viewer3D/Viewer.cs:1156
 msgid "Train and car labels hidden."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1219
+#: ../../RunActivity/Viewer3D/Viewer.cs:1223
 msgid "To change stations, secure the engine room without voltage."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1313
+#: ../../RunActivity/Viewer3D/Viewer.cs:1317
 msgid "Confirmations suppressed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1315
+#: ../../RunActivity/Viewer3D/Viewer.cs:1319
 msgid "Confirmations visible"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1493
+#: ../../RunActivity/Viewer3D/Viewer.cs:1497
 msgid "Switched to player control"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1500
+#: ../../RunActivity/Viewer3D/Viewer.cs:1504
 msgid "You can't switch from manual to autopilot mode"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1506
+#: ../../RunActivity/Viewer3D/Viewer.cs:1510
 msgid "Switched to autopilot"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1963
+#: ../../RunActivity/Viewer3D/Viewer.cs:1967
 msgid "You are in the locomotive station "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2249
+#: ../../RunActivity/Viewer3D/Viewer.cs:2253
 msgid "Game saved"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:333
+#: ../../RunActivity/Viewer3D/Viewer.cs:334
 #, csharp-format
 msgid "Allowed speed raised to {0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1524
+#: ../../RunActivity/Viewer3D/Viewer.cs:1528
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1528
+#: ../../RunActivity/Viewer3D/Viewer.cs:1532
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1351
+#: ../../RunActivity/Viewer3D/Viewer.cs:1355
 #, csharp-format
 msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
 msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
@@ -2556,6 +2556,7 @@ msgid "Save your game ({0})"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:59
+#: ../../RunActivity/Viewer3D/Popups/UnprotectedLvlCrossWindow.cs:52
 #, csharp-format
 msgid "Continue playing ({0})"
 msgstr ""
@@ -2965,7 +2966,7 @@ msgid "ApplS"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1647
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1646
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
 msgid "coal"
 msgstr ""
@@ -3052,7 +3053,7 @@ msgid "Slip"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1646
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1645
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
 msgid "water"
 msgstr ""
@@ -3276,6 +3277,14 @@ msgstr ""
 msgid "{0} portion will form train : {1}"
 msgstr ""
 
+#: ../../RunActivity/Viewer3D/Popups/UnprotectedLvlCrossWindow.cs:31
+msgid "Warning Event"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/UnprotectedLvlCrossWindow.cs:44
+msgid "You didn't give a corresponding sound sign at an unprotected crossing!"
+msgstr ""
+
 #: ../../RunActivity/Viewer3D/Popups/WindowText.cs:152
 msgid ""
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 "
@@ -3294,113 +3303,109 @@ msgid_plural "{0:F0} sound sources"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:482
-msgid "Nedali jste odpovídající zvukové znamení před nechráněným přejezdem!"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:509
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:517
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:508
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:516
 msgid "Handbrake"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1642
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1641
 msgid "freight-grain"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1643
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1642
 msgid "freight-coal"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1644
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1643
 msgid "freight-gravel"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1645
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1644
 msgid "freight-sand"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1648
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1647
 msgid "diesel oil"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1649
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1648
 msgid "wood"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1649
 msgid "sand"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
 msgid "freight-general"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
 msgid "freight-livestock"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
 msgid "freight-fuel"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
 msgid "freight-milk"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1655
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
 msgid "mail"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1784
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1783
 msgid "Refill: Immediate refill process selected, refilling immediately."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1805
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1804
 msgid "Refill: Electric loco and no pickup. Command rejected"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1921
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1940
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1920
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1939
 msgid "Incompatible pickup type"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1927
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1945
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1926
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1944
 msgid "Starting refill"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1812
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1811
 #, csharp-format
 msgid "Refill: Distance to {0} supply is {1}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1820
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1819
 #, csharp-format
 msgid "Refill: Loco must be stationary to refill {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1826
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1825
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1833
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1832
 #, csharp-format
 msgid "Refill: Loco speed must not exceed {0}."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1851
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1872
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1850
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1871
 #, csharp-format
 msgid "Refill: {0} supply now replenished."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1878
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1877
 #, csharp-format
 msgid "Unload: {0} fuel or freight now unloaded."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1813
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1812
 #, csharp-format
 msgid "{0} meter"
 msgid_plural "{0} meters"
