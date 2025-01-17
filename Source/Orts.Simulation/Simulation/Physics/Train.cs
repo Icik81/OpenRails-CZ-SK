@@ -151,6 +151,9 @@ namespace Orts.Simulation.Physics
         public int LocoIndex = -1;
         public Direction LocoDirection = Direction.N;
         public bool UnprotectedLevelCrossWarningCanEnable;
+        public float UnprotectedLevelCrossWarningDistance;
+        public bool UnprotectedLevelCross1;
+        public bool UnprotectedLevelCross2;        
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train

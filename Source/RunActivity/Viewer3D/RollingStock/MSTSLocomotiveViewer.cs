@@ -462,27 +462,36 @@ namespace Orts.Viewer3D.RollingStock
 
             // Kontrola zvukového znamení hráče před nechráněným přejezdem
             if (Locomotive.Train.UnprotectedLevelCrossWarningCanEnable)
-            {
+            {                 
                 Locomotive.UnprotectedLevelCrossWarningRequest = true;
-                if (UserInput.IsPressed(UserCommand.ControlHorn)
-                    || UserInput.IsPressed(UserCommand.ControlHorn2)
-                    || UserInput.IsPressed(UserCommand.ControlHorn12)
-                    || UserInput.IsPressed(UserCommand.ControlBell))
-                {
-                    Locomotive.UnprotectedLevelCrossWarningOk = true;
+                if (UserInput.IsReleased(UserCommand.ControlHorn)
+                    || UserInput.IsReleased(UserCommand.ControlHorn2)
+                    || UserInput.IsReleased(UserCommand.ControlHorn12)
+                    || UserInput.IsReleased(UserCommand.ControlBell))
+                {                    
+                     Locomotive.UnprotectedLevelCrossWarningCount++;                    
+                    if (Locomotive.Train.UnprotectedLevelCross1 && Locomotive.UnprotectedLevelCrossWarningCount > 0)
+                    { 
+                        Locomotive.UnprotectedLevelCrossWarningOk = true;
+                        Locomotive.UnprotectedLevelCrossWarningCount = 0;
+                    }
+                    if (Locomotive.Train.UnprotectedLevelCross2 && Locomotive.UnprotectedLevelCrossWarningCount > 1)
+                    {
+                        Locomotive.UnprotectedLevelCrossWarningOk = true;
+                        Locomotive.UnprotectedLevelCrossWarningCount = 0;
+                    }
                 }
             }
             else
-            {
+            {                
                 if (Locomotive.UnprotectedLevelCrossWarningRequest)
                 {
-                    if (!Locomotive.UnprotectedLevelCrossWarningOk)
-                    {                        
-                        Viewer.UnprotectedLvlCrossWindow.Visible = true;
-                        Locomotive.UnprotectedLevelCrossWarningOk = false;
-                        Locomotive.UnprotectedLevelCrossWarningRequest = false;
-                    }                    
+                    if (!Locomotive.UnprotectedLevelCrossWarningOk)                                            
+                        Viewer.UnprotectedLvlCrossWindow.Visible = true;                                                                                                                
                 }
+                Locomotive.UnprotectedLevelCrossWarningCount = 0;
+                Locomotive.UnprotectedLevelCrossWarningRequest = false;
+                Locomotive.UnprotectedLevelCrossWarningOk = false;
             }
 
             // Ovládání TRACTION_SWITCH aretované pozice

@@ -763,6 +763,7 @@ namespace Orts.Simulation.RollingStocks
         public bool PlayerLocoSetUp;
         public bool UnprotectedLevelCrossWarningRequest;
         public bool UnprotectedLevelCrossWarningOk;
+        public int UnprotectedLevelCrossWarningCount;
 
 
         // Jindrich

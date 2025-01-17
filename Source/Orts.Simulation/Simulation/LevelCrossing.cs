@@ -115,7 +115,7 @@ namespace Orts.Simulation
             {
                 bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability > 0f ? true : false;
                 bool UnprotectedLevelCross1 = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
-                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability == 2f ? true : false;
+                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability == 2f ? true : false;                
 
                 var predictedDist = crossing.CrossingGroup.WarningTime * absSpeedMpS;
                 var maxPredictedDist = crossing.CrossingGroup.WarningTime * (maxSpeedMpS - absSpeedMpS) / 2; // added distance if train accelerates to maxspeed
@@ -156,19 +156,39 @@ namespace Orts.Simulation
                     // Hráč
                     if (train.IsActualPlayerTrain)
                     {
-                        // Startovní pravidlo
+                        // Startovní pravidlo                        
                         if (UnprotectedLevelCross)
                         {
-                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, 500);
-                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, 500);
-
-                            if (frontDistance > 0 && Math.Abs(train.SpeedMpS) > 0)
-                                train.UnprotectedLevelCrossWarningCanEnable = true;
+                            train.UnprotectedLevelCross1 = UnprotectedLevelCross1;
+                            train.UnprotectedLevelCross2 = UnprotectedLevelCross2;
+                            if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                            
+                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, train.UnprotectedLevelCrossWarningDistance);                            
+                            if (!train.AITrainDirectionForward)
+                            {
+                                frontDistance = -crossing.DistanceTo(new Traveller(train.FrontTDBTraveller, Traveller.TravellerDirection.Backward), train.UnprotectedLevelCrossWarningDistance + train.Length);
+                                var rearDistance = -frontDistance - train.Length;
+                                if (rearDistance > 0 && Math.Abs(train.SpeedMpS) > 0)
+                                    train.UnprotectedLevelCrossWarningCanEnable = true;
+                                else
+                                {
+                                    train.UnprotectedLevelCrossWarningDistance = 0;
+                                    train.UnprotectedLevelCrossWarningCanEnable = false;
+                                }
+                            }
                             else
-                                train.UnprotectedLevelCrossWarningCanEnable = false;                            
+                            {
+                                if (frontDistance > 0 && Math.Abs(train.SpeedMpS) > 0)
+                                    train.UnprotectedLevelCrossWarningCanEnable = true;
+                                else
+                                {
+                                    train.UnprotectedLevelCrossWarningDistance = 0;
+                                    train.UnprotectedLevelCrossWarningCanEnable = false;
+                                }
+                            }
                         }
                         else
-                            train.UnprotectedLevelCrossWarningCanEnable = false;
+                            train.UnprotectedLevelCrossWarningCanEnable = false;                        
                     }
 
                     // AI
@@ -200,18 +220,34 @@ namespace Orts.Simulation
                         // Startovní pravidlo
                         if (UnprotectedLevelCross)
                         {
-                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
-                            float rearDistance = crossing.DistanceTo(train.RearTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);                            
-
-                            if (frontDistance > 0 && Math.Abs(AItrain.SpeedMpS) > 0)
-                                AItrain.AIUnprotectedLevelCrossWarningCanEnable = true;
+                            float frontDistance = crossing.DistanceTo(AItrain.FrontTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
+                            if (!AItrain.AITrainDirectionForward)
+                            {
+                                frontDistance = -crossing.DistanceTo(new Traveller(AItrain.FrontTDBTraveller, Traveller.TravellerDirection.Backward), AItrain.AIUnprotectedLevelCrossWarningDistance + AItrain.Length);
+                                var rearDistance = -frontDistance - AItrain.Length;
+                                if (rearDistance > 0 && Math.Abs(AItrain.SpeedMpS) > 0)
+                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable = true;
+                                else
+                                {
+                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+                                    AItrain.AIUnprotectedLevelCrossWarningRunning = false;
+                                    if (frontDistance > 0)
+                                        AItrain.AIUnprotectedLevelCrossSetup = false;
+                                }
+                            }
                             else
                             {
-                                AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
-                                AItrain.AIUnprotectedLevelCrossWarningRunning = false;
-                                if (rearDistance < 0)
-                                    AItrain.AIUnprotectedLevelCrossSetup = false;
-                            }
+                                float rearDistance = crossing.DistanceTo(AItrain.RearTDBTraveller, AItrain.AIUnprotectedLevelCrossWarningDistance);
+                                if (frontDistance > 0 && Math.Abs(AItrain.SpeedMpS) > 0)
+                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable = true;
+                                else
+                                {
+                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable = false;
+                                    AItrain.AIUnprotectedLevelCrossWarningRunning = false;
+                                    if (rearDistance < 0)
+                                        AItrain.AIUnprotectedLevelCrossSetup = false;
+                                }
+                            }                            
                         }
                         else
                         {
@@ -287,13 +323,13 @@ namespace Orts.Simulation
                             }                            
                         }                        
                     }
-                }
+                }                                
 
                 else if ((train.TrainType != Train.TRAINTYPE.STATIC) && WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, totalMaxDist) || WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, totalMaxDist))
                 {
                     validTrain = true;
-                    reqDist = totalMaxDist;
-                }
+                    reqDist = totalMaxDist;                    
+                }                                
 
                 if ((train.TrainType == Train.TRAINTYPE.STATIC) && !validStaticConsist && !crossing.StaticConsists.Contains(train))
                 {
