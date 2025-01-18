@@ -3787,13 +3787,26 @@ namespace Orts.Simulation.AIs
                 AITrainThrottlePercent -= stepSize * timeS;
             }
 
-            if (AITrainBrakePercent < 100)
+            //if (AITrainBrakePercent < 100)
             {
-                AITrainBrakePercent += stepSize;
-                if (AITrainBrakePercent > 100)
-                    AITrainBrakePercent = 100;
+                // AI plynule dobržďuje
+                if (!AITrainWillAttach && Math.Abs(SpeedMpS) > 0.1f / 3.6f && Math.Abs(SpeedMpS) < 10f / 3.6f)
+                {
+                    if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * 10f)
+                        AITrainBrakePercent -= 10;                    
+                    if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * 10f)
+                        AITrainBrakePercent += 1;
+                    if (AITrainBrakePercent < 10) AITrainBrakePercent = 10;
+                    reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);
+                }                
+                else
+                {
+                    AITrainBrakePercent += stepSize;
+                    if (AITrainBrakePercent > 100)
+                        AITrainBrakePercent = 100;
+                }                
             }
-            else
+            //else
             {
                 float ds = timeS * (reqDecelMpSS);
                 SpeedMpS = Math.Max(SpeedMpS - ds, 0); // avoid negative speeds
