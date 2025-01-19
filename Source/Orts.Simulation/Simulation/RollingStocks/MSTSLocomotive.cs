@@ -5433,7 +5433,7 @@ namespace Orts.Simulation.RollingStocks
                             CarIsWaitingAtStation = true;
                         break;
                     }
-                }                
+                }
 
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
@@ -5446,6 +5446,31 @@ namespace Orts.Simulation.RollingStocks
                                 CarIsRunning = true;
                             if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
                                 CarIsWaiting = true;
+                        }
+                    }
+                }
+
+                // Zastavení ve stanici - WP 49xxx a 59xxx pro určení metrů pro offset od středu stanice
+                (Train as AITrain).DontStopStopOffset = false;
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                    {
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        {
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                            if (AIActionPoint0.Delay > 49000 && AIActionPoint0.Delay < 49900)
+                            {
+                                (Train as AITrain).AITrainOffsetStop = true;
+                                (Train as AITrain).DontStopStopOffset = true;
+                                (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
+                            }
+                            if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
+                            {
+                                (Train as AITrain).AITrainOffsetStop = true;
+                                (Train as AITrain).DontStopStopOffset = true;
+                                (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
+                            }
                         }
                     }
                 }
@@ -5464,7 +5489,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);                            
-                            if (AbsSpeedMpS < 0.01f && (AIActionPoint0.Delay > 40000 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
+                            if (AbsSpeedMpS < 0.01f && (AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
                             {
                                 CarIsShunting = true;
                                 AIStartOn = true;

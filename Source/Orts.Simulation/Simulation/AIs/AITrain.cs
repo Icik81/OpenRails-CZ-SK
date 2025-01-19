@@ -80,6 +80,7 @@ namespace Orts.Simulation.AIs
 
         // Icik
         public bool DontStopABSWP;
+        public bool DontStopStopOffset;
         public float EfficiencyServis;
         public bool AIUnprotectedLevelCrossWarningRunning;
         public bool AIUnprotectedLevelCrossSetup;
@@ -93,6 +94,8 @@ namespace Orts.Simulation.AIs
         public int AIUnprotectedLevelCrossWarningType;
         public bool AIUnprotectedLevelCrossWarningCutOff;
         public bool AIUnprotectedLevelCrossWarningCanEnable;
+        public bool AITrainOffsetStop;
+        public float AITrainOffsetStopDistance;
 
         public enum AI_MOVEMENT_STATE
         {
@@ -285,7 +288,9 @@ namespace Orts.Simulation.AIs
             // Icik
             NumberOfCarsToLeaveOrSteal = inf.ReadInt32();
             BoardingCompleted = inf.ReadBoolean();
-            RestOfPax = inf.ReadInt32();
+            RestOfPax = inf.ReadInt32();            
+            AITrainOffsetStop = inf.ReadBoolean();
+            AITrainOffsetStopDistance = inf.ReadSingle();
 
             if (!Simulator.TimetableMode && doorOpenDelay <= 0 && doorCloseAdvance > 0 && Simulator.OpenDoorsInAITrains &&
                 MovementState == AI_MOVEMENT_STATE.STATION_STOP && StationStops.Count > 0)
@@ -385,6 +390,8 @@ namespace Orts.Simulation.AIs
             outf.Write(NumberOfCarsToLeaveOrSteal);
             outf.Write(BoardingCompleted);
             outf.Write(RestOfPax);
+            outf.Write(AITrainOffsetStop);
+            outf.Write(AITrainOffsetStopDistance);
 
             if (LevelCrossingHornPattern != null)
             {
@@ -2655,7 +2662,7 @@ namespace Orts.Simulation.AIs
             if (nextActionInfo != null)
             {
                 requiredSpeedMpS = nextActionInfo.RequiredSpeedMpS;
-                distanceToGoM = nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM;
+                distanceToGoM = nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM;                
 
                 if (nextActionInfo.ActiveItem != null)
                 {
@@ -2679,9 +2686,13 @@ namespace Orts.Simulation.AIs
 
                 if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
                 {
-                    NextStopDistanceM = distanceToGoM;
+                    // AI offset pro zastavení ve stanici
+                    if (AITrainOffsetStop)
+                        distanceToGoM += AITrainOffsetStopDistance;
+
+                    NextStopDistanceM = distanceToGoM;                                                           
                     if (distanceToGoM <= 0.1f)
-                    {
+                    {                        
                         AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 100);
                         AITrainThrottlePercent = 0;
 
@@ -2694,7 +2705,7 @@ namespace Orts.Simulation.AIs
 
                             if (thisStation.ActualStopType == StationStop.STOPTYPE.STATION_STOP)
                             {
-#if DEBUG_REPORTS
+#if DEBUG_REPORTS               
                                 DateTime baseDT = new DateTime();
                                 DateTime arrTime = baseDT.AddSeconds(presentTime);
 
@@ -2702,7 +2713,7 @@ namespace Orts.Simulation.AIs
                                      Number.ToString() + " arrives station " +
                                      StationStops[0].PlatformItem.Name + " at " +
                                      arrTime.ToString("HH:mm:ss") + "\n");
-#endif
+#endif                                
                                 if (CheckTrain)
                                 {
                                     DateTime baseDTCT = new DateTime();
@@ -2713,6 +2724,7 @@ namespace Orts.Simulation.AIs
                                          StationStops[0].PlatformItem.Name + " at " +
                                          arrTimeCT.ToString("HH:mm:ss") + "\n");
                                 }
+                                AITrainOffsetStop = false;
                             }
                             else if (thisStation.ActualStopType == StationStop.STOPTYPE.WAITING_POINT)
                             {
@@ -4314,7 +4326,7 @@ namespace Orts.Simulation.AIs
                 int direction = thisRoute[routeIndex].Direction;
                 if (!IsActualPlayerTrain)
                 {
-                    // Icik                                        
+                    // Icik                                                            
                     if (waitingPoint[2] >= 49900 && waitingPoint[2] <= 49999)
                     {
                         NumberOfCarsToLeaveOrSteal = waitingPoint[2] - 49900;

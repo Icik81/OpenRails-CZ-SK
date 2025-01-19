@@ -1901,7 +1901,7 @@ namespace Orts.Simulation.AIs
                 currentMvmtState = movementState;
 
             // Icik
-            if ((thisTrain as AITrain).DontStopABSWP)
+            if ((thisTrain as AITrain).DontStopABSWP || (thisTrain as AITrain).DontStopStopOffset)
             {
                 if ((thisTrain as AITrain).AuxActionsContain.CountSpec() > 0)
                 {
@@ -1909,7 +1909,10 @@ namespace Orts.Simulation.AIs
                     //(thisTrain as AITrain).ResetActions(true);
                     movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;
                 }
-                (thisTrain as AITrain).DontStopABSWP = false;
+                if ((thisTrain as AITrain).DontStopABSWP)
+                    (thisTrain as AITrain).DontStopABSWP = false;
+                if ((thisTrain as AITrain).DontStopStopOffset)
+                    (thisTrain as AITrain).DontStopStopOffset = false;
             }
 
             return movementState;
