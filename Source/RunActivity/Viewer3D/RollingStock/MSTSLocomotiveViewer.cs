@@ -1406,11 +1406,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 Locomotive.ToggleRefreshWorld(true);
             }
-            else
-            if (UserInput.IsReleased(UserCommand.ControlRefreshWorld))
-            {
-                Locomotive.ToggleRefreshWorld(false);
-            }
+            
             // Ovládání tlačítka znovunačtení vedení
             if (UserInput.IsPressed(UserCommand.ControlRefreshWire) || Locomotive.Simulator.WireHeightSwitch57 || Locomotive.Simulator.WireHeightSwitch62 || Locomotive.Simulator.WireHeightSwitchHidden)
             {

@@ -175,7 +175,10 @@ namespace Orts.Viewer3D
             }
 
             if (Viewer.Simulator.RefreshWorld)
+            {
                 Viewer.Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
+                Viewer.Simulator.RefreshWorld = false;
+            }
         }
 
         [CallOnThread("Loader")]
