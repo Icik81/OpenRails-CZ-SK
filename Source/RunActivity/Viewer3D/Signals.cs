@@ -26,6 +26,7 @@ using Orts.Formats.Msts;
 using Orts.Simulation.Signalling;
 using Orts.Viewer3D.Common;
 using ORTS.Common;
+using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -315,16 +316,75 @@ namespace Orts.Viewer3D
                 }
             }
 
+            SignalLightState PreState;
+            float ChangeStateTimer;            
             public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime, Matrix xnaTileTranslation)
             {
                 var initialise = DisplayState == -1;
+
+                if (ChangeStateTimer == -1)
+                {
+                    ChangeStateTimer = Viewer.Random.Next(3, 16);
+                }
+
                 if (DisplayState != SignalHead.draw_state)
                 {
 #if DEBUG_SIGNAL_SHAPES
                     Console.WriteLine("{5} {0} signal {1} unit {2} state: {3} --> {4}",
                         SignalShape.Location, SignalShape.UID, Index, DisplayState,
                         SignalHead.draw_state, InfoDisplay.FormattedTime(Viewer.Simulator.ClockTime));
-#endif
+#endif                       
+                    // Icik
+                    // Zpoždění přenastavení signálu
+                    ChangeStateTimer -= elapsedTime.ClockSeconds;
+                    if (ChangeStateTimer > 0)
+                    {
+                        if (DisplayState < 0 || !SignalTypeData.DrawAspects.ContainsKey(DisplayState))
+                            return;
+
+                        for (var i = 0; i < SignalTypeData.Lights.Count; i++)
+                        {
+                            SignalLightState state = lightStates[i];
+                            bool semaphoreDark = SemaphorePos != SemaphoreTarget && SignalTypeData.LightsSemaphoreChange[i];
+                            bool constantDark = !SignalTypeData.DrawAspects[DisplayState].DrawLights[i];
+                            bool flashingDark = SignalTypeData.DrawAspects[DisplayState].FlashLights[i] && (CumulativeTime > SignalTypeData.FlashTimeOn);
+                            state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
+                            if (!state.IsIlluminated())
+                                continue;
+
+                            bool isDay;
+                            if (Viewer.Settings.UseMSTSEnv == false)
+                                isDay = Viewer.World.Sky.solarDirection.Y > 0;
+                            else
+                                isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
+                            bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 200;
+                            if (!SignalTypeData.DayLight && isDay && !isPoorVisibility)
+                                continue;
+
+                            var slp = SignalTypeData.Lights[i];
+                            var xnaMatrix = Matrix.CreateTranslation(slp.Position);
+
+                            foreach (int MatrixIndex in MatrixIndices)
+                            {
+                                Matrix.Multiply(ref xnaMatrix, ref SignalShape.XNAMatrices[MatrixIndex], out xnaMatrix);
+                            }
+                            Matrix.Multiply(ref xnaMatrix, ref xnaTileTranslation, out xnaMatrix);
+
+                            void renderEffect(Material material)
+                            {
+                                frame.AddPrimitive(material, slp, RenderPrimitiveGroup.Lights, ref xnaMatrix, ShapeFlags.None, PreState);
+                            }
+                            renderEffect(SignalTypeData.Material);
+                            if (Viewer.Settings.SignalLightGlow)
+                                renderEffect(SignalTypeData.GlowMaterial);
+                        }
+                        return;
+                    }
+                    else
+                    {                                                
+                        ChangeStateTimer = -1;
+                    }
+
                     DisplayState = SignalHead.draw_state;
                     if (SignalTypeData.DrawAspects.ContainsKey(DisplayState))
                     {
@@ -378,11 +438,14 @@ namespace Orts.Viewer3D
                         Matrix.Multiply(ref xnaMatrix, ref SignalShape.XNAMatrices[MatrixIndex], out xnaMatrix);
                     }
                     Matrix.Multiply(ref xnaMatrix, ref xnaTileTranslation, out xnaMatrix);
-
+                    
                     void renderEffect(Material material)
                     {
                         frame.AddPrimitive(material, slp, RenderPrimitiveGroup.Lights, ref xnaMatrix, ShapeFlags.None, state);
                     }
+                    
+                    PreState = state;
+
                     renderEffect(SignalTypeData.Material);
                     if (Viewer.Settings.SignalLightGlow)
                         renderEffect(SignalTypeData.GlowMaterial);
@@ -407,6 +470,7 @@ namespace Orts.Viewer3D
                             SemaphoreSpeed = 0;
                         }
                     }
+                    
                     foreach (AnimatedPart SemaphorePart in SemaphoreParts)
                     {
                         SemaphorePart.SetFrameCycle(SemaphorePos);
