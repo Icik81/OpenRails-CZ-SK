@@ -736,7 +736,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
                         {
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
-                            loco.LapButtonEnable = true;
+                            if (!loco.TrainBrakeController.BS2ControllerOnStation)
+                                loco.LapButtonEnable = true;
                         }
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)
@@ -756,7 +757,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco.TrainBrakeController.DefaultNeutralBrakeValue > 0)
                         {
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultNeutralBrakeValue;
-                            loco.LapButtonEnable = true;
+                            if (!loco.TrainBrakeController.BS2ControllerOnStation)
+                                loco.LapButtonEnable = true;
                         }
                         else
                         if (loco.TrainBrakeController.DefaultBrakeValue > 0)

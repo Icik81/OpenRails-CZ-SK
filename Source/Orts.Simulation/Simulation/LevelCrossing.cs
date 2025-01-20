@@ -211,7 +211,7 @@ namespace Orts.Simulation
                             {
                                 AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
                                 AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
-                                AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 5);
+                                AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 6);
                                 AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
                                 AItrain.AIUnprotectedLevelCrossSetup = true;
                             }
