@@ -322,9 +322,15 @@ namespace Orts.Viewer3D
             {
                 var initialise = DisplayState == -1;
 
-                if (ChangeStateTimer == -1)
+                // Na stůj
+                if (ChangeStateTimer == -1 && DisplayState != 0)
                 {
                     ChangeStateTimer = Viewer.Random.Next(3, 16);
+                }
+                // Ostatní
+                if (ChangeStateTimer == -1 && DisplayState == 0)
+                {
+                    ChangeStateTimer = Viewer.Random.Next(1, 1);
                 }
 
                 if (DisplayState != SignalHead.draw_state)
