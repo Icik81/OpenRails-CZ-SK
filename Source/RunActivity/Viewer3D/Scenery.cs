@@ -176,7 +176,7 @@ namespace Orts.Viewer3D
 
             if (Viewer.Simulator.RefreshWorld)
             {
-                Viewer.Simulator.Confirmer.Information(Simulator.Catalog.GetString("World Object reloaded!"));
+                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("World Object reloaded!"));
                 Viewer.Simulator.RefreshWorld = false;
             }
         }
