@@ -316,22 +316,11 @@ namespace Orts.Viewer3D
                 }
             }
 
-            SignalLightState PreState;
+            SignalLightState PreState = null;
             float ChangeStateTimer;            
             public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime, Matrix xnaTileTranslation)
             {
-                var initialise = DisplayState == -1;
-
-                // Na stůj
-                if (ChangeStateTimer == -1 && DisplayState != 0)
-                {
-                    ChangeStateTimer = Viewer.Random.Next(3, 16);
-                }
-                // Ostatní
-                if (ChangeStateTimer == -1 && DisplayState == 0)
-                {
-                    ChangeStateTimer = Viewer.Random.Next(1, 1);
-                }
+                var initialise = DisplayState == -1;                
 
                 if (DisplayState != SignalHead.draw_state)
                 {
@@ -339,9 +328,23 @@ namespace Orts.Viewer3D
                     Console.WriteLine("{5} {0} signal {1} unit {2} state: {3} --> {4}",
                         SignalShape.Location, SignalShape.UID, Index, DisplayState,
                         SignalHead.draw_state, InfoDisplay.FormattedTime(Viewer.Simulator.ClockTime));
-#endif                       
+#endif
                     // Icik
                     // Zpoždění přenastavení signálu
+                    // Na stůj
+                    if (ChangeStateTimer == -1 && SignalHead.draw_state == 0)
+                    {
+                        if (SignalTypeData.Semaphore)
+                            ChangeStateTimer = Viewer.Random.Next(10, 20);
+                        else
+                            ChangeStateTimer = Viewer.Random.Next(3, 6);
+                    }
+                    // Ostatní
+                    if (ChangeStateTimer == -1 && SignalHead.draw_state != 0)
+                    {
+                        ChangeStateTimer = Viewer.Random.Next(3, 9) / 10f;
+                    }
+
                     ChangeStateTimer -= elapsedTime.ClockSeconds;
                     if (ChangeStateTimer > 0)
                     {
@@ -357,6 +360,8 @@ namespace Orts.Viewer3D
                             state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
                             if (!state.IsIlluminated())
                                 continue;
+
+                            if (PreState == null) PreState = state;
 
                             bool isDay;
                             if (Viewer.Settings.UseMSTSEnv == false)
