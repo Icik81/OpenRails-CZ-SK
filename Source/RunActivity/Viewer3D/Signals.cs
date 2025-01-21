@@ -335,14 +335,14 @@ namespace Orts.Viewer3D
                     if (ChangeStateTimer == -1 && SignalHead.draw_state == 0)
                     {
                         if (SignalTypeData.Semaphore)
-                            ChangeStateTimer = Viewer.Random.Next(10, 20);
+                            ChangeStateTimer = Viewer.Random.Next(30, 60);
                         else
                             ChangeStateTimer = Viewer.Random.Next(3, 6);
                     }
                     // Ostatní
                     if (ChangeStateTimer == -1 && SignalHead.draw_state != 0)
                     {
-                        ChangeStateTimer = Viewer.Random.Next(3, 9) / 10f;
+                        ChangeStateTimer = Viewer.Random.Next(3, 5) / 10f;
                     }
 
                     ChangeStateTimer -= elapsedTime.ClockSeconds;
