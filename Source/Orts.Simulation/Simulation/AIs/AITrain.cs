@@ -3934,6 +3934,7 @@ namespace Orts.Simulation.AIs
         float AIRollOnThrottle;
         float AIRollOnTime;
         float AIRollOnCutOffSpeed;
+        float AIRollOnStartTimer;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -4049,6 +4050,9 @@ namespace Orts.Simulation.AIs
                     AIRollOn = false;
                 }
 
+                AIRollOnStartTimer += timeS;
+                if (AIRollOnStartTimer < 2f) AITSethrottlePercent = 0f;
+
                 if (Math.Round(AITrainThrottlePercent, 0) > 0.99f * AIRollOnThrottle)
                 {
                     AIRollOnTimer += timeS;
@@ -4056,6 +4060,7 @@ namespace Orts.Simulation.AIs
                     {
                         AIStayToRollOn = false;
                         AIRollOnTimer = 0f;
+                        AIRollOnStartTimer = 0f;
                     }
                 }
             }            

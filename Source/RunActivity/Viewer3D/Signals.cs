@@ -317,7 +317,8 @@ namespace Orts.Viewer3D
             }
 
             SignalLightState PreState = null;
-            float ChangeStateTimer;            
+            float ChangeStateTimer;
+            bool SignalStopDelayRun;
             public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime, Matrix xnaTileTranslation)
             {
                 var initialise = DisplayState == -1;                
@@ -331,20 +332,24 @@ namespace Orts.Viewer3D
 #endif
                     // Icik
                     // Zpoždění přenastavení signálu
+
                     // Na stůj
-                    if (ChangeStateTimer == -1 && SignalHead.draw_state == 0)
+                    if (ChangeStateTimer == -1 && SignalHead.state == MstsSignalAspect.STOP)
                     {
                         if (SignalTypeData.Semaphore)
                             ChangeStateTimer = Viewer.Random.Next(30, 60);
                         else
                             ChangeStateTimer = Viewer.Random.Next(3, 6);
+                        SignalStopDelayRun = true;
                     }
+                    else
                     // Ostatní
-                    if (ChangeStateTimer == -1 && SignalHead.draw_state != 0)
+                    if ((ChangeStateTimer == -1 || SignalStopDelayRun) && SignalHead.state != MstsSignalAspect.STOP)
                     {
-                        ChangeStateTimer = Viewer.Random.Next(3, 5) / 10f;
+                        ChangeStateTimer = Viewer.Random.Next(1, 3);
+                        SignalStopDelayRun = false;
                     }
-
+                    
                     ChangeStateTimer -= elapsedTime.ClockSeconds;
                     if (ChangeStateTimer > 0)
                     {
