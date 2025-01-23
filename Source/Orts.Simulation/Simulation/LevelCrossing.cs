@@ -161,7 +161,7 @@ namespace Orts.Simulation
                         {
                             train.UnprotectedLevelCross1 = UnprotectedLevelCross1;
                             train.UnprotectedLevelCross2 = UnprotectedLevelCross2;
-                            if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                            if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 100, 500);
                             
                             float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, train.UnprotectedLevelCrossWarningDistance);                            
                             if (!train.AITrainDirectionForward)
@@ -201,7 +201,7 @@ namespace Orts.Simulation
                         {
                             if (UnprotectedLevelCross1)
                             {
-                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 100, 500);
                                 AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 4);
                                 AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(1, 3);
                                 AItrain.AIUnprotectedLevelCrossWarningType = (int)Math.Round(Simulator.Random.Next(14, 20) / 10f, 0); // 1 - Horn, 2 - Bell
@@ -209,7 +209,7 @@ namespace Orts.Simulation
                             }
                             if (UnprotectedLevelCross2)
                             {
-                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 0, 500);
+                                AItrain.AIUnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(AItrain.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 100, 500);
                                 AItrain.AIUnprotectedLevelCrossTime = Simulator.Random.Next(1, 6);
                                 AItrain.AIUnprotectedLevelCrossWarningCount = Simulator.Random.Next(2, 6);
                                 AItrain.AIUnprotectedLevelCrossWarningType = Simulator.Random.Next(1, 3); // 1 - Horn, 2 - Bell
