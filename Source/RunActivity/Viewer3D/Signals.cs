@@ -316,7 +316,6 @@ namespace Orts.Viewer3D
                 }
             }
 
-            SignalLightState PreState = null;
             float ChangeStateTimer;
             bool SignalStopDelayRun;
             public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime, Matrix xnaTileTranslation)
@@ -332,29 +331,52 @@ namespace Orts.Viewer3D
 #endif
                     // Icik
                     // Zpoždění přenastavení signálu
-
                     // Na stůj
                     if (ChangeStateTimer == -1 && SignalHead.state == MstsSignalAspect.STOP)
                     {
                         if (SignalTypeData.Semaphore)
-                            ChangeStateTimer = Viewer.Random.Next(30, 60);
+                            ChangeStateTimer = 45;
                         else
-                            ChangeStateTimer = Viewer.Random.Next(3, 6);
+                            ChangeStateTimer = Viewer.Random.Next(40, 45) / 10f;
                         SignalStopDelayRun = true;
                     }
                     else
                     // Ostatní
                     if ((ChangeStateTimer == -1 || SignalStopDelayRun) && SignalHead.state != MstsSignalAspect.STOP)
                     {
-                        ChangeStateTimer = Viewer.Random.Next(1, 3);
+                        if (SignalTypeData.Semaphore)
+                            ChangeStateTimer = 1;
+                        else
+                            ChangeStateTimer = Viewer.Random.Next(10, 15) / 10f;
                         SignalStopDelayRun = false;
                     }
                     
                     ChangeStateTimer -= elapsedTime.ClockSeconds;
                     if (ChangeStateTimer > 0)
-                    {
+                    {                                           
+                        if (SignalTypeData.DrawAspects.ContainsKey(DisplayState))
+                        {
+                            SemaphoreTarget = SignalTypeData.DrawAspects[DisplayState].SemaphorePos;
+                            SemaphoreSpeed = SignalTypeData.SemaphoreAnimationTime <= 0 ? 0 : (SemaphoreTarget > SemaphorePos ? +1 : -1) / SignalTypeData.SemaphoreAnimationTime;
+                            if (Sound != null) Sound.HandleEvent(Event.SemaphoreArm);
+                        }
+
+                        CumulativeTime += elapsedTime.ClockSeconds;
+                        while (CumulativeTime > SignalTypeData.FlashTimeTotal)
+                            CumulativeTime -= SignalTypeData.FlashTimeTotal;
+
                         if (DisplayState < 0 || !SignalTypeData.DrawAspects.ContainsKey(DisplayState))
                             return;
+
+                        if (SignalTypeData.Semaphore)
+                        {
+                            // We reset the animation matrix before preparing the lights, because they need to be positioned
+                            // based on the original matrix only.
+                            foreach (AnimatedPart SemaphorePart in SemaphoreParts)
+                            {
+                                SemaphorePart.SetFrameWrap(0);
+                            }
+                        }
 
                         for (var i = 0; i < SignalTypeData.Lights.Count; i++)
                         {
@@ -364,9 +386,7 @@ namespace Orts.Viewer3D
                             bool flashingDark = SignalTypeData.DrawAspects[DisplayState].FlashLights[i] && (CumulativeTime > SignalTypeData.FlashTimeOn);
                             state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
                             if (!state.IsIlluminated())
-                                continue;
-
-                            if (PreState == null) PreState = state;
+                                continue;                            
 
                             bool isDay;
                             if (Viewer.Settings.UseMSTSEnv == false)
@@ -388,19 +408,41 @@ namespace Orts.Viewer3D
 
                             void renderEffect(Material material)
                             {
-                                frame.AddPrimitive(material, slp, RenderPrimitiveGroup.Lights, ref xnaMatrix, ShapeFlags.None, PreState);
+                                frame.AddPrimitive(material, slp, RenderPrimitiveGroup.Lights, ref xnaMatrix, ShapeFlags.None, state);
                             }
                             renderEffect(SignalTypeData.Material);
                             if (Viewer.Settings.SignalLightGlow)
-                                renderEffect(SignalTypeData.GlowMaterial);
+                                renderEffect(SignalTypeData.GlowMaterial);                                                   
+                        }
+                        if (SignalTypeData.Semaphore)
+                        {
+                            // Now we update and re-animate the semaphore arm.
+                            if (SignalTypeData.SemaphoreAnimationTime <= 0 || initialise)
+                            {
+                                // No timing (so instant switch) or we're initialising.
+                                SemaphorePos = SemaphoreTarget;
+                                SemaphoreSpeed = 0;
+                            }
+                            else
+                            {
+                                // Animate slowly to target position.
+                                SemaphorePos += SemaphoreSpeed * elapsedTime.ClockSeconds;
+                                if (SemaphorePos * Math.Sign(SemaphoreSpeed) > SemaphoreTarget * Math.Sign(SemaphoreSpeed))
+                                {
+                                    SemaphorePos = SemaphoreTarget;
+                                    SemaphoreSpeed = 0;
+                                }
+                            }
+
+                            foreach (AnimatedPart SemaphorePart in SemaphoreParts)
+                            {
+                                SemaphorePart.SetFrameCycle(SemaphorePos);
+                            }
                         }
                         return;
-                    }
-                    else
-                    {                                                
-                        ChangeStateTimer = -1;
-                    }
-
+                    }                                                                    
+                    ChangeStateTimer = -1;
+                    
                     DisplayState = SignalHead.draw_state;
                     if (SignalTypeData.DrawAspects.ContainsKey(DisplayState))
                     {
@@ -409,6 +451,7 @@ namespace Orts.Viewer3D
                         if (Sound != null) Sound.HandleEvent(Event.SemaphoreArm);
                     }
                 }
+                
 
                 CumulativeTime += elapsedTime.ClockSeconds;
                 while (CumulativeTime > SignalTypeData.FlashTimeTotal)
@@ -458,9 +501,7 @@ namespace Orts.Viewer3D
                     void renderEffect(Material material)
                     {
                         frame.AddPrimitive(material, slp, RenderPrimitiveGroup.Lights, ref xnaMatrix, ShapeFlags.None, state);
-                    }
-                    
-                    PreState = state;
+                    }                                       
 
                     renderEffect(SignalTypeData.Material);
                     if (Viewer.Settings.SignalLightGlow)
@@ -491,7 +532,7 @@ namespace Orts.Viewer3D
                     {
                         SemaphorePart.SetFrameCycle(SemaphorePos);
                     }
-                }
+                }                
             }
 
             [CallOnThread("Loader")]
