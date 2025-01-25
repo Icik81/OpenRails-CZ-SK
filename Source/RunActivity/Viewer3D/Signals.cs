@@ -201,6 +201,8 @@ namespace Orts.Viewer3D
 
             private readonly SignalLightState[] lightStates;
 
+            public bool IsJunctionPart;
+
             public SignalShapeHead(Viewer viewer, SignalShape signalShape, int index, SignalHead signalHead,
                         Orts.Formats.Msts.SignalItem mstsSignalItem, Orts.Formats.Msts.SignalShape.SignalSubObj mstsSignalSubObj)
             {
@@ -215,8 +217,15 @@ namespace Orts.Viewer3D
                     string MatrixName = signalShape.SharedShape.MatrixNames[mindex];
                     if (String.Equals(MatrixName, mstsSignalSubObj.MatrixName))
                         MatrixIndices.Add(mindex);
-                }
 
+                    if (mstsSignalSubObj.MatrixName.ToLower() == "zavazi"
+                        || mstsSignalSubObj.MatrixName.ToLower() == "navest"
+                        || mstsSignalSubObj.MatrixName.ToLower() == "head"
+                        || mstsSignalSubObj.MatrixName.ToLower() == "main")
+                    {
+                        IsJunctionPart = true;
+                    }
+                }
 
                 if (!viewer.SIGCFG.SignalTypes.ContainsKey(mstsSignalSubObj.SignalSubSignalType))
                     return;
@@ -334,9 +343,12 @@ namespace Orts.Viewer3D
                     // Na stůj
                     if (ChangeStateTimer == -1 && SignalHead.state == MstsSignalAspect.STOP)
                     {
-                        if (SignalTypeData.Semaphore)
-                            ChangeStateTimer = 45;
+                        if (SignalTypeData.Semaphore && IsJunctionPart)
+                            ChangeStateTimer = 0;
                         else
+                        if (SignalTypeData.Semaphore)
+                            ChangeStateTimer = Viewer.Random.Next(450, 455) / 10f;
+                        else                        
                             ChangeStateTimer = Viewer.Random.Next(40, 45) / 10f;
                         SignalStopDelayRun = true;
                     }
@@ -344,8 +356,11 @@ namespace Orts.Viewer3D
                     // Ostatní
                     if ((ChangeStateTimer == -1 || SignalStopDelayRun) && SignalHead.state != MstsSignalAspect.STOP)
                     {
+                        if (SignalTypeData.Semaphore && IsJunctionPart)
+                            ChangeStateTimer = 0;
+                        else
                         if (SignalTypeData.Semaphore)
-                            ChangeStateTimer = 1;
+                            ChangeStateTimer = Viewer.Random.Next(10, 15) / 10f;
                         else
                             ChangeStateTimer = Viewer.Random.Next(10, 15) / 10f;
                         SignalStopDelayRun = false;
