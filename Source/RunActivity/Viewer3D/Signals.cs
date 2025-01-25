@@ -399,16 +399,24 @@ namespace Orts.Viewer3D
                             bool semaphoreDark = SemaphorePos != SemaphoreTarget && SignalTypeData.LightsSemaphoreChange[i];
                             bool constantDark = !SignalTypeData.DrawAspects[DisplayState].DrawLights[i];
                             bool flashingDark = SignalTypeData.DrawAspects[DisplayState].FlashLights[i] && (CumulativeTime > SignalTypeData.FlashTimeOn);
-                            state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
-                            if (!state.IsIlluminated())
-                                continue;                            
 
                             bool isDay;
                             if (Viewer.Settings.UseMSTSEnv == false)
                                 isDay = Viewer.World.Sky.solarDirection.Y > 0;
                             else
                                 isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
-                            bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 200;
+
+                            bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
+
+                            if (SignalTypeData.Semaphore && isDay && !isPoorVisibility)
+                            {
+                                constantDark = true;
+                            }
+
+                            state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
+                            if (!state.IsIlluminated())
+                                continue;                            
+                                                        
                             if (!SignalTypeData.DayLight && isDay && !isPoorVisibility)
                                 continue;
 
@@ -427,7 +435,13 @@ namespace Orts.Viewer3D
                             }
                             renderEffect(SignalTypeData.Material);
                             if (Viewer.Settings.SignalLightGlow)
-                                renderEffect(SignalTypeData.GlowMaterial);                                                   
+                            {
+                                if (SignalTypeData.Semaphore && !isDay)
+                                    renderEffect(SignalTypeData.GlowMaterial);
+
+                                if (!SignalTypeData.Semaphore)
+                                    renderEffect(SignalTypeData.GlowMaterial);
+                            }
                         }
                         if (SignalTypeData.Semaphore)
                         {
@@ -491,16 +505,24 @@ namespace Orts.Viewer3D
                     bool semaphoreDark = SemaphorePos != SemaphoreTarget && SignalTypeData.LightsSemaphoreChange[i];
                     bool constantDark = !SignalTypeData.DrawAspects[DisplayState].DrawLights[i];
                     bool flashingDark = SignalTypeData.DrawAspects[DisplayState].FlashLights[i] && (CumulativeTime > SignalTypeData.FlashTimeOn);
-                    state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
-                    if (!state.IsIlluminated())
-                        continue;
 
                     bool isDay;
                     if (Viewer.Settings.UseMSTSEnv == false)
                         isDay = Viewer.World.Sky.solarDirection.Y > 0;
                     else
                         isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
-                    bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 200;
+
+                    bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
+
+                    if (SignalTypeData.Semaphore && isDay && !isPoorVisibility)
+                    {
+                        constantDark = true;
+                    }
+                    
+                    state.UpdateIntensity(semaphoreDark || constantDark || flashingDark ? 0 : 1, elapsedTime);
+                    if (!state.IsIlluminated())
+                        continue;
+                                        
                     if (!SignalTypeData.DayLight && isDay && !isPoorVisibility)
                         continue;
 
@@ -520,7 +542,13 @@ namespace Orts.Viewer3D
 
                     renderEffect(SignalTypeData.Material);
                     if (Viewer.Settings.SignalLightGlow)
-                        renderEffect(SignalTypeData.GlowMaterial);
+                    {
+                        if (SignalTypeData.Semaphore && !isDay)                        
+                            renderEffect(SignalTypeData.GlowMaterial);
+                        
+                        if (!SignalTypeData.Semaphore)
+                            renderEffect(SignalTypeData.GlowMaterial);
+                    }
                 }
 
                 if (SignalTypeData.Semaphore)
