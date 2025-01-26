@@ -1739,8 +1739,10 @@ namespace Orts.Simulation.Physics
         public int[] NumbersOccupiedTrain = new int[20];
         float TimeToRequestSignal;
         public bool TrainHasPermission;
+        public bool AITrainWillAttach;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {            
+        {
+            AITrainWillAttach = false;
             GeneratePaxDynamically();
             // Icik
             if (IsPlayerDriven)
