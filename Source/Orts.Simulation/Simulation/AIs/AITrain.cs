@@ -4049,7 +4049,11 @@ namespace Orts.Simulation.AIs
                 }
 
                 AIRollOnStartTimer += timeS;
-                if (AIRollOnStartTimer < 2f) AITSethrottlePercent = 0f;
+                if (AIRollOnStartTimer < 2f)
+                {
+                    AITSethrottlePercent = 0f;
+                    AITrainThrottlePercent = 0f;
+                }
 
                 if (Math.Round(AITrainThrottlePercent, 0) > 0.99f * AIRollOnThrottle)
                 {
@@ -4058,7 +4062,7 @@ namespace Orts.Simulation.AIs
                     {
                         AIStayToRollOn = false;
                         AIRollOnTimer = 0f;
-                        AIRollOnStartTimer = 0f;
+                        AIRollOnStartTimer = 0f;                        
                     }
                 }
             }            
@@ -4075,30 +4079,29 @@ namespace Orts.Simulation.AIs
                 AITrainThrottlePercent += stepSize * timeS;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
-            }            
-
-            if (!AIStayToRollOn)
-            {
-                if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
-                {
-                    float ds = timeS * (reqAccelMpSS);
-                    SpeedMpS = LastSpeedMpS + ds;
-                    foreach (TrainCar car in Cars)
-                    {
-                        //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
-                        // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
-                        //  car.SpeedMpS = car.Flipped ? -SpeedMpS : SpeedMpS;
-                        car.SpeedMpS = car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab) ? -SpeedMpS : SpeedMpS;
-                    }
-
-                    if (CheckTrain)
-                    {
-                        File.AppendAllText(@"C:\temp\checktrain.txt", "Forced speed increase : was " + LastSpeedMpS + " - now " + SpeedMpS + "\n");
-                    }
-
-                }
             }
 
+            if (AIStayToRollOn) reqAccelMpSS = 0;
+
+            if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
+            {
+                float ds = timeS * (reqAccelMpSS);
+                SpeedMpS = LastSpeedMpS + ds;
+                foreach (TrainCar car in Cars)
+                {
+                    //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                    // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
+                    //  car.SpeedMpS = car.Flipped ? -SpeedMpS : SpeedMpS;
+                    car.SpeedMpS = car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab) ? -SpeedMpS : SpeedMpS;
+                }
+
+                if (CheckTrain)
+                {
+                    File.AppendAllText(@"C:\temp\checktrain.txt", "Forced speed increase : was " + LastSpeedMpS + " - now " + SpeedMpS + "\n");
+                }
+
+            }
+            
             if (Math.Abs(SpeedMpS) > AbsAllowedMaxSpeed)
             {
                 AITSethrottlePercent = 0;
