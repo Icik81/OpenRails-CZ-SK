@@ -124,7 +124,7 @@ namespace Orts.Viewer3D
                     Step2 = MaxSteps - 1;
                 }
             }
-            var diff = CelestialDiff(clockTime);
+            var diff = CelestialDiff(clockTime);            
             solarDirection.X = MathHelper.Lerp(solarPosArray[Step1].X, solarPosArray[Step2].X, diff);
             solarDirection.Y = MathHelper.Lerp(solarPosArray[Step1].Y, solarPosArray[Step2].Y, diff);
             solarDirection.Z = MathHelper.Lerp(solarPosArray[Step1].Z, solarPosArray[Step2].Z, diff);
@@ -186,7 +186,7 @@ namespace Orts.Viewer3D
             // Set starting values
             seasonType = -1;
             // Default wind speed and direction
-            windSpeed = 5.0f; // m/s (approx 11 mph)
+            windSpeed = 3.0f; // m/s (approx 11 mph)
             windDirection = 4.7f; // radians (approx 270 deg, i.e. westerly)
         }
 
@@ -201,8 +201,12 @@ namespace Orts.Viewer3D
                 // First time around, initialize the following items:
                 worldLoc = new WorldLatLon();
 
-                skySteps.OldClockTime = Viewer.Simulator.ClockTime % 86400;
-                while (skySteps.OldClockTime < 0) skySteps.OldClockTime += 86400;                
+                if (Viewer.Simulator.OldClockTime == 0)                
+                    skySteps.OldClockTime = Viewer.Simulator.ClockTime % 86400;                                    
+                else                
+                    skySteps.OldClockTime = Viewer.Simulator.OldClockTime % 86400;
+                                    
+                while (skySteps.OldClockTime < 0) skySteps.OldClockTime += 86400;
 
                 skySteps.Step1 = skySteps.Step2 = (int)(skySteps.OldClockTime / 1200);
                 skySteps.Step2 = skySteps.Step2 < skySteps.MaxSteps - 1 ? skySteps.Step2 + 1 : 0; // limit to max. steps in case activity starts near midnight
