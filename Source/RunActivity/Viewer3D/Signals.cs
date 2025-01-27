@@ -408,7 +408,7 @@ namespace Orts.Viewer3D
 
                             bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
-                            if (SignalTypeData.Semaphore && isDay && !isPoorVisibility)
+                            if (SignalTypeData.Semaphore && isDay)
                             {
                                 constantDark = true;
                             }
@@ -514,7 +514,7 @@ namespace Orts.Viewer3D
 
                     bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
-                    if (SignalTypeData.Semaphore && isDay && !isPoorVisibility)
+                    if (SignalTypeData.Semaphore && isDay)
                     {
                         constantDark = true;
                     }

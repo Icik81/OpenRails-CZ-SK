@@ -3807,7 +3807,17 @@ namespace Orts.Simulation.AIs
                     if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * 10f)
                         AITrainBrakePercent += 1;
                     if (AITrainBrakePercent < 10) AITrainBrakePercent = 10;
-                    reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);
+                    
+                    float TrainElevation = 0;
+                    foreach (TrainCar car in Cars)                    
+                        TrainElevation += Math.Abs(car.CurrentElevationPercent);
+                    
+                    TrainElevation /= Cars.Count;
+                    AITrainBrakePercent = TrainElevation > 1 ? AITrainBrakePercent * TrainElevation : AITrainBrakePercent;
+                    if (AITrainBrakePercent > 100)
+                        AITrainBrakePercent = 100;
+
+                    reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);                                        
                 }                
                 else
                 {
@@ -4065,7 +4075,21 @@ namespace Orts.Simulation.AIs
                         AIRollOnStartTimer = 0f;                        
                     }
                 }
-            }            
+            }
+
+            if (AITrainWillAttach)
+            {                
+                float TrainElevation = 0;
+                foreach (TrainCar car in Cars)
+                    TrainElevation += car.CurrentElevationPercent * (car.Flipped ? -1f : 1f);
+
+                TrainElevation /= Cars.Count;
+                AITSethrottlePercent = 10f; 
+                AITSethrottlePercent = TrainElevation < -1f ? AITSethrottlePercent * TrainElevation : AITSethrottlePercent; // stoupá
+                AITSethrottlePercent = TrainElevation > 0.5f ? AITSethrottlePercent * 0 : AITSethrottlePercent; // klesá
+                if (AITSethrottlePercent > 100)
+                    AITSethrottlePercent = 100;
+            }
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
             {
