@@ -3943,6 +3943,7 @@ namespace Orts.Simulation.AIs
         float AIRollOnTime;
         float AIRollOnCutOffSpeed;
         float AIRollOnStartTimer;
+        float AITSethrottlePercent;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -3982,17 +3983,18 @@ namespace Orts.Simulation.AIs
             }
 
             // Icik
-            float AbsAllowedMaxSpeed = Math.Abs(AllowedMaxSpeedMpS);
-            float AITSethrottlePercent = 0;
+            float AbsAllowedMaxSpeed = Math.Abs(AllowedMaxSpeedMpS);            
             if (!AIThrottleDownMode)
             {
-                AITSethrottlePercent = 100f;                
-                if (Math.Abs(SpeedMpS) > 0.90f * AbsAllowedMaxSpeed)
+                if (Math.Abs(SpeedMpS) < 0.5f / 3.6f)
+                    AITSethrottlePercent = 100f;
+                else
+                if (!AIRollOn && (Math.Abs(SpeedMpS) > 0.90f * AbsAllowedMaxSpeed || Math.Abs(AccelerationMpSpS.SmoothedValue) < reqAccelMpSS))
                     AIThrottleDownMode = true;
             }
-            if (AIThrottleDownMode && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
+            if (AIThrottleDownMode)
             {
-                AITSethrottlePercent = (1f - (Math.Abs(SpeedMpS) / AbsAllowedMaxSpeed - 0.60f)) * 100f;
+                AITSethrottlePercent = Math.Abs(AccelerationMpSpS.SmoothedValue) / reqAccelMpSS * 100f;                
                 if (Math.Abs(SpeedMpS) < 0.80f * AbsAllowedMaxSpeed)
                     AIThrottleDownMode = false;
             }            
@@ -4047,22 +4049,29 @@ namespace Orts.Simulation.AIs
                 if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
                 {
                     AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, AIRollOnThrottle);
-                    
-                    if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 10f)                                                                
-                        AITSethrottlePercent += Math.Abs(SpeedMpS * 3.6f * SpeedMpS * 3.6f) * 4f; 
-                                            
+
+                    if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 10f)
+                        AITSethrottlePercent += Math.Abs(SpeedMpS * 3.6f * SpeedMpS * 3.6f) * 4f;
+
                     reqAccelMpSS = MathHelper.Clamp(reqAccelMpSS, 0, reqAccelMpSS * (AITSethrottlePercent / 100f));
                 }
-                else                
+                else
                 {
-                    AIRollOn = false;
+                    if (Math.Abs(AccelerationMpSpS.SmoothedValue) > 0.9f * reqAccelMpSS)
+                    {
+                        AIRollOn = false;
+                        AIRollOnStartTimer = 0f;
+                    }
                 }
 
-                AIRollOnStartTimer += timeS;
-                if (AIRollOnStartTimer < 2f)
+                if (AIRollOn)
                 {
-                    AITSethrottlePercent = 0f;
-                    AITrainThrottlePercent = 0f;
+                    AIRollOnStartTimer += timeS;
+                    if (AIRollOnStartTimer < 2f)
+                    {
+                        AITrainThrottlePercent = 0f;
+                        AITSethrottlePercent = 0f;
+                    }
                 }
 
                 if (Math.Round(AITrainThrottlePercent, 0) > 0.99f * AIRollOnThrottle)
@@ -4071,25 +4080,10 @@ namespace Orts.Simulation.AIs
                     if (AIRollOnTimer > AIRollOnTime)
                     {
                         AIStayToRollOn = false;
-                        AIRollOnTimer = 0f;
-                        AIRollOnStartTimer = 0f;                        
+                        AIRollOnTimer = 0f;                                                
                     }
                 }
-            }
-
-            if (AITrainWillAttach)
-            {                
-                float TrainElevation = 0;
-                foreach (TrainCar car in Cars)
-                    TrainElevation += car.CurrentElevationPercent * (car.Flipped ? -1f : 1f);
-
-                TrainElevation /= Cars.Count;
-                AITSethrottlePercent = 10f; 
-                AITSethrottlePercent = TrainElevation < -1f ? AITSethrottlePercent * TrainElevation : AITSethrottlePercent; // stoupá
-                AITSethrottlePercent = TrainElevation > 0.5f ? AITSethrottlePercent * 0 : AITSethrottlePercent; // klesá
-                if (AITSethrottlePercent > 100)
-                    AITSethrottlePercent = 100;
-            }
+            }            
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
             {
@@ -4104,7 +4098,7 @@ namespace Orts.Simulation.AIs
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
-
+            
             if (AIStayToRollOn) reqAccelMpSS = 0;
 
             if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
