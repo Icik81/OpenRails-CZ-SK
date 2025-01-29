@@ -373,7 +373,7 @@ namespace Orts.Viewer3D
                         {
                             SemaphoreTarget = SignalTypeData.DrawAspects[DisplayState].SemaphorePos;
                             SemaphoreSpeed = SignalTypeData.SemaphoreAnimationTime <= 0 ? 0 : (SemaphoreTarget > SemaphorePos ? +1 : -1) / SignalTypeData.SemaphoreAnimationTime;
-                            if (Sound != null) Sound.HandleEvent(Event.SemaphoreArm);
+                            //if (Sound != null) Sound.HandleEvent(Event.SemaphoreArm);
                         }
 
                         CumulativeTime += elapsedTime.ClockSeconds;

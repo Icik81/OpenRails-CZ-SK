@@ -1510,10 +1510,10 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedControlled: return Math.Abs(car.WheelSpeedMpS);
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedACControlled: return car.AbsWheelSpeedMpSAC;
                 case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeedDCControlled: return car.AbsWheelSpeedMpSDC;
-                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed1Controlled: return car.AbsWheelSpeed1MpS;
-                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed2Controlled: return car.AbsWheelSpeed2MpS;
-                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed3Controlled: return car.AbsWheelSpeed3MpS;
-                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed4Controlled: return car.AbsWheelSpeed4MpS;
+                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed1Controlled: return car.AbsWheelSpeedMpS;
+                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed2Controlled: return 0;
+                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed3Controlled: return 0;
+                case Orts.Formats.Msts.VolumeCurve.Controls.WheelSpeed4Controlled: return 0;
                 case Orts.Formats.Msts.VolumeCurve.Controls.SlipSpeedControlled: return car.SlipSpeedDiference;
                 case Orts.Formats.Msts.VolumeCurve.Controls.VibrationControlled: return car.Factor_vibration;
                 case Orts.Formats.Msts.VolumeCurve.Controls.Variable1Controlled: return car.Variable1;
@@ -2289,22 +2289,22 @@ namespace Orts.Viewer3D
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed1_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed1_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed1_NEquals_To:
-                    return car.AbsWheelSpeed1MpS;
+                    return car.AbsWheelSpeedMpS;
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed2_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed2_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed2_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed2_NEquals_To:
-                    return car.AbsWheelSpeed2MpS;
+                    return 0;
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed3_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed3_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed3_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed3_NEquals_To:
-                    return car.AbsWheelSpeed3MpS;
+                    return 0;
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed4_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed4_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed4_Equals_To:
                 case Orts.Formats.Msts.Variable_Trigger.Events.WheelSpeed4_NEquals_To:
-                    return car.AbsWheelSpeed4MpS;
+                    return 0;
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Dec_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Inc_Past:
                 case Orts.Formats.Msts.Variable_Trigger.Events.SlipSpeed_Equals_To:
