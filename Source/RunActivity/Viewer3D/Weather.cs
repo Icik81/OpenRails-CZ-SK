@@ -1618,7 +1618,7 @@ namespace Orts.Viewer3D
                 // begin with overcast
                 var randValue = Simulator.Random.Next(170);
                 var intermValue = randValue >= 50 ? (float)(randValue - 50f) : (float)randValue;
-                ORTSOvercast = intermValue >= 20 ? (float)(intermValue - 20f) / 100f : (float)intermValue / 100f; // give more probability to less overcast
+                ORTSOvercast = intermValue >= 10 ? (float)(intermValue - 10f) / 100f : (float)intermValue / 100f; // give more probability to less overcast
                 ORTSOvercastTransitionTimeS = weatherChangeTimer;
                 overcastTimer = (float)ORTSOvercastTransitionTimeS;
                 overcastChangeRate = overcastTimer > 0 ? (MathHelper.Clamp(ORTSOvercast, 0, 1.0f) - weatherControl.Weather.OvercastFactor) / ORTSOvercastTransitionTimeS : 0;
@@ -1674,8 +1674,8 @@ namespace Orts.Viewer3D
 
                 // and now define visibility                
                 // Icik
-                int SeasonFogMin = 1000;
-                int SeasonFogMax = 1000;
+                float SeasonFogMin = 1000;
+                float SeasonFogMax = 1000;
                 switch (weatherControl.Viewer.Simulator.Season)
                 {
                     case SeasonType.Spring:
@@ -1694,9 +1694,9 @@ namespace Orts.Viewer3D
                         SeasonFogMax = 20000;
                         break;
                     case SeasonType.Winter:
-                        randValue = Simulator.Random.Next(2000);
+                        randValue = (int)(Simulator.Random.Next(10, 20) * 100f);
                         SeasonFogMin = 500;
-                        SeasonFogMax = 6500;
+                        SeasonFogMax = 20000;
                         break;
                 }
 
