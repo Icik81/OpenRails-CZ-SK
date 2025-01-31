@@ -38,7 +38,7 @@ namespace Orts.Viewer3D
         //public const float MaxIntensityPPSPM2 = 0.035f;
 
         // Icik
-        public const float MaxIntensityPPSPM2 = 1.00f;
+        public const float MaxIntensityPPSPM2 = 1f;
 
         readonly Viewer Viewer;
         readonly WeatherControl WeatherControl;
@@ -231,7 +231,7 @@ namespace Orts.Viewer3D
                 ParticleBoxHeightM = ParticleBoxHeightM_16;
             }
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
-                MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2 / MaxIntensityKoef * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
+                MaxParticles = (int)(2f * PrecipitationViewer.MaxIntensityPPSPM2 / MaxIntensityKoef * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
             // Processing 16bit device
             else
                 MaxParticles = (int)(PrecipitationViewer.MaxIntensityPPSPM2_16 * ParticleBoxLengthM * ParticleBoxWidthM * ParticleBoxHeightM / SnowVelocityMpS / ParticleVelocityFactor);
@@ -394,6 +394,8 @@ namespace Orts.Viewer3D
             ParticleDirection = wind;
         }
 
+        float SnowFallChangeChaosTimer;
+        float StartTimeChaosX;
         public void Update(float currentTime, ElapsedTime elapsedTime, float particlesPerSecondPerM2, Viewer viewer)
         {
             var tiles = viewer.Tiles;
@@ -435,9 +437,21 @@ namespace Orts.Viewer3D
                     var particle = (FirstFreeParticle + 1) % MaxParticles;
                     var vertex = particle * VerticiesPerParticle;
 
+                    SnowFallChangeChaosTimer += viewer.Simulator.OneSecondLoop;
+                    if (SnowFallChangeChaosTimer < 0.5f)
+                        StartTimeChaosX = -10f;
+                    else
+                        StartTimeChaosX = 10f;
+                    if (SnowFallChangeChaosTimer > 1.0f)
+                        SnowFallChangeChaosTimer = 0f;
+
+                    if (viewer.Simulator.Weather.PrecipitationLiquidity > 0.5f)
+                        StartTimeChaosX = 0f;
+
                     for (var j = 0; j < VerticiesPerParticle; j++)
                     {
                         Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);
+                        Vertices[vertex + j].StartPosition_StartTime.X += StartTimeChaosX;
                         Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;
                         Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
                         Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
