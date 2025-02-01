@@ -2299,7 +2299,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > selectedApproachSpeed)
                                 StartReducingSpeedLightFlash(fast, elapsedTimeSeconds);
                             else
+                            {
                                 StartReducingSpeed = false;
+                                MirelMaximumSpeed = selectedApproachSpeed;
+                            }
                             timeBeforeIntervetion += elapsedTimeSeconds;
                             if (timeBeforeIntervetion > timeBeforeCountDown - 2)
                                 canChangeSelectedApproachSpeed = false;
@@ -2433,7 +2436,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > selectedApproachSpeed && !ManualMode)
                                 StartReducingSpeedLightFlash(fast, elapsedTimeSeconds);
                             else
+                            {
                                 StartReducingSpeed = false;
+                                MirelMaximumSpeed = selectedApproachSpeed;
+                            }
                             timeBeforeIntervetion += elapsedTimeSeconds;
                             if (timeBeforeIntervetion > timeBeforeCountDown - 2)
                                 canChangeSelectedApproachSpeed = false;
@@ -2560,7 +2566,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MpS.ToKpH(Locomotive.AbsSpeedMpS) > selectedApproachSpeed && !ManualMode)
                                 StartReducingSpeedLightFlash(fast, elapsedTimeSeconds);
                             else
+                            {
                                 StartReducingSpeed = false;
+                                MirelMaximumSpeed = selectedApproachSpeed;
+                            }
                             timeBeforeIntervetion += elapsedTimeSeconds;
                             if (timeBeforeIntervetion > timeBeforeCountDown - 2)
                                 canChangeSelectedApproachSpeed = false;

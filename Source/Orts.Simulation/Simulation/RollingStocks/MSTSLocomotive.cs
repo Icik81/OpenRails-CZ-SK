@@ -6528,6 +6528,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Mirel != null)
                 {
                     Mirel.initTest = InitTest.Passed;
+                    Mirel.driveMode = DriveMode.Normal;
                     Mirel.selectedDriveMode = DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     Mirel.BlueLight = true;
