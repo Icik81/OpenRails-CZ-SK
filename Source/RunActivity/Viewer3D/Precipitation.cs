@@ -103,7 +103,7 @@ namespace Orts.Viewer3D
             frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
             frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
 
-            if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
+            //if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
             {
                 frame.AddPrimitive(Material, Pricipitation3, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
                 frame.AddPrimitive(Material, Pricipitation4, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
