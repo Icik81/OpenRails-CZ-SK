@@ -6266,59 +6266,29 @@ namespace Orts.Simulation.RollingStocks
             Pantograph p3;
             Pantograph p4;
 
-            if (Flipped)
+            if (UsingRearCab)
             {
-                if (UsingRearCab)
+                p1 = Pantographs.List[1];
+                p2 = Pantographs.List[0];
+                p3 = Pantographs.List[1];
+                p4 = Pantographs.List[0];
+                if (Pantographs.Count == 4)
                 {
-                    p1 = Pantographs.List[0];
-                    p2 = Pantographs.List[1];
-                    p3 = Pantographs.List[0];
-                    p4 = Pantographs.List[1];
-                    if (Pantographs.Count == 4)
-                    {
-                        p3 = Pantographs.List[2];
-                        p4 = Pantographs.List[3];
-                    }
-                }
-                else
-                {
-                    p1 = Pantographs.List[1];
-                    p2 = Pantographs.List[0];
-                    p3 = Pantographs.List[1];
-                    p4 = Pantographs.List[0];
-                    if (Pantographs.Count == 4)
-                    {
-                        p3 = Pantographs.List[3];
-                        p4 = Pantographs.List[2];
-                    }
+                    p3 = Pantographs.List[3];
+                    p4 = Pantographs.List[2];
                 }
             }
             else
             {
-                if (UsingRearCab)
+                p1 = Pantographs.List[0];
+                p2 = Pantographs.List[1];
+                p3 = Pantographs.List[0];
+                p4 = Pantographs.List[1];
+                if (Pantographs.Count == 4)
                 {
-                    p1 = Pantographs.List[1];
-                    p2 = Pantographs.List[0];
-                    p3 = Pantographs.List[1];
-                    p4 = Pantographs.List[0];
-                    if (Pantographs.Count == 4)
-                    {
-                        p3 = Pantographs.List[3];
-                        p4 = Pantographs.List[2];
-                    }
+                    p3 = Pantographs.List[2];
+                    p4 = Pantographs.List[3];
                 }
-                else
-                {
-                    p1 = Pantographs.List[0];
-                    p2 = Pantographs.List[1];
-                    p3 = Pantographs.List[0];
-                    p4 = Pantographs.List[1];
-                    if (Pantographs.Count == 4)
-                    {
-                        p3 = Pantographs.List[2];
-                        p4 = Pantographs.List[3];
-                    }
-                }                
             }
 
             // Master - Slave
