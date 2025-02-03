@@ -2226,7 +2226,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.Clear_1:
                         {
                             MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
-                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140))
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) &&
+                                !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140 || MirelMaximumSpeed == 195 || MirelMaximumSpeed == 190))
                                 MirelMaximumSpeed += 1;
                             if (recieverState == RecieverState.Off)
                             {
@@ -2353,7 +2354,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.Restricted:
                         {
                             MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
-                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140))
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) &&
+                                !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140 || MirelMaximumSpeed == 195 || MirelMaximumSpeed == 190))
                                 MirelMaximumSpeed += 1;
 
                             if (MirelType == Type.LS90)
@@ -2491,7 +2493,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     case TrackMonitorSignalAspect.StopAndProceed:
                         {
                             MirelMaximumSpeed = (float)Math.Round(MirelMaximumSpeed, 0);
-                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) && !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140))
+                            if ((MirelMaximumSpeed.ToString().Contains("9") || MirelMaximumSpeed.ToString().Contains("4")) &&
+                                !(MirelMaximumSpeed == 40 || MirelMaximumSpeed == 90 || MirelMaximumSpeed == 95 || MirelMaximumSpeed == 45 || MirelMaximumSpeed == 145 || MirelMaximumSpeed == 140 || MirelMaximumSpeed == 195 || MirelMaximumSpeed == 190))
                                 MirelMaximumSpeed += 1;
                             if (recieverState == RecieverState.Off)
                             {
