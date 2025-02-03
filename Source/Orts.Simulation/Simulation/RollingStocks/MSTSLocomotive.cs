@@ -20954,7 +20954,20 @@ namespace Orts.Simulation.RollingStocks
                         else                        
                             maxForce = (maxForce / MaxForceN) * 100;                                                                            
                     }
+
                     data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
+
+                    if (!(cvc is Orts.Formats.Msts.CVCDigital))
+                    {
+                        cvc.ElapsedTime += elapsedTime;
+                        if (cvc.ElapsedTime < 0.15f)
+                        {
+                            data = cvc.PreviousData;
+                            break;
+                        }
+                        cvc.ElapsedTime = 0;
+                        cvc.PreviousData = data;
+                    }
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:                    
                     data = 0.0f;
@@ -21010,6 +21023,16 @@ namespace Orts.Simulation.RollingStocks
                             data = N.ToLbf(data) * 0.001f;
                             break;
                     }
+
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime < 0.50f)
+                    {
+                        data = cvc.PreviousData;
+                        break;
+                    }
+                    cvc.ElapsedTime = 0;
+                    cvc.PreviousData = data;
+
                     //                       if (direction == 1 && !(cvc is CVCGauge))
                     //                           data = -data;
                     break;
@@ -21067,6 +21090,16 @@ namespace Orts.Simulation.RollingStocks
                         else
                             cvc.IsVisible = NegativeMask = true;
                     }
+                    
+                    cvc.ElapsedTime += elapsedTime;
+                    if (cvc.ElapsedTime < 0.30f)
+                    {
+                        data = cvc.PreviousData;
+                        break;
+                    }
+                    cvc.ElapsedTime = 0;
+                    cvc.PreviousData = data;                    
+
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
