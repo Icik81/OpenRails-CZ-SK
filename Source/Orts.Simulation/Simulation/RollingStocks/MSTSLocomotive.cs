@@ -21090,6 +21090,7 @@ namespace Orts.Simulation.RollingStocks
                                 data = -100;
                             else
                                 data = 100;
+                            cvc.PreviousData = data;
                         }
                     }
                     if (ControllerVolts > -0.05f && ControllerVolts < 0.05f)
