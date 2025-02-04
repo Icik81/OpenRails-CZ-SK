@@ -623,10 +623,10 @@
   </wsdl:binding>
   <wsdl:service name="WebService">
     <wsdl:port name="WebServiceSoap" binding="tns:WebServiceSoap">
-      <soap:address location="http://lkpr.aspone.cz/WebService.asmx" />
+      <soap:address location="http://lkpr.aspfree.cz/WebService.asmx" />
     </wsdl:port>
     <wsdl:port name="WebServiceSoap12" binding="tns:WebServiceSoap12">
-      <soap12:address location="http://lkpr.aspone.cz/WebService.asmx" />
+      <soap12:address location="http://lkpr.aspfree.cz/WebService.asmx" />
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

@@ -169,7 +169,7 @@
     <Compile Include="Simulation\Turntables.cs" />
     <Compile Include="Simulation\Weather.cs" />
     <Compile Include="Common\Scripting\EuropeanTrainControlSystem.cs" />
-    <Compile Include="Web References\cz.aspone.lkpr\Reference.cs">
+    <Compile Include="Web References\cz.aspfree.lkpr\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -212,11 +212,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Web References\cz.aspone.lkpr\Reference.map">
+    <None Include="Web References\cz.aspfree.lkpr\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Web References\cz.aspone.lkpr\WebService.wsdl" />
+    <None Include="Web References\cz.aspfree.lkpr\WebService.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
@@ -225,20 +225,20 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://lkpr.aspone.cz/WebService.asmx">
+    <WebReferenceUrl Include="http://lkpr.aspfree.cz/WebService.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\cz.aspone.lkpr\</RelPath>
-      <UpdateFromURL>http://lkpr.aspone.cz/WebService.asmx</UpdateFromURL>
+      <RelPath>Web References\cz.aspfree.lkpr\</RelPath>
+      <UpdateFromURL>http://lkpr.aspfree.cz/WebService.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Orts_Simulation_cz_aspone_lkpr_WebService</CachedSettingsPropName>
+      <CachedSettingsPropName>Orts_Simulation_cz_aspfree_lkpr_WebService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Web References\cz.aspone.lkpr\WebService.disco" />
+    <None Include="Web References\cz.aspfree.lkpr\WebService.disco" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.3.6.0\build\net472\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.targets')" />

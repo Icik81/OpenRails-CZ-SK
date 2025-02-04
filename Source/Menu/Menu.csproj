@@ -133,7 +133,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Web References\cz.aspone.lkpr\Reference.cs">
+    <Compile Include="Web References\cz.aspfree.lkpr\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.map</DependentUpon>
@@ -207,11 +207,11 @@
     <None Include="Updater.ini">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Include="Web References\cz.aspone.lkpr\Reference.map">
+    <None Include="Web References\cz.aspfree.lkpr\Reference.map">
       <Generator>MSDiscoCodeGenerator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>
-    <None Include="Web References\cz.aspone.lkpr\WebService.wsdl" />
+    <None Include="Web References\cz.aspfree.lkpr\WebService.wsdl" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Orts.ExternalDevices\Orts.ExternalDevices.csproj">
@@ -249,7 +249,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="RailDriverLegend.png" />
-    <None Include="Web References\cz.aspone.lkpr\WebService.disco" />
+    <None Include="Web References\cz.aspfree.lkpr\WebService.disco" />
     <None Include="Resources\info-18-2.png" />
   </ItemGroup>
   <ItemGroup>
@@ -262,16 +262,16 @@
     <WebReferences Include="Web References\" />
   </ItemGroup>
   <ItemGroup>
-    <WebReferenceUrl Include="http://lkpr.aspone.cz/WebService.asmx">
+    <WebReferenceUrl Include="http://lkpr.aspfree.cz/WebService.asmx">
       <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\cz.aspone.lkpr\</RelPath>
-      <UpdateFromURL>http://lkpr.aspone.cz/WebService.asmx</UpdateFromURL>
+      <RelPath>Web References\cz.aspfree.lkpr\</RelPath>
+      <UpdateFromURL>http://lkpr.aspfree.cz/WebService.asmx</UpdateFromURL>
       <ServiceLocationURL>
       </ServiceLocationURL>
       <CachedDynamicPropName>
       </CachedDynamicPropName>
       <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Menu_cz_aspone_lkpr_WebService</CachedSettingsPropName>
+      <CachedSettingsPropName>Menu_cz_aspfree_lkpr_WebService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

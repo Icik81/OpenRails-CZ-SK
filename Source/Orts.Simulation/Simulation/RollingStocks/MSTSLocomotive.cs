@@ -20051,7 +20051,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
             int markerId = eloco.marker.Id;
 
-            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
 
             if (!VoltageMarkersDbVersionUpdated)
             {
@@ -20117,7 +20117,7 @@ namespace Orts.Simulation.RollingStocks
             if (!Simulator.SuperUser)
                 return;
 
-            cz.aspone.lkpr.WebService webService = new cz.aspone.lkpr.WebService();
+            cz.aspfree.lkpr.WebService webService = new cz.aspfree.lkpr.WebService();
             if (!PowerSuplyStationDbVersionUpdated)
             {
                 int v = int.Parse(webService.GetPowerSuplyStationVersion(Simulator.TRK.Tr_RouteFile.FileName));
@@ -20179,7 +20179,7 @@ namespace Orts.Simulation.RollingStocks
             if (!Simulator.SuperUser)
                 return;
 
-            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
 
             if (!VoltageMarkersDbVersionUpdated)
             {

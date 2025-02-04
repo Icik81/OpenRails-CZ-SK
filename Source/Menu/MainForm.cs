@@ -467,7 +467,7 @@ namespace ORTS
             try
             {
                 Ping ping = new Ping();
-                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                PingReply pingReply = ping.Send("lkpr.aspfree.cz", 1000);
                 if (pingReply != null)
                 {
                     if (pingReply.Status == IPStatus.Success)
@@ -488,7 +488,7 @@ namespace ORTS
 
                             string version = File.ReadAllText(SelectedRoute.Path + "\\MirelDbVersion.ini");
                             if (string.IsNullOrEmpty(version)) version = "0";
-                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
                             string verRemote = ws.GetLastVersion(SelectedRoute.ToString());                                                        
 
                             if (verRemote == null)
@@ -515,7 +515,7 @@ namespace ORTS
                             try
                             {
                                 File.Delete(SelectedRoute.Path + "\\MirelDb.xml");
-                                webClient.DownloadFile("http://lkpr.aspone.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
+                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
                             }
                             catch
                             {
@@ -568,7 +568,7 @@ namespace ORTS
             try
             {
                 Ping ping = new Ping();
-                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                PingReply pingReply = ping.Send("lkpr.aspfree.cz", 1000);
                 if (pingReply != null)
                 {
                     if (pingReply.Status == IPStatus.Success)
@@ -590,7 +590,7 @@ namespace ORTS
 
                             string version = File.ReadAllText(SelectedRoute.Path + "\\PowerSupplyStationsDbVersion.ini");
                             if (string.IsNullOrEmpty(version)) version = "0";
-                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
                             string verRemote = "0";
                             if (verRemote == version && File.Exists(SelectedRoute.Path + "\\PowerSupplyStations.xml"))
                             {                                
@@ -610,7 +610,7 @@ namespace ORTS
                             try
                             {
                                 File.Delete(SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                                webClient.DownloadFile("http://lkpr.aspone.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
                             }
                             catch
                             {
@@ -668,7 +668,7 @@ namespace ORTS
             try
             {
                 Ping ping = new Ping();
-                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                PingReply pingReply = ping.Send("lkpr.aspfree.cz", 1000);
                 if (pingReply != null)
                 {
                     if (pingReply.Status == IPStatus.Success)
@@ -690,7 +690,7 @@ namespace ORTS
 
                             string version = File.ReadAllText(SelectedRoute.Path + "\\VoltageChangeMarkersDbVersion.ini");
                             if (string.IsNullOrEmpty(version)) version = "0";
-                            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
                             string verRemote = ws.GetPowerSuplyMarkerVersion(SelectedRoute.ToString());
                             if (verRemote == null || verRemote == version && File.Exists(SelectedRoute.Path + "\\VoltageChangeMarkers.xml"))
                             {
@@ -705,7 +705,7 @@ namespace ORTS
                             try
                             {
                                 File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                                webClient.DownloadFile("http://lkpr.aspone.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
                             }
                             catch
                             {
@@ -764,7 +764,7 @@ namespace ORTS
             try
             {
                 Ping ping = new Ping();
-                PingReply pingReply = ping.Send("lkpr.aspone.cz", 1000);
+                PingReply pingReply = ping.Send("lkpr.aspfree.cz", 1000);
                 if (pingReply != null)
                 {
                     if (pingReply.Status == IPStatus.Success)
@@ -772,7 +772,7 @@ namespace ORTS
                         if (!File.Exists(Application.StartupPath + "\\krestni_muzi.csv") || !File.Exists(Application.StartupPath + "\\krestni_zeny.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_muzi_1.csv") || !File.Exists(Application.StartupPath + "\\prijmeni_zeny_1.csv"))
                         {
                             WebClient webClient = new WebClient();
-                            webClient.DownloadFile("http://lkpr.aspone.cz/or/Names.zip", Application.StartupPath + "\\Names.zip");
+                            webClient.DownloadFile("http://lkpr.aspfree.cz/or/Names.zip", Application.StartupPath + "\\Names.zip");
                             ZipFile zFile = new ZipFile(Application.StartupPath + "\\Names.zip");
                             zFile.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                         }

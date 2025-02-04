@@ -34,7 +34,7 @@ using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
-using Orts.Simulation.cz.aspone.lkpr;
+using Orts.Simulation.cz.aspfree.lkpr;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;

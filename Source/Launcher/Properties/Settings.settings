@@ -1,5 +1,9 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="ORTS.Properties" GeneratedClassName="Settings">
   <Profiles />
-  <Settings />
+  <Settings>
+    <Setting Name="OpenRails_cz_aspfree_lkpr_WebService" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://lkpr.aspfree.cz/WebService.asmx</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

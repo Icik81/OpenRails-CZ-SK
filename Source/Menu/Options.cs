@@ -19,7 +19,7 @@ using GNU.Gettext;
 using GNU.Gettext.WinForms;
 using MSTS;
 using ORTS.Common.Input;
-using ORTS.cz.aspone.lkpr;
+
 using ORTS.Settings;
 using ORTS.Updater;
 using System;

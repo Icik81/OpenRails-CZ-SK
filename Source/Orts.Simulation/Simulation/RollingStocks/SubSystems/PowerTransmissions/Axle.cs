@@ -15,7 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.cz.aspone.lkpr;
+using Orts.Simulation.cz.aspfree.lkpr;
 using ORTS.Common;
 using System;
 using System.IO;

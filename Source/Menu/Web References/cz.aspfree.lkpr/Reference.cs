@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace Orts.Simulation.cz.aspone.lkpr {
+namespace ORTS.cz.aspfree.lkpr {
     using System.Diagnostics;
     using System;
     using System.Xml.Serialization;
@@ -62,7 +62,7 @@ namespace Orts.Simulation.cz.aspone.lkpr {
         
         /// <remarks/>
         public WebService() {
-            this.Url = global::Orts.Simulation.Properties.Settings.Default.Orts_Simulation_cz_aspone_lkpr_WebService;
+            this.Url = global::ORTS.Properties.Settings.Default.Menu_cz_aspfree_lkpr_WebService;
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;

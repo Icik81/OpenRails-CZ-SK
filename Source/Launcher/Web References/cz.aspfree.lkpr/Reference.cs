@@ -13,7 +13,7 @@
 // 
 #pragma warning disable 1591
 
-namespace ORTS.cz.aspone.lkpr {
+namespace ORTS.cz.aspfree.lkpr {
     using System.Diagnostics;
     using System;
     using System.Xml.Serialization;
@@ -62,7 +62,7 @@ namespace ORTS.cz.aspone.lkpr {
         
         /// <remarks/>
         public WebService() {
-            this.Url = global::ORTS.Properties.Settings.Default.Menu_cz_aspone_lkpr_WebService;
+            this.Url = global::ORTS.Properties.Settings.Default.OpenRails_cz_aspfree_lkpr_WebService;
             if ((this.IsLocalFileSystemWebService(this.Url) == true)) {
                 this.UseDefaultCredentials = true;
                 this.useDefaultCredentialsSetExplicitly = false;
@@ -201,17 +201,10 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetPowerSupplyStations", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public System.Data.DataTable GetPowerSupplyStations(string TrackName, string Version) {
-            try
-            {
-                object[] results = this.Invoke("GetPowerSupplyStations", new object[] {
+            object[] results = this.Invoke("GetPowerSupplyStations", new object[] {
                         TrackName,
                         Version});
-                return ((System.Data.DataTable)(results[0]));
-            }
-            catch (System.Exception e)
-            {
-                return null;
-            }            
+            return ((System.Data.DataTable)(results[0]));
         }
         
         /// <remarks/>
@@ -270,16 +263,9 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetLastVersion", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string GetLastVersion(string Track) {
-            try
-            {
-                object[] results = this.Invoke("GetLastVersion", new object[] {
+            object[] results = this.Invoke("GetLastVersion", new object[] {
                         Track});
-                return ((string)(results[0]));
-            }
-            catch (System.Exception e)
-            {
-                return null;
-            }            
+            return ((string)(results[0]));
         }
         
         /// <remarks/>
@@ -335,16 +321,9 @@ namespace ORTS.cz.aspone.lkpr {
         /// <remarks/>
         [System.Web.Services.Protocols.SoapDocumentMethodAttribute("http://tempuri.org/GetPowerSuplyMarkerVersion", RequestNamespace="http://tempuri.org/", ResponseNamespace="http://tempuri.org/", Use=System.Web.Services.Description.SoapBindingUse.Literal, ParameterStyle=System.Web.Services.Protocols.SoapParameterStyle.Wrapped)]
         public string GetPowerSuplyMarkerVersion(string Track) {
-            try
-            {
-                object[] results = this.Invoke("GetPowerSuplyMarkerVersion", new object[] {
+            object[] results = this.Invoke("GetPowerSuplyMarkerVersion", new object[] {
                         Track});
-                return ((string)(results[0]));
-            }
-            catch (System.Exception e)
-            {
-                return null;
-            }
+            return ((string)(results[0]));
         }
         
         /// <remarks/>

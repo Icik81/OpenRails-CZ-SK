@@ -162,7 +162,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (!Locomotive.IsPlayerTrain) return;
             if (!DatabaseVersionUpdated)
             {
-                cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+                cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
                 int v = int.Parse(ws.GetLastVersion(Simulator.TRK.Tr_RouteFile.FileName));
                 DatabaseVersion = v + 1;
                 ws.UpdateMirelVersion(DatabaseVersion, Simulator.TRK.Tr_RouteFile.FileName);
@@ -225,7 +225,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         protected void SaveMirelStateToWorld(int SectionID, String NewState)
         {
-            cz.aspone.lkpr.WebService ws = new cz.aspone.lkpr.WebService();
+            cz.aspfree.lkpr.WebService ws = new cz.aspfree.lkpr.WebService();
             ws.SaveMirelSignal(Simulator.TRK.Tr_RouteFile.Name, SectionID, NewState, DatabaseVersion);
         }
 
