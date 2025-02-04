@@ -3100,6 +3100,10 @@ namespace Orts.Simulation.RollingStocks
                 airPipeSystem = BrakeSystem as AirSinglePipe;
                 DynamicBrake = true;
             }
+            
+            // Vectron
+            if (TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply && DynamicBrakeController != null)
+                ThrottleController.CurrentValue = 0f;
 
             if (airPipeSystem != null
                 && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
@@ -6790,7 +6794,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (UsingForceHandle && TrainBrakeController.TrainBrakeControllerState != ControllerState.EPApply)
+                    if (UsingForceHandle)
                     {
                         if (ForceHandleIncreasing)
                         {
@@ -6834,7 +6838,12 @@ namespace Orts.Simulation.RollingStocks
                             if (ForceHandleValue < 0)
                             {
                                 if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                    SetDynamicBrakePercent(-ForceHandleValue);
+                                {
+                                    if (TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
+                                        DynamicBrakePercent = Math.Max(Math.Abs(ForceHandleValue), DynamicBrakePercent);
+                                    else
+                                        DynamicBrakePercent = -ForceHandleValue;
+                                }
                             }
                         }
                         else
@@ -6856,7 +6865,12 @@ namespace Orts.Simulation.RollingStocks
                                 if (ForceHandleValue < 0)
                                 {
                                     if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                        DynamicBrakePercent = -ForceHandleValue;
+                                    {
+                                        if (TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
+                                            DynamicBrakePercent = Math.Max(Math.Abs(ForceHandleValue), DynamicBrakePercent);
+                                        else
+                                            DynamicBrakePercent = -ForceHandleValue;
+                                    }
                                 }
                             }
                             else
@@ -6876,11 +6890,16 @@ namespace Orts.Simulation.RollingStocks
                                 if (ForceHandleValue < 0)
                                 {
                                     if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
-                                        DynamicBrakePercent = -ForceHandleValue;
+                                    {
+                                        if (TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
+                                            DynamicBrakePercent = Math.Max(Math.Abs(ForceHandleValue), DynamicBrakePercent);
+                                        else
+                                            DynamicBrakePercent = -ForceHandleValue;
+                                    }
                                 }
                             }
                         }
-                        ControllerVolts = ForceHandleValue / 10;
+                        ControllerVolts = ForceHandleValue / 10;                        
                     }
 
                     float speedDiff = 0;
@@ -9911,7 +9930,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                     {
                         if (UsingForceHandle)
-                            return (CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * ForceHandleValue / 100) * 100;
+                            return (CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * ForceHandleValue / 100);
                         else
                             return CombinedControlSplitPosition + (1 - CombinedControlSplitPosition) * (intermediateValue ? -DynamicBrakeController.IntermediateValue : -DynamicBrakeController.CurrentValue);
                     }
@@ -10540,6 +10559,8 @@ namespace Orts.Simulation.RollingStocks
         #region DynamicBrakeController
         public void StartDynamicBrakeIncrease(float? target)
         {
+            if (UsingForceHandle && DynamicBrakePercent > 0)
+                return;
             if (MirelRSControllerEnable)
                 return;
             if (HS198ControllerEnable)
@@ -20967,7 +20988,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         cvc.ElapsedTime = 0;
                         cvc.PreviousData = data;
-                    }
+                    }                    
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:                    
                     data = 0.0f;

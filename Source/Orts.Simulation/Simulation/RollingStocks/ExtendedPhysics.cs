@@ -722,7 +722,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void Update(int totalMotors, float elapsedClockSeconds, float overridenControllerVolts, bool usingControllerVolts)
         {            
-            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.TractionBlocked && Locomotive.GetCombinedHandleValue(true) == 50)
+            if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.TractionBlocked && Locomotive.GetCombinedHandleValue(true) == 0.5f)
                 Locomotive.TractionBlocked = false;
             if (Locomotive.AbsSpeedMpS == 0 && Locomotive.IsLeadLocomotive() && Locomotive.PowerOn)
             {
