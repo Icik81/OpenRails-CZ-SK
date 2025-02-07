@@ -3841,7 +3841,7 @@ namespace Orts.Simulation.RollingStocks
 
                     //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
                    
-                    VibrationRotationVelocityRadpS.X += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;
+                    VibrationRotationVelocityRadpS.X += (RandomVibrationDirection * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;
 
                     if (force == 0) force = 1;                   
                     float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 1.3f);
@@ -3862,7 +3862,8 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                     }
-                    
+
+                    SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f / 5.0f, 0.0f, 1.5f);
                     if (force < 3)
                     {
                         switch (WagonNumAxles)
@@ -3872,20 +3873,20 @@ namespace Orts.Simulation.RollingStocks
                             case 2:
                                 if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f)
                                 {
-                                    VibratioDampingCoefficient = 0.01f;
-                                    VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.3f;
+                                    VibratioDampingCoefficient = 0.05f * SpeedFactor;
+                                    VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * TrackFactorY * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f;
                                     if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
-                                        VibrationRotationVelocityRadpS.X += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 3f * VibrationMassKG) / x;
+                                        VibrationRotationVelocityRadpS.X -= (TrackFactorX * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 10f * VibrationMassKG) / x;
                                 }
                                 break;
                             case 4:
                             case 6:
                                 if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f)
                                 {
-                                    VibratioDampingCoefficient = 0.06f;
-                                    VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.2f;
-                                    if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.001f)
-                                        VibrationRotationVelocityRadpS.X += (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 2f * VibrationMassKG) / x;
+                                    VibratioDampingCoefficient = 0.10f * SpeedFactor;
+                                    VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * TrackFactorY * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.5f;                                                                        
+                                    if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
+                                        VibrationRotationVelocityRadpS.X -= (TrackFactorX * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 5f * VibrationMassKG) / x;
                                 }
                                 break;
                         }
