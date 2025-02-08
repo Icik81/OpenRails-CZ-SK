@@ -1747,6 +1747,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     flashing = true;
                 }
             }
+            else
+                if (ManualModeDisplay) ManualModeDisplay = false;
 
             if (Locomotive.AbsSpeedMpS < 0.01f)
                 vigilanceAfterZeroSpeedConfirmed = false;
