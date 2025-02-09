@@ -1,15 +1,18 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-02-09 15:48:59+0100\n"
-"PO-Revision-Date: 2025-02-09 15:48:59+0100\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2025-02-09 12:41:48+0100\n"
+"PO-Revision-Date: 2025-02-09 15:46+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: MonoDevelop Gettext addin\n"
-
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
+"|| n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: .\n"
 
 #: ../../Menu/ImportExportSaveForm.cs:52
 msgid "Save Packs"
@@ -35,6 +38,7 @@ msgid "Save Pack folder contains {0} save pack:"
 msgid_plural "Save Pack folder contains {0} save packs:"
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: ../../Menu/ImportExportSaveForm.Designer.cs:39
 msgid "Open Save Packs folder"
@@ -106,8 +110,7 @@ msgstr ""
 msgid "Winter"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:167
-#: ../../Menu/MainForm.cs:187
+#: ../../Menu/MainForm.cs:167 ../../Menu/MainForm.cs:187
 msgid "Clear"
 msgstr ""
 
@@ -119,18 +122,15 @@ msgstr ""
 msgid "Rain"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:172
-#: ../../Menu/Options.cs:641
+#: ../../Menu/MainForm.cs:172 ../../Menu/Options.cs:641
 msgid "Easy"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:173
-#: ../../Menu/Options.cs:1059
+#: ../../Menu/MainForm.cs:173 ../../Menu/Options.cs:1059
 msgid "Medium"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:174
-#: ../../Menu/Options.cs:647
+#: ../../Menu/MainForm.cs:174 ../../Menu/Options.cs:647
 msgid "Hard"
 msgstr ""
 
@@ -230,8 +230,7 @@ msgstr ""
 msgid "Route: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1606
-#: ../../Menu/MainForm.cs:1638
+#: ../../Menu/MainForm.cs:1606 ../../Menu/MainForm.cs:1638
 #, csharp-format
 msgid "Locomotive: {0}"
 msgstr ""
@@ -241,8 +240,7 @@ msgstr ""
 msgid "Activity: {0}"
 msgstr ""
 
-#: ../../Menu/MainForm.cs:1615
-#: ../../Menu/MainForm.cs:1641
+#: ../../Menu/MainForm.cs:1615 ../../Menu/MainForm.cs:1641
 #, csharp-format
 msgid "Path: {0}"
 msgstr ""
@@ -285,8 +283,7 @@ msgstr ""
 msgid "Start"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:151
-#: ../../Menu/MainForm.Designer.cs:1029
+#: ../../Menu/MainForm.Designer.cs:151 ../../Menu/MainForm.Designer.cs:1029
 msgid "Open Rails CZ/SK"
 msgstr ""
 
@@ -294,8 +291,7 @@ msgstr ""
 msgid "Logging"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:180
-#: ../../Menu/Options.Designer.cs:3216
+#: ../../Menu/MainForm.Designer.cs:180 ../../Menu/Options.Designer.cs:3216
 #: ../../Menu/Properties/Options.Designer.cs:2763
 msgid "Options"
 msgstr ""
@@ -356,8 +352,7 @@ msgstr ""
 msgid "Mode:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:444
-#: ../../Menu/TestingForm.Designer.cs:192
+#: ../../Menu/MainForm.Designer.cs:444 ../../Menu/TestingForm.Designer.cs:192
 msgid "Activity"
 msgstr ""
 
@@ -409,8 +404,7 @@ msgstr ""
 msgid "Difficulty:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:765
-#: ../../Menu/MainForm.Designer.cs:916
+#: ../../Menu/MainForm.Designer.cs:765 ../../Menu/MainForm.Designer.cs:916
 msgid "Season:"
 msgstr ""
 
@@ -438,8 +432,7 @@ msgstr ""
 msgid "Timetable set:"
 msgstr ""
 
-#: ../../Menu/MainForm.Designer.cs:971
-#: ../../Menu/Options.cs:307
+#: ../../Menu/MainForm.Designer.cs:971 ../../Menu/Options.cs:307
 #: ../../Menu/TestingForm.Designer.cs:314
 msgid "Testing"
 msgstr ""
@@ -448,8 +441,7 @@ msgstr ""
 msgid "What's new?"
 msgstr ""
 
-#: ../../Menu/Options.cs:105
-#: ../../Menu/TestingForm.Designer.cs:184
+#: ../../Menu/Options.cs:105 ../../Menu/TestingForm.Designer.cs:184
 msgid "Route"
 msgstr ""
 
@@ -521,8 +513,7 @@ msgstr ""
 msgid "mph"
 msgstr ""
 
-#: ../../Menu/Options.cs:272
-#: ../../Menu/ResumeForm.Designer.cs:398
+#: ../../Menu/Options.cs:272 ../../Menu/ResumeForm.Designer.cs:398
 msgid "Time"
 msgstr ""
 
@@ -621,8 +612,7 @@ msgid ""
 "\n"
 msgstr ""
 
-#: ../../Menu/Options.cs:612
-#: ../../Menu/OptionsRailDriver.cs:262
+#: ../../Menu/Options.cs:612 ../../Menu/OptionsRailDriver.cs:262
 msgid "No errors found."
 msgstr ""
 
@@ -662,10 +652,8 @@ msgid ""
 "{2:F0}° horizontal FOV on 16:9"
 msgstr ""
 
-#: ../../Menu/Options.cs:661
-#: ../../Menu/Options.cs:999
-#: ../../Menu/Options.cs:1017
-#: ../../Menu/Options.cs:1039
+#: ../../Menu/Options.cs:661 ../../Menu/Options.cs:999
+#: ../../Menu/Options.cs:1017 ../../Menu/Options.cs:1039
 #, csharp-format
 msgid "{0}%"
 msgstr ""
@@ -695,8 +683,7 @@ msgstr ""
 msgid "All detail (+{0}%)"
 msgstr ""
 
-#: ../../Menu/Options.cs:1015
-#: ../../Menu/Options.cs:1037
+#: ../../Menu/Options.cs:1015 ../../Menu/Options.cs:1037
 msgid "SigCFG defined"
 msgstr ""
 
@@ -737,8 +724,7 @@ msgstr ""
 msgid "Brake pipe charging rate (PSI/s)"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:368
-#: ../../Menu/TestingForm.Designer.cs:87
+#: ../../Menu/Options.Designer.cs:368 ../../Menu/TestingForm.Designer.cs:87
 #: ../../Menu/Properties/Options.Designer.cs:348
 msgid "Cancel"
 msgstr ""
@@ -874,8 +860,7 @@ msgstr ""
 msgid "View from the cabin compatible with MSTS / OR"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:1147
-#: ../../Menu/Options.Designer.cs:1365
+#: ../../Menu/Options.Designer.cs:1147 ../../Menu/Options.Designer.cs:1365
 #: ../../Menu/Properties/Options.Designer.cs:1137
 msgid "XXX"
 msgstr ""
@@ -1127,22 +1112,19 @@ msgstr ""
 msgid "Keyboard"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2112
-#: ../../Menu/Options.Designer.cs:2180
+#: ../../Menu/Options.Designer.cs:2112 ../../Menu/Options.Designer.cs:2180
 #: ../../Menu/Properties/Options.Designer.cs:1490
 #: ../../Menu/Properties/Options.Designer.cs:1553
 msgid "Export"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2126
-#: ../../Menu/Options.Designer.cs:2205
+#: ../../Menu/Options.Designer.cs:2126 ../../Menu/Options.Designer.cs:2205
 #: ../../Menu/Properties/Options.Designer.cs:1503
 #: ../../Menu/Properties/Options.Designer.cs:1576
 msgid "Defaults"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2139
-#: ../../Menu/Options.Designer.cs:2193
+#: ../../Menu/Options.Designer.cs:2139 ../../Menu/Options.Designer.cs:2193
 #: ../../Menu/Properties/Options.Designer.cs:1515
 #: ../../Menu/Properties/Options.Designer.cs:1565
 msgid "Check"
@@ -1263,8 +1245,7 @@ msgstr ""
 msgid "Content"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2607
-#: ../../Menu/ResumeForm.Designer.cs:155
+#: ../../Menu/Options.Designer.cs:2607 ../../Menu/ResumeForm.Designer.cs:155
 #: ../../Menu/Properties/Options.Designer.cs:1955
 msgid "Delete"
 msgstr ""
@@ -1328,8 +1309,7 @@ msgstr ""
 msgid "Precipitation box height (m)"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2998
-#: ../../Menu/Options.Designer.cs:3042
+#: ../../Menu/Options.Designer.cs:2998 ../../Menu/Options.Designer.cs:3042
 #: ../../Menu/Options.Designer.cs:3154
 #: ../../Menu/Properties/Options.Designer.cs:2193
 #: ../../Menu/Properties/Options.Designer.cs:2237
@@ -1393,8 +1373,7 @@ msgstr ""
 msgid "Name"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2767
-#: ../../Menu/ResumeForm.Designer.cs:390
+#: ../../Menu/Options.Designer.cs:2767 ../../Menu/ResumeForm.Designer.cs:390
 #: ../../Menu/Properties/Options.Designer.cs:2102
 msgid "Path"
 msgstr ""
@@ -1415,8 +1394,7 @@ msgstr ""
 msgid "Sound Volume 0-100"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:1009
-#: ../../Menu/Options.Designer.cs:1755
+#: ../../Menu/Options.Designer.cs:1009 ../../Menu/Options.Designer.cs:1755
 #: ../../Menu/Properties/Options.Designer.cs:2453
 msgid "Default is 0%"
 msgstr ""
@@ -1429,8 +1407,7 @@ msgstr ""
 msgid "Default is 50%"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:1123
-#: ../../Menu/Options.Designer.cs:1907
+#: ../../Menu/Options.Designer.cs:1123 ../../Menu/Options.Designer.cs:1907
 msgid "Default is 25%"
 msgstr ""
 
@@ -1442,15 +1419,13 @@ msgstr ""
 msgid "Default is 20%"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:1264
-#: ../../Menu/Options.Designer.cs:1771
+#: ../../Menu/Options.Designer.cs:1264 ../../Menu/Options.Designer.cs:1771
 #: ../../Menu/Options.Designer.cs:1879
 #: ../../Menu/Properties/Options.Designer.cs:1018
 msgid "Default is 100%"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:1300
-#: ../../Menu/Options.Designer.cs:2857
+#: ../../Menu/Options.Designer.cs:1300 ../../Menu/Options.Designer.cs:2857
 #: ../../Menu/Properties/Options.Designer.cs:1064
 #: ../../Menu/Properties/Options.Designer.cs:2587
 msgid "Distance to see mountains"
@@ -1466,8 +1441,7 @@ msgstr ""
 msgid "Check for incorrect key assignments."
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2194
-#: ../../Menu/Options.Designer.cs:2206
+#: ../../Menu/Options.Designer.cs:2194 ../../Menu/Options.Designer.cs:2206
 #: ../../Menu/Properties/Options.Designer.cs:1566
 #: ../../Menu/Properties/Options.Designer.cs:1577
 msgid "Load the factory default button assignments."
@@ -1483,8 +1457,7 @@ msgstr ""
 msgid "Use the full range of the Throttle Lever. There will be no Auto Brake!"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:3012
-#: ../../Menu/Options.Designer.cs:3056
+#: ../../Menu/Options.Designer.cs:3012 ../../Menu/Options.Designer.cs:3056
 #: ../../Menu/Properties/Options.Designer.cs:2207
 #: ../../Menu/Properties/Options.Designer.cs:2251
 msgid ""
@@ -1515,8 +1488,7 @@ msgid ""
 "feature!"
 msgstr ""
 
-#: ../../Menu/Options.Designer.cs:2113
-#: ../../Menu/Options.Designer.cs:2181
+#: ../../Menu/Options.Designer.cs:2113 ../../Menu/Options.Designer.cs:2181
 #: ../../Menu/Properties/Options.Designer.cs:1491
 #: ../../Menu/Properties/Options.Designer.cs:1554
 msgid ""
@@ -1555,8 +1527,7 @@ msgstr ""
 msgid "Explore in Activity Mode"
 msgstr ""
 
-#: ../../Menu/ResumeForm.cs:159
-#: ../../Menu/ResumeForm.cs:195
+#: ../../Menu/ResumeForm.cs:159 ../../Menu/ResumeForm.cs:195
 msgid "Explore Route"
 msgstr ""
 
@@ -1670,8 +1641,7 @@ msgstr ""
 msgid "Deletes the currently selected save or saves."
 msgstr ""
 
-#: ../../Menu/ResumeForm.Designer.cs:169
-#: ../../Menu/ResumeForm.Designer.cs:205
+#: ../../Menu/ResumeForm.Designer.cs:169 ../../Menu/ResumeForm.Designer.cs:205
 msgid "Restores all saves deleted in this session."
 msgstr ""
 
@@ -1822,4 +1792,3 @@ msgstr ""
 #: ../../Menu/Properties/Options.Designer.cs:2510
 msgid "Default is 130%"
 msgstr ""
-

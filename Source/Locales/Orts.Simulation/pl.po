@@ -1,15 +1,18 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-02-09 15:49:05+0100\n"
-"PO-Revision-Date: 2025-02-09 15:49:06+0100\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2025-02-09 12:41:54+0100\n"
+"PO-Revision-Date: 2025-02-09 15:48+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: MonoDevelop Gettext addin\n"
-
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 "
+"|| n%100>14) ? 1 : 2);\n"
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: .\n"
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:285
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:321
@@ -332,6 +335,7 @@ msgid "Cannot decouple: train has {0} player, need to completely stop."
 msgid_plural "Cannot decouple: train has {0} players, need to completely stop."
 msgstr[0] ""
 msgstr[1] ""
+msgstr[2] ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1128
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:6970
@@ -1399,8 +1403,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:4824
 #, csharp-format
 msgid ""
-"Player train has been included into train {0} service {1}, that automatically "
-"becomes the new player train"
+"Player train has been included into train {0} service {1}, that "
+"automatically becomes the new player train"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Transfertables.cs:252
@@ -3081,8 +3085,8 @@ msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1954
 msgid ""
-"You were travelling too fast for this curve, and have snapped a brake hose on "
-"Car "
+"You were travelling too fast for this curve, and have snapped a brake hose "
+"on Car "
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1562
@@ -3103,8 +3107,9 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1920
 #, csharp-format
 msgid ""
-"You are travelling too fast for this curve. Slow down, your passengers in car "
-"{0} are feeling uncomfortable. The recommended speed for this curve is {1}"
+"You are travelling too fast for this curve. Slow down, your passengers in "
+"car {0} are feeling uncomfortable. The recommended speed for this curve is "
+"{1}"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/CruiseControl.cs:365
@@ -3348,4 +3353,3 @@ msgstr ""
 #, csharp-format
 msgid "Turntable is ready for access - allowed speed set to {0}"
 msgstr ""
-

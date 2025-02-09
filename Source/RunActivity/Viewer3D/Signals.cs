@@ -343,10 +343,10 @@ namespace Orts.Viewer3D
                     // Na stůj
                     if (ChangeStateTimer == -1 && SignalHead.state == MstsSignalAspect.STOP)
                     {
-                        if (SignalTypeData.Semaphore && IsJunctionPart)
+                        if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && IsJunctionPart)
                             ChangeStateTimer = 0;
                         else
-                        if (SignalTypeData.Semaphore)
+                        if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore)
                             ChangeStateTimer = Viewer.Random.Next(450, 455) / 10f;
                         else                        
                             ChangeStateTimer = Viewer.Random.Next(40, 45) / 10f;
@@ -356,10 +356,10 @@ namespace Orts.Viewer3D
                     // Ostatní
                     if ((ChangeStateTimer == -1 || SignalStopDelayRun) && SignalHead.state != MstsSignalAspect.STOP)
                     {
-                        if (SignalTypeData.Semaphore && IsJunctionPart)
+                        if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && IsJunctionPart)
                             ChangeStateTimer = 0;
                         else
-                        if (SignalTypeData.Semaphore)
+                        if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore)
                             ChangeStateTimer = Viewer.Random.Next(10, 15) / 10f;
                         else
                             ChangeStateTimer = Viewer.Random.Next(10, 15) / 10f;
@@ -408,7 +408,7 @@ namespace Orts.Viewer3D
 
                             bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
-                            if (SignalTypeData.Semaphore && isDay)
+                            if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && isDay)
                             {
                                 constantDark = true;
                             }
@@ -436,10 +436,10 @@ namespace Orts.Viewer3D
                             renderEffect(SignalTypeData.Material);
                             if (Viewer.Settings.SignalLightGlow)
                             {
-                                if (SignalTypeData.Semaphore && !isDay)
+                                if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && !isDay)
                                     renderEffect(SignalTypeData.GlowMaterial);
 
-                                if (!SignalTypeData.Semaphore)
+                                if (!SignalTypeData.Semaphore || !SignalTypeData.CZRoutes)
                                     renderEffect(SignalTypeData.GlowMaterial);
                             }
                         }
@@ -514,7 +514,7 @@ namespace Orts.Viewer3D
 
                     bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
-                    if (SignalTypeData.Semaphore && isDay)
+                    if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && isDay)
                     {
                         constantDark = true;
                     }
@@ -543,10 +543,10 @@ namespace Orts.Viewer3D
                     renderEffect(SignalTypeData.Material);
                     if (Viewer.Settings.SignalLightGlow)
                     {
-                        if (SignalTypeData.Semaphore && !isDay)                        
+                        if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && !isDay)                        
                             renderEffect(SignalTypeData.GlowMaterial);
                         
-                        if (!SignalTypeData.Semaphore)
+                        if (!SignalTypeData.Semaphore || !SignalTypeData.CZRoutes)
                             renderEffect(SignalTypeData.GlowMaterial);
                     }
                 }
@@ -604,6 +604,8 @@ namespace Orts.Viewer3D
             public readonly float SemaphoreAnimationTime;
             public bool AreSemaphoresReindexed;
 
+            public bool CZRoutes;
+
             public SignalTypeData(Viewer viewer, Orts.Formats.Msts.SignalType mstsSignalType)
             {                
                 if (!viewer.SIGCFG.LightTextures.ContainsKey(mstsSignalType.LightTextureName))
@@ -653,6 +655,7 @@ namespace Orts.Viewer3D
                                 case "ztracena_old":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));                                    
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
+                                    CZRoutes = true;
                                     break;
 
                                 // 128x128 
@@ -664,20 +667,25 @@ namespace Orts.Viewer3D
                                 case "luhacovice":
                                 case "zvolen-nove zamky": // ZSR150
                                 case "cr_244":
+                                case "trat 042":
+                                case "zsr130":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight128.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
+                                    CZRoutes = true;
                                     break;
 
                                 // 256x256 
-                                case "trat_183":
+                                case "trat_183":                                
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight256.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
+                                    CZRoutes = true;
                                     break;
 
                                 // 64x64 Velká 
                                 case "trat zsr 191-193":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
+                                    CZRoutes = true;
                                     break;
 
                                 default:

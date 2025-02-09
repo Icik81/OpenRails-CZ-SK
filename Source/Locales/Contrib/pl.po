@@ -1,15 +1,16 @@
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-02-09 15:48:58+0100\n"
-"PO-Revision-Date: 2025-02-09 15:48:58+0100\n"
+"Project-Id-Version: \n"
+"POT-Creation-Date: 2025-02-09 12:41:47+0100\n"
+"PO-Revision-Date: 2025-02-09 15:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
+"Language: pl\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=utf-8\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: MonoDevelop Gettext addin\n"
-
+"X-Generator: Poedit 3.5\n"
+"X-Poedit-Basepath: .\n"
 
 #: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.cs:13
 #: ../../Contrib/ActivityEditor/ActivityEditor/AboutActEdit.Designer.cs:89
@@ -651,8 +652,8 @@ msgstr ""
 
 #: ../../Contrib/ActivityEditor/AEWizard/InteriorWizardPage.cs:114
 msgid ""
-"Sample header subtitle will help a user complete a certain task in the Sample "
-"wizard by clarifying the task in some way."
+"Sample header subtitle will help a user complete a certain task in the "
+"Sample wizard by clarifying the task in some way."
 msgstr ""
 
 #: ../../Contrib/ContentManager/ContentManagerGUI.cs:92
@@ -664,8 +665,7 @@ msgid "Open Rails Content Manager"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:625
-msgid ""
-"The path you are working on has un-saved changes.\n"
+msgid "The path you are working on has un-saved changes.\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:627
@@ -742,8 +742,8 @@ msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1091
 msgid ""
-"This will open every single .pat file for this route, (try to) fix all broken "
-"nodes, and save the modified path. "
+"This will open every single .pat file for this route, (try to) fix all "
+"broken nodes, and save the modified path. "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1092
@@ -752,8 +752,8 @@ msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1093
 msgid ""
-"This can be useful when a route has been changed and you want all paths to be "
-"corrected."
+"This can be useful when a route has been changed and you want all paths to "
+"be corrected."
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Drawing/DrawColors.cs:80
@@ -1100,198 +1100,159 @@ msgid "<Select siding>"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:557
-msgid ""
-"ctrl-R\tReload the route\n"
+msgid "ctrl-R\tReload the route\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:558
-msgid ""
-"Q\tQuit\n"
+msgid "Q\tQuit\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:560
-msgid ""
-"=\tZoom-in (and keep zooming)\n"
+msgid "=\tZoom-in (and keep zooming)\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:561
-msgid ""
-"shift-=\tZoom-in\n"
+msgid "shift-=\tZoom-in\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:562
-msgid ""
-"-\tZoom-out (and keep zooming)\n"
+msgid "-\tZoom-out (and keep zooming)\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:563
-msgid ""
-"shift--\tZoom-out\n"
+msgid "shift--\tZoom-out\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:564
-msgid ""
-"Z\tZoom to tile\n"
+msgid "Z\tZoom to tile\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:565
-msgid ""
-"M\tToggle zoom center\n"
+msgid "M\tToggle zoom center\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:566
-msgid ""
-"R\tZoom reset\n"
+msgid "R\tZoom reset\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:567
-msgid ""
-"L\tAdd label\n"
+msgid "L\tAdd label\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:569
-msgid ""
-"shift-C\t\tShift center to current mouse location\n"
+msgid "shift-C\t\tShift center to current mouse location\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:570
-msgid ""
-"left arrow\tShift left\n"
+msgid "left arrow\tShift left\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:571
-msgid ""
-"down arrow\tShift down\n"
+msgid "down arrow\tShift down\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:572
-msgid ""
-"right arrow\tShift right\n"
+msgid "right arrow\tShift right\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:573
-msgid ""
-"up arrow\t\tShift up\n"
+msgid "up arrow\t\tShift up\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:575
-msgid ""
-"F5\tShow speed-limits\n"
+msgid "F5\tShow speed-limits\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:576
-msgid ""
-"shift-F5\tShow mileposts\n"
+msgid "shift-F5\tShow mileposts\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:577
-msgid ""
-"F6\tShow terrain\n"
+msgid "F6\tShow terrain\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:578
-msgid ""
-"ctrl-F6\tShow DM terrain\n"
+msgid "ctrl-F6\tShow DM terrain\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:579
-msgid ""
-"shift-F6\tShow terrain patch lines\n"
+msgid "shift-F6\tShow terrain patch lines\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:580
-msgid ""
-"F7\tshow signals\n"
+msgid "F7\tshow signals\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:581
-msgid ""
-"F8\tShow platforms\n"
+msgid "F8\tShow platforms\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:582
-msgid ""
-"shift-F8\tShow platform-names\n"
+msgid "shift-F8\tShow platform-names\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:583
-msgid ""
-"F9\tShow sidings\n"
+msgid "F9\tShow sidings\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:584
-msgid ""
-"shift-F9\tShow siding-names\n"
+msgid "shift-F9\tShow siding-names\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:585
-msgid ""
-"F10\tHighlight tracks\n"
+msgid "F10\tHighlight tracks\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:586
-msgid ""
-"shift-F10\tHighlight items\n"
+msgid "shift-F10\tHighlight items\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:587
-msgid ""
-"F11\tShow path\n"
+msgid "F11\tShow path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:588
-msgid ""
-"shift-F11\tShow raw path\n"
+msgid "shift-F11\tShow raw path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:590
-msgid ""
-"C\t\tShift to center of current path node\n"
+msgid "C\t\tShift to center of current path node\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:591
-msgid ""
-"PgUp\t\tShow more of the path\n"
+msgid "PgUp\t\tShow more of the path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:592
-msgid ""
-"PgDn\t\tShow less of the path\n"
+msgid "PgDn\t\tShow less of the path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:593
-msgid ""
-"shift-PgUp\tShow the full path\n"
+msgid "shift-PgUp\tShow the full path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:594
-msgid ""
-"shift-PgDn\tShow only start point of path\n"
+msgid "shift-PgDn\tShow only start point of path\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:595
-msgid ""
-"E\t\tPlace end-point\n"
+msgid "E\t\tPlace end-point\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:596
-msgid ""
-"W\t\tPlace a wait-point\n"
+msgid "W\t\tPlace a wait-point\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:597
-msgid ""
-"ctrl-Z\t\tUndo in path editor\n"
+msgid "ctrl-Z\t\tUndo in path editor\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:598
-msgid ""
-"ctrl-Y\t\tRedo in path editor\n"
+msgid "ctrl-Y\t\tRedo in path editor\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:600
-msgid ""
-"alt-?\t\tVarious keys to open submenus\n"
+msgid "alt-?\t\tVarious keys to open submenus\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:601
@@ -1303,8 +1264,7 @@ msgid "This is ORTS TrackViewer, version "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:610
-msgid ""
-"It is a 'Contribution' to ORTS, and as such\n"
+msgid "It is a 'Contribution' to ORTS, and as such\n"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:611
@@ -1996,4 +1956,3 @@ msgstr ""
 #: ../../Contrib/TrackViewer/UserInterface/StatusBarControl.xaml:99
 msgid "Any other relevant information. Make your choice via Statusbar menu"
 msgstr ""
-
