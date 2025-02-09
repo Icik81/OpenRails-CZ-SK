@@ -411,7 +411,7 @@ namespace Orts.Simulation.RollingStocks
         public bool FrontHeadLight;
         public bool RearHeadLight;
         public bool CarSteamHeatOn;
-        public string WagonName;
+        public string WagonName;        
         public float SlipSpeedDiference;
         public bool CarHasHeatingReady;
         public bool CarHasBrakePipeConnected;

@@ -961,6 +961,19 @@ namespace Orts.Simulation.RollingStocks
                 BrakeSystem = MSTSBrakeSystem.Create(CarBrakeSystemType, this);            
         }
 
+        public string WagonNameNullFormat(string mainShapeFileName)
+        {
+            string wagonName = "";
+            foreach (var Char in mainShapeFileName)
+            {
+                var Character = Char;
+                if (Character == '_') Character = ' ';
+                if (Character == '.') break;
+                wagonName = string.Concat(wagonName, Character);                                
+            }            
+            return wagonName;
+        }
+
         public bool DoorLeftIsOpened;
         public bool DoorRightIsOpened;              
         float MPMessageTimer;
@@ -1988,7 +2001,7 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterConsumptionPerHour = copy.DieselHeaterConsumptionPerHour;
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;
             GenSoundOff = copy.GenSoundOff;
-            WagonName = copy.WagonName;
+            WagonName = copy.WagonName;            
 
             if (copy.IntakePointList != null)
             {
@@ -2283,6 +2296,10 @@ namespace Orts.Simulation.RollingStocks
             base.Update(elapsedClockSeconds);
 
             // Icik
+            if (WagonName == null) WagonName = WagonNameNullFormat(MainShapeFileName);
+            if (WagonName.Contains(" ms") && !WagonName.Contains(Simulator.Catalog.GetString(" - out of order")))
+                WagonName = string.Concat(WagonName, Simulator.Catalog.GetString(" - out of order"));
+
             MP_Messages();
             DetermineFirstCarHeadOfTrain();
             ToggleHeatingCarOperationsWindow();
