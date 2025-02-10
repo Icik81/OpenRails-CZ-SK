@@ -244,7 +244,7 @@ namespace Orts.Simulation
         public bool ControlUnitIsLead;
         public bool MainResZero;
         public bool DoorSwitchEnable;
-        public bool DoorSwitchDoorLocked = true;
+        public bool DoorSwitchDoorLocked;
         public bool DoorSwitchPaxRequest;
         public bool DoorSwitchDoorUnLockedSignal;
         public bool DoorSwitchDoorOpened;

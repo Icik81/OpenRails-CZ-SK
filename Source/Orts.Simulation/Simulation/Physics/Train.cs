@@ -17541,7 +17541,7 @@ namespace Orts.Simulation.Physics
                 var wagon = (train.Cars[i] as MSTSWagon);             
                 foreach (Passenger pax in wagon.PassengerList)
                 {
-                    if (pax.ArrivalStationName == train.StationStops[0].PlatformItem.Name || EndStation || EndStationTT || wagon.NoPaxsMode)
+                    if (pax.ArrivalStation == ActualStationNumber || EndStation || EndStationTT || wagon.NoPaxsMode)
                     {
                         exitPaxList.Add(pax);
                     }
@@ -17570,7 +17570,7 @@ namespace Orts.Simulation.Physics
                         continue;
                     foreach (Passenger pax in exitPaxList)
                     {                        
-                        if (((train.StationStops[0].PlatformItem.Name == pax.ArrivalStationName || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock) || EndStationTT)
+                        if (((ActualStationNumber == pax.ArrivalStation || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock) || EndStationTT)
                         {
                             if (pax.WagonName == Cars[i].CarID)
                             {
