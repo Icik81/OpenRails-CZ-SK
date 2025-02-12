@@ -95,8 +95,7 @@ namespace Orts.Simulation.RollingStocks
     public abstract class TrainCar
     {
         public readonly Simulator Simulator;
-        public string WagFilePath;
-        public readonly string WagFilePathBase;
+        public readonly string WagFilePath;
         public string RealWagFilePath; //we are substituting missing remote cars in MP, so need to remember this
 
         public static int DbfEvalTravellingTooFast;//Debrief eval
@@ -2182,11 +2181,10 @@ namespace Orts.Simulation.RollingStocks
         {
         }
 
-        public TrainCar(Simulator simulator, string wagFile, string wagFileBase)
+        public TrainCar(Simulator simulator, string wagFile)
         {
             Simulator = simulator;
             WagFilePath = wagFile;
-            WagFilePathBase = wagFileBase;
             RealWagFilePath = wagFile;
         }
 

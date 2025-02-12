@@ -895,28 +895,12 @@ namespace Orts.Simulation.AIs
             train.Length = 0.0f;
             foreach (Wagon wagon in conFile.Train.TrainCfg.WagonList)
             {
-                string wagonFolder = Simulator.BasePath + @"\trains\trainset\" + wagon.Folder;
-                string wagonFilePathBase = wagonFolder + @"\" + wagon.Name + ".wag"; ;
-                if (wagon.IsEngine)
-                    wagonFilePathBase = Path.ChangeExtension(wagonFilePathBase, ".eng");
 
-                string wagonFilePath = wagonFolder + @"\OpenRailsCZSK\" + wagon.Name + ".wag"; ;
+                string wagonFolder = Simulator.BasePath + @"\trains\trainset\" + wagon.Folder;
+                string wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag";
+                ;
                 if (wagon.IsEngine)
                     wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-
-                if (!File.Exists(wagonFilePath))
-                {
-                    wagonFilePath = wagonFolder + @"\OpenRails\" + wagon.Name + ".wag"; ;
-                    if (wagon.IsEngine)
-                        wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-
-                    if (!File.Exists(wagonFilePath))
-                    {
-                        wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
-                        if (wagon.IsEngine)
-                            wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-                    }
-                }
 
                 if (!File.Exists(wagonFilePath))
                 {
@@ -926,7 +910,7 @@ namespace Orts.Simulation.AIs
 
                 try
                 {
-                    TrainCar car = RollingStock.Load(Simulator, wagonFilePath, wagonFilePathBase);
+                    TrainCar car = RollingStock.Load(Simulator, wagonFilePath);
                     car.Flipped = wagon.Flip;
                     train.Cars.Add(car);
                     car.Train = train;

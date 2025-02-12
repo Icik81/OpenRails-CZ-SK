@@ -28,7 +28,7 @@ namespace Orts.Simulation.RollingStocks
 {
     public static class RollingStock
     {
-        public static TrainCar Load(Simulator simulator, string wagFilePath, string wagFilePathBase, bool initialize = true)
+        public static TrainCar Load(Simulator simulator, string wagFilePath, bool initialize = true)
         {
             if (String.IsNullOrEmpty(wagFilePath))
                 return null;
@@ -56,7 +56,7 @@ namespace Orts.Simulation.RollingStocks
             if (!wagFile.IsEngine)
             {
                 // its an ordinary MSTS wagon
-                car = new MSTSWagon(simulator, wagFilePath, wagFilePathBase);
+                car = new MSTSWagon(simulator, wagFilePath);
             }
             else
             {
@@ -67,10 +67,10 @@ namespace Orts.Simulation.RollingStocks
                 switch (wagFile.Engine.Type.ToLower())
                 {
                     // TODO complete parsing of proper car types
-                    case "electric": car = new MSTSElectricLocomotive(simulator, wagFilePath, wagFilePathBase); break;
-                    case "steam": car = new MSTSSteamLocomotive(simulator, wagFilePath, wagFilePathBase); break;
-                    case "diesel": car = new MSTSDieselLocomotive(simulator, wagFilePath, wagFilePathBase); break;
-                    case "control": car = new MSTSControlUnit(simulator, wagFilePath, wagFilePathBase); break;
+                    case "electric": car = new MSTSElectricLocomotive(simulator, wagFilePath); break;
+                    case "steam": car = new MSTSSteamLocomotive(simulator, wagFilePath); break;
+                    case "diesel": car = new MSTSDieselLocomotive(simulator, wagFilePath); break;
+                    case "control": car = new MSTSControlUnit(simulator, wagFilePath); break;
                     default: throw new InvalidDataException(wagFilePath + "\r\n\r\nUnknown engine type: " + wagFile.Engine.Type);
                 }
             }
@@ -98,7 +98,7 @@ namespace Orts.Simulation.RollingStocks
 
         public static TrainCar Restore(Simulator simulator, BinaryReader inf, Train train)
         {
-            TrainCar car = Load(simulator, inf.ReadString(), inf.ReadString(), false);
+            TrainCar car = Load(simulator, inf.ReadString(), false);
             if (car == null)
                 return null;
             car.Train = train;

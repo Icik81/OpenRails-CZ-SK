@@ -848,7 +848,7 @@ namespace Orts.MultiPlayer
                 char type = 'w';
                 if (wagonFilePath.ToLower().Contains(".eng")) type = 'e';
                 string newWagonFilePath = SubMissingCar(length, type);
-                car = RollingStock.Load(Simulator, newWagonFilePath, newWagonFilePath);
+                car = RollingStock.Load(Simulator, newWagonFilePath);
                 car.CarLengthM = length;
                 car.RealWagFilePath = wagonFilePath;
                 if (Simulator.Confirmer != null)

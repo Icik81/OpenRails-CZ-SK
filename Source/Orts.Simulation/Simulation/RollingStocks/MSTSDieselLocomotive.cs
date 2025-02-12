@@ -115,8 +115,8 @@ namespace Orts.Simulation.RollingStocks
 
         public bool JVSetUp;
 
-        public MSTSDieselLocomotive(Simulator simulator, string wagFile, string wagFileBase)
-            : base(simulator, wagFile, wagFileBase)
+        public MSTSDieselLocomotive(Simulator simulator, string wagFile)
+            : base(simulator, wagFile)
         {
             PowerOn = false;
             RefillImmediately();
@@ -163,9 +163,9 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public override void LoadFromWagFile(string wagFilePath, string wagFilePathBase)
+        public override void LoadFromWagFile(string wagFilePath)
         {
-            base.LoadFromWagFile(wagFilePath, wagFilePathBase);
+            base.LoadFromWagFile(wagFilePath);
 
             if (Simulator.Settings.VerboseConfigurationMessages)  // Display locomotivve name for verbose error messaging
             {

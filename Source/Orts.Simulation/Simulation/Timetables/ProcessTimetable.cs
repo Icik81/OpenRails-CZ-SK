@@ -2452,30 +2452,13 @@ namespace Orts.Simulation.Timetables
                 // add wagons
                 foreach (Wagon wagon in consistFile.Train.TrainCfg.WagonList)
                 {
-                    TrainCar car = null;
-                    string wagonFolder = Path.Combine(trainsDirectory, wagon.Folder);                                        
-                    
-                    string wagonFilePathBase = wagonFolder + @"\" + wagon.Name + ".wag"; ;
-                    if (wagon.IsEngine)
-                        wagonFilePathBase = Path.ChangeExtension(wagonFilePathBase, ".eng");
+                    string wagonFolder = Path.Combine(trainsDirectory, wagon.Folder);
+                    string wagonFilePath = Path.Combine(wagonFolder, wagon.Name + ".wag");
 
-                    string wagonFilePath = wagonFolder + @"\OpenRailsCZSK\" + wagon.Name + ".wag"; ;
+                    TrainCar car = null;
+
                     if (wagon.IsEngine)
                         wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-
-                    if (!File.Exists(wagonFilePath))
-                    {
-                        wagonFilePath = wagonFolder + @"\OpenRails\" + wagon.Name + ".wag"; ;
-                        if (wagon.IsEngine)
-                            wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-
-                        if (!File.Exists(wagonFilePath))
-                        {
-                            wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
-                            if (wagon.IsEngine)
-                                wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
-                        }
-                    }
 
                     if (!File.Exists(wagonFilePath))
                     {
@@ -2485,7 +2468,7 @@ namespace Orts.Simulation.Timetables
 
                     //try
                     //{
-                    car = RollingStock.Load(simulator, wagonFilePath, wagonFilePathBase);
+                    car = RollingStock.Load(simulator, wagonFilePath);
                     car.Flipped = wagon.Flip;
 
                     if (consistReverse)

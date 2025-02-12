@@ -862,8 +862,8 @@ namespace Orts.Simulation.RollingStocks
 
         public bool SelectedSpeedConfirmed = true;
 
-        public MSTSLocomotive(Simulator simulator, string wagPath, string wagPathBase)
-            : base(simulator, wagPath, wagPathBase)
+        public MSTSLocomotive(Simulator simulator, string wagPath)
+            : base(simulator, wagPath)
         {
             //  BrakePipeChargingRatePSIpS = Simulator.Settings.BrakePipeChargingRate;
 
@@ -892,9 +892,9 @@ namespace Orts.Simulation.RollingStocks
         /// This initializer is called when we haven't loaded this type of car before
         /// and must read it new from the wag file.
         /// </summary>
-        public override void LoadFromWagFile(string wagFilePath, string wagFilePathBase)
+        public override void LoadFromWagFile(string wagFilePath)
         {
-            base.LoadFromWagFile(wagFilePath, wagFilePathBase);
+            base.LoadFromWagFile(wagFilePath);
 
             // Assumes that CabViewList[0] is the front cab
             // and that CabViewList[1] is the rear cab, if present.
