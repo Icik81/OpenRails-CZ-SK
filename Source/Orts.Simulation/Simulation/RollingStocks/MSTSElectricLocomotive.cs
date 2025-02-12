@@ -118,8 +118,8 @@ namespace Orts.Simulation.RollingStocks
         bool PowerOnTriggered;        
 
 
-        public MSTSElectricLocomotive(Simulator simulator, string wagFile) :
-            base(simulator, wagFile)
+        public MSTSElectricLocomotive(Simulator simulator, string wagFile, string wagFileBase) :
+            base(simulator, wagFile, wagFileBase)
         {
             PowerSupply = new ScriptedElectricPowerSupply(this);
         }

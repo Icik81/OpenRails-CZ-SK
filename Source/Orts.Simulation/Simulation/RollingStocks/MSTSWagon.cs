@@ -407,8 +407,8 @@ namespace Orts.Simulation.RollingStocks
             set { base.BrakeSystem = value; } // value needs to be set to allow trailing cars to have same brake system as locomotive when in simple brake mode
         }
 
-        public MSTSWagon(Simulator simulator, string wagFilePath)
-            : base(simulator, wagFilePath)
+        public MSTSWagon(Simulator simulator, string wagFilePath, string wagFilePathBase)
+            : base(simulator, wagFilePath, wagFilePathBase)
         {
             Pantographs = new Pantographs(this);
         }
@@ -421,7 +421,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                LoadFromWagFile(WagFilePath);
+                LoadFromWagFile(WagFilePath, WagFilePathBase);
                 CarManager.LoadedCars.Add(WagFilePath, this);
             }
 
@@ -454,19 +454,11 @@ namespace Orts.Simulation.RollingStocks
         /// This initializer is called when we haven't loaded this type of car before
         /// and must read it new from the wag file.
         /// </summary>
-        public virtual void LoadFromWagFile(string wagFilePath)
+        public virtual void LoadFromWagFile(string wagFilePath, string wagFilePathBase)
         {
             string dir = Path.GetDirectoryName(wagFilePath);
             string file = Path.GetFileName(wagFilePath);
-            string orFile = dir + @"\openrails\" + file;
-            if (File.Exists(orFile))
-                wagFilePath = orFile;
-            
-            // Icik
-            string orczskFile = dir + @"\openrailsczsk\" + file;
-            if (File.Exists(orczskFile))
-                wagFilePath = orczskFile;
-
+   
             using (STFReader stf = new STFReader(wagFilePath, true))
             {
                 while (!stf.Eof)
@@ -474,6 +466,11 @@ namespace Orts.Simulation.RollingStocks
                     stf.ReadItem();
                     Parse(stf.Tree.ToLower(), stf);
                 }
+            }
+
+            if (wagFilePath.ToLower().Contains("\\openrailsczsk\\") || wagFilePath.ToLower().Contains("\\openrails\\"))
+            {
+                WagFilePath = WagFilePathBase; // Nutné kvůli načítání souborů v kořenové složce
             }
 
             var wagonFolderSlash = Path.GetDirectoryName(WagFilePath) + @"\";
