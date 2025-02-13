@@ -97,7 +97,7 @@ namespace Orts.Simulation.RollingStocks
         public readonly Simulator Simulator;
         public string WagFilePath;
         public string WagFilePathOrigin; // Cesta k originálnímu ladění eng/wag
-        public readonly string WagFilePathBase; // Cesta ke kořenové složce modelu
+        public string WagFilePathBase; // Cesta ke kořenové složce modelu
         public string RealWagFilePath; //we are substituting missing remote cars in MP, so need to remember this
 
         public static int DbfEvalTravellingTooFast;//Debrief eval
