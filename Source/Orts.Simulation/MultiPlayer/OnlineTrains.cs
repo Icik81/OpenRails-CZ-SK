@@ -188,7 +188,7 @@ namespace Orts.MultiPlayer
                 TrainCar car = null;
                 try
                 {
-                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath);
+                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath, wagonFilePath);
                     car.CarLengthM = player.lengths[i] / 100.0f;
                 }
                 catch (Exception error)

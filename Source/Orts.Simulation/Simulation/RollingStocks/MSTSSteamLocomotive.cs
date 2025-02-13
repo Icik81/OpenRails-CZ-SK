@@ -725,8 +725,8 @@ namespace Orts.Simulation.RollingStocks
 
         #endregion
 
-        public MSTSSteamLocomotive(Simulator simulator, string wagFile)
-            : base(simulator, wagFile)
+        public MSTSSteamLocomotive(Simulator simulator, string wagFile, string wagFileBase)
+            : base(simulator, wagFile, wagFileBase)
         {
             RefillTenderWithCoal();
             RefillTenderWithWater();

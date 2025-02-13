@@ -1619,9 +1619,28 @@ namespace Orts.Simulation
             foreach (Wagon wagon in conFile.Train.TrainCfg.WagonList)
             {
                 string wagonFolder = BasePath + @"\trains\trainset\" + wagon.Folder;
-                string wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+
+                string wagonFilePathBase = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+                if (wagon.IsEngine)
+                    wagonFilePathBase = Path.ChangeExtension(wagonFilePathBase, ".eng");
+
+                string wagonFilePath = wagonFolder + @"\OpenRailsCZSK\" + wagon.Name + ".wag"; ;
                 if (wagon.IsEngine)
                     wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+
+                if (!File.Exists(wagonFilePath))
+                {
+                    wagonFilePath = wagonFolder + @"\OpenRails\" + wagon.Name + ".wag"; ;
+                    if (wagon.IsEngine)
+                        wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+
+                    if (!File.Exists(wagonFilePath))
+                    {
+                        wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+                        if (wagon.IsEngine)
+                            wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+                    }
+                }                
 
                 if (!File.Exists(wagonFilePath))
                 {
@@ -1634,7 +1653,7 @@ namespace Orts.Simulation
 
                 try
                 {
-                    TrainCar car = RollingStock.Load(this, wagonFilePath);
+                    TrainCar car = RollingStock.Load(this, wagonFilePath, wagonFilePathBase);
                     car.Flipped = wagon.Flip;
                     car.UiD = wagon.UiD;
                     if (MPManager.IsMultiPlayer()) car.CarID = MPManager.GetUserName() + " - " + car.UiD; //player's train is always named train 0.
@@ -1818,9 +1837,28 @@ namespace Orts.Simulation
                     {
                         Wagon wagon = (Wagon)activityObject.Train_Config.TrainCfg.WagonList[iWagon];
                         string wagonFolder = BasePath + @"\trains\trainset\" + wagon.Folder;
-                        string wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+
+                        string wagonFilePathBase = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+                        if (wagon.IsEngine)
+                            wagonFilePathBase = Path.ChangeExtension(wagonFilePathBase, ".eng");
+
+                        string wagonFilePath = wagonFolder + @"\OpenRailsCZSK\" + wagon.Name + ".wag"; ;
                         if (wagon.IsEngine)
                             wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+
+                        if (!File.Exists(wagonFilePath))
+                        {
+                            wagonFilePath = wagonFolder + @"\OpenRails\" + wagon.Name + ".wag"; ;
+                            if (wagon.IsEngine)
+                                wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+
+                            if (!File.Exists(wagonFilePath))
+                            {
+                                wagonFilePath = wagonFolder + @"\" + wagon.Name + ".wag"; ;
+                                if (wagon.IsEngine)
+                                    wagonFilePath = Path.ChangeExtension(wagonFilePath, ".eng");
+                            }
+                        }
 
                         if (!File.Exists(wagonFilePath))
                         {
@@ -1830,7 +1868,7 @@ namespace Orts.Simulation
 
                         try // Load could fail if file has bad data.
                         {
-                            TrainCar car = RollingStock.Load(this, wagonFilePath);
+                            TrainCar car = RollingStock.Load(this, wagonFilePath, wagonFilePathBase);
                             car.Flipped = !wagon.Flip;
                             car.UiD = wagon.UiD;
                             car.CarID = activityObject.ID + " - " + car.UiD;

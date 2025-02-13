@@ -46,8 +46,8 @@ namespace Orts.Simulation.RollingStocks
         public float FakeDieselOilTemperatureDeg2;
         public float RealRPM2;
 
-        public MSTSControlUnit(Simulator simulator, string wagFile) :
-            base(simulator, wagFile)
+        public MSTSControlUnit(Simulator simulator, string wagFile, string wagFileBase) :
+            base(simulator, wagFile, wagFileBase)
         {
             PowerSupply = new ScriptedElectricPowerSupply(this);
         }
