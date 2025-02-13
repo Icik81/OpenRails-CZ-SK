@@ -414,14 +414,13 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void Load()
-        {
-            if (WagFilePath.ToLower().Contains("\\openrailsczsk\\") || WagFilePath.ToLower().Contains("\\openrails\\"))
+        {            
+            if (CarManager.LoadedCars.ContainsKey(WagFilePathBase))
             {
-                WagFilePath = WagFilePathBase; // Nutné kvůli načítání souborů v kořenové složce
-            }
-
-            if (CarManager.LoadedCars.ContainsKey(WagFilePath))
-            {                
+                if (WagFilePath.ToLower().Contains("\\openrailsczsk\\") || WagFilePath.ToLower().Contains("\\openrails\\"))
+                {
+                    WagFilePath = WagFilePathBase; // Nutné kvůli načítání souborů v kořenové složce
+                }
                 Copy(CarManager.LoadedCars[WagFilePath]);
             }
             else
