@@ -414,7 +414,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void Load()
-        {
+        {            
             if (CarManager.LoadedCars.ContainsKey(WagFilePath))
             {
                 Copy(CarManager.LoadedCars[WagFilePath]);
@@ -467,6 +467,10 @@ namespace Orts.Simulation.RollingStocks
                     Parse(stf.Tree.ToLower(), stf);
                 }
             }
+
+            // Icik
+            if (WagFilePathOrigin == null)
+                WagFilePathOrigin = WagFilePath;
 
             if (wagFilePath.ToLower().Contains("\\openrailsczsk\\") || wagFilePath.ToLower().Contains("\\openrails\\"))
             {
@@ -1999,6 +2003,7 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;
             GenSoundOff = copy.GenSoundOff;
             WagonName = copy.WagonName;            
+            WagFilePathOrigin = copy.WagFilePathOrigin;
 
             if (copy.IntakePointList != null)
             {

@@ -92,7 +92,8 @@ namespace Orts.Simulation.RollingStocks
         public static void Save(BinaryWriter outf, TrainCar car)
         {
             MSTSWagon wagon = (MSTSWagon)car;   // extend this when we introduce other types of rolling stock
-            outf.Write(wagon.WagFilePath);
+            outf.Write(wagon.WagFilePathOrigin);            
+            outf.Write(wagon.WagFilePathBase);
             wagon.Save(outf);
         }
 
