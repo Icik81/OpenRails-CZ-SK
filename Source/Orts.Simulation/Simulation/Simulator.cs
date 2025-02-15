@@ -244,7 +244,7 @@ namespace Orts.Simulation
         public bool ControlUnitIsLead;
         public bool MainResZero;
         public bool DoorSwitchEnable;
-        public bool DoorSwitchDoorLocked;
+        public bool DoorSwitchDoorLocked = true;
         public bool DoorSwitchPaxRequest;
         public bool DoorSwitchDoorUnLockedSignal;
         public bool DoorSwitchDoorOpened;
@@ -647,6 +647,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            DoorSwitchDoorLocked = inf.ReadBoolean();
             TrainOperationsMenuSetScrollPosition = inf.ReadInt32();
             WireHeigth = inf.ReadInt32();
             GameWasRestored = true;
@@ -692,6 +693,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(DoorSwitchDoorLocked);
             outf.Write(TrainOperationsMenuSetScrollPosition);
             outf.Write(WireHeigth);
             outf.Write(CarCoupleMaxSpeedOvercome);
