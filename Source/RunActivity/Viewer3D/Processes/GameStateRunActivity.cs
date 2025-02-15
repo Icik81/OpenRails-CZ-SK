@@ -18,6 +18,7 @@
 // Define this to include extra data on loading performance and progress indications.
 //#define DEBUG_LOADING
 
+using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
@@ -32,6 +33,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Resources;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
@@ -72,6 +74,8 @@ namespace Orts.Viewer3D.Processes
         LoadingScreenPrimitive LoadingScreen;
         LoadingBarPrimitive LoadingBar;
         Matrix LoadingMatrix = Matrix.Identity;
+        
+        GettextResourceManager catalog = new GettextResourceManager("RunActivity");
 
         public GameStateRunActivity(string[] args)
         {
@@ -214,10 +218,10 @@ namespace Orts.Viewer3D.Processes
                         if (error is IncompatibleSaveException)
                         {
                             MessageBox.Show(String.Format(
-                                "Save file is incompatible with this version of {0}.\n\n" +
+                                catalog.GetString("Save file is incompatible with this version of {0}.\n\n") +
                                 "    {1}\n\n" +
-                                "Saved version: {2}\n" +
-                                "Current version: {3}",
+                                catalog.GetString("Saved version: {2}\n") +
+                                catalog.GetString("Current version: {3}"),
                                 Application.ProductName,
                                 ((IncompatibleSaveException)error).SaveFile,
                                 ((IncompatibleSaveException)error).VersionOrBuild,
@@ -226,18 +230,18 @@ namespace Orts.Viewer3D.Processes
                         }
                         else if (error is InvalidCommandLine)
                             MessageBox.Show(String.Format(
-                                "{0} was started with an invalid command-line. {1} Arguments given:\n\n{2}",
+                                catalog.GetString("{0} was started with an invalid command-line. {1} Arguments given:\n\n{2}"),
                                 Application.ProductName,
                                 error.Message,
                                 String.Join("\n", data.Select(d => "\u2022 " + d).ToArray())),
                                 Application.ProductName + " " + VersionInfo.VersionOrBuild, MessageBoxButtons.OK, MessageBoxIcon.Error);
                         else if (error is Traveller.MissingTrackNodeException)
-                            MessageBox.Show(String.Format("Open Rails detected a track section which is not present in tsection.dat and cannot continue.\n\n" +
-                                "Most likely you don't have the XTracks or Ytracks version needed for this route."));
+                            MessageBox.Show(String.Format(catalog.GetString("Open Rails detected a track section which is not present in tsection.dat and cannot continue.\n\n") +
+                                catalog.GetString("Most likely you don't have the XTracks or Ytracks version needed for this route.")));
                         else if (error is FileNotFoundException)
                         {
                             MessageBox.Show(String.Format(
-                                    "An essential file is missing and {0} cannot continue.\n\n" +
+                                    catalog.GetString("An essential file is missing and {0} cannot continue.\n\n") +
                                     "    {1}",
                                     Application.ProductName, (error as FileNotFoundException).FileName),
                                     Application.ProductName + " " + VersionInfo.VersionOrBuild, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -248,7 +252,7 @@ namespace Orts.Viewer3D.Processes
                             var re = new Regex("'([^']+)'").Match(error.Message);
                             var fileName = re.Groups[1].Success ? re.Groups[1].Value : error.Message;
                             MessageBox.Show(String.Format(
-                                    "An essential folder is missing and {0} cannot continue.\n\n" +
+                                    catalog.GetString("An essential folder is missing and {0} cannot continue.\n\n") +
                                     "    {1}",
                                     Application.ProductName, fileName),
                                     Application.ProductName + " " + VersionInfo.VersionOrBuild, MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -258,18 +262,15 @@ namespace Orts.Viewer3D.Processes
                             var errorSummary = error.GetType().FullName + ": " + error.Message;
                             var logFile = Path.Combine(settings.LoggingPath, settings.LoggingFilename);
                             var openTracker = MessageBox.Show(String.Format(
-                                    "A fatal error has occured and {0} cannot continue.\n\n" +
+                                    catalog.GetString("A fatal error has occured and {0} cannot continue.\n\n") +
                                     "    {1}\n\n" +
-                                    "This error may be due to bad data or a bug. You can help improve {0} by reporting this error in our bug tracker at http://launchpad.net/or and attaching the log file {2}.\n\n" +
-                                    ">>> Click OK to report this error on the {0} bug tracker <<<",
+                                    catalog.GetString("You will now be redirected to the MSTS forum website at https://forum.msts.cz, where you can report this bug to developers.") + " " +
+                                    catalog.GetString("Make sure your computer is connected to the internet and that you are registered on the MSTS forum.\n\n") +
+                                    catalog.GetString(">>> Click OK to report this error on the MSTS forum bug tracker <<<"),
                                     Application.ProductName, errorSummary, logFile),
                                     Application.ProductName + " " + VersionInfo.VersionOrBuild, MessageBoxButtons.OKCancel, MessageBoxIcon.Error);
                             if (openTracker == DialogResult.OK)
-                                Process.Start("http://launchpad.net/or");
-                            // James Ross would prefer to do this:
-                            //   Process.Start("http://bugs.launchpad.net/or/+filebug?field.title=" + Uri.EscapeDataString(errorSummary));
-                            // but unfortunately if you need to log in (as most people might), Launchpad munges the title
-                            // and leaves you with garbage. Plus, landing straight on a login page might confuse some people.
+                                Process.Start("https://forum.msts.cz/index.php");                            
                         }
                     }
                     // Make sure we quit after handling an error.

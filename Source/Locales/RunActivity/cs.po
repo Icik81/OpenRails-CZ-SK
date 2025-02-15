@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2025-01-18 12:25:55+0100\n"
-"PO-Revision-Date: 2025-01-18 12:29+0100\n"
+"POT-Creation-Date: 2025-02-15 10:12:06+0100\n"
+"PO-Revision-Date: 2025-02-15 10:14+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -90,7 +90,7 @@ msgstr "Výška trolejového vedení nastavena na:"
 msgid "Wire hidden"
 msgstr "Trolejové vedení skryto"
 
-#: ../../RunActivity/Viewer3D/Scenery.cs:155
+#: ../../RunActivity/Viewer3D/Scenery.cs:156
 msgid "World Object reloaded!"
 msgstr "Objekty světa nahrány!"
 
@@ -2990,7 +2990,7 @@ msgid "ApplS"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1655
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
 msgid "coal"
 msgstr "uhlí"
@@ -3077,7 +3077,7 @@ msgid "Slip"
 msgstr "Prokluz"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
 msgid "water"
 msgstr "voda"
@@ -3318,7 +3318,105 @@ msgstr ""
 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890 \",.-+|!$%&/"
 "()=?;:'_[]"
 
-#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:1206
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:221
+#, csharp-format
+msgid ""
+"Save file is incompatible with this version of {0}.\n"
+"\n"
+msgstr ""
+"Uložená pozice není kompatibilní s verzí {0}.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:223
+#, csharp-format
+msgid "Saved version: {2}\n"
+msgstr "Uložená verze: {2}\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:224
+#, csharp-format
+msgid "Current version: {3}"
+msgstr "Aktuální verze: {3}"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:233
+#, csharp-format
+msgid ""
+"{0} was started with an invalid command-line. {1} Arguments given:\n"
+"\n"
+"{2}"
+msgstr ""
+"Položka {0} byla spuštěna s neplatným příkazovým řádkem. {1} Zadané "
+"argumenty:\n"
+"\n"
+"{2}"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:239
+msgid ""
+"Open Rails detected a track section which is not present in tsection.dat and "
+"cannot continue.\n"
+"\n"
+msgstr ""
+"Open Rails zjistil traťový úsek, který se v tsection.dat nevyskytuje a "
+"nemůže pokračovat.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:240
+msgid ""
+"Most likely you don't have the XTracks or Ytracks version needed for this "
+"route."
+msgstr ""
+"S největší pravděpodobností nemáte k dispozici verzi XTracks nebo Ytracks "
+"potřebnou pro tuto trasu."
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:244
+#, csharp-format
+msgid ""
+"An essential file is missing and {0} cannot continue.\n"
+"\n"
+msgstr ""
+"Důležitý soubor chybí a {0} nemůže pokračovat.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:255
+#, csharp-format
+msgid ""
+"An essential folder is missing and {0} cannot continue.\n"
+"\n"
+msgstr ""
+"Důležitá složka chybí a {0} nemůže pokračovat.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:265
+#, csharp-format
+msgid ""
+"A fatal error has occured and {0} cannot continue.\n"
+"\n"
+msgstr ""
+"Došlo k závažné chybě a {0} nemůže pokračovat.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:267
+msgid ""
+"You will now be redirected to the MSTS forum website at https://forum.msts."
+"cz, where you can report this bug to developers."
+msgstr ""
+"Nyní budete přesměrováni na webové stránky MSTS fóra na adrese https://forum."
+"msts.cz, kde můžete tuto chybu nahlásit vývojářům."
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:268
+msgid ""
+"Make sure your computer is connected to the internet and that you are "
+"registered on the MSTS forum.\n"
+"\n"
+msgstr ""
+"Ujistěte se, že je váš počítač připojen k internetu a že jste na MSTS fóru "
+"registrováni.\n"
+"\n"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:269
+msgid ">>> Click OK to report this error on the MSTS forum bug tracker <<<"
+msgstr ">>> Klik na OK k nahlášení této chyby na MSTS fórum <<<"
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:1207
 #, csharp-format
 msgid "Activity Save file '*.save' not found in folder {0}"
 msgstr "Uložený soubor aktivity '*.save' nebyl v adresáři {0} nalezen"
@@ -3336,104 +3434,104 @@ msgstr[2] "{0:F0} textur"
 msgid "Handbrake"
 msgstr "Ruční brzda"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1646
 msgid "freight-grain"
 msgstr "náklad-obilí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1647
 msgid "freight-coal"
 msgstr "náklad-uhlí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1648
 msgid "freight-gravel"
 msgstr "náklad-štěrk"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1649
 msgid "freight-sand"
 msgstr "náklad-písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1656
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
 msgid "diesel oil"
 msgstr "nafta"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1657
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
 msgid "wood"
 msgstr "dřevo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1658
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
 msgid "sand"
 msgstr "písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1655
 msgid "freight-general"
 msgstr "náklad-obecné"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1660
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1656
 msgid "freight-livestock"
 msgstr "náklad-životnost"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1661
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1657
 msgid "freight-fuel"
 msgstr "náklad-palivo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1662
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1658
 msgid "freight-milk"
 msgstr "náklad-mléko"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1663
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
 msgid "mail"
-msgstr ""
+msgstr "pošta"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1792
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1788
 msgid "Refill: Immediate refill process selected, refilling immediately."
 msgstr "Doplnit: Zvolen proces okamžitého doplnění, doplnění probíhá okamžitě."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1813
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1809
 msgid "Refill: Electric loco and no pickup. Command rejected"
 msgstr "Doplnit: Elektrická lokomotiva a bez sběrače. Příkaz odmítnut"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1929
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1948
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1925
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1944
 msgid "Incompatible pickup type"
 msgstr "Nekompatibilní typ"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1935
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1953
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1931
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1949
 msgid "Starting refill"
 msgstr "Začíná doplňovat"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1820
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1816
 #, csharp-format
 msgid "Refill: Distance to {0} supply is {1}."
 msgstr "Doplněníl: Vzdálenost k zásobníku {0} jes {1}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1828
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1824
 #, csharp-format
 msgid "Refill: Loco must be stationary to refill {0}."
 msgstr "Doplněníl: Lokomotiva musí být pro doplněníl {0} nehybná."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1834
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1830
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0}."
 msgstr "Doplnění: Rychlost lokomotivy musí mít nejméně: {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1841
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1837
 #, csharp-format
 msgid "Refill: Loco speed must not exceed {0}."
 msgstr "Doplněníl: Rychlost lokomotivy nesmí překročit:  {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1859
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1880
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1855
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1876
 #, csharp-format
 msgid "Refill: {0} supply now replenished."
 msgstr "Doplnění: Z8sobník {0} byl doplněn."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1886
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1882
 #, csharp-format
 msgid "Unload: {0} fuel or freight now unloaded."
 msgstr "Vykládka: {0} paliva nebo nákladu vyloženo."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1821
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1817
 #, csharp-format
 msgid "{0} meter"
 msgid_plural "{0} meters"

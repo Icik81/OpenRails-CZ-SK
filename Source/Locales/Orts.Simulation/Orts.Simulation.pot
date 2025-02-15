@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-02-09 15:49:05+0100\n"
-"PO-Revision-Date: 2025-02-09 15:49:06+0100\n"
+"POT-Creation-Date: 2025-02-15 10:12:04+0100\n"
+"PO-Revision-Date: 2025-02-15 10:12:05+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -544,8 +544,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:342
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:343
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:344
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3925
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3937
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3931
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3943
 msgid "off"
 msgstr ""
 
@@ -585,8 +585,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:341
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:342
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:19307
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3921
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3941
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3927
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3947
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:313
 msgid "on"
 msgstr ""
@@ -1387,11 +1387,11 @@ msgctxt "Horn 1+2"
 msgid "sound"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2259
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2297
 msgid "Train can't be suspended with speed not equal 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2380
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2418
 msgid "To return to static train speed must be = 0"
 msgstr ""
 
@@ -1652,7 +1652,7 @@ msgid "Gear"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:926
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2169
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2171
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:409
 msgid "Control"
 msgstr ""
@@ -2577,8 +2577,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6637
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6658
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6660
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2163
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2165
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2167
 msgid "Yes"
 msgstr ""
 
@@ -2603,8 +2603,8 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6637
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6658
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6660
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2163
 #: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2165
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2167
 msgid "No"
 msgstr ""
 
@@ -3042,65 +3042,65 @@ msgctxt "HUD"
 msgid "Power"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2289
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2290
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2295
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2296
 msgid " - out of order"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2513
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:2519
 msgid "Starting unload"
-msgstr ""
-
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3969
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3981
-msgid "opened"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3975
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3987
+msgid "opened"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3981
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3993
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:303
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:305
 msgid "closed"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4900
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4906
 msgid "Incompatible data"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4914
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4920
 msgid "Starting refill"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4923
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:4929
 msgid "Preparing for unload"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1565
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1567
 msgid "Tree leaves on track!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1954
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1956
 msgid ""
 "You were travelling too fast for this curve, and have snapped a brake hose on "
 "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1562
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1564
 msgid "Car ID: "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1562
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1564
 msgid " - experiencing braking force wheel skid."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1916
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1918
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your freight car {0} "
 "may be damaged. The recommended speed for this curve is {1}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1920
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1922
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your passengers in car "

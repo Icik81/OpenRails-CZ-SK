@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-02-09 15:49:07+0100\n"
-"PO-Revision-Date: 2025-02-09 15:49:07+0100\n"
+"POT-Creation-Date: 2025-02-15 10:12:06+0100\n"
+"PO-Revision-Date: 2025-02-15 10:12:07+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3291,7 +3291,84 @@ msgid ""
 "\",.-+|!$%&/()=?;:'_[]"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:1206
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:221
+#, csharp-format
+msgid ""
+"Save file is incompatible with this version of {0}.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:223
+#, csharp-format
+msgid ""
+"Saved version: {2}\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:224
+#, csharp-format
+msgid "Current version: {3}"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:233
+#, csharp-format
+msgid ""
+"{0} was started with an invalid command-line. {1} Arguments given:\n"
+"\n"
+"{2}"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:239
+msgid ""
+"Open Rails detected a track section which is not present in tsection.dat and "
+"cannot continue.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:240
+msgid ""
+"Most likely you don't have the XTracks or Ytracks version needed for this "
+"route."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:244
+#, csharp-format
+msgid ""
+"An essential file is missing and {0} cannot continue.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:255
+#, csharp-format
+msgid ""
+"An essential folder is missing and {0} cannot continue.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:265
+#, csharp-format
+msgid ""
+"A fatal error has occured and {0} cannot continue.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:267
+msgid ""
+"You will now be redirected to the MSTS forum website at "
+"https://forum.msts.cz, where you can report this bug to developers."
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:268
+msgid ""
+"Make sure your computer is connected to the internet and that you are "
+"registered on the MSTS forum.\n"
+"\n"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:269
+msgid ">>> Click OK to report this error on the MSTS forum bug tracker <<<"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Processes/GameStateRunActivity.cs:1207
 #, csharp-format
 msgid "Activity Save file '*.save' not found in folder {0}"
 msgstr ""
