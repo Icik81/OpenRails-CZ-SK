@@ -3738,8 +3738,8 @@ namespace Orts.Simulation.RollingStocks
         float CyklusCouplerImpact;
         float Vibration3Timer;
         float RandomVibrationDirection;
-        float VibrationYTimer;
-        float VibrationYTime;
+        float VibrationXYTimer;
+        float VibrationXYTime;
         private void AddVibrations(float factor, float elapsedTimeS)
         {
             // NOTE: For low angles (as our vibration rotations are), sin(angle) ~= angle, and since the displacement at the end of the car is sin(angle) = displacement/half-length, sin(displacement/half-length) * half-length ~= displacement.
@@ -3809,27 +3809,30 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 //VibrationType_2 = VibrationType_3 = false;
-                // Integrátor pro náhodné vibrace v ose Y (boční vibrace)
-                if (VibrationYTimer > 0)
+
+                // Integrátor pro náhodné vibrace v ose XY (boční a svislé vibrace)
+                if (VibrationXYTimer > 0 && !VibrationType_3)
                 {
-                    VibrationYTimer += elapsedTimeS;
-                    float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f / 5.0f, 0.0f, 1.0f);
+                    VibrationXYTimer += elapsedTimeS;
+                    float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f / 5.0f, 0.0f, 0.5f);
                     switch (WagonNumAxles)
                     {
                         case 0:
                         case 1:
                         case 2:
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.Y += 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirection * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * 0.30f * SpeedFactor * elapsedTimeS;
                             break;
                         case 4:
                         case 6:
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.Y += 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirection * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * 0.15f * SpeedFactor * elapsedTimeS;
                             break;
                     }
-                    if (VibrationYTimer > VibrationYTime)                    
-                        VibrationYTimer = 0;                    
+                    if (VibrationXYTimer > VibrationXYTime)                    
+                        VibrationXYTimer = 0;                    
                 }
 
                 //Vibrace náhodné nerovnosti
@@ -3869,15 +3872,15 @@ namespace Orts.Simulation.RollingStocks
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;
 
                     //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
-                   
-                    VibrationRotationVelocityRadpS.X += (RandomVibrationDirection * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1.0f * VibrationMassKG) / x;
+                    
+                    if (force > 3)
+                        VibrationRotationVelocityRadpS.X += (RandomVibrationDirection * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
 
                     if (force == 0) force = 1;                   
-                    float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 1.3f);
-                    if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f) RandomVibrationDirection = Simulator.Random.Next(-1, 2);
-
+                    
                     if (force < 3)
                     {
+                        float SpeedFactor = MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 40.0f / 5.0f), 1.0f, 1.3f);
                         switch (WagonNumAxles)
                         {
                             case 0:
@@ -3892,21 +3895,22 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (force < 6 && VibrationYTimer == 0)
+                    if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f) RandomVibrationDirection = Simulator.Random.Next(-1, 2);
+                    if (force < 6 && VibrationXYTimer == 0)
                     {
                         if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f)
-                            VibrationYTimer += elapsedTimeS;
+                            VibrationXYTimer += elapsedTimeS;
 
                         switch (WagonNumAxles)
                         {
                             case 0:
                             case 1:
                             case 2:
-                                VibrationYTime = force / 1f;                                
+                                VibrationXYTime = force / 1f;                                
                                 break;
                             case 4:
                             case 6:
-                                VibrationYTime = force / 1f;
+                                VibrationXYTime = force / 1f;
                                 break;
                         }
                     }
@@ -3943,7 +3947,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Vibration3Timer = 0;
 
-                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)   //Vibrace na výhybce
+                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)    //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
