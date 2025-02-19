@@ -1128,7 +1128,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Pro AI budou brány default hodnoty
-            if (!Train.IsActualPlayerTrain)
+            if (!Train.IsActualPlayerTrain && !DerailIsOn)
             {
                 DavisAN = DavisBNSpM = DavisCNSSpMM = 0f;
             }

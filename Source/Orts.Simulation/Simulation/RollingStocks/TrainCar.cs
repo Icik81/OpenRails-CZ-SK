@@ -3737,7 +3737,8 @@ namespace Orts.Simulation.RollingStocks
 
         float CyklusCouplerImpact;
         float Vibration3Timer;
-        float RandomVibrationDirection;
+        float RandomVibrationDirectionX;
+        float RandomVibrationDirectionY;
         float VibrationXYTimer;
         float VibrationXYTime;
         private void AddVibrations(float factor, float elapsedTimeS)
@@ -3810,6 +3811,9 @@ namespace Orts.Simulation.RollingStocks
 
                 //VibrationType_2 = VibrationType_3 = false;
 
+                if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f) RandomVibrationDirectionX = Simulator.Random.Next(-1, 1) == 0 ? 1 : -1;
+                if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f) RandomVibrationDirectionY = Simulator.Random.Next(-1, 1) == 0 ? 1 : -1;
+
                 // Integrátor pro náhodné vibrace v ose XY (boční a svislé vibrace)
                 if (VibrationXYTimer > 0 && !VibrationType_3)
                 {
@@ -3821,14 +3825,15 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                         case 2:
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirection * 0.30f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
                             break;
                         case 4:
                         case 6:
+                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f / 5.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirection * 0.15f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirection * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
                             break;
                     }
                     if (VibrationXYTimer > VibrationXYTime)                    
@@ -3873,8 +3878,8 @@ namespace Orts.Simulation.RollingStocks
 
                     //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
                     
-                    if (force > 3)
-                        VibrationRotationVelocityRadpS.X += (RandomVibrationDirection * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
+                    if (force > 2)
+                        VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
 
                     if (force == 0) force = 1;                   
                     
@@ -3894,9 +3899,8 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                     }
-
-                    if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f) RandomVibrationDirection = Simulator.Random.Next(-1, 2);
-                    if (force < 6 && VibrationXYTimer == 0)
+                    
+                    if (force < 3 && VibrationXYTimer == 0)
                     {
                         if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f)
                             VibrationXYTimer += elapsedTimeS;
@@ -3947,7 +3951,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Vibration3Timer = 0;
 
-                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)    //Vibrace na výhybce
+                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f && Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.01f)    //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
@@ -3980,7 +3984,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;                    
 
-                    VibrationRotationVelocityRadpS.X -= (TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;                    
+                    VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;                    
 
                     //Simulator.Confirmer.Information("force " + force);
                 }
