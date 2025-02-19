@@ -1648,8 +1648,22 @@ namespace Orts.Viewer3D
             // Mouse control for 2D cab
 
             if (Camera is CabCamera && (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._hasCabRenderer)
-            {                
-                if (UserInput.IsMouseLeftButtonPressed)
+            {
+                if (!UserInput.IsMouseLeftButtonDown || !TrainOperationsWindow.Visible)
+                {
+                    Simulator.RunTimeCabMouseControll = 0;                    
+                }
+
+                if (UserInput.IsMouseLeftButtonDown && TrainOperationsWindow.Visible)
+                {
+                    Simulator.RunTimeCabMouseControll += Simulator.OneSecondLoop;
+                    if (Simulator.RunTimeCabMouseControll < 0.15f)
+                    {                      
+                        return;
+                    }
+                }                           
+
+                if (UserInput.IsMouseLeftButtonPressed || Simulator.RunTimeCabMouseControll > 0.15f)
                 {
                     var cabRenderer = (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._CabRenderer;
                     foreach (var controlRenderer in cabRenderer.ControlMap.Values)
@@ -1686,9 +1700,8 @@ namespace Orts.Viewer3D
                     }
                 }
             }
-
+            
             // explore 2D cabview controls
-
             if (Camera is CabCamera && (PlayerLocomotiveViewer as MSTSLocomotiveViewer)._hasCabRenderer && MouseChangingControl == null &&
                 RenderProcess.IsMouseVisible)
             {
