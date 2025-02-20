@@ -3951,7 +3951,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Vibration3Timer = 0;
 
-                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f && Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.01f)    //Vibrace na výhybce
+                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)    //Vibrace na výhybce
                 {
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
@@ -3960,15 +3960,15 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                         case 2:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.10f;
+                            VibratioDampingCoefficient = 0.035f;
                             break;
                         case 4:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.15f;
+                            VibratioDampingCoefficient = 0.035f;
                             break;
                         case 6:
                             y = 28; y1 = 31;
-                            VibratioDampingCoefficient = 0.15f;
+                            VibratioDampingCoefficient = 0.035f;
                             break;
                     }
 
@@ -3978,7 +3978,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (force != 0)
                     {
-                        VibrationSpringConstantPrimepSpS = (52 + (force * 2)) / 0.2f;
+                        VibrationSpringConstantPrimepSpS = (22 + (force * 2)) / 0.2f;
                         for (int i = 0; i < TrackFactorX * force * 10 + 5; i++) Factor_vibration = i;
                     }
                     else
