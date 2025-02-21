@@ -3272,7 +3272,7 @@ namespace Orts.Simulation.RollingStocks
             ResetAllDerailmentCoef = false;
             int XDynamicMarker = Simulator.Random.Next(-1, 2);
             int YDynamicMarker = Simulator.Random.Next(-1, 2);
-            float ZRotDynamic = Simulator.Random.Next(0, 11) / 10f;
+            float ZRotDynamic = Simulator.Random.Next(0, 8) / 10f;
 
             if (ResetAllDerailmentCoef)
             {
@@ -3286,7 +3286,11 @@ namespace Orts.Simulation.RollingStocks
             if (Train.TrainDerailmentTimer > 0)
             {
                 Train.TrainDerailmentTimer += elapsedTimeS;
-                if (Train.TrainDerailmentTimer > 10.0f) Simulator.CarDerailed = true;
+                if (Train.TrainDerailmentTimer > 20.0f)
+                {
+                    Simulator.CarDerailed = true;
+                    SpeedMpS = 0;
+                }
             }
 
             if (!Train.TrainEndOfRoute)
@@ -3352,10 +3356,12 @@ namespace Orts.Simulation.RollingStocks
                 }            
 
                 if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
+                XRotFinal = MathHelper.Clamp(XRotFinal, -0.07f, 0.07f);
+                YRotFinal = MathHelper.Clamp(YRotFinal, -0.07f, 0.07f);                
                 var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
                 var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
                 var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
-                var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
+                var DerailTranslationX = Matrix.CreateTranslation(PushXFinal * PushXFinalMarker, 0, 0);
                 var DerailTranslationY = Matrix.CreateTranslation(0, PushY, 0);
                 var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
                 if (prevDereailAbsSpeedMpS != 0)
@@ -3414,25 +3420,26 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Flipped)
                         {
-                            if (CurrentCurveAngle < 0)
+                            if (CurrentCurveAngle > 0)
                                 DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
                             else
-                            if (CurrentCurveAngle > 0)
+                            if (CurrentCurveAngle < 0)
                                 DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
                         }
                         else
                         {
-                            if (CurrentCurveAngle > 0)
+                            if (CurrentCurveAngle < 0)
                                 DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * 1.0f);
                             else
-                            if (CurrentCurveAngle < 0)
+                            if (CurrentCurveAngle > 0)
                                 DerailRotateCoef = (int)((AbsSpeedMpS - ActualTrackSpeedMpS) * 3.6f * (-1.0f));
                         }
                         DerailRotateCoef = MathHelper.Clamp(DerailRotateCoef, -20f, 20f);
                         if (DerailRotateCoef != 0)
                             IsCurveCase = true;
                     }
-                    //Simulator.Confirmer.Information("Radius " + CurrentCurveRadius);
+                    //if (CarIsPlayerLoco)
+                    //    Simulator.Confirmer.Information("Radius " + CurrentCurveRadius + "  CurrentCurveAngle " + CurrentCurveAngle);                    
                 }
 
                 if (DerailRotateCoef != 0)
@@ -3456,9 +3463,9 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (DerailRotateCoef > DerailRotateCoefDelta)
                         {
-                            TiltingXRot -= 0.1f * elapsedTimeS;
-                            TiltingYRot += 0.5f * elapsedTimeS;
-                            ZRot += ZRotDynamic * elapsedTimeS;
+                            TiltingXRot -= 0.001f * elapsedTimeS;
+                            TiltingYRot += 0.01f * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y += 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
@@ -3467,9 +3474,9 @@ namespace Orts.Simulation.RollingStocks
                         else
                         if (DerailRotateCoef < DerailRotateCoefDelta)
                         {
-                            TiltingXRot -= 0.1f * elapsedTimeS;
-                            TiltingYRot -= 0.5f * elapsedTimeS;
-                            ZRot -= ZRotDynamic * elapsedTimeS;
+                            TiltingXRot -= 0.001f * elapsedTimeS;
+                            TiltingYRot -= 0.01f * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
@@ -3482,7 +3489,7 @@ namespace Orts.Simulation.RollingStocks
                         {                            
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot += 0.01f * elapsedTimeS;
-                            ZRot += ZRotDynamic * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y += 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
@@ -3493,7 +3500,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot -= 0.01f * elapsedTimeS;
-                            ZRot -= ZRotDynamic * elapsedTimeS;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
@@ -3506,8 +3513,8 @@ namespace Orts.Simulation.RollingStocks
                     if (HasZRotFinalMarker == 0 || HasZRotFinalMarker == ZRotFinalMarker)
                     {
                         ZRotFinal = Math.Max(ZRotFinal, Math.Abs(ZRot));
-                        PushXFinal = Math.Max(PushXFinal, Math.Abs(PushX));
-                        PushXFinalMarker = DerailRotateCoef != 0 ? Math.Abs(DerailRotateCoef) / DerailRotateCoef : 1;
+                        PushXFinal = Math.Max(PushXFinal, Math.Abs(PushX));                        
+                        if (PushXFinalMarker == 0) PushXFinalMarker = TiltingZRot != 0 ? Math.Abs(TiltingZRot) / TiltingZRot : 1;                        
                         XRotFinal = Math.Max(XRotFinal, Math.Abs(XRot));
                         YRotFinal = Math.Max(YRotFinal, Math.Abs(YRot));
                     }
@@ -3515,19 +3522,23 @@ namespace Orts.Simulation.RollingStocks
                     if (ZRotFinal > 1.0f && AbsSpeedMpS > 1.0f)
                     {
                         HasZRotFinalMarker = ZRotFinalMarker;
-                        PushX += AbsSpeedMpS * 0.1f * elapsedTimeS;
+                        float curveRadius = MathHelper.Clamp((1f - (CurrentCurveRadius / 1000f)) / 3.5f, 0f, 1f);
+                        PushX += AbsSpeedMpS * curveRadius * elapsedTimeS;
                         if (CarIsDecoupled) XRot += AbsSpeedMpS * 0.001f * elapsedTimeS; // Náchylné na mizení vozů!
                         YRot += AbsSpeedMpS * 0.001f * elapsedTimeS;
-                        PushY += 0.1f * elapsedTimeS * ZRotFinal;
-                        if (XRotFinalMarker == 0) XRotFinalMarker = Simulator.Random.Next(-1, 2);
-                        if (YRotFinalMarker == 0) YRotFinalMarker = Simulator.Random.Next(-1, 2);
+                        PushY += 0.1f * elapsedTimeS * ZRotFinal;                        
+                        if (XRotFinalMarker == 0) XRotFinalMarker = Simulator.Random.Next(-1, 2) == 0 ? 1 : -1;
+                        if (YRotFinalMarker == 0) YRotFinalMarker = Simulator.Random.Next(-1, 2) == 0 ? 1 : -1;
                     }                    
 
-                    if (PushXFinal > 3.0) Train.TrainOutOfRoute = true;
+                    if (PushXFinal > 3.0f) Train.TrainOutOfRoute = true;
+                    XRotFinal = MathHelper.Clamp(XRotFinal, -0.07f, 0.07f);
+                    YRotFinal = MathHelper.Clamp(YRotFinal, -0.07f, 0.07f);
+                    PushY = MathHelper.Clamp(PushY, 0, 1f);
                     var DerailRotationX = Matrix.CreateRotationX(XRotFinal * XRotFinalMarker);
                     var DerailRotationY = Matrix.CreateRotationY(YRotFinal * YRotFinalMarker);
                     var DerailRotationZ = Matrix.CreateRotationZ(ZRotFinal * ZRotFinalMarker);
-                    var DerailTranslationX = Matrix.CreateTranslation(-PushXFinal * PushXFinalMarker, 0, 0);
+                    var DerailTranslationX = Matrix.CreateTranslation(PushXFinal * PushXFinalMarker, 0, 0);
                     var DerailTranslationY = Matrix.CreateTranslation(0, PushY, 0);
                     var DerailTranslationZ = Matrix.CreateTranslation(0, 0, -PushZFinal * PushZFinalMarker);
                     WorldPosition.XNAMatrix = DerailRotationX * DerailRotationY * DerailRotationZ * DerailTranslationX * DerailTranslationY * DerailTranslationZ * WorldPosition.XNAMatrix;                    
@@ -3570,7 +3581,7 @@ namespace Orts.Simulation.RollingStocks
                             DerailmentTimer4 += elapsedTimeS;
                             if (DerailmentTimer4 > 1.0f)
                             {
-                                (this as MSTSWagon).DavisAN = MassKG * Simulator.Random.Next(0, 20);
+                                (this as MSTSWagon).DavisAN = MassKG * (AbsSpeedMpS / (80f / 3.6f)) * Simulator.Random.Next(5, 8);
                                 DerailmentTimer4 = 0;
                                 CarIsDecoupled = true;
                                 Train.TrainIsDerailing = true;
@@ -3825,15 +3836,15 @@ namespace Orts.Simulation.RollingStocks
                         case 1:
                         case 2:
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * 0.30f * SpeedFactor * elapsedTimeS;
                             break;
                         case 4:
                         case 6:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f / 5.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * 0.15f * SpeedFactor * elapsedTimeS;
                             break;
                     }
                     if (VibrationXYTimer > VibrationXYTime)                    
