@@ -228,7 +228,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
                 DebugKoef2 = 1.0f;
             }
             else
-                DebugKoef2 = DebugKoef2Factor[AutoCylPressurePSI0 + AutoCylPressurePSI1 + AutoCylPressurePSI2];
+                DebugKoef2 = DebugKoef2Factor[GetCylPressurePSI()];
             return DebugKoef2;
         }
 

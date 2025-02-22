@@ -3889,7 +3889,7 @@ namespace Orts.Simulation.RollingStocks
 
                     //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
                     
-                    if (force > 2)
+                    if (force > 2 && Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
                         VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
 
                     if (force == 0) force = 1;                   
@@ -3913,7 +3913,7 @@ namespace Orts.Simulation.RollingStocks
                     
                     if (force < 3 && VibrationXYTimer == 0)
                     {
-                        if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f)
+                        if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f && Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
                             VibrationXYTimer += elapsedTimeS;
 
                         switch (WagonNumAxles)
