@@ -1740,6 +1740,7 @@ namespace Orts.Simulation.Physics
         float TimeToRequestSignal;
         public bool TrainHasPermission;
         public bool AITrainWillAttach;
+        int AIPreferenceModeStep;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {
             AITrainWillAttach = false;
@@ -1770,6 +1771,32 @@ namespace Orts.Simulation.Physics
                 {
                     ToggleToManualMode();
                     MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "MPCONTROLMODE", 1)).ToString());
+                }
+            }
+
+            // Preference AI před hráčem, pokud AI projede WP 40000
+            if (IsActualPlayerTrain && Simulator.AIPreference)
+            {
+                AIPreferenceModeStep++;
+                if (AIPreferenceModeStep == 1)
+                {
+                    RequestToggleManualMode();
+                }
+                else
+                if (ControlMode == Train.TRAIN_CONTROL.MANUAL)
+                {
+                    RequestToggleManualMode();                   
+                }
+                else
+                if (ControlMode != Train.TRAIN_CONTROL.AUTO_SIGNAL && EndAuthorityType[0] != END_AUTHORITY.RESERVED_SWITCH)
+                {
+                    RequestToggleManualMode();
+                }
+                else
+                if (ControlMode == Train.TRAIN_CONTROL.AUTO_SIGNAL)
+                {                    
+                    Simulator.AIPreference = false;
+                    AIPreferenceModeStep = 0;
                 }
             }
 
@@ -10554,7 +10581,7 @@ namespace Orts.Simulation.Physics
                 if (routeIndex < 0)
                 {
                     if (Simulator.Confirmer != null) // As Confirmer may not be created until after a restore.
-                        if (!Simulator.Settings.MSTSCompatibilityMode)
+                        if (!Simulator.Settings.MSTSCompatibilityMode && !Simulator.AIPreference)
                             Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Train is not back on original route"));
                 }
                 else
@@ -10569,7 +10596,7 @@ namespace Orts.Simulation.Physics
                     else
                     {                        
                         ToggleFromManualMode(routeIndex);
-                        if (!Simulator.Settings.MSTSCompatibilityMode)
+                        if (!Simulator.Settings.MSTSCompatibilityMode && !Simulator.AIPreference)
                             Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.On);
                     }
                 }
@@ -10590,7 +10617,7 @@ namespace Orts.Simulation.Physics
             else
             {
                 ToggleToManualMode();
-                if (!Simulator.Settings.MSTSCompatibilityMode)
+                if (!Simulator.Settings.MSTSCompatibilityMode && !Simulator.AIPreference)
                     Simulator.Confirmer.Confirm(CabControl.SignalMode, CabSetting.Off);
             }
         }

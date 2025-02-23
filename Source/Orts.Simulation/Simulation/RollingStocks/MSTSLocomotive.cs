@@ -5479,6 +5479,24 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                // Přednost AI před hráčem - WP 40xxx
+                (Train as AITrain).DontStopAIPreference = false;
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                    {
+                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        {
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                            if (AIActionPoint0.Delay == 40000)
+                            {                                
+                                Simulator.AIPreference = true;
+                                (Train as AITrain).DontStopAIPreference = true;                                
+                            }                            
+                        }
+                    }
+                }
+
                 if (CarIsWaiting)
                 {
                     CarIsShunting = false;

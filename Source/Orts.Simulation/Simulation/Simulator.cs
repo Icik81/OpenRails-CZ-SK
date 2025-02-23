@@ -274,7 +274,8 @@ namespace Orts.Simulation
         public bool CarPositionChanged;
         public int TrainOperationsMenuSetScrollPosition;
         public float GameTimeHours;
-        public float RunTimeCabMouseControll;        
+        public float RunTimeCabMouseControll;
+        public bool AIPreference;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

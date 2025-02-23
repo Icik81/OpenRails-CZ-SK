@@ -81,6 +81,7 @@ namespace Orts.Simulation.AIs
         // Icik
         public bool DontStopABSWP;
         public bool DontStopStopOffset;
+        public bool DontStopAIPreference;
         public float EfficiencyServis;
         public bool AIUnprotectedLevelCrossWarningRunning;
         public bool AIUnprotectedLevelCrossSetup;
@@ -95,7 +96,7 @@ namespace Orts.Simulation.AIs
         public bool AIUnprotectedLevelCrossWarningCutOff;
         public bool AIUnprotectedLevelCrossWarningCanEnable;
         public bool AITrainOffsetStop;
-        public float AITrainOffsetStopDistance;
+        public float AITrainOffsetStopDistance;                
 
         public enum AI_MOVEMENT_STATE
         {
