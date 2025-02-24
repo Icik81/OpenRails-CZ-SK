@@ -1791,9 +1791,10 @@ namespace Orts.Simulation.AIs
                 }
                 AITrain aiTrain = thisTrain as AITrain;
 
-                thisTrain.AuxActionsContain.CheckGenActions(this.GetType(), aiTrain.RearTDBTraveller.WorldLocation, ActualDepart - presentTime);
+                thisTrain.AuxActionsContain.CheckGenActions(this.GetType(), aiTrain.RearTDBTraveller.WorldLocation, ActualDepart - presentTime);                
 
-                if (ActualDepart > presentTime)
+                // Icik
+                if (ActualDepart > presentTime || ActualDepart == 0)
                 {
                     movementState = AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION;
                 }
