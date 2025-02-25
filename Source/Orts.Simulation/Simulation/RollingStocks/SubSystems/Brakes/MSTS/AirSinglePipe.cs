@@ -83,6 +83,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float TRMg = 0;
         protected float PrevAuxResPressurePSI = 0;
         protected float threshold = 0;
+        protected float thresholdOld = 0;
         protected float prevBrakeLine1PressurePSI = 0;
         protected float prevAutoCylPressurePSI = 0;
         protected bool NotConnected = false;
@@ -1791,7 +1792,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     OLBailOffActivated = true;
                 }
                 else
+                {
                     OLBailOff = false;
+                    OLBailOffActivated = false;
+                }
 
                 if (OLBailOff || OL3active)
                 {
@@ -1801,6 +1805,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
                         if (AutoCylPressurePSI1 > 0)
                             AutoCylPressurePSI1 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
+                        ThresholdBailOffOn = Math.Max(AutoCylPressurePSI0, AutoCylPressurePSI1);
                         BrakeCylApply = false;
                         switch (OLBailOffType)
                         {
@@ -1881,10 +1886,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB                
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
-                if (ThresholdBailOffOn > 0 && (Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
+                if ((Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
-                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
+                    if (threshold < ThresholdBailOffOn || thresholdOld < threshold) 
+                        ThresholdBailOffOn = 0;                    
+                    
                     if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AuxResPressurePSI > 0)
@@ -1902,6 +1908,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         EDBEngineBrakeDelay = 0;
                     }
                 }
+                else
+                {
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
+                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
+                }
+                
+                thresholdOld = threshold;
+
                 if (loco.DynamicBrakeForceCurves != null || loco.DynamicBrakePercent > 1)
                 {
                     PressureConverterBaseEDB = loco.DynamicBrakePercent / 100 * 4.0f * 14.50377f;
