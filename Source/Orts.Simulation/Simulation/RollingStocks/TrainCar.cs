@@ -3670,7 +3670,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.5f;
                 TrackFactorY = 0.5f;
                 TrackFactorZ = 0.5f;
-                TrackFactorValue = 0.30f;
+                TrackFactorValue = 0.50f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(95, 101) / 100f;
@@ -3693,9 +3693,9 @@ namespace Orts.Simulation.RollingStocks
             else
             if (ActualTrackSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
-                TrackFactorX = 0.65f;
-                TrackFactorY = 0.65f;
-                TrackFactorZ = 0.65f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
                 TrackFactorValue = 0.80f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
@@ -3704,12 +3704,12 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
             else
-            if (ActualTrackSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit <= 50 / 3.6f) // Běžná trať do 50km/h
+            if (ActualTrackSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit0 <= 50 / 3.6f && Train.NextRouteSpeedLimit1 <= 50 / 3.6f) // Běžná trať do 50km/h
             {
-                TrackFactorX = 0.65f;
-                TrackFactorY = 0.65f;
-                TrackFactorZ = 0.65f;
-                TrackFactorValue = 1.00f;
+                TrackFactorX = 1.0f;
+                TrackFactorY = 1.0f;
+                TrackFactorZ = 1.0f;
+                TrackFactorValue = 1.0f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(77, 83) / 100f;
@@ -3718,10 +3718,10 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                TrackFactorX = 0.6f;
-                TrackFactorY = 0.6f;
-                TrackFactorZ = 0.6f;
-                TrackFactorValue = 0.60f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
+                TrackFactorValue = 0.80f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
                     TrackFactor = Simulator.Random.Next(83, 89) / 100f;
@@ -3730,19 +3730,13 @@ namespace Orts.Simulation.RollingStocks
             }
             float SpeedFactor;
             if (AbsSpeedMpS < ActualTrackSpeedMpS)
-                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (ActualTrackSpeedMpS / 2.0f), 0.5f, 1.0f);            
+                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (ActualTrackSpeedMpS / 2f), 0.5f, 1.0f);            
             else
-                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / ActualTrackSpeedMpS, 1.0f, 2.5f);
-
-            if (AbsSpeedMpS < 3f)
-                SpeedFactor = 0.3f;
-
-            if (AbsSpeedMpS < 1f)
-                SpeedFactor = 0;
+                SpeedFactor = MathHelper.Clamp(1f + (AbsSpeedMpS / ActualTrackSpeedMpS / 10f), 1.0f, 1.25f);
 
             TrackFactorX *= SpeedFactor;
-            TrackFactorY *= SpeedFactor * 1.5f;
-            TrackFactorZ *= SpeedFactor * 0.5f;
+            TrackFactorY *= SpeedFactor;
+            TrackFactorZ *= SpeedFactor;
             FirstFrame = false;
         }
 
@@ -3837,15 +3831,15 @@ namespace Orts.Simulation.RollingStocks
                         case 2:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.30f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
                             break;
                         case 4:
                         case 6:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
-                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
-                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.15f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
                             break;
                     }
                     if (VibrationXYTimer > VibrationXYTime)                    
@@ -3969,7 +3963,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)    //Vibrace na výhybce
                 {
-                    float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f / 5.0f, 0.0f, 1.0f);
+                    float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
                     {
@@ -3978,13 +3972,13 @@ namespace Orts.Simulation.RollingStocks
                         case 2:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
-                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 1.0f);
+                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 1.0f);
                             break;
                         case 4:                            
                         case 6:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
-                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 1.0f);
+                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
                             break;
                     }
 
@@ -4003,7 +3997,11 @@ namespace Orts.Simulation.RollingStocks
                     
                     VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;                    
                     //Simulator.Confirmer.Information("force " + force);
-                }                
+                }
+
+                VibrationRotationVelocityRadpS.X = MathHelper.Clamp(VibrationRotationVelocityRadpS.X, -0.05f, +0.05f);
+                VibrationRotationVelocityRadpS.Y = MathHelper.Clamp(VibrationRotationVelocityRadpS.Y, -0.05f, +0.05f);
+                VibrationRotationVelocityRadpS.Z = MathHelper.Clamp(VibrationRotationVelocityRadpS.Z, -0.05f, +0.05f);                
 
                 VibrationType_1 = false;
                 VibrationType_2 = false;

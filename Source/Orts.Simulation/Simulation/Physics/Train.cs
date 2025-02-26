@@ -103,7 +103,8 @@ namespace Orts.Simulation.Physics
         public float TotalCapacityMainResBrakePipe;
         public float TotalAirLoss;
         public bool TrainDoorsOpen;
-        public float NextRouteSpeedLimit;
+        public float NextRouteSpeedLimit0;
+        public float NextRouteSpeedLimit1;
         public bool SteamHeatingIsAvailable;
         public bool HasSpeedInCoupler;
         public string AITrainNameReadyToDepart;
