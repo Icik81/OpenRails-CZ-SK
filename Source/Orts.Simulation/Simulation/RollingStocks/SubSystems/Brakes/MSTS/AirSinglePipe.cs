@@ -3944,13 +3944,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                         if (train.BrakeLine3PressurePSI > lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
-                        else lead.EngineBrakeState = ValveState.Release;
-                        if (lead.BrakeSystem.AutoCylPressurePSI1 == train.BrakeLine3PressurePSI)
-                        {
-                            lead.EngineBrakeState = ValveState.Lap;
-                        }
+                        else lead.EngineBrakeState = ValveState.Release;                        
                         if (lead.BrakeSystem.AutoCylPressurePSI1 < 1) brakeSystem.EngineBrakeDelay = 0;
                     }
+                    else                    
+                        lead.EngineBrakeState = ValveState.Lap;
+                    
                 }
 
                 // Definice pro brzdič LEKOV

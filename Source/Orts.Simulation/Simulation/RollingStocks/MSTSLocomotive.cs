@@ -6549,8 +6549,7 @@ namespace Orts.Simulation.RollingStocks
                 // Mirel                   
                 if (Mirel != null)
                 {
-                    Mirel.initTest = InitTest.Passed;
-                    Mirel.driveMode = DriveMode.Normal;
+                    Mirel.initTest = InitTest.Passed;                    
                     Mirel.selectedDriveMode = DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     Mirel.BlueLight = true;
@@ -14100,10 +14099,12 @@ namespace Orts.Simulation.RollingStocks
             if (Pantograph4Enable)
             {
                 if (Pantograph4Switch[LocoStation] < 4)
+                {
                     Pantograph4Switch[LocoStation]++;
+                    SignalEvent(Event.PantographToggle);
+                }
                 if (Pantograph4Switch[LocoStation] == 4)
-                    Pantograph4Switch[LocoStation] = 0;
-                SignalEvent(Event.PantographToggle);
+                    Pantograph4Switch[LocoStation] = 0;                
             }
         }
         public void TogglePantograph4SwitchDown()
@@ -14111,10 +14112,12 @@ namespace Orts.Simulation.RollingStocks
             if (Pantograph4Enable)
             {
                 if (Pantograph4Switch[LocoStation] > -1)
+                {
                     Pantograph4Switch[LocoStation]--;
+                    SignalEvent(Event.PantographToggle);
+                }
                 if (Pantograph4Switch[LocoStation] == -1)
-                    Pantograph4Switch[LocoStation] = 3;
-                SignalEvent(Event.PantographToggle);
+                    Pantograph4Switch[LocoStation] = 3;                
             }
         }
 
