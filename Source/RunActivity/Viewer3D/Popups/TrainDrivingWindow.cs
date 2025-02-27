@@ -128,7 +128,7 @@ namespace Orts.Viewer3D.Popups
 
         readonly Dictionary<string, string> LastColToAbbreviated = new Dictionary<string, string>()
         {
-            { Viewer.Catalog.GetString("apply Service"), Viewer.Catalog.GetString("Apply")},
+            {Viewer.Catalog.GetString("apply Service"), Viewer.Catalog.GetString("Apply")},
             {Viewer.Catalog.GetString("Apply Quick"), Viewer.Catalog.GetString("ApplQ")},
             {Viewer.Catalog.GetString("Apply Slow"), Viewer.Catalog.GetString("ApplS")},
             {Viewer.Catalog.GetString("coal"), Viewer.Catalog.GetString("c")},
@@ -138,7 +138,7 @@ namespace Orts.Viewer3D.Popups
             {Viewer.Catalog.GetString("safe range"), Viewer.Catalog.GetString("safe")},
             {Viewer.Catalog.GetString("skid"), Viewer.Catalog.GetString("Skid")},
             {Viewer.Catalog.GetString("slip warning"), Viewer.Catalog.GetString("Warning")},
-            {Viewer.Catalog.GetString("slip"), Viewer.Catalog.GetString("Slip")},
+            {Viewer.Catalog.GetString("Slip"), Viewer.Catalog.GetString("Slip")},
             {Viewer.Catalog.GetString("water"), Viewer.Catalog.GetString("w")},
         };
 
