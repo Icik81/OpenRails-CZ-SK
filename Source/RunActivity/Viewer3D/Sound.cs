@@ -3181,13 +3181,24 @@ namespace Orts.Viewer3D
             if (Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Outcomes == null
                 || Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Outcomes.ActivitySound == null)
             {
-                ORTSActSoundFile = Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSActSoundFile;
+                string ORTSActSoundCheckFile = Path.Combine(Program.Simulator.RoutePath + "\\ACTIVITY_SOUND\\" + Path.GetFileName(Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSActSoundFile));
+                if (!File.Exists(ORTSActSoundCheckFile))                
+                    ORTSActSoundFile = Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSActSoundFileBase;                
+                else
+                    ORTSActSoundFile = Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSActSoundFile;
+
                 ORTSActSoundFileType = Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ORTSActSoundFileType;
             }
             else
             {
                 activitySound = Program.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Outcomes.ActivitySound;
-                ORTSActSoundFile = activitySound.ORTSActSoundFile;
+
+                string ORTSActSoundCheckFile = Path.Combine(Program.Simulator.RoutePath + "\\ACTIVITY_SOUND\\" + Path.GetFileName(activitySound.ORTSActSoundFile));
+                if (!File.Exists(ORTSActSoundCheckFile))
+                    ORTSActSoundFile = activitySound.ORTSActSoundFileBase;
+                else
+                    ORTSActSoundFile = activitySound.ORTSActSoundFile;
+                
                 ORTSActSoundFileType = activitySound.ORTSActSoundFileType;
             }
             var train = Program.Simulator.ActivityRun.triggeredEventWrapper.Train;

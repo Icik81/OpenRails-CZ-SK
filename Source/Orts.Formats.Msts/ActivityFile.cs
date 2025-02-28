@@ -1199,6 +1199,7 @@ namespace Orts.Formats.Msts
         public Boolean Reversible;
         public int ORTSContinue = -1;
         public string ORTSActSoundFile;
+        public string ORTSActSoundFileBase;
         public ORTSActSoundFileTypes ORTSActSoundFileType;
         public ORTSWeatherChange ORTSWeatherChange;
         public string TrainService = "";
@@ -1254,7 +1255,10 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     var tempString = stf.ReadString();
-                    ORTSActSoundFile =Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
+                    ORTSActSoundFile = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "ACTIVITY_SOUND"), tempString);
+                    ORTSActSoundFileBase = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
                     try
                     {
                     ORTSActSoundFileType = (ORTSActSoundFileTypes)Enum.Parse(typeof(ORTSActSoundFileTypes), stf.ReadString());
@@ -1330,7 +1334,10 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     var tempString = stf.ReadString();
-                    ORTSActSoundFile =Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
+                    ORTSActSoundFile = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "ACTIVITY_SOUND"), tempString);
+                    ORTSActSoundFileBase = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
                     try
                     {
                     ORTSActSoundFileType = (ORTSActSoundFileTypes)Enum.Parse(typeof(ORTSActSoundFileTypes), stf.ReadString());
@@ -1417,7 +1424,10 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     var tempString = stf.ReadString();
-                    ORTSActSoundFile = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+                                        
+                    ORTSActSoundFile = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "ACTIVITY_SOUND"), tempString);                                                        
+                    ORTSActSoundFileBase = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
                     try
                     {
                     ORTSActSoundFileType = (ORTSActSoundFileTypes)Enum.Parse(typeof(ORTSActSoundFileTypes), stf.ReadString());
@@ -1552,6 +1562,7 @@ namespace Orts.Formats.Msts
     public class ActivitySound
     {
         public string ORTSActSoundFile;
+        public string ORTSActSoundFileBase;
         public ORTSActSoundFileTypes ORTSActSoundFileType;
         public int TileX;
         public int TileZ;
@@ -1566,7 +1577,10 @@ namespace Orts.Formats.Msts
                 {
                     stf.MustMatch("(");
                     var tempString = stf.ReadString();
-                    ORTSActSoundFile =Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
+                    ORTSActSoundFile = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "ACTIVITY_SOUND"), tempString);
+                    ORTSActSoundFileBase = Path.Combine(Path.Combine(Path.GetDirectoryName(Path.GetDirectoryName(fileName)), "SOUND"), tempString);
+
                     try
                     {
                     ORTSActSoundFileType = (ORTSActSoundFileTypes)Enum.Parse(typeof(ORTSActSoundFileTypes), stf.ReadString());
