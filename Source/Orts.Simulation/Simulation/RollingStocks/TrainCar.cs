@@ -423,6 +423,7 @@ namespace Orts.Simulation.RollingStocks
         public bool WagonIsStatic;
         public int MPBrakeCarMode = 0;
         public int MPBrakeCarModePL = 0;
+        public bool CarIsOnLvlCrossover;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -3683,60 +3684,61 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorX = 0.6f;
                 TrackFactorY = 0.6f;
                 TrackFactorZ = 0.6f;
-                TrackFactorValue = 0.60f;
+                TrackFactorValue = 0.70f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(89, 95) / 100f;
+                    TrackFactor = Simulator.Random.Next(85, 95) / 100f;
                     AdhCycle = 0;
                 }                
             }
             else
             if (ActualTrackSpeedMpS > 50 / 3.6f) // Běžná trať do 100km/h
             {
-                TrackFactorX = 0.8f;
-                TrackFactorY = 0.8f;
-                TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.80f;
+                TrackFactorX = 0.7f;
+                TrackFactorY = 0.7f;
+                TrackFactorZ = 0.7f;
+                TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(83, 89) / 100f;
+                    TrackFactor = Simulator.Random.Next(75, 85) / 100f;
                     AdhCycle = 0;
                 }                
             }
             else
             if (ActualTrackSpeedMpS <= 50 / 3.6f && Train.NextRouteSpeedLimit0 <= 50 / 3.6f && Train.NextRouteSpeedLimit1 <= 50 / 3.6f) // Běžná trať do 50km/h
             {
-                TrackFactorX = 1.0f;
-                TrackFactorY = 1.0f;
-                TrackFactorZ = 1.0f;
+                TrackFactorX = 0.8f;
+                TrackFactorY = 0.8f;
+                TrackFactorZ = 0.8f;
                 TrackFactorValue = 1.0f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(77, 83) / 100f;
+                    TrackFactor = Simulator.Random.Next(65, 75) / 100f;
                     AdhCycle = 0;
                 }                
             }
             else
             {
-                TrackFactorX = 0.8f;
-                TrackFactorY = 0.8f;
-                TrackFactorZ = 0.8f;
-                TrackFactorValue = 0.80f;
+                TrackFactorX = 0.7f;
+                TrackFactorY = 0.7f;
+                TrackFactorZ = 0.7f;
+                TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(83, 89) / 100f;
+                    TrackFactor = Simulator.Random.Next(75, 85) / 100f;
                     AdhCycle = 0;
                 }                
             }
             float SpeedFactor;
             if (AbsSpeedMpS < ActualTrackSpeedMpS)
-                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / (ActualTrackSpeedMpS / 2f), 0.5f, 1.0f);            
+                SpeedFactor = MathHelper.Clamp(AbsSpeedMpS / ActualTrackSpeedMpS, 0.0f, 1.0f);            
             else
-                SpeedFactor = MathHelper.Clamp(1f + (AbsSpeedMpS / ActualTrackSpeedMpS / 10f), 1.0f, 1.25f);
+                SpeedFactor = MathHelper.Clamp(1f + ((1f - (ActualTrackSpeedMpS / AbsSpeedMpS)) / 2f), 1.0f, 1.25f);
 
             TrackFactorX *= SpeedFactor;
             TrackFactorY *= SpeedFactor;
             TrackFactorZ *= SpeedFactor;
+            //TrackFactorValue *= SpeedFactor;
             FirstFrame = false;
         }
 
@@ -3847,7 +3849,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                                 
                 //Vibrace náhodné nerovnosti
-                if (VibrationType_1)   //Vibrace na spojích, dle vzdálenosti
+                if (VibrationType_1 || CarIsOnLvlCrossover)   //Vibrace na spojích, dle vzdálenosti
                 {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
@@ -3872,21 +3874,24 @@ namespace Orts.Simulation.RollingStocks
                     if (force > 25 && force < 31) force -= 25; // Nabývá od 1 do 5
                     else force = 0;
 
-                    if (AbsSpeedMpS < 20 / 3.6f && force > 2) force = 2;
+                    if (CarIsOnLvlCrossover) force = 3;
+
+                    if (AbsSpeedMpS < 20 / 3.6f && force > 2) force = 2;                    
 
                     if (force != 0)
                     {
                         VibrationSpringConstantPrimepSpS = (12 + (force * 2)) / 0.2f;
-                        for (int i = 0; i < TrackFactorX * force * 10 + 5; i++) Factor_vibration = i;
+                        for (int i = 0; i < TrackFactorValue * force * 10 + 5; i++) Factor_vibration = i;
                     }
                     else
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;
 
-                    //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);
-                    
-                    if (force > 2 && Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
-                    {
-                        VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;                         
+                    //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);                                        
+
+                    if (force > 2 || CarIsOnLvlCrossover)
+                    {                        
+                        if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
+                            VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
                     }
 
                     if (force == 0) force = 1;                   
@@ -3989,7 +3994,7 @@ namespace Orts.Simulation.RollingStocks
                     if (force != 0)
                     {
                         VibrationSpringConstantPrimepSpS = (22 + (force * 2)) / 0.2f;
-                        for (int i = 0; i < TrackFactorX * force * 10 + 5; i++) Factor_vibration = i;
+                        for (int i = 0; i < TrackFactorValue * force * 10 + 5; i++) Factor_vibration = i;
                     }
                     else
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;
@@ -3999,9 +4004,9 @@ namespace Orts.Simulation.RollingStocks
                     //Simulator.Confirmer.Information("force " + force);
                 }
 
-                VibrationRotationVelocityRadpS.X = MathHelper.Clamp(VibrationRotationVelocityRadpS.X, -0.05f, +0.05f);
-                VibrationRotationVelocityRadpS.Y = MathHelper.Clamp(VibrationRotationVelocityRadpS.Y, -0.05f, +0.05f);
-                VibrationRotationVelocityRadpS.Z = MathHelper.Clamp(VibrationRotationVelocityRadpS.Z, -0.05f, +0.05f);                
+                VibrationRotationVelocityRadpS.X = MathHelper.Clamp(VibrationRotationVelocityRadpS.X, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);
+                VibrationRotationVelocityRadpS.Y = MathHelper.Clamp(VibrationRotationVelocityRadpS.Y, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);
+                VibrationRotationVelocityRadpS.Z = MathHelper.Clamp(VibrationRotationVelocityRadpS.Z, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);                
 
                 VibrationType_1 = false;
                 VibrationType_2 = false;

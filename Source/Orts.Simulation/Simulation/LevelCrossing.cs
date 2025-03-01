@@ -153,6 +153,14 @@ namespace Orts.Simulation
                     validTrain = true;
                     reqDist = totalDist;
 
+                    foreach (TrainCar Car in train.Cars)
+                    {
+                        if (WorldLocation.Within(crossing.Location, Car.WorldPosition.WorldLocation, 2))
+                            Car.CarIsOnLvlCrossover = true; // Vůz je na přejezdu                    
+                        else
+                            Car.CarIsOnLvlCrossover = false;
+                    }                                                                                        
+
                     // Hráč
                     if (train.IsActualPlayerTrain)
                     {
@@ -162,8 +170,8 @@ namespace Orts.Simulation
                             train.UnprotectedLevelCross1 = UnprotectedLevelCross1;
                             train.UnprotectedLevelCross2 = UnprotectedLevelCross2;
                             if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 100, 500);
-                            
-                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, train.UnprotectedLevelCrossWarningDistance);                            
+
+                            float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, train.UnprotectedLevelCrossWarningDistance);
                             if (!train.AITrainDirectionForward)
                             {
                                 frontDistance = -crossing.DistanceTo(new Traveller(train.FrontTDBTraveller, Traveller.TravellerDirection.Backward), train.UnprotectedLevelCrossWarningDistance + train.Length);
@@ -188,7 +196,7 @@ namespace Orts.Simulation
                             }
                         }
                         else
-                            train.UnprotectedLevelCrossWarningCanEnable = false;                        
+                            train.UnprotectedLevelCrossWarningCanEnable = false;
                     }
 
                     // AI
