@@ -650,6 +650,8 @@ namespace Orts.Simulation.Timetables
             outf.Write(NumberOfCarsToLeaveOrSteal);            
             outf.Write(BoardingCompleted);
             outf.Write(RestOfPax);
+            outf.Write(AITrainOffsetStop);
+            outf.Write(AITrainOffsetStopDistance);
 
             // dummy for level crossing horn pattern
             outf.Write(-1);
