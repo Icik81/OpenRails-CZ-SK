@@ -1198,7 +1198,8 @@ namespace Orts.Simulation.RollingStocks
                             DavisCNSSpMM *= GCoef;                        
                         break;
                     }
-                case 6:
+
+                default:
                     {
                         if (DavisAN == 0)
                             DavisAN = 1.7f * G0;
@@ -1218,28 +1219,7 @@ namespace Orts.Simulation.RollingStocks
                             if (G1 != G)
                             DavisCNSSpMM *= GCoef;                   
                         break;
-                    }
-                default:  // B'o-B'o
-                    {
-                        if (DavisAN == 0)
-                            DavisAN = 1.4f * G0;
-                        else
-                            if (G1 != G)
-                            DavisAN *= GCoef;
-
-                        if (DavisBNSpM == 0)
-                            DavisBNSpM = 0.00001f * G0;
-                        else
-                            if (G1 != G)
-                            DavisBNSpM *= GCoef;
-
-                        if (DavisCNSSpMM == 0)
-                            DavisCNSSpMM = 0.00015f * G0;
-                        else
-                            if (G1 != G)
-                            DavisCNSSpMM *= GCoef;                        
-                        break;
-                    }
+                    }                                    
             }
             DavisAN0 = DavisAN;
             DavisBNSpM0 = DavisBNSpM;

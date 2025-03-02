@@ -1099,11 +1099,18 @@ namespace Orts.Simulation.RollingStocks
                 switch (WagonNumAxles)
                 {
                     case 2:
+                    case 3:
                         CoefE /= 1.25f;
                         CoefP /= 1.25f;
                         CoefF /= 1.25f;
                         break;
                     case 4:
+                        CoefE = 0.84f;
+                        CoefP = 0.60f;
+                        CoefF = 0.60f;
+                        break;
+
+                    default:
                         CoefE = 0.84f;
                         CoefP = 0.60f;
                         CoefF = 0.60f;
@@ -1152,9 +1159,14 @@ namespace Orts.Simulation.RollingStocks
                             switch (WagonNumAxles)
                             {
                                 case 2:
+                                case 3:
                                     BrakeSystem.CoefMode = 1.25f;
                                     break;
                                 case 4:
+                                    BrakeSystem.CoefMode = 1.05f;
+                                    break;
+
+                                default:
                                     BrakeSystem.CoefMode = 1.05f;
                                     break;
                             }
@@ -1195,9 +1207,14 @@ namespace Orts.Simulation.RollingStocks
                             switch (WagonNumAxles)
                             {
                                 case 2:
+                                case 3:
                                     BrakeSystem.CoefMode = 1.12f;
                                     break;
                                 case 4:
+                                    BrakeSystem.CoefMode = 0.65f;
+                                    break;
+
+                                default:
                                     BrakeSystem.CoefMode = 0.65f;
                                     break;
                             }
@@ -3182,16 +3199,16 @@ namespace Orts.Simulation.RollingStocks
 
                 // Omezí maximální náklon vozu dle náprav
                 switch (WagonNumAxles)
-                {
-                    case 0:
-                    case 1:
+                {                                        
                     case 2:
+                    case 3:
                         MaxSpeedTilting = 60.0f / 3.6f;
                         break;
                     case 4:
                         MaxSpeedTilting = 100.0f / 3.6f;
                         break;
-                    case 6:
+                    
+                    default:
                         MaxSpeedTilting = 80.0f / 3.6f;
                         break;
                 }                
@@ -3827,17 +3844,22 @@ namespace Orts.Simulation.RollingStocks
                     VibrationXYTimer += elapsedTimeS;
                     float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 0.5f);
                     switch (WagonNumAxles)
-                    {
-                        case 0:
-                        case 1:
+                    {                       
                         case 2:
+                        case 3:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
                             VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
                             VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
                             break;
-                        case 4:
-                        case 6:
+                        case 4:                        
+                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 0.5f);
+                            VibratioDampingCoefficient = 0.05f * SpeedFactor;
+                            VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
+                            VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
+                            break;
+
+                        default:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
                             VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
@@ -3853,10 +3875,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
-                    {
-                        case 0:
-                        case 1:
+                    {                        
                         case 2:
+                        case 3:
                             y = 10; y1 = 40;
                             VibratioDampingCoefficient = 0.035f;
                             break;
@@ -3864,7 +3885,8 @@ namespace Orts.Simulation.RollingStocks
                             y = 10; y1 = 75;
                             VibratioDampingCoefficient = 0.035f;
                             break;
-                        case 6:
+                        
+                        default:
                             y = 10; y1 = 75;
                             VibratioDampingCoefficient = 0.035f;
                             break;
@@ -3900,14 +3922,16 @@ namespace Orts.Simulation.RollingStocks
                     {
                         float SpeedFactor = AbsSpeedMpS > 0.1f ? MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 10.0f), 1.0f, 1.3f) : 0;
                         switch (WagonNumAxles)
-                        {
-                            case 0:
-                            case 1:
+                        {                            
                             case 2:
+                            case 3:
                                 VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
                                 break;
-                            case 4:
-                            case 6:
+                            case 4:                            
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
+                                break;
+
+                            default:
                                 VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
                                 break;
                         }
@@ -3921,14 +3945,16 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         switch (WagonNumAxles)
-                        {
-                            case 0:
-                            case 1:
+                        {                            
                             case 2:
+                            case 3:
                                 VibrationXYTime = force / 1f;                                
                                 break;
-                            case 4:
-                            case 6:
+                            case 4:                            
+                                VibrationXYTime = force / 1f;
+                                break;
+
+                            default:
                                 VibrationXYTime = force / 1f;
                                 break;
                         }
@@ -3971,16 +3997,20 @@ namespace Orts.Simulation.RollingStocks
                     float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
-                    {
-                        case 0:
-                        case 1:
+                    {                        
                         case 2:
+                        case 3:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 1.0f);
                             break;
-                        case 4:                            
-                        case 6:
+                        case 4:                                                    
+                            y = 28; y1 = 31;
+                            VibratioDampingCoefficient = 0.035f;
+                            SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
+                            break;
+
+                        default:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);

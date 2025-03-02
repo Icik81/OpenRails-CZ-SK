@@ -1282,7 +1282,8 @@ namespace Orts.Viewer3D.RollingStock
                             case 4:
                                 smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms";
                                 break;
-                            case 6:
+                                
+                            default:
                                 smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound_ex.sms";
                                 break;
                         }
