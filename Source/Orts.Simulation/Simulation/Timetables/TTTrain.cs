@@ -10409,10 +10409,7 @@ namespace Orts.Simulation.Timetables
                                 correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
                             }
                             remaining = actualDepart - correctedTime;
-                        }
-                        if (remaining < 1) DisplayColor = Color.LightGreen;
-                        else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                        else DisplayColor = Color.White;
+                        }                        
 
                         if (!BoardingCompleted || EndStation || EndStationTT || PeopleWantToLeaveCount > 0)
                             UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
@@ -10428,6 +10425,10 @@ namespace Orts.Simulation.Timetables
                         // Still have to wait
                         if (remaining > 0)
                         {
+                            if (remaining < 1) DisplayColor = Color.LightGreen;
+                            else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
+                            else DisplayColor = Color.White;
+
                             DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
                         }

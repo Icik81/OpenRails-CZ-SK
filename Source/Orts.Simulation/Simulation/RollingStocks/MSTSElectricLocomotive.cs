@@ -2681,9 +2681,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 // Zesílení zvuku při rozjezdu
                 float SndBoost = (Train as AITrain != null) ? (Train as AITrain).AIRollOn ? (1f + (1f - (AbsWheelSpeedMpS * 3.6f / 10f))) : 1f : 1f;                 
-                Variable2 = MathHelper.Clamp(AIVariable2 * SndBoost, 0f, 100f);                
+                Variable2 = MathHelper.Clamp(AIVariable2 * SndBoost, 0f, 100f);
 
-                // AI EDB brždění
+                // AI EDB brždění                
                 if (DynamicBrakeController != null)
                 {
                     float CoefSpeedMpSCutOff = (AbsSpeedMpS > 20.0f / 3.6f) ? 1f : (1.0f - ((20.0f - (AbsSpeedMpS * 3.6f)) / 10f));
@@ -2693,20 +2693,14 @@ namespace Orts.Simulation.RollingStocks
                     if (SpeedMpS < 0)
                     {
                         if (AccelerationMpSS > 0.1f && AccelerationCoef > 0)
-                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
-                        else
-                        if (Variable3 > 0)
-                            Variable3 -= 0.1f * elapsedClockSeconds;
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;                        
                     }
                     if (SpeedMpS > 0)
                     {
                         if (AccelerationMpSS < -0.1f && AccelerationCoef > 0)
-                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;
-                        else
-                        if (Variable3 > 0)
-                            Variable3 -= 0.1f * elapsedClockSeconds;
+                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;                        
                     }
-                }
+                }                
             }
             else            
             {

@@ -1134,10 +1134,7 @@ namespace Orts.Simulation
                     // Waiting at a station
                     if (arrived)
                     {
-                        var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);
-                        if (remaining < 1) DisplayColor = Color.LightGreen;
-                        else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                        else DisplayColor = Color.White;
+                        var remaining = (int)Math.Ceiling(BoardingEndS - Simulator.ClockTime);                        
 
                         if (!BoardingCompleted || MyPlayerTrain.EndStation || MyPlayerTrain.PeopleWantToLeaveCount > 0)
                             MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
@@ -1158,6 +1155,10 @@ namespace Orts.Simulation
                         // Still have to wait
                         if (remaining > 0)
                         {
+                            if (remaining < 1) DisplayColor = Color.LightGreen;
+                            else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
+                            else DisplayColor = Color.White;
+
                             DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
                                 remaining / 60, remaining % 60);
 
