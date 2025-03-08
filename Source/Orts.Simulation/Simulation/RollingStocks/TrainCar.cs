@@ -3871,7 +3871,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                                 
                 //Vibrace náhodné nerovnosti
-                if (VibrationType_1 || CarIsOnLvlCrossover)   //Vibrace na spojích, dle vzdálenosti
+                if ((VibrationType_1 || CarIsOnLvlCrossover) && AbsSpeedMpS > 0.1f)   //Vibrace na spojích, dle vzdálenosti
                 {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
@@ -3961,7 +3961,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                if (VibrationType_2)   //Vibrace v oblouku
+                if (VibrationType_2 && AbsSpeedMpS > 0.1f)   //Vibrace v oblouku
                 {                    
                     float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 0, 3);                                                            
                     force = (int)forceF;
@@ -3992,7 +3992,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                     Vibration3Timer = 0;
 
-                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f)    //Vibrace na výhybce
+                if (VibrationType_3 && Vibration3Timer > ActivateVibrationTime3 && Vibration3Timer < ActivateVibrationTime3 + 0.05f && AbsSpeedMpS > 0.1f)    //Vibrace na výhybce
                 {
                     float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
                     int y = 25, y1 = 31;

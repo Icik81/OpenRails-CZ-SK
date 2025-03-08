@@ -2144,7 +2144,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (lead != null && lead.Simulator.Settings.CorrectQuestionableBrakingParams)
             {
                 brakePipeTimeFactorS = 0.003f;
-                BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
+                //BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
             }
 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;

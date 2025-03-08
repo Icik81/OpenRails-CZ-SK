@@ -17097,7 +17097,7 @@ namespace Orts.Simulation.Physics
                     CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100.0f);
                     CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
 
-                    int index = 0;
+                    int index = ActualStationNumber;
                     foreach (StationStop ss in train.StationStops)
                     {
                         float remainingPax = 0;                        
@@ -17134,8 +17134,8 @@ namespace Orts.Simulation.Physics
                         if (Simulator.ClockTime / 3600f > 0.0f)
                             remainingPax *= 0.25f;
 
-                        remainingPax = (int)Math.Round((double)remainingPax, 0) * ((train.StationStops.Count - index) / (float)MaxStationCountFromStart);
-
+                        remainingPax = (int)Math.Round((double)remainingPax, 0) * (1 - (index / (float)MaxStationCountFromStart));
+                        
                         if (index == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
                         {
                             remainingPax = 0;

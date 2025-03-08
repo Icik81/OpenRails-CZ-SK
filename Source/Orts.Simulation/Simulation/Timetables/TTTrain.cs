@@ -10441,6 +10441,7 @@ namespace Orts.Simulation.Timetables
                                 if (PeopleWantToLeaveCount > 0 && !PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
                                 else
+                                if (!TrainIsPaxFull)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
                                 return;

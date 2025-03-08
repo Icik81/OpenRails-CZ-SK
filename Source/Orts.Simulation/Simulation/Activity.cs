@@ -1180,6 +1180,7 @@ namespace Orts.Simulation
                                 if (MyPlayerTrain.PeopleWantToLeaveCount > 0 && !MyPlayerTrain.PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
                                 else
+                                if (!MyPlayerTrain.TrainIsPaxFull)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
                                 MyPlayerTrain.UpdatePassengerCountAndWeight(MyPlayerTrain, MyPlayerTrain.ActualPassengerCountAtStation, clock);
                                 return;
