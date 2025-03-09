@@ -2644,7 +2644,7 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the locomotive's sound variables.
         /// </summary> 
         float AIVariable2;
-        float PlayerVariable2;        
+        float PlayerVariable2;
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             if (MaxForceN == 0)
@@ -2686,20 +2686,29 @@ namespace Orts.Simulation.RollingStocks
                 // AI EDB brždění                
                 if (DynamicBrakeController != null)
                 {
-                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 20.0f / 3.6f) ? 1f : (1.0f - ((20.0f - (AbsSpeedMpS * 3.6f)) / 10f));
+                    float AIDynamicBrakePercent = 0;
+                    float CoefSpeedMpSCutOff = (AbsSpeedMpS > 10.0f / 3.6f) ? 1f : (1.0f - ((10.0f - (AbsSpeedMpS * 3.6f)) / 10f));
                     if (CoefSpeedMpSCutOff < 0) CoefSpeedMpSCutOff = 0;
 
-                    float AccelerationCoef = (AbsSpeedMpS < 10f / 3.6f) ? 0 : Math.Abs(AccelerationMpSS);
+                    float AccelerationCoef = (AbsSpeedMpS < 5f / 3.6f) ? 0 : Math.Abs(AccelerationMpSS);
                     if (SpeedMpS < 0)
                     {
                         if (AccelerationMpSS > 0.1f && AccelerationCoef > 0)
-                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;                        
+                            AIDynamicBrakePercent = AccelerationCoef * CoefSpeedMpSCutOff * 3f * 100f;                        
                     }
                     if (SpeedMpS > 0)
                     {
                         if (AccelerationMpSS < -0.1f && AccelerationCoef > 0)
-                            Variable3 = AccelerationCoef * CoefSpeedMpSCutOff * 2f;                        
-                    }
+                            AIDynamicBrakePercent = AccelerationCoef * CoefSpeedMpSCutOff * 3f * 100f;                        
+                    }                                                                   
+
+                    if ((int)AIDynamicBrakePercent / 100f > Variable3)
+                        Variable3 += 0.1f * elapsedClockSeconds;
+                    if ((int)AIDynamicBrakePercent / 100f < Variable3)
+                        Variable3 -= 0.1f * elapsedClockSeconds;
+
+                    Variable3 = MathHelper.Clamp(Variable3, 0, 1f);
+                    //Simulator.Confirmer.Information("Variable3 " + Variable3);
                 }                
             }
             else            
