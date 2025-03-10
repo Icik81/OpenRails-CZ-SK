@@ -6542,10 +6542,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && PlayerLocoSetUp)
             {
-                if (Wiper) SignalEvent(Event.WiperOff);
-                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                if (Flipped)
-                    ActiveStation = UsingRearCab ? DriverStation.Station1 : DriverStation.Station2;
+                if (Wiper) SignalEvent(Event.WiperOff);                                
+                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;                
                 // Mirel                   
                 if (Mirel != null)
                 {
