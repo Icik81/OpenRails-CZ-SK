@@ -338,6 +338,7 @@
             this.numericBrakePipeChargingRate.Name = "numericBrakePipeChargingRate";
             this.numericBrakePipeChargingRate.Size = new System.Drawing.Size(72, 22);
             this.numericBrakePipeChargingRate.TabIndex = 7;
+            this.toolTip1.SetToolTip(this.numericBrakePipeChargingRate, "Default 145 PSI/s");
             this.numericBrakePipeChargingRate.Value = new decimal(new int[] {
             1,
             0,
@@ -1670,7 +1671,7 @@
             this.checkCorrectQuestionableBrakingParams.Size = new System.Drawing.Size(250, 20);
             this.checkCorrectQuestionableBrakingParams.TabIndex = 45;
             this.checkCorrectQuestionableBrakingParams.Text = "Correct questionable braking params";
-            this.checkCorrectQuestionableBrakingParams.UseVisualStyleBackColor = true;            
+            this.checkCorrectQuestionableBrakingParams.UseVisualStyleBackColor = true;
             // 
             // checkBoxVibration
             // 

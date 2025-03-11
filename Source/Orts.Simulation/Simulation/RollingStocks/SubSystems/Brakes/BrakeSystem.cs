@@ -171,6 +171,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float EngineBrakeTresholdRate = 1.0f;
         public float MainResFlowTimerOn;
         public float MainResFlowTimerOff;
+        public float EmergResVolumeM3;
 
         public bool BrakePipeDischargeRate = false;
         public bool BrakePipeChargeRate = false;

@@ -1099,9 +1099,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 StartOn = false;
             }
 
-            // Definice limitů proměnných pro chod nenaladěných vozidel
-            //if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
-            //{
+            // Definice limitů proměnných pro chod nenaladěných vozidel            
             if (loco != null) // Lokomotiva
             {
                 if (loco.HandBrakePercent != HandbrakePercent)
@@ -1112,16 +1110,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
-                {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);                    
-                }
-                else
-                {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);                    
-                }
+                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
+                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);
             }
             else // Vagón
             {
@@ -1130,26 +1120,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                if ((Car as MSTSWagon).Simulator.Settings.CorrectQuestionableBrakingParams)
+                if ((Car as MSTSWagon).HasPassengerCapacity)
                 {
-                    if ((Car as MSTSWagon).HasPassengerCapacity)
-                    {
-                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);
-                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);                        
-                    }
-                    else
-                    {
-                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);
-                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);                        
-                    }
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
                 }
                 else
                 {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.0f, 7.0f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.0f, 0.300f);                    
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);
+                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
                 }
             }
-            //}
+            Car.BrakeSystem.EmergResVolumeM3 = EmergResVolumeM3;           
 
             // Časy pro napouštění a vypouštění brzdového válce v sekundách režimy G, P, R
             float TimeApplyG = 22.0f;
@@ -2136,23 +2118,51 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
-            var lead = trainCar as MSTSLocomotive;
+            var lead = trainCar as MSTSLocomotive;            
 
+            if (lead != null)
+            {
+                lead.BrakePipeTimeFactorS = MathHelper.Clamp(lead.BrakePipeTimeFactorS, 0.0025f, 0.0035f);
+                
+                if (lead.BrakePipeChargingRatePSIorInHgpS != lead.Simulator.Settings.BrakePipeChargingRate)
+                    lead.BrakePipeChargingRatePSIorInHgpS = MathHelper.Clamp(lead.BrakePipeChargingRatePSIorInHgpS, 9.0f * 14.50377f, 12.0f * 14.50377f);
+                
+                train.TrainTotalAirBrakeVolumeM3 = lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3;
+                train.TrainTotalAirBrakeLengthM = lead.CarLengthM + 2;
+                train.TrainTotalAirBrakeCarsCount = 1;
+            }
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
-            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 21 : lead.BrakePipeChargingRatePSIorInHgpS;            
+            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 10.0f * 14.50377f : lead.BrakePipeChargingRatePSIorInHgpS; // Výchozí napouštění jímky lokomotivy 9 bar/s
 
             if (lead != null && lead.Simulator.Settings.CorrectQuestionableBrakingParams)
             {
                 brakePipeTimeFactorS = 0.003f;
-                //BrakePipeChargingRatePSIorInHgpS0 = 21.0f;
+                BrakePipeChargingRatePSIorInHgpS0 = 10f * 14.50377f;
             }
 
+            foreach (TrainCar car in train.Cars)
+            {
+                // Výpočet objemu potrubí pro každý vůz
+                if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
+                // Výpočet celkového objemu potrubí a jímek
+                if (car.CarHasBrakePipeConnected)
+                {
+                    train.TrainTotalAirBrakeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3Base + car.BrakeSystem.EmergResVolumeM3;
+                    train.TrainTotalAirBrakeLengthM += car.CarLengthM + 2;
+                    train.TrainTotalAirBrakeCarsCount += 1;
+                }
+            }
+            // Výpočet výsledné rychlosti napouštění potrubí a jímek pro celý vlak
+            if (lead != null)
+                BrakePipeChargingRatePSIorInHgpS0 = lead.BrakePipeChargingRatePSIorInHgpS * ((lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3) / train.TrainTotalAirBrakeVolumeM3);
+                                
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;
             float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 1000f;
 
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
-            float brakePipeTimeFactorSToTrainLength = train.Length / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.Cars.Count);
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10f;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorSToTrainLength = train.TrainTotalAirBrakeLengthM / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.TrainTotalAirBrakeCarsCount);
+            
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 5f;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
@@ -2526,10 +2536,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 train.TotalCapacityMainResBrakePipe = 0.0f;
 
                 foreach (TrainCar car in train.Cars)
-                {
-                    // Výpočet objemu potrubí pro každý vůz
-                    if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
-
+                {                    
                     // Výpočet celkového objemu potrubí
                     train.TotalTrainBrakePipeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3;
 

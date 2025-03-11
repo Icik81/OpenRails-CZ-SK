@@ -154,7 +154,10 @@ namespace Orts.Simulation.Physics
         public bool UnprotectedLevelCrossWarningCanEnable;
         public float UnprotectedLevelCrossWarningDistance;
         public bool UnprotectedLevelCross1;
-        public bool UnprotectedLevelCross2;        
+        public bool UnprotectedLevelCross2;
+        public float TrainTotalAirBrakeVolumeM3;
+        public float TrainTotalAirBrakeLengthM;
+        public int TrainTotalAirBrakeCarsCount;
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
