@@ -1110,8 +1110,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
-                EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);
+                EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);                
+                switch ((Car as MSTSWagon).WagonNumAxles)
+                {
+                    case 2:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.100f, 0.150f);
+                        break;
+                    case 4:
+                    case 6:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);
+                        break;
+                    default:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.100f, 0.150f);
+                        break;
+                }
             }
             else // Vagón
             {
@@ -1132,7 +1144,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     default:
                         EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.075f);
                         break;
-
                 }
                 if ((Car as MSTSWagon).HasPassengerCapacity)
                 {
