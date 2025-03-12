@@ -2163,7 +2163,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (lead != null && lead.Simulator.Settings.CorrectQuestionableBrakingParams)
             {
                 brakePipeTimeFactorS = 0.003f;
-                BrakePipeChargingRatePSIorInHgpS0 = 10f * 14.50377f;
+                lead.BrakePipeChargingRatePSIorInHgpS = 10f * 14.50377f;
             }
 
             foreach (TrainCar car in train.Cars)
@@ -2180,7 +2180,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             // Výpočet výsledné rychlosti napouštění potrubí a jímek pro celý vlak
             if (lead != null)
-                BrakePipeChargingRatePSIorInHgpS0 = lead.BrakePipeChargingRatePSIorInHgpS * ((lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3) / train.TrainTotalAirBrakeVolumeM3);
+                BrakePipeChargingRatePSIorInHgpS0 = 2 * lead.BrakePipeChargingRatePSIorInHgpS * ((lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3) / train.TrainTotalAirBrakeVolumeM3);
                                 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;
             float AngleCockLeakCoef = 0.003f / brakePipeTimeFactorS * 1000f;
