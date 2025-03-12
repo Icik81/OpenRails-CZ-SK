@@ -1120,15 +1120,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
+                switch ((Car as MSTSWagon).WagonNumAxles)
+                {
+                    case 2:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.075f);
+                        break;
+                    case 4:
+                    case 6:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
+                        break;
+                    default:
+                        EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.075f);
+                        break;
+
+                }
                 if ((Car as MSTSWagon).HasPassengerCapacity)
                 {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);                                     
                 }
                 else
                 {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);
-                    EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
+                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);                    
                 }
             }
             Car.BrakeSystem.EmergResVolumeM3 = EmergResVolumeM3;           
@@ -1536,8 +1548,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
 
                 // Zaznamená poslední stav pomocné jímky pro určení pracovního bodu pomocné jímky
-                if (AutoCylPressurePSI0 < 1 && !BrakeReadyToApply)
-                    PrevAuxResPressurePSI = AuxResPressurePSI;
+                if (AutoCylPressurePSI0 < 1 && BrakePipeChangeRate >= BrakeSensitivityPSIpS && !BrakeCylRelease)
+                    PrevAuxResPressurePSI = AuxResPressurePSI;                
+
+                if (BrakeLine1PressurePSI > maxPressurePSI0 && BrakePipeChangeRate < BrakeSensitivityPSIpS)
+                    PrevAuxResPressurePSI = maxPressurePSI0;
 
                 // triple valve is set to charge the brake cylinder
                 BrakeCylApply = false;
