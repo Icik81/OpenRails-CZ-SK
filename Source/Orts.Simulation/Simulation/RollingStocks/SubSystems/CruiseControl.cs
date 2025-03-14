@@ -542,7 +542,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 return;
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]++;
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0);
-            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));
+            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));            
         }
 
         protected bool maxForceDecreasing = false;
@@ -570,7 +570,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]--;
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0);
-            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));
+            Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));            
         }
 
         protected bool selectedSpeedIncreasing = false;
@@ -853,7 +853,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool noBrakeIntervention = false;
 
         protected virtual void UpdateMotiveForce(float elapsedClockSeconds, float AbsWheelSpeedMps)
-        {
+        {            
             if (Locomotive.RequiredDecelerationPercent > 0)
                 return;
             if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply || Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Emergency)
@@ -2082,6 +2082,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (controllerVolts > 0)
                                 Locomotive.ControllerVolts = controllerVolts;
                         }
+                        
+                        // Icik - ošetření zasekávajícího 100% poměrného tahu 
+                        if (Locomotive.ControllerVolts > 0)
+                            Locomotive.SetThrottlePercent(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]);
+                        else
+                            Locomotive.SetThrottlePercent(0);
                     }
                 }
                 else if (UseThrottle && !AripotEquipment)
