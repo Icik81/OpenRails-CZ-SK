@@ -21683,13 +21683,26 @@ namespace Orts.Simulation.RollingStocks
                         break;  
                     }
                 case CABViewControlTypes.REQUIRED_DECELERATION:
-                    {
-                        data = RequiredDecelerationPercentDisplay / 100f;
-                        if (data < DynamicBrakePercent / 100f)
-                            data = DynamicBrakePercent / 100f;
-                        if (data > RequiredDecelerationPercent / 100f && RequiredDecelerationPercent != 0)
-                            data = RequiredDecelerationPercent / 100;
-   
+                    {                        
+                        float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
+                        step *= elapsedTime;
+                        if (AbsSpeedMpS < 1f / 3.6f)
+                        {
+                            RequiredDecelerationPercent -= step * 2;
+                            if (RequiredDecelerationPercent < 0)
+                                RequiredDecelerationPercent = 0;
+                            if (DynamicBrakePercent > RequiredDecelerationPercent)
+                                SetDynamicBrakePercent(RequiredDecelerationPercent);
+                            data = RequiredDecelerationPercentDisplay / 100f;
+                        }
+                        else
+                        {
+                            data = RequiredDecelerationPercentDisplay / 100f;
+                            if (data < DynamicBrakePercent / 100f)
+                                data = DynamicBrakePercent / 100f;
+                            if (data > RequiredDecelerationPercent / 100f && RequiredDecelerationPercent != 0)
+                                data = RequiredDecelerationPercent / 100;
+                        }
                         break;
                     }
                 case CABViewControlTypes.WIPERS:

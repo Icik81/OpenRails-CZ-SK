@@ -2081,13 +2081,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (controllerVolts > 0)
                                 Locomotive.ControllerVolts = controllerVolts;
-                        }
-                        
-                        // Icik - ošetření zasekávajícího 100% poměrného tahu 
-                        if (Locomotive.ControllerVolts > 0)
-                            Locomotive.SetThrottlePercent(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]);
-                        else
-                            Locomotive.SetThrottlePercent(0);
+                        }                                                
                     }
                 }
                 else if (UseThrottle && !AripotEquipment)
@@ -2129,7 +2123,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     else
                     {
-                        if (Locomotive.ThrottlePercent < 100 && SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking && !UseThrottle)
+                        if (Locomotive.ThrottlePercent <= 100 && SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking && !UseThrottle)
                         {
                             if (SelectedMaxAccelerationPercent == 0 && Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0)
                             {
@@ -2326,7 +2320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case CABViewControlTypes.ORTS_SELECTED_SPEED_MAXIMUM_ACCELERATION:
                     if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Auto || SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV || MaxForceKeepSelectedStepWhenManualModeSet)
                     {
-                        data = (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] - 1) * (float)cvc.MaxValue / 100;
+                        data = (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] - 1) * (float)cvc.MaxValue / 100;                        
                     }
                     else
                         data = 0;
