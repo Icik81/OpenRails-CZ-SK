@@ -511,7 +511,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                                 Locomotive.Train.ControllerVolts = 0;
                         }
                     }
-                    if (Locomotive.ThrottlePercent > 1 && (controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined))
+                    if (Locomotive.ThrottlePercent > 0 && (controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined))
                     {
                         Locomotive.SetThrottlePercent(Locomotive.ThrottlePercent - 1f);
                         Locomotive.ControllerVolts -= 0.05f;

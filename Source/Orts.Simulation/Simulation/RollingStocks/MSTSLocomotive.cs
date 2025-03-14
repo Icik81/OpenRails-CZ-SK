@@ -21693,14 +21693,15 @@ namespace Orts.Simulation.RollingStocks
                                 RequiredDecelerationPercent = 0;
                             if (DynamicBrakePercent > RequiredDecelerationPercent)
                                 SetDynamicBrakePercent(RequiredDecelerationPercent);
+                            RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
                             data = RequiredDecelerationPercentDisplay / 100f;
                         }
                         else
-                        {
+                        {                            
                             data = RequiredDecelerationPercentDisplay / 100f;
                             if (data < DynamicBrakePercent / 100f)
                                 data = DynamicBrakePercent / 100f;
-                            if (data > RequiredDecelerationPercent / 100f && RequiredDecelerationPercent != 0)
+                            if (data > RequiredDecelerationPercent / 100f)
                                 data = RequiredDecelerationPercent / 100;
                         }
                         break;
