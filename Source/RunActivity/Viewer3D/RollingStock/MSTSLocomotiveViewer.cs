@@ -472,7 +472,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.UnprotectedLevelCrossWarningOk = true;
                         Locomotive.UnprotectedLevelCrossWarningCount = 0;
                     }
-                    if (Locomotive.Train.UnprotectedLevelCross2 && Locomotive.UnprotectedLevelCrossWarningCount > 1)
+                    if (Locomotive.Train.UnprotectedLevelCross2 && Locomotive.UnprotectedLevelCrossWarningCount > 0) // Stačí jedno houknutí
                     {
                         Locomotive.UnprotectedLevelCrossWarningOk = true;
                         Locomotive.UnprotectedLevelCrossWarningCount = 0;
