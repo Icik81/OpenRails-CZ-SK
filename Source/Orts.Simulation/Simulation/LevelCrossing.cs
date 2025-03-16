@@ -169,7 +169,7 @@ namespace Orts.Simulation
                         {
                             train.UnprotectedLevelCross1 = UnprotectedLevelCross1;
                             train.UnprotectedLevelCross2 = UnprotectedLevelCross2;
-                            if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = MathHelper.Clamp(Simulator.Random.Next((int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 2f), (int)(Math.Abs(train.SpeedMpS * 3.6f) / 10f / 1f)) * 100f, 100, 500);
+                            if (train.UnprotectedLevelCrossWarningDistance == 0) train.UnprotectedLevelCrossWarningDistance = totalDist;
 
                             float frontDistance = crossing.DistanceTo(train.FrontTDBTraveller, train.UnprotectedLevelCrossWarningDistance);
                             if (!train.AITrainDirectionForward)
