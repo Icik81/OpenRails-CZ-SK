@@ -115,7 +115,7 @@ namespace Orts.Simulation
             {
                 bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability > 0f ? true : false;
                 bool UnprotectedLevelCross1 = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
-                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability == 2f ? true : false;                
+                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability >= 2f ? true : false;                
 
                 var predictedDist = crossing.CrossingGroup.WarningTime * absSpeedMpS;
                 var maxPredictedDist = crossing.CrossingGroup.WarningTime * (maxSpeedMpS - absSpeedMpS) / 2; // added distance if train accelerates to maxspeed
