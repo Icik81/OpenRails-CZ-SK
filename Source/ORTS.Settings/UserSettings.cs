@@ -170,6 +170,8 @@ namespace ORTS.Settings
         [Default(true)]
         public bool AlerterDisableExternal { get; set; }
         [Default(true)]
+        public bool HornLvlCrossings { get; set; }
+        [Default(true)]
         public bool SpeedControl { get; set; }
         [Default(false)]
         public bool ViewDispatcher { get; set; }

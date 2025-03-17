@@ -142,6 +142,7 @@ namespace ORTS
             checkAlerter.Checked = Settings.Alerter;
             checkAlerterExternal.Enabled = Settings.Alerter;
             checkAlerterExternal.Checked = Settings.Alerter && !Settings.AlerterDisableExternal;
+            checkBoxHornLvlCrossing.Checked = Settings.HornLvlCrossings;
             //checkOverspeedMonitor.Checked = Settings.SpeedControl;
             checkControlConfirmations.Checked = !Settings.SuppressConfirmations;
             checkViewMapWindow.Checked = Settings.ViewDispatcher;
@@ -448,6 +449,7 @@ namespace ORTS
             // General tab
             Settings.Alerter = checkAlerter.Checked;
             Settings.AlerterDisableExternal = !checkAlerterExternal.Checked;
+            Settings.HornLvlCrossings = checkBoxHornLvlCrossing.Checked;
             //Settings.SpeedControl = checkOverspeedMonitor.Checked;
             Settings.SuppressConfirmations = !checkControlConfirmations.Checked;
             Settings.ViewDispatcher = checkViewMapWindow.Checked;

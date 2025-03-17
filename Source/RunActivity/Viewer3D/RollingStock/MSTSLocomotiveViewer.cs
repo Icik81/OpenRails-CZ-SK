@@ -458,7 +458,7 @@ namespace Orts.Viewer3D.RollingStock
             DoublePressedKeyTest();
 
             // Kontrola zvukového znamení hráče před nechráněným přejezdem
-            if (Locomotive.Train.UnprotectedLevelCrossWarningCanEnable)
+            if (Locomotive.Simulator.Settings.HornLvlCrossings && Locomotive.Train.UnprotectedLevelCrossWarningCanEnable)
             {                 
                 Locomotive.UnprotectedLevelCrossWarningRequest = true;
                 if (UserInput.IsReleased(UserCommand.ControlHorn)

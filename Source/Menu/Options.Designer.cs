@@ -40,6 +40,7 @@
             this.checkViewMapWindow = new System.Windows.Forms.CheckBox();
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabPageGeneral = new System.Windows.Forms.TabPage();
+            this.checkBoxHornLvlCrossing = new System.Windows.Forms.CheckBox();
             this.checkReduceMemory = new System.Windows.Forms.CheckBox();
             this.checkSaveCommands = new System.Windows.Forms.CheckBox();
             this.pbEnableWebServer = new System.Windows.Forms.PictureBox();
@@ -434,6 +435,7 @@
             // 
             // tabPageGeneral
             // 
+            this.tabPageGeneral.Controls.Add(this.checkBoxHornLvlCrossing);
             this.tabPageGeneral.Controls.Add(this.checkReduceMemory);
             this.tabPageGeneral.Controls.Add(this.checkSaveCommands);
             this.tabPageGeneral.Controls.Add(this.pbEnableWebServer);
@@ -470,6 +472,18 @@
             this.tabPageGeneral.TabIndex = 0;
             this.tabPageGeneral.Text = "General";
             this.tabPageGeneral.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxHornLvlCrossing
+            // 
+            this.checkBoxHornLvlCrossing.AutoSize = true;
+            this.checkBoxHornLvlCrossing.Location = new System.Drawing.Point(43, 120);
+            this.checkBoxHornLvlCrossing.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxHornLvlCrossing.Name = "checkBoxHornLvlCrossing";
+            this.checkBoxHornLvlCrossing.Size = new System.Drawing.Size(312, 20);
+            this.checkBoxHornLvlCrossing.TabIndex = 30;
+            this.checkBoxHornLvlCrossing.Text = "Checking signals at unprotected level crossings";
+            this.toolTip1.SetToolTip(this.checkBoxHornLvlCrossing, "Inspecting sound signs on unprotected crossings");
+            this.checkBoxHornLvlCrossing.UseVisualStyleBackColor = true;
             // 
             // checkReduceMemory
             // 
@@ -3510,5 +3524,6 @@
         private System.Windows.Forms.CheckBox checkOverrideActivityPaxCount;
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.CheckBox checkCorrectQuestionableBrakingParams;
+        private System.Windows.Forms.CheckBox checkBoxHornLvlCrossing;
     }
 }
