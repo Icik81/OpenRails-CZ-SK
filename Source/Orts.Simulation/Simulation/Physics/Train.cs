@@ -151,13 +151,15 @@ namespace Orts.Simulation.Physics
         public int WagonIndex = -1;
         public int LocoIndex = -1;
         public Direction LocoDirection = Direction.N;
-        public bool UnprotectedLevelCrossWarningCanEnable;
-        public float UnprotectedLevelCrossWarningDistance;
-        public bool UnprotectedLevelCross1;
-        public bool UnprotectedLevelCross2;
+        public bool[] UnprotectedLevelCrossWarningCanEnable = new bool[1000];
+        public float[] UnprotectedLevelCrossWarningDistance = new float[1000];
+        public bool[] UnprotectedLevelCross1 = new bool[1000];
+        public bool[] UnprotectedLevelCross2 = new bool[1000];
+        public int UnprotectedLevelCrossCount;
         public float TrainTotalAirBrakeVolumeM3;
         public float TrainTotalAirBrakeLengthM;
         public int TrainTotalAirBrakeCarsCount;
+        public bool TrainIsNearToLvlCross;
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train

@@ -84,17 +84,17 @@ namespace Orts.Simulation.AIs
         public bool DontStopAIPreference;
         public float EfficiencyServis;
         public bool AIUnprotectedLevelCrossWarningRunning;
-        public bool AIUnprotectedLevelCrossSetup;
-        public float AIUnprotectedLevelCrossWarningDistance;
-        public float AIUnprotectedLevelCrossTimer1;
-        public float AIUnprotectedLevelCrossTimer2;
-        public float AIUnprotectedLevelCrossTime;
-        public bool AIUnprotectedLevelCrossHornOn;
-        public int AIUnprotectedLevelCrossWarningCount;
-        public bool AIUnprotectedLevelCrossBellOn;
-        public int AIUnprotectedLevelCrossWarningType;
-        public bool AIUnprotectedLevelCrossWarningCutOff;
-        public bool AIUnprotectedLevelCrossWarningCanEnable;
+        public bool[] AIUnprotectedLevelCrossSetup = new bool[1000];
+        public float[] AIUnprotectedLevelCrossWarningDistance = new float[1000];
+        public float[] AIUnprotectedLevelCrossTimer1 = new float[1000];
+        public float[] AIUnprotectedLevelCrossTimer2 = new float[1000];
+        public float[] AIUnprotectedLevelCrossTime = new float[1000];
+        public bool[] AIUnprotectedLevelCrossHornOn = new bool[1000];
+        public int[] AIUnprotectedLevelCrossWarningCount = new int[1000];
+        public bool[] AIUnprotectedLevelCrossBellOn = new bool[1000];
+        public int[] AIUnprotectedLevelCrossWarningType = new int[1000];
+        public bool[] AIUnprotectedLevelCrossWarningCutOff = new bool[1000];
+        public bool[] AIUnprotectedLevelCrossWarningCanEnable = new bool[1000];
         public bool AITrainOffsetStop;
         public float AITrainOffsetStopDistance;                
 

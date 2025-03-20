@@ -458,37 +458,44 @@ namespace Orts.Viewer3D.RollingStock
             DoublePressedKeyTest();
 
             // Kontrola zvukového znamení hráče před nechráněným přejezdem
-            if (Locomotive.Simulator.Settings.HornLvlCrossings && Locomotive.Train.UnprotectedLevelCrossWarningCanEnable)
-            {                 
-                Locomotive.UnprotectedLevelCrossWarningRequest = true;
-                if (UserInput.IsReleased(UserCommand.ControlHorn)
-                    || UserInput.IsReleased(UserCommand.ControlHorn2)
-                    || UserInput.IsReleased(UserCommand.ControlHorn12)
-                    || UserInput.IsReleased(UserCommand.ControlBell))
-                {                    
-                     Locomotive.UnprotectedLevelCrossWarningCount++;                    
-                    if (Locomotive.Train.UnprotectedLevelCross1 && Locomotive.UnprotectedLevelCrossWarningCount > 0)
-                    { 
-                        Locomotive.UnprotectedLevelCrossWarningOk = true;
-                        Locomotive.UnprotectedLevelCrossWarningCount = 0;
-                    }
-                    if (Locomotive.Train.UnprotectedLevelCross2 && Locomotive.UnprotectedLevelCrossWarningCount > 0) // Stačí jedno houknutí
-                    {
-                        Locomotive.UnprotectedLevelCrossWarningOk = true;
-                        Locomotive.UnprotectedLevelCrossWarningCount = 0;
-                    }
-                }
-            }
-            else
-            {                
-                if (Locomotive.UnprotectedLevelCrossWarningRequest)
+            if (Locomotive.Simulator.Settings.HornLvlCrossings && Locomotive.Train.TrainIsNearToLvlCross)
+            {
+                Locomotive.Train.TrainIsNearToLvlCross = false;
+                for (int i = 1; i < Locomotive.Train.UnprotectedLevelCrossCount; i++)
                 {
-                    if (!Locomotive.UnprotectedLevelCrossWarningOk)                                            
-                        Viewer.UnprotectedLvlCrossWindow.Visible = true;                                                                                                                
+                    if (Locomotive.Train.UnprotectedLevelCrossWarningCanEnable[i])
+                    {
+                        Locomotive.UnprotectedLevelCrossWarningRequest[i] = true;
+                        if (UserInput.IsReleased(UserCommand.ControlHorn)
+                            || UserInput.IsReleased(UserCommand.ControlHorn2)
+                            || UserInput.IsReleased(UserCommand.ControlHorn12)
+                            || UserInput.IsReleased(UserCommand.ControlBell))
+                        {
+                            Locomotive.UnprotectedLevelCrossWarningCount[i]++;
+                            if (Locomotive.Train.UnprotectedLevelCross1[i] && Locomotive.UnprotectedLevelCrossWarningCount[i] > 0)
+                            {
+                                Locomotive.UnprotectedLevelCrossWarningOk[i] = true;
+                                Locomotive.UnprotectedLevelCrossWarningCount[i] = 0;
+                            }
+                            if (Locomotive.Train.UnprotectedLevelCross2[i] && Locomotive.UnprotectedLevelCrossWarningCount[i] > 0) // Stačí jedno houknutí
+                            {
+                                Locomotive.UnprotectedLevelCrossWarningOk[i] = true;
+                                Locomotive.UnprotectedLevelCrossWarningCount[i] = 0;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (Locomotive.UnprotectedLevelCrossWarningRequest[i])
+                        {
+                            if (!Locomotive.UnprotectedLevelCrossWarningOk[i])
+                                Viewer.UnprotectedLvlCrossWindow.Visible = true;
+                        }
+                        Locomotive.UnprotectedLevelCrossWarningCount[i] = 0;
+                        Locomotive.UnprotectedLevelCrossWarningRequest[i] = false;
+                        Locomotive.UnprotectedLevelCrossWarningOk[i] = false;
+                    }
                 }
-                Locomotive.UnprotectedLevelCrossWarningCount = 0;
-                Locomotive.UnprotectedLevelCrossWarningRequest = false;
-                Locomotive.UnprotectedLevelCrossWarningOk = false;
             }
 
             // Ovládání TRACTION_SWITCH aretované pozice
