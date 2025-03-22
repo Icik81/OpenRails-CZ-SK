@@ -10649,12 +10649,9 @@ namespace Orts.Simulation.RollingStocks
         public void TryKeepDeceleration(float elapsedClockSeconds)
         {
             // Icik
-            if (RequiredDecelerationPercent == 0)
-            {
-                RequiredDeceleration = 0;
-                return;
-            }
-
+            if (RequiredDecelerationPercent == 0)            
+                RequiredDeceleration = 0;                
+            
             if ((CruiseControl != null && !CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
             {
                 RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;

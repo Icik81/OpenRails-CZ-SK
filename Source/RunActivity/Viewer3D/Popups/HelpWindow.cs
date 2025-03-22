@@ -101,6 +101,59 @@ namespace Orts.Viewer3D.Popups
                     line.Add(new Label(width, line.RemainingHeight, Owner.Viewer.Settings.Input.Commands[(int)command].ToString()));
                 }
             }));
+            // Icik
+            // Jízdní řád pro TT
+            if (owner.Viewer.Simulator.Activity == null)
+            {
+                Tabs.Add(new TabData(Tab.ActivityTimetable, Viewer.Catalog.GetString("Timetable"), (cl) =>
+                {
+                    var colWidth = (cl.RemainingWidth - cl.TextHeight) / 7;
+                    {
+                        var line = cl.AddLayoutHorizontalLineOfText();
+                        line.Add(new Label(colWidth * 3, line.RemainingHeight, Viewer.Catalog.GetString("Station")));
+                        line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Arrive"), LabelAlignment.Center));
+                        line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Actual"), LabelAlignment.Center));
+                        line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Depart"), LabelAlignment.Center));
+                        line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Actual"), LabelAlignment.Center));
+                    }
+                    cl.AddHorizontalSeparator();
+                    var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);
+                    foreach (var task in owner.Viewer.PlayerTrain.StationStops)
+                    {
+                        var stopAt = task;
+                        if (stopAt != null)
+                        {
+                            DateTime baseDTCT = new DateTime();
+                            DateTime arrTimeCT0 = baseDTCT.AddSeconds(stopAt.ArrivalTime);
+                            DateTime depTimeCT0 = baseDTCT.AddSeconds(stopAt.DepartTime);                                                                                                                                                                          
+                            Label arrive, depart;
+                            var line = scrollbox.AddLayoutHorizontalLineOfText();
+                            line.Add(new Label(colWidth * 3, line.RemainingHeight, stopAt.PlatformItem.Name));                            
+                            line.Add(new Label(colWidth, line.RemainingHeight, arrTimeCT0.ToString("HH:mm:ss"), LabelAlignment.Center));
+
+                            //if (stopAt.ActualArrival > 0)
+                            //{
+                            //    DateTime arrTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualArrival);
+                            //    line.Add(arrive = new Label(colWidth, line.RemainingHeight, stopAt.ActualArrival > 0 ? arrTimeCT1.ToString("HH:mm:ss") : Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                            //    arrive.Color = NextStationWindow.GetArrivalColor(arrTimeCT0, arrTimeCT1);
+                            //}
+                            //else
+                                line.Add(arrive = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
+
+                            line.Add(new Label(colWidth, line.RemainingHeight, depTimeCT0.ToString("HH:mm:ss"), LabelAlignment.Center));
+
+                            //if (stopAt.ActualDepart > 0)
+                            //{
+                            //    DateTime depTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualDepart);
+                            //    line.Add(depart = new Label(colWidth, line.RemainingHeight, stopAt.ActualDepart > 0 ? depTimeCT1.ToString("HH:mm:ss") : Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                            //    depart.Color = NextStationWindow.GetDepartColor(depTimeCT0, depTimeCT1);
+                            //}
+                            //else
+                                line.Add(depart = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
+                        }
+                    }                    
+                }));
+            }
             if (owner.Viewer.Simulator.Activity != null)
             {
                 Tabs.Add(new TabData(Tab.ActivityBriefing, Viewer.Catalog.GetString("Briefing"), (cl) =>
