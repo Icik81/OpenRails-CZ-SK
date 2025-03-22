@@ -22,6 +22,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 {
@@ -369,6 +370,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
                 if (controllerBinding != ControllerBinding.Combined)
                     return;
+
+                // Icik
+                // Po zastavení plynule odpadá EDB
+                if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
+                {
+                    if (Locomotive.AbsSpeedMpS < 1f / 3.6f)
+                    {
+                        float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
+                        step *= Locomotive.elapsedTime;
+                        Locomotive.DynamicBrakePercent -= step * 2;
+                        if (Locomotive.DynamicBrakePercent < -1)
+                            Locomotive.DynamicBrakePercent = -1;
+                        Locomotive.ControllerVolts -= step * 2;
+                        if (Locomotive.ControllerVolts < 0)
+                            Locomotive.ControllerVolts = 0;
+                        Locomotive.RequiredDecelerationPercent = 0;
+                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                    }
+                }
             }
 
             if (!haveCruiseControl || !ccAutoMode)
@@ -1028,7 +1048,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
                     }
                 }
-            }            
+            }                        
         }
 
         private bool messageDisplayed = false;

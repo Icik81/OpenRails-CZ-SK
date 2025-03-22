@@ -3106,7 +3106,7 @@ namespace Orts.Simulation.RollingStocks
                 ThrottleController.CurrentValue = 0f;
 
             if (airPipeSystem != null
-                && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < TrainBrakeController.MaxPressurePSI - 1f && AbsSpeedMpS > 1)
+                && ((airPipeSystem is EPBrakeSystem && Train.BrakeLine4 > 0f) || (MainResPressurePSI >= airPipeSystem.maxPressurePSI0 && airPipeSystem.BrakeLine1PressurePSI < 4.84f * 14.50377f && AbsSpeedMpS > 1)
                 && ThrottleController.CurrentValue == 0f && !(DynamicBrakeController != null && DynamicBrakeBlendingOverride && DynamicBrakeController.CurrentValue > 0f))
                 /* && (!DynamicBrakeBlendingLeverOverride && DynamicBrakeController != null && DynamicBrakeIntervention < DynamicBrakeController.CurrentValue)*/)
             {
@@ -7787,7 +7787,7 @@ namespace Orts.Simulation.RollingStocks
 
             PrevMotiveForceN = MotiveForceN;
             base.Update(elapsedClockSeconds);
-
+            
 #if DEBUG_ADHESION
             // Timer to determine travel time - resets when locomotive stops
             if (AbsSpeedMpS > 0)
@@ -10633,7 +10633,7 @@ namespace Orts.Simulation.RollingStocks
 
         public float RequiredDeceleration = 0;
         public float RequiredDecelerationPercent = 0;
-        public float RequiredDecelerationPercentAuto = 0;
+        
         public float MaxRequiredDeceleration = -0.75f;
         public float RequiredDecelerationPercentDisplay = 0;
         public void StartAnyBrakeIncrease(float elapsedClockSeconds)
@@ -10651,9 +10651,9 @@ namespace Orts.Simulation.RollingStocks
         public void TryKeepDeceleration(float elapsedClockSeconds)
         {
             // Icik
-            if (RequiredDecelerationPercent == 0)            
-                RequiredDeceleration = 0;                
-            
+            if (RequiredDecelerationPercent == 0)
+                RequiredDeceleration = 0;
+                           
             if ((CruiseControl != null && !CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
             {
                 RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
@@ -21693,49 +21693,14 @@ namespace Orts.Simulation.RollingStocks
                         break;  
                     }
                 case CABViewControlTypes.REQUIRED_DECELERATION:
-                    {                        
-                        float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
-                        step *= elapsedTime;
-                        if (AbsSpeedMpS < 1f / 3.6f)
-                        {
-                            if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Manual)
-                            {
-                                RequiredDecelerationPercentAuto -= step * 2;
-                                if (RequiredDecelerationPercentAuto < 0)
-                                    RequiredDecelerationPercentAuto = 0;
-                                if (DynamicBrakePercent > RequiredDecelerationPercentAuto)
-                                    SetDynamicBrakePercent(RequiredDecelerationPercentAuto);                                
-                                data = RequiredDecelerationPercentAuto / 100f;
-                            }
-                            else
-                            {
-                                RequiredDecelerationPercent -= step * 2;
-                                if (RequiredDecelerationPercent < 0)
-                                    RequiredDecelerationPercent = 0;
-                                if (DynamicBrakePercent > RequiredDecelerationPercent)
-                                    SetDynamicBrakePercent(RequiredDecelerationPercent);
-                                RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
-                                data = RequiredDecelerationPercentDisplay / 100f;
-                            }
-                        }
-                        else
-                        {                            
-                            if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Manual)
-                            {
-                                data = RequiredDecelerationPercentDisplay / 100f;
-                                if (data < DynamicBrakePercent / 100f)
-                                    data = DynamicBrakePercent / 100f;
-                            }
-                            else
-                            {
-                                data = RequiredDecelerationPercentDisplay / 100f;
-                                if (data < DynamicBrakePercent / 100f)
-                                    data = DynamicBrakePercent / 100f;
-                                if (data > RequiredDecelerationPercent / 100f)
-                                    data = RequiredDecelerationPercent / 100;
-                            }
-                            RequiredDecelerationPercentAuto = data * 100f;
-                        }
+                    {
+                        data = RequiredDecelerationPercentDisplay / 100f;
+                        if (data < DynamicBrakePercent / 100f)
+                            data = DynamicBrakePercent / 100f;
+                        if (data > RequiredDecelerationPercent / 100f && RequiredDecelerationPercent != 0)
+                            data = RequiredDecelerationPercent / 100;
+                        if (data > DynamicBrakePercent / 100f && RequiredDecelerationPercent == 0)
+                            data = DynamicBrakePercent / 100;
                         break;
                     }
                 case CABViewControlTypes.WIPERS:
