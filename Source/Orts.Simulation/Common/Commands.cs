@@ -1026,6 +1026,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualBell = ToState;
+            Receiver.Mirel.ResetVigilance();
             Receiver.Simulator.HazzardManager.Bell();
         }
 

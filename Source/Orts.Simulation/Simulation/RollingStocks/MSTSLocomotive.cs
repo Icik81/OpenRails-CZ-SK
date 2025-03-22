@@ -6997,6 +6997,8 @@ namespace Orts.Simulation.RollingStocks
                         }
                         if (wasRestored && !Simulator.Paused)
                             wasRestored = false;
+
+                        extendedPhysics.OverridenControllerVolts = ControllerVolts;
                         if (AntiWheelSpinEquipped)
                         {
                             if (extendedPhysics == null && skidSpeedDegratation > 0)
@@ -7006,8 +7008,8 @@ namespace Orts.Simulation.RollingStocks
                                     TractiveForceN = MaxForceN;
                             }
                             else if (extendedPhysics != null && LocoType != LocoTypes.Vectron)
-                            {
-                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
+                            {                                
+                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;                                
                             }
                         }
                         if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
@@ -10629,6 +10631,7 @@ namespace Orts.Simulation.RollingStocks
 
         public float RequiredDeceleration = 0;
         public float RequiredDecelerationPercent = 0;
+        public float RequiredDecelerationPercentAuto = 0;
         public float MaxRequiredDeceleration = -0.75f;
         public float RequiredDecelerationPercentDisplay = 0;
         public void StartAnyBrakeIncrease(float elapsedClockSeconds)
@@ -10645,6 +10648,13 @@ namespace Orts.Simulation.RollingStocks
 
         public void TryKeepDeceleration(float elapsedClockSeconds)
         {
+            // Icik
+            if (RequiredDecelerationPercent == 0)
+            {
+                RequiredDeceleration = 0;
+                return;
+            }
+
             if ((CruiseControl != null && !CruiseControl.doNotForceDynamicBrake || RequiredDecelerationPercent < DynamicBrakePercent || DynamicBrakePercent == -1) && AbsSpeedMpS > 0)
             {
                 RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
@@ -10672,8 +10682,9 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeChangeActiveState(true);
                             StopDynamicBrakeDecrease();
                             float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
-                            step *= elapsedClockSeconds * 10;
-                            StartDynamicBrakeIncrease(1);
+                            step *= elapsedClockSeconds * 10;                            
+                            if (DynamicBrakePercent < RequiredDecelerationPercent)
+                                StartDynamicBrakeIncrease(1);
                         }
                         else
                         {
@@ -21688,21 +21699,43 @@ namespace Orts.Simulation.RollingStocks
                         step *= elapsedTime;
                         if (AbsSpeedMpS < 1f / 3.6f)
                         {
-                            RequiredDecelerationPercent -= step * 2;
-                            if (RequiredDecelerationPercent < 0)
-                                RequiredDecelerationPercent = 0;
-                            if (DynamicBrakePercent > RequiredDecelerationPercent)
-                                SetDynamicBrakePercent(RequiredDecelerationPercent);
-                            RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
-                            data = RequiredDecelerationPercentDisplay / 100f;
+                            if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Manual)
+                            {
+                                RequiredDecelerationPercentAuto -= step * 2;
+                                if (RequiredDecelerationPercentAuto < 0)
+                                    RequiredDecelerationPercentAuto = 0;
+                                if (DynamicBrakePercent > RequiredDecelerationPercentAuto)
+                                    SetDynamicBrakePercent(RequiredDecelerationPercentAuto);                                
+                                data = RequiredDecelerationPercentAuto / 100f;
+                            }
+                            else
+                            {
+                                RequiredDecelerationPercent -= step * 2;
+                                if (RequiredDecelerationPercent < 0)
+                                    RequiredDecelerationPercent = 0;
+                                if (DynamicBrakePercent > RequiredDecelerationPercent)
+                                    SetDynamicBrakePercent(RequiredDecelerationPercent);
+                                RequiredDecelerationPercentDisplay = RequiredDecelerationPercent;
+                                data = RequiredDecelerationPercentDisplay / 100f;
+                            }
                         }
                         else
                         {                            
-                            data = RequiredDecelerationPercentDisplay / 100f;
-                            if (data < DynamicBrakePercent / 100f)
-                                data = DynamicBrakePercent / 100f;
-                            if (data > RequiredDecelerationPercent / 100f)
-                                data = RequiredDecelerationPercent / 100;
+                            if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] != SpeedRegulatorMode.Manual)
+                            {
+                                data = RequiredDecelerationPercentDisplay / 100f;
+                                if (data < DynamicBrakePercent / 100f)
+                                    data = DynamicBrakePercent / 100f;
+                            }
+                            else
+                            {
+                                data = RequiredDecelerationPercentDisplay / 100f;
+                                if (data < DynamicBrakePercent / 100f)
+                                    data = DynamicBrakePercent / 100f;
+                                if (data > RequiredDecelerationPercent / 100f)
+                                    data = RequiredDecelerationPercent / 100;
+                            }
+                            RequiredDecelerationPercentAuto = data * 100f;
                         }
                         break;
                     }

@@ -962,13 +962,13 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Trakční síla se pro EP u dieselů počítá v MSTSLocomotive 
-            if (Locomotive is MSTSDieselLocomotive)
-            {
-                ForceN = Locomotive.DriveForceN / totalMotors;
-                LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS;
-                Locomotive.WheelSpeedDirectionMarkerEP = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
-            }
-            else
+            //if (Locomotive is MSTSDieselLocomotive)
+            //{                
+            //    ForceN = Locomotive.DriveForceN / totalMotors;
+            //    LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS;
+            //    Locomotive.WheelSpeedDirectionMarkerEP = LocomotiveAxle.AxleSpeedMpS == 0 ? 1.0f : LocomotiveAxle.AxleSpeedMpS / Math.Abs(LocomotiveAxle.AxleSpeedMpS);
+            //}
+            //else
             {
                 LocomotiveAxle.TrainSpeedMpS = Locomotive.SpeedMpS < 0 ? -Locomotive.SpeedMpS : Locomotive.SpeedMpS;
                 Locomotive.WheelSpeedDirectionMarkerEP = Locomotive.SpeedMpS == 0 ? 1.0f : Locomotive.SpeedMpS / Math.Abs(Locomotive.SpeedMpS);
