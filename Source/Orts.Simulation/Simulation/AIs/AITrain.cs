@@ -6947,8 +6947,7 @@ namespace Orts.Simulation.AIs
 
                     // if moving, set departed
                     if (Math.Abs(SpeedMpS) > 1.5f)
-                    {
-                        ActualStationNumber++;
+                    {                        
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
                             StationStops[0].ActualDepart = presentTime;
@@ -7103,7 +7102,7 @@ namespace Orts.Simulation.AIs
                     if (StationStops.Count > 0)
                     {
                         // check if stopped at station
-                        if (Math.Abs(SpeedMpS) == 0.0f)
+                        if (Math.Abs(SpeedMpS) < 0.1f)
                         {
                             AtStation = IsAtPlatform();
                             if (AtStation)
@@ -7111,6 +7110,7 @@ namespace Orts.Simulation.AIs
                                 int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                                 StationStops[0].ActualArrival = presentTime;
                                 StationStops[0].CalculateDepartTime(presentTime, this);
+                                ActualStationNumber++;
                             }
                         }
                         else if (ControlMode == TRAIN_CONTROL.AUTO_NODE || ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
