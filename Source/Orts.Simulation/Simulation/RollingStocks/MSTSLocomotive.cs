@@ -6998,7 +6998,9 @@ namespace Orts.Simulation.RollingStocks
                         if (wasRestored && !Simulator.Paused)
                             wasRestored = false;
 
-                        extendedPhysics.OverridenControllerVolts = ControllerVolts;
+                        if (extendedPhysics != null) 
+                            extendedPhysics.OverridenControllerVolts = ControllerVolts;
+
                         if (AntiWheelSpinEquipped)
                         {
                             if (extendedPhysics == null && skidSpeedDegratation > 0)
