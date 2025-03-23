@@ -17504,13 +17504,14 @@ namespace Orts.Simulation.Physics
                     numOfWagons++;
                 }
             }
-            Random rnd = new Random();            
-
+            Random rnd = new Random();
+    
+    NoPaxsModeExitEnterTimeRecalculated:
             if (!exitTimesCalculated)
-            {                
+            {
                 for (int i = 0; i < train.Cars.Count; i++)
                 {
-                    var wagon = (train.Cars[i] as MSTSWagon);                    
+                    var wagon = (train.Cars[i] as MSTSWagon);
 
                     if ((wagon.HasPassengerCapacity || wagon.WagonType == TrainCar.WagonTypes.Passenger) && !wagon.FreightDoors)
                     {
@@ -17532,7 +17533,7 @@ namespace Orts.Simulation.Physics
                                 nextTimeExitDoors2 += pax.TimeToEnterAndExit / numOfWagons / 10f;
                             }
                         }
-                    }                    
+                    }
                 }
                 exitTimesCalculated = true;
             }
@@ -17586,6 +17587,15 @@ namespace Orts.Simulation.Physics
             {
                 var wagon = (train.Cars[i] as MSTSWagon);
 
+                // Přepočítá čas nástupu a výstupu pro paxe při zákazu nástupu paxů do vozu
+                if (wagon.NoPaxsModeExitEnterTimeRecalculated)
+                {
+                    wagon.NoPaxsModeExitEnterTimeRecalculated = false;
+                    exitTimesCalculated = false;
+                    enterTimesCalculated = false;
+                    goto NoPaxsModeExitEnterTimeRecalculated;
+                }
+
                 // Automatické dveře na vzduch se bez vzduchu neotevřou a paxové nevystoupí
                 if (wagon.AutomaticDoors && !wagon.BrakeSystem.AirOK_DoorCanManipulate) break;
 
@@ -17600,7 +17610,8 @@ namespace Orts.Simulation.Physics
                         wagon.UnboardingComplete = false;
  
                     if (wagon.UnboardingComplete)
-                        continue;
+                        continue;                    
+
                     foreach (Passenger pax in exitPaxList)
                     {                        
                         if (((ActualStationNumber == pax.ArrivalStation || EndStation || wagon.NoPaxsMode) && pax.TimeToStartExiting < gameClock) || EndStationTT)
@@ -17664,6 +17675,23 @@ namespace Orts.Simulation.Physics
             }
         boarding:
             int currentWagIndex = 0;
+
+            // Test najíždějící solo mašiny na odstavené vozy na nástupišti
+            TrainHasPaxCapacity = false;
+            for (int j = 0; j < train.Cars.Count; j++)
+            {
+                if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0)
+                {
+                    TrainHasPaxCapacity = true;
+                    break;
+                }
+            }
+            if (!TrainHasPaxCapacity)
+            {
+                enterTimesCalculated = false;
+                return;
+            }
+
             if (!EndStation)
             {
                 foreach (Passenger pax in train.StationStops[0].PlatformItem.PassengerList)
@@ -17676,7 +17704,22 @@ namespace Orts.Simulation.Physics
                         }
                     }
                     if ((Simulator.Settings.GenerateRandomPaxCount && pax.TimeToStartBoarding < gameClock) || (pax.TimeToStartBoarding < gameClock && ActualStationNumber == pax.DepartureStation)) // board him
-                    {
+                    {                        
+                        TrainIsPaxFull = true;
+                        for (int j = 0; j < train.Cars.Count; j++)
+                        {
+                            if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.2f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
+                            {
+                                TrainIsPaxFull = false;
+                                break;
+                            }
+                        }
+                        if (TrainIsPaxFull)
+                        {
+                            train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!! All the cars on the train are occupied!"));
+                            goto boarded;
+                        }                                                
+
                         for (int i = 0; i < train.Cars.Count; i++)
                         {
                             var wagon = (train.Cars[i] as MSTSWagon);
@@ -17698,38 +17741,10 @@ namespace Orts.Simulation.Physics
                                             break;
                                     }
                                 }
-
-                                // Test najíždějící solo mašiny na odstavené vozy na nástupišti
-                                TrainHasPaxCapacity = false;
-                                for (int j = 0; j < train.Cars.Count; j++)
-                                {
-                                    if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0)
-                                    {
-                                        TrainHasPaxCapacity = true;
-                                        break;
-                                    }                               
-                                }
-                                if (!TrainHasPaxCapacity)
-                                {
-                                    enterTimesCalculated = false;
-                                    return;
-                                }
-
+                                                                
                                 if (pax.WagonIndex == -1)
-                                {
-                                    TrainIsPaxFull = true;
-                                    for (int j = 0; j < train.Cars.Count; j++)
-                                    {
-                                        if ((train.Cars[j] as MSTSWagon).PassengerCapacity > 0 && (train.Cars[j] as MSTSWagon).PassengerList.Count < 1.2f * (train.Cars[j] as MSTSWagon).PassengerCapacity)
-                                        {                                            
-                                            TrainIsPaxFull = false;
-                                            break;
-                                        }
-                                    }
-                                    if (TrainIsPaxFull)
-                                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!! All the cars on the train are occupied!"));
-                                    else
-                                        train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
+                                {                                    
+                                    train.Simulator.Confirmer.Information(Simulator.Catalog.GetString("Passenger cannot board the train!!!"));
                                     goto boarded;
                                 }
                             }

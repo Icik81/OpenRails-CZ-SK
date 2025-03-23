@@ -117,12 +117,12 @@ namespace Orts.Viewer3D.Popups
                         line.Add(new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("Actual"), LabelAlignment.Center));
                     }
                     cl.AddHorizontalSeparator();
-                    var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);
+                    var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);                    
                     foreach (var task in owner.Viewer.PlayerTrain.StationStops)
                     {
                         var stopAt = task;
                         if (stopAt != null)
-                        {
+                        {                            
                             DateTime baseDTCT = new DateTime();
                             DateTime arrTimeCT0 = baseDTCT.AddSeconds(stopAt.ArrivalTime);
                             DateTime depTimeCT0 = baseDTCT.AddSeconds(stopAt.DepartTime);                                                                                                                                                                          
@@ -131,10 +131,10 @@ namespace Orts.Viewer3D.Popups
                             line.Add(new Label(colWidth * 3, line.RemainingHeight, stopAt.PlatformItem.Name));                            
                             line.Add(new Label(colWidth, line.RemainingHeight, arrTimeCT0.ToString("HH:mm:ss"), LabelAlignment.Center));
 
-                            //if (stopAt.ActualArrival > 0)
+                            //if (stopAt.PlatformItem.Name == owner.Viewer.PlayerTrain.StationStops[0].PlatformItem.Name && owner.Viewer.PlayerTrain.StationStops[0].ActualArrival > 0)
                             //{
-                            //    DateTime arrTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualArrival);
-                            //    line.Add(arrive = new Label(colWidth, line.RemainingHeight, stopAt.ActualArrival > 0 ? arrTimeCT1.ToString("HH:mm:ss") : Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                            //    DateTime arrTimeCT1 = baseDTCT.AddSeconds(owner.Viewer.PlayerTrain.StationStops[0].ActualArrival);
+                            //    line.Add(arrive = new Label(colWidth, line.RemainingHeight, arrTimeCT1.ToString("HH:mm:ss"), LabelAlignment.Center));
                             //    arrive.Color = NextStationWindow.GetArrivalColor(arrTimeCT0, arrTimeCT1);
                             //}
                             //else
@@ -142,10 +142,10 @@ namespace Orts.Viewer3D.Popups
 
                             line.Add(new Label(colWidth, line.RemainingHeight, depTimeCT0.ToString("HH:mm:ss"), LabelAlignment.Center));
 
-                            //if (stopAt.ActualDepart > 0)
+                            //if (stopAt.PlatformItem.Name == owner.Viewer.PlayerTrain.StationStops[0].PlatformItem.Name && stopAt.ActualDepart > 0 && Math.Abs(owner.Viewer.PlayerTrain.SpeedMpS) > 1.5f)
                             //{
-                            //    DateTime depTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualDepart);
-                            //    line.Add(depart = new Label(colWidth, line.RemainingHeight, stopAt.ActualDepart > 0 ? depTimeCT1.ToString("HH:mm:ss") : Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                            //    DateTime depTimeCT1 = baseDTCT.AddSeconds(owner.Viewer.PlayerTrain.Simulator.ClockTime);
+                            //    line.Add(depart = new Label(colWidth, line.RemainingHeight, depTimeCT1.ToString("HH:mm:ss"), LabelAlignment.Center));
                             //    depart.Color = NextStationWindow.GetDepartColor(depTimeCT0, depTimeCT1);
                             //}
                             //else

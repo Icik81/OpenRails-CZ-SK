@@ -1074,7 +1074,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
             }
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.8 && !arrIsBraking && !Locomotive.ARRTrainBrakeEngage)
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.84f && !arrIsBraking && !Locomotive.ARRTrainBrakeEngage)
             {
                 canAddForce = false;
                 reducingForce = true;
@@ -1122,7 +1122,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 return;
             }
-            else if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.7)
+            else if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > 4.84f)
             {
                 canAddForce = true;
             }
@@ -2114,7 +2114,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
                 if (controllerVolts > 0)
                 {
-                    if (breakout || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.98)
+                    if (breakout || Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 4.84f)
                     {
                         maxForceN = 0;
                         controllerVolts = 0;

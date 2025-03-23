@@ -7110,6 +7110,8 @@ namespace Orts.Simulation.RollingStocks
                 BrakeSystem.IsAirEmpty = Simulator.Settings.AirEmpty;
                 BrakeSystem.IsAirFull = !Simulator.Settings.AirEmpty;
                 LocoReadyToGo = !Simulator.Settings.AirEmpty;
+                AILocoSetUp = true;
+                PlayerLocoSetUp = true;
                 CarIsPlayerLocoSet = true;
                 if (LocoReadyToGo)
                 {
@@ -7117,6 +7119,26 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = true;
                     PowerKeyPosition[LocoStation] = 2;
                     StationIsActivated[LocoStation] = true;
+
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        car.BrakeSystem.HeatingIsOn = true;
+                        TrainCar AIFirstLocomotive = null;
+                        if (car is MSTSLocomotive)
+                        {
+                            if (AIFirstLocomotive == null)
+                                AIFirstLocomotive = car;
+
+                            if (car != AIFirstLocomotive)
+                            {
+                                car.PowerKeyPosition[(car as MSTSLocomotive).LocoStation] = 0;
+                                (car as MSTSLocomotive).PowerKey = false;
+                            }
+
+                            if (car is MSTSControlUnit)
+                                (car as MSTSControlUnit).PowerOn = true;
+                        }
+                    }
                     /*if (CruiseControl != null && CruiseControl.Equipped)
                     {
                         CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
@@ -7131,6 +7153,11 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = false;
                     PowerKeyPosition[1] = 0;
                     PowerKeyPosition[2] = 0;
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSControlUnit)
+                            (car as MSTSControlUnit).PowerOn = false;
+                    }
                 }
             }
 
@@ -7193,6 +7220,7 @@ namespace Orts.Simulation.RollingStocks
                     TrainCar AIFirstLocomotive = null;
                     foreach (TrainCar car in Train.Cars)
                     {
+                        car.BrakeSystem.HeatingIsOn = true;
                         if (car is MSTSLocomotive)
                         {
                             if (AIFirstLocomotive == null)

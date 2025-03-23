@@ -186,6 +186,7 @@ namespace Orts.Simulation.RollingStocks
         public int MotorStartCyklus;
         public bool StartOn = true;
         public bool NoPaxsMode;
+        public bool NoPaxsModeExitEnterTimeRecalculated;
         public bool WagonIsServis;
         public bool WagonIsServis14;        
         public float FanOSpeedLow;

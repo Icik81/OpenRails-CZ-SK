@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
@@ -553,6 +554,7 @@ namespace Orts.Viewer3D.Popups
         {
             if (Viewer.PlayerTrain.Cars[CarPosition].HasPassengerCapacity)
             {
+                (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsModeExitEnterTimeRecalculated = true;
                 (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode = !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode;
                 if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
                 {
@@ -560,7 +562,7 @@ namespace Orts.Viewer3D.Popups
                 }
                 if (!(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).NoPaxsMode)
                 {
-                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pax`s mode"));
+                    Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Pax`s mode"));                    
                 }
             }
         }
