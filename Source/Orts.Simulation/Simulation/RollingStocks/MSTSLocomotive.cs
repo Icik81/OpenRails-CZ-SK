@@ -6538,6 +6538,7 @@ namespace Orts.Simulation.RollingStocks
         public bool SplashScreenWillBeDisplayed = false;
         protected float HvPantoTimer = 0;
         protected bool firstFrame = true;
+        float CarSteamHeatOnSetTimer;
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && PlayerLocoSetUp)
@@ -7163,41 +7164,49 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Testuje připojené potrubí pro vozy s parním vytápěním            
-            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count && LocoSetUpTimer > 2)
+            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count)
             {
-                Train.prevTrainCarsCount = Train.Cars.Count; 
-                int SteamHeatCarPosition = 0;
-                int CarPosition = 0;
-                foreach (TrainCar car in Train.Cars)
+                CarSteamHeatOnSetTimer += elapsedClockSeconds;
+                if (CarSteamHeatOnSetTimer < Train.Cars.Count * 1f)
                 {
-                    car.WagonCanEnableSteamHeating = false;
-                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).IsSteamHeatFitted)
+                    int SteamHeatCarPosition = 0;
+                    int CarPosition = 0;
+                    foreach (TrainCar car in Train.Cars)
                     {
-                        SteamHeatCarPosition = CarPosition;
-                        break;
+                        car.WagonCanEnableSteamHeating = false;
+                        if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).IsSteamHeatFitted)
+                        {
+                            SteamHeatCarPosition = CarPosition;
+                            break;
+                        }
+                        if (car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler || car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
+                        {
+                            SteamHeatCarPosition = CarPosition;
+                            break;
+                        }
+                        CarPosition++;
                     }
-                    if (car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler || car.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
+                    for (int i = SteamHeatCarPosition; i < Train.Cars.Count; i++)
                     {
-                        SteamHeatCarPosition = CarPosition;
-                        break;
+                        var wagon = Train.Cars[i];
+                        if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)
+                            break;
+                        else
+                            wagon.WagonCanEnableSteamHeating = true;
                     }
-                    CarPosition++;
-                }                                
-                for (int i = SteamHeatCarPosition; i < Train.Cars.Count; i++) 
-                {
-                    var wagon = Train.Cars[i];
-                    if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)                    
-                        break;                    
-                    else                                    
-                        wagon.WagonCanEnableSteamHeating = true;                    
+                    for (int i = SteamHeatCarPosition; i >= 0; i--)
+                    {
+                        var wagon = Train.Cars[i];
+                        if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)
+                            break;
+                        else
+                            wagon.WagonCanEnableSteamHeating = true;
+                    }                                            
                 }
-                for (int i = SteamHeatCarPosition; i >= 0; i--)
+                else
                 {
-                    var wagon = Train.Cars[i];
-                    if (!wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove)
-                        break;
-                    else
-                        wagon.WagonCanEnableSteamHeating = true;
+                    Train.prevTrainCarsCount = Train.Cars.Count;
+                    CarSteamHeatOnSetTimer = 0;
                 }
             }
             
