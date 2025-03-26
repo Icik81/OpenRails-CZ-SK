@@ -160,6 +160,7 @@ namespace Orts.Simulation.Physics
         public float TrainTotalAirBrakeLengthM;
         public int TrainTotalAirBrakeCarsCount;
         public bool TrainIsNearToLvlCross;
+        public List<StationStop> StationTasks = new List<StationStop>();
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
@@ -586,6 +587,19 @@ namespace Orts.Simulation.Physics
             }            
         }
 
+        public int TotalTasks;
+        public void FillStationTasks()
+        {
+            if (StationTasks.Count == 0 && StationStops != null)
+            {
+                foreach (var task in StationStops)
+                {
+                    StationTasks.Add(task);
+                }
+                TotalTasks = StationTasks.Count;
+            }                        
+        }
+
         public object WagonTypes { get; internal set; }
 
         // Get the UiD value of the first wagon - searches along train, and gets the integer UiD of the first wagon that is not an engine or tender
@@ -745,7 +759,7 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik
+            // Icik                        
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
@@ -827,7 +841,7 @@ namespace Orts.Simulation.Physics
 
 
             SignalObjectItems = new List<ObjectItemInfo>();
-            signalRef = simulator.Signals;
+            signalRef = simulator.Signals;            
 
             TrainType = (TRAINTYPE)inf.ReadInt32();
             IsTilting = inf.ReadBoolean();
@@ -899,6 +913,13 @@ namespace Orts.Simulation.Physics
             {
                 StationStop thisStation = new StationStop(inf, signalRef);
                 StationStops.Add(thisStation);
+            }
+
+            TotalTasks = inf.ReadInt32();
+            for (int task = 0; task < TotalTasks; task++)
+            {
+                StationStop thisTask = new StationStop(inf, signalRef);
+                StationTasks.Add(thisTask);
             }
 
             int prevStopAvail = inf.ReadInt32();
@@ -1122,7 +1143,7 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
-            // Icik
+            // Icik                       
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
@@ -1258,6 +1279,13 @@ namespace Orts.Simulation.Physics
             foreach (StationStop thisStop in StationStops)
             {
                 thisStop.Save(outf);
+            }
+
+            outf.Write(TotalTasks);
+            if (TotalTasks > 0)
+            {
+                foreach (StationStop task in StationTasks)
+                    task.Save(outf);
             }
 
             if (PreviousStop == null)
@@ -1748,7 +1776,7 @@ namespace Orts.Simulation.Physics
         public bool AITrainWillAttach;
         int AIPreferenceModeStep;
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {
+        {            
             AITrainWillAttach = false;
             GeneratePaxDynamically();
             // Icik

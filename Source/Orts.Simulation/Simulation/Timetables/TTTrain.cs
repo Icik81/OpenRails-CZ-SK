@@ -2785,6 +2785,7 @@ namespace Orts.Simulation.Timetables
                     }
                     else
                     {
+                        FillStationTasks();
                         CheckStationTask();
                         CheckStationTaskPax();
                         CheckPlayerAttachState();                                               // check for player attach
@@ -10513,17 +10514,20 @@ namespace Orts.Simulation.Timetables
                     // if stations to be checked
                     if (StationStops.Count > 0)
                     {
-                        // check if stopped at station
+                        // check if stopped at station                        
                         if (Math.Abs(SpeedMpS) < 0.1f)
                         {
                             AtStation = IsAtPlatform();
                             if (AtStation)
                             {
-                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
+                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));                                                                
                                 StationStops[0].ActualArrival = presentTime;
                                 StationStops[0].CalculateDepartTime(presentTime, this);
                                 ActualStationNumber++;
+                                StationTasks[ActualStationNumber].ActualArrival = presentTime;
                             }
+                            else
+                                StationTasks[ActualStationNumber].ActualArrival = -1;
                         }
                         else if (ControlMode == TRAIN_CONTROL.AUTO_NODE || ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
                         {
@@ -10544,16 +10548,18 @@ namespace Orts.Simulation.Timetables
         
         public override void CheckStationTask()
         {
-            // if at station
+            // if at station            
             if (AtStation)
-            {
+            {                
                 int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                 int eightHundredHours = 8 * 3600;
                 int sixteenHundredHours = 16 * 3600;
 
                 // if moving, set departed
+                StationTasks[ActualStationNumber].ActualDepart = -1;
                 if (Math.Abs(SpeedMpS) > 1.0f)
-                {
+                {                    
+                    StationTasks[ActualStationNumber].ActualDepart = presentTime;
                     StationStops[0].ActualDepart = presentTime;
                     StationStops[0].Passed = true;
                     AtStation = false;
