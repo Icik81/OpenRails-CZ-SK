@@ -6556,6 +6556,7 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.Ls90power[LocoStation] = LS90power.On;
                 }
                 PlayerLocoSetUp = false;
+                LocoSetUpTimer = 0;
             }
             else
                 AILocoSetUp = false;
@@ -7214,8 +7215,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     PowerKey = true;
-                    AuxResPressurePSI = MaxAuxResPressurePSI;
-                    LocoSetUpTimer = 0;
+                    AuxResPressurePSI = MaxAuxResPressurePSI;                    
 
                     TrainCar AIFirstLocomotive = null;
                     foreach (TrainCar car in Train.Cars)
