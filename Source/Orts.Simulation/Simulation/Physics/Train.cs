@@ -1889,6 +1889,7 @@ namespace Orts.Simulation.Physics
 
             if (IsActualPlayerTrain && Simulator.OriginalPlayerTrain != this && !CheckStations) // if player train is to check own stations
             {
+                FillStationTasks();
                 CheckStationTask();
             }            
 

@@ -6989,13 +6989,13 @@ namespace Orts.Simulation.AIs
                         }
                         else
                         {
-                            int actualDepart = StationStops[0].ActualDepart;
+                            int Depart = StationStops[0].DepartTime;
                             int correctedTime = presentTime;
                             if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
                             {
                                 correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
                             }
-                            remaining = actualDepart - correctedTime;
+                            remaining = Depart - correctedTime;
                         }                        
 
                         if (!BoardingCompleted || EndStation || PeopleWantToLeaveCount > 0)
