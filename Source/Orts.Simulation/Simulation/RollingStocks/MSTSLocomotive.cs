@@ -7094,6 +7094,7 @@ namespace Orts.Simulation.RollingStocks
             CarFrameUpdate(elapsedClockSeconds);            
             VentilationSwitch(elapsedClockSeconds);
             VentilationDR(elapsedClockSeconds);
+            JVHack(elapsedClockSeconds);
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             if (!Simulator.Paused && Simulator.GameSpeed == 1)
                 LocoSetUpTimer = LocoSetUpTimer < 5.0f ? LocoSetUpTimer + elapsedClockSeconds : 5.0f;
@@ -20045,6 +20046,34 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Confirmer.Warning("CommandCylinderThrottlePosition: " + CommandCylinderThrottlePosition[LocoStation]);
         }
         #endregion CommandCylinder
+
+        #region JVHack
+        // Kompatibilita lokomotiv pro JV ladění
+        public void JVHack(float elapsedClockSeconds)
+        {
+            if (!(this as MSTSWagon).JVSetup) return;
+
+            // Jednotky 560
+            if (LocomotiveTypeNumber == 560)
+            {                
+                if (Pantographs[1].State == PantographState.Down || Pantographs[1].State == PantographState.Lowering)                
+                    SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
+                
+                if (Pantographs[1].State == PantographState.Up || Pantographs[1].State == PantographState.Raising)                
+                    SignalEvent(PowerSupplyEvent.RaisePantograph, 2);                
+                
+                Pantographs[2].State = Pantographs[1].State;
+                
+                if (MPManager.IsMultiPlayer())
+                {
+                    if (Pantographs[2].State == PantographState.Lowering)
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
+                    if (Pantographs[2].State == PantographState.Raising)
+                        MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
+                }                
+            }
+        }
+        #endregion JVHack
 
         #endregion
 
