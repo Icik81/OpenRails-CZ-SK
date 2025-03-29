@@ -20070,7 +20070,10 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 0).ToString());
                     if (Pantographs[2].State == PantographState.Raising)
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
-                }                
+                }
+                
+                if (LocoSetUpTimer > 0.49f && LocoSetUpTimer < 0.5f && CircuitBreakerOn)
+                    SignalEvent(Event.CircuitBreakerClosing);
             }
         }
         #endregion JVHack
