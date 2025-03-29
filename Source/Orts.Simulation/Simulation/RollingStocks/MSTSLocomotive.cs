@@ -20072,7 +20072,7 @@ namespace Orts.Simulation.RollingStocks
                         MPManager.Notify(new MSGEvent(MPManager.GetUserName(), "PANTO2", 1).ToString());
                 }
                 
-                if (LocoSetUpTimer > 0.49f && LocoSetUpTimer < 0.5f && CircuitBreakerOn)
+                if (LocoSetUpTimer > 0.45f && LocoSetUpTimer < 0.5f && CircuitBreakerOn)
                     SignalEvent(Event.CircuitBreakerClosing);
             }
         }
