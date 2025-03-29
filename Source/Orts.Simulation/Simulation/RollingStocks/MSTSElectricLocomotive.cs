@@ -1565,7 +1565,8 @@ namespace Orts.Simulation.RollingStocks
             
         // Icik            
         EndAIVoltageChoice:
-            SetAIPantoDown(elapsedClockSeconds);            
+            SetAIPantoDown(elapsedClockSeconds);
+            JVHack(elapsedClockSeconds);
             VoltageIndicate(elapsedClockSeconds);                                                
             UnderVoltageProtection(elapsedClockSeconds);
 
