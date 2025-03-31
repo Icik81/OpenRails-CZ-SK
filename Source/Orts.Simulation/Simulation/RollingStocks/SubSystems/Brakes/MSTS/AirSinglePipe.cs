@@ -1989,10 +1989,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             T0_PipePressure += elapsedClockSeconds;            
             if (T0_PipePressure > 0.33f && T0_PipePressure < 0.43f)
             {
-                MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) > 0 ? (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) : 0;                
-
+                MainResChangeRate = (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) > 0 ? (prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe) : 0;
+                
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI);
-                if (BrakePipeChangeRate > 1)
+                if (BrakePipeChangeRate > 1f)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
                 else
                     BrakePipeChangeRateBar = 0;
@@ -2024,7 +2024,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             
             (Car as MSTSWagon).Variable10 = Math.Abs(MainResPressurePSI - BrakeLine1PressurePSI) / maxPressurePSI0;
             (Car as MSTSWagon).Variable11 = MainResPressurePSI / MaxMainResPressurePSI;
-            
 
             //if (loco != null)
             //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("BrakePipeThreshold " + BrakePipeThreshold / 14.50377f));
@@ -2088,10 +2087,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         
             // sound trigger checking runs every half second, to avoid the problems caused by the jumping BrakeLine1PressurePSI value, and also saves cpu time :)
             if (SoundTriggerCounter > 1.0f)
-            {
+            {                
                 SoundTriggerCounter = 0f;
+                (Car as MSTSWagon).Variable9 = 0;
                 // Událost pro hodnotu tlaku v brzdovém válci
-                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 0.1f) //(AutoCylPressurePSI != prevCylPressurePSI)
+                if (Math.Abs(AutoCylPressurePSI0 - prevCylPressurePSI) > 1f) //(AutoCylPressurePSI != prevCylPressurePSI)
                 {                    
                     if (!TrainBrakePressureChanging)
                     {                        
@@ -2118,7 +2118,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Událost pro hodnotu tlaku v brzdovém potrubí
-                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1.0f) //BrakeLine1PressurePSI != prevBrakePipePressurePSI
+                if (Math.Abs(BrakeLine1PressurePSI - prevBrakePipePressurePSI) > 1f) //BrakeLine1PressurePSI != prevBrakePipePressurePSI
                 {                                        
                     if (!BrakePipePressureChanging)
                     {                        
@@ -2427,32 +2427,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
 
-                    float MainResChangeRateSensitivity = 0.005f * 14.50377f;
+                    float MainResChangeRateSensitivity = 0.001f * 14.50377f;
                     // Kontrolka doplňování vzduchu (průtoku)                    
-                    if (lead.BrakeSystem.MainResFlow)
-                    {                        
-                        if (lead.BrakeSystem.MainResChangeRate > MainResChangeRateSensitivity)
+                    if (lead.BrakeSystem.MainResFlow && lead.BrakeSystem.MainResChangeRate > MainResChangeRateSensitivity)
+                    {
+                        lead.BrakeSystem.MainResFlowTimerOn += elapsedClockSeconds;
+                        if (lead.BrakeSystem.MainResFlowTimerOn > 0.5f)
                         {
-                            lead.BrakeSystem.MainResFlowTimerOn += elapsedClockSeconds;
-                            if (lead.BrakeSystem.MainResFlowTimerOn > 0.5f)
-                            {
-                                lead.BrakeSystem.BrakePipeFlow = true;
-                            }
-                            else
-                                lead.BrakeSystem.BrakePipeFlow = false;
-                        }
-                        else
-                        {
-                            lead.BrakeSystem.BrakePipeFlow = false;
-                            lead.BrakeSystem.MainResFlowTimerOn = 0;
+                            lead.BrakeSystem.BrakePipeFlow = true;
+                            lead.BrakeSystem.MainResFlowTimerOff = 0;
                         }
                     }
-                    if (!lead.BrakeSystem.MainResFlow)
-                    {
-                        lead.BrakeSystem.MainResFlowTimerOn = 0;
+                    if (!lead.BrakeSystem.MainResFlow || lead.BrakeSystem.MainResChangeRate < MainResChangeRateSensitivity)
+                    {                        
                         lead.BrakeSystem.MainResFlowTimerOff += elapsedClockSeconds;
-                        if (lead.BrakeSystem.MainResFlowTimerOff > 0.5f)
+                        if (lead.BrakeSystem.MainResFlowTimerOff > 1.0f)
                         {
+                            lead.BrakeSystem.MainResFlowTimerOn = 0;
                             lead.BrakeSystem.BrakePipeFlow = false;
                         }
                     }
@@ -2545,17 +2536,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
                         || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running
-                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression   // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH    // Postupné odbržďování pro BS2
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLap     // Bez postupného odbržďování 
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)    // Stupňovité odbržďování pro EP
                         || lead.ARRTrainBrakeEngage_Apply
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)
-                        {
+                        {                                                            
                             lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss
-                            lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
-                            lead.BrakeSystem.MainResFlow = true;
+
+                            if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral && (lead.BrakeSystem.BrakeLine1PressurePSI > 4.84f * 14.50377f || lead.BrakeSystem.BrakeCylRelease))
+                            {
+                                lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
+                                lead.BrakeSystem.MainResFlow = true;
+                            }
+
+                            if (lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral && lead.BrakeSystem.BrakeCylRelease)
+                            {
+                                lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
+                                lead.BrakeSystem.MainResFlow = true;
+                            }                                                                                        
                         }
                     }
                     // reduce pressure in lead brake line if brake pipe pressure is above equalising pressure - apply brakes
