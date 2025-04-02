@@ -91,8 +91,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected ValveState PrevTripleValveStateState;
         protected float AutomaticDoorsCycle = 0;
         protected float AirWithEDBMotiveForceN;
-        protected bool PressureConverterEnable;
-        protected bool MainResChangeRateUpdate;
+        protected bool PressureConverterEnable;        
 
         protected bool AICompressorOn;
         protected bool AICompressorOff;
@@ -1571,13 +1570,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (BrakeLine1PressurePSI > maxPressurePSI0 && BrakePipeChangeRate < BrakeSensitivityPSIpS)
                     PrevAuxResPressurePSI = maxPressurePSI0;
-
-                TrainBrakeRelease = false;
+                
                 // triple valve is set to charge the brake cylinder
                 BrakeCylApply = false;
                 if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency && !CarHasAirStuckBrake_2)
                 {
-                    TrainBrakeRelease = false;
                     BrakeCylRelease = false;
                     float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
 
@@ -1759,8 +1756,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 // triple valve set to release pressure in brake cylinder and EP valve set
                 if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !CarHasAirStuckBrake_1)
-                {
-                    TrainBrakeRelease = true;
+                {                    
                     BrakeCylRelease = true;
                     BrakeCylApply = false;
                     BrakeReadyToApply = false;
@@ -1988,23 +1984,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 T0_PipePressure = 0f;
                 prevBrakeLine1PressurePSI = BrakeLine1PressurePSI;
-                prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;
-                MainResChangeRateUpdate = false;
+                prevTotalCapacityMainResBrakePipe = TotalCapacityMainResBrakePipe;                
             }
             T0_PipePressure += elapsedClockSeconds;            
             if (T0_PipePressure > 0.33f && T0_PipePressure < 0.43f)
-            {
-                if (loco != null && !MainResChangeRateUpdate)
-                {
-                    MainResChangeRate = Math.Abs(prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe);
-                    if (loco.CompressorIsOn)
-                        MainResChangeRate -= 0.1f * loco.MainResChargingRatePSIpS;
-                    if (loco.Compressor2IsOn)
-                        MainResChangeRate -= 0.1f * loco.MainResChargingRatePSIpS_2;
-                    MainResChangeRateUpdate = true;
-                    MainResChangeRate = Math.Abs(MainResChangeRate);
-                }
-
+            {                
+                MainResChangeRate = Math.Abs(prevTotalCapacityMainResBrakePipe - TotalCapacityMainResBrakePipe);
                 BrakePipeChangeRate = Math.Abs(prevBrakeLine1PressurePSI - BrakeLine1PressurePSI);
                 if (BrakePipeChangeRate > 1f)
                     BrakePipeChangeRateBar = Math.Max(BrakePipeChangeRateBar, BrakePipeChangeRate / 14.50377f);
@@ -2442,7 +2427,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
 
-                    float MainResChangeRateSensitivity = 0.001f * 14.50377f;
+                    float MainResChangeRateSensitivity = 0.003f * 14.50377f;
                     // Kontrolka doplňování vzduchu (průtoku)                    
                     if (lead.BrakeSystem.MainResFlow && lead.BrakeSystem.MainResChangeRate > MainResChangeRateSensitivity)
                     {
@@ -2559,10 +2544,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         || lead.ARRTrainBrakeEngage_Apply
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap)
                         {                                                                                                               
-                            if (lead.BrakeSystem.AngleCockOpen || train.EqualReservoirPressurePSIorInHg > lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f || lead.BrakeSystem.TrainBrakeRelease)
+                            if (lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)
                             {
                                 lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
-                                lead.BrakeSystem.MainResFlow = true;
+                                if (PressureDiffEqualToPipePSI > 0.02f) lead.BrakeSystem.MainResFlow = true;
                             }
                             lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss     
                         }
@@ -2591,7 +2576,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 float brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
                 train.TotalTrainBrakePipeVolumeM3 = 0.0f; // initialise train brake pipe volume
                 train.TotalCapacityMainResBrakePipe = 0.0f;
-                if (lead != null) lead.BrakeSystem.AngleCockOpen = false;                                    
+                if (lead != null) lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = 0;                                    
 
                 foreach (TrainCar car in train.Cars)
                 {                    
@@ -2617,6 +2602,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         // If TrainPipePressureDiffPropagationPSI equals to p1-p0 the equalization is achieved in one step.
                         car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipePressureDiffPropogationPSI * brakePipeVolumeM30 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
                         car0.BrakeSystem.BrakeLine1PressurePSI += TrainPipePressureDiffPropogationPSI * car.BrakeSystem.BrakePipeVolumeM3 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
+
+                        if (car.CarHasBrakePipeConnected && lead != null && TrainPipePressureDiffPropogationPSI < 0)
+                            lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = TrainPipePressureDiffPropogationPSI;
                     }
                     
                     if (train.Cars.Count == 1 && (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen))
@@ -2625,9 +2613,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (car.BrakeSystem.AngleCockAOpen && car.BrakeSystem.AngleCockBOpen)
                             car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
-                            car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                        if (lead != null)
-                            lead.BrakeSystem.AngleCockOpen = true;
+                            car.BrakeSystem.BrakeLine1PressurePSI = 0;                        
                     }
                     else
                     if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
@@ -2635,8 +2621,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                             car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                        if (car.CarHasBrakePipeConnected && lead != null)
-                            lead.BrakeSystem.AngleCockOpen = true;
                     }
                     else
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
@@ -2644,8 +2628,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                             car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                        if (car.CarHasBrakePipeConnected && lead != null)
-                            lead.BrakeSystem.AngleCockOpen = true;
                     }
                     else
                     if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
@@ -2655,8 +2637,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                            if (car.CarHasBrakePipeConnected && lead != null)
-                                lead.BrakeSystem.AngleCockOpen = true;
                         }
 
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
@@ -2664,8 +2644,6 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             car0.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0)
                                 car.BrakeSystem.BrakeLine1PressurePSI = 0;
-                            if (car.CarHasBrakePipeConnected && lead != null)
-                                lead.BrakeSystem.AngleCockOpen = true;
                         }
                     }
                     
