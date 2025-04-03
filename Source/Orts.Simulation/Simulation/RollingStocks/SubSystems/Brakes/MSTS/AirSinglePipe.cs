@@ -1764,6 +1764,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BrakeCylReleaseEDBOn = false;
                     OLBailOffActivated = false;
 
+                    if (Car is MSTSLocomotive && (Car as MSTSLocomotive).IsLeadLocomotive())
+                        (Car as MSTSLocomotive).BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
+
                     if ((Car as MSTSWagon).EmergencyReservoirPresent)
                     {
                         if (!(Car as MSTSWagon).DistributorPresent && AuxResPressurePSI < EmergResPressurePSI && AuxResPressurePSI < BrakeLine1PressurePSI)
