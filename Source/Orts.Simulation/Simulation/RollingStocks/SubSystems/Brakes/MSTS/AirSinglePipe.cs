@@ -2427,12 +2427,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
 
-                    float MainResChangeRateSensitivity = 0.003f * 14.50377f;
+                    float MainResChangeRateSensitivity = 0.001f * 14.50377f;
                     // Kontrolka doplňování vzduchu (průtoku)                    
                     if (lead.BrakeSystem.MainResFlow && lead.BrakeSystem.MainResChangeRate > MainResChangeRateSensitivity)
                     {
                         lead.BrakeSystem.MainResFlowTimerOn += elapsedClockSeconds;
-                        if (lead.BrakeSystem.MainResFlowTimerOn > 0.5f)
+                        if (lead.BrakeSystem.MainResFlowTimerOn > 0.0f)
                         {
                             lead.BrakeSystem.BrakePipeFlow = true;
                             lead.BrakeSystem.MainResFlowTimerOff = 0;
@@ -2536,16 +2536,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
                         || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Running
-                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
-                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)    // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
-                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)    // Postupné odbržďování pro BS2
-                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLap && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)      // Bez postupného odbržďování 
-                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)     // Stupňovité odbržďování pro EP
-                        || lead.ARRTrainBrakeEngage_Apply && lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0))       // Vyrovná ztráty vzduchu pro neutrální pozici kontroléru
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Suppression && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0))    // Klesne na tlak v potrubí snížený o FullServicePressureDrop 
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLapH && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0))    // Postupné odbržďování pro BS2
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.GSelfLap && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0))      // Bez postupného odbržďování 
+                        || (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0))     // Stupňovité odbržďování pro EP
+                        || lead.ARRTrainBrakeEngage_Apply && (lead.BrakeSystem.BrakeLine1PressurePSI + 0.2f < train.EqualReservoirPressurePSIorInHg || lead.BrakeSystem.TrainPipePressureDiffPropogationPSI < 0)
                         /*|| lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap*/)
                         {                                                                                                               
                             lead.MainResPressurePSI = lead.MainResPressurePSI - (PressureDiffEqualToPipePSI * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);   // Decrease main reservoir pressure
-                            if (PressureDiffEqualToPipePSI > 0.02f) lead.BrakeSystem.MainResFlow = true;                            
+                            if (PressureDiffEqualToPipePSI > 0.03f) lead.BrakeSystem.MainResFlow = true;                            
                             lead.BrakeSystem.BrakeLine1PressurePSI += PressureDiffEqualToPipePSI;  // Increase brake pipe pressure to cover loss     
                         }
                     }
@@ -2786,8 +2786,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
                             {
                                 (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 5f * elapsedClockSeconds;
-                                lead.MainResPressurePSI -= 5f * elapsedClockSeconds;
-                                lead.BrakeSystem.MainResFlow = true;
+                                lead.MainResPressurePSI -= 5f * elapsedClockSeconds;                                
                             }
                             else
                             if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
@@ -2824,8 +2823,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (sumv > 0)
                                 lead.MainResPressurePSI -= train.TotalAirLoss / sumv * elapsedClockSeconds;
                             else
-                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;
-                            lead.BrakeSystem.MainResFlow = true;
+                                lead.MainResPressurePSI -= train.TotalAirLoss * elapsedClockSeconds;                            
                         }
                     }
 
@@ -2836,8 +2834,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
                     {
                         loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
-                        loco.AuxResPressurePSI += 5 * elapsedClockSeconds;
-                        loco.BrakeSystem.MainResFlow = true;
+                        loco.AuxResPressurePSI += 5 * elapsedClockSeconds;                        
                     }
 
                     // Netěsnosti jímky pomocného kompresoru
@@ -3184,8 +3181,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI && loco.MainResOverPressure)
                     {
                         loco.MainResPressurePSI -= 0.25f * 14.50377f * elapsedClockSeconds;
-                        loco.SignalEvent(Event.MaxMainResOverPressureValveOpen);
-                        loco.BrakeSystem.MainResFlow = true;
+                        loco.SignalEvent(Event.MaxMainResOverPressureValveOpen);                        
                     }
                     else
                     {
@@ -3586,8 +3582,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     || lead.BrakeSystem.Overcharge && lead.BrakeSystem.SlowApplyStart
                     || lead.BrakeSystem.QuickRelease && lead.BrakeSystem.SlowApplyStart)
                 {
-                    lead.MainResPressurePSI -= SumSA * (lead.TrainBrakeController.ApplyRatePSIpS / 3 * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);
-                    lead.BrakeSystem.MainResFlow = true;
+                    lead.MainResPressurePSI -= SumSA * (lead.TrainBrakeController.ApplyRatePSIpS / 3 * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);                    
                     foreach (TrainCar car in train.Cars)
                     {
                         if (!car.BrakeSystem.BrakeControllerLap)
@@ -3624,8 +3619,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     || lead.BrakeSystem.Overcharge && lead.BrakeSystem.ApplyGA
                     || lead.BrakeSystem.QuickRelease && lead.BrakeSystem.ApplyGA)
                 {
-                    lead.MainResPressurePSI -= SumGA * (lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);
-                    lead.BrakeSystem.MainResFlow = true;
+                    lead.MainResPressurePSI -= SumGA * (lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);                    
                     foreach (TrainCar car in train.Cars)
                     {
                         if (!car.BrakeSystem.BrakeControllerLap)
@@ -3660,8 +3654,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                    || lead.BrakeSystem.Overcharge && lead.BrakeSystem.Apply
                    || lead.BrakeSystem.QuickRelease && lead.BrakeSystem.Apply)
                 {
-                    lead.MainResPressurePSI -= SumA * (lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);
-                    lead.BrakeSystem.MainResFlow = true;
+                    lead.MainResPressurePSI -= SumA * (lead.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * lead.BrakeSystem.BrakePipeVolumeM3 / lead.MainResVolumeM3);                    
                     foreach (TrainCar car in train.Cars)
                     {
                         if (!car.BrakeSystem.BrakeControllerLap)
@@ -3909,8 +3902,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply);
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
-                        lead.BrakeSystem.MainResFlow = true;
+                        lead.MainResPressurePSI -= dp * ((EngineBrakeControllerRate - EngineBrakeControllerApply) / EngineBrakeControllerApply) * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;                        
                         if (EngineBrakeCylOffset < lead.BrakeSystem.AutoCylPressurePSI1)
                         {
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
@@ -3980,8 +3972,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
-                        lead.BrakeSystem.MainResFlow = true;
+                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;                        
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Apply;
@@ -4043,8 +4034,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             lead.BrakeSystem.AutoCylPressurePSI1 += dp;
 
                         lead.BrakeSystem.AutoCylPressurePSI1 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI1, 0, lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
-                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
-                        lead.BrakeSystem.MainResFlow = true;
+                        lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;                        
                         if (train.BrakeLine3PressurePSI < lead.BrakeSystem.AutoCylPressurePSI1)
                             lead.SignalEvent(Event.EngineBrakePressureStoppedChanging);
                         else lead.EngineBrakeState = ValveState.Apply;
@@ -4112,8 +4102,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         {
                             lead.SignalEvent(Event.TrainBrakePressureIncrease);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINBRAKESTATE", 1)).ToString());
-                            lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;
-                            lead.BrakeSystem.MainResFlow = true;
+                            lead.MainResPressurePSI -= dp * brakeSystem.GetCylVolumeM3() / lead.MainResVolumeM3 / 14.50377f;                            
                         }
                         lead.BrakeSystem.T4_ParkingkBrake = 1;
                         lead.BrakeSystem.AutoCylPressurePSI2 = MathHelper.Clamp(lead.BrakeSystem.AutoCylPressurePSI2, 0, lead.ParkingBrakeTargetPressurePSI);
