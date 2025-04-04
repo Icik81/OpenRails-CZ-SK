@@ -2197,7 +2197,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (lead != null)
             {
                 float BrakePipeChargingRateBreakPoint = 4.8f * 14.50377f;
-                float BrakePipeChargingRateCoef = (float)Math.Pow(BrakePipeChargingRateBreakPoint / lead.BrakeSystem.BrakeLine1PressurePSI, 50);
+                float BrakePipeChargingRateCoef = (float)Math.Pow(BrakePipeChargingRateBreakPoint / lead.BrakeSystem.BrakeLine1PressurePSI, 30);
                 
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.BrakeSystem.BrakeLine1PressurePSI > 0.99f * lead.BrakeSystem.maxPressurePSI0)
                     BrakePipeChargingRateCoef = 2;
