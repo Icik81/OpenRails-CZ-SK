@@ -3820,9 +3820,8 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             if (!PowerOn)
-            {                             
-                DynamicBrakePercent = -1;
-                SetDynamicBrakePercent(DynamicBrakePercent);
+            {
+                DynamicBrakeIntervention = -1;                
             }
         }
 
