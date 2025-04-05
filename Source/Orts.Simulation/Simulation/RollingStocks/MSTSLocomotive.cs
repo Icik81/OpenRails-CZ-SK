@@ -3818,6 +3818,12 @@ namespace Orts.Simulation.RollingStocks
                 }
                 //Trace.TraceWarning("Hodnota PowerOnFilter {0}, DynamicBrakePercent {1}, čas simulace {2}", PowerOnFilter, DynamicBrakePercent, Simulator.GameTime);
             }
+            else
+            if (!PowerOn)
+            {                             
+                DynamicBrakePercent = -1;
+                SetDynamicBrakePercent(DynamicBrakePercent);
+            }
         }
 
         // Icik

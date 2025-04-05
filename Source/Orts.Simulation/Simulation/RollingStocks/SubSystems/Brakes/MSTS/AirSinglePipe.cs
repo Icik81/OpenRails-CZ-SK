@@ -2529,7 +2529,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         // U těchto funkcí se kompenzují ztráty vzduchu o netěsnosti
                         if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release
-                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease
+                        || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease 
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.MatrosovRelease
                         || lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.WestingHouseRelease
                         || (lead.QuickReleaseButton && lead.QuickReleaseButtonEnable)
@@ -3500,15 +3500,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Automatické napouštění při tlaku větším než 4.84bar
                 if (train.EqualReservoirPressurePSIorInHg > 4.84f * 14.50377f)
                 {
-                    lead.BrakeSystem.ReleaseTr = 0;
-                    lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
+                    lead.BrakeSystem.ReleaseTr = 0;                    
                 }
 
                 // Zpětné automatické dofouknutí při nechtěné manipulace s brzdičem
                 if (lead.BrakeSystem.Neutral && lead.BrakeSystem.ReleaseTr != 1 && !lead.BrakeSystem.Apply && !lead.BrakeSystem.ApplyGA && !lead.BrakeSystem.SlowApplyStart)
                 {
                     if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage && lead.RequiredDecelerationPercent == 0)
+                    {
                         train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                        lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
+                    }
                     if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI && !lead.BrakeSystem.QuickRelease)
                         train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;                    
                 }
