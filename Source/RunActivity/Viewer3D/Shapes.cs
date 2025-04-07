@@ -401,7 +401,7 @@ namespace Orts.Viewer3D
     /// </summary>
     public class AnimatedShape : PoseableShape
     {
-        protected float[] AnimationKey = new float[10];  // advances with time
+        protected float[] AnimationKey = new float[20];  // advances with time
         protected float FrameRateMultiplier = 1; // e.g. in passenger view shapes MSTS divides by 30 the frame rate; this is the inverse
 
         /// <summary>
@@ -418,7 +418,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[10] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0};        
+        float[] TimeAction = new float[20];        
         float TCoef;
         bool TestCondition1;
         bool TestCondition2;
@@ -442,6 +442,7 @@ namespace Orts.Viewer3D
                 // Icik
                 for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
                 {
+                    // 0
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_w"))
                     {
                         if (DLoco != null)
@@ -484,6 +485,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
+                    // 1
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
                     {
                         if (DLoco != null)
@@ -510,6 +512,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
+                    // 2
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_w"))
                     {
                         if (DLoco != null)
@@ -558,6 +561,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
+                    // 3
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_o"))
                     {
                         if (DLoco != null)
@@ -605,11 +609,13 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[3]);
                         }
                     }
+                    else
+                    // 4
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_tw"))
                     {
                         if (DLoco != null)
                         {
-                            DLoco.DieselEngines[0].TopWaterPlatesOpened = AnimationKey[4] <= 0 ? false : true;                                
+                            DLoco.DieselEngines[0].TopWaterPlatesOpened = AnimationKey[4] <= 0 ? false : true;
 
                             if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
                             {
@@ -633,6 +639,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
+                    // 5
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_to"))
                     {
                         if (DLoco != null)
@@ -642,7 +649,7 @@ namespace Orts.Viewer3D
                             if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
                             {
                                 TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f: TimeAction[5] / 2.0f);
+                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
                                 if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
                                     AnimationKey[5] += elapsedTime.ClockSeconds * TCoef;
                             }
@@ -660,8 +667,10 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[5]);
                         }
                     }
+                    else
+                    // 6
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("3"))
-                    {                        
+                    {
                         if (ELoco != null && ELoco.Pantographs.Count == 4)
                         {
                             if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
@@ -704,7 +713,7 @@ namespace Orts.Viewer3D
                                     TimeTest = 0;
                                 }
                             }
-                            
+
                             if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
                             {
                                 TimeAction[6] = ELoco.Pantographs[3].DelayS;
@@ -721,6 +730,7 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
+                    // 7
                     if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("4"))
                     {
                         if (ELoco != null && ELoco.Pantographs.Count == 4)
@@ -774,6 +784,17 @@ namespace Orts.Viewer3D
                             AnimateMatrix(matrix, AnimationKey[7]);
                         }
                     }
+                    else
+                    // 8
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("trasa")) // letadla
+                    {
+
+                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                        AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                        while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
+                        while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
+                        AnimateMatrix(matrix, AnimationKey[8]);
+                    }
 
                     else
                     {
@@ -782,19 +803,20 @@ namespace Orts.Viewer3D
                         {
                             if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_w") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_o")) goto AnimationSkip;
                             if (SharedShape.MatrixNames[i].ToLower().Contains("fan_w") || SharedShape.MatrixNames[i].ToLower().Contains("fan_o")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;                            
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;
                             if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
                             if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
+                            if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkip;
                         }
 
                         // Smyčka pro obecné animace světa
-                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[9] == 0 ? 0.2f : TimeAction[9]);
-                        AnimationKey[9] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                        while (AnimationKey[9] > SharedShape.Animations[0].FrameCount) AnimationKey[9] -= SharedShape.Animations[0].FrameCount;
-                        while (AnimationKey[9] < 0) AnimationKey[9] += SharedShape.Animations[0].FrameCount;
-                        AnimateMatrix(matrix, AnimationKey[9]);
+                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[20] == 0 ? 0.2f : TimeAction[20]);
+                        AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                        while (AnimationKey[20] > SharedShape.Animations[0].FrameCount) AnimationKey[20] -= SharedShape.Animations[0].FrameCount;
+                        while (AnimationKey[20] < 0) AnimationKey[20] += SharedShape.Animations[0].FrameCount;
+                        AnimateMatrix(matrix, AnimationKey[20]);
 
-                    AnimationSkip: continue;
+                        AnimationSkip: continue;
                     }
                 }
             }
