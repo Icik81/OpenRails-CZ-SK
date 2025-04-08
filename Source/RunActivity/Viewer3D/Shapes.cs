@@ -401,7 +401,7 @@ namespace Orts.Viewer3D
     /// </summary>
     public class AnimatedShape : PoseableShape
     {
-        protected float[] AnimationKey = new float[20];  // advances with time
+        protected float[] AnimationKey = new float[21];  // advances with time
         protected float FrameRateMultiplier = 1; // e.g. in passenger view shapes MSTS divides by 30 the frame rate; this is the inverse
 
         /// <summary>
@@ -418,7 +418,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[20];        
+        float[] TimeAction = new float[21];        
         float TCoef;
         bool TestCondition1;
         bool TestCondition2;
