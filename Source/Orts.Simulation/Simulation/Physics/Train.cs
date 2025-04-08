@@ -17065,6 +17065,8 @@ namespace Orts.Simulation.Physics
         public void FillNames(Train train)
         {
             // Icik
+            if (StationStops.Count < 2) return;
+
             if (MaxStationCountFromStart == -1)
             {
                 foreach (StationStop stop in StationStops)
