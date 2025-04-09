@@ -786,13 +786,23 @@ namespace Orts.Viewer3D
                     }
                     else
                     // 8
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("trasa")) // letadla
+                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("trasa")) // letadla (čmelák)
                     {
-
-                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
-                        AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                        while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
-                        while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
+                        if (Viewer.Simulator.GameTimeHours > 8 && Viewer.Simulator.GameTimeHours < 20 && Viewer.Simulator.Season != SeasonType.Winter)
+                        {
+                            TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                            AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
+                            while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
+                        }
+                        else
+                        {
+                            if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
+                            {
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                                AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                            }                            
+                        }
                         AnimateMatrix(matrix, AnimationKey[8]);
                     }
 
@@ -811,6 +821,7 @@ namespace Orts.Viewer3D
 
                         // Smyčka pro obecné animace světa
                         TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[20] == 0 ? 0.2f : TimeAction[20]);
+                        if (SharedShape.Animations[0].FrameCount > 500) TCoef = 1.0f; // rychle se pohybující objekty
                         AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                         while (AnimationKey[20] > SharedShape.Animations[0].FrameCount) AnimationKey[20] -= SharedShape.Animations[0].FrameCount;
                         while (AnimationKey[20] < 0) AnimationKey[20] += SharedShape.Animations[0].FrameCount;
