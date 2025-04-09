@@ -799,38 +799,38 @@ namespace Orts.Viewer3D
                         {
                             if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
                             {
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.004f : TimeAction[8]);
                                 AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }                            
                         }
                         AnimateMatrix(matrix, AnimationKey[8]);
-                    }
-
-                    else
-                    {
-                        // Vyloučené animace
-                        for (var i = 0; i < SharedShape.Matrices.Length; ++i)
-                        {
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_w") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_o")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("fan_w") || SharedShape.MatrixNames[i].ToLower().Contains("fan_o")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
-                            if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkip;
-                        }
-
-                        // Smyčka pro obecné animace světa
-                        TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[20] == 0 ? 0.2f : TimeAction[20]);
-                        if (SharedShape.Animations[0].FrameCount > 500) TCoef = 1.0f; // rychle se pohybující objekty
-                        AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                        while (AnimationKey[20] > SharedShape.Animations[0].FrameCount) AnimationKey[20] -= SharedShape.Animations[0].FrameCount;
-                        while (AnimationKey[20] < 0) AnimationKey[20] += SharedShape.Animations[0].FrameCount;
-                        AnimateMatrix(matrix, AnimationKey[20]);
-
-                        AnimationSkip: continue;
-                    }
+                    }                    
                 }
+            }                        
+
+            if (SharedShape.Animations?.Count > 0 && SharedShape.Animations[0].FrameCount > 0)
+            {
+                // Vyloučené animace
+                for (var i = 0; i < SharedShape.Matrices.Length; ++i)
+                {
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_w") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_o")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("fan_w") || SharedShape.MatrixNames[i].ToLower().Contains("fan_o")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkip;
+                }
+
+                AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
+                while (AnimationKey[20] > SharedShape.Animations[0].FrameCount) AnimationKey[20] -= SharedShape.Animations[0].FrameCount;
+                while (AnimationKey[20] < 0) AnimationKey[20] += SharedShape.Animations[0].FrameCount;
+
+                // Update the pose for each matrix
+                for (var matrix = 0; matrix < SharedShape.Matrices.Length; ++matrix)
+                    AnimateMatrix(matrix, AnimationKey[20]);
             }
+
+        AnimationSkip: 
             SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
         }
     }
