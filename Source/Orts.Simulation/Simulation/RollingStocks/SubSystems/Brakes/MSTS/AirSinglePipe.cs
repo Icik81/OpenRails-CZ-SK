@@ -265,7 +265,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
                 string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
-                string.Format("{0:F0} L", Car as MSTSLocomotive != null ? (Car as MSTSLocomotive).MainResVolumeM3 * (Car as MSTSLocomotive).MainResPressurePSI * 1000 / 14.50377f : 0),
+                string.Format("{0:F0} L", Car as MSTSLocomotive != null && (Car as MSTSLocomotive).FakeMainResVolumeM3 == 0 ? (Car as MSTSLocomotive).MainResVolumeM3 * (Car as MSTSLocomotive).MainResPressurePSI * 1000 / 14.50377f : 0),
                 CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Off") : Simulator.Catalog.GetString("Failure!") : BrakeCarModeText,
                 string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),
                 string.Format("DebKoef {0:F1}", DebugKoef),
@@ -2600,7 +2600,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.BrakeLine1PressurePSI -= TrainPipePressureDiffPropogationPSI * brakePipeVolumeM30 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
                         car0.BrakeSystem.BrakeLine1PressurePSI += TrainPipePressureDiffPropogationPSI * car.BrakeSystem.BrakePipeVolumeM3 / (brakePipeVolumeM30 + car.BrakeSystem.BrakePipeVolumeM3);
 
-                        if (car.CarHasBrakePipeConnected && lead != null && TrainPipePressureDiffPropogationPSI < 0)
+                        if (car.CarHasBrakePipeConnected && lead != null && TrainPipePressureDiffPropogationPSI < -0.001f)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = TrainPipePressureDiffPropogationPSI;
                     }
                     
@@ -2769,31 +2769,116 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Počítání hlavních jímek
             // Úbytky vzduchu při manipulaci s dveřmi
             // Spouštění kompresoru na obsazených nebo propojených lokomotivách
+            int ControlUnitZeroPosition = -1;
+            int PowerUnitPosition = -1;
             for (int i = 0; i < train.Cars.Count; i++)
             {
                 var loco = (train.Cars[i] as MSTSLocomotive);
                 train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = 0;
 
                 if (loco != null)
-                {
+                {              
+                    if ((train.Cars[i] as MSTSLocomotive).FakeMainResVolumeM3 != 0)
+                    {
+                        (train.Cars[i] as MSTSLocomotive).MainResVolumeM3 = 0.0001f;
+                    }
+
                     if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
                     {
-                        // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
-                        train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
-
-                        if (!LocoTwoPipesConnectionBreak && !loco.Simulator.MainResZero && lead != null)
+                        if (train.Cars[i] is MSTSControlUnit && (train.Cars[i] as MSTSLocomotive).MainResVolumeM3 == 0.0001f)
                         {
-                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
+                            ControlUnitZeroPosition = i; // Řídící jednotka bez hlavního zásobníku                                                                             
+                        }
+
+                        if (!LocoTwoPipesConnectionBreak && (train.Cars[i] as MSTSLocomotive).PowerUnit)
+                        {
+                            PowerUnitPosition = i;
+                        }
+
+                        if (!LocoTwoPipesConnectionBreak)
+                        {                                                        
+                            if (ControlUnitZeroPosition > -1 && PowerUnitPosition > -1)
                             {
-                                (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 5f * elapsedClockSeconds;
-                                lead.MainResPressurePSI -= 5f * elapsedClockSeconds;                                
+                                (train.Cars[ControlUnitZeroPosition] as MSTSLocomotive).MainResVolumeM3 = (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResVolumeM3;
+                                (train.Cars[ControlUnitZeroPosition] as MSTSLocomotive).FakeMainResVolumeM3 = (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResVolumeM3;
                             }
-                            else
-                            if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
+                            
+                            // Použití všech hlavních jímek při propojení napájecího potrubí                                                        
+                            if ((train.Cars[i] as MSTSLocomotive).FakeMainResVolumeM3 == 0)
+                                train.Cars[i].BrakeSystem.TotalCapacityMainResBrakePipe = (train.Cars[i].BrakeSystem.BrakePipeVolumeM3 * train.Cars[i].BrakeSystem.BrakeLine1PressurePSI) + (loco.MainResVolumeM3 * loco.MainResPressurePSI);
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < train.Cars.Count; i++)
+            {
+                var loco = (train.Cars[i] as MSTSLocomotive);                
+
+                if (loco != null)
+                {
+                    if (i >= first && i <= last || TwoPipesConnection && continuousFromInclusive <= i && i < continuousToExclusive)
+                    {                        
+                        if (!LocoTwoPipesConnectionBreak)
+                        {
+                            if ((train.Cars[i] as MSTSLocomotive).MainResVolumeM3 > 0.0001f)
                             {
-                                (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 5f * elapsedClockSeconds;
-                                lead.MainResPressurePSI += 5f * elapsedClockSeconds;
-                            }
+                                // Řídící jednotka nemá hlavní jímku
+                                if (ControlUnitZeroPosition > -1 && PowerUnitPosition > -1)
+                                {                                                                        
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI - 5f)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI * elapsedClockSeconds;
+                                        if (lead != null && (train.Cars[i] as MSTSLocomotive) == lead && train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.maxPressurePSI0)
+                                            train.EqualReservoirPressurePSIorInHg += lead.BrakeSystem.maxPressurePSI0 * elapsedClockSeconds;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI + 5f)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI * elapsedClockSeconds;
+                                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < 0) (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = 0;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 1f * elapsedClockSeconds;
+                                        (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                        (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI += 1f * elapsedClockSeconds;
+                                    }
+                                }
+                                else                                    
+                                {
+                                    // Řídící jednotka má definovaný objem pro hlavní jímku nebo vlak nemá řídící jednotku
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI - 5f)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                        lead.MainResPressurePSI -= 10f * elapsedClockSeconds;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI + 5f)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                        lead.MainResPressurePSI += 10f * elapsedClockSeconds;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 1f * elapsedClockSeconds;
+                                        lead.MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                    }
+                                    else
+                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
+                                    {
+                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                        lead.MainResPressurePSI += 1f * elapsedClockSeconds;
+                                    }
+                                }
+                            }                            
 
                             // Logika chování vzduchu mezi pomocnými jímkami
                             //if (train.Cars[i] is MSTSElectricLocomotive)
@@ -2811,6 +2896,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             //    }
                             //}
                         }
+                    }
+                    // Vyprázdní hlavní jímku, pokud nemá definovaný objem
+                    if ((train.Cars[i] as MSTSLocomotive).MainResVolumeM3 == 0.0001f)
+                    {
+                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > 0f)
+                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= (train.Cars[i] as MSTSLocomotive).MainResPressurePSI * elapsedClockSeconds;
+                        
+                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < 0f)
+                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI = 0;                        
                     }
 
                     // *** Manipulace s dveřmi ***
@@ -2833,13 +2927,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     // Propojení hlavní jímky s pomocnou jímkou pomocného kompresoru
                     if (loco.AuxCompressor && loco.MainResPressurePSI > loco.AuxResPressurePSI && loco.AuxResPressurePSI < loco.MaxAuxResPressurePSI)
                     {
-                        loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5 * elapsedClockSeconds;
-                        loco.AuxResPressurePSI += 5 * elapsedClockSeconds;                        
+                        loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 1.0f * elapsedClockSeconds;
+                        loco.AuxResPressurePSI += 1.0f * elapsedClockSeconds;                        
                     }
 
                     // Netěsnosti jímky pomocného kompresoru
                     if (loco.AuxResPressurePSI > 0)
-                        loco.AuxResPressurePSI -= loco.AuxResPipeLeak * elapsedClockSeconds * 1;
+                        loco.AuxResPressurePSI -= loco.AuxResPipeLeak * elapsedClockSeconds * 1.0f;
 
                     // Minimální mez pro dostatek vzduchu pro pantografy
                     if (loco.AuxResPressurePSI >= loco.MinAuxPressurePantoPSI || !loco.AuxCompressor)
@@ -3509,7 +3603,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.MaxPressurePSI - train.EqualReservoirPressurePSIorInHg < lead.BrakeSystem.BrakePipeMinPressureDropToEngage && lead.RequiredDecelerationPercent == 0)
                     {
                         train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
-                        if (lead.BrakeSystem.BrakeLine1PressurePSI < lead.BrakeSystem.maxPressurePSI0)
+                        if (lead.BrakeSystem.BrakeLine1PressurePSI < 0.99f * lead.BrakeSystem.maxPressurePSI0)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                     }
                     if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI && !lead.BrakeSystem.QuickRelease)

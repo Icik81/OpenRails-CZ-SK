@@ -799,7 +799,7 @@ namespace Orts.Viewer3D
                         {
                             if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
                             {
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.004f : TimeAction[8]);
+                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.002f : TimeAction[8]);
                                 AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }                            
                         }
