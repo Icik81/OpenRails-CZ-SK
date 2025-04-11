@@ -1814,7 +1814,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (OLBailOff || OL3active)
                 {
-                    if (BrakeLine1PressurePSI > OLBailOffLimitPressurePSI)
+                    if (BrakeLine1PressurePSI > OLBailOffLimitPressurePSI && Car is MSTSLocomotive && (Car as MSTSLocomotive).AcceptMUSignals)
                     {
                         if (AutoCylPressurePSI0 > 0)
                             AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
