@@ -1388,7 +1388,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 ExhaustColor = ExhaustSteadyColor;
             }
             // Startování a zastavování SM má svoji rychlost změny 
-            if (EngineStatus == Status.Starting || EngineStatus == Status.Stopping)
+            if (EngineStatus == Status.Starting || EngineStatus == Status.Stopping || RealRPM < IdleRPM)
             {
                 if (RealRPM < DemandedRPM)
                 {
