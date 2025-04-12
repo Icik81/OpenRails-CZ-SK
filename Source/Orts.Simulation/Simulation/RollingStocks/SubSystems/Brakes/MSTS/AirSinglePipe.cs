@@ -2825,7 +2825,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 // Řídící jednotka nemá hlavní jímku
                                 if (ControlUnitZeroPosition > -1 && PowerUnitPosition > -1)
-                                {                                                                        
+                                {
+                                    (train.Cars[i] as MSTSLocomotive).MaxMainResOverPressurePSI = (train.Cars[PowerUnitPosition] as MSTSLocomotive).MaxMainResOverPressurePSI;
+                                    (train.Cars[i] as MSTSLocomotive).MaxMainResPressurePSI = (train.Cars[PowerUnitPosition] as MSTSLocomotive).MaxMainResPressurePSI;
+                                    (train.Cars[i] as MSTSLocomotive).CompressorRestartPressurePSI = (train.Cars[PowerUnitPosition] as MSTSLocomotive).CompressorRestartPressurePSI;
+
                                     if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI - 5f)
                                     {
                                         (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += (train.Cars[PowerUnitPosition] as MSTSLocomotive).MainResPressurePSI * elapsedClockSeconds;

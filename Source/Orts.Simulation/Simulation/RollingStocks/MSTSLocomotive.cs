@@ -11816,9 +11816,9 @@ namespace Orts.Simulation.RollingStocks
                 if (IsPlayerTrain)
                 {
                     TM_Temperature(elapsedClockSeconds);
-                    DriveResistance_Temperature(elapsedClockSeconds);
+                    DriveResistance_Temperature(elapsedClockSeconds);                    
 
-                    if ((BrakeSystem.StartOn && !Simulator.Settings.AirEmpty) || AILocoSetUp)
+                    if (BrakeSystem.StartOn || AILocoSetUp)
                     {                        
                         foreach (TrainCar car in Train.Cars)
                         {
@@ -13636,14 +13636,14 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
                                             if (MPManager.IsMultiPlayer())
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                                if (Pantographs.Count == 4)
+                                                if ((car as MSTSWagon).Pantographs.Count == 4)
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
@@ -13687,12 +13687,12 @@ namespace Orts.Simulation.RollingStocks
                                         if (car.AcceptMUSignals)
                                         {
                                             (car as MSTSLocomotive).PantoCommandDown = true;
-                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
-                                            if (Pantographs.Count == 4)
+                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                             {
-                                                if (Pantographs[p3].State != PantographState.Down || Pantographs[p4].State != PantographState.Down)
+                                                if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Down || (car as MSTSWagon).Pantographs[p4].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph);
                                             }
 
@@ -13700,7 +13700,7 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                                if (Pantographs.Count == 4)
+                                                if ((car as MSTSWagon).Pantographs.Count == 4)
                                                 {
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                     MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
@@ -13749,17 +13749,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p1].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
 
-                                                        if (Pantographs[p2].State != PantographState.Down)
+                                                        if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
@@ -13800,17 +13800,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p3].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
 
-                                                        if (Pantographs[p4].State != PantographState.Down)
+                                                        if ((car as MSTSWagon).Pantographs[p4].State != PantographState.Down)
                                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p4);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 1).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
@@ -13840,10 +13840,10 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    if (Pantographs[p1].State != PantographState.Up)
+                                                    if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
 
-                                                    if (Pantographs[p2].State != PantographState.Down)
+                                                    if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                         car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
 
                                                     if (MPManager.IsMultiPlayer())
@@ -13891,17 +13891,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p1].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
 
-                                                        if (Pantographs[p2].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 1).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
@@ -13941,17 +13941,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p3].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
 
-                                                        if (Pantographs[p4].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p4].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 1).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 1).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
@@ -13980,10 +13980,10 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    if (Pantographs[p1].State != PantographState.Up)
+                                                    if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
 
-                                                    if (Pantographs[p2].State != PantographState.Up)
+                                                    if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
                                                     if (MPManager.IsMultiPlayer())
@@ -14031,17 +14031,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p2].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
-                                                        if (Pantographs[p1].State != PantographState.Down)
+                                                        if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 1).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 0).ToString());
@@ -14082,17 +14082,17 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.AcceptMUSignals)
                                                     {
-                                                        if (Pantographs[p4].State != PantographState.Up)
+                                                        if ((car as MSTSWagon).Pantographs[p4].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
 
-                                                        if (Pantographs[p3].State != PantographState.Down)
+                                                        if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Down)
                                                             car.SignalEvent(PowerSupplyEvent.LowerPantograph, p3);
 
                                                         if (MPManager.IsMultiPlayer())
                                                         {
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps3, 0).ToString());
                                                             MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps4, 1).ToString());
-                                                            if (Pantographs.Count == 4)
+                                                            if ((car as MSTSWagon).Pantographs.Count == 4)
                                                             {
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps1, 0).ToString());
                                                                 MPManager.Notify(new MSGEvent(MPManager.GetUserName(), ps2, 0).ToString());
@@ -14122,10 +14122,10 @@ namespace Orts.Simulation.RollingStocks
                                             {
                                                 if (car.AcceptMUSignals)
                                                 {
-                                                    if (Pantographs[p2].State != PantographState.Up)
+                                                    if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
-                                                    if (Pantographs[p1].State != PantographState.Down)
+                                                    if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                         car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
 
                                                     if (MPManager.IsMultiPlayer())
@@ -14237,7 +14237,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
                                             if (MPManager.IsMultiPlayer())
@@ -14269,10 +14269,10 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Up)                                            
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)                                            
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                             
-                                            if (Pantographs[p2].State != PantographState.Down)                                            
+                                            if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Down)                                            
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
                                             
                                             if (MPManager.IsMultiPlayer())
@@ -14304,7 +14304,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph);
 
                                             if (MPManager.IsMultiPlayer())
@@ -14336,10 +14336,10 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
 
-                                            if (Pantographs[p2].State != PantographState.Up)
+                                            if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
                                             if (MPManager.IsMultiPlayer())
@@ -14497,7 +14497,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
                                             if (MPManager.IsMultiPlayer())
@@ -14539,10 +14539,10 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (Pantograph4NCActivated)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
                                             }
-                                            if (Pantographs[p2].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
 
                                             if (MPManager.IsMultiPlayer())
@@ -14581,7 +14581,7 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -14622,12 +14622,12 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.AcceptMUSignals)
                                         {
-                                            if (Pantographs[p1].State != PantographState.Down)
+                                            if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
 
                                             if (Pantograph4NCActivated)
                                             {
-                                                if (Pantographs[p2].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
                                             }
                                             if (MPManager.IsMultiPlayer())
@@ -14711,7 +14711,7 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -14743,10 +14743,10 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Down)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
 
-                                                if (Pantographs[p2].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -14778,7 +14778,7 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Down || Pantographs[p2].State != PantographState.Down)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -14810,10 +14810,10 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
 
-                                                if (Pantographs[p2].State != PantographState.Down)
+                                                if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph, p2);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -14845,7 +14845,7 @@ namespace Orts.Simulation.RollingStocks
                                         {
                                             if (car.AcceptMUSignals)
                                             {
-                                                if (Pantographs[p1].State != PantographState.Up || Pantographs[p2].State != PantographState.Up)
+                                                if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
 
                                                 if (MPManager.IsMultiPlayer())
@@ -15080,7 +15080,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] preCompressorSwitch = new int[3];
         public void ToggleCompressorCombined()
         {
-            if (CompressorCombined)
+            if (CompressorCombined && IsLeadLocomotive())
             {
                 Compressor_I_HandMode[LocoStation] = false;
                 switch (CompressorSwitch[LocoStation])
@@ -15156,7 +15156,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] preCompressorSwitch2 = new int[3];
         public void ToggleCompressorCombined2()
         {
-            if (CompressorCombined2)
+            if (CompressorCombined2 && IsLeadLocomotive())
             {
                 Compressor_II_HandMode[LocoStation] = false;
                 switch (CompressorSwitch2[LocoStation])
@@ -15249,7 +15249,7 @@ namespace Orts.Simulation.RollingStocks
         
         public void ToggleCompressorOffAutoOnSwitch()
         {
-            if (CompressorOffAutoOn)
+            if (CompressorOffAutoOn && IsLeadLocomotive())
             {
                 Compressor_I_HandMode[LocoStation] = false;
                 if (CompressorAutoOffOn)
@@ -15382,7 +15382,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorOffAutoOnSwitch2()
         {
-            if (CompressorOffAutoOn2)
+            if (CompressorOffAutoOn2 && IsLeadLocomotive())
             {
                 Compressor_II_HandMode[LocoStation] = false;
                 if (CompressorAutoOffOn2)

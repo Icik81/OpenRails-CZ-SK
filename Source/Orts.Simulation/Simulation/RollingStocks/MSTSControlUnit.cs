@@ -232,17 +232,7 @@ namespace Orts.Simulation.RollingStocks
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
-                        AuxResPressurePSI = PU.AuxResPressurePSI;
-
-                        switch (SwitchingVoltageMode)
-                        {
-                            case 0:
-                                VoltageDC = PantographVoltageV;
-                                break;
-                            case 2:
-                                VoltageAC = PantographVoltageV;
-                                break;
-                        }
+                        AuxResPressurePSI = PU.AuxResPressurePSI;                                                
 
                         // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
@@ -257,12 +247,13 @@ namespace Orts.Simulation.RollingStocks
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
                             HVOn = false; HVOff = false;                            
                             PU.BreakPowerButton = BreakPowerButton;
+                            if (AuxCompressor) PU.AuxCompressor = true;
 
-                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;
-                            PU.CompressorMode_OffAuto[LocoStation] = CompressorMode_OffAuto[LocoStation];
-                            PU.Compressor_I_HandMode[LocoStation] = Compressor_I_HandMode[LocoStation];                            
-                            PU.CompressorMode2_OffAuto[LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[LocoStation] = Compressor_II_HandMode[LocoStation];                            
+                            PU.AuxCompressorMode_OffOn[PU.LocoStation] = AuxCompressorMode_OffOn[LocoStation];
+                            PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
+                            PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
+                            PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                              
                         }                        
 
                         break;
@@ -311,12 +302,13 @@ namespace Orts.Simulation.RollingStocks
                             PU.PowerKey = PowerKey;
                            
                             PU.BreakPowerButton = BreakPowerButton;
+                            if (AuxCompressor) PU.AuxCompressor = true;
 
-                            PU.AuxCompressorMode_OffOn = AuxCompressorMode_OffOn;
-                            PU.CompressorMode_OffAuto[LocoStation] = CompressorMode_OffAuto[LocoStation];
-                            PU.Compressor_I_HandMode[LocoStation] = Compressor_I_HandMode[LocoStation];
-                            PU.CompressorMode2_OffAuto[LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[LocoStation] = Compressor_II_HandMode[LocoStation];
+                            PU.AuxCompressorMode_OffOn[PU.LocoStation] = AuxCompressorMode_OffOn[LocoStation];
+                            PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
+                            PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];
+                            PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
                         }
 
                         break;
