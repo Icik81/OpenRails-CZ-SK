@@ -1325,7 +1325,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                 if (PassengerCapacity == 0)
                     PassengerCapacity = 80;                
-            }
+            }            
 
             // Hack
             /*DavisAN = DavisBNSpM = DavisCNSSpMM = 0;

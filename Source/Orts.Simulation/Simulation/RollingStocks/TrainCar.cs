@@ -424,6 +424,7 @@ namespace Orts.Simulation.RollingStocks
         public int MPBrakeCarMode = 0;
         public int MPBrakeCarModePL = 0;
         public bool CarIsOnLvlCrossover;
+        public bool WagonIsFlipped;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2269,6 +2270,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarHasHeatingReady);
             outf.Write(CarOutsideTempCBase);
             outf.Write(SelectedCar);
+            outf.Write(WagonIsFlipped);
 
             BrakeSystem.Save(outf);
         }
@@ -2334,6 +2336,7 @@ namespace Orts.Simulation.RollingStocks
             CarHasHeatingReady = inf.ReadBoolean();
             CarOutsideTempCBase = inf.ReadSingle();
             SelectedCar = inf.ReadBoolean();
+            WagonIsFlipped = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

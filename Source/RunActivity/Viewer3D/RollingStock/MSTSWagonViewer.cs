@@ -306,11 +306,7 @@ namespace Orts.Viewer3D.RollingStock
             Mirrors = new AnimatedPart(TrainCarShape);
             Wipers = new AnimatedPart(TrainCarShape);
             UnloadingParts = new AnimatedPart(TrainCarShape);
-            Bell = new AnimatedPart(TrainCarShape);
-
-            // Icik
-            CoolingPlates_W = new AnimatedPart(TrainCarShape);
-            CoolingPlates_O = new AnimatedPart(TrainCarShape);
+            Bell = new AnimatedPart(TrainCarShape);            
 
             if (car.FreightAnimations != null)
                 FreightAnimations = new FreightAnimationsViewer(viewer, car, wagonFolderSlash);
@@ -397,12 +393,10 @@ namespace Orts.Viewer3D.RollingStock
             Mirrors.SetState(MSTSWagon.MirrorOpen);
             UnloadingParts.SetState(MSTSWagon.UnloadingPartsOpen);
 
-            // Icik
-            if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
-            {
-                CoolingPlates_W.SetState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning);
-                CoolingPlates_O.SetState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning);
-            }
+            // Icik            
+            // Zjistí, zdali je vůz fyzicky otočen
+            if (!Viewer.Simulator.GameWasRestored)
+                car.WagonIsFlipped = car.Flipped;
 
             InitializeUserInputCommands();
         }
@@ -546,16 +540,7 @@ namespace Orts.Viewer3D.RollingStock
             else if (matrixName.StartsWith("ORTSBELL")) // wipers
             {
                 Bell.AddMatrix(matrix);
-            }
-            // Icik
-            else if (matrixName.StartsWith("LAMELA_W")) // Lamely na chlazení vody
-            {
-                CoolingPlates_W.AddMatrix(matrix);
-            }
-            else if (matrixName.StartsWith("LAMELA_O")) // Lamely na chlazení oleje
-            {
-                CoolingPlates_O.AddMatrix(matrix);
-            }
+            }            
             else
             {
                 if (matrixAnimated && matrix != 0)
@@ -606,14 +591,7 @@ namespace Orts.Viewer3D.RollingStock
             LeftDoor.UpdateState(MSTSWagon.DoorLeftOpen, elapsedTime);
             RightDoor.UpdateState(MSTSWagon.DoorRightOpen, elapsedTime);
             Mirrors.UpdateState(MSTSWagon.MirrorOpen, elapsedTime);
-            UnloadingParts.UpdateState(MSTSWagon.UnloadingPartsOpen, elapsedTime);
-
-            // Icik
-            if (Viewer.PlayerLocomotive as MSTSDieselLocomotive != null)
-            {
-                CoolingPlates_W.UpdateState(MSTSWagon.DoorLeftOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].WaterTempCoolingRunning, elapsedTime);
-                CoolingPlates_O.UpdateState(MSTSWagon.DoorRightOpen || (Viewer.PlayerLocomotive as MSTSDieselLocomotive).DieselEngines[0].OilTempCoolingRunning, elapsedTime);
-            }
+            UnloadingParts.UpdateState(MSTSWagon.UnloadingPartsOpen, elapsedTime);            
 
             UpdateAnimation(frame, elapsedTime);
 

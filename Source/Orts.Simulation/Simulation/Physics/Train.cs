@@ -16820,35 +16820,68 @@ namespace Orts.Simulation.Physics
 
         bool ReverseAtStation = false;
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
-        {
+        {            
             StationStop thisStation = StationStops[0];
             var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
             if (open)
             {
-                if (ReverseAtStation)
+                // Fyzicky otočený vůz
+                if (LeadLocomotive.WagonIsFlipped)
                 {
-                    if (thisStation.PlatformItem.PlatformSide[1])
+                    if (LeadLocomotive.Flipped)
                     {
-                        //open left doors
-                        ToggleDoorsWagon(frontIsFront, true, wagon);
+                        if (thisStation.PlatformItem.PlatformSide[0])
+                        {
+                            //open left doors
+                            ToggleDoorsWagon(frontIsFront, true, wagon);
+                        }
+                        if (thisStation.PlatformItem.PlatformSide[1])
+                        {
+                            //open right doors
+                            ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        }
                     }
-                    if (thisStation.PlatformItem.PlatformSide[0])
+                    else
                     {
-                        //open right doors
-                        ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        if (thisStation.PlatformItem.PlatformSide[1])
+                        {
+                            //open left doors
+                            ToggleDoorsWagon(frontIsFront, true, wagon);
+                        }
+                        if (thisStation.PlatformItem.PlatformSide[0])
+                        {
+                            //open right doors
+                            ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        }
                     }
                 }
                 else
                 {
-                    if (thisStation.PlatformItem.PlatformSide[0])
+                    if (LeadLocomotive.Flipped)
                     {
-                        //open left doors
-                        ToggleDoorsWagon(frontIsFront, true, wagon);
+                        if (thisStation.PlatformItem.PlatformSide[1])
+                        {
+                            //open left doors
+                            ToggleDoorsWagon(frontIsFront, true, wagon);
+                        }
+                        if (thisStation.PlatformItem.PlatformSide[0])
+                        {
+                            //open right doors
+                            ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        }
                     }
-                    if (thisStation.PlatformItem.PlatformSide[1])
+                    else
                     {
-                        //open right doors
-                        ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        if (thisStation.PlatformItem.PlatformSide[0])
+                        {
+                            //open left doors
+                            ToggleDoorsWagon(frontIsFront, true, wagon);
+                        }
+                        if (thisStation.PlatformItem.PlatformSide[1])
+                        {
+                            //open right doors
+                            ToggleDoorsWagon(!frontIsFront, true, wagon);
+                        }
                     }
                 }
             }
@@ -16861,14 +16894,14 @@ namespace Orts.Simulation.Physics
 
         public void ReverseAtStationStopTest(Train train)
         {
-            float distanceToReversalPoint = 10000;
+            //float distanceToReversalPoint = 10000;
 
-            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
-                distanceToReversalPoint = ComputeDistanceToReversalPoint();
+            //if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+            //    distanceToReversalPoint = ComputeDistanceToReversalPoint();
             
-            ReverseAtStation = false;
-            if (distanceToReversalPoint < 50)
-                ReverseAtStation = true;
+            //ReverseAtStation = false;
+            //if (distanceToReversalPoint < 50)
+            //    ReverseAtStation = true;            
         }        
 
         public bool BoardingComplete;
@@ -17354,122 +17387,69 @@ namespace Orts.Simulation.Physics
             {
                 if (!Simulator.DoorSwitchDoorLocked && loco.Battery && loco.StationIsActivated[loco.LocoStation])
                 {
-                    Simulator.DoorSwitchDoorLocked = true;                    
-                    if (!loco.UsingRearCab)
+                    Simulator.DoorSwitchDoorLocked = true;
+
+                    // Fyzicky otočený vůz
+                    if (loco.WagonIsFlipped)
                     {
-                        if (loco.Flipped)
+                        // Druhá kabina
+                        if (loco.UsingRearCab)
                         {
-                            if (ReverseAtStation)
+                            switch (loco.DoorSwitch[loco.LocoStation])
                             {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
                             }
                         }
                         else
                         {
-                            if (ReverseAtStation)
+                            // První kabina
+                            switch (loco.DoorSwitch[loco.LocoStation])
                             {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
                             }
                         }
                     }
                     else
                     {
-                        if (loco.Flipped)
+                        // Druhá kabina
+                        if (loco.UsingRearCab)
                         {
-                            if (ReverseAtStation)
+                            switch (loco.DoorSwitch[loco.LocoStation])
                             {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                }
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
                             }
                         }
                         else
                         {
-                            if (ReverseAtStation)
+                            // První kabina
+                            switch (loco.DoorSwitch[loco.LocoStation])
                             {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                }
+                                case 0:
+                                    Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                                    break;
+                                case 2:
+                                    Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                                    break;
                             }
                         }
                     }
-                }
+                }                
+                
                 if (Simulator.DoorSwitchDoorLocked)
                 {
                     // Některé vozy nemusí mít automatické dveře a dveře si cestující otevírají sami                    
