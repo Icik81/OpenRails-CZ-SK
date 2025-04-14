@@ -160,7 +160,7 @@ namespace Orts.Simulation.Physics
         public float TrainTotalAirBrakeLengthM;
         public int TrainTotalAirBrakeCarsCount;
         public bool TrainIsNearToLvlCross;
-        public List<StationStop> StationTasks = new List<StationStop>();
+        public List<StationStop> StationTasks = new List<StationStop>();        
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
@@ -1831,6 +1831,17 @@ namespace Orts.Simulation.Physics
                 {                    
                     Simulator.AIPreference = false;
                     AIPreferenceModeStep = 0;
+                }
+            }
+
+            // Určuje otočení cesty vlaku po projetí reverzního bodu 
+            if (!Simulator.Settings.MSTSCompatibilityMode)
+            {
+                if (!nextRouteReady) TrainReverseIsSetOn = false;
+                if (!TrainReverseIsSetOn && nextRouteReady && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
+                {
+                    TrainRouteIsReversed = !TrainRouteIsReversed;
+                    TrainReverseIsSetOn = true;
                 }
             }
 
@@ -16822,13 +16833,13 @@ namespace Orts.Simulation.Physics
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
         {            
             StationStop thisStation = StationStops[0];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD && !ProblemStation;
             if (open)
             {
                 // Fyzicky otočený vůz
                 if (LeadLocomotive.WagonIsFlipped)
                 {
-                    if (LeadLocomotive.Flipped)
+                    if (TrainRouteIsReversed)
                     {
                         if (thisStation.PlatformItem.PlatformSide[0])
                         {
@@ -16857,7 +16868,7 @@ namespace Orts.Simulation.Physics
                 }
                 else
                 {
-                    if (LeadLocomotive.Flipped)
+                    if (TrainRouteIsReversed)
                     {
                         if (thisStation.PlatformItem.PlatformSide[1])
                         {
@@ -16894,14 +16905,14 @@ namespace Orts.Simulation.Physics
 
         public void ReverseAtStationStopTest(Train train)
         {
-            //float distanceToReversalPoint = 10000;
+            float distanceToReversalPoint = 10000;
 
             //if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
             //    distanceToReversalPoint = ComputeDistanceToReversalPoint();
-            
+
             //ReverseAtStation = false;
             //if (distanceToReversalPoint < 50)
-            //    ReverseAtStation = true;            
+            //    ReverseAtStation = true;                       
         }        
 
         public bool BoardingComplete;
@@ -17363,7 +17374,8 @@ namespace Orts.Simulation.Physics
                 }
             }
         }
-        
+
+        bool ProblemStation;
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
             if (train.Simulator.Paused)
@@ -17373,14 +17385,19 @@ namespace Orts.Simulation.Physics
             bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
 
             StationStop thisStation = StationStops[0];
-            bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[0];
-            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[1];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+            
+            ProblemStation = false;
+            if (thisStation.PlatformItem.PlatformFrontUiD == 1703 /*Břeclav*/)
+                ProblemStation = true;
 
-            if (frontIsFront)
-            {
-                LeftPlatformSide = !LeftPlatformSide;
+            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+            bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD && !ProblemStation;
+            
+            if (!frontIsFront)
+            {                
                 RightPlatformSide = !RightPlatformSide;
+                LeftPlatformSide = !LeftPlatformSide;
             }
 
             if (Simulator.DoorSwitchEnable)
