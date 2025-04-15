@@ -16836,7 +16836,13 @@ namespace Orts.Simulation.Physics
 
             bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;            
+
+            if (!frontIsFront)
+            {
+                RightPlatformSide = !RightPlatformSide;
+                LeftPlatformSide = !LeftPlatformSide;
+            }
 
             if (ProblemStation)
             {
@@ -16844,140 +16850,29 @@ namespace Orts.Simulation.Physics
                 LeftPlatformSide = !LeftPlatformSide;
             }
 
+            if (TrainRouteIsReversed)
+            {
+                RightPlatformSide = !RightPlatformSide;
+                LeftPlatformSide = !LeftPlatformSide;
+            }
+
             if (open)
             {
-                // Fyzicky otočený vůz
-                if (LeadLocomotive.WagonIsFlipped)
+                if (RightPlatformSide)
                 {
-                    if (TrainRouteIsReversed)
-                    {
-                        if (!frontIsFront)
-                        {
-                            if (LeftPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (RightPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                        else
-                        if (frontIsFront)
-                        {
-                            if (RightPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (LeftPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!frontIsFront)
-                        {
-                            if (RightPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (LeftPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                        else
-                        if (frontIsFront)
-                        {
-                            if (LeftPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (RightPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                    }
+                    //open right doors
+                    ToggleDoorsWagon(true, true, wagon);
                 }
-                else
+                if (LeftPlatformSide)
                 {
-                    if (TrainRouteIsReversed)
-                    {
-                        if (!frontIsFront)
-                        {
-                            if (RightPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (LeftPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                        else
-                        if (frontIsFront)
-                        {
-                            if (LeftPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (RightPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (!frontIsFront)
-                        {
-                            if (LeftPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (RightPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                        else
-                        if (frontIsFront)
-                        {
-                            if (RightPlatformSide)
-                            {
-                                //open left doors
-                                ToggleDoorsWagon(frontIsFront, true, wagon);
-                            }
-                            if (LeftPlatformSide)
-                            {
-                                //open right doors
-                                ToggleDoorsWagon(!frontIsFront, true, wagon);
-                            }
-                        }
-                    }
+                    //open left doors
+                    ToggleDoorsWagon(false, true, wagon);
                 }
             }
             if (!open)
             {
-                ToggleDoorsWagon(!frontIsFront, false, wagon);
-                ToggleDoorsWagon(frontIsFront, false, wagon);
+                ToggleDoorsWagon(true, false, wagon);
+                ToggleDoorsWagon(false, false, wagon);
             }
         }
 
@@ -17470,14 +17365,26 @@ namespace Orts.Simulation.Physics
 
             bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;            
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+            if (loco.WagonIsFlipped)
+            {
+                RightPlatformSide = !RightPlatformSide;
+                LeftPlatformSide = !LeftPlatformSide;
+            }
+
+            if (loco.UsingRearCab)
+            {
+                RightPlatformSide = !RightPlatformSide;
+                LeftPlatformSide = !LeftPlatformSide;
+            }
 
             if (!frontIsFront)
             {                
                 RightPlatformSide = !RightPlatformSide;
                 LeftPlatformSide = !LeftPlatformSide;
             }            
-
+            
             if (ProblemStation)
             {
                 RightPlatformSide = !RightPlatformSide;
@@ -17489,131 +17396,14 @@ namespace Orts.Simulation.Physics
                 if (!Simulator.DoorSwitchDoorLocked && loco.Battery && loco.StationIsActivated[loco.LocoStation])
                 {
                     Simulator.DoorSwitchDoorLocked = true;
-
-                    // Fyzicky otočený vůz
-                    if (loco.WagonIsFlipped)
+                    switch (loco.DoorSwitch[loco.LocoStation])
                     {
-                        // Druhá kabina
-                        if (loco.UsingRearCab)
-                        {
-                            if (!frontIsFront)
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            if (frontIsFront)
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (!frontIsFront)
-                            {
-                                // První kabina
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            if (frontIsFront)
-                            {
-                                // První kabina
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        // Druhá kabina
-                        if (loco.UsingRearCab)
-                        {
-                            if (!frontIsFront)
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            if (frontIsFront)
-                            {
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (!frontIsFront)
-                            {
-                                // První kabina
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                            else
-                            if (frontIsFront)
-                            {
-                                // První kabina
-                                switch (loco.DoorSwitch[loco.LocoStation])
-                                {
-                                    case 0:
-                                        Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
-                                        break;
-                                    case 2:
-                                        Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
-                                        break;
-                                }
-                            }
-                        }
+                        case 0:
+                            Simulator.DoorSwitchDoorLocked = LeftPlatformSide ? false : true;
+                            break;
+                        case 2:
+                            Simulator.DoorSwitchDoorLocked = RightPlatformSide ? false : true;
+                            break;
                     }
                 }                
                 
