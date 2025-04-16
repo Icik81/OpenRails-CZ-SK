@@ -1840,8 +1840,13 @@ namespace Orts.Simulation.Physics
                 if (!nextRouteReady) TrainReverseIsSetOn = false;
                 if (!TrainReverseIsSetOn && nextRouteReady && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
                 {
-                    TrainRouteIsReversed = !TrainRouteIsReversed;
+                    TrainRouteIsReversed = true;
                     TrainReverseIsSetOn = true;
+                    ReverseAtStation = true;
+                }
+                if (ReverseAtStation && !((ActivityTaskPassengerStopAt)Simulator.ActivityRun.Current).IsAtStation(this))
+                {
+                    ReverseAtStation = false;
                 }
             }
 
@@ -16796,11 +16801,8 @@ namespace Orts.Simulation.Physics
                 if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
                     wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
 
-                if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))
-                {
-                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
-                    ReverseAtStation = false;
-                }
+                if (!open && (wagon.BrakeSystem.LeftDoorIsOpened || wagon.BrakeSystem.RightDoorIsOpened))                
+                    wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger                                    
 
                 if (!wagon.FreightDoors)
                 {
@@ -16810,28 +16812,49 @@ namespace Orts.Simulation.Physics
                         wagon.DoorLeftOpen = open;
                     
                     wagon.BrakeSystem.RightDoorIsOpened = false;
-                    wagon.BrakeSystem.LeftDoorIsOpened = false;                    
-                    if (wagon.DoorLeftOpen)
+                    wagon.BrakeSystem.LeftDoorIsOpened = false;
+                    
+                    MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
+                    bool platformSide = StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
+
+                    StationStop thisStation = StationStops[0];
+
+                    ProblemStation = false;
+                    if (thisStation.PlatformItem.PlatformFrontUiD == 1703 /*Břeclav*/)
+                        ProblemStation = true;
+
+                    bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+                    bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+                    if (loco.WagonIsFlipped)
                     {
-                        if (TrainLeadUseRearCab)                        
-                            wagon.BrakeSystem.RightDoorIsOpened = true;                        
-                        else
-                            wagon.BrakeSystem.LeftDoorIsOpened = true;                        
+                        RightPlatformSide = !RightPlatformSide;
+                        LeftPlatformSide = !LeftPlatformSide;
                     }
-                    if (wagon.DoorRightOpen)
+
+                    if (!frontIsFront || loco.UsingRearCab)
                     {
-                        if (TrainLeadUseRearCab)
-                            wagon.BrakeSystem.LeftDoorIsOpened = true;
-                        else
-                            wagon.BrakeSystem.RightDoorIsOpened = true;
+                        RightPlatformSide = !RightPlatformSide;
+                        LeftPlatformSide = !LeftPlatformSide;
                     }
+
+                    if (ProblemStation)
+                    {
+                        RightPlatformSide = !RightPlatformSide;
+                        LeftPlatformSide = !LeftPlatformSide;
+                    }
+
+                    if (RightPlatformSide) wagon.BrakeSystem.RightDoorIsOpened = true;
+                    if (LeftPlatformSide) wagon.BrakeSystem.LeftDoorIsOpened = true;
                 }
             }
         }
 
         bool ReverseAtStation = false;
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
-        {            
+        {
+            MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
             StationStop thisStation = StationStops[0];
 
             bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
@@ -16842,19 +16865,13 @@ namespace Orts.Simulation.Physics
             {
                 RightPlatformSide = !RightPlatformSide;
                 LeftPlatformSide = !LeftPlatformSide;
-            }
+            }            
 
-            if (ProblemStation)
+            if (ReverseAtStation)
             {
                 RightPlatformSide = !RightPlatformSide;
-                LeftPlatformSide = !LeftPlatformSide;
-            }
-
-            if (TrainRouteIsReversed)
-            {
-                RightPlatformSide = !RightPlatformSide;
-                LeftPlatformSide = !LeftPlatformSide;
-            }
+                LeftPlatformSide = !LeftPlatformSide;                
+            }            
 
             if (open)
             {
@@ -16878,14 +16895,14 @@ namespace Orts.Simulation.Physics
 
         public void ReverseAtStationStopTest(Train train)
         {
-            float distanceToReversalPoint = 10000;
+            //float distanceToReversalPoint = 10000;
 
             //if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
             //    distanceToReversalPoint = ComputeDistanceToReversalPoint();
 
             //ReverseAtStation = false;
             //if (distanceToReversalPoint < 50)
-            //    ReverseAtStation = true;                       
+            //    ReverseAtStation = true;
         }        
 
         public bool BoardingComplete;
@@ -17371,20 +17388,14 @@ namespace Orts.Simulation.Physics
             {
                 RightPlatformSide = !RightPlatformSide;
                 LeftPlatformSide = !LeftPlatformSide;
-            }
+            }                        
 
-            if (loco.UsingRearCab)
-            {
-                RightPlatformSide = !RightPlatformSide;
-                LeftPlatformSide = !LeftPlatformSide;
-            }
-
-            if (!frontIsFront)
+            if (!frontIsFront || loco.UsingRearCab)
             {                
                 RightPlatformSide = !RightPlatformSide;
                 LeftPlatformSide = !LeftPlatformSide;
             }            
-            
+
             if (ProblemStation)
             {
                 RightPlatformSide = !RightPlatformSide;

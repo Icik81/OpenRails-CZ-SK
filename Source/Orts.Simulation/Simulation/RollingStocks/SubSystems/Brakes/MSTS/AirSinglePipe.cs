@@ -2795,7 +2795,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             PowerUnitPosition = i;
                         }
 
-                        if (!LocoTwoPipesConnectionBreak)
+                        if (!LocoTwoPipesConnectionBreak || loco == train.LeadLocomotive)
                         {                                                        
                             if (ControlUnitZeroPosition > -1 && PowerUnitPosition > -1)
                             {
