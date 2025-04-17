@@ -246,25 +246,32 @@ namespace Orts.Viewer3D
                     break;
             }
 
-            // Ranní mlha
-            if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
+            if (Program.Simulator.ActivityRun != null && Program.Simulator.ActivityRun.WeatherChangesPresent)                
             {
-                if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
-                    Program.Simulator.Weather.FogDistance -= 0.040f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                if (Program.Simulator.Weather.FogDistance < MorningFogDistance)
-                    Program.Simulator.Weather.FogDistance += 0.040f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                //if (MorningFogFirstRun)                
-                //    Program.Simulator.Weather.FogDistance = MorningFogDistance;                        
+                // Aktivitář používá své počasí                
             }
             else
             {
-                if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
-                    Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
-                    Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-            }            
-            MorningFogFirstRun = false;
-
+                // Ranní mlha
+                if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
+                {
+                    if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
+                        Program.Simulator.Weather.FogDistance -= 0.040f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                    if (Program.Simulator.Weather.FogDistance < MorningFogDistance)
+                        Program.Simulator.Weather.FogDistance += 0.040f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                    //if (MorningFogFirstRun)                
+                    //    Program.Simulator.Weather.FogDistance = MorningFogDistance;                        
+                }
+                else
+                {
+                    if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
+                        Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                    if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
+                        Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                }
+                MorningFogFirstRun = false;
+            }
+            
             // Mění intenzitu okolního světla v závislosti na zatažení oblohy
             Program.Simulator.OvercastAmbientLightCoef = 1.0f - (Program.Simulator.Weather.OvercastFactor / 3.0f);
 
