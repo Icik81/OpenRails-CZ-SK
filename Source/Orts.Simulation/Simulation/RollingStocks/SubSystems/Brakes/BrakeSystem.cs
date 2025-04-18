@@ -203,6 +203,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarHasMechanicStuckBrake_2;
         public bool CarHasProblemWithBrake;
 
+        public bool Status_CarHasAirStuckBrake_1;
+        public bool Status_CarHasAirStuckBrake_2;
+        public bool Status_CarHasAirStuckBrake_3;
+        public bool Status_CarHasMechanicStuckBrake_1;
+        public bool Status_CarHasMechanicStuckBrake_2;
+
         public bool Apply = false;
         public bool ApplyGA = false;
         public bool Release = false;

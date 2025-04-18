@@ -907,7 +907,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik                
         public virtual void BrakeMassKG()
         {                        
-            if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.CarHasMechanicStuckBrake_1)
+            if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.Status_CarHasMechanicStuckBrake_1)
             {
                 BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG / 3;
                 return;
@@ -1007,6 +1007,23 @@ namespace Orts.Simulation.RollingStocks
             if (BrakeSystem.CarHasAirStuckBrake_1 || BrakeSystem.CarHasAirStuckBrake_2 || BrakeSystem.CarHasAirStuckBrake_3
                 || BrakeSystem.CarHasMechanicStuckBrake_1 || BrakeSystem.CarHasMechanicStuckBrake_2)
                 BrakeSystem.CarHasProblemWithBrake = true;
+
+            if (!BrakeSystem.BrakeCarDeactivate)
+            {
+                BrakeSystem.Status_CarHasAirStuckBrake_1 = BrakeSystem.CarHasAirStuckBrake_1;
+                BrakeSystem.Status_CarHasAirStuckBrake_2 = BrakeSystem.CarHasAirStuckBrake_2;
+                BrakeSystem.Status_CarHasAirStuckBrake_3 = BrakeSystem.CarHasAirStuckBrake_3;
+                BrakeSystem.Status_CarHasMechanicStuckBrake_1 = BrakeSystem.CarHasMechanicStuckBrake_1;
+                BrakeSystem.Status_CarHasMechanicStuckBrake_2 = BrakeSystem.CarHasMechanicStuckBrake_2;
+            }
+            else
+            {
+                BrakeSystem.Status_CarHasAirStuckBrake_1 = false;
+                BrakeSystem.Status_CarHasAirStuckBrake_2 = false;
+                BrakeSystem.Status_CarHasAirStuckBrake_3 = false;
+                BrakeSystem.Status_CarHasMechanicStuckBrake_1 = false;
+                BrakeSystem.Status_CarHasMechanicStuckBrake_2 = false;
+            }
 
             var car = this as MSTSWagon;
             if (!BrakeSystem.BrakeCarHasStatus 

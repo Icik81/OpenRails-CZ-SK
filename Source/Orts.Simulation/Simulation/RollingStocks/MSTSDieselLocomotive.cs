@@ -637,16 +637,26 @@ namespace Orts.Simulation.RollingStocks
                     AbsTractionSpeedMpS = AbsSpeedMpS;
                 }
 
+                // Dostupný výkon SM
+                float AvailableSMPowerW = MaxPowerW * (1 - PowerReduction);
                 float maxPowerW;
 
                 if (TractiveForceCurves == null)
                 {
                     // This sets the maximum force of the locomotive, it will be adjusted down if it exceeds the max power of the locomotive.
-                    float maxForceN = Math.Min(t * MaxForceN * (1 - PowerReduction), AbsTractionSpeedMpS == 0.0f ? (t * MaxForceN * (1 - PowerReduction)) : (t * LocomotiveMaxRailOutputPowerW / AbsTractionSpeedMpS));
+                    float maxForceN;
 
                     // Maximum rail power is reduced by apparent throttle factor and the number of engines running (power ratio)
                     maxPowerW = LocomotiveMaxRailOutputPowerW * DieselEngineFractionPower * LocomotiveApparentThrottleSetting;
 
+                    if (AvailableSMPowerW < maxPowerW)
+                    {
+                        float ActualPowerReduction = (maxPowerW - AvailableSMPowerW) / maxPowerW;
+                        maxForceN = Math.Min(t * MaxForceN * (1 - ActualPowerReduction), AbsTractionSpeedMpS == 0.0f ? (t * MaxForceN * (1 - ActualPowerReduction)) : (t * LocomotiveMaxRailOutputPowerW / AbsTractionSpeedMpS));
+                    }
+                    else                    
+                        maxForceN = Math.Min(t * MaxForceN, AbsTractionSpeedMpS == 0.0f ? (t * MaxForceN) : (t * LocomotiveMaxRailOutputPowerW / AbsTractionSpeedMpS));
+                    
                     // If unloading speed is in ENG file, and locomotive speed is greater then unloading speed, and less then max speed, then apply a decay factor to the power/force
                     if (UnloadingSpeedMpS != 0 && AbsTractionSpeedMpS > UnloadingSpeedMpS && AbsTractionSpeedMpS < MaxSpeedMpS && !WheelSlip)
                     {
@@ -668,26 +678,29 @@ namespace Orts.Simulation.RollingStocks
                         TractiveForceN = maxForceN;
                         // Motive force will be produced until power reaches zero, some locomotives had a overspeed monitor set at the maximum design speed
                     }
-
                 }
                 else
-                {
-                    // Tractive force is read from Table using the apparent throttle setting, and then reduced by the number of engines running (power ratio)
-                   
-                    TractiveForceN = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * DieselEngineFractionPower * (1 - PowerReduction);
+                {                                                                                               
+                    // Skutečný výkon počítaný zadanou křivkou síly a rychlosti
+                    maxPowerW = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * AbsTractionSpeedMpS;                    
 
+                    if (DieselEngines.Count > 1)
+                        maxPowerW += TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * AbsTractionSpeedMpS;
+
+                    if (AvailableSMPowerW < maxPowerW)
+                    {
+                        float ActualPowerReduction = (maxPowerW - AvailableSMPowerW) / maxPowerW;
+                        TractiveForceN = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * DieselEngineFractionPower * (1 - ActualPowerReduction);                                                
+                    }
+                    else                    
+                        TractiveForceN = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * DieselEngineFractionPower;
+                                                                 
                     if (TractiveForceN < 0 && !TractiveForceCurves.AcceptsNegativeValues())
                         TractiveForceN = 0;
 
-                    // Icik
                     // Ohraničení trakční síly dle vstupního výkonu motoru
-                    maxPowerW = DieselEngines[0].CurrentDieselOutputPowerW;
-
-                    if (DieselEngines.Count > 1)
-                        maxPowerW += DieselEngines[1].CurrentDieselOutputPowerW;                    
-
-                    if (TractiveForceN * AbsSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
-                        TractiveForceN = (0.88f * maxPowerW * (1 - PowerReduction)) / AbsTractionSpeedMpS;
+                    if (TractiveForceN * AbsTractionSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
+                        TractiveForceN = (0.88f * maxPowerW) / AbsTractionSpeedMpS;
                 }
 
                 DieselFlowLps = DieselEngines.DieselFlowLps;
@@ -712,12 +725,12 @@ namespace Orts.Simulation.RollingStocks
 
             if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
             {
-                TractiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN * (1 - PowerReduction);
+                TractiveForceN *= 1 - (MaxForceN - MaxContinuousForceN) / (MaxForceN * MaxContinuousForceN) * AverageForceN;
                 float w = (ContinuousForceTimeFactor - elapsedClockSeconds) / ContinuousForceTimeFactor;
                 if (w < 0)
                     w = 0;
                 AverageForceN = w * AverageForceN + (1 - w) * TractiveForceN;
-            }
+            }            
         }
 
         /// <summary>

@@ -1251,7 +1251,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         dp = (AuxResPressurePSI - AutoCylPressurePSI0) * AuxCylVolumeRatioBase / (1 + AuxCylVolumeRatioBase);
                     if (AutoCylPressurePSI0 + dp > MaxCylPressurePSI)
                         dp = MaxCylPressurePSI - AutoCylPressurePSI0;
-                    if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen)
+                    if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen && !BrakeCarDeactivate)
                         dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
                     if (dp < 0)
                         dp = 0;
@@ -1299,7 +1299,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AuxResPressurePSI -= dp * EmergAuxVolumeRatio;
                         }
                     }
-                    if (AuxResPressurePSI < BrakeLine1PressurePSI && (NoMRPAuxResCharging || BrakeLine2PressurePSI < BrakeLine1PressurePSI) && !BleedOffValveOpen)
+                    if (AuxResPressurePSI < BrakeLine1PressurePSI && (NoMRPAuxResCharging || BrakeLine2PressurePSI < BrakeLine1PressurePSI) && !BleedOffValveOpen && !BrakeCarDeactivate)
                     {
                         float dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS; // Change in pressure for train brake pipe.
                         if (AuxResPressurePSI + dp > BrakeLine1PressurePSI - dp * AuxBrakeLineVolumeRatio)
@@ -1573,7 +1573,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 
                 // triple valve is set to charge the brake cylinder
                 BrakeCylApply = false;
-                if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency && !CarHasAirStuckBrake_2)
+                if (TripleValveState == ValveState.Apply || TripleValveState == ValveState.Emergency && !Status_CarHasAirStuckBrake_2)
                 {
                     BrakeCylRelease = false;
                     float dp = elapsedClockSeconds * MaxApplicationRatePSIpS;
@@ -1586,12 +1586,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (TwoStateBrake && LowPressure)
                     {
-                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioLowPressureBraking && !BleedOffValveOpen)
+                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioLowPressureBraking && !BleedOffValveOpen && !BrakeCarDeactivate)
                             dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioLowPressureBraking;
                     }
                     else
                     {
-                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen)
+                        if (BrakeLine1PressurePSI > AuxResPressurePSI - dp / AuxCylVolumeRatioBase && !BleedOffValveOpen && !BrakeCarDeactivate)
                             dp = (AuxResPressurePSI - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
                     }
 
@@ -1703,7 +1703,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     && BrakeLine1PressurePSI < PrevAuxResPressurePSI - BrakePipeMinPressureDropToEngage
                     && ThresholdBailOffOn == 0
                     && BrakeCylApplyMainResPressureOK
-                    && !CarHasAirStuckBrake_2
+                    && !Status_CarHasAirStuckBrake_2
                     && !OLBailOff)
                 {
                     if (TrainBrakeDelay > BrakeDelayToEngage - 0.05f && TrainBrakeDelay < BrakeDelayToEngage && AutoCylPressurePSI0 < 1)
@@ -1729,7 +1729,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Vypouští brzdový válec
-                if ((BrakeCylRelease || PressureConverterBase < AutoCylPressurePSI0) && !CarHasAirStuckBrake_1)
+                if ((BrakeCylRelease || PressureConverterBase < AutoCylPressurePSI0) && !Status_CarHasAirStuckBrake_1)
                 {
                     float thresholdBreakPoint = 4.84f * 14.50377f;
                     if (AutoCylPressurePSI0 > threshold || BrakeLine1PressurePSI > thresholdBreakPoint)
@@ -1755,7 +1755,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // triple valve set to release pressure in brake cylinder and EP valve set
-                if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !CarHasAirStuckBrake_1)
+                if (TripleValveState == ValveState.Release && HoldingValve == ValveState.Release && !Status_CarHasAirStuckBrake_1)
                 {                    
                     BrakeCylRelease = true;
                     BrakeCylApply = false;
@@ -1785,7 +1785,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AuxResPressurePSI -= dp * EmergAuxVolumeRatio;
                         }
                     }
-                    if (AuxResPressurePSI < BrakeLine1PressurePSI && !BleedOffValveOpen)
+                    if (AuxResPressurePSI < BrakeLine1PressurePSI && !BleedOffValveOpen && !BrakeCarDeactivate)
                     {
                         float dp = elapsedClockSeconds * MaxAuxilaryChargingRatePSIpS; // Change in pressure for train brake pipe.
                         if (AuxResPressurePSI + dp > BrakeLine1PressurePSI - dp * AuxBrakeLineVolumeRatio)
@@ -2037,8 +2037,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Record HUD display values for brake cylinders depending upon whether they are wagons or locomotives/tenders (which are subject to their own engine brakes)   
             if (Car.WagonType == MSTSWagon.WagonTypes.Engine || Car.WagonType == MSTSWagon.WagonTypes.Tender)
             {
-                Car.Train.HUDLocomotiveBrakeCylinderPSI = CylPressurePSI;
-                Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached                
+                if (Car.CarIsPlayerLoco)
+                {
+                    Car.Train.HUDLocomotiveBrakeCylinderPSI = CylPressurePSI;
+                    Car.Train.HUDWagonBrakeCylinderPSI = Car.Train.HUDLocomotiveBrakeCylinderPSI;  // Initially set Wagon value same as locomotive, will be overwritten if a wagon is attached
+                }
             }
             else
             {
@@ -2070,7 +2073,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             f = Math.Max(Car.MaxBrakeForceN, Car.MaxHandbrakeForceN / 2);
 
             // Síla zaseklých zdrží nebo kotoučů
-            if (CarHasMechanicStuckBrake_2)
+            if (Status_CarHasMechanicStuckBrake_2)
                  f = Car.MaxBrakeForceN * 0.75f;
 
             // fRMg není zohledněna v síle na brzdící nápravy
@@ -2307,7 +2310,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if ((car as MSTSWagon).TrainPipeLeakRatePSIpSBase == 0 && !(car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)
                     (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = 0.0010f * 14.50377f; // Výchozí netěsnost 0.0010bar/s                
 
-                if ((car as MSTSWagon).BrakeSystem.CarHasAirStuckBrake_3)
+                if ((car as MSTSWagon).BrakeSystem.Status_CarHasAirStuckBrake_3)
                 {
                     (car as MSTSWagon).TrainPipeLeakRatePSIpSBase = (car as MSTSWagon).TrainPipeLeakRatePSIpSBase0 * 10f;
                     if ((car as MSTSWagon).BrakeSystem.BrakeCarDeactivate)

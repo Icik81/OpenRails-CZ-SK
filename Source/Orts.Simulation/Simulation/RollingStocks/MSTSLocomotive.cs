@@ -8678,7 +8678,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerUnit)
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
+                    LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
                 }
 
                 // Nikdy nedovolí, aby počet hnacích náprav byl 1 při celkovém počtu náprav větší než 2 - kvůli výpočtu adhezní tíhy hnací nápravy
@@ -10512,7 +10512,7 @@ namespace Orts.Simulation.RollingStocks
                     return string.Format("{0}", EngineBrakeController.GetStatus());  // Fraction found so don't display BC
                 }
                 else
-                {
+                {                    
                     return string.Format("{0}{1}", EngineBrakeController.GetStatus(), BailOff ? " BailOff" : "");  // Fraction found so don't display BC
                 }
             }
