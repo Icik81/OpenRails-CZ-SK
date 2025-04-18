@@ -16806,10 +16806,10 @@ namespace Orts.Simulation.Physics
 
                 if (!wagon.FreightDoors)
                 {
-                    if (!wagon.Flipped && right || wagon.Flipped && !right)                    
+                    if (!wagon.Flipped && right || wagon.Flipped && !right)                                            
                         wagon.DoorRightOpen = open;                    
                     else                    
-                        wagon.DoorLeftOpen = open;
+                        wagon.DoorLeftOpen = open;                    
                     
                     wagon.BrakeSystem.RightDoorIsOpened = false;
                     wagon.BrakeSystem.LeftDoorIsOpened = false;
@@ -16825,7 +16825,7 @@ namespace Orts.Simulation.Physics
 
                     bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
                     bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
-                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+                    var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;                    
 
                     if (loco.WagonIsFlipped)
                     {
@@ -16871,19 +16871,35 @@ namespace Orts.Simulation.Physics
             {
                 RightPlatformSide = !RightPlatformSide;
                 LeftPlatformSide = !LeftPlatformSide;                
-            }            
-
+            }
+            
             if (open)
             {
                 if (RightPlatformSide)
                 {
                     //open right doors
-                    ToggleDoorsWagon(true, true, wagon);
+                    if (wagon == loco)
+                    {
+                        if (loco.UsingRearCab && loco.Flipped && !ReverseAtStation && frontIsFront)
+                            ToggleDoorsWagon(false, true, wagon);
+                        else
+                            ToggleDoorsWagon(true, true, wagon);
+                    }
+                    else
+                        ToggleDoorsWagon(true, true, wagon);
                 }
                 if (LeftPlatformSide)
                 {
                     //open left doors
-                    ToggleDoorsWagon(false, true, wagon);
+                    if (wagon == loco)
+                    {
+                        if (loco.UsingRearCab && loco.Flipped && !ReverseAtStation && frontIsFront)
+                            ToggleDoorsWagon(true, true, wagon);
+                        else
+                            ToggleDoorsWagon(false, true, wagon);
+                    }
+                    else
+                        ToggleDoorsWagon(false, true, wagon);
                 }
             }
             if (!open)
