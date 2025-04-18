@@ -276,6 +276,7 @@ namespace Orts.Simulation
         public float GameTimeHours;
         public float RunTimeCabMouseControll;
         public bool AIPreference;
+        public bool WeatherChangesPresent;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -153,7 +153,11 @@ namespace Orts.Simulation
                 }
                 EventWrapper eventAdded = EventList.Last();
                 eventAdded.OriginalActivationLevel = i.Activation_Level;
-                if (i.ORTSWeatherChange != null || i.Outcomes.ORTSWeatherChange != null) WeatherChangesPresent = true;
+                if (i.ORTSWeatherChange != null || i.Outcomes.ORTSWeatherChange != null)
+                {
+                    WeatherChangesPresent = true;
+                    Simulator.WeatherChangesPresent = true;
+                }
             }
 
             StationStopLogActive = false;
