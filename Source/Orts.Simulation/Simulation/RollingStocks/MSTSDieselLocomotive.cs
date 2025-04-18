@@ -638,7 +638,13 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Dostupný výkon SM
-                float AvailableSMPowerW = MaxPowerW * (1 - PowerReduction);
+                float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW;
+                
+                if (DieselEngines.Count > 1)                
+                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW;                
+                
+                AvailableSMPowerW *= (1 - PowerReduction);
+
                 float maxPowerW;
 
                 if (TractiveForceCurves == null)
