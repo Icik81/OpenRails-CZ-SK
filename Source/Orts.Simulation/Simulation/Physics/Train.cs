@@ -1844,7 +1844,7 @@ namespace Orts.Simulation.Physics
                     TrainReverseIsSetOn = true;
                     ReverseAtStation = true;
                 }
-                if (ReverseAtStation && !((ActivityTaskPassengerStopAt)Simulator.ActivityRun.Current).IsAtStation(this))
+                if (ReverseAtStation && ((ActivityTaskPassengerStopAt)Simulator.ActivityRun.Current) != null && !((ActivityTaskPassengerStopAt)Simulator.ActivityRun.Current).IsAtStation(this))
                 {
                     ReverseAtStation = false;
                 }
