@@ -6926,9 +6926,8 @@ namespace Orts.Simulation.AIs
                     StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                 }
             }
-
-            if (AtStation)
-                ReverseAtStationStopTest(this);
+            
+            ReverseAtStationStopTest(this);
 
             if (StationStops.Count == 1) EndStation = true;
 
@@ -6959,6 +6958,7 @@ namespace Orts.Simulation.AIs
                         AtStation = false;
                         MayDepart = false;
                         DisplayMessage = "";
+                        ReverseAtStation = false;
                     }
                     else
                     {

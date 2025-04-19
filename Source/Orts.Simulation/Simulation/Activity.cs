@@ -265,6 +265,7 @@ namespace Orts.Simulation
                 {
                     if (Math.Abs(prevTrainSpeed) < 0.1f && Math.Abs(Simulator.OriginalPlayerTrain.SpeedMpS) >= 1.5f)
                     {
+                        Simulator.OriginalPlayerTrain.ReverseAtStation = false;
                         prevTrainSpeed = Simulator.OriginalPlayerTrain.SpeedMpS;
                         Current.NotifyEvent(ActivityEventType.TrainStart);
                         if (Current.IsCompleted != null)
@@ -1102,9 +1103,8 @@ namespace Orts.Simulation
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                     }
                 }
-
-                if (IsAtStation(MyPlayerTrain))
-                    MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
+                
+                MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
 

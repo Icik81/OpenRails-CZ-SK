@@ -10339,9 +10339,8 @@ namespace Orts.Simulation.Timetables
                 EndStationTT = true;
             else
                 EndStationTT = false;
-
-            if (AtStation)
-                ReverseAtStationStopTest(this);
+            
+            ReverseAtStationStopTest(this);
 
             if (StationStops.Count == 1) EndStation = true;            
 
@@ -10372,6 +10371,7 @@ namespace Orts.Simulation.Timetables
                         AtStation = false;
                         MayDepart = false;
                         DisplayMessage = "";
+                        ReverseAtStation = false;
                     }
                     else
                     {
