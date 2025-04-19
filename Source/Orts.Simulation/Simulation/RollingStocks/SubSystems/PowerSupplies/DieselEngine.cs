@@ -1081,10 +1081,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {                
                 float LoadSM;
                 float LoadEDB = 0;
-                // 30kW chlazení dieselu + 20kW chlazení trakčáků + 10kW dobíjení aku + 5kW napájení elektroniky na 1000kW loko
-                if (locomotive.DynamicBrake != null) LoadEDB = Math.Abs(locomotive.DynamicBrakeForceN) > 1000 ? 10000 : 0; // Chlazení EDB 10kW na 1000kW loko
-                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1000000f * MaximumDieselPowerW) * (1000000f / MaximumDieselPowerW);                
-                LoadSM /= 1000000f;
+                // 30kW chlazení dieselu + 20kW chlazení trakčáků + 10kW dobíjení aku + 5kW napájení elektroniky na 1470kW loko
+                if (locomotive.DynamicBrake != null) LoadEDB = Math.Abs(locomotive.DynamicBrakeForceN) > 1000 ? 10000 : 0; // Chlazení EDB 10kW na 1470kW loko
+                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW);                
+                LoadSM /= 1470000f;
                 LoadSM = MathHelper.Clamp(LoadSM, 0, 1);                
                 return LoadSM;
             }
@@ -1558,6 +1558,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     RealRPM = Math.Max(RealRPM + (dRPM * elapsedClockSeconds), 0);
                 }
+            }
+
+            // Dokud se nenastaví volnoběžné otáčky dle sezóny, neteče proud do topení
+            if (RealRPM < 0.99f * ElevatedConsumptionIdleRPMBase && locomotive.PowerReductionResult1 > 0)
+            {
+                locomotive.I_Heating = 0;
+                locomotive.PowerReductionResult1 = 0;
             }
 
             // Icik

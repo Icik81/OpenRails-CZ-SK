@@ -638,13 +638,27 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Dostupný výkon SM
-                float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW * (1 - DieselEngines.DEList[0].LoadSMCoef);
+                float maxPowerW;
+                float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW - (DieselEngines.DEList[0].LoadSMCoef * DieselEngines.DEList[0].MaximumDieselPowerW);
                 
                 if (DieselEngines.Count > 1)                
-                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW * (1 - DieselEngines.DEList[1].LoadSMCoef);
+                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);
 
-                AvailableSMPowerW *= 1 - PowerReduction;
-                float maxPowerW;
+                AvailableSMPowerW -= PowerReductionResult1 * MaximumDieselEnginePowerW;
+
+                // Alternátor
+                // Zde bude interpolační křivka přetížení alternátoru
+                float AlternatorPowerW = 400000f / 1470000f * MaximumDieselEnginePowerW; // Poměrově určený výkon alternátoru - 420 kVA = 400 kW pro řadu 754 s výkonem 1470 kW
+                AlternatorOverloadCoef = AvailableSMPowerW / AlternatorPowerW;
+
+                // 1 a více ... 3000 V plný výkon
+                // 0.33 a méně ... 1000 V a vybavuje ochrana podpětí
+                AlternatorOverloadCoef = MathHelper.Clamp(AlternatorOverloadCoef, 0, 1);
+                
+                // Vypnutí topení při nedostatečně buzeném alternátoru
+                if (PowerReductionResult1 > 0 && AlternatorOverloadCoef < 0.33f) HeatingOverCurrent = true;
+
+                if (AvailableSMPowerW < 1) AvailableSMPowerW = 1;                                                    
 
                 if (TractiveForceCurves == null)
                 {

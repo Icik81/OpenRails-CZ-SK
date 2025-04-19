@@ -485,6 +485,7 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByHeatingWag;
         public float PowerReductionByAuxEquipmentEng;
         public float PowerReductionByAuxEquipmentWag;
+        public float AlternatorOverloadCoef;
         public float PowerReduction0;
         public float PowerReduction1;
         public float TElevatedConsumption = 0;
@@ -5026,8 +5027,8 @@ namespace Orts.Simulation.RollingStocks
                             car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;                            
                         }
                         else
-                            car.PowerReductionByHeating0 = car.PowerReductionByHeating;
-                        car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition;
+                            car.PowerReductionByHeating0 = car.PowerReductionByHeating * AlternatorOverloadCoef;
+                        car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition * AlternatorOverloadCoef;
                     }
 
                     if (!car.StatusHeatIsOn) // Pokud je jednotka neaktivní (termostat zapnutý)
