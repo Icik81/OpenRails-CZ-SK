@@ -111,9 +111,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>        
         float partialFuelConsumption = 0;
 
-        private const float GearBoxControllerBoost = 1; // Slow boost to enable easy single gear up/down commands
-
-        public bool JVSetUp;
+        private const float GearBoxControllerBoost = 1; // Slow boost to enable easy single gear up/down commands        
 
         public MSTSDieselLocomotive(Simulator simulator, string wagFile, string wagFileBase)
             : base(simulator, wagFile, wagFileBase)
@@ -148,8 +146,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsdieselcooling": DieselEngineCooling = (DieselEngine.Cooling)stf.ReadInt((int)DieselEngine.Cooling.Proportional); break;
 
                 // Detekuje JV ladění, ladění pro OR CZ/SK tento parametr nikdy nepoužívá        
-                case "engine(ortsmasterkey": JVSetUp = true; break;
-                case "wagon(ortslengthbogiecentre": JVSetUp = true; break;
+                case "engine(ortsmasterkey": JVSetup = true; break;
+                case "wagon(ortslengthbogiecentre": JVSetup = true; break;
 
                 default:
                     GearBox.Parse(lowercasetoken, stf);
@@ -379,7 +377,7 @@ namespace Orts.Simulation.RollingStocks
             DieselFlowLps = 0.0f;
             InitialMassKg = MassKG;
 
-            JVSetUp = locoCopy.JVSetUp;
+            JVSetup = locoCopy.JVSetup;
 
             if (this.CarID.StartsWith("0"))
                 DieselLevelL = locoCopy.DieselLevelL;
@@ -642,22 +640,26 @@ namespace Orts.Simulation.RollingStocks
                 float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW - (DieselEngines.DEList[0].LoadSMCoef * DieselEngines.DEList[0].MaximumDieselPowerW);
                 
                 if (DieselEngines.Count > 1)                
-                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);
-
-                AvailableSMPowerW -= PowerReductionResult1 * MaximumDieselEnginePowerW;
+                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);                
 
                 // Alternátor
                 // Zde bude interpolační křivka přetížení alternátoru
                 float AlternatorPowerW = 400000f / 1470000f * MaximumDieselEnginePowerW; // Poměrově určený výkon alternátoru - 420 kVA = 400 kW pro řadu 754 s výkonem 1470 kW
-                AlternatorOverloadCoef = AvailableSMPowerW / AlternatorPowerW;
 
                 // 1 a více ... 3000 V plný výkon
-                // 0.33 a méně ... 1000 V a vybavuje ochrana podpětí
+                // 0.66 a méně ... 2000 V a vybavuje ochrana podpětí
+                AlternatorOverloadCoef = AlternatorPowerW / (PowerReductionResult1 * MaximumDieselEnginePowerW);
                 AlternatorOverloadCoef = MathHelper.Clamp(AlternatorOverloadCoef, 0, 1);
-                
-                // Vypnutí topení při nedostatečně buzeném alternátoru
-                if (PowerReductionResult1 > 0 && AlternatorOverloadCoef < 0.33f) HeatingOverCurrent = true;
 
+                // 1 a více ... plný výkon topení
+                // méně než 1 ... snížený výkon topení
+                HeatingOverloadCoef = AvailableSMPowerW / (PowerReductionResult1 * MaximumDieselEnginePowerW);
+                HeatingOverloadCoef = MathHelper.Clamp(HeatingOverloadCoef, 0, 1);
+
+                // Vypnutí topení při přetíženém alternátoru
+                if (PowerReductionResult1 > 0 && AlternatorOverloadCoef < 0.66f) HeatingOverCurrent = true;
+
+                AvailableSMPowerW -= PowerReductionResult1 * MaximumDieselEnginePowerW;
                 if (AvailableSMPowerW < 1) AvailableSMPowerW = 1;                                                    
 
                 if (TractiveForceCurves == null)
@@ -755,6 +757,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the locomotive's sound variables.
         /// </summary>        
+        bool SoundVariableFirstRun;
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             // Aripot
@@ -863,9 +866,9 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Hack pro start zvuku motoru JV ladění
-            if (JVSetUp)
+            if (JVSetup)
             {
-                if (!this.BrakeSystem.PowerForWagon && AITimeMotorRunning > preAITimeMotorRunning)
+                if (!this.BrakeSystem.PowerForWagon && !SoundVariableFirstRun && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
                 {
                     SignalEvent(Event.EnginePowerOff);
                 }
@@ -873,9 +876,15 @@ namespace Orts.Simulation.RollingStocks
                 if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer < 1f)
                 {
                     SignalEvent(Event.EnginePowerOn);
-                }                
+                }
+                else
+                if (!this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                {
+                    Variable2 = 0.01f;
+                }
                 preAITimeMotorRunning = AITimeMotorRunning;
             }
+            SoundVariableFirstRun = true;
         }
 
         public override void ChangeGearUp()

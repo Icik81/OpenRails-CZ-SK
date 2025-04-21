@@ -1517,7 +1517,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
             // Icik
             // Sníží otáčky motoru kvůli ochraně TM 
-            if (!RPMgrowth && (locomotive.OverVoltage || locomotive.OverCurrent || locomotive.HeatingOverCurrent))
+            if (!RPMgrowth && (locomotive.OverVoltage || locomotive.OverCurrent))
             {
                 if (RealRPM > IdleRPM)
                     RealRPM -= ChangeDownRPMpS * elapsedClockSeconds;
