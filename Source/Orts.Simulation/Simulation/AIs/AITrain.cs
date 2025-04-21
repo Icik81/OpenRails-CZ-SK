@@ -6925,8 +6925,8 @@ namespace Orts.Simulation.AIs
                 {
                     StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                 }
-            }
-            
+            }            
+
             ReverseAtStationStopTest(this);
 
             if (StationStops.Count == 1) EndStation = true;
@@ -7008,6 +7008,8 @@ namespace Orts.Simulation.AIs
 
                         StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                         RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
+                        
+                        if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
 
                         // Still have to wait
                         if (remaining > 0)

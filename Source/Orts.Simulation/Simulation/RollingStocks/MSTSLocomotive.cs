@@ -485,8 +485,8 @@ namespace Orts.Simulation.RollingStocks
         public float PowerReductionByHeatingWag;
         public float PowerReductionByAuxEquipmentEng;
         public float PowerReductionByAuxEquipmentWag;
-        public float AlternatorOverloadCoef;
-        public float HeatingOverloadCoef;
+        public float AlternatorOverloadCoef = 1.0f;
+        public float HeatingOverloadCoef = 1.0f;
         public float PowerReduction0;
         public float PowerReduction1;
         public float TElevatedConsumption = 0;

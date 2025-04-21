@@ -33,6 +33,7 @@ using System.Linq;
 using System.Security.Policy;
 using System.Text;
 using static Orts.Simulation.Physics.Train;
+using static System.Collections.Specialized.BitVector32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
@@ -1155,6 +1156,8 @@ namespace Orts.Simulation
 
                         MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
                         RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
+                        
+                        if (MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] != -1) MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] = RestOfPax;
 
                         // Still have to wait
                         if (remaining > 0)

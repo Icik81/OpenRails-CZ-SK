@@ -778,7 +778,11 @@ namespace Orts.Simulation.Physics
             {
                 fullUnboardStations.Add(inf.ReadInt32());
                 UnboardStationsName.Add(inf.ReadString());                
-            }            
+            }
+            for (int i = 0; i < MaxStationCountFromStart; i++)
+            {
+                StationsBoardingRestOfPaxes[i] = inf.ReadInt32();                
+            }
 
             Init(simulator);
             routedForward = new TrainRouted(this, 0);
@@ -1168,6 +1172,11 @@ namespace Orts.Simulation.Physics
             }
             else
                 outf.Write(0);
+
+            for (int i = 0; i < MaxStationCountFromStart; i++)
+            {               
+                outf.Write(StationsBoardingRestOfPaxes[i]);
+            }
 
             SaveCars(outf);
             outf.Write(Number);
@@ -16914,8 +16923,7 @@ namespace Orts.Simulation.Physics
         private bool enterTimesCalculated = false;
         private double nextTimeExitDoors1 = 0;
         private double nextTimeExitDoors2 = 0;
-        private int numUsableWagons = 0;
-        private bool firtWagonActionComputed = false;
+        private int numUsableWagons = 0;        
         public int numCars = 0;
         public float MaxPaxCapacity = 0;
         public float CurrentPaxCapacity = 0;
@@ -16938,7 +16946,8 @@ namespace Orts.Simulation.Physics
         public List<Passenger> exitPaxList = new List<Passenger>();
 
         public List<int> fullUnboardStations = new List<int>();
-        public List<string> UnboardStationsName = new List<string>();                
+        public List<string> UnboardStationsName = new List<string>();
+        public int[] StationsBoardingRestOfPaxes = new int[50];
         protected bool initPax = true;
         protected int statCount = 0;
         float actualRandom = 1;
@@ -16980,6 +16989,9 @@ namespace Orts.Simulation.Physics
             int station = 0;
             foreach (StationStop ss in StationStops)
             {
+                // Nástup ukončen, negeneruj cestující
+                if (StationsBoardingRestOfPaxes[station] == -1) goto SkipToNextStationDynamic;
+
                 if (station == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
                 {
                     ss.PlatformItem.NumPassengersWaiting = 0;
@@ -17004,8 +17016,12 @@ namespace Orts.Simulation.Physics
 
                 ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
-                int numPax = ss.PlatformItem.NumPassengersWaiting;
+                int numPax = ss.PlatformItem.NumPassengersWaiting;                
                 int maxStation = 0;
+
+                // Pokud zbývají cestující
+                if (StationsBoardingRestOfPaxes[station] > 0 && StationsBoardingRestOfPaxes[station] < numPax) numPax = StationsBoardingRestOfPaxes[station];
+
                 if (ss.PlatformItem.PassengerListBuffer.Count < numPax)
                 {
                     while (ss.PlatformItem.PassengerListBuffer.Count < numPax)
@@ -17089,6 +17105,7 @@ namespace Orts.Simulation.Physics
                         goto goagain;
                     }
                 }
+            SkipToNextStationDynamic:
                 station++;
             }
         }
@@ -17267,11 +17284,18 @@ namespace Orts.Simulation.Physics
                 
                 station = ActualStationNumber;
                 foreach (StationStop ss in train.StationStops)
-                {                    
+                {
+                    // Nástup ukončen, negeneruj cestující
+                    if (StationsBoardingRestOfPaxes[station] == -1) goto SkipToNextStation;
+
                     if (station - ActualStationNumber + 1 == StationStops.Count)
                         break;
 
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
+
+                    // Pokud zbývají cestující
+                    if (StationsBoardingRestOfPaxes[station] > 0 && StationsBoardingRestOfPaxes[station] < numPax) numPax = StationsBoardingRestOfPaxes[station];
+                    
                     for (int i = 0; i < numPax; i++)
                     {
                         pax = new Passenger(testNamesM, testSurNamesM, testNamesF, testSurNamesF, random);
@@ -17302,6 +17326,7 @@ namespace Orts.Simulation.Physics
                         pax.WagonName = Cars[pax.WagonIndex].CarID;
                         ss.PlatformItem.PassengerList.Add(pax);
                     }
+                SkipToNextStation:
                     station++;
                 }
                 namesFilled = true;
@@ -17818,6 +17843,7 @@ namespace Orts.Simulation.Physics
                         enterTimesCalculated = false;
                         exitTimesCalculated = false;
                         DoorCanBeOpenned = true;
+                        StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
                         return;
                     }
                 }
@@ -17846,9 +17872,10 @@ namespace Orts.Simulation.Physics
                         wagon.TimeToCloseDoorGenerate = 0;
                     }
                 }
-                train.BoardingComplete = true;                
+                train.BoardingComplete = true;                  
                 enterTimesCalculated = false;
                 exitTimesCalculated = false;
+                StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
             }
         }
 
