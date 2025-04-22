@@ -646,14 +646,20 @@ namespace Orts.Simulation.RollingStocks
                 // Zde bude interpolační křivka přetížení alternátoru
                 float AlternatorPowerW = 400000f / 1470000f * MaximumDieselEnginePowerW; // Poměrově určený výkon alternátoru - 420 kVA = 400 kW pro řadu 754 s výkonem 1470 kW
 
+                float MaximalPowerReduction = 1;
+                if (MaximalPowerReductionByHeating > 0)
+                    MaximalPowerReduction = MaximalPowerReductionByHeating;
+                if (MaximalPowerReductionByAirCondition > 0)
+                    MaximalPowerReduction = MaximalPowerReductionByAirCondition;
+
                 // 1 a více ... 3000 V plný výkon
                 // 0.66 a méně ... 2000 V a vybavuje ochrana podpětí
-                AlternatorOverloadCoef = AlternatorPowerW / (PowerReductionResult1 * MaximumDieselEnginePowerW);
+                AlternatorOverloadCoef = AlternatorPowerW / (MaximalPowerReduction * HeatingOverloadCoef);
                 AlternatorOverloadCoef = MathHelper.Clamp(AlternatorOverloadCoef, 0, 1);
 
                 // 1 a více ... plný výkon topení
                 // méně než 1 ... snížený výkon topení
-                HeatingOverloadCoef = AvailableSMPowerW / (PowerReductionResult1 * MaximumDieselEnginePowerW);
+                HeatingOverloadCoef = AvailableSMPowerW / MaximalPowerReduction;
                 HeatingOverloadCoef = MathHelper.Clamp(HeatingOverloadCoef, 0, 1);
 
                 // Vypnutí topení při přetíženém alternátoru

@@ -483,6 +483,8 @@ namespace Orts.Simulation.RollingStocks
         public int SwitchingVoltageMode = 1;
         public float PowerReductionByHeatingEng;
         public float PowerReductionByHeatingWag;
+        public float MaximalPowerReductionByHeating;
+        public float MaximalPowerReductionByAirCondition;
         public float PowerReductionByAuxEquipmentEng;
         public float PowerReductionByAuxEquipmentWag;
         public float AlternatorOverloadCoef = 1.0f;
@@ -5008,7 +5010,9 @@ namespace Orts.Simulation.RollingStocks
             if (Train.HeatingIsOn || this.CabHeatingIsOn)
             {
                 PowerReductionByHeatingWag = 0;
-
+                MaximalPowerReductionByHeating = 0;
+                MaximalPowerReductionByAirCondition = 0;
+                
                 foreach (TrainCar car in Train.Cars)
                 {
                     var mstsDieselLocomotive = car as MSTSDieselLocomotive;
@@ -5025,11 +5029,15 @@ namespace Orts.Simulation.RollingStocks
                             // Kalorifer
                             if (mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC != 0)
                                 mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC = mstsDieselLocomotive.DieselEngines[0].DieselIdleWaterTemperatureDegC;
-                            car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;                            
+                            car.PowerReductionByHeating0 = 0.85f * car.PowerReductionByHeating * mstsDieselLocomotive.DieselEngines[0].RealDieselWaterTemperatureDeg / mstsDieselLocomotive.DieselEngines[0].DieselIdleTemperatureDegC;
                         }
                         else
+                        {
                             car.PowerReductionByHeating0 = car.PowerReductionByHeating * AlternatorOverloadCoef * HeatingOverloadCoef;
+                            MaximalPowerReductionByHeating += car.PowerReductionByHeating;
+                        }
                         car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition * AlternatorOverloadCoef * HeatingOverloadCoef;
+                        MaximalPowerReductionByAirCondition += car.PowerReductionByAirCondition;
                     }
 
                     if (!car.StatusHeatIsOn) // Pokud je jednotka neaktivní (termostat zapnutý)
