@@ -367,22 +367,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 case "wagon(brakesensitivity": BrakeSensitivityPSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
 
                 // Načte brzdící váhu lokomotivy i vozů v režimech G, P, R, Prázdný, Ložený
-                case "wagon(brakemassg": BrakeMassG = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(brakemassp": BrakeMassP = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(brakemassr": BrakeMassR = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(brakemassrmg": BrakeMassRMg = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(brakemassempty": BrakeMassEmpty = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(brakemassloaded": BrakeMassLoaded = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); break;
-                case "wagon(forcewagonloaded": ForceWagonLoaded = stf.ReadBoolBlock(false); break;
-                case "wagon(forcebrakemode": ForceBrakeMode = stf.ReadStringBlock("P"); break;
+                case "wagon(brakemassg": BrakeMassG = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(brakemassp": BrakeMassP = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(brakemassr": BrakeMassR = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(brakemassrmg": BrakeMassRMg = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(brakemassempty": BrakeMassEmpty = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(brakemassloaded": BrakeMassLoaded = stf.ReadFloatBlock(STFReader.UNITS.Mass, null); ORCZSKSetUp = true; break;
+                case "wagon(forcewagonloaded": ForceWagonLoaded = stf.ReadBoolBlock(false); ORCZSKSetUp = true; break;
+                case "wagon(forcebrakemode": ForceBrakeMode = stf.ReadStringBlock("P"); ORCZSKSetUp = true; break;
 
                 // Načte hodnoty napouštění a vypouštění brzdových válců lokomotivy i vozů v režimech G, P, R
-                case "wagon(maxapplicationrateg": MaxApplicationRatePSIpSG = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                case "wagon(maxreleaserateg": MaxReleaseRatePSIpSG = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                case "wagon(maxapplicationratep": MaxApplicationRatePSIpSP = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                case "wagon(maxreleaseratep": MaxReleaseRatePSIpSP = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                case "wagon(maxapplicationrater": MaxApplicationRatePSIpSR = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
-                case "wagon(maxreleaserater": MaxReleaseRatePSIpSR = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
+                case "wagon(maxapplicationrateg": MaxApplicationRatePSIpSG = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
+                case "wagon(maxreleaserateg": MaxReleaseRatePSIpSG = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
+                case "wagon(maxapplicationratep": MaxApplicationRatePSIpSP = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
+                case "wagon(maxreleaseratep": MaxReleaseRatePSIpSP = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
+                case "wagon(maxapplicationrater": MaxApplicationRatePSIpSR = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
+                case "wagon(maxreleaserater": MaxReleaseRatePSIpSR = ReleaseRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); ORCZSKSetUp = true; break;
 
                 // Automatický zátěžový regulátor pro vozy
                 case "wagon(autoloadregulatorequipped": AutoLoadRegulatorEquipped = stf.ReadBoolBlock(false); break;
@@ -1110,7 +1110,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                if (Car.Simulator.Settings.CorrectQuestionableBrakingParams)
+                if (Car.Simulator.Settings.CorrectQuestionableBrakingParams && !ORCZSKSetUp)
                 {
                     EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
                     switch ((Car as MSTSWagon).WagonNumAxles)
@@ -1135,7 +1135,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 MaxAuxilaryChargingRatePSIpS = MathHelper.Clamp(MaxAuxilaryChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
-                if (Car.Simulator.Settings.CorrectQuestionableBrakingParams)
+                if (Car.Simulator.Settings.CorrectQuestionableBrakingParams && !ORCZSKSetUp)
                 {
                     switch ((Car as MSTSWagon).WagonNumAxles)
                     {
