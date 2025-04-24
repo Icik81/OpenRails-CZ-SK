@@ -1083,7 +1083,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float LoadEDB = 0;
                 // 30kW chlazení dieselu + 20kW chlazení trakčáků + 10kW dobíjení aku + 5kW napájení elektroniky na 1470kW loko
                 if (locomotive.DynamicBrake != null) LoadEDB = Math.Abs(locomotive.DynamicBrakeForceN) > 1000 ? 10000 : 0; // Chlazení EDB 10kW na 1470kW loko
-                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW);                
+                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW) * (RealRPM / MaxRPM);                
                 LoadSM /= 1470000f;
                 LoadSM = MathHelper.Clamp(LoadSM, 0, 1);                
                 return LoadSM;

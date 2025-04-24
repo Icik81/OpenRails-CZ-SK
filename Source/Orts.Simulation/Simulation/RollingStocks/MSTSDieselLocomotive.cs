@@ -637,10 +637,10 @@ namespace Orts.Simulation.RollingStocks
 
                 // Dostupný výkon SM
                 float maxPowerW;
-                float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW - (DieselEngines.DEList[0].LoadSMCoef * DieselEngines.DEList[0].MaximumDieselPowerW * DieselEngines.DEList[0].RealRPM / DieselEngines.DEList[0].MaxRPM);
+                float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW - (DieselEngines.DEList[0].LoadSMCoef * DieselEngines.DEList[0].MaximumDieselPowerW);
                 
                 if (DieselEngines.Count > 1)                
-                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW * DieselEngines.DEList[1].RealRPM / DieselEngines.DEList[1].MaxRPM);                
+                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);                
 
                 // Alternátor
                 // Zde bude interpolační křivka přetížení alternátoru

@@ -2130,6 +2130,7 @@ namespace Orts.Viewer3D
         float[] HeadOutZ = new float[3];
         protected override void SetCameraCar(TrainCar car)
         {
+            car = Viewer.PlayerTrain.LeadLocomotive;
             base.SetCameraCar(car);
             if (attachedCar.HeadOutViewpoints.Count > 0)
                 attachedLocation = attachedCar.HeadOutViewpoints[CurrentViewpointIndex].Location;
