@@ -3962,8 +3962,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (this is MSTSLocomotive)
             {
-                if (PowerReduction <
-                    PowerReductionResult1
+                if (PowerReduction <                    
                     + PowerReductionResult2
                     + PowerReductionResult3
                     + PowerReductionResult4
@@ -3980,8 +3979,7 @@ namespace Orts.Simulation.RollingStocks
                     )
                     PowerReduction += 1 * elapsedClockSeconds;
 
-                if (PowerReduction >
-                    PowerReductionResult1
+                if (PowerReduction >                    
                     + PowerReductionResult2
                     + PowerReductionResult3
                     + PowerReductionResult4
@@ -8688,7 +8686,7 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerUnit)
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
-                    LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
+                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
                 }
 
                 // Nikdy nedovolí, aby počet hnacích náprav byl 1 při celkovém počtu náprav větší než 2 - kvůli výpočtu adhezní tíhy hnací nápravy
