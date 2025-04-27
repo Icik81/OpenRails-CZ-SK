@@ -4583,7 +4583,7 @@ namespace Orts.Simulation.Physics
 
         public void PropagateBrakePressure(float elapsedClockSeconds)
         {
-            if (LeadLocomotiveIndex >= 0)
+            if (IsActualPlayerTrain && LeadLocomotiveIndex >= 0)
             {
                 if (LeadLocomotiveIndex >= Cars.Count)
                 {
