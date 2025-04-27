@@ -2860,29 +2860,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 }
                                 else                                    
                                 {
-                                    // Řídící jednotka má definovaný objem pro hlavní jímku nebo vlak nemá řídící jednotku
-                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI - 5f)
+                                    if (lead != null)
                                     {
-                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
-                                        lead.MainResPressurePSI -= 10f * elapsedClockSeconds;
-                                    }
-                                    else
-                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI + 5f)
-                                    {
-                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
-                                        lead.MainResPressurePSI += 10f * elapsedClockSeconds;
-                                    }
-                                    else
-                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
-                                    {
-                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 1f * elapsedClockSeconds;
-                                        lead.MainResPressurePSI -= 1f * elapsedClockSeconds;
-                                    }
-                                    else
-                                    if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
-                                    {
-                                        (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 1f * elapsedClockSeconds;
-                                        lead.MainResPressurePSI += 1f * elapsedClockSeconds;
+                                        // Řídící jednotka má definovaný objem pro hlavní jímku nebo vlak nemá řídící jednotku
+                                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI - 5f)
+                                        {
+                                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                            lead.MainResPressurePSI -= 10f * elapsedClockSeconds;
+                                        }
+                                        else
+                                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI + 5f)
+                                        {
+                                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= BrakePipeChargingRatePSIorInHgpS0 * elapsedClockSeconds;
+                                            lead.MainResPressurePSI += 10f * elapsedClockSeconds;
+                                        }
+                                        else
+                                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI < lead.MainResPressurePSI)
+                                        {
+                                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI += 1f * elapsedClockSeconds;
+                                            lead.MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                        }
+                                        else
+                                        if ((train.Cars[i] as MSTSLocomotive).MainResPressurePSI > lead.MainResPressurePSI)
+                                        {
+                                            (train.Cars[i] as MSTSLocomotive).MainResPressurePSI -= 1f * elapsedClockSeconds;
+                                            lead.MainResPressurePSI += 1f * elapsedClockSeconds;
+                                        }
                                     }
                                 }
                             }                            
