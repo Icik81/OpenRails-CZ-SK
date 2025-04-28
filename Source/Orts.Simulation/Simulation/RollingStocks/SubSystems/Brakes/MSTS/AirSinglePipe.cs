@@ -1222,6 +1222,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     loco.EmergencyButtonPressed = false;
                     loco.SetEmergency(false);
+                    loco.BrakeSystem.AutoCylPressurePSI1 = 0;
                 }
                 UpdateTripleValveState(threshold);
 

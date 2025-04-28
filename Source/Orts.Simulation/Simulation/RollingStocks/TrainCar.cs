@@ -3796,10 +3796,16 @@ namespace Orts.Simulation.RollingStocks
                 VibrationSpringConstantPrimepSpS = 9.8f / 0.2f;
                 VibratioDampingCoefficient = 0.02f;
             }
+            else
+            if (AbsSpeedMpS < 0.1f)
+            {
+                VibrationSpringConstantPrimepSpS = 50 / 0.2f;
+                VibratioDampingCoefficient = 0.3f;
+            }
 
             if (CarLengthM < 30.0f && !Simulator.Paused && Simulator.GameSpeed == 1)
             {
-                int force;                                
+                int force;
                 float VibrationMassKG = ((3 + (MassKG / 10000)) / (MassKG / 10000));
                 if (VibrationMassKG > 1.5) VibrationMassKG = 1.5f;
 
@@ -3864,7 +3870,7 @@ namespace Orts.Simulation.RollingStocks
                     VibrationXYTimer += elapsedTimeS;
                     float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 0.5f);
                     switch (WagonNumAxles)
-                    {                       
+                    {
                         case 2:
                         case 3:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 20.0f, 0.0f, 0.5f);
@@ -3872,7 +3878,7 @@ namespace Orts.Simulation.RollingStocks
                             VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
                             VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.25f * SpeedFactor * elapsedTimeS;
                             break;
-                        case 4:                        
+                        case 4:
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 0.5f);
                             VibratioDampingCoefficient = 0.05f * SpeedFactor;
                             VibrationRotationVelocityRadpS.X += RandomVibrationDirectionX * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
@@ -3886,16 +3892,16 @@ namespace Orts.Simulation.RollingStocks
                             VibrationRotationVelocityRadpS.Y += RandomVibrationDirectionY * TrackFactorX * 0.125f * SpeedFactor * elapsedTimeS;
                             break;
                     }
-                    if (VibrationXYTimer > VibrationXYTime)                    
-                        VibrationXYTimer = 0;                    
+                    if (VibrationXYTimer > VibrationXYTime)
+                        VibrationXYTimer = 0;
                 }
-                                
+
                 //Vibrace náhodné nerovnosti
                 if ((VibrationType_1 || CarIsOnLvlCrossover) && AbsSpeedMpS > 0.1f)   //Vibrace na spojích, dle vzdálenosti
                 {
                     int y = 10, y1 = 100;
                     switch (WagonNumAxles)
-                    {                        
+                    {
                         case 2:
                         case 3:
                             y = 10; y1 = 40;
@@ -3905,7 +3911,7 @@ namespace Orts.Simulation.RollingStocks
                             y = 10; y1 = 75;
                             VibratioDampingCoefficient = 0.035f;
                             break;
-                        
+
                         default:
                             y = 10; y1 = 75;
                             VibratioDampingCoefficient = 0.035f;
@@ -3918,7 +3924,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (CarIsOnLvlCrossover) force = 3;
 
-                    if (AbsSpeedMpS < 20 / 3.6f && force > 2) force = 2;                    
+                    if (AbsSpeedMpS < 20 / 3.6f && force > 2) force = 2;
 
                     if (force != 0)
                     {
@@ -3931,23 +3937,23 @@ namespace Orts.Simulation.RollingStocks
                     //Simulator.Confirmer.Information("Factor_vibration: " + Factor_vibration);                                        
 
                     if (force > 2 || CarIsOnLvlCrossover)
-                    {                        
+                    {
                         if (Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
                             VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.85f * VibrationMassKG) / x;
                     }
 
-                    if (force == 0) force = 1;                   
-                    
+                    if (force == 0) force = 1;
+
                     if (force < 3)
                     {
                         float SpeedFactor = AbsSpeedMpS > 0.1f ? MathHelper.Clamp(1.0f + (AbsSpeedMpS * 3.6f / 10.0f), 1.0f, 1.3f) : 0;
                         switch (WagonNumAxles)
-                        {                            
+                        {
                             case 2:
                             case 3:
                                 VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
                                 break;
-                            case 4:                            
+                            case 4:
                                 VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
                                 break;
 
@@ -3956,21 +3962,21 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                     }
-                    
+
                     if (force < 3 && VibrationXYTimer == 0)
                     {
                         if (Math.Abs(VibrationRotationVelocityRadpS.Y) < 0.0001f && Math.Abs(VibrationRotationVelocityRadpS.X) < 0.0001f)
                         {
-                            VibrationXYTimer += elapsedTimeS;                            
+                            VibrationXYTimer += elapsedTimeS;
                         }
 
                         switch (WagonNumAxles)
-                        {                            
+                        {
                             case 2:
                             case 3:
-                                VibrationXYTime = force / 1f;                                
+                                VibrationXYTime = force / 1f;
                                 break;
-                            case 4:                            
+                            case 4:
                                 VibrationXYTime = force / 1f;
                                 break;
 
@@ -3982,8 +3988,8 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (VibrationType_2 && AbsSpeedMpS > 0.1f)   //Vibrace v oblouku
-                {                    
-                    float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 0, 3);                                                            
+                {
+                    float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 0, 3);
                     force = (int)forceF;
 
                     VibratioDampingCoefficient = 0.05f;
@@ -3996,13 +4002,13 @@ namespace Orts.Simulation.RollingStocks
                     {
                         VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
                         VibrationRotationVelocityRadpS.Z += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
-                    }                    
+                    }
                     //Simulator.Confirmer.Information("VibrationRotationVelocityRadpS.Y " + VibrationRotationVelocityRadpS.Y);
                 }
 
                 float ActivateVibrationTime3 = AbsSpeedMpS == 0 ? 0 : ((1.0f / (AbsSpeedMpS * 3.6f)) * 30f);
                 //Simulator.Confirmer.Information("ActivateVibrationTime3 " + ActivateVibrationTime3);
-                
+
                 if (IsOverJunction())
                 {
                     Vibration3Timer += elapsedTimeS;
@@ -4017,14 +4023,14 @@ namespace Orts.Simulation.RollingStocks
                     float SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
                     int y = 25, y1 = 31;
                     switch (WagonNumAxles)
-                    {                        
+                    {
                         case 2:
                         case 3:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 40.0f, 0.0f, 1.0f);
                             break;
-                        case 4:                                                    
+                        case 4:
                             y = 28; y1 = 31;
                             VibratioDampingCoefficient = 0.035f;
                             SpeedFactor = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 80.0f, 0.0f, 1.0f);
@@ -4049,18 +4055,18 @@ namespace Orts.Simulation.RollingStocks
                     else
                         VibrationSpringConstantPrimepSpS = (12 + (1 * 2)) / 0.2f;
 
-                    
-                    VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;                    
+
+                    VibrationRotationVelocityRadpS.X += (RandomVibrationDirectionX * TrackFactorX * SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.8f * VibrationMassKG) / x;
                     //Simulator.Confirmer.Information("force " + force);
                 }
 
                 VibrationRotationVelocityRadpS.X = MathHelper.Clamp(VibrationRotationVelocityRadpS.X, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);
                 VibrationRotationVelocityRadpS.Y = MathHelper.Clamp(VibrationRotationVelocityRadpS.Y, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);
-                VibrationRotationVelocityRadpS.Z = MathHelper.Clamp(VibrationRotationVelocityRadpS.Z, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);                
+                VibrationRotationVelocityRadpS.Z = MathHelper.Clamp(VibrationRotationVelocityRadpS.Z, -0.05f * x / CarLengthM, +0.05f * x / CarLengthM);
 
                 VibrationType_1 = false;
                 VibrationType_2 = false;
-                VibrationType_3 = false;                                 
+                VibrationType_3 = false;
             }
         }
         #endregion
