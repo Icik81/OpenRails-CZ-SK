@@ -1903,17 +1903,15 @@ namespace Orts.Simulation.AIs
 
             // Icik
             if ((thisTrain as AITrain).DontStopABSWP || (thisTrain as AITrain).DontStopStopOffset || (thisTrain as AITrain).DontStopAIPreference)
-            {
-                if ((thisTrain as AITrain).AuxActionsContain.CountSpec() > 0)
-                {
-                    (thisTrain as AITrain).AuxActionsContain.Remove(this);
-                    //(thisTrain as AITrain).ResetActions(true);
-                    movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;
-                }
+            {                         
+                movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;    
+                
                 if ((thisTrain as AITrain).DontStopABSWP)
                     (thisTrain as AITrain).DontStopABSWP = false;
+
                 if ((thisTrain as AITrain).DontStopStopOffset)
                     (thisTrain as AITrain).DontStopStopOffset = false;
+
                 if ((thisTrain as AITrain).DontStopAIPreference)
                     (thisTrain as AITrain).DontStopAIPreference = false;
             }

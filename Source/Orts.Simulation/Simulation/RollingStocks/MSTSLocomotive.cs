@@ -5482,12 +5482,14 @@ namespace Orts.Simulation.RollingStocks
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).DontStopStopOffset = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
+                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
                             }
                             if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).DontStopStopOffset = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
+                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
                             }
                         }
                     }
@@ -5505,7 +5507,8 @@ namespace Orts.Simulation.RollingStocks
                             if (AIActionPoint0.Delay == 40000)
                             {                                
                                 Simulator.AIPreference = true;
-                                (Train as AITrain).DontStopAIPreference = true;                                
+                                (Train as AITrain).DontStopAIPreference = true;
+                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
                             }                            
                         }
                     }
@@ -5603,13 +5606,16 @@ namespace Orts.Simulation.RollingStocks
                             float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);                            
 
                             if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait)
-                            {
-                                (Train as AITrain).DontStopABSWP = true;
-                                
+                            {                                
                                 // Půlnoční AI
                                 if (Simulator.ClockTime - GameClockToWait > 3600)
                                 {
                                     (Train as AITrain).DontStopABSWP = false;
+                                }
+                                else
+                                {
+                                    (Train as AITrain).DontStopABSWP = true;
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
                                 }
                             }                            
                         }
