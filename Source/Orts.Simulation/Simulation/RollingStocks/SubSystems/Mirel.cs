@@ -158,6 +158,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SetMirelSignal(bool ToState)
         {
+            if (Simulator == null) return;
             if (!Simulator.SuperUser) return;
             if (!Locomotive.IsPlayerTrain) return;
             if (!DatabaseVersionUpdated)
