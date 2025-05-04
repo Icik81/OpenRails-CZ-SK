@@ -1081,9 +1081,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             {                
                 float LoadSM;
                 float LoadEDB = 0;
+                float MaxLoadSM;
                 // 30kW chlazení dieselu + 20kW chlazení trakčáků + 10kW dobíjení aku + 5kW napájení elektroniky na 1470kW loko
                 if (locomotive.DynamicBrake != null) LoadEDB = Math.Abs(locomotive.DynamicBrakeForceN) > 1000 ? 10000 : 0; // Chlazení EDB 10kW na 1470kW loko
-                LoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW) * (RealRPM / MaxRPM);                
+                MaxLoadSM = ((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW); // Maximální příkon pomocných pohonů
+                LoadSM = MathHelper.Clamp(((30000f + 20000f + 10000f + 5000f + LoadEDB) / 0.85f / 1470000f * MaximumDieselPowerW) * (1470000f / MaximumDieselPowerW) * (MathHelper.Clamp(RealRPM / (MaxRPM * 2f / 3f), 0, 1)), MaxLoadSM * 0.5f, MaxLoadSM);                
                 LoadSM /= 1470000f;
                 LoadSM = MathHelper.Clamp(LoadSM, 0, 1);                
                 return LoadSM;
@@ -2331,20 +2333,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     locomotive.DieselLocoTempReady2 = false;
             }
 
-            //CoolingFlowBase = 2.0f;
             // Průtok čerpadla zvyšuje chlazení při vyšších otáčkách
-            if (CoolingFlowBase == 0) CoolingFlowBase = 2.0f;            
-            CoolingFlow = 0.1f;
-            if (RealRPM > IdleRPM && RealRPM <= IdleRPM * 2.0f)
-                CoolingFlow = (RealRPM / IdleRPM - 1.0f) * CoolingFlowBase * 10f;
-            else
-            if (RealRPM > IdleRPM)
-                CoolingFlow = CoolingFlowBase * 10f;
-
-            float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -5f , 5f);
-
-            //CoolingFlow = 10;
-            //CoolingFlowBase = 0.1f;
+            if (CoolingFlowBase == 0) CoolingFlowBase = 2.5f; // default                                                                          
+            CoolingFlow = MathHelper.Clamp((float)Math.Pow(CoolingFlowBase, RealRPM / IdleRPM * RealRPM / IdleRPM * RealRPM / IdleRPM), 0, 20);            
+            
+            // Teplotní delta koeficient mezi venkovní teplotou a teplotou vody
+            float CarOutsideTempDelta = MathHelper.Clamp(RealDieselWaterTemperatureDeg - locomotive.CarOutsideTempC0, -5f, 5f);
 
             // Voda
             // Teplotu zvyšují otáčky a zátěž motoru
@@ -2353,8 +2347,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec;
-                RealDieselWaterTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselWaterTempTimeConstantSec;
+                RealDieselWaterTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec, 0, 100);
+                RealDieselWaterTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselWaterTempTimeConstantSec, 0, 100);
             }
             if (float.IsNaN(RealDieselWaterTemperatureDeg))
             {
@@ -2372,8 +2366,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleOilTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec;
-                RealDieselOilTemperatureDeg += elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselOilTempTimeConstantSec;
+                RealDieselOilTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec, 0, 100);
+                RealDieselOilTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselOilTempTimeConstantSec, 0, 100);
             }
             if (float.IsNaN(RealDieselOilTemperatureDeg))
             {
@@ -2381,7 +2375,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
             // Teplota okolí koriguje teplotu motoru
             // Čerpadlo při vyšších otáčkách má vyšší průtok chladící kapaliny
-            float RealDieselOilTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * CarOutsideTempDelta * CoolingFlow / (DieselOilTempTimeConstantSec * 2), 0, 100);
+            float RealDieselOilTemperatureDegDelta = MathHelper.Clamp(elapsedClockSeconds * CarOutsideTempDelta * CoolingFlow / DieselOilTempTimeConstantSec, 0, 100);
             RealDieselOilTemperatureDeg -= RealDieselOilTemperatureDegDelta;
 
             // Poškození a vypnutí motoru

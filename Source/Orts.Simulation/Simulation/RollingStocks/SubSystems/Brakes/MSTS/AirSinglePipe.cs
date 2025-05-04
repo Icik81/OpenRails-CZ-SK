@@ -263,9 +263,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BailOffOnAntiSkid ? Simulator.Catalog.GetString("Active") : "",
                 string.Format("{0:F5} bar/s", (Car as MSTSWagon).TrainPipeLeakRatePSIpSBase / 14.50377f),
                 string.Empty, // Spacer because the state above needs 2 columns.                                     
-                string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),
+                string.Format("{0:F0} L", BrakePipeVolumeM3Base * 1000),                
                 string.Format("{0:F0} L", CylVolumeM3 * 1000),
                 string.Format("{0:F0} L", Car as MSTSLocomotive != null && (Car as MSTSLocomotive).FakeMainResVolumeM3 == 0 ? (Car as MSTSLocomotive).MainResVolumeM3 * (Car as MSTSLocomotive).MainResPressurePSI * 1000 / 14.50377f : 0),
+                string.Format("{0:F0} L", EmergResVolumeM3 * 1000),
                 CarHasProblemWithBrake ?  BrakeCarDeactivate ? Simulator.Catalog.GetString("Off") : Simulator.Catalog.GetString("Failure!") : BrakeCarModeText,
                 string.Format("{0}{1:F0} t", AutoLoadRegulatorEquipped ? "Auto " : "", (BrakeMassKG + BrakeMassKGRMg) / 1000),
                 string.Format("DebKoef {0:F1}", DebugKoef),

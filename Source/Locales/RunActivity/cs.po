@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2025-02-15 10:12:06+0100\n"
-"PO-Revision-Date: 2025-02-15 10:14+0100\n"
+"POT-Creation-Date: 2025-05-04 15:05:45+0200\n"
+"PO-Revision-Date: 2025-05-04 15:07+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -56,11 +56,11 @@ msgstr "3D kabina"
 msgid "Head out"
 msgstr "Boční pohled"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2215
+#: ../../RunActivity/Viewer3D/Cameras.cs:2216
 msgid "Cab"
 msgstr "Kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2498
+#: ../../RunActivity/Viewer3D/Cameras.cs:2499
 msgid "Trackside"
 msgstr "Trať"
 
@@ -176,11 +176,11 @@ msgstr "Nelze přepnout z manuálního módu na autopilota"
 msgid "Switched to autopilot"
 msgstr "Přepnuto na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1967
+#: ../../RunActivity/Viewer3D/Viewer.cs:1980
 msgid "You are in the locomotive station "
 msgstr "Nacházíš se na stanovišti lokomotivy "
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2253
+#: ../../RunActivity/Viewer3D/Viewer.cs:2266
 msgid "Game saved"
 msgstr "Hra uložena"
 
@@ -406,7 +406,8 @@ msgid "Dispatch"
 msgstr "Dispečer"
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:757
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:108
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:172
 msgid "Timetable"
 msgstr "Jízdní řád"
 
@@ -494,7 +495,7 @@ msgstr "3D"
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:284
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:471
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:828
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1653
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1655
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:313
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:121
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:519
@@ -517,8 +518,8 @@ msgid "Variable 1"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:351
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1659
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1661
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1663
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:80
 msgid "Distance"
 msgstr "Vzdálenost"
@@ -616,8 +617,8 @@ msgstr "Brzdový režim vozu"
 
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:56
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:59
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:59
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:62
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:60
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:63
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
 #: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:284
 #: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:287
@@ -676,7 +677,7 @@ msgid "Car Mode Empty/Loaded"
 msgstr "Režim vozu Prázdný/Ložený"
 
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:146
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:231
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:232
 msgid "N/A"
 msgstr "Neaktivní příkaz (N/A)"
 
@@ -705,199 +706,199 @@ msgid "Car Mode"
 msgstr "Režim vozu"
 
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:199
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:236
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:237
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:106
 #: ../../RunActivity/Viewer3D/Popups/HelperSpeedSelectWindow.cs:73
 msgid "Close window"
 msgstr "Zavřít okno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:44
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:45
 msgid "Car Operation Menu"
 msgstr "Příkazy vozidel"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:67
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:68
 msgid "Togle Locomotive Station"
 msgstr "Přejít na stanoviště lokomotivy"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:76
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:77
 msgid "Toggle Handbrake"
 msgstr "Zatáhnout ruční brzdu"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:87
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:88
 msgid "Toggle Power"
 msgstr "Zapnout napájení"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:110
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:111
 msgid "Toggle Cable MU"
 msgstr "Zapojit MU kabel"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:119
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:120
 msgid "Toggle Power MU"
 msgstr "Zapnout MU pohon"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:128
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:129
 msgid "Connect/Unmount Helper"
 msgstr "Připojit postrk"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:137
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:138
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:36
 msgid "Helper Options"
 msgstr "Volby postrku"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:146
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:147
 msgid "Toggle Brake Hose Connection"
 msgstr "Zapojit hadice hlavního potrubí"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:151
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:152
 msgid "Open/Close Front Angle Cock"
 msgstr "Přední vzduchový kohout"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:156
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:157
 msgid "Open/Close Rear Angle Cock"
 msgstr "Zadní vzduchový kohout"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:161
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:162
 msgid "Open/Close Bleed Off Valve"
 msgstr "Odvzdušňovací ventil"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:166
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:167
 msgid "Brake Mode Options"
 msgstr "Volby režimu brzdy"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:169
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:170
 msgid "Car Brake"
 msgstr "Brzda vozu"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:174
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:175
 msgid "Air Twin Pipe Hoses"
 msgstr "Zapojit hadice napájecího potrubí"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:179
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:180
 msgid "Left Door"
 msgstr "Levé dveře"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:184
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:185
 msgid "Right Door"
 msgstr "Pravé dveře"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:189
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:559
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:190
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:561
 msgid "No Pax`s mode"
 msgstr "Zákaz nástupu cestujících"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:206
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:207
 msgid "Stove Heating"
 msgstr "Vytápění kamny"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:211
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:212
 msgid "Steam Heating"
 msgstr "Parní vytápění"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:216
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:217
 msgid "Diesel Heating"
 msgstr "Naftový topný agreagát"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:222
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:223
 msgid "Calorifer Heating"
 msgstr "Vytápění kaloriferem"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:224
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:225
 msgid "Electric Heating/Air"
 msgstr "El.topení/klimatizace"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:294
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:295
 msgid "Handbrake set"
 msgstr "Ruční brzda zatažena"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:296
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:297
 msgid "Handbrake off"
 msgstr "Ruční brzda povolena"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:316
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:317
 msgid "Power OFF command sent"
 msgstr "Signál pro vyputí napájení odeslán"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:326
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:327
 msgid "Power ON command sent"
 msgstr "Signál pro zapnutí napájení odeslán"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:357
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:358
 msgid "Cable MU disconnected"
 msgstr "Kabel MU odpojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:361
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:362
 msgid "Cable MU connected"
 msgstr "Kabel MU zapojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:383
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:384
 msgid "Power MU disconnected"
 msgstr "Pohon MU odpojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:386
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:387
 msgid "Power MU connected"
 msgstr "Pohon MU zapojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:404
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:405
 msgid "Helper disconnected"
 msgstr "Postrk odpojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:406
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:407
 msgid "Helper connected"
 msgstr "Postrk zapojen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:431
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:432
 msgid "Front brake hose connected"
 msgstr "Přední brzdové hadice spojeny"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:433
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:434
 msgid "Front brake hose disconnected"
 msgstr "Přední brzdové hadice rozpojeny"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:440
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:441
 msgid "Front angle cock opened"
 msgstr "Přední vzduchový kohout otevřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:442
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:443
 msgid "Front angle cock closed"
 msgstr "Přední vzduchový kohout uzavřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:449
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:450
 msgid "Rear angle cock opened"
 msgstr "Zadní vzduchový kohout otevřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:451
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:452
 msgid "Rear angle cock closed"
 msgstr "Zadní vzduchový kohout uzavřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:461
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:462
 msgid "Bleed off valve opened"
 msgstr "Odvzdušňovací ventil otevřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:463
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:464
 msgid "Bleed off valve closed"
 msgstr "Odvzdušňovací ventil uzavřen"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:482
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:483
 msgid "Air Twin Pipe Hoses disconnected"
 msgstr "Napájecí hadice rozpojeny"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:483
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:484
 msgid "disconnect"
 msgstr "rozpojeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:487
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:488
 msgid "Air Twin Pipe Hoses connected"
 msgstr "Napájecí hadice spojeny"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:488
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:489
 msgid "connect"
 msgstr "spojeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:500
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:501
 msgid "Car Brake On"
 msgstr "Brzda vozu zapnuta"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:501
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:502
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1055
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1064
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1066
@@ -915,11 +916,11 @@ msgstr "Brzda vozu zapnuta"
 msgid "on"
 msgstr "zapnuto"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:506
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:507
 msgid "Car Brake Off"
 msgstr "Brzda vozu vypnuta"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:507
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:508
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:788
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1055
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1064
@@ -938,32 +939,32 @@ msgstr "Brzda vozu vypnuta"
 msgid "off"
 msgstr "vypnuto"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:522
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:523
 msgid "Left Door Closed"
 msgstr "Levé dveře zavřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:523
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:524
 msgid "closed"
 msgstr "zavřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:527
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:528
 msgid "Left Door Opened"
 msgstr "Levé dveře otevřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:528
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:529
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:676
 msgid "opened"
 msgstr "otevřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:541
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:542
 msgid "Right Door Closed"
 msgstr "Pravé dveře zavřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:546
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:547
 msgid "Right Door Opened"
 msgstr "Pravé dveře otevřeno"
 
-#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:563
+#: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:565
 msgid "Pax`s mode"
 msgstr "Zákaz nástupu cestujících"
 
@@ -1056,38 +1057,43 @@ msgstr "Nápověda"
 msgid "Key Commands"
 msgstr "Ovládací klávesy"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:106
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1053
-msgid "Briefing"
-msgstr "Instrukce"
-
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:122
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:408
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:113
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:177
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:463
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:79
 msgid "Station"
 msgstr "Stanice"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:123
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:114
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:178
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:81
 msgid "Arrive"
 msgstr "Příjezd"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:124
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:126
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:115
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:179
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:181
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:82
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:84
 msgid "Actual"
 msgstr "Skutečný"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:125
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:116
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:180
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:83
 msgid "Depart"
 msgstr "Odjezd"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:141
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:143
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:401
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:414
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:161
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1108
+msgid "Briefing"
+msgstr "Instrukce"
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:196
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:198
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:456
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:469
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:287
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:522
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:612
@@ -1095,145 +1101,145 @@ msgstr "Odjezd"
 msgid "(missed)"
 msgstr "(nezastaveno)"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:150
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:205
 msgid "Work Orders"
 msgstr "Pokyny pro posun"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:155
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:581
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:210
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:636
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] "Úkol"
 msgstr[1] "Úkoly"
 msgstr[2] "Úkoly"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:156
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:211
 msgid "Car(s)"
 msgstr "Vozy"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:157
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:212
 msgid "Location"
 msgstr "Umístění"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:158
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:213
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:608
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:842
 #: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:193
 msgid "Status"
 msgstr "Stav"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:178
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:453
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:233
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:508
 msgid "Assemble Train"
 msgstr "Sestavit vlak"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:182
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:237
 msgid "At Location"
 msgstr "Na koleji"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:186
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:460
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:241
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:515
 msgid "Drop Off"
 msgstr "Odstavit"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:190
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:464
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:245
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:519
 msgid "Pick Up"
 msgstr "Připojit"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:283
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:491
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:524
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:338
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:546
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:579
 msgid "Done"
 msgstr "Hotovo"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:297
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:352
 msgid "Evaluation"
 msgstr "Hodnocení"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:336
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:391
 msgid "This Activity has ended."
 msgstr "Aktivita ukončena."
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:345
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:400
 msgid "Timetable:"
 msgstr "Jízdní řád:"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:380
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:435
 msgid "- Station stops: "
 msgstr "- Zastavení ve stanicích: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:391
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:446
 msgid "- Remaining station stops: "
 msgstr "- Zbývá stanic k zastavení: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:406
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:461
 msgid "- Missed station stops: "
 msgstr "- Projeté zastavení ve stanicích: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:416
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:471
 msgid " "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:430
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:485
 msgid "Work orders:"
 msgstr "Pokyny pro posun:"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:456
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:851
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:511
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:906
 msgid "Assemble Train At Location"
 msgstr "Sestavit vlak na místě"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:517
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:572
 msgid "- Tasks: "
 msgstr "- Úkoly: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:529
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:584
 msgid "- Accomplished: "
 msgstr "- Splněné: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:531
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:586
 msgid "- Coupling speed limits: "
 msgstr "- Rychlostní limit pro připojení: "
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:539
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:594
 msgid "  The Debrief evaluation report is disabled."
 msgstr "   Vyhodnocení po jízdě je vypnuto."
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:594
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:649
 msgid "- "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:595
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:650
 msgid "= "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:667
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:722
 msgid "A report file was created:"
 msgstr "Soubor hlášení (reportu) byl vytvořen:"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
 msgid "Diesel."
 msgstr "Diesel."
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
 msgid "Steam."
 msgstr "Par."
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:763
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
 msgid "Electric."
 msgstr "Elektrik."
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1062
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1117
 msgid "Procedures"
 msgstr "Postupy"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1141
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1168
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1196
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1223
 msgid " = "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:394
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:449
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:136
 #, csharp-format
 msgid "Current Delay: {0} minute"
@@ -1242,14 +1248,14 @@ msgstr[0] "Aktuální zpoždění: {0} minuta"
 msgstr[1] "Aktuální zpoždění: {0} minuty"
 msgstr[2] "Aktuální zpoždění: {0} minut"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:582
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:637
 msgid "Task accomplished"
 msgid_plural "Tasks accomplished"
 msgstr[0] "Úloha dokončena"
 msgstr[1] "Úlohy dokončeny"
 msgstr[2] "Úlohy dokončeny"
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:595
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:650
 #, csharp-format
 msgid "{0} minute"
 msgid_plural "{0} minutes"
@@ -1325,7 +1331,7 @@ msgid "Num of substeps"
 msgstr "Poč. díl. stupňů"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:171
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1913
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1915
 msgid "Memory"
 msgstr "Paměť"
 
@@ -1338,22 +1344,22 @@ msgid "Frame time"
 msgstr "Časový rámec"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:174
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1927
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1929
 msgid "Render process"
 msgstr "Proces vykreslování"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:175
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1928
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1930
 msgid "Updater process"
 msgstr "Proces aktualizace"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:176
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1929
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1931
 msgid "Loader process"
 msgstr "Proces zátěže"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:177
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1930
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1932
 msgid "Sound process"
 msgstr "Proces zvuku"
 
@@ -1388,8 +1394,8 @@ msgid "Replay"
 msgstr "Přehrát"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:472
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1513
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1543
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1515
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1545
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:345
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:352
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:357
@@ -1485,8 +1491,8 @@ msgid "Autopilot"
 msgstr "Autopilot"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:505
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1445
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1447
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1449
 msgid "Wheel slip"
 msgstr "Prokluz kol"
 
@@ -1585,9 +1591,9 @@ msgstr "Návěst na opakovači"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:581
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:669
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1578
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1610
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1911
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1580
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1612
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1913
 #: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:461
 #: ../../RunActivity/Viewer3D/RollingStock/SubSystems/ETCS/DataEntry.cs:486
 msgid "Yes"
@@ -1595,8 +1601,8 @@ msgstr "Ano"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:581
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:669
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1610
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1911
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1612
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1913
 msgid "No"
 msgstr "Ne"
 
@@ -1614,15 +1620,15 @@ msgstr "Cest"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1176
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1207
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1234
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1509
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1530
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1511
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1532
 msgid "Car"
 msgstr "Vůz"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:605
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:822
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1588
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1612
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1590
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1614
 msgid "Flipped"
 msgstr "Obráceno"
 
@@ -1740,7 +1746,7 @@ msgstr "Traťové napětí"
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1077
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1087
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1116
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:2165
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:2167
 msgid "PlayerLoco"
 msgstr "LokoHráče"
 
@@ -1924,7 +1930,7 @@ msgid "BrkPipe"
 msgstr "BrzPotr"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1184
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1297
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1299
 msgid "VacRes"
 msgstr "Jímka podtlaku"
 
@@ -1948,7 +1954,7 @@ msgid "Brk"
 msgstr "Brzda"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1242
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1303
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1305
 msgid "AuxRes"
 msgstr "PomJímka"
 
@@ -1985,333 +1991,337 @@ msgid "VolMainRes"
 msgstr "ObjHlJímka"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1274
+msgid "VolAuxRes"
+msgstr "ObjPomJímka"
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1276
 msgid "BrkMode"
 msgstr "BrzRežim"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1276
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1278
 msgid "BrkMass"
 msgstr "BrzVáha"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1410
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1412
 msgid "FORCE INFORMATION"
 msgstr "INFORMACE O SILÁCH V SOUPRAVĚ"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1426
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1428
 msgid "Tree leaves on track!"
 msgstr "Listí na kolejích!"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1433
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1442
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1435
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1444
 msgid "(Advanced adhesion model)"
 msgstr "(Pokročilý model adheze)"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1434
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1463
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1474
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1436
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1465
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1476
 msgid "Loco Adhesion"
 msgstr "Adheze lokomotivy"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1435
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1437
 msgid "Wag Adhesion"
 msgstr "Adheze vozu"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1436
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1438
 msgid "Tang. Force"
 msgstr "Tang. síla"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1437
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1439
 msgid "Static Force"
 msgstr "Statická síla"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1448
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1450
 msgid "Conditions"
 msgstr "Podmínky"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1449
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1451
 msgid "Axle drive force"
 msgstr "Hnací síla nápr."
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1451
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1453
 msgid "Axle brake force"
 msgstr "Brzdná síla nápr."
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1452
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1454
 msgid "Number of substeps"
 msgstr "Počet dílčích stupňů"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1454
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1456
 msgid "Solver"
 msgstr "Řešitel"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1455
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1457
 msgid "Stability correction"
 msgstr "Korekce stability"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1456
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1473
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1458
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1475
 msgid "Axle out force"
 msgstr "Tažná síla nápr."
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1459
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1461
 msgid "Wheel Speed"
 msgstr "Rychlost kola"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1464
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1475
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1466
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1477
 msgid "Wagon Adhesion"
 msgstr "Adheze vozu"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1467
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1477
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1469
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1479
 msgid "Track quality"
 msgstr "Kvalita tratě"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1472
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1474
 msgid "(Simple adhesion model)"
 msgstr "(Jednoduchý model adheze)"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1487
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1496
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1489
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1498
 msgid "ResWind:"
 msgstr "OdporVítr:"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1488
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1497
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1490
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1499
 msgid "ResSpeed:"
 msgstr "OdporRychl:"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1493
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1495
 msgid "Wind Speed:"
 msgstr "RychlVětru:"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1494
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1496
 msgid "Wind Direction:"
 msgstr "Směr větru:"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1495
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1497
 msgid "Train Direction:"
 msgstr "Směr vlaku:"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1510
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1539
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1540
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1512
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1541
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1542
 msgid "Coupler"
 msgstr "Spřáhlo"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1511
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1541
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1513
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1543
 msgid "Slack"
 msgstr "Natažení"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1512
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1542
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1514
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1544
 #: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:337
 msgid "Mass"
 msgstr "Hmotnost"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1514
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1536
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1544
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1516
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1538
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1546
 msgid "Curve"
 msgstr "Oblouk"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1515
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1545
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1517
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1547
 msgid "Brk Frict."
 msgstr "BrzdTření"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1516
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1546
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1518
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1548
 msgid "Brk Slide"
 msgstr "BrzdSkluz"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1517
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1547
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1519
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1549
 msgid "Bear Temp"
 msgstr "Teplota ložisek"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1531
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1533
 msgid "Total"
 msgstr "Celkem"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1532
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1534
 msgid "Motive"
 msgstr "Hybná"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1533
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1535
 msgid "Brake"
 msgstr "Brzdná"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1534
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1536
 msgid "Friction"
 msgstr "Odpor"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1535
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1537
 msgid "Gravity"
 msgstr "Gravitace"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1537
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1539
 msgid "Tunnel"
 msgstr "OdporTunel"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1538
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1890
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1540
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1892
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1894
 msgid "Wind"
 msgstr "Vítr"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1633
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1635
 msgid "DISPATCHER INFORMATION : active trains : "
 msgstr "INFORMACE DISPEČERA : aktivní vlaky :"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1641
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1651
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1643
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1653
 msgid "Train"
 msgstr "Vlak"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1642
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1662
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1644
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1664
 msgid "Consist"
 msgstr "Souprava"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1643
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1665
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1955
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1645
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1667
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1957
 msgid "Path"
 msgstr "Trasa"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1652
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1654
 msgid "Travelled"
 msgstr "Ujeto"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1654
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1656
 msgid "Max"
 msgstr "Max"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1655
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1657
 msgid "AI mode"
 msgstr "AI režim"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1656
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1658
 msgid "AI data"
 msgstr "AI data"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1657
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1659
 msgid "Mode"
 msgstr "Režim"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1658
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1660
 msgid "Auth"
 msgstr "Povol"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1660
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1662
 msgid "Signal"
 msgstr "Návěst"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1875
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1877
 msgid "WEATHER INFORMATION"
 msgstr "INFORMACE O POČASÍ"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1883
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
 msgid "Visibility"
 msgstr "Viditelnost"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1884
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1886
 msgid "Cloud cover"
 msgstr "Oblačnost-pokrytí"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1887
 msgid "Intensity"
 msgstr "Intenzita srážek"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1886
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1888
 msgid "Liquidity"
 msgstr "Kapalnost srážek"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1894
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1896
 msgid "Amb Temp"
 msgstr "Teplota okolí"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1899
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1901
 msgid "DEBUG INFORMATION"
 msgstr "LADÍCÍ INFORMACE"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1911
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1913
 msgid "Logging enabled"
 msgstr "Logování povoleno"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1912
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1914
 msgid "Build"
 msgstr "Verze programu"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1914
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1916
 msgid "CPU"
 msgstr "CPU"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1915
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1917
 msgid "GPU"
 msgstr "GPU"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1916
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1918
 msgid "Adapter"
 msgstr "Gr. karta"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1921
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1923
 msgid "Shadow maps"
 msgstr "Stínové mapy"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1923
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1925
 msgid "Shadow primitives"
 msgstr "Stínová primitiva"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1926
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1928
 msgid "Render primitives"
 msgstr "Vykreslovací primitiva"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1927
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1928
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1929
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1930
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1931
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1932
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1933
 msgid "wait"
 msgstr "čekání"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1931
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1933
 msgid "Total process"
 msgstr "Procesů celkem"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1932
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1934
 msgid "Camera"
 msgstr "Pohled"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1453
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1455
 #, csharp-format
 msgid "filtered by {0:F0}"
 msgstr "filtrováno po {0:F0}"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1883
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
 #, csharp-format
 msgid "{0:N0} m"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1884
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1886
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1888
 #, csharp-format
 msgid "{0:F0} %"
 msgstr "{0:F0} %"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1885
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1887
 #, csharp-format
 msgid "{0:F4} p/s/m^2"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1890
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1892
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1894
 #, csharp-format
 msgid "{0:F1},{1:F1} m/s"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1913
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1915
 #, fuzzy, csharp-format
 #| msgid ""
 #| "{0:F0} MB ({5}, {6}, {7}, {8}, {1:F0} MB managed, {9:F0} kB/frame "
@@ -2323,47 +2333,47 @@ msgstr ""
 "{0:F0} MB ({5}, {6}, {7}, {8}, {1:F0} MB spravováno, {9:F0} kB/snímek "
 "přiděleno, {2:F0}/{3:F0}/{4:F0} GCs)"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1914
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1916
 #, csharp-format
 msgid "{0:F0}% ({1})"
 msgstr "{0:F0}% ({1})"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1915
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1917
 #, csharp-format
 msgid "{0:F0} FPS (50th/95th/99th percentiles {1:F1} / {2:F1} / {3:F1} ms) "
 msgstr "{0:F0} FPS (50th/95th/99th percentilů {1:F1} / {2:F1} / {3:F1} ms) "
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1916
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1918
 #, csharp-format
 msgid "{0} ({1:F0} MB) ({2:F0} pixels x {3:F0} pixels)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1919
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1921
 #, csharp-format
 msgid "{0}/{1}"
 msgstr "{0}/{1}"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1920
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1922
 #, csharp-format
 msgid "({0}x{0})"
 msgstr "({0}x{0})"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1923
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1926
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1925
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1928
 #, csharp-format
 msgid "{0:F0}"
 msgstr "{0:F0}"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1927
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1928
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1929
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1930
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1931
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1932
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1933
 #, csharp-format
 msgid "{0:F0}% ({1:F0}% {2})"
 msgstr "{0:F0}% ({1:F0}% {2})"
 
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1914
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1916
 #, csharp-format
 msgid "{0} logical processor"
 msgid_plural "{0} logical processors"
@@ -2990,7 +3000,7 @@ msgid "ApplS"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:134
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1655
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:118
 msgid "coal"
 msgstr "uhlí"
@@ -3065,19 +3075,12 @@ msgid "Warning"
 msgstr "Varování"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:141
-#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:869
-#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:125
-#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:668
-msgid "slip"
-msgstr "prokluz"
-
-#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:141
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:125
 msgid "Slip"
 msgstr "Prokluz"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:142
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:126
 msgid "water"
 msgstr "voda"
@@ -3207,6 +3210,12 @@ msgstr "Nahoru"
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:641
 msgid "Exceeded"
 msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:869
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:125
+#: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:668
+msgid "slip"
+msgstr "prokluz"
 
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:884
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:886
@@ -3429,109 +3438,109 @@ msgstr[0] "{0:F0} zdrojů zvuku"
 msgstr[1] "{0:F0} textur"
 msgstr[2] "{0:F0} textur"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:517
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:525
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:521
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:529
 msgid "Handbrake"
 msgstr "Ruční brzda"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1646
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1650
 msgid "freight-grain"
 msgstr "náklad-obilí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1647
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1651
 msgid "freight-coal"
 msgstr "náklad-uhlí"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1648
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
 msgid "freight-gravel"
 msgstr "náklad-štěrk"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1649
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
 msgid "freight-sand"
 msgstr "náklad-písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1652
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1656
 msgid "diesel oil"
 msgstr "nafta"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1653
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1657
 msgid "wood"
 msgstr "dřevo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1654
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1658
 msgid "sand"
 msgstr "písek"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1655
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
 msgid "freight-general"
 msgstr "náklad-obecné"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1656
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1660
 msgid "freight-livestock"
 msgstr "náklad-životnost"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1657
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1661
 msgid "freight-fuel"
 msgstr "náklad-palivo"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1658
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1662
 msgid "freight-milk"
 msgstr "náklad-mléko"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1659
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1663
 msgid "mail"
 msgstr "pošta"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1788
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1792
 msgid "Refill: Immediate refill process selected, refilling immediately."
 msgstr "Doplnit: Zvolen proces okamžitého doplnění, doplnění probíhá okamžitě."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1809
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1813
 msgid "Refill: Electric loco and no pickup. Command rejected"
 msgstr "Doplnit: Elektrická lokomotiva a bez sběrače. Příkaz odmítnut"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1925
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1944
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1929
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1948
 msgid "Incompatible pickup type"
 msgstr "Nekompatibilní typ"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1931
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1949
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1935
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1953
 msgid "Starting refill"
 msgstr "Začíná doplňovat"
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1816
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1820
 #, csharp-format
 msgid "Refill: Distance to {0} supply is {1}."
 msgstr "Doplněníl: Vzdálenost k zásobníku {0} jes {1}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1824
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1828
 #, csharp-format
 msgid "Refill: Loco must be stationary to refill {0}."
 msgstr "Doplněníl: Lokomotiva musí být pro doplněníl {0} nehybná."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1830
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1834
 #, csharp-format
 msgid "Refill: Loco speed must exceed {0}."
 msgstr "Doplnění: Rychlost lokomotivy musí mít nejméně: {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1837
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1841
 #, csharp-format
 msgid "Refill: Loco speed must not exceed {0}."
 msgstr "Doplněníl: Rychlost lokomotivy nesmí překročit:  {0}."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1855
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1876
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1859
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1880
 #, csharp-format
 msgid "Refill: {0} supply now replenished."
 msgstr "Doplnění: Z8sobník {0} byl doplněn."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1882
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1886
 #, csharp-format
 msgid "Unload: {0} fuel or freight now unloaded."
 msgstr "Vykládka: {0} paliva nebo nákladu vyloženo."
 
-#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1817
+#: ../../RunActivity/Viewer3D/RollingStock/MSTSLocomotiveViewer.cs:1821
 #, csharp-format
 msgid "{0} meter"
 msgid_plural "{0} meters"

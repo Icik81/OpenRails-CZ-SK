@@ -1229,7 +1229,7 @@ namespace Orts.Viewer3D.Popups
                 }
                 else // default air braked
                 {
-                    statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}",
+                    statusHeader.Add(string.Format("{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t{6}\t{7}\t{8}\t{9}\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}",
                     //0
                     Viewer.Catalog.GetString("Car"),
                     //1
@@ -1271,8 +1271,10 @@ namespace Orts.Viewer3D.Popups
                     //15
                     Viewer.Catalog.GetString("VolMainRes"),
                     //16
-                    Viewer.Catalog.GetString("BrkMode"),
+                    Viewer.Catalog.GetString("VolAuxRes"),
                     //17
+                    Viewer.Catalog.GetString("BrkMode"),
+                    //18
                     Viewer.Catalog.GetString("BrkMass")
                     //Add new header data here, if addining additional column.
                     ));
