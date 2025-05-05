@@ -16904,7 +16904,7 @@ namespace Orts.Simulation.Physics
 
             // Určuje otočení cesty vlaku po projetí reverzního bodu             
             if (!nextRouteReady) ReverseAtStationIsSetOn = false;
-            if (!ReverseAtStationIsSetOn && nextRouteReady && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
+            if (!ReverseAtStationIsSetOn && nextRouteReady && TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
             {
                 ReverseAtStationIsSetOn = true;
                 ReverseAtStation = true;
