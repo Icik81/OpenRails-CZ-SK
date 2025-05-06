@@ -742,6 +742,22 @@ namespace Orts.Viewer3D.RollingStock
                 distanceTravelledDrivenM = 0.0f;
             }
 
+            // Zaseknutá kola ruční brzdou
+            Car.WheelsSkiding = false;
+            if ((Car as MSTSWagon).HandBrakePresent && (Car as MSTSWagon).BrakeSystem.HandBrakeActive)
+            {
+                if (Car is MSTSLocomotive && (Car as MSTSLocomotive).HandBrakePercent < 50)
+                {
+                    // nic
+                }
+                else
+                {
+                    Car.WheelsSkiding = true;
+                    distanceTravelledM = 0.0f;
+                    distanceTravelledDrivenM = 0.0f;
+                }
+            }
+
             // Running gear and drive wheel rotation (animation) in steam locomotives
             if (!RunningGear.Empty() && AnimationDriveWheelRadiusM > 0.001)
                 RunningGear.UpdateLoop(distanceTravelledDrivenM / MathHelper.TwoPi / AnimationDriveWheelRadiusM);

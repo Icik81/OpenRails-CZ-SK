@@ -2060,7 +2060,7 @@ namespace Orts.Simulation.Physics
                 // Icik                
                 if (!(car is MSTSLocomotive))
                 {
-                    (car as MSTSWagon).WheelSpeedMpS = car.SpeedMpS;
+                    (car as MSTSWagon).WheelSpeedMpS = car.SpeedMpS;                    
                     (car as MSTSWagon).AbsWheelSpeedMpS = Math.Abs((car as MSTSWagon).WheelSpeedMpS);
                 }
                 // Provede odraz vozů při prudkém najetí
@@ -22999,7 +22999,7 @@ namespace Orts.Simulation.Physics
                     car.AbsSpeedMpS = car.AbsSpeedMpS * (1 - elapsedClockSeconds) + targetSpeedMpS * elapsedClockSeconds;
                     if (car.IsDriveable && car is MSTSWagon)
                     {
-                        (car as MSTSWagon).WheelSpeedMpS = SpeedMpS;
+                        (car as MSTSWagon).WheelSpeedMpS = SpeedMpS;                        
                         if (car.AbsSpeedMpS != 0f)
                         {
                             if (car is MSTSElectricLocomotive)

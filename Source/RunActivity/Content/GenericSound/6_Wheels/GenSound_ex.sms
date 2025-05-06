@@ -15,7 +15,40 @@ Tr_SMS (
 			Distance    	( 500 )
 		)
 		Volume ( 1.0 )
-		Streams ( 10
+		Streams ( 11
+		
+			Stream (
+				Skip (** Otěr **)
+				Priority ( 6 )
+				Volume( 1.0 )
+				Triggers ( 4
+					Discrete_Trigger ( 20168 StartLoopRelease   ( 1 File ( "../4_Wheels/x_oter.wav" -1 )   SelectionMethod ( SequentialSelection ) ) )
+					Discrete_Trigger ( 20168 SetStreamVolume ( 1.0 ) )
+					Discrete_Trigger ( 20169 SetStreamVolume ( 0.0 ) )
+					Discrete_Trigger ( 20169 ReleaseLoopReleaseWithJump () )					
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 4
+						0	40000
+						0.1 42000
+						1	44000
+						20  46000					
+					)
+					Granularity ( 100 )
+				)
+				
+				VolumeCurve (
+					SpeedControlled
+					CurvePoints ( 4
+						0       0.0
+                        0.1	    1.0
+						1		1.0
+						20		1.0
+					)
+					Granularity ( 0.05 )
+				)								
+			)
 		
 			Stream (
 				Skip (** Prokluz **)

@@ -2417,7 +2417,7 @@ namespace Orts.Simulation.RollingStocks
                     CouplerExceedBreakLimit = false;
                 }
             }
-
+            
             AbsWheelSpeedMpS = Math.Abs(WheelSpeedMpS);
 
             if (this is MSTSLocomotive)

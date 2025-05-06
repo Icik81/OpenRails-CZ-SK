@@ -412,6 +412,8 @@ namespace Orts.Common
         Pantograph1Down15kVAC,
         Pantograph2Up15kVAC,
         Pantograph2Down15kVAC,
+        WheelsSkidingStart,
+        WheelsSkidingStop,
     }
 
     public static class Events
@@ -837,7 +839,9 @@ namespace Orts.Common
                         case 20164: return Event.Pantograph1Up15kVAC; 
                         case 20165: return Event.Pantograph1Down15kVAC; 
                         case 20166: return Event.Pantograph2Up15kVAC; 
-                        case 20167: return Event.Pantograph2Down15kVAC; 
+                        case 20167: return Event.Pantograph2Down15kVAC;
+                        case 20168: return Event.WheelsSkidingStart;
+                        case 20169: return Event.WheelsSkidingStop;
 
                         default: return 0;
                     }

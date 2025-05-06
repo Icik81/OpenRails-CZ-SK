@@ -1455,9 +1455,21 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         
         public float TrackFactor = 1;
-        float WheelDrivedLength;
+        float WheelDrivedLength;        
+        public bool WheelsSkiding;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
-        {                            
+        {
+            // Šoupaní stojících kol o kolejnici                        
+            if (WheelsSkiding) { (this as MSTSWagon).WheelSpeedMpS = 0; (this as MSTSWagon).AbsWheelSpeedMpS = 0; }
+            if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && (this as MSTSWagon).AbsWheelSpeedMpS == 0)
+            {
+                this.SignalEvent(Event.WheelsSkidingStart);
+            }
+            if (((this as MSTSWagon).AbsWheelSpeedMpS > 0 || (this as MSTSWagon).AbsSpeedMpS < 0.01f))
+            {             
+                this.SignalEvent(Event.WheelsSkidingStop);
+            }            
+
             // WheelDamage 
             if (!(this is MSTSSteamLocomotive))            
             {
