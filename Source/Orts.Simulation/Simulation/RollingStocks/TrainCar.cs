@@ -1459,13 +1459,14 @@ namespace Orts.Simulation.RollingStocks
         public bool WheelsSkiding;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
         {
-            // Šoupaní stojících kol o kolejnici                        
-            if (WheelsSkiding) { (this as MSTSWagon).WheelSpeedMpS = 0; (this as MSTSWagon).AbsWheelSpeedMpS = 0; }
-            if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && (this as MSTSWagon).AbsWheelSpeedMpS == 0)
+            float WheelSpeedMpS = (this as MSTSWagon).WheelSpeedMpS;
+            // Šoupaní stojících kol o kolejnici                                    
+            if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && WheelsSkiding)
             {
                 this.SignalEvent(Event.WheelsSkidingStart);
+                (this as MSTSWagon).WheelSpeedMpS = 0;
             }
-            if (((this as MSTSWagon).AbsWheelSpeedMpS > 0 || (this as MSTSWagon).AbsSpeedMpS < 0.01f))
+            if (!WheelsSkiding || (this as MSTSWagon).AbsSpeedMpS < 0.01f)
             {             
                 this.SignalEvent(Event.WheelsSkidingStop);
             }            
@@ -1545,28 +1546,15 @@ namespace Orts.Simulation.RollingStocks
                 BrakeShoeCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeCoefficientFrictionAdjFactor, 0.01f, 1.0f);
                 BrakeShoeRetardCoefficientFrictionAdjFactor = MathHelper.Clamp(BrakeShoeRetardCoefficientFrictionAdjFactor, 0.01f, 1.0f);
 
-                var PlayerLoco = this as MSTSLocomotive;
+                var PlayerLoco = this as MSTSLocomotive;                                
                 if (PlayerLoco != null)
                 {
                     if (!BrakeSkid)
                     {
-                        if (PlayerLoco.WheelSpeedMpS_Cab < PlayerLoco.WheelSpeedMpS)
+                        if (PlayerLoco.WheelSpeedMpS_Cab < WheelSpeedMpS)
                             PlayerLoco.WheelSpeedMpS_Cab += 10f / 3.6f * elapsedClockSeconds;
-                        if (PlayerLoco.WheelSpeedMpS_Cab > PlayerLoco.WheelSpeedMpS)
-                        {
-                            PlayerLoco.WheelSpeedMpS_Cab = PlayerLoco.WheelSpeedMpS;
-                            //if (PlayerLoco.extendedPhysics != null)
-                            //{
-                            //    foreach (Undercarriage uc in PlayerLoco.extendedPhysics.Undercarriages)
-                            //    {
-                            //        foreach (ExtendedAxle ea in uc.Axles)
-                            //        {
-                            //            if (ea.HaveSpeedometerSensor)
-                            //                PlayerLoco.WheelSpeedMpS_Cab = Math.Abs(ea.WheelSpeedMpS);                                       
-                            //        }                                    
-                            //    }
-                            //}
-                        }
+                        if (PlayerLoco.WheelSpeedMpS_Cab > WheelSpeedMpS)                        
+                            PlayerLoco.WheelSpeedMpS_Cab = WheelSpeedMpS;                                                    
                     }
                     else
                     {                        

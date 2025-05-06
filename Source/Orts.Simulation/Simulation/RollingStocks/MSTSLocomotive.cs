@@ -8641,6 +8641,7 @@ namespace Orts.Simulation.RollingStocks
                     if (i == 10)
                     {
                         for (int j = 1; j < 11; j++) DriveAxleNumber[j] = j;
+                        DriveAxleCount = WagonNumAxles;
                         goto SkipToZeroDriveAxleCount;
                     }
                 }

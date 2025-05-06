@@ -746,16 +746,16 @@ namespace Orts.Viewer3D.RollingStock
             Car.WheelsSkiding = false;
             if ((Car as MSTSWagon).HandBrakePresent && (Car as MSTSWagon).BrakeSystem.HandBrakeActive)
             {
-                if (Car is MSTSLocomotive && (Car as MSTSLocomotive).HandBrakePercent < 50)
-                {
-                    // nic
-                }
+                if (!(Car is MSTSLocomotive))                                 
+                    Car.WheelsSkiding = true;
                 else
                 {
-                    Car.WheelsSkiding = true;
-                    distanceTravelledM = 0.0f;
-                    distanceTravelledDrivenM = 0.0f;
+                    if ((Car as MSTSLocomotive).WagonNumAxles > (Car as MSTSLocomotive).DriveAxleCount)                    
+                        Car.WheelsSkiding = true;                    
                 }
+
+                distanceTravelledM = 0.0f;
+                distanceTravelledDrivenM = 0.0f;
             }
 
             // Running gear and drive wheel rotation (animation) in steam locomotives
