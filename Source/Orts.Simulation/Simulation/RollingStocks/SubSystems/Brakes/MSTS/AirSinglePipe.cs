@@ -2941,8 +2941,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (loco.AuxResPressurePSI < loco.MainResPressurePSI + 5)
                         {
-                            loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 5.0f * elapsedClockSeconds;
-                            loco.AuxResPressurePSI += 5.0f * elapsedClockSeconds;
+                            loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 10.0f * elapsedClockSeconds;
+                            loco.AuxResPressurePSI += 10.0f * elapsedClockSeconds;
                         }
                         else
                         {
@@ -3020,10 +3020,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (loco is MSTSElectricLocomotive)
                     {
-                        // Lokomotivy 361
+                        loco.AuxCompressor = loco.NoAuxCompressor ? false : true;
+                        // Lokomotivy 361                        
                         if (loco.LocomotiveTypeNumber == 361)
-                        {
-                            loco.AuxCompressor = true;
+                        {                            
                             loco.Compressor_I = true;
                             loco.Compressor_II = true;
                             if (loco.AutoCompressor)
