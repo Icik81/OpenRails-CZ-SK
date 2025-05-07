@@ -1461,11 +1461,13 @@ namespace Orts.Simulation.RollingStocks
         {
             float WheelSpeedMpS = (this as MSTSWagon).WheelSpeedMpS;
             // Šoupaní stojících kol o kolejnici                                    
+            // Trigger 20168
             if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && WheelsSkiding)
             {
                 this.SignalEvent(Event.WheelsSkidingStart);
                 (this as MSTSWagon).WheelSpeedMpS = 0;
             }
+            // Trigger 20169
             if (!WheelsSkiding || (this as MSTSWagon).AbsSpeedMpS < 0.01f)
             {             
                 this.SignalEvent(Event.WheelsSkidingStop);
@@ -1475,7 +1477,7 @@ namespace Orts.Simulation.RollingStocks
             if (!(this is MSTSSteamLocomotive))            
             {
                 //WheelDamageValue = 10;
-                if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
+                if (!BrakeSkid && !WheelsSkiding && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
                 {
                     float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
                     float Wheel_s = 2.0f * MathHelper.Pi * (this as MSTSWagon).WheelRadiusM;
@@ -1566,7 +1568,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 
                 // WheelDamage - plošky na kolech při zaseknutých kolech                
-                if (BrakeSkid)
+                if (BrakeSkid || WheelsSkiding)
                 {
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)

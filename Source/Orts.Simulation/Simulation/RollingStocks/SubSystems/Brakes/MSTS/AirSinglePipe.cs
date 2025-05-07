@@ -2941,8 +2941,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (loco.AuxResPressurePSI < loco.MainResPressurePSI + 5)
                         {
-                            loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 10.0f * elapsedClockSeconds;
-                            loco.AuxResPressurePSI += 10.0f * elapsedClockSeconds;
+                            loco.MainResPressurePSI -= (loco.AuxResVolumeM3 * loco.MaxAuxResPressurePSI / (loco.MainResVolumeM3 * loco.MaxMainResPressurePSI)) * 20f * elapsedClockSeconds;
+                            loco.AuxResPressurePSI += 20f * elapsedClockSeconds;
                         }
                         else
                         {
