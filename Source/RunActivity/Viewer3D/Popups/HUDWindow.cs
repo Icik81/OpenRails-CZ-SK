@@ -1874,7 +1874,10 @@ namespace Orts.Viewer3D.Popups
 
         void TextPageWeather(TableData table)
         {
-            TextPageHeading(table, Viewer.Catalog.GetString("WEATHER INFORMATION"));
+            if (Viewer.Simulator.WeatherAdv == 7)
+                TextPageHeading(table, Viewer.Catalog.GetString("WEATHER INFORMATION - Dynamic weather"));
+            else
+                TextPageHeading(table, Viewer.Catalog.GetString("WEATHER INFORMATION"));
 
             //Disable Hudscroll.
             Viewer.HUDScrollWindow.Visible = WebServerPageNo > 0 ? true : false;//HudScroll

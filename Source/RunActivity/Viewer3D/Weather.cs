@@ -1428,7 +1428,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.FogDistanceFinal = weatherControl.Weather.FogDistance;
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
-                {
+                {                    
                     if (ORTSPrecipitationIntensity == -1)
                     {
                         ORTSPrecipitationIntensityChanceToChange = Simulator.Random.Next(10);
@@ -1514,7 +1514,10 @@ namespace Orts.Viewer3D
 
                 FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 1.0f);
                 ORTSPrecipitationIntensity = MathHelper.Clamp(ORTSPrecipitationIntensity, 0, 1.0f);                
-                weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1.0f);                
+                weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1.0f);
+
+                if (weatherControl.Weather.OvercastFactor < 0.3f)
+                    FinishPrecipitationIntensity = 0;
 
                 if (FinishPrecipitationIntensity > weatherControl.Weather.PricipitationIntensityPPSPM2)
                     weatherControl.Weather.PricipitationIntensityPPSPM2 += 0.01f * elapsedTime.ClockSeconds;
