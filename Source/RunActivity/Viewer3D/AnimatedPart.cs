@@ -204,9 +204,10 @@ namespace Orts.Viewer3D
             {
                 float Panto57HeightCorrection = ELoco.Pantographs[1].Panto57HeightCorrection / 100f;
                 float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                ELoco.Panto3AnimFrameCount = FrameCount;
 
                 //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
-                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount || AnimationKey == 0)
                 {
                     pantoVibrates = false;
                     pantoVibratesDone = false;
@@ -285,9 +286,10 @@ namespace Orts.Viewer3D
             {
                 float Panto57HeightCorrection = ELoco.Pantographs[2].Panto57HeightCorrection / 100f;
                 float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+                ELoco.Panto4AnimFrameCount = FrameCount;
 
                 //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
-                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount || AnimationKey == 0)
                 {
                     pantoVibrates = false;
                     pantoVibratesDone = false;
@@ -357,7 +359,7 @@ namespace Orts.Viewer3D
                         SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown * PantoAnimSlowingDown));
                 }
             }
-        }
+        }        
         public void UpdateStatePanto3(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
@@ -365,9 +367,17 @@ namespace Orts.Viewer3D
             {
                 float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
                 float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
-
+                                
+                if (FrameCount == 0)
+                {
+                    FrameCount = ELoco.Panto3AnimFrameCount;
+                    ELoco.Pantographs[3].AnimCorrectTimeCoefUp *= 1.6f;
+                    ELoco.Pantographs[3].AnimCorrectTimeCoefDown *= 2.0f;
+                }
+                ELoco.Panto3AnimFrame = AnimationKey / FrameCount;
+                
                 //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
-                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount || AnimationKey == 0)
                 {
                     pantoVibrates = false;
                     pantoVibratesDone = false;
@@ -446,8 +456,16 @@ namespace Orts.Viewer3D
                 float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
                 float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
 
+                if (FrameCount == 0)
+                {
+                    FrameCount = ELoco.Panto4AnimFrameCount;
+                    ELoco.Pantographs[4].AnimCorrectTimeCoefUp *= 1.6f;
+                    ELoco.Pantographs[4].AnimCorrectTimeCoefDown *= 2.0f;
+                }
+                ELoco.Panto4AnimFrame = AnimationKey / FrameCount;
+
                 //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
-                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount || AnimationKey == 0)
                 {
                     pantoVibrates = false;
                     pantoVibratesDone = false;

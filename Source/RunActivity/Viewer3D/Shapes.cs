@@ -673,59 +673,60 @@ namespace Orts.Viewer3D
                     {
                         if (ELoco != null && ELoco.Pantographs.Count == 4)
                         {
-                            if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
-                            {
-                                TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
-                                if (AnimationKey[6] < 1)
-                                {
-                                    if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
-                                    {
-                                        float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
-                                        float LimitPantoHeight = 1f + Panto57HeightCorrection;
-                                        if (AnimationKey[6] < 0.99f * LimitPantoHeight)
-                                        {
-                                            AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                                            ELoco.Pantographs[3].State = PantographState.Raising;
-                                        }
-                                        else
-                                        if (AnimationKey[6] > 1.01f * LimitPantoHeight)
-                                        {
-                                            AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
-                                            ELoco.Pantographs[3].State = PantographState.Lowering;
-                                        }
-                                        else
-                                            ELoco.Pantographs[3].State = PantographState.Up;
-                                    }
-                                    else
-                                    {
-                                        AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                                        ELoco.Pantographs[3].State = PantographState.Raising;
-                                    }
+                            //if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
+                            //{
+                            //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                            //    if (AnimationKey[6] < 1)
+                            //    {
+                            //        if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                            //        {
+                            //            float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
+                            //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
+                            //            if (AnimationKey[6] < 0.99f * LimitPantoHeight)
+                            //            {
+                            //                AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                            //                ELoco.Pantographs[3].State = PantographState.Raising;
+                            //            }
+                            //            else
+                            //            if (AnimationKey[6] > 1.01f * LimitPantoHeight)
+                            //            {
+                            //                AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
+                            //                ELoco.Pantographs[3].State = PantographState.Lowering;
+                            //            }
+                            //            else
+                            //                ELoco.Pantographs[3].State = PantographState.Up;
+                            //        }
+                            //        else
+                            //        {
+                            //            AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                            //            ELoco.Pantographs[3].State = PantographState.Raising;
+                            //        }
 
-                                    // Testovací čas přehrátí animace
-                                    TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
-                                    //ELoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
-                                }
-                                else
-                                {
-                                    ELoco.Pantographs[3].State = PantographState.Up;
-                                    TimeTest = 0;
-                                }
-                            }
+                            //        // Testovací čas přehrátí animace
+                            //        TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
+                            //        //ELoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
+                            //    }
+                            //    else
+                            //    {
+                            //        ELoco.Pantographs[3].State = PantographState.Up;
+                            //        TimeTest = 0;
+                            //    }
+                            //}
 
-                            if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
-                            {
-                                TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
-                                if (AnimationKey[6] > 0)
-                                {
-                                    AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
-                                    ELoco.Pantographs[3].State = PantographState.Lowering;
-                                }
-                                else
-                                    ELoco.Pantographs[3].State = PantographState.Down;
-                            }
+                            //if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
+                            //{
+                            //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                            //    if (AnimationKey[6] > 0)
+                            //    {
+                            //        AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
+                            //        ELoco.Pantographs[3].State = PantographState.Lowering;
+                            //    }
+                            //    else
+                            //        ELoco.Pantographs[3].State = PantographState.Down;
+                            //}                            
+                            AnimationKey[6] = ELoco.Panto3AnimFrame;
                             AnimateMatrix(matrix, AnimationKey[6]);
                         }
                     }
@@ -735,52 +736,53 @@ namespace Orts.Viewer3D
                     {
                         if (ELoco != null && ELoco.Pantographs.Count == 4)
                         {
-                            if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
-                            {
-                                TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
-                                if (AnimationKey[7] < 1)
-                                {
-                                    if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
-                                    {
-                                        float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
-                                        float LimitPantoHeight = 1f + Panto57HeightCorrection;
-                                        if (AnimationKey[7] < 0.99f * LimitPantoHeight)
-                                        {
-                                            AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
-                                            ELoco.Pantographs[4].State = PantographState.Raising;
-                                        }
-                                        else
-                                        if (AnimationKey[7] > 1.01f * LimitPantoHeight)
-                                        {
-                                            AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
-                                            ELoco.Pantographs[4].State = PantographState.Lowering;
-                                        }
-                                        else
-                                            ELoco.Pantographs[4].State = PantographState.Up;
-                                    }
-                                    else
-                                    {
-                                        AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
-                                        ELoco.Pantographs[4].State = PantographState.Raising;
-                                    }
-                                }
-                                else
-                                    ELoco.Pantographs[4].State = PantographState.Up;
-                            }
+                            //if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
+                            //{
+                            //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
+                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                            //    if (AnimationKey[7] < 1)
+                            //    {
+                            //        if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                            //        {
+                            //            float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
+                            //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
+                            //            if (AnimationKey[7] < 0.99f * LimitPantoHeight)
+                            //            {
+                            //                AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                            //                ELoco.Pantographs[4].State = PantographState.Raising;
+                            //            }
+                            //            else
+                            //            if (AnimationKey[7] > 1.01f * LimitPantoHeight)
+                            //            {
+                            //                AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
+                            //                ELoco.Pantographs[4].State = PantographState.Lowering;
+                            //            }
+                            //            else
+                            //                ELoco.Pantographs[4].State = PantographState.Up;
+                            //        }
+                            //        else
+                            //        {
+                            //            AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                            //            ELoco.Pantographs[4].State = PantographState.Raising;
+                            //        }
+                            //    }
+                            //    else
+                            //        ELoco.Pantographs[4].State = PantographState.Up;
+                            //}
 
-                            if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
-                            {
-                                TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                                TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
-                                if (AnimationKey[7] > 0)
-                                {
-                                    AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
-                                    ELoco.Pantographs[4].State = PantographState.Lowering;
-                                }
-                                else
-                                    ELoco.Pantographs[4].State = PantographState.Down;
-                            }
+                            //if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
+                            //{
+                            //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
+                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                            //    if (AnimationKey[7] > 0)
+                            //    {
+                            //        AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
+                            //        ELoco.Pantographs[4].State = PantographState.Lowering;
+                            //    }
+                            //    else
+                            //        ELoco.Pantographs[4].State = PantographState.Down;
+                            //}
+                            AnimationKey[7] = ELoco.Panto4AnimFrame;
                             AnimateMatrix(matrix, AnimationKey[7]);
                         }
                     }

@@ -769,6 +769,10 @@ namespace Orts.Simulation.RollingStocks
         public bool[] UnprotectedLevelCrossWarningRequest = new bool[1000];
         public bool[] UnprotectedLevelCrossWarningOk = new bool[1000];
         public int[] UnprotectedLevelCrossWarningCount = new int[1000];
+        public float Panto3AnimFrame;
+        public float Panto4AnimFrame;
+        public int Panto3AnimFrameCount;
+        public int Panto4AnimFrameCount;
 
 
         // Jindrich
