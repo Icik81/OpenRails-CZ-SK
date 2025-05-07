@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
@@ -141,29 +142,140 @@ namespace Orts.Viewer3D
             SetFrameClamp(AnimationKey + (state ? 1 : -1) * elapsedTime.ClockSeconds);
         }
 
+        float pantoVibratesTimer;
+        float pantoVibratesTime;
+        bool pantoVibrates;
+        int pantoVibratesCycleCount;
+        int pantoVibratesCycle;
+        bool pantoVibratesEnable;
+        bool pantoVibratesDone;
+        float pantoVibratesRatioCoef;
+        float pantoVibratesRatioCoefMax;
+        public void PantoVibrates(ElapsedTime elapsedTime)
+        {
+            // Nastavení vibrace pantografu
+            if (!pantoVibrates)
+            {
+                pantoVibratesTimer = 0;
+                pantoVibratesTime = 0.3f;
+                pantoVibratesCycleCount = 5;
+                pantoVibratesRatioCoefMax = 0.15f;
+            }
+            
+            pantoVibrates = true;
+            pantoVibratesEnable = true;
+                        
+            if (pantoVibratesTimer == 0)
+            {
+                pantoVibratesCycle++;
+                pantoVibratesRatioCoef = MathHelper.Clamp(pantoVibratesRatioCoefMax / (pantoVibratesCycle / 2f), 0, pantoVibratesRatioCoefMax);                
+                //Program.Viewer.Simulator.Confirmer.Warning("pantoVibratesRatioCoef: " + pantoVibratesRatioCoef);
+            }
+
+            if (pantoVibratesCycle < pantoVibratesCycleCount + 1)
+            {
+                pantoVibratesTimer += elapsedTime.ClockSeconds;
+
+                if (pantoVibratesTimer < pantoVibratesTime)
+                    SetFrameClamp(AnimationKey - (pantoVibratesRatioCoef * elapsedTime.ClockSeconds));
+                if (pantoVibratesTimer > pantoVibratesTime)
+                    SetFrameClamp(AnimationKey + (pantoVibratesRatioCoef * elapsedTime.ClockSeconds));
+
+                if (pantoVibratesTimer > 2f * pantoVibratesTime)                
+                    pantoVibratesTimer = 0;                
+            }
+            else
+            {                
+                pantoVibratesCycle = 0;
+                pantoVibratesEnable = false;
+                pantoVibratesDone = true;
+            }
+        }
+
         // Icik
+        float PantoAnimSlowingUp;
+        float PantoAnimSlowingDown;
+        float preWireHeight;
+        float PantoAnimSlowingDownTimer;
         public void UpdateStatePanto1(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
             {
+                float Panto57HeightCorrection = ELoco.Pantographs[1].Panto57HeightCorrection / 100f;
+                float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+
+                //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                {
+                    pantoVibrates = false;
+                    pantoVibratesDone = false;
+                }
+
                 if (state)
                 {
+                    PantoAnimSlowingDownTimer = 0;
+                    // Vibrace pantografu
                     if (ELoco.Pantographs[1].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                     {
-                        float Panto57HeightCorrection = ELoco.Pantographs[1].Panto57HeightCorrection / 100f;
-                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
-                        if (AnimationKey < 0.99f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
-                        else
-                        if (AnimationKey > 1.01f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * LimitPantoHeight ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * LimitPantoHeight || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
                     }
                     else
-                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp));
+                    {
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * FrameCount ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * FrameCount || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+                    }
+
+                    if (!pantoVibrates || preWireHeight != ELoco.Simulator.WireHeigth)
+                    {
+                        if (ELoco.Pantographs[1].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                        {
+                            if (AnimationKey < 0.99f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            else
+                            if (AnimationKey > 1.01f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
+                            if (AnimationKey > 0.99f * LimitPantoHeight && AnimationKey < 1.01f * LimitPantoHeight)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                        else
+                        {
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            if (AnimationKey > 0.99f * FrameCount)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                    }
                 }
                 else
-                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown));
+                {
+                    if (AnimationKey > 0.1f)
+                    {
+                        PantoAnimSlowingDown = 1f;
+                        PantoAnimSlowingDownTimer = 0;                        
+                    }                    
+
+                    if (AnimationKey < 0.1f && AnimationKey != 0)
+                    {
+                        PantoAnimSlowingDown = 0;
+
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0 || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+
+                        PantoAnimSlowingDownTimer += elapsedTime.ClockSeconds;
+
+                        if (PantoAnimSlowingDownTimer > 2f)
+                        {
+                            pantoVibrates = false;
+                            PantoAnimSlowingDown = 1.5f;
+                            if (AnimationKey == 0) PantoAnimSlowingDownTimer = 0;
+                        }
+                    }
+                    if (!pantoVibrates)
+                        SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[1].AnimCorrectTimeCoefDown * PantoAnimSlowingDown));                    
+                }
             }            
         }
         public void UpdateStatePanto2(bool state, ElapsedTime elapsedTime)
@@ -171,72 +283,240 @@ namespace Orts.Viewer3D
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
             {
+                float Panto57HeightCorrection = ELoco.Pantographs[2].Panto57HeightCorrection / 100f;
+                float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+
+                //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                {
+                    pantoVibrates = false;
+                    pantoVibratesDone = false;
+                }
+
                 if (state)
                 {
+                    // Vibrace pantografu
                     if (ELoco.Pantographs[2].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                     {
-                        float Panto57HeightCorrection = ELoco.Pantographs[2].Panto57HeightCorrection / 100f;
-                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
-                        if (AnimationKey < 0.99f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
-                        else
-                        if (AnimationKey > 1.01f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * LimitPantoHeight ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * LimitPantoHeight || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
                     }
                     else
-                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp));
+                    {
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * FrameCount ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * FrameCount || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+                    }
+
+                    if (!pantoVibrates || preWireHeight != ELoco.Simulator.WireHeigth)
+                    {
+                        if (ELoco.Pantographs[2].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                        {
+                            if (AnimationKey < 0.99f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            else
+                            if (AnimationKey > 1.01f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
+                            if (AnimationKey > 0.99f * LimitPantoHeight && AnimationKey < 1.01f * LimitPantoHeight)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                        else
+                        {
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            if (AnimationKey > 0.99f * FrameCount)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                    }
                 }
                 else
-                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown));
-            }            
+                {
+                    if (AnimationKey > 0.1f)
+                    {
+                        PantoAnimSlowingDown = 1f;
+                        PantoAnimSlowingDownTimer = 0;
+                    }
+
+                    if (AnimationKey < 0.1f && AnimationKey != 0)
+                    {
+                        PantoAnimSlowingDown = 0;
+
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0 || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+
+                        PantoAnimSlowingDownTimer += elapsedTime.ClockSeconds;
+
+                        if (PantoAnimSlowingDownTimer > 2f)
+                        {
+                            pantoVibrates = false;
+                            PantoAnimSlowingDown = 1.5f;
+                            if (AnimationKey == 0) PantoAnimSlowingDownTimer = 0;
+                        }
+                    }
+                    if (!pantoVibrates)
+                        SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[2].AnimCorrectTimeCoefDown * PantoAnimSlowingDown));
+                }
+            }
         }
         public void UpdateStatePanto3(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
             {
+                float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
+                float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+
+                //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                {
+                    pantoVibrates = false;
+                    pantoVibratesDone = false;
+                }
+
                 if (state)
                 {
+                    // Vibrace pantografu
                     if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                     {
-                        float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
-                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
-                        if (AnimationKey < 0.99f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
-                        else
-                        if (AnimationKey > 1.01f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * LimitPantoHeight ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * LimitPantoHeight || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
                     }
                     else
-                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp));
+                    {
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * FrameCount ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * FrameCount || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+                    }
+
+                    if (!pantoVibrates || preWireHeight != ELoco.Simulator.WireHeigth)
+                    {
+                        if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                        {
+                            if (AnimationKey < 0.99f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            else
+                            if (AnimationKey > 1.01f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
+                            if (AnimationKey > 0.99f * LimitPantoHeight && AnimationKey < 1.01f * LimitPantoHeight)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                        else
+                        {
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            if (AnimationKey > 0.99f * FrameCount)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                    }
                 }
                 else
-                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown));
-            }            
+                {
+                    if (AnimationKey > 0.1f)
+                    {
+                        PantoAnimSlowingDown = 1f;
+                        PantoAnimSlowingDownTimer = 0;
+                    }
+
+                    if (AnimationKey < 0.1f && AnimationKey != 0)
+                    {
+                        PantoAnimSlowingDown = 0;
+
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0 || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+
+                        PantoAnimSlowingDownTimer += elapsedTime.ClockSeconds;
+
+                        if (PantoAnimSlowingDownTimer > 2f)
+                        {
+                            pantoVibrates = false;
+                            PantoAnimSlowingDown = 1.5f;
+                            if (AnimationKey == 0) PantoAnimSlowingDownTimer = 0;
+                        }
+                    }
+                    if (!pantoVibrates)
+                        SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[3].AnimCorrectTimeCoefDown * PantoAnimSlowingDown));
+                }
+            }
         }
         public void UpdateStatePanto4(bool state, ElapsedTime elapsedTime)
         {
             var ELoco = (Program.Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             if (ELoco != null)
             {
+                float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
+                float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
+
+                //Program.Viewer.Simulator.Confirmer.Information("PantoAnimSlowingDown: " + PantoAnimSlowingUp);
+                if (!state && AnimationKey > 0.1f || state && (AnimationKey > 0 && AnimationKey < 0.3f) || AnimationKey > 0.1f * FrameCount && AnimationKey < 0.3f * FrameCount)
+                {
+                    pantoVibrates = false;
+                    pantoVibratesDone = false;
+                }
+
                 if (state)
                 {
+                    // Vibrace pantografu
                     if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
                     {
-                        float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
-                        float LimitPantoHeight = FrameCount * (1f + Panto57HeightCorrection);
-                        if (AnimationKey < 0.99f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
-                        else
-                        if (AnimationKey > 1.01f * LimitPantoHeight)
-                            SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * LimitPantoHeight ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * LimitPantoHeight || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
                     }
                     else
-                        SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp));
-                }                
+                    {
+                        PantoAnimSlowingUp = AnimationKey < 0.85f * FrameCount ? 1.5f : 0.5f;
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0.99f * FrameCount || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+                    }
+
+                    if (!pantoVibrates || preWireHeight != ELoco.Simulator.WireHeigth)
+                    {
+                        if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                        {
+                            if (AnimationKey < 0.99f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            else
+                            if (AnimationKey > 1.01f * LimitPantoHeight)
+                                SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
+                            if (AnimationKey > 0.99f * LimitPantoHeight && AnimationKey < 1.01f * LimitPantoHeight)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                        else
+                        {
+                            SetFrameClamp(AnimationKey + (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefUp * PantoAnimSlowingUp));
+                            if (AnimationKey > 0.99f * FrameCount)
+                                preWireHeight = ELoco.Simulator.WireHeigth;
+                        }
+                    }
+                }
                 else
-                    SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown));
-            }            
+                {
+                    if (AnimationKey > 0.1f)
+                    {
+                        PantoAnimSlowingDown = 1f;
+                        PantoAnimSlowingDownTimer = 0;
+                    }
+
+                    if (AnimationKey < 0.1f && AnimationKey != 0)
+                    {
+                        PantoAnimSlowingDown = 0;
+
+                        if (!pantoVibratesDone && (!pantoVibrates && AnimationKey > 0 || pantoVibratesEnable))
+                            PantoVibrates(elapsedTime);
+
+                        PantoAnimSlowingDownTimer += elapsedTime.ClockSeconds;
+
+                        if (PantoAnimSlowingDownTimer > 2f)
+                        {
+                            pantoVibrates = false;
+                            PantoAnimSlowingDown = 1.5f;
+                            if (AnimationKey == 0) PantoAnimSlowingDownTimer = 0;
+                        }
+                    }
+                    if (!pantoVibrates)
+                        SetFrameClamp(AnimationKey - (1 * elapsedTime.ClockSeconds * ELoco.Pantographs[4].AnimCorrectTimeCoefDown * PantoAnimSlowingDown));
+                }
+            }
         }
 
         /// <summary>
