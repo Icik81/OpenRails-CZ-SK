@@ -10311,8 +10311,12 @@ namespace Orts.Simulation.Timetables
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
             if (StationStops.Count == 0) return;
 
-            double clock = Simulator.GameTime;
             FillNames(this);
+
+            RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
+            if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
+
+            double clock = Simulator.GameTime;            
 
             if (AtStation && BoardingComplete)
             {
@@ -10320,20 +10324,7 @@ namespace Orts.Simulation.Timetables
             }
 
             if (BoardingCompleted)
-                StationStops[0].PlatformItem.NumPassengersWaiting = 0;
-
-            if (RestOfPax != -1)
-            {
-                if (Simulator.GameTime > 0)
-                {
-                    if (StationStops[0].PlatformItem.NumPassengersWaiting < RestOfPax)
-                        StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                }
-                else
-                {
-                    StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                }
-            }            
+                StationStops[0].PlatformItem.NumPassengersWaiting = 0;                       
 
             if (StationStops.Count == 1)
                 EndStationTT = true;
@@ -10418,12 +10409,7 @@ namespace Orts.Simulation.Timetables
                             BoardingCompleted = true;
                         else
                             BoardingCompleted = false;
-
-                        StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                        RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
                         
-                        if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
-
                         // Still have to wait
                         if (remaining > 0)
                         {

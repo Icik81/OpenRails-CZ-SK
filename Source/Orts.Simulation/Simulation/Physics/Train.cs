@@ -16947,7 +16947,7 @@ namespace Orts.Simulation.Physics
 
         public List<int> fullUnboardStations = new List<int>();
         public List<string> UnboardStationsName = new List<string>();
-        public int[] StationsBoardingRestOfPaxes = new int[50];
+        public int[] StationsBoardingRestOfPaxes = new int[100];
         protected bool initPax = true;
         protected int statCount = 0;
         float actualRandom = 1;
@@ -16990,7 +16990,7 @@ namespace Orts.Simulation.Physics
             foreach (StationStop ss in StationStops)
             {
                 // Nástup ukončen, negeneruj cestující
-                if (StationsBoardingRestOfPaxes[station] == -1) goto SkipToNextStationDynamic;
+                if (StationsBoardingRestOfPaxes[station] == -1) goto SkipToNextStationDynamic;                
 
                 if (station == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
                 {
@@ -17017,10 +17017,7 @@ namespace Orts.Simulation.Physics
                 ss.PlatformItem.NumPassengersWaiting = (int)(freeSeatsNextStation * actualRandom);
                 double nextStationSeconds = -TimeSpan.FromSeconds((Simulator.ClockTime - ss.DepartTime) % (24 * 3600)).TotalSeconds;
                 int numPax = ss.PlatformItem.NumPassengersWaiting;                
-                int maxStation = 0;
-
-                // Pokud zbývají cestující
-                if (StationsBoardingRestOfPaxes[station] > 0 && StationsBoardingRestOfPaxes[station] < numPax) numPax = StationsBoardingRestOfPaxes[station];
+                int maxStation = 0;                
 
                 if (ss.PlatformItem.PassengerListBuffer.Count < numPax)
                 {
@@ -17294,7 +17291,7 @@ namespace Orts.Simulation.Physics
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
 
                     // Pokud zbývají cestující
-                    if (StationsBoardingRestOfPaxes[station] > 0 && StationsBoardingRestOfPaxes[station] < numPax) numPax = StationsBoardingRestOfPaxes[station];
+                    if (StationsBoardingRestOfPaxes[station] > 0) numPax = StationsBoardingRestOfPaxes[station];
                     
                     for (int i = 0; i < numPax; i++)
                     {

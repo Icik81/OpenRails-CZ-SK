@@ -1082,6 +1082,9 @@ namespace Orts.Simulation
 
                 MyPlayerTrain.FillNames(MyPlayerTrain);
 
+                RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
+                if (MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] != -1) MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] = RestOfPax;                
+
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
                     MyPlayerTrain.BoardingComplete = false;
@@ -1090,20 +1093,7 @@ namespace Orts.Simulation
                 double clock = MyPlayerTrain.Simulator.GameTime;
 
                 if (BoardingCompleted)
-                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;
-
-                if (RestOfPax != -1)
-                {
-                    if (Simulator.GameTime > 0)
-                    {
-                        if (MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting < RestOfPax)
-                            MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                    }
-                    else
-                    {
-                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                    }
-                }
+                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;                
                 
                 MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
@@ -1152,12 +1142,7 @@ namespace Orts.Simulation
                         if (!MyPlayerTrain.PeopleWantToEntry && !MyPlayerTrain.TrainDoorsOpen && MyPlayerTrain.PeopleWantToLeaveCount == 0)
                             BoardingCompleted = true;
                         else
-                            BoardingCompleted = false;
-
-                        MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                        RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
-                        
-                        if (MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] != -1) MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] = RestOfPax;
+                            BoardingCompleted = false;                                                
 
                         // Still have to wait
                         if (remaining > 0)

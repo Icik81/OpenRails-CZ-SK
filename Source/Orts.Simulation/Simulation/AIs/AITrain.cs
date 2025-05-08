@@ -6903,29 +6903,20 @@ namespace Orts.Simulation.AIs
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
             if (StationStops.Count == 0) return;
 
-            double clock = Simulator.GameTime;
-            FillNames(this);            
+            FillNames(this);
 
+            RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
+            if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
+
+            double clock = Simulator.GameTime;
+                   
             if (AtStation && BoardingComplete)
             {
                 BoardingComplete = false;
             }
 
             if (BoardingCompleted)
-                StationStops[0].PlatformItem.NumPassengersWaiting = 0;
-
-            if (RestOfPax != -1)
-            {
-                if (Simulator.GameTime > 0)
-                {
-                    if (StationStops[0].PlatformItem.NumPassengersWaiting < RestOfPax)
-                        StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                }
-                else
-                {
-                    StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                }
-            }            
+                StationStops[0].PlatformItem.NumPassengersWaiting = 0;                        
 
             ReverseAtStationStopTest(this);
 
@@ -7004,12 +6995,7 @@ namespace Orts.Simulation.AIs
                         if (!PeopleWantToEntry && !TrainDoorsOpen && PeopleWantToLeaveCount == 0)
                             BoardingCompleted = true;
                         else
-                            BoardingCompleted = false;
-
-                        StationStops[0].PlatformItem.NumPassengersWaiting = RestOfPax;
-                        RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
-                        
-                        if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
+                            BoardingCompleted = false;                                               
 
                         // Still have to wait
                         if (remaining > 0)
