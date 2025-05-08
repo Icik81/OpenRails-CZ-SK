@@ -256,18 +256,18 @@ namespace Orts.Viewer3D
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
                 {
                     if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
-                        Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                        Program.Simulator.Weather.FogDistance -= 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
                     if (Program.Simulator.Weather.FogDistance < MorningFogDistance)
-                        Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                        Program.Simulator.Weather.FogDistance += 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
                     //if (MorningFogFirstRun)                
                     //    Program.Simulator.Weather.FogDistance = MorningFogDistance;                        
                 }
                 else
                 {
                     if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
-                        Program.Simulator.Weather.FogDistance += 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                        Program.Simulator.Weather.FogDistance += 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
                     if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
-                        Program.Simulator.Weather.FogDistance -= 0.020f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
+                        Program.Simulator.Weather.FogDistance -= 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
                 }
                 MorningFogFirstRun = false;
             }
