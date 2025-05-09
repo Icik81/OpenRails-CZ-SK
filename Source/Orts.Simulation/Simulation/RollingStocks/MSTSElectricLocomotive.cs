@@ -1571,8 +1571,11 @@ namespace Orts.Simulation.RollingStocks
             UnderVoltageProtection(elapsedClockSeconds);
 
             if (IsPlayerTrain)
-            {                
-                if (MultiSystemEngine && LocomotivePowerVoltage == 15000) Loco15kV = true;
+            {
+                if (LocoType != LocoTypes.Vectron && MultiSystemEngine && LocomotivePowerVoltage == 15000)
+                {
+                    Loco15kV = SwitchingVoltageMode_OffAC ? true : false;                    
+                }
                 RouteVoltageVInfo = RouteVoltageV;                
                 AuxAirConsumption(elapsedClockSeconds);
                 FaultByPlayer(elapsedClockSeconds);

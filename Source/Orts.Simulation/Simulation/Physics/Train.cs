@@ -17118,8 +17118,9 @@ namespace Orts.Simulation.Physics
                 {
                     if (stop.PlatformItem.NumPassengersWaiting >= 10000)
                         stop.PlatformItem.NumPassengersWaitingBase = stop.PlatformItem.NumPassengersWaiting;                    
-                }                
+                }
 
+                int station = 0;
                 foreach (StationStop stop in StationStops)
                 {
                     if (stop.PlatformItem.NumPassengersWaitingBase >= 10000)
@@ -17130,7 +17131,11 @@ namespace Orts.Simulation.Physics
                     }
                     else
                         fullUnboardStations.Add(0);
-                    UnboardStationsName.Add(stop.PlatformItem.Name);                    
+                    UnboardStationsName.Add(stop.PlatformItem.Name);
+
+                    if (!Simulator.Settings.GenerateRandomPaxCount)
+                        StationsBoardingRestOfPaxes[station] = stop.PlatformItem.NumPassengersWaiting;
+                    station++;
                 }
                 MaxStationCountFromStart = StationStops.Count;
             }                        
