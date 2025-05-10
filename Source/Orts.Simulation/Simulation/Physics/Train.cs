@@ -17284,7 +17284,7 @@ namespace Orts.Simulation.Physics
                 }
                 numUsableWagons = train.Cars.Count;
                 
-                station = ActualStationNumber;
+                station = ActualStationNumber;                
                 foreach (StationStop ss in train.StationStops)
                 {
                     // Nástup ukončen, negeneruj cestující
@@ -17296,6 +17296,7 @@ namespace Orts.Simulation.Physics
                     int numPax = ss.PlatformItem.NumPassengersWaiting;
 
                     // Pokud zbývají cestující
+                    if (!Simulator.Settings.GenerateRandomPaxCount) ss.PlatformItem.PassengerList.Clear();
                     if (StationsBoardingRestOfPaxes[station] > 0) numPax = StationsBoardingRestOfPaxes[station];
                     
                     for (int i = 0; i < numPax; i++)

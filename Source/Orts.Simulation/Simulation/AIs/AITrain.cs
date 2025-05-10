@@ -814,7 +814,7 @@ namespace Orts.Simulation.AIs
             if (CheckTrain)
             {
                 File.AppendAllText(@"C:\temp\checktrain.txt", "Switch MovementState : " + MovementState + "\n");
-            }
+            }            
 
             // Icik            
             if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)
@@ -1137,7 +1137,7 @@ namespace Orts.Simulation.AIs
             }
 #endif
             //            Trace.TraceWarning ("Time {0} Train no. {1} Speed {2} AllowedMaxSpeed {3} Throttle percent {4} Distance travelled {5} Movement State {6} BrakePerCent {7}",
-            //               clockTime, Number, SpeedMpS, AllowedMaxSpeedMpS, AITrainThrottlePercent, DistanceTravelledM, MovementState, AITrainBrakePercent);
+            //               clockTime, Number, SpeedMpS, AllowedMaxSpeedMpS, AITrainThrottlePercent, DistanceTravelledM, MovementState, AITrainBrakePercent);            
         }
 
         //================================================================================================//
@@ -2353,19 +2353,18 @@ namespace Orts.Simulation.AIs
         /// <summary>
         /// Train is braking
         /// </summary>
-
+        float distanceToGoM;        
         public virtual void UpdateBrakingState(float elapsedClockSeconds, int presentTime)
-        {
-
+        {            
             // check if action still required
 
             bool clearAction = false;
 
-            float distanceToGoM = activityClearingDistanceM;
+            distanceToGoM = activityClearingDistanceM;
             if (nextActionInfo != null && nextActionInfo.RequiredSpeedMpS == 99999f)  //  RequiredSpeed doesn't matter
             {
                 return;
-            }
+            }            
 
             if (nextActionInfo == null) // action has been reset - keep status quo
             {
@@ -2380,7 +2379,7 @@ namespace Orts.Simulation.AIs
                     else if (EndAuthorityType[0] == END_AUTHORITY.END_OF_PATH)
                     {
                         distanceToGoM = DistanceToEndNodeAuthorityM[0] - activityClearingDistanceM;
-                    }
+                    }                    
 
                     if (distanceToGoM <= 0)
                     {
@@ -2862,7 +2861,7 @@ namespace Orts.Simulation.AIs
             if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP)
                 creepDistanceM = 0.0f;
             if (nextActionInfo == null && requiredSpeedMpS == 0)
-                creepDistanceM = clearingDistanceM;
+                creepDistanceM = clearingDistanceM;            
 
             // keep speed within required speed band
 
@@ -3155,6 +3154,16 @@ namespace Orts.Simulation.AIs
                 File.AppendAllText(@"C:\temp\checktrain.txt",
                      "     A&B(E): " + AITrainThrottlePercent.ToString() + " - " + AITrainBrakePercent.ToString() + "\n");
             }
+
+            // Icik
+            // Postupné zpomalování při zastavení vlaku 
+            if (nextActionInfo != null)
+                distanceToGoM = Math.Min(nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM, DistanceToEndNodeAuthorityM[0]);
+            else
+                distanceToGoM = DistanceToEndNodeAuthorityM[0];
+            smoothDeceleration = AITrainWillAttach ? false : true;
+            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
+
         }
 
         //================================================================================================//
@@ -3163,8 +3172,7 @@ namespace Orts.Simulation.AIs
         /// </summary>
 
         public virtual void UpdateAccelState(float elapsedClockSeconds)
-        {
-
+        {                         
             // check speed
             if (((SpeedMpS - LastSpeedMpS) / elapsedClockSeconds) < 0.5f * MaxAccelMpSS)
             {
@@ -3791,43 +3799,75 @@ namespace Orts.Simulation.AIs
         /// Train control routines
         /// </summary>
 
-        public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
+        bool smoothDeceleration;
+        float preAITrainBrakePercent;
+        public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpH, float distanceToGoM, float distanceToStartM)
         {
+            if (!smoothDeceleration) return;
+
+            if (distanceToGoM < distanceToStartM && Math.Abs(SpeedMpS * 3.6f) > 0.1f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpH)
+            {
+                // AI plynule dobržďuje (skřípání brzd)
+                if (Math.Abs(SpeedMpS * 3.6f) > 2.0f && Math.Abs(SpeedMpS * 3.6f) < 5f)
+                {
+                    if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * 5f)
+                        AITrainBrakePercent -= 10;
+                    if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * 5f)
+                        AITrainBrakePercent += 1;                    
+
+                    float TrainElevation = 0;
+                    foreach (TrainCar car in Cars)
+                        TrainElevation += Math.Abs(car.CurrentElevationPercent);
+
+                    TrainElevation /= Cars.Count;
+                    AITrainBrakePercent = TrainElevation > 1 ? AITrainBrakePercent * TrainElevation : AITrainBrakePercent;
+                    AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0, 100);
+                }
+                else
+                if (Math.Abs(SpeedMpS * 3.6f) > 0.0f)
+                {
+                    // AI plynule začne brzdit
+                    int BrakeMassCoef = MathHelper.Clamp((int)(MassKg / 25000f), 1, 10);
+                    if (preAITrainBrakePercent >= AITrainBrakePercent)
+                    {
+                        if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * BrakeMassCoef)
+                            AITrainBrakePercent -= 1f;
+                        if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * BrakeMassCoef)
+                            AITrainBrakePercent += 1f;
+                    }
+                    //AITrainBrakePercent = 20;
+
+                    AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0, 100);
+                    preAITrainBrakePercent = AITrainBrakePercent;
+                }
+                
+                reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);                
+                float ds = timeS * (reqDecelMpSS);
+                SpeedMpS = Math.Max(SpeedMpS - ds, 0); // avoid negative speeds
+                foreach (TrainCar car in Cars)
+                {
+                    //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
+                    // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
+                    //  car.SpeedMpS = car.Flipped ? -SpeedMpS : SpeedMpS;
+                    car.SpeedMpS = car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab) ? -SpeedMpS : SpeedMpS;
+                }
+            }            
+        }
+       
+        public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
+        {            
             if (AITrainThrottlePercent > 0)
             {
                 AITrainThrottlePercent -= stepSize * timeS;
             }
 
-            //if (AITrainBrakePercent < 100)
+            if (AITrainBrakePercent < 100)            
             {
-                // AI plynule dobržďuje
-                if (!AITrainWillAttach && Math.Abs(SpeedMpS) > 0.1f / 3.6f && Math.Abs(SpeedMpS) < 10f / 3.6f)
-                {
-                    if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * 10f)
-                        AITrainBrakePercent -= 10;                    
-                    if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * 10f)
-                        AITrainBrakePercent += 1;
-                    if (AITrainBrakePercent < 10) AITrainBrakePercent = 10;
-                    
-                    float TrainElevation = 0;
-                    foreach (TrainCar car in Cars)                    
-                        TrainElevation += Math.Abs(car.CurrentElevationPercent);
-                    
-                    TrainElevation /= Cars.Count;
-                    AITrainBrakePercent = TrainElevation > 1 ? AITrainBrakePercent * TrainElevation : AITrainBrakePercent;
-                    if (AITrainBrakePercent > 100)
-                        AITrainBrakePercent = 100;
-
-                    reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);                                        
-                }                
-                else
-                {
-                    AITrainBrakePercent += stepSize;
-                    if (AITrainBrakePercent > 100)
-                        AITrainBrakePercent = 100;
-                }                
+                AITrainBrakePercent += stepSize;
+                if (AITrainBrakePercent > 100)
+                    AITrainBrakePercent = 100;
             }
-            //else
+            else
             {
                 float ds = timeS * (reqDecelMpSS);
                 SpeedMpS = Math.Max(SpeedMpS - ds, 0); // avoid negative speeds
@@ -3874,6 +3914,10 @@ namespace Orts.Simulation.AIs
 
         public void AdjustControlsBrakeOff()
         {
+            // Icik
+            if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
+            if (smoothDeceleration) return;
+
             AITrainBrakePercent = 0;
             InitializeBrakes();
 
