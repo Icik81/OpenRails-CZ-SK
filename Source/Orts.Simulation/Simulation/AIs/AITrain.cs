@@ -6947,20 +6947,14 @@ namespace Orts.Simulation.AIs
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
             if (StationStops.Count == 0) return;
 
-            FillNames(this);
-
-            RestOfPax = StationStops[0].PlatformItem.PassengerList.Count;
-            if (StationsBoardingRestOfPaxes[ActualStationNumber] != -1) StationsBoardingRestOfPaxes[ActualStationNumber] = RestOfPax;
+            FillNames(this);            
 
             double clock = Simulator.GameTime;
                    
             if (AtStation && BoardingComplete)
             {
                 BoardingComplete = false;
-            }
-
-            if (BoardingCompleted)
-                StationStops[0].PlatformItem.NumPassengersWaiting = 0;                        
+            }            
 
             ReverseAtStationStopTest(this);
 

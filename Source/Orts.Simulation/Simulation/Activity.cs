@@ -1080,10 +1080,7 @@ namespace Orts.Simulation
                 if (MyPlayerTrain.StationStops.Count == 0)
                     return;
 
-                MyPlayerTrain.FillNames(MyPlayerTrain);
-
-                RestOfPax = MyPlayerTrain.StationStops[0].PlatformItem.PassengerList.Count;
-                if (MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] != -1) MyPlayerTrain.StationsBoardingRestOfPaxes[MyPlayerTrain.ActualStationNumber] = RestOfPax;                
+                MyPlayerTrain.FillNames(MyPlayerTrain);                               
 
                 if (arrived && MyPlayerTrain.BoardingComplete)
                 {
@@ -1092,8 +1089,8 @@ namespace Orts.Simulation
 
                 double clock = MyPlayerTrain.Simulator.GameTime;
 
-                if (BoardingCompleted)
-                    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;                
+                //if (BoardingCompleted)
+                //    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;                
                 
                 MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
 
