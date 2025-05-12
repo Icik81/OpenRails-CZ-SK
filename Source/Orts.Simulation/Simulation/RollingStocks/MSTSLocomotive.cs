@@ -6349,56 +6349,17 @@ namespace Orts.Simulation.RollingStocks
                         (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
                         (car as MSTSElectricLocomotive).PantoMode = PantoMode;
 
-                        if (car.Flipped)
+                        if (car.Flipped ^ UsingRearCab)
                         {
-                            if (UsingRearCab)
-                            {
-                                (car as MSTSWagon).Pantographs.List[0].State = p1.State;
-                                (car as MSTSWagon).Pantographs.List[1].State = p2.State;
+                            (car as MSTSWagon).Pantographs.List[1].State = p1.State;
+                            (car as MSTSWagon).Pantographs.List[0].State = p2.State;
 
-                                if ((car as MSTSWagon).Pantographs.Count == 4)
-                                {
-                                    (car as MSTSWagon).Pantographs.List[2].State = p3.State;
-                                    (car as MSTSWagon).Pantographs.List[3].State = p4.State;
-                                }
-                            }
-                            else
+                            if ((car as MSTSWagon).Pantographs.Count == 4)
                             {
-                                (car as MSTSWagon).Pantographs.List[1].State = p1.State;
-                                (car as MSTSWagon).Pantographs.List[0].State = p2.State;
-
-                                if ((car as MSTSWagon).Pantographs.Count == 4)
-                                {
-                                    (car as MSTSWagon).Pantographs.List[3].State = p3.State;
-                                    (car as MSTSWagon).Pantographs.List[2].State = p4.State;
-                                }
+                                (car as MSTSWagon).Pantographs.List[3].State = p3.State;
+                                (car as MSTSWagon).Pantographs.List[2].State = p4.State;
                             }
-                        }
-                        else
-                        {
-                            if (UsingRearCab)
-                            {
-                                (car as MSTSWagon).Pantographs.List[1].State = p1.State;
-                                (car as MSTSWagon).Pantographs.List[0].State = p2.State;
-
-                                if ((car as MSTSWagon).Pantographs.Count == 4)
-                                {
-                                    (car as MSTSWagon).Pantographs.List[3].State = p3.State;
-                                    (car as MSTSWagon).Pantographs.List[2].State = p4.State;
-                                }
-                            }
-                            else
-                            {
-                                (car as MSTSWagon).Pantographs.List[0].State = p1.State;
-                                (car as MSTSWagon).Pantographs.List[1].State = p2.State;
-
-                                if ((car as MSTSWagon).Pantographs.Count == 4)
-                                {
-                                    (car as MSTSWagon).Pantographs.List[2].State = p3.State;
-                                    (car as MSTSWagon).Pantographs.List[3].State = p4.State;
-                                }
-                            }
-                        }
+                        }                        
                         break;
                     }
                 }
@@ -7285,24 +7246,18 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Automatický přechod řidiče v kabině loko AI                            
-                if (Direction == Direction.Reverse)
+                if (Flipped ^ UsingRearCab)
                 {
                     if (!DriverUsingRearCab)
                         ToggleMirrors();
                     DriverUsingRearCab = true;
                 }
-                if (Direction == Direction.Forward)
+                else
                 {
                     if (DriverUsingRearCab)
                         ToggleMirrors();
                     DriverUsingRearCab = false;
-                }
-
-                if (Flipped && !UsingRearCab)
-                {
-                    if (Direction == Direction.Forward)
-                        Direction = Direction.Reverse;
-                }
+                }                
             }
 
             if (IsPlayerTrain && !Simulator.Paused)
@@ -8289,16 +8244,8 @@ namespace Orts.Simulation.RollingStocks
                         Train.LocoDirection = Direction;
                         if (Direction != Direction.N)
                         {
-                            if (UsingRearCab)
-                            {
-                                if (!Flipped)
-                                    Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
-                            }
-                            else
-                            {
-                                if (Flipped)
-                                    Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
-                            }
+                            if (Flipped ^ UsingRearCab)                                                            
+                                Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;                                                        
                         }
                     }
                     if (IsLeadLocomotive() && OneCabDummyStation)
@@ -8333,6 +8280,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else // for AI locomotives
                 {
+                    if (Flipped ^ UsingRearCab)
+                        Direction = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
+
                     switch (Direction)
                     {
                         case Direction.Reverse:
@@ -8697,7 +8647,8 @@ namespace Orts.Simulation.RollingStocks
                 if (PowerUnit)
                 {
                     DriveForceN = LocomotiveAxle.DriveForceN;
-                    LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
+                    MotiveForceN *= (1 - PowerReduction);
+                    LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
                 }
 
                 // Nikdy nedovolí, aby počet hnacích náprav byl 1 při celkovém počtu náprav větší než 2 - kvůli výpočtu adhezní tíhy hnací nápravy

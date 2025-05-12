@@ -1866,7 +1866,7 @@ namespace Orts.Simulation.RollingStocks
                         HVOn = true;
                     }
 
-                    if (Flipped || UsingRearCab)
+                    if (Flipped ^ UsingRearCab)
                     {
                         if (Pantographs.Count == 4)
                         {
