@@ -139,7 +139,14 @@ namespace Orts.Viewer3D.Popups
                                 arrive.Color = NextStationWindow.GetArrivalColor(arrTimeCT0, arrTimeCT1);
                             }
                             else
+                            if (stopAt.ActualArrival == -2)
+                            {
+                                line.Add(arrive = new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                                arrive.Color = Color.Orange;
+                            }
+                            else
                                 line.Add(arrive = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
+                            
 
                             
                             line.Add(new Label(colWidth, line.RemainingHeight, depTimeCT.ToString("HH:mm:ss"), LabelAlignment.Center));
@@ -149,6 +156,12 @@ namespace Orts.Viewer3D.Popups
                                 DateTime depTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualDepart);
                                 line.Add(depart = new Label(colWidth, line.RemainingHeight, depTimeCT1.ToString("HH:mm:ss"), LabelAlignment.Center));
                                 depart.Color = NextStationWindow.GetDepartColor(depTimeCT0, depTimeCT1);
+                            }
+                            else
+                            if (stopAt.ActualDepart == -2)
+                            {
+                                line.Add(depart = new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                                depart.Color = Color.Orange;
                             }
                             else
                                 line.Add(depart = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));

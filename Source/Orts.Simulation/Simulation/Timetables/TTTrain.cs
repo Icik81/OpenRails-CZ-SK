@@ -2795,7 +2795,8 @@ namespace Orts.Simulation.Timetables
                             stillExist = CheckRouteActions(elapsedClockSeconds);                 // check routepath (AI check at other point) //
                         }
                     }
-                }
+                }                
+
                 if (stillExist && ControlMode != TRAIN_CONTROL.OUT_OF_CONTROL)
                 {
                     UpdateRouteClearanceAhead(SignalObjIndex, movedBackward, elapsedClockSeconds);  // update route clearance  //
@@ -2816,6 +2817,8 @@ namespace Orts.Simulation.Timetables
                     }
                 }
             }
+            else
+                MaxStationCountFromStart = -1;
 
             // calculate minimal delay (Timetable only)
             UpdateMinimalDelay();
@@ -10343,153 +10346,135 @@ namespace Orts.Simulation.Timetables
                     int eightHundredHours = 8 * 3600;
                     int sixteenHundredHours = 16 * 3600;
 
-                    // if moving, set departed
-                    if (Math.Abs(SpeedMpS) > 1.5f)
-                    {                        
-                        if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
+                    // Některé vozy nemusí mít automatické dveře a dveře si cestující otevírají sami
+                    for (int i = 0; i < this.Cars.Count; i++)
+                    {
+                        MSTSWagon wagonNoAutomaticDoors = (MSTSWagon)this.Cars[i];
+                        if (!wagonNoAutomaticDoors.AutomaticDoors)
                         {
-                            StationStops[0].ActualDepart = presentTime;
-                            StationStops[0].Passed = true;
-                            Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
-                            PreviousStop = StationStops[0].CreateCopy();
-                            StationStops.RemoveAt(0);
+                            goto SkipToArrived;
                         }
-                        AtStation = false;
-                        MayDepart = false;
-                        DisplayMessage = "";
-                        ReverseAtStation = false;
+                    }
+                    // Automatické centrální dveře
+                    if (!MayDepart && AtStation && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor
+                        && (PeopleWantToEntry || PeopleWantToLeaveCount > 0))
+                    {
+                        DisplayColor = Color.Yellow;
+                        DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
+                        Simulator.DoorSwitchPaxRequest = true;
+                        return;
+                    }
+
+                    SkipToArrived:
+                    int remaining;
+                    if (StationStops.Count == 0)
+                    {
+                        remaining = 0;
                     }
                     else
                     {
-                        // Některé vozy nemusí mít automatické dveře a dveře si cestující otevírají sami
-                        for (int i = 0; i < this.Cars.Count; i++)
+                        int Depart = StationStops[0].DepartTime;
+                        int correctedTime = presentTime;
+                        if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
                         {
-                            MSTSWagon wagonNoAutomaticDoors = (MSTSWagon)this.Cars[i];
-                            if (!wagonNoAutomaticDoors.AutomaticDoors)
-                            {
-                                goto SkipToArrived;
-                            }
+                            correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
                         }
-                        // Automatické centrální dveře
-                        if (!MayDepart && AtStation && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked && !loco.OpenedLeftDoor && !loco.OpenedRightDoor
-                            && (PeopleWantToEntry || PeopleWantToLeaveCount > 0))
+                        remaining = Depart - correctedTime;
+                    }
+
+                    if (!BoardingCompleted || EndStation || EndStationTT || PeopleWantToLeaveCount > 0)
+                        UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
+
+                    if (!PeopleWantToEntry && !TrainDoorsOpen && PeopleWantToLeaveCount == 0)
+                        BoardingCompleted = true;
+                    else
+                        BoardingCompleted = false;
+
+                    // Still have to wait
+                    if (remaining > 0)
+                    {
+                        if (remaining < 1) DisplayColor = Color.LightGreen;
+                        else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
+                        else DisplayColor = Color.White;
+
+                        DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
+                            remaining / 60, remaining % 60);
+                    }
+                    // May depart
+                    else if (!MayDepart)
+                    {
+                        // check if passenger on board - if not, do not allow depart
+                        if (PeopleWantToEntry || PeopleWantToLeaveCount > 0
+                            || (!PeopleWantToEntry && TrainDoorsOpen && !DoorCanBeOpenned && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
                         {
-                            DisplayColor = Color.Yellow;
-                            DisplayMessage = Simulator.Catalog.GetString("People are waiting for the door to open…");
-                            Simulator.DoorSwitchPaxRequest = true;
+                            if (PeopleWantToLeaveCount > 0 && !PeopleWantToEntry)
+                                DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
+                            else
+                            if (!TrainIsPaxFull)
+                                DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
+                            UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
                             return;
                         }
-
-                        SkipToArrived:
-                        int remaining;
-                        if (StationStops.Count == 0)
-                        {
-                            remaining = 0;
-                        }
                         else
+                        if ((!PeopleWantToEntry && !TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked))
+                            || (!PeopleWantToEntry && loco.CentralHandlingDoors && (Simulator.DoorSwitchDoorLocked || DoorCanBeOpenned)))
                         {
-                            int Depart = StationStops[0].DepartTime;
-                            int correctedTime = presentTime;
-                            if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
+                            if (ClearForDepartGenerate == 0)
+                                ClearForDepartGenerate = Simulator.Random.Next(2, 6);
+
+                            if (NextSignalObject[0] != null)
+                                distanceToNextSignal = NextSignalObject[0].DistanceTo(FrontTDBTraveller);
+
+                            if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
+                                && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
+                                || NextSignalObject[0].hasPermission == SignalObject.Permission.Granted))
+                                || distanceToNextSignal > 600
+                                || distanceToNextSignal == -1
+                                || EndStation
+                                )
                             {
-                                correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
-                            }
-                            remaining = Depart - correctedTime;
-                        }                        
-
-                        if (!BoardingCompleted || EndStation || EndStationTT || PeopleWantToLeaveCount > 0)
-                            UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
-
-                        if (!PeopleWantToEntry && !TrainDoorsOpen && PeopleWantToLeaveCount == 0)
-                            BoardingCompleted = true;
-                        else
-                            BoardingCompleted = false;
-                        
-                        // Still have to wait
-                        if (remaining > 0)
-                        {
-                            if (remaining < 1) DisplayColor = Color.LightGreen;
-                            else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
-                            else DisplayColor = Color.White;
-
-                            DisplayMessage = Simulator.Catalog.GetStringFmt("Time to departure: {0:D2}:{1:D2}",
-                                remaining / 60, remaining % 60);
-                        }
-                        // May depart
-                        else if (!MayDepart)
-                        {
-                            // check if passenger on board - if not, do not allow depart
-                            if (PeopleWantToEntry || PeopleWantToLeaveCount > 0
-                                || (!PeopleWantToEntry && TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
-                            {
-                                if (PeopleWantToLeaveCount > 0 && !PeopleWantToEntry)
-                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
+                                TimeToClearForDepart++;
+                                if (TimeToClearForDepart > ClearForDepartGenerate * 30f)
+                                {
+                                    MayDepart = true;
+                                    DisplayColor = Color.LightGreen;
+                                    DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
+                                    BoardingCompleted = false;
+                                    TimeToClearForDepart = 0;
+                                    ClearForDepartGenerate = 0;
+                                    if (Simulator.Settings.TrainDepartSound == 0)
+                                        Simulator.SoundNotify = Event.PermissionToDepart;
+                                    if (Simulator.Settings.TrainDepartSound == 1)
+                                    {
+                                        if (loco.IsLeadLocomotive())
+                                            loco.SignalEvent(Event.AIPermissionToDepart);
+                                    }
+                                    DoorCanBeOpenned = false;
+                                }
                                 else
-                                if (!TrainIsPaxFull)
-                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to board....");
-                                UpdatePassengerCountAndWeight(this, ActualPassengerCountAtStation, clock);
-                                return;
+                                {
+                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
+                                }
                             }
                             else
-                            if ((!PeopleWantToEntry && !TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked))
-                                || (!PeopleWantToEntry && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked))
                             {
-                                if (ClearForDepartGenerate == 0)
-                                    ClearForDepartGenerate = Simulator.Random.Next(2, 6);
-
-                                if (NextSignalObject[0] != null)
-                                    distanceToNextSignal = NextSignalObject[0].DistanceTo(FrontTDBTraveller);
-
-                                if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
-                                    && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
-                                    || NextSignalObject[0].hasPermission == SignalObject.Permission.Granted))
-                                    || distanceToNextSignal > 600
-                                    || distanceToNextSignal == -1
-                                    || EndStation
-                                    )
+                                DisplayColor = Color.Yellow;
+                                if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
+                                    && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
+                                    && NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
                                 {
-                                    TimeToClearForDepart++;
-                                    if (TimeToClearForDepart > ClearForDepartGenerate * 30f)
-                                    {
-                                        MayDepart = true;
-                                        DisplayColor = Color.LightGreen;
-                                        DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
-                                        BoardingCompleted = false;
-                                        TimeToClearForDepart = 0;
-                                        ClearForDepartGenerate = 0;
-                                        if (Simulator.Settings.TrainDepartSound == 0)
-                                            Simulator.SoundNotify = Event.PermissionToDepart;
-                                        if (Simulator.Settings.TrainDepartSound == 1)
-                                        {
-                                            if (loco.IsLeadLocomotive())
-                                                loco.SignalEvent(Event.AIPermissionToDepart);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
-                                    }
+                                    DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
                                 }
                                 else
-                                {
-                                    DisplayColor = Color.Yellow;
-                                    if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
-                                        && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
-                                        && NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
-                                    {
-                                        DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
-                                    }
-                                    else
-                                        DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
-                                }
+                                    DisplayMessage = Simulator.Catalog.GetString("Waiting for the permission....");
                             }
                         }
-                        // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
-                        if (MayDepart && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && BoardingCompleted)
-                        {
-                            ToggleDoors(true, false);
-                            ToggleDoors(false, false);                            
-                        }
+                    }
+                    // Zavření dveří průvodčím při odjezdu, pokud zůstanou některé otevřené nezbednými lidmi
+                    if (MayDepart && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked) && BoardingCompleted)
+                    {
+                        ToggleDoors(true, false);
+                        ToggleDoors(false, false);
                     }
                 }
                 else
@@ -10503,10 +10488,9 @@ namespace Orts.Simulation.Timetables
                             AtStation = IsAtPlatform();
                             if (AtStation)
                             {
-                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));                                                                
+                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                                 StationStops[0].ActualArrival = presentTime;
                                 StationStops[0].CalculateDepartTime(presentTime, this);
-                                ActualStationNumber++;
                                 StationTasks[ActualStationNumber].ActualArrival = presentTime;
                             }
                             else
@@ -10519,7 +10503,9 @@ namespace Orts.Simulation.Timetables
 
                             if (missedStation)
                             {
-                                ActualStationNumber++;
+                                StationTasks[ActualStationNumber].ActualArrival = -2;
+                                StationTasks[ActualStationNumber].ActualDepart = -2;
+                                ActualStationNumber++;                                
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);
                             }
@@ -10552,6 +10538,8 @@ namespace Orts.Simulation.Timetables
 
                     PreviousStop = StationStops[0].CreateCopy();
                     StationStops.RemoveAt(0);
+                    ReverseAtStation = false;
+                    ActualStationNumber++;
                 }
                 else
                 {

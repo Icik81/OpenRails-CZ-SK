@@ -16934,16 +16934,31 @@ namespace Orts.Simulation.Physics
         float actualRandom = 1;
 
         public void GeneratePaxDynamically()
-        {
-            if (!IsPlayerDriven)
+        {            
+            if (!IsPlayerDriven || StationStops == null || StationStops.Count == 0)                            
+            {                
                 return;
-            if (StationStops == null)
-                return;
-            if (StationStops.Count == 0)
-                return;
+            }
 
             if (MaxStationCountFromStart == -1)
             {
+                // Inicializace
+                statCount = 0;
+                ReverseAtStation = false;
+                BoardingComplete = false;
+                TotalOnBoard = 0;
+                initPax = true;
+                namesFilled = false;
+                EndStation = EndStationTT = false;
+                fullUnboardStations.Clear();
+                UnboardStationsName.Clear();
+                foreach (StationStop stop in StationStops)                
+                    stop.PlatformItem.NumPassengersWaitingBase = 0;                
+                for (int i = 0; i < 100; i++)                
+                    StationsBoardingRestOfPaxes[i] = 0;
+
+
+                // Naplnění seznamů atributů stanic
                 foreach (StationStop stop in StationStops)
                 {
                     if (stop.PlatformItem.NumPassengersWaiting >= 10000)

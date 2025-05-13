@@ -6975,7 +6975,7 @@ namespace Orts.Simulation.AIs
                     int sixteenHundredHours = 16 * 3600;
 
                     // if moving, set departed
-                    if (Math.Abs(SpeedMpS) > 1.5f)
+                    if (Math.Abs(SpeedMpS) > 1.0f)
                     {                        
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
@@ -6989,6 +6989,7 @@ namespace Orts.Simulation.AIs
                         MayDepart = false;
                         DisplayMessage = "";
                         ReverseAtStation = false;
+                        ActualStationNumber++;
                     }
                     else
                     {
@@ -7051,7 +7052,7 @@ namespace Orts.Simulation.AIs
                         {
                             // check if passenger on board - if not, do not allow depart
                             if (PeopleWantToEntry || PeopleWantToLeaveCount > 0
-                                || (!PeopleWantToEntry && TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
+                                || (!PeopleWantToEntry && TrainDoorsOpen && !DoorCanBeOpenned && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked)))
                             {
                                 if (PeopleWantToLeaveCount > 0 && !PeopleWantToEntry)
                                     DisplayMessage = Simulator.Catalog.GetString("Waiting for passengers to unboard....");
@@ -7063,7 +7064,7 @@ namespace Orts.Simulation.AIs
                             }
                             else
                             if ((!PeopleWantToEntry && !TrainDoorsOpen && (!loco.CentralHandlingDoors || !Simulator.DoorSwitchDoorLocked))
-                                || (!PeopleWantToEntry && loco.CentralHandlingDoors && Simulator.DoorSwitchDoorLocked))
+                                || (!PeopleWantToEntry && loco.CentralHandlingDoors && (Simulator.DoorSwitchDoorLocked || DoorCanBeOpenned)))
                             {
                                 if (ClearForDepartGenerate == 0)
                                     ClearForDepartGenerate = Simulator.Random.Next(2, 6);
@@ -7095,6 +7096,7 @@ namespace Orts.Simulation.AIs
                                             if (loco.IsLeadLocomotive())
                                                 loco.SignalEvent(Event.AIPermissionToDepart);
                                         }
+                                        DoorCanBeOpenned = false;
                                     }
                                     else
                                     {
@@ -7136,8 +7138,7 @@ namespace Orts.Simulation.AIs
                             {
                                 int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                                 StationStops[0].ActualArrival = presentTime;
-                                StationStops[0].CalculateDepartTime(presentTime, this);
-                                ActualStationNumber++;
+                                StationStops[0].CalculateDepartTime(presentTime, this);                                
                             }
                         }
                         else if (ControlMode == TRAIN_CONTROL.AUTO_NODE || ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)

@@ -3305,7 +3305,7 @@ namespace Orts.Simulation.RollingStocks
         float RealSpeedMarker;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {
-            if (MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
+            if (Train is Timetables.TTTrain || MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
 
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;
