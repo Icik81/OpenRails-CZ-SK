@@ -16871,25 +16871,29 @@ namespace Orts.Simulation.Physics
             }
         }
 
-        public bool ReverseAtStation;
+        public bool ReverseAtStation;        
         public void ReverseAtStationStopTest(Train train)
         {
-            //float distanceToReversalPoint = 10000;
+            float distanceToReversalPoint = 10000;
 
-            //if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
-            //    distanceToReversalPoint = ComputeDistanceToReversalPoint();
+            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+                distanceToReversalPoint = ComputeDistanceToReversalPoint();
+            
+            // Detekce reverzního bodu
+            if (!ReverseAtStationIsSetOn && !ReverseAtStation && distanceToReversalPoint < 100)                            
+                ReverseAtStationIsSetOn = true;            
 
-            //ReverseAtStation = false;
-            //if (distanceToReversalPoint < 50)
-            //    ReverseAtStation = true;
-
-            // Určuje otočení cesty vlaku po projetí reverzního bodu             
-            if (!nextRouteReady) ReverseAtStationIsSetOn = false;
-            if (!ReverseAtStationIsSetOn && nextRouteReady && TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
-            {
-                ReverseAtStationIsSetOn = true;
+            // Až po zastavení
+            if (ReverseAtStationIsSetOn && !ReverseAtStation && Math.Abs(SpeedMpS) < 0.1f)
                 ReverseAtStation = true;
-            }            
+
+            // Projetí reverzního bodu                         
+            if (ReverseAtStationIsSetOn && nextRouteReady && TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)            
+                ReverseAtStationIsSetOn = false;                
+            
+            // Rozjetí vlaku po projetí reverzního bodu
+            if (!ReverseAtStationIsSetOn && ReverseAtStation && Math.Abs(SpeedMpS) > 1.5f)
+                ReverseAtStation = false;
         }        
 
         public bool BoardingComplete;
@@ -17380,8 +17384,8 @@ namespace Orts.Simulation.Physics
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         {
             if (train.Simulator.Paused)
-                return;
-            
+                return;            
+
             MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
             StationStop thisStation = StationStops[0];
             bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;

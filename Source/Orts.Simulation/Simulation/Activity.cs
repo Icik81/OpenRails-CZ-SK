@@ -1087,12 +1087,9 @@ namespace Orts.Simulation
                     MyPlayerTrain.BoardingComplete = false;
                 }
 
-                double clock = MyPlayerTrain.Simulator.GameTime;
-
-                //if (BoardingCompleted)
-                //    MyPlayerTrain.StationStops[0].PlatformItem.NumPassengersWaiting = 0;                
-                
                 MyPlayerTrain.ReverseAtStationStopTest(MyPlayerTrain);
+
+                double clock = MyPlayerTrain.Simulator.GameTime;                                                             
 
                 if (MyPlayerTrain.StationStops.Count == 1) MyPlayerTrain.EndStation = true;
 
@@ -1184,6 +1181,8 @@ namespace Orts.Simulation
 
                                 if (MyPlayerTrain.NextSignalObject[0] != null)
                                     distanceToNextSignal = MyPlayerTrain.NextSignalObject[0].DistanceTo(MyPlayerTrain.FrontTDBTraveller);
+                                else
+                                    distanceToNextSignal = -1;
 
                                 if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && MyPlayerTrain.NextSignalObject[0] != null
                                     && (MyPlayerTrain.NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP

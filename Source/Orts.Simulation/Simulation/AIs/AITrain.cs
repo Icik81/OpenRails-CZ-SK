@@ -6975,7 +6975,7 @@ namespace Orts.Simulation.AIs
                     int sixteenHundredHours = 16 * 3600;
 
                     // if moving, set departed
-                    if (Math.Abs(SpeedMpS) > 1.0f)
+                    if (Math.Abs(SpeedMpS) > 1.5f)
                     {                        
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
@@ -7071,6 +7071,8 @@ namespace Orts.Simulation.AIs
 
                                 if (NextSignalObject[0] != null)
                                     distanceToNextSignal = NextSignalObject[0].DistanceTo(FrontTDBTraveller);
+                                else
+                                    distanceToNextSignal = -1;
 
                                 if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
                                     && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP

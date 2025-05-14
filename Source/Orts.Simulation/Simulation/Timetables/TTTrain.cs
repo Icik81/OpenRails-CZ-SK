@@ -10393,6 +10393,7 @@ namespace Orts.Simulation.Timetables
                     // Still have to wait
                     if (remaining > 0)
                     {
+                        MayDepart = false;
                         if (remaining < 1) DisplayColor = Color.LightGreen;
                         else if (remaining < 11) DisplayColor = new Color(255, 255, 128);
                         else DisplayColor = Color.White;
@@ -10424,6 +10425,8 @@ namespace Orts.Simulation.Timetables
 
                             if (NextSignalObject[0] != null)
                                 distanceToNextSignal = NextSignalObject[0].DistanceTo(FrontTDBTraveller);
+                            else
+                                distanceToNextSignal = -1;
 
                             if ((distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
                                 && (NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) != MstsSignalAspect.STOP
@@ -10431,6 +10434,7 @@ namespace Orts.Simulation.Timetables
                                 || distanceToNextSignal > 600
                                 || distanceToNextSignal == -1
                                 || EndStation
+                                || CheckEndOfRoutePositionTT()
                                 )
                             {
                                 TimeToClearForDepart++;
@@ -10461,7 +10465,8 @@ namespace Orts.Simulation.Timetables
                                 DisplayColor = Color.Yellow;
                                 if (distanceToNextSignal >= 0 && distanceToNextSignal <= 600 && NextSignalObject[0] != null
                                     && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) == MstsSignalAspect.STOP
-                                    && NextSignalObject[0].hasPermission != SignalObject.Permission.Granted)
+                                    && NextSignalObject[0].hasPermission != SignalObject.Permission.Granted
+                                    && !CheckEndOfRoutePositionTT())
                                 {
                                     DisplayMessage = Simulator.Catalog.GetString("Passenger boarding completed. Waiting for signal ahead to clear.");
                                 }
@@ -10526,7 +10531,7 @@ namespace Orts.Simulation.Timetables
 
                 // if moving, set departed
                 StationTasks[ActualStationNumber].ActualDepart = -1;
-                if (Math.Abs(SpeedMpS) > 1.0f)
+                if (Math.Abs(SpeedMpS) > 1.5f)
                 {                    
                     StationTasks[ActualStationNumber].ActualDepart = presentTime;
                     StationStops[0].ActualDepart = presentTime;
@@ -10786,57 +10791,57 @@ namespace Orts.Simulation.Timetables
                         DisplayColor = Color.Green;
                         remaining = 999;
                     }
-                    else
-                    {
-                        int actualDepart = StationStops[0].ActualDepart;
-                        if (helddepart >= 0)
-                        {
-                            actualDepart = CompareTimes.LatestTime(helddepart, actualDepart);
-                            StationStops[0].ActualDepart = actualDepart;
-                        }
-                        int correctedTime = presentTime;
-                        if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
-                        {
-                            correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
-                        }
-                        remaining = actualDepart - correctedTime;
-                        // set display text color
-                        if (remaining < 1)
-                        {
-                            DisplayColor = Color.LightGreen;
-                        }
-                        else if (remaining < 11)
-                        {
-                            DisplayColor = new Color(255, 255, 128);
-                        }
-                        else
-                        {
-                            DisplayColor = Color.White;
-                        }
+                    //else
+                    //{
+                    //    int actualDepart = StationStops[0].ActualDepart;
+                    //    if (helddepart >= 0)
+                    //    {
+                    //        actualDepart = CompareTimes.LatestTime(helddepart, actualDepart);
+                    //        StationStops[0].ActualDepart = actualDepart;
+                    //    }
+                    //    int correctedTime = presentTime;
+                    //    if (presentTime > sixteenHundredHours && StationStops[0].DepartTime < eightHundredHours)
+                    //    {
+                    //        correctedTime = presentTime - 24 * 3600;  // correct to time before midnight (negative value!)
+                    //    }
+                    //    remaining = actualDepart - correctedTime;
+                    //    // set display text color
+                    //    if (remaining < 1)
+                    //    {
+                    //        DisplayColor = Color.LightGreen;
+                    //    }
+                    //    else if (remaining < 11)
+                    //    {
+                    //        DisplayColor = new Color(255, 255, 128);
+                    //    }
+                    //    else
+                    //    {
+                    //        DisplayColor = Color.White;
+                    //    }
 
-                        // clear holding signal
-                        if (remaining < 120 && StationStops[0].ExitSignal >= 0 && HoldingSignals.Contains(StationStops[0].ExitSignal)) // within two minutes of departure and hold signal?
-                        {
-                            HoldingSignals.Remove(StationStops[0].ExitSignal);
+                    //    // clear holding signal
+                    //    if (remaining < 120 && StationStops[0].ExitSignal >= 0 && HoldingSignals.Contains(StationStops[0].ExitSignal)) // within two minutes of departure and hold signal?
+                    //    {
+                    //        HoldingSignals.Remove(StationStops[0].ExitSignal);
 
-                            if (ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
-                            {
-                                SignalObject nextSignal = signalRef.SignalObjects[StationStops[0].ExitSignal];
-                                nextSignal.requestClearSignal(ValidRoute[0], routedForward, 0, false, null);
-                            }
-                        }
+                    //        if (ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
+                    //        {
+                    //            SignalObject nextSignal = signalRef.SignalObjects[StationStops[0].ExitSignal];
+                    //            nextSignal.requestClearSignal(ValidRoute[0], routedForward, 0, false, null);
+                    //        }
+                    //    }
 
-                        // check departure time
-                        if (remaining <= 0)
-                        {
-                            // if at end of route allow depart without playing departure sound
-                            if (CheckEndOfRoutePositionTT())
-                            {
-                                MayDepart = true;
-                                DisplayMessage = Simulator.Catalog.GetString("Passenger detraining completed. Train terminated.");
-                            }                            
-                        }                        
-                    }
+                    //    // check departure time
+                    //    if (remaining <= 0)
+                    //    {
+                    //        // if at end of route allow depart without playing departure sound
+                    //        if (CheckEndOfRoutePositionTT())
+                    //        {                                
+                    //            //MayDepart = true;
+                    //            //DisplayMessage = Simulator.Catalog.GetString("Passenger detraining completed. Train terminated.");
+                    //        }                            
+                    //    }                        
+                    //}
                 }
             }
             else
