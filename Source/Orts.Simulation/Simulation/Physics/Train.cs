@@ -2100,7 +2100,7 @@ namespace Orts.Simulation.Physics
                 }
 
                 // Vyhodnocení selhání TM
-                if (!MPManager.IsMultiPlayer() && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
+                if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain && car.CarIsPlayerLoco && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
                 {
                     float TMFailureSpeed = 30.0f / 3.6f;  // kritická rychlost kdy dojde ke zničení TM                     
                     if (car.Flipped ^ ((MSTSLocomotive)car).UsingRearCab)
@@ -16783,9 +16783,9 @@ namespace Orts.Simulation.Physics
                 {
                     MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
                     StationStop thisStation = StationStops[0];
-                    bool platformSide = StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
-                    bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+                    bool platformSide = StationStops[0].PlatformItem.PlatformSide[0] ? true : false;                    
                     bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+                    bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
                     var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
 
                     if (loco.UsingRearCab)
@@ -16812,7 +16812,7 @@ namespace Orts.Simulation.Physics
                         LeftPlatformSide = !LeftPlatformSide;
                     }
 
-                    if (loco.UsingRearCab ^ loco.Flipped)
+                    if (loco.UsingRearCab ^ wagon.Flipped)
                     {
                         RightPlatformSide = !RightPlatformSide;
                         LeftPlatformSide = !LeftPlatformSide;
@@ -16833,9 +16833,9 @@ namespace Orts.Simulation.Physics
         public void ToggleDoorsPeople(bool right, bool open, MSTSWagon wagon)
         {
             MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
-            StationStop thisStation = StationStops[0];
-            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+            StationStop thisStation = StationStops[0];            
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
             var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;            
 
             if (!frontIsFront)
@@ -16874,25 +16874,26 @@ namespace Orts.Simulation.Physics
         public bool ReverseAtStation;        
         public void ReverseAtStationStopTest(Train train)
         {
-            float distanceToReversalPoint = 10000;
+            //float distanceToReversalPoint = 10000;
 
-            if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
-                distanceToReversalPoint = ComputeDistanceToReversalPoint();
+            //if (TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+            //    distanceToReversalPoint = ComputeDistanceToReversalPoint();
             
-            // Detekce reverzního bodu
-            if (!ReverseAtStationIsSetOn && !ReverseAtStation && distanceToReversalPoint < 100)                            
-                ReverseAtStationIsSetOn = true;            
-
-            // Až po zastavení
-            if (ReverseAtStationIsSetOn && !ReverseAtStation && Math.Abs(SpeedMpS) < 0.1f)
-                ReverseAtStation = true;
+            //// Detekce reverzního bodu
+            //if (!ReverseAtStationIsSetOn && !ReverseAtStation && distanceToReversalPoint < 1)                            
+            //    ReverseAtStationIsSetOn = true;                        
 
             // Projetí reverzního bodu                         
-            if (ReverseAtStationIsSetOn && nextRouteReady && TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)            
-                ReverseAtStationIsSetOn = false;                
-            
-            // Rozjetí vlaku po projetí reverzního bodu
-            if (!ReverseAtStationIsSetOn && ReverseAtStation && Math.Abs(SpeedMpS) > 1.5f)
+            if (!nextRouteReady) ReverseAtStationIsSetOn = false;
+            if (!ReverseAtStationIsSetOn && nextRouteReady && TCRoute.ReversalInfo[TCRoute.activeSubpath] != null && TCRoute.activeSubpath > 0 && TCRoute.ReversalInfo[TCRoute.activeSubpath - 1].Valid)
+                ReverseAtStationIsSetOn = true;
+
+            // Až po zastavení
+            if (ReverseAtStationIsSetOn && Math.Abs(SpeedMpS) < 0.1f)
+                ReverseAtStation = true;
+
+            // Až po rozjetí
+            if (ReverseAtStation && Math.Abs(SpeedMpS) > 1.5f)
                 ReverseAtStation = false;
         }        
 
@@ -17388,9 +17389,9 @@ namespace Orts.Simulation.Physics
 
             MSTSLocomotive loco = LeadLocomotive as MSTSLocomotive;
             StationStop thisStation = StationStops[0];
-            bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;
-            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
+            bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;            
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
+            bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
             var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;                                  
 
             if (!frontIsFront)

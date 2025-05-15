@@ -730,6 +730,9 @@ namespace Orts.Simulation.RollingStocks
                         TractiveForceN = (0.88f * maxPowerW) / AbsTractionSpeedMpS;
                 }
 
+                // Redukce výkonu na různých faktorech
+                TractiveForceN *= 1 - PowerReduction; 
+
                 DieselFlowLps = DieselEngines.DieselFlowLps;
                 partialFuelConsumption += DieselEngines.DieselFlowLps * elapsedClockSeconds;
                 if (partialFuelConsumption >= 0.1)

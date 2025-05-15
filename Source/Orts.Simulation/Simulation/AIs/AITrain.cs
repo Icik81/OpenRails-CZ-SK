@@ -3157,12 +3157,14 @@ namespace Orts.Simulation.AIs
 
             // Icik
             // Postupné zpomalování při zastavení vlaku 
+            distanceToGoM = -1;
             if (nextActionInfo != null)
                 distanceToGoM = Math.Min(nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM, DistanceToEndNodeAuthorityM[0]);
             else
                 distanceToGoM = DistanceToEndNodeAuthorityM[0];
-            smoothDeceleration = AITrainWillAttach ? false : true;
-            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
+            smoothDeceleration = !AITrainWillAttach;
+            if (distanceToGoM < 100 && distanceToGoM > 0)
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
 
         }
 

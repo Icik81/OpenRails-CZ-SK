@@ -8646,8 +8646,7 @@ namespace Orts.Simulation.RollingStocks
                 // Icik                
                 if (PowerUnit)
                 {
-                    DriveForceN = LocomotiveAxle.DriveForceN;
-                    MotiveForceN *= (1 - PowerReduction);
+                    DriveForceN = LocomotiveAxle.DriveForceN;                    
                     LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
                 }
 
@@ -8720,7 +8719,7 @@ namespace Orts.Simulation.RollingStocks
             if (PowerUnit)
             {
                 DriveForceN = LocomotiveAxle.DriveForceN;
-                LocomotiveAxle.DriveForceN = MotiveForceN * (1 - PowerReduction);  //Total force applied to wheels                    
+                LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
             }
 
             // Check if the following few lines are required???
@@ -11513,6 +11512,8 @@ namespace Orts.Simulation.RollingStocks
                         MotorIdleHandlingOn = false;
                 }                
             }
+            else
+                PowerReductionResult14 = 0.0f;
         }
 
 
