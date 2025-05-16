@@ -1791,10 +1791,15 @@ namespace Orts.Simulation.AIs
                 }
                 AITrain aiTrain = thisTrain as AITrain;
 
-                thisTrain.AuxActionsContain.CheckGenActions(this.GetType(), aiTrain.RearTDBTraveller.WorldLocation, ActualDepart - presentTime);                
+                thisTrain.AuxActionsContain.CheckGenActions(this.GetType(), aiTrain.RearTDBTraveller.WorldLocation, ActualDepart - presentTime);
 
                 // Icik
-                if (ActualDepart > presentTime || ActualDepart == 0)
+                if (ActualDepart == 0)
+                {
+                    movementState = AITrain.AI_MOVEMENT_STATE.INIT_ACTION;
+                }
+                else
+                if (ActualDepart > presentTime)
                 {
                     movementState = AITrain.AI_MOVEMENT_STATE.HANDLE_ACTION;
                 }
@@ -1903,8 +1908,10 @@ namespace Orts.Simulation.AIs
 
             // Icik
             if ((thisTrain as AITrain).DontStopABSWP || (thisTrain as AITrain).DontStopStopOffset || (thisTrain as AITrain).DontStopAIPreference)
-            {                         
-                movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;    
+            {
+                (thisTrain as AITrain).requiredActions.RemovePendingAIActionItems(false);
+                (thisTrain as AITrain).AuxActionsContain.SetAuxAction((thisTrain as AITrain));                
+                movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;
                 
                 if ((thisTrain as AITrain).DontStopABSWP)
                     (thisTrain as AITrain).DontStopABSWP = false;
