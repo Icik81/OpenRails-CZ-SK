@@ -5486,14 +5486,14 @@ namespace Orts.Simulation.RollingStocks
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).DontStopStopOffset = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
-                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
                             }
                             if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).DontStopStopOffset = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
-                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
                             }
                         }
                     }
@@ -5512,7 +5512,7 @@ namespace Orts.Simulation.RollingStocks
                             {                                
                                 Simulator.AIPreference = true;
                                 (Train as AITrain).DontStopAIPreference = true;
-                                (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
                             }                            
                         }
                     }
@@ -5619,8 +5619,8 @@ namespace Orts.Simulation.RollingStocks
                                 else
                                 {
                                     (Train as AITrain).DontStopABSWP = true;
-                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
-                                }
+                                    (Train as AITrain).AuxActionsContain.RemoveAt(0);
+                                }                                
                             }                            
                         }
                     }

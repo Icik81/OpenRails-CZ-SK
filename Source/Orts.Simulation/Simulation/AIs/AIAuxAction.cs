@@ -1908,11 +1908,9 @@ namespace Orts.Simulation.AIs
 
             // Icik
             if ((thisTrain as AITrain).DontStopABSWP || (thisTrain as AITrain).DontStopStopOffset || (thisTrain as AITrain).DontStopAIPreference)
-            {
-                (thisTrain as AITrain).requiredActions.RemovePendingAIActionItems(false);
-                (thisTrain as AITrain).AuxActionsContain.SetAuxAction((thisTrain as AITrain));                
+            {                
                 movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;
-                
+
                 if ((thisTrain as AITrain).DontStopABSWP)
                     (thisTrain as AITrain).DontStopABSWP = false;
 
