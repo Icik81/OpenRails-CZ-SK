@@ -3157,12 +3157,12 @@ namespace Orts.Simulation.AIs
 
             // Icik
             // Postupné zpomalování při zastavení vlaku             
-            if (nextActionInfo != null)
-                distanceToGoM = Math.Min(nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM, DistanceToEndNodeAuthorityM[0]);
-            else
-                distanceToGoM = DistanceToEndNodeAuthorityM[0];
-            smoothDeceleration = !AITrainWillAttach;            
-            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
+            //if (nextActionInfo != null)
+            //    distanceToGoM = Math.Min(nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM, DistanceToEndNodeAuthorityM[0]);
+            //else
+            //    distanceToGoM = DistanceToEndNodeAuthorityM[0];
+            //smoothDeceleration = !AITrainWillAttach;            
+            //SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
         }
 
         //================================================================================================//
@@ -3914,8 +3914,8 @@ namespace Orts.Simulation.AIs
         public void AdjustControlsBrakeOff()
         {
             // Icik
-            if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
-            if (smoothDeceleration) return;
+            //if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
+            //if (smoothDeceleration) return;
 
             AITrainBrakePercent = 0;
             InitializeBrakes();
