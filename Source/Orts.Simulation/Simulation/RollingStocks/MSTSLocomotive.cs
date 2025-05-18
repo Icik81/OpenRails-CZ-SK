@@ -8281,10 +8281,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 else // for AI locomotives
-                {
-                    if (Flipped ^ UsingRearCab)
-                        Direction = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
-
+                {                    
                     switch (Direction)
                     {
                         case Direction.Reverse:
