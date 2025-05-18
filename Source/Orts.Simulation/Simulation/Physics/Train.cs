@@ -4771,6 +4771,7 @@ namespace Orts.Simulation.Physics
         /// Check if train is passenger or freight train
         /// </summary>
 
+        public bool AITrainIsMixed;
         public void CheckFreight()
         {
             IsFreight = false;
@@ -4781,7 +4782,10 @@ namespace Orts.Simulation.Physics
                 if (car.WagonType == TrainCar.WagonTypes.Freight)
                     IsFreight = true;
                 if ((car.WagonType == TrainCar.WagonTypes.Passenger) || (car.IsDriveable && car.HasPassengerCapacity))
+                {
                     PassengerCarsNumber++;
+                    AITrainIsMixed = true;
+                }
                 if (car.IsDriveable && (car as MSTSLocomotive).CabViewList.Count > 0) IsPlayable = true;
             }
             if (TrainType == TRAINTYPE.AI_INCORPORATED && IncorporatingTrainNo > -1) IsPlayable = true;
@@ -13713,6 +13717,14 @@ namespace Orts.Simulation.Physics
         /// returns true if yes
         /// </summary>
 
+        public bool IsAtStation(Train myTrain)
+        {
+            if (myTrain.StationStops.Count == 0) return false;
+            var thisStation = myTrain.StationStops[0];
+            if (myTrain.StationStops[0].SubrouteIndex != myTrain.TCRoute.activeSubpath) return false;
+            return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
+        }
+
         public bool IsAtPlatform()
         {
             if (StationStops.Count < 1) return false;
@@ -13748,7 +13760,7 @@ namespace Orts.Simulation.Physics
                 if (occupiedSections.Contains(sectionIndex))
                 {
                     // TODO : check offset within section
-                    atStation = true;
+                    atStation = IsAtStation(this);
                     break;
                 }
             }

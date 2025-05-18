@@ -5472,35 +5472,62 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
-                // Zastavení ve stanici - WP 49xxx a 59xxx pro určení metrů pro offset od středu stanice
-                (Train as AITrain).DontStopStopOffset = false;
+                // **** SPECIÁLNÍ BODY PRO AKCE ****
+
+                //  Počet vozů k odebrání nebo zanechání
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
-                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
                     {
-                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
+                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
-                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                            if (AIActionPoint0.Delay >= 49900 && AIActionPoint0.Delay <= 49999)
+                            {
+                                (Train as AITrain).NumberOfCarsToLeaveOrSteal = AIActionPoint0.Delay - 49900;
+                            }                            
+                        }
+                    }
+                }
+
+                // Zastavení ve stanici - WP 49xxx a 59xxx pro určení metrů pro offset od středu stanice                
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
+                    {
+                        var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
+                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        {
                             if (AIActionPoint0.Delay > 49000 && AIActionPoint0.Delay < 49900)
                             {
-                                (Train as AITrain).AITrainOffsetStop = true;
-                                (Train as AITrain).DontStopStopOffset = true;
+                                (Train as AITrain).AITrainOffsetStop = true;                                
                                 (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
-                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
                             }
                             if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
                             {
-                                (Train as AITrain).AITrainOffsetStop = true;
-                                (Train as AITrain).DontStopStopOffset = true;
+                                (Train as AITrain).AITrainOffsetStop = true;                                
                                 (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
-                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
                             }
                         }
                     }
                 }
 
-                // Přednost AI před hráčem - WP 40xxx
-                (Train as AITrain).DontStopAIPreference = false;
+                // Přednost AI před hráčem - WP 40xxx                
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
+                    {
+                        var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
+                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        {
+                            if (AIActionPoint0.Delay == 40000)                            
+                                Simulator.AIPreference = true;                                                                                         
+                        }
+                    }                    
+                }
+
+                // AI nezastaví na ABS WP, pokud uběhl čas
+                (Train as AITrain).DontStopABSWP = false;
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
@@ -5508,12 +5535,19 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AIActionPoint0.Delay == 40000)
-                            {                                
-                                Simulator.AIPreference = true;
-                                (Train as AITrain).DontStopAIPreference = true;
-                                (Train as AITrain).AuxActionsContain.RemoveAt(0);
-                            }                            
+                            float GameClock = AIActionPoint0.Delay - 30000;
+                            int GameClockHour = (int)(GameClock / 100);
+                            int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
+                            float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
+
+                            if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait + 1)
+                            {
+                                // Půlnoční AI
+                                if (Simulator.ClockTime - GameClockToWait > 3600)
+                                    (Train as AITrain).DontStopABSWP = false;
+                                else
+                                    (Train as AITrain).DontStopABSWP = true;
+                            }
                         }
                     }
                 }
@@ -5591,40 +5625,8 @@ namespace Orts.Simulation.RollingStocks
                 if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameShunting)
                     (Train as AITrain).AITrainNameShunting = "NOP";
                 if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
-                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";
+                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";                
 
-
-                // AI nezastaví na ABS WP, pokud uběhl čas
-                (Train as AITrain).DontStopABSWP = false;
-                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
-                {
-                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
-                    {
-                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
-                        {
-                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-
-                            float GameClock = AIActionPoint0.Delay - 30000;
-                            int GameClockHour = (int)(GameClock / 100);
-                            int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
-                            float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);                            
-
-                            if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait)
-                            {                                
-                                // Půlnoční AI
-                                if (Simulator.ClockTime - GameClockToWait > 3600)
-                                {
-                                    (Train as AITrain).DontStopABSWP = false;
-                                }
-                                else
-                                {
-                                    (Train as AITrain).DontStopABSWP = true;
-                                    (Train as AITrain).AuxActionsContain.RemoveAt(0);
-                                }                                
-                            }                            
-                        }
-                    }
-                }
 
                 // Aktivuje parní topení pro AI, pokud je k dispozici               
                 if ((this as MSTSLocomotive).CarOutsideTempC < 18f && !(Train as AITrain).CarSteamHeatOn && (Train as AITrain).Cars.Count > 1)
