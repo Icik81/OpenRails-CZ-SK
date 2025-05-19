@@ -3309,7 +3309,7 @@ namespace Orts.Simulation.RollingStocks
         float RealSpeedMarker;
         public void Derailment(float elapsedTimeS, float speedMpS)
         {
-            if (Train is Timetables.TTTrain || MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
+            if (MPManager.IsMultiPlayer() && ((MPManager.Client != null && MPManager.GetUserName() != MPManager.Client.UserName) || MPManager.IsServer())) return;
 
             //DerailRotateCoef = 5f;
             ResetAllDerailmentCoef = false;
@@ -3508,7 +3508,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot += 0.01f * elapsedTimeS;
-                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker / 20f;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y += 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z += 0.1f * elapsedTimeS;
@@ -3519,7 +3519,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             TiltingXRot -= 0.001f * elapsedTimeS;
                             TiltingYRot -= 0.01f * elapsedTimeS;
-                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker;
+                            ZRot -= ZRotDynamic * elapsedTimeS * PushXFinalMarker / 20f;
                             VibrationRotationRad.X -= 0.1f * elapsedTimeS * XDynamicMarker;
                             VibrationRotationRad.Y -= 0.1f * elapsedTimeS * YDynamicMarker;
                             VibrationRotationRad.Z -= 0.1f * elapsedTimeS;
@@ -3598,7 +3598,8 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 DerailmentTimer3 = 0;
                                 CarIsDecoupled = true;
-                                Train.TrainIsDerailing = true;                                
+                                Train.TrainIsDerailing = true;
+                                Simulator.CarDerailed = true;
                                 if (Train.Cars.Count > 1)
                                 {
                                     var uncoupleBehindCar = Train.Cars[0];
@@ -3628,6 +3629,7 @@ namespace Orts.Simulation.RollingStocks
                                 DerailmentTimer4 = 0;
                                 CarIsDecoupled = true;
                                 Train.TrainIsDerailing = true;
+                                Simulator.CarDerailed = true;
                                 if (Train.Cars.Count > 1)
                                 {                                    
                                     var uncoupleBehindCar = Train.Cars[0];

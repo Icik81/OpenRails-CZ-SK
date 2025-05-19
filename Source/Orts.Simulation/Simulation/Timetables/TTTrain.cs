@@ -7108,6 +7108,8 @@ namespace Orts.Simulation.Timetables
                 return (true);
             }
 
+            if (otherTrain == null) return false;
+
             // pick up is only possible if train is stopped, inactive and not reactivated at any time
             if (Math.Abs(otherTrain.SpeedMpS) < 0.1f && otherTrain.ControlMode == TRAIN_CONTROL.INACTIVE && otherTrain.ActivateTime == null)
             {
@@ -7246,6 +7248,8 @@ namespace Orts.Simulation.Timetables
         public bool CheckTransfer(TTTrain otherTrain, ref int? stationTransferIndex, ref int? trainTransferIndex)
         {
             bool transferTrain = false;
+
+            if (otherTrain == null) return false;
 
             // transfer is only possible if train is stopped, either at station (station transfer) or as inactive (train transfer)
             if (Math.Abs(otherTrain.SpeedMpS) > 0.1f)
