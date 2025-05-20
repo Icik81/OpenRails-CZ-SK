@@ -13760,7 +13760,8 @@ namespace Orts.Simulation.Physics
                 if (occupiedSections.Contains(sectionIndex))
                 {
                     // TODO : check offset within section
-                    atStation = IsAtStation(this);
+                    //atStation = IsAtStation(this);
+                    atStation = true;
                     break;
                 }
             }
