@@ -1785,7 +1785,7 @@ namespace Orts.Simulation.Physics
         float TimeToRequestSignal;
         public bool TrainHasPermission;
         public bool AITrainWillAttach;
-        int AIPreferenceModeStep;
+        int AIPreferenceModeStep;        
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {            
             AITrainWillAttach = false;

@@ -2694,6 +2694,10 @@ namespace Orts.Simulation.AIs
                     if (distanceToGoM <= 0.1f)
                     {                        
                         AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 100);
+                        
+                        // Icik
+                        UpdateSmoothDecelerating(elapsedClockSeconds);
+
                         AITrainThrottlePercent = 0;
 
                         // train is stopped - set departure time
@@ -3156,16 +3160,27 @@ namespace Orts.Simulation.AIs
             }
 
             // Icik
-            // Postupné zpomalování při zastavení vlaku             
-            //if (nextActionInfo != null)
-            //    distanceToGoM = Math.Min(nextActionInfo.ActivateDistanceM - PresentPosition[0].DistanceTravelledM, DistanceToEndNodeAuthorityM[0]);
-            //else
-            //    distanceToGoM = DistanceToEndNodeAuthorityM[0];
-            //smoothDeceleration = !AITrainWillAttach;            
-            //SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, 100, distanceToGoM, Math.Abs(SpeedMpS * 3.6f) / 10f * 20f + 1f);
+            UpdateSmoothDecelerating(elapsedClockSeconds);
         }
 
         //================================================================================================//
+        /// <summary>
+        /// Train is smooth decelerating
+        /// </summary>        
+        public void UpdateSmoothDecelerating(float elapsedClockSeconds)
+        {
+            // Icik
+            // Postupné zpomalování při zastavení vlaku
+            // Vylučuje servisy a vlaky bez lokomotiv
+            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
+            {                
+                if (!AITrainWillAttach)
+                    SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 15 : 20, distanceToGoM, this.Cars.Count > 3 ? 50 : 25);
+                else
+                    smoothDeceleration = false;
+            }
+        }
+
         /// <summary>
         /// Train is accelerating
         /// </summary>
@@ -3798,48 +3813,66 @@ namespace Orts.Simulation.AIs
         /// Train control routines
         /// </summary>
 
-        bool smoothDeceleration;
-        float preAITrainBrakePercent;
-        public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpH, float distanceToGoM, float distanceToStartM)
-        {
-            if (!smoothDeceleration) return;
-
-            if (distanceToGoM < distanceToStartM && Math.Abs(SpeedMpS * 3.6f) > 0.1f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpH)
+        bool smoothDeceleration;        
+        public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
+        {                        
+            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.5f)
             {
-                // AI plynule dobržďuje (skřípání brzd)
-                if (Math.Abs(SpeedMpS * 3.6f) > 2.0f && Math.Abs(SpeedMpS * 3.6f) < 5f)
-                {
-                    if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * 5f)
-                        AITrainBrakePercent -= 10;
-                    if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * 5f)
-                        AITrainBrakePercent += 1;                    
-
-                    float TrainElevation = 0;
-                    foreach (TrainCar car in Cars)
-                        TrainElevation += Math.Abs(car.CurrentElevationPercent);
-
-                    TrainElevation /= Cars.Count;
-                    AITrainBrakePercent = TrainElevation > 1 ? AITrainBrakePercent * TrainElevation : AITrainBrakePercent;
-                    AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0, 100);
-                }
-                else
-                if (Math.Abs(SpeedMpS * 3.6f) > 0.0f)
+                smoothDeceleration = true;
+                if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < 0) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
+                
+                if (Math.Abs(SpeedMpS * 3.6f) > 10.0f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpHSlowingDown)
                 {
                     // AI plynule začne brzdit
-                    int BrakeMassCoef = MathHelper.Clamp((int)(MassKg / 25000f), 1, 10);
-                    if (preAITrainBrakePercent >= AITrainBrakePercent)
-                    {
-                        if (AITrainBrakePercent > Math.Abs(SpeedMpS) * 3.6f * BrakeMassCoef)
-                            AITrainBrakePercent -= 1f;
-                        if (AITrainBrakePercent < Math.Abs(SpeedMpS) * 3.6f * BrakeMassCoef)
-                            AITrainBrakePercent += 1f;
-                    }
-                    //AITrainBrakePercent = 20;
-
-                    AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0, 100);
-                    preAITrainBrakePercent = AITrainBrakePercent;
+                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    if (Deceleration > 0.75f)
+                        AITrainBrakePercent -= 1;
+                    if (Deceleration < 0.75f)
+                        AITrainBrakePercent += 1;                    
                 }
-                
+                else
+                if (Math.Abs(SpeedMpS * 3.6f) > 5.0f && Math.Abs(SpeedMpS * 3.6f) < 10)
+                {
+                    // AI plynule začne brzdit
+                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    if (Deceleration > 0.50f)
+                        AITrainBrakePercent -= 1;
+                    if (Deceleration < 0.50f)
+                        AITrainBrakePercent += 1;
+                }
+                else
+                if (Math.Abs(SpeedMpS * 3.6f) > 3.5f && Math.Abs(SpeedMpS * 3.6f) < 5.0f)
+                {
+                    // AI plynule začne brzdit                 
+                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    if (Deceleration > 0.30f)
+                        AITrainBrakePercent -= 1;
+                    if (Deceleration < 0.30f)
+                        AITrainBrakePercent += 1;
+                }
+                else
+                if (Math.Abs(SpeedMpS * 3.6f) > 2.0f && Math.Abs(SpeedMpS * 3.6f) < 3.5f)
+                {
+                    // AI plynule začne brzdit                 
+                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    if (Deceleration > 0.20f)
+                        AITrainBrakePercent -= 1;
+                    if (Deceleration < 0.20f)
+                        AITrainBrakePercent += 1;                    
+                }
+                else
+                if (Math.Abs(SpeedMpS * 3.6f) > 0.5f && Math.Abs(SpeedMpS * 3.6f) < 2.0f)
+                {
+                    // AI plynule dobržďuje (skřípání brzd)                 
+                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    if (Deceleration > 0.10f)
+                        AITrainBrakePercent -= 1;
+                    if (Deceleration < 0.10f)
+                        AITrainBrakePercent += 1;
+                }
+                else
+                    smoothDeceleration = false;
+
                 reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);                
                 float ds = timeS * (reqDecelMpSS);
                 SpeedMpS = Math.Max(SpeedMpS - ds, 0); // avoid negative speeds
@@ -3850,11 +3883,16 @@ namespace Orts.Simulation.AIs
                     //  car.SpeedMpS = car.Flipped ? -SpeedMpS : SpeedMpS;
                     car.SpeedMpS = car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab) ? -SpeedMpS : SpeedMpS;
                 }
-            }            
+            }
+            else
+                smoothDeceleration = false;
+            AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0, 100);
         }
        
         public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
-        {            
+        {
+            if (smoothDeceleration) return;
+
             if (AITrainThrottlePercent > 0)
             {
                 AITrainThrottlePercent -= stepSize * timeS;
@@ -3914,8 +3952,8 @@ namespace Orts.Simulation.AIs
         public void AdjustControlsBrakeOff()
         {
             // Icik
-            //if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
-            //if (smoothDeceleration) return;
+            if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
+            if (smoothDeceleration) return;
 
             AITrainBrakePercent = 0;
             InitializeBrakes();
@@ -4131,14 +4169,14 @@ namespace Orts.Simulation.AIs
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
             {
-                AITrainThrottlePercent -= stepSize * timeS;
+                AITrainThrottlePercent -= stepSize * timeS * 2f;
                 if (AITrainThrottlePercent < 0)
                     AITrainThrottlePercent = 0;
             }
             else
             if (AITrainThrottlePercent < AITSethrottlePercent)
             {
-                AITrainThrottlePercent += stepSize * timeS;
+                AITrainThrottlePercent += stepSize * timeS * 2f;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
@@ -6743,7 +6781,7 @@ namespace Orts.Simulation.AIs
 
             retString[4] = String.Copy(movString);
             retString[5] = String.Copy(abString);
-            retString[11] = String.Copy(nameString);
+            retString[11] = String.Copy(nameString);            
 
             return (retString);
         }
