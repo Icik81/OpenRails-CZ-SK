@@ -3815,7 +3815,7 @@ namespace Orts.Simulation.AIs
 
         bool smoothDeceleration;        
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
-        {                        
+        {            
             if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.5f)
             {
                 smoothDeceleration = true;
@@ -4036,22 +4036,25 @@ namespace Orts.Simulation.AIs
                     AITrainThrottlePercent = 0;
                     return;
                 }
-            }            
-            
-            foreach (TrainCar car in Cars)
+            }
+
+            if (!(this is Timetables.TTTrain))
             {
-                if (car is MSTSElectricLocomotive)
+                foreach (TrainCar car in Cars)
                 {
-                    MSTSElectricLocomotive loco = (MSTSElectricLocomotive)car;
-                    foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
+                    if (car is MSTSElectricLocomotive)
                     {
-                        if (pss.TotalAmps > 5000)
+                        MSTSElectricLocomotive loco = (MSTSElectricLocomotive)car;
+                        foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
                         {
-                            foreach (MSTSElectricLocomotive eloc in pss.Consuptors)
+                            if (pss.TotalAmps > 5000)
                             {
-                                if (eloc == loco)
+                                foreach (MSTSElectricLocomotive eloc in pss.Consuptors)
                                 {
-                                    return;
+                                    if (eloc == loco)
+                                    {
+                                        return;
+                                    }
                                 }
                             }
                         }
@@ -4169,19 +4172,19 @@ namespace Orts.Simulation.AIs
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
             {
-                AITrainThrottlePercent -= stepSize * timeS * 2f;
+                AITrainThrottlePercent -= stepSize * timeS;
                 if (AITrainThrottlePercent < 0)
                     AITrainThrottlePercent = 0;
             }
             else
             if (AITrainThrottlePercent < AITSethrottlePercent)
             {
-                AITrainThrottlePercent += stepSize * timeS * 2f;
+                AITrainThrottlePercent += stepSize * timeS;
                 if (AITrainThrottlePercent > 100)
                     AITrainThrottlePercent = 100;
             }
             
-            if (AIStayToRollOn) reqAccelMpSS = 0;
+            if (AIStayToRollOn) reqAccelMpSS = 0;            
 
             if (LastSpeedMpS == 0 || (((SpeedMpS - LastSpeedMpS) / timeS) < 0.5f * MaxAccelMpSS))
             {

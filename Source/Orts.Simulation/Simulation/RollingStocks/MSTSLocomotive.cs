@@ -8731,6 +8731,8 @@ namespace Orts.Simulation.RollingStocks
             if (LocoNumDrvAxles <= 0)
                 return;
 
+            DrvWheelWeightKg = MassKG;
+
             //Curtius-Kniffler computation
             // Set to a high level of adhesion to ensure that locomotive rarely slips in dry mode
             float uMax = 1.3f * (7.5f / (AbsSpeedMpS + 44.0f) + 0.161f); // Curtius - Kniffler equation
@@ -9000,7 +9002,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
             SanderSpeedOfMpS = 1000;
-
+            
             //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
             float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
@@ -9221,7 +9223,7 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.AdhesionConditions = AdhesionMultiplier * AdhesionFilter.Filter(BaseFrictionCoefficientFactor + AdhesionRandom, elapsedClockSeconds);                                                
                 LocomotiveAxle.AdhesionConditions = MathHelper.Clamp(LocomotiveAxle.AdhesionConditions, 0.05f, 2.5f); // Avoids NaNs in axle speed computing                
             }
-
+            
             // Set adhesion conditions for other steam locomotives
             if (EngineType == EngineTypes.Steam && SteamEngineType != MSTSSteamLocomotive.SteamEngineTypes.Geared)  // ToDo explore adhesion factors
             {
