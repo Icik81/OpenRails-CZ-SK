@@ -140,7 +140,7 @@ namespace Orts.Simulation.AIs
         public static float followDistanceStatTrainM = 30.0f;  // min dist for starting to follow
         public static float keepDistanceMovingTrainM = 300.0f; // stay 300m behind moving train
         public static float creepSpeedMpS = 2.5f;              // speed for creeping up behind train or upto signal
-        public static float couplingSpeedMpS = 0.2f;           // speed for coupling to other train
+        public static float couplingSpeedMpS = 0.5f / 3.6f;           // speed for coupling to other train
         public static float maxFollowSpeedMpS = 15.0f;         // max. speed when following
         public static float movingtableSpeedMpS = 2.5f;        // speed for moving tables (approx. max 8 kph)
         public static float hysterisMpS = 0.5f;                // speed hysteris value to avoid instability
@@ -3172,13 +3172,10 @@ namespace Orts.Simulation.AIs
             // Icik
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
-            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
-            {                
-                if (!AITrainWillAttach)
-                    SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 15 : 20, distanceToGoM, this.Cars.Count > 3 ? 50 : 25);
-                else
-                    smoothDeceleration = false;
-            }
+            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))                            
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 15 : 20, distanceToGoM, this.Cars.Count > 3 ? 50 : 25);                            
+            else
+                smoothDeceleration = false;
         }
 
         /// <summary>
@@ -3375,13 +3372,24 @@ namespace Orts.Simulation.AIs
                             float brakingDistance = SpeedMpS * SpeedMpS * 0.5f * (0.5f * MaxDecelMpSS);
                             float reqspeed = (float)Math.Sqrt(distanceToTrain * MaxDecelMpSS);
 
-                            float maxspeed = Math.Max(reqspeed / 2, creepSpeedMpS); // allow continue at creepspeed
-                            if (distanceToTrain < keepDistanceStatTrainM_P - 2.0f && attachToTrain)
+                            float maxspeed = Math.Max(reqspeed, creepSpeedMpS); // allow continue at creepspeed
+                            
+                            // Icik                                 
+                            if (distanceToTrain < keepDistanceStatTrainM_P * 2f && attachToTrain)
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 6f);
+
+                            if (distanceToTrain < keepDistanceStatTrainM_P - 7.0f && attachToTrain)
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 3f);
+
+                            if (distanceToTrain < keepDistanceStatTrainM_P - 8.0f && attachToTrain)
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 2f);
+
+                            if (distanceToTrain < keepDistanceStatTrainM_P - 9.5f && attachToTrain)
                                 maxspeed = Math.Min(maxspeed, couplingSpeedMpS);
+
                             maxspeed = Math.Min(maxspeed, AllowedMaxSpeedMpS); // but never beyond valid speed limit
 
-                            // set brake or acceleration as required
-
+                            // set brake or acceleration as required                            
                             if (SpeedMpS > maxspeed)
                             {
                                 AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
