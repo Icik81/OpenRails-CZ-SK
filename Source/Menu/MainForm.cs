@@ -1066,6 +1066,11 @@ namespace ORTS
             DialogResult = DialogResult.OK;
         }
 
+        void buttonRefreshTrainset_Click(object sender, EventArgs e)
+        {
+            LoadLocomotiveList();            
+        }
+
         #endregion
 
         #region Options
@@ -1161,6 +1166,8 @@ namespace ORTS
                 SelectedActivity != null && (!(SelectedActivity is ExploreActivity) || (comboBoxConsist.Items.Count > 0 && comboBoxHeadTo.Items.Count > 0)) :
                 SelectedTimetableTrain != null;
             buttonResumeMP.Enabled = buttonStartMP.Enabled = buttonStart.Enabled && !String.IsNullOrEmpty(textBoxMPUser.Text) && !String.IsNullOrEmpty(textBoxMPHost.Text);
+
+            if (comboBoxLocomotive.Enabled && comboBoxConsist.Enabled) lblConsists.Visible = false;
         }
         #endregion
 
@@ -1346,18 +1353,19 @@ namespace ORTS
         }
 
         void ShowLocomotiveList()
-        {
+        {            
             if (SelectedActivity == null || SelectedActivity is ExploreActivity)
             {
+                lblConsists.Visible = true;
                 comboBoxLocomotive.Items.Clear();
                 comboBoxLocomotive.Items.Add(new Locomotive());
                 foreach (var loco in Consists.Where(c => c.Locomotive != null).Select(c => c.Locomotive).Distinct().OrderBy(l => l.ToString()))
                 {
-                    comboBoxLocomotive.Items.Add(loco);
+                    comboBoxLocomotive.Items.Add(loco);                    
                 }
                 if (comboBoxLocomotive.Items.Count == 1)
                     comboBoxLocomotive.Items.Clear();
-                UpdateFromMenuSelection<Locomotive>(comboBoxLocomotive, UserSettings.Menu_SelectionIndex.Locomotive, l => l.FilePath);
+                UpdateFromMenuSelection<Locomotive>(comboBoxLocomotive, UserSettings.Menu_SelectionIndex.Locomotive, l => l.FilePath);                
             }
             else
             {
@@ -1367,21 +1375,21 @@ namespace ORTS
                 comboBoxLocomotive.SelectedIndex = 0;
                 comboBoxConsist.Items.Clear();
                 comboBoxConsist.Items.Add(consist);
-                comboBoxConsist.SelectedIndex = 0;
+                comboBoxConsist.SelectedIndex = 0;                
             }
-            UpdateEnabled();
+            UpdateEnabled();            
         }
 
         void ShowConsistList()
         {
             if (SelectedActivity == null || SelectedActivity is ExploreActivity)
-            {
+            {                
                 comboBoxConsist.Items.Clear();
                 foreach (var consist in Consists.Where(c => comboBoxLocomotive.SelectedItem.Equals(c.Locomotive)).OrderBy(c => c.Name))
                     comboBoxConsist.Items.Add(consist);
-                UpdateFromMenuSelection<Consist>(comboBoxConsist, UserSettings.Menu_SelectionIndex.Consist, c => c.FilePath);
+                UpdateFromMenuSelection<Consist>(comboBoxConsist, UserSettings.Menu_SelectionIndex.Consist, c => c.FilePath);                
             }
-            UpdateEnabled();
+            UpdateEnabled();            
         }
         #endregion
 
@@ -1824,7 +1832,7 @@ namespace ORTS
                 else if (defaultValue != null)
                     SelectComboBoxItem<T>(comboBox, item => map(item) == map(defaultValue));
                 else if (comboBox.Items.Count > 0)
-                    comboBox.SelectedIndex = 0;
+                    comboBox.SelectedIndex = 0;                
             }
         }
 

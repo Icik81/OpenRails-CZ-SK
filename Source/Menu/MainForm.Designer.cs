@@ -63,6 +63,7 @@ namespace ORTS
             this.radioButtonModeTimetable = new System.Windows.Forms.RadioButton();
             this.panelModeActivity = new System.Windows.Forms.Panel();
             this.label16 = new System.Windows.Forms.Label();
+            this.RefreshTrainsetbutton = new System.Windows.Forms.Button();
             this.comboBoxWeather = new System.Windows.Forms.ComboBox();
             this.lblConsists = new System.Windows.Forms.Label();
             this.checkDebriefActivityEval = new System.Windows.Forms.CheckBox();
@@ -459,6 +460,7 @@ namespace ORTS
             // panelModeActivity
             // 
             this.panelModeActivity.Controls.Add(this.label16);
+            this.panelModeActivity.Controls.Add(this.RefreshTrainsetbutton);
             this.panelModeActivity.Controls.Add(this.comboBoxWeather);
             this.panelModeActivity.Controls.Add(this.lblConsists);
             this.panelModeActivity.Controls.Add(this.checkDebriefActivityEval);
@@ -498,6 +500,16 @@ namespace ORTS
             this.label16.Text = "Weather advanced:";
             this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
+            // RefreshTrainsetbutton
+            // 
+            this.RefreshTrainsetbutton.Location = new System.Drawing.Point(232, 108);
+            this.RefreshTrainsetbutton.Margin = new System.Windows.Forms.Padding(4);
+            this.RefreshTrainsetbutton.Name = "RefreshTrainsetbutton";
+            this.RefreshTrainsetbutton.Size = new System.Drawing.Size(145, 28);
+            this.RefreshTrainsetbutton.TabIndex = 0;
+            this.RefreshTrainsetbutton.Text = "Trainset refresh ";
+            this.RefreshTrainsetbutton.Click += new System.EventHandler(this.buttonRefreshTrainset_Click);
+            // 
             // comboBoxWeather
             // 
             this.comboBoxWeather.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
@@ -512,14 +524,13 @@ namespace ORTS
             // lblConsists
             // 
             this.lblConsists.AutoSize = true;
-            this.lblConsists.Location = new System.Drawing.Point(157, 114);
+            this.lblConsists.Location = new System.Drawing.Point(148, 114);
             this.lblConsists.Margin = new System.Windows.Forms.Padding(4);
             this.lblConsists.Name = "lblConsists";
-            this.lblConsists.Size = new System.Drawing.Size(63, 16);
+            this.lblConsists.Size = new System.Drawing.Size(61, 16);
             this.lblConsists.TabIndex = 21;
-            this.lblConsists.Text = "načítám...";
+            this.lblConsists.Text = "loading...";
             this.lblConsists.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.lblConsists.Visible = false;
             // 
             // checkDebriefActivityEval
             // 
@@ -1121,5 +1132,6 @@ namespace ORTS
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.ComboBox comboBoxWeather;
         private System.Windows.Forms.ComboBox comboBoxStartWeather;
+        private System.Windows.Forms.Button RefreshTrainsetbutton;
     }
 }

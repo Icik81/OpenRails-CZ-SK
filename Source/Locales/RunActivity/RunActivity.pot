@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-05-07 18:13:47+0200\n"
-"PO-Revision-Date: 2025-05-07 18:13:48+0200\n"
+"POT-Creation-Date: 2025-05-24 19:39:12+0200\n"
+"PO-Revision-Date: 2025-05-24 19:39:13+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -202,7 +202,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2528
+#: ../../RunActivity/Viewer3D/Weather.cs:2626
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -396,7 +396,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Debugging/DebugViewerForm.Designer.cs:757
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:108
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:172
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:185
 msgid "Timetable"
 msgstr ""
 
@@ -1045,42 +1045,39 @@ msgid "Key Commands"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:113
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:177
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:463
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:190
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:476
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:79
 msgid "Station"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:114
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:178
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:191
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:81
 msgid "Arrive"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:115
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:117
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:179
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:181
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:192
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:194
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:82
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:84
 msgid "Actual"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:116
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:180
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:193
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:83
 msgid "Depart"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:161
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1108
-msgid "Briefing"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:196
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:198
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:456
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:144
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:163
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:209
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:211
 #: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:469
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:482
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:287
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:522
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:612
@@ -1088,144 +1085,149 @@ msgstr ""
 msgid "(missed)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:205
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:174
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1121
+msgid "Briefing"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:218
 msgid "Work Orders"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:210
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:636
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:223
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:649
 msgid "Task"
 msgid_plural "Tasks"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:211
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:224
 msgid "Car(s)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:212
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:225
 msgid "Location"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:213
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:226
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:608
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:842
 #: ../../RunActivity/Viewer3D/Popups/MultiPlayerWindow.cs:193
 msgid "Status"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:233
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:508
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:246
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:521
 msgid "Assemble Train"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:237
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:250
 msgid "At Location"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:241
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:515
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:254
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:528
 msgid "Drop Off"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:245
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:519
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:258
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:532
 msgid "Pick Up"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:338
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:546
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:579
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:351
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:559
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:592
 msgid "Done"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:352
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:365
 msgid "Evaluation"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:391
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:404
 msgid "This Activity has ended."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:400
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:413
 msgid "Timetable:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:435
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:448
 msgid "- Station stops: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:446
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:459
 msgid "- Remaining station stops: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:461
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:474
 msgid "- Missed station stops: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:471
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:484
 msgid " "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:485
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:498
 msgid "Work orders:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:511
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:906
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:524
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:919
 msgid "Assemble Train At Location"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:572
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:585
 msgid "- Tasks: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:584
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:597
 msgid "- Accomplished: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:586
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:599
 msgid "- Coupling speed limits: "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:594
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:607
 msgid "  The Debrief evaluation report is disabled."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:649
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:662
 msgid "- "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:650
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:663
 msgid "= "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:722
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:735
 msgid "A report file was created:"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:831
 msgid "Diesel."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:831
 msgid "Steam."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:818
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:831
 msgid "Electric."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1117
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1130
 msgid "Procedures"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1196
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1223
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1209
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:1236
 msgid " = "
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:449
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:462
 #: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:136
 #, csharp-format
 msgid "Current Delay: {0} minute"
@@ -1233,13 +1235,13 @@ msgid_plural "Current Delay: {0} minutes"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:637
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:650
 msgid "Task accomplished"
 msgid_plural "Tasks accomplished"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:650
+#: ../../RunActivity/Viewer3D/Popups/HelpWindow.cs:663
 #, csharp-format
 msgid "{0} minute"
 msgid_plural "{0} minutes"
