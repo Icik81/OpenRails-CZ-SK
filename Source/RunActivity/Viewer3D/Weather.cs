@@ -269,13 +269,23 @@ namespace Orts.Viewer3D
             Weather.PrecipitationLiquidity = inf.ReadSingle();
             RandomizedWeather = inf.ReadBoolean();
             weatherChangeOn = inf.ReadBoolean();
+            
+            // Icik
+            if (Viewer.Simulator.WeatherAdv != 7 && !Program.Simulator.WeatherChangesPresent)
+            {
+                RandomizedWeather = false;
+                weatherChangeOn = false;
+                // Profily poèasí jsou nadøazené uloženým hodnotám
+                SetInitialWeatherParameters();
+            }
+
             if (weatherChangeOn)
             {
                 dynamicWeather = new DynamicWeather();
                 dynamicWeather.Restore(inf);
             }
             UpdateVolume();
-
+            
             // Icik
             NightTime = inf.ReadBoolean();
         }
@@ -285,7 +295,7 @@ namespace Orts.Viewer3D
             // Profily poèasí
             switch (Viewer.Simulator.WeatherAdv)
             {
-                case 0: // Clear                    
+                case 0: // Clear                                        
                     switch ((int)Viewer.Simulator.Season)
                     {
                         case 0:  // Jaro
