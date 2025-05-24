@@ -268,8 +268,14 @@ namespace Orts.Viewer3D
             Weather.PricipitationIntensityPPSPM2 = inf.ReadSingle();
             Weather.PrecipitationLiquidity = inf.ReadSingle();
             RandomizedWeather = inf.ReadBoolean();
-            weatherChangeOn = inf.ReadBoolean();
-            
+            weatherChangeOn = inf.ReadBoolean();                        
+
+            if (weatherChangeOn)
+            {
+                dynamicWeather = new DynamicWeather();
+                dynamicWeather.Restore(inf);
+            }
+
             // Icik
             if (Viewer.Simulator.WeatherAdv != 7 && !Program.Simulator.WeatherChangesPresent)
             {
@@ -279,11 +285,6 @@ namespace Orts.Viewer3D
                 SetInitialWeatherParameters();
             }
 
-            if (weatherChangeOn)
-            {
-                dynamicWeather = new DynamicWeather();
-                dynamicWeather.Restore(inf);
-            }
             UpdateVolume();
             
             // Icik
