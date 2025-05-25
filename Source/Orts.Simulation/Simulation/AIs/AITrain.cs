@@ -3824,7 +3824,7 @@ namespace Orts.Simulation.AIs
         bool smoothDeceleration;        
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {            
-            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.5f)
+            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.5f && AITrainThrottlePercent == 0)
             {
                 smoothDeceleration = true;
                 if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < 0) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
