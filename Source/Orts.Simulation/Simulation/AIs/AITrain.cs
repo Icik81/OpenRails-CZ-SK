@@ -3899,6 +3899,7 @@ namespace Orts.Simulation.AIs
        
         public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
         {
+            if (distanceToGoM < 0) smoothDeceleration = false;
             if (smoothDeceleration) return;
 
             if (AITrainThrottlePercent > 0)

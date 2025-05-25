@@ -1167,7 +1167,7 @@ namespace ORTS
                 SelectedTimetableTrain != null;
             buttonResumeMP.Enabled = buttonStartMP.Enabled = buttonStart.Enabled && !String.IsNullOrEmpty(textBoxMPUser.Text) && !String.IsNullOrEmpty(textBoxMPHost.Text);
 
-            if (comboBoxLocomotive.Enabled && comboBoxConsist.Enabled) lblConsists.Visible = false;
+            if (comboBoxLocomotive.Enabled && comboBoxConsist.Enabled) lblConsists.Visible = false;            
         }
         #endregion
 
@@ -1353,7 +1353,7 @@ namespace ORTS
         }
 
         void ShowLocomotiveList()
-        {            
+        {                     
             if (SelectedActivity == null || SelectedActivity is ExploreActivity)
             {
                 lblConsists.Visible = true;
@@ -1376,8 +1376,10 @@ namespace ORTS
                 comboBoxConsist.Items.Clear();
                 comboBoxConsist.Items.Add(consist);
                 comboBoxConsist.SelectedIndex = 0;                
-            }
-            UpdateEnabled();            
+            }            
+            UpdateEnabled();
+            if (SelectedActivity != null && !(SelectedActivity is ExploreActivity)) lblConsists.Visible = false;
+
         }
 
         void ShowConsistList()
