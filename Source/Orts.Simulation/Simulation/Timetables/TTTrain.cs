@@ -43,6 +43,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation.Timetables
@@ -11386,6 +11387,17 @@ namespace Orts.Simulation.Timetables
                 }
 
                 // set proper player train references
+
+                // Icik            
+                CheckPaxToLeaveCount(this);
+                if (AtStation && PeopleWantToLeaveCount > 0)
+                {
+                    for (int i = 0; i < Cars.Count; i++)
+                    {
+                        var wagon = (Cars[i] as MSTSWagon);
+                        wagon.PassengerList.Clear();                        
+                    }
+                }
 
                 if (nextTrainNumber > 0)
                 {
