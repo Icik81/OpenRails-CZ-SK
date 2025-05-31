@@ -3824,60 +3824,22 @@ namespace Orts.Simulation.AIs
         bool smoothDeceleration;        
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {            
-            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.5f && AITrainThrottlePercent == 0)
+            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f && AITrainThrottlePercent == 0)
             {
                 smoothDeceleration = true;
-                if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < 0) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
-                
-                if (Math.Abs(SpeedMpS * 3.6f) > 10.0f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpHSlowingDown)
+                if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < -1) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
+
+                float RequiredDecceleration = (SpeedMpS * SpeedMpS) / (2 * distanceToGoM);
+                                
+                if (Math.Abs(SpeedMpS * 3.6f) > 0.0f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpHSlowingDown)
                 {
                     // AI plynule začne brzdit
                     float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
-                    if (Deceleration > 0.75f)
+                    if (Deceleration > RequiredDecceleration)
                         AITrainBrakePercent -= 1;
-                    if (Deceleration < 0.75f)
+                    if (Deceleration < RequiredDecceleration)
                         AITrainBrakePercent += 1;                    
-                }
-                else
-                if (Math.Abs(SpeedMpS * 3.6f) > 5.0f && Math.Abs(SpeedMpS * 3.6f) < 10)
-                {
-                    // AI plynule začne brzdit
-                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
-                    if (Deceleration > 0.50f)
-                        AITrainBrakePercent -= 1;
-                    if (Deceleration < 0.50f)
-                        AITrainBrakePercent += 1;
-                }
-                else
-                if (Math.Abs(SpeedMpS * 3.6f) > 3.5f && Math.Abs(SpeedMpS * 3.6f) < 5.0f)
-                {
-                    // AI plynule začne brzdit                 
-                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
-                    if (Deceleration > 0.30f)
-                        AITrainBrakePercent -= 1;
-                    if (Deceleration < 0.30f)
-                        AITrainBrakePercent += 1;
-                }
-                else
-                if (Math.Abs(SpeedMpS * 3.6f) > 2.0f && Math.Abs(SpeedMpS * 3.6f) < 3.5f)
-                {
-                    // AI plynule začne brzdit                 
-                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
-                    if (Deceleration > 0.20f)
-                        AITrainBrakePercent -= 1;
-                    if (Deceleration < 0.20f)
-                        AITrainBrakePercent += 1;                    
-                }
-                else
-                if (Math.Abs(SpeedMpS * 3.6f) > 0.5f && Math.Abs(SpeedMpS * 3.6f) < 2.0f)
-                {
-                    // AI plynule dobržďuje (skřípání brzd)                 
-                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
-                    if (Deceleration > 0.10f)
-                        AITrainBrakePercent -= 1;
-                    if (Deceleration < 0.10f)
-                        AITrainBrakePercent += 1;
-                }
+                }                
                 else
                     smoothDeceleration = false;
 
@@ -3899,7 +3861,7 @@ namespace Orts.Simulation.AIs
        
         public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
         {
-            if (distanceToGoM < 0) smoothDeceleration = false;
+            if (distanceToGoM < -1) smoothDeceleration = false;
             if (smoothDeceleration) return;
 
             if (AITrainThrottlePercent > 0)
