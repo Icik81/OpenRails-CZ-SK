@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.MultiPlayer;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
@@ -141,14 +142,14 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         var drawer = Exhaust1[i];
 
-                        if (car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped || MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;
                             var colorB = car.ExhaustColorB.SmoothedValue / 255f;
                             drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                         }
-                        if (car.DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && !MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;
@@ -162,14 +163,14 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         var drawer = Exhaust2[i];
 
-                        if (car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped || MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;
                             var colorB = car.ExhaustColorB.SmoothedValue / 255f;
                             drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                         }
-                        if (car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines.Count > 1 && car.DieselEngines[1].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && !MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;
@@ -184,14 +185,14 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         var drawer = Exhaust[i];
 
-                        if (car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines[0].EngineStatus != Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped || MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;
                             var colorB = car.ExhaustColorB.SmoothedValue / 255f;
                             drawer.SetOutput(exhaustParticles, car.ExhaustMagnitude.SmoothedValue, new Color((byte)car.ExhaustColorR.SmoothedValue, (byte)car.ExhaustColorG.SmoothedValue, (byte)car.ExhaustColorB.SmoothedValue));
                         }
-                        if (car.DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped)
+                        if (car.DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped && !MPManager.IsMultiPlayer())
                         {
                             var colorR = car.ExhaustColorR.SmoothedValue / 255f;
                             var colorG = car.ExhaustColorG.SmoothedValue / 255f;

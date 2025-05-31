@@ -15,7 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Physics;
 using System;
@@ -53,14 +55,29 @@ namespace Orts.Simulation.RollingStocks
                     // on error, fall through and try loading without the custom dll
                 }
             }
+
+            // Icik
+            if (wagFilePathBase == null)
+            {
+                string wagonFolder = Path.GetDirectoryName(wagFilePath);
+
+                if (wagonFolder.ToLower().Contains("\\openrailsczsk"))
+                    wagonFolder = (Path.GetDirectoryName(wagFilePath)).ToLower().Replace("\\openrailsczsk", "");
+                else
+                if (wagonFolder.ToLower().Contains("\\openrails"))
+                    wagonFolder = (Path.GetDirectoryName(wagFilePath)).ToLower().Replace("\\openrails", "");
+
+                wagFilePathBase = wagonFolder + @"\" + Path.GetFileName(wagFilePath);
+            }
+
             if (!wagFile.IsEngine)
             {
-                // its an ordinary MSTS wagon
+                // its an ordinary MSTS wagon             
                 car = new MSTSWagon(simulator, wagFilePath, wagFilePathBase);
             }
             else
             {
-                // its an ordinary MSTS engine of some type.
+                // its an ordinary MSTS engine of some type.                
                 if (wagFile.Engine.Type == null)
                     throw new InvalidDataException(wagFilePath + "\r\n\r\nEngine type missing");
 

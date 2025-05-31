@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
@@ -182,13 +183,12 @@ namespace Orts.MultiPlayer
                 else throw new Exception();
             }
             for (var i = 0; i < player.cars.Length; i++)// cars.Length-1; i >= 0; i--) {
-            {
-
+            {               
                 string wagonFilePath = MPManager.Simulator.BasePath + @"\trains\trainset\" + player.cars[i];
                 TrainCar car = null;
                 try
                 {
-                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath, wagonFilePath);
+                    car = RollingStock.Load(MPManager.Simulator, wagonFilePath, null);
                     car.CarLengthM = player.lengths[i] / 100.0f;
                 }
                 catch (Exception error)
