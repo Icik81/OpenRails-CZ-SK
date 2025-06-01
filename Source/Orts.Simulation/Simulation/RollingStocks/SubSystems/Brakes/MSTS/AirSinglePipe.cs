@@ -70,8 +70,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected float SoundTriggerCounter = 0;
         protected float prevCylPressurePSI = 0;
         protected float prevBrakePipePressurePSI = 0;
-        protected bool BailOffOn;
-        protected bool AutoBailOffActivated;
+        protected bool BailOffOn;        
 
         protected float T0_PipePressure = 0;
         protected float T0_CylinderPressure = 0;
@@ -1633,46 +1632,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                     if (!TwoStateBrake)
                     {
-                        if (AutoCylPressurePSI0 == prevAutoCylPressurePSI)
-                            dp = 0;
-                        if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
-                        {
-                            if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
-                                AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;
-                            else
-                            if (loco != null && loco.DynamicBrakeAutoBailOff && !AutoBailOffActivated)
-                                AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;
-                        }
+                        if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)                        
+                            AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;                        
                     }
 
                     if (TwoStateBrake)
                     {
                         if (LowPressure)
                         {
-                            if (AutoCylPressurePSI0 > BrakeCylinderMaxPressureForLowState - 1)
-                                dp = 0;
-                            if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
-                            {
-                                if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
-                                    AuxResPressurePSI -= dp / AuxCylVolumeRatioLowPressureBraking;
-                                else
-                                if (loco != null && loco.DynamicBrakeAutoBailOff && !AutoBailOffActivated)
-                                    AuxResPressurePSI -= dp / AuxCylVolumeRatioLowPressureBraking;
-                            }
+                            if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)                                                        
+                                AuxResPressurePSI -= dp / AuxCylVolumeRatioLowPressureBraking;                            
                         }
 
                         if (!LowPressure)
                         {
-                            if (AutoCylPressurePSI0 == prevAutoCylPressurePSI)
-                                dp = 0;
-                            if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)
-                            {
-                                if ((loco != null && !loco.DynamicBrakeAutoBailOff) || loco == null)
-                                    AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;
-                                else
-                                if (loco != null && loco.DynamicBrakeAutoBailOff && !AutoBailOffActivated)
-                                    AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;
-                            }
+                            if (TrainBrakeDelay > BrakeDelayToEngage + 0.25f)                            
+                                AuxResPressurePSI -= dp / AuxCylVolumeRatioBase;                            
                         }
                     }
 
@@ -1869,12 +1844,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
 
-                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn && AutoCylPressurePSI0 > 0 && !BrakeCylReleaseEDBOn)
+                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn /*&& AutoCylPressurePSI0 > 0*/ && !BrakeCylReleaseEDBOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB
-                    AutoBailOffActivated = true;
+                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
                     if (AutoCylPressurePSI0 < 1.0f)
                         BrakeCylReleaseEDBOn = true;
                 }
@@ -1896,8 +1870,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BailOffOn = false;
 
                 if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
-                {
-                    AutoBailOffActivated = false;
+                {                    
                     ThresholdBailOffOn = 0;
                 }
 
@@ -1905,18 +1878,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
                 if ((Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
                 {
-                    if (threshold < ThresholdBailOffOn || thresholdOld < threshold) 
-                        ThresholdBailOffOn = 0;                    
-                    
+                    if (BrakeCylRelease)
+                        ThresholdBailOffOn = 0;
+
                     if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AuxResPressurePSI > 0)
                     {
-                        if (!OL3active)
-                        {
-                            AutoBailOffActivated = false;
-                            AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS; // Rychlost napouštění po uvadnutí EDB
-                        }
+                        if (!OL3active)                                                    
+                            AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS; // Rychlost napouštění po uvadnutí EDB                                                                                
                     }
                     else
                     if (AutoCylPressurePSI0 >= ThresholdBailOffOn)

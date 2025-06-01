@@ -3985,6 +3985,12 @@ namespace Orts.Simulation.RollingStocks
                     car.BrakeSystem.RightDoorText = Simulator.Catalog.GetString("closed");
                 }
 
+                if (!mstsWagon.DoorRightOpen && !mstsWagon.DoorLeftOpen)
+                {
+                    car.BrakeSystem.RightDoorIsOpened = false;
+                    car.BrakeSystem.LeftDoorIsOpened = false;
+                }
+
                 if (car.BrakeSystem.LeftDoorCycle == 0)
                 {
                     switch (car.BrakeSystem.LeftDoorMenu)
