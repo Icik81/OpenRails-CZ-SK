@@ -141,9 +141,7 @@ namespace Orts.Viewer3D.Popups
                         NrSelectedCar++;
                     }
                     else
-                        car.SelectedCar = false;
-
-                    Owner.Viewer.PlayerTrain.Simulator.ChangeCabActivated = false;                    
+                        car.SelectedCar = false;                                        
 
                     scrollbox.Add(carLabel);
                     scrollbox2.Add(new TrainOperationsIcon(10, 0, textHeight + (textHeight / 2), Owner.Viewer, car, carPosition));

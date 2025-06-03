@@ -782,7 +782,7 @@ namespace Orts.Viewer3D
             // the screen
             if (CabCamera.IsAvailable)
             {
-                var i = ((PlayerLocomotive as MSTSLocomotive).UsingRearCab) ? 1 : 0;                
+                var i = (PlayerLocomotive as MSTSLocomotive).UsingRearCab ? 1 : 0;                
                 var cabTextureFileName = (PlayerLocomotive as MSTSLocomotive).CabViewList[i].CVFFile.TwoDViews[0];
                 var cabTextureInverseRatio = ComputeCabTextureInverseRatio(cabTextureFileName);
                 if (cabTextureInverseRatio != -1) CabTextureInverseRatio = cabTextureInverseRatio;
@@ -1173,7 +1173,7 @@ namespace Orts.Viewer3D
                     if ((PlayerLocomotive as MSTSLocomotive).OneCabDummyStation)
                     {
                         (PlayerLocomotive as MSTSLocomotive).OneCabDummyStation = false;
-                        new ChangeCabCommand(Log);
+                        new ChangeCabCommand(Log);                                                                                                    
                         return;
                     }
                 }
@@ -1239,10 +1239,10 @@ namespace Orts.Viewer3D
                 }
                 else
                 {
-                    // OneCab
+                    // OneCab                    
                     new ChangeCabCommand(Log);
-                    if ((PlayerLocomotive as MSTSLocomotive).AbsSpeedMpS > 1.0f / 3.6f)
-                    {
+                    if ((PlayerLocomotive as MSTSLocomotive).AbsSpeedMpS > 0.1f / 3.6f)
+                    {                        
                         if ((PlayerLocomotive as MSTSLocomotive).UsingRearCab && (PlayerLocomotive as MSTSLocomotive).StationIsActivated[1])
                         {
                             (PlayerLocomotive as MSTSLocomotive).UsingRearCab = false;
@@ -1253,11 +1253,7 @@ namespace Orts.Viewer3D
                         {
                             (PlayerLocomotive as MSTSLocomotive).UsingRearCab = true;
                             (PlayerLocomotive as MSTSLocomotive).OneCabDummyStation = true;
-                        }                        
-                        if ((PlayerLocomotive as MSTSLocomotive).OneCabDummyStation)
-                        {
-                            (PlayerLocomotive as MSTSLocomotive).StationIsActivated[1] = (PlayerLocomotive as MSTSLocomotive).StationIsActivated[2] = false;
-                        }
+                        }                                                
                     }
                     return;
                 }

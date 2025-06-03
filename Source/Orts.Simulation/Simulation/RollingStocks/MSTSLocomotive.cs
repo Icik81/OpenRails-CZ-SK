@@ -7354,6 +7354,7 @@ namespace Orts.Simulation.RollingStocks
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;
                 Simulator.GameWasRestored = false;
+                Simulator.ChangeCabActivated = false;
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -8248,19 +8249,8 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (Flipped ^ UsingRearCab)                                                            
                                 Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;                                                        
-                        }
-                    }
-                    if (IsLeadLocomotive() && OneCabDummyStation)
-                    {
-                        if (Simulator.Direction == Direction.Forward)
-                            Direction = Direction.Forward;
-                        else
-                        if (Simulator.Direction == Direction.Reverse)
-                        {
-                            Direction = Direction.Reverse;
-                            TractiveForceN *= -1;
-                        }
-                    }
+                        }                        
+                    }                    
 
                     if (!IsLeadLocomotive())
                     {
@@ -9330,6 +9320,31 @@ namespace Orts.Simulation.RollingStocks
 
         }
 
+        int[] preDirectionPosition = new int[3]; 
+        public void DirectionHandleUpdate()
+        {
+            if (IsLeadLocomotive())
+            {
+                if (!DirectionButton && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !MirelRSControllerEnable && !HS198ControllerEnable)
+                {
+                    if (!StationIsActivated[LocoStation]) preDirectionPosition[LocoStation] = 0;
+                    if (StationIsActivated[LocoStation] && !DirectionControllerBlocked)
+                    {
+                        if (preDirectionPosition[LocoStation] != DirectionPosition[LocoStation] || Simulator.LocoStationChange || Simulator.ChangeCabActivated)
+                        {
+                            switch (DirectionPosition[LocoStation])
+                            {
+                                case -1: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Backward")); break;
+                                case 0: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position 0")); break;
+                                case 1: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.DieselDirection_Forward, Simulator.Catalog.GetString("Position Forward")); break;
+                            }
+                            preDirectionPosition[LocoStation] = DirectionPosition[LocoStation];
+                        }
+                    }
+                }
+            }
+        }
+
         public virtual void StartReverseIncrease(float? target)
         {
             // Icik
@@ -9347,18 +9362,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (StationIsActivated[LocoStation] && !this.DirectionControllerBlocked)
                 {
-                    AlerterReset(TCSEvent.ReverserChanged);
-                    if (this.IsLeadLocomotive())
-                    {
-                        {
-                            switch (Direction)
-                            {
-                                case Direction.Reverse: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
-                                case Direction.N: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
-                                case Direction.Forward: SetDirection(Direction.Forward); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.On); break;
-                            }
-                        }
-                    }
+                    AlerterReset(TCSEvent.ReverserChanged);                    
                 }
             }
         }
@@ -9380,18 +9384,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (StationIsActivated[LocoStation] && !this.DirectionControllerBlocked)
                 {
-                    AlerterReset(TCSEvent.ReverserChanged);
-                    if (this.IsLeadLocomotive())
-                    {
-                        {
-                            switch (Direction)
-                            {
-                                case Direction.Reverse: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                                case Direction.N: SetDirection(Direction.Reverse); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Off); break;
-                                case Direction.Forward: SetDirection(Direction.N); Simulator.Confirmer.Confirm(CabControl.Reverser, CabSetting.Neutral); break;
-                            }
-                        }
-                    }
+                    AlerterReset(TCSEvent.ReverserChanged);                 
                 }
             }
         }
@@ -11308,7 +11301,7 @@ namespace Orts.Simulation.RollingStocks
             if (UsingRearCab)
                 LocoStation = 2;
 
-            if (!Simulator.ControlUnitIsLead)
+            //if (!Simulator.ControlUnitIsLead)
             {
                 if (PowerKeyPosition[LocoStation] == 2)
                     StationIsActivated[LocoStation] = true;
@@ -12495,6 +12488,7 @@ namespace Orts.Simulation.RollingStocks
         public bool DirectionControllerChange;
         public void DirectionControllerLogic()
         {
+            DirectionHandleUpdate();
             if (IsLeadLocomotive())
             {
                 // Lokomotivy 361 mají značné zpoždění v reakci na změnu směru
@@ -12536,8 +12530,8 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car is MSTSLocomotive)
                         {
-                            //Direction = Direction.N;
-                            car.DirectionControllerBlocked = true;
+                            Direction = Direction.N;
+                            //car.DirectionControllerBlocked = true;
                         }
                     }
                 }
@@ -16039,52 +16033,55 @@ namespace Orts.Simulation.RollingStocks
         public void ToggleDieselDirectionControllerInOut()
         {
             // Zasunutí a odebrání směrové páky u dieselu            
-            if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
-            {                
-                string DieselDirectionControllerInfo;
-                if (!DieselDirectionControllerInOut && !AcceptMUSignals)
-                {
-                    DieselDirectionControllerInOut = true;
-                    PowerKeyPosition[LocoStation] = 2;
-                    this.CarPowerKey = true;
-                    DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever retracted");
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
-                }
-                else
-                if (!DieselDirectionControllerInOut && Simulator.PowerKeyInPocket && AcceptMUSignals)
-                {
-                    DieselDirectionControllerInOut = true;
-                    PowerKeyPosition[LocoStation] = 2;
-                    this.CarPowerKey = true;
-                    DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever retracted");
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
-                }
-                else
-                if (DieselDirectionControllerInOut && StationIsActivated[LocoStation])
-                {
-                    DieselDirectionControllerInOut = false;
-                    PowerKeyPosition[LocoStation] = 0;
-                    this.CarPowerKey = false;
-                    DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever extended");
-                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
-                }
-            }
-            if (DieselDirectionControllerInOut
-                && ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
-                && DieselDirectionController_Out
-                )
+            if (AbsSpeedMpS < 0.1f / 3.6f)
             {
-                DieselDirectionController_In = true;
-                DieselDirectionController_Out = false;
-                SignalEvent(Event.DieselDirectionControllerIn);
-            }
-            if (!DieselDirectionControllerInOut
-                && ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
-                && DieselDirectionController_In)
-            {
-                DieselDirectionController_In = false;
-                DieselDirectionController_Out = true;
-                SignalEvent(Event.DieselDirectionControllerOut);
+                if ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
+                {
+                    string DieselDirectionControllerInfo;
+                    if (!DieselDirectionControllerInOut && !AcceptMUSignals)
+                    {
+                        DieselDirectionControllerInOut = true;
+                        PowerKeyPosition[LocoStation] = 2;
+                        this.CarPowerKey = true;
+                        DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever retracted");
+                        if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
+                    }
+                    else
+                    if (!DieselDirectionControllerInOut && Simulator.PowerKeyInPocket && AcceptMUSignals)
+                    {
+                        DieselDirectionControllerInOut = true;
+                        PowerKeyPosition[LocoStation] = 2;
+                        this.CarPowerKey = true;
+                        DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever retracted");
+                        if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
+                    }
+                    else
+                    if (DieselDirectionControllerInOut && StationIsActivated[LocoStation])
+                    {
+                        DieselDirectionControllerInOut = false;
+                        PowerKeyPosition[LocoStation] = 0;
+                        this.CarPowerKey = false;
+                        DieselDirectionControllerInfo = Simulator.Catalog.GetString("Directional lever extended");
+                        if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Information(DieselDirectionControllerInfo);
+                    }
+                }
+                if (DieselDirectionControllerInOut
+                    && ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
+                    && DieselDirectionController_Out
+                    )
+                {
+                    DieselDirectionController_In = true;
+                    DieselDirectionController_Out = false;
+                    SignalEvent(Event.DieselDirectionControllerIn);
+                }
+                if (!DieselDirectionControllerInOut
+                    && ((DieselDirectionController && DieselDirection_0) || (DieselDirectionController2 && DieselDirection_0))
+                    && DieselDirectionController_In)
+                {
+                    DieselDirectionController_In = false;
+                    DieselDirectionController_Out = true;
+                    SignalEvent(Event.DieselDirectionControllerOut);
+                }
             }
         }
         // Ovládání jističe RDST

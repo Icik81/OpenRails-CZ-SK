@@ -767,6 +767,7 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the locomotive's sound variables.
         /// </summary>        
         bool SoundVariableFirstRun;
+        bool JVMotorStartCycleActivated;
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             // Aripot
@@ -882,9 +883,10 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.EnginePowerOff);
                 }
                 else
-                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer < 1f)
+                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer > 1f && LocoSetUpTimer < 2f && !JVMotorStartCycleActivated)
                 {
                     SignalEvent(Event.EnginePowerOn);
+                    JVMotorStartCycleActivated = true;
                 }
                 else
                 if (!this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)

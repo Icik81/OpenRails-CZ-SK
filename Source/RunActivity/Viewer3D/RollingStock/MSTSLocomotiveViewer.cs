@@ -2619,6 +2619,11 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             var i = (_Locomotive.UsingRearCab) ? 1 : 0;
+
+            // Icik
+            if (_Locomotive.OneCabDummyStation)
+                i = (_Locomotive.UsingRearCab) ? 0 : 1;
+
             _CabTexture = CABTextureManager.GetTexture(_Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], Dark, FloodLight, CabLight, out _isNightTexture, HasCabLightDirectory);
             if (_CabTexture == SharedMaterialManager.MissingTexture)
                 return;

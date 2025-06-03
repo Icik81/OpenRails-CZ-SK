@@ -1477,8 +1477,8 @@ namespace Orts.Simulation.Physics
             Trace.Assert(LeadLocomotive != null, "Tried to switch to non-existent loco");
             TrainCar newLead = LeadLocomotive;  // Changing LeadLocomotiveIndex also changed LeadLocomotive
             //((MSTSLocomotive)newLead).UsingRearCab = nextCabIndex < 0;
-
-            ((MSTSLocomotive)newLead).UsingRearCab = presentIndex == 1 ? true : false;
+            
+            ((MSTSLocomotive)newLead).UsingRearCab = presentIndex == 1 ? true : false;            
 
             if (oldLead != null && newLead != null && oldLead != newLead)
             {
@@ -2056,7 +2056,7 @@ namespace Orts.Simulation.Physics
                 {
                     car.TotalForceN = -car.TotalForceN;
                     car.SpeedMpS = -car.SpeedMpS;
-                }
+                }                
 
                 // Icik                
                 if (!(car is MSTSLocomotive))

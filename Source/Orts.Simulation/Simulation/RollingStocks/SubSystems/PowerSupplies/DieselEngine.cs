@@ -2347,7 +2347,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselWaterTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleWaterTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;
-                RealDieselWaterTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec, 0, 100);
+                RealDieselWaterTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.017f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 2.5f / DieselWaterTempTimeConstantSec, 0, 100);
                 RealDieselWaterTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselWaterTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselWaterTempTimeConstantSec, 0, 100);
             }
             if (float.IsNaN(RealDieselWaterTemperatureDeg))
@@ -2366,7 +2366,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float DieselIdleTemperatureDelta = MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) != 1 ? MathHelper.Clamp(DieselIdleTemperatureDegC / RealDieselOilTemperatureDeg, 1, 10) * 5.0f : 1.0f;
                 if (DieselIdleOilTemperatureDegC != 0)
                     DieselIdleTemperatureDegC = DieselIdleOilTemperatureDegC;
-                RealDieselOilTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.02f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec, 0, 100);
+                RealDieselOilTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * (LoadPercent * 0.017f * (120 - DieselIdleTemperatureDegC) + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 2.5f / DieselOilTempTimeConstantSec, 0, 100);
                 RealDieselOilTemperatureDeg += MathHelper.Clamp(elapsedClockSeconds * ((RealRPM - IdleRPM) / (MaxRPM - IdleRPM) * 120 + DieselIdleTemperatureDegC - RealDieselOilTemperatureDeg) * 1.5f * DieselIdleTemperatureDelta / DieselOilTempTimeConstantSec, 0, 100);
             }
             if (float.IsNaN(RealDieselOilTemperatureDeg))
