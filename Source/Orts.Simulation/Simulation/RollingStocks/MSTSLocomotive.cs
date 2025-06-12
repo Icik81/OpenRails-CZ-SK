@@ -4727,7 +4727,7 @@ namespace Orts.Simulation.RollingStocks
                             if (car.CarHasHeatingReady && !car.WagonHasTemperature)
                             {
                                 if (Simulator.Season == SeasonType.Summer)
-                                    car.WagonTemperature = Simulator.Random.Next(24, 29);
+                                    car.WagonTemperature = Simulator.Random.Next((int)car.CarOutsideTempC - 2, (int)car.CarOutsideTempC + 2);
                                 else
                                     car.WagonTemperature = Simulator.Random.Next(18, 23);
                                 // Parní lokomotiva
@@ -4773,36 +4773,38 @@ namespace Orts.Simulation.RollingStocks
                         // Vliv otevření dveří u vozů
                         if (car.BrakeSystem.LeftDoorIsOpened)
                         {
-                            TempStepUpSlow += 75;
-                            TempStepDownSlow += 75;
+                            TempStepUpSlow += 50;
+                            TempStepDownSlow += 50;
                         }
                         if (car.BrakeSystem.RightDoorIsOpened)
                         {
-                            TempStepUpSlow += 75;
-                            TempStepDownSlow += 75;
+                            TempStepUpSlow += 50;
+                            TempStepDownSlow += 50;
                         }
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0;
 
                         // Otevření oken vozu                                                
-                        if (car.WagonTemperature > 28f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
+                        if (car.WagonTemperature > 22f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
                             CarWindowsIsOpened = true;
 
-                        if (car.WagonTemperature < 24f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
+                        if (car.WagonTemperature < 18f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
                             CarWindowsIsOpened = false;
 
                         if (car is MSTSLocomotive && !(car as MSTSLocomotive).PowerOn)
                             CarWindowsIsOpened = false;
 
-                        float OpenWindowsCoef = 0f;
-                        if (CarWindowsIsOpened)                        
-                            OpenWindowsCoef = car.CarOutsideTempC0 * 0.2f; // Otevřená okna
-                        
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 - OpenWindowsCoef)
+                        if (CarWindowsIsOpened)
+                        {
+                            TempStepUpSlow += 75;
+                            TempStepDownSlow += 75;
+                        }
+
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0)
                             car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (500 / 3.6f)))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 - OpenWindowsCoef)
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0)
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (2500 / 3.6f))) * elapsedClockSeconds;
                         else
                         if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0)
@@ -4814,7 +4816,7 @@ namespace Orts.Simulation.RollingStocks
                             car.TempCDeltaAir = 0;
 
                         // Topení
-                        if (car.CarOutsideTempC < 20)
+                        if (car.CarOutsideTempC < 18)
                         {
                             float SetTempCHyst = 3.5f;                            
                             if (car.SetTemperatureCFrost == 0)
@@ -4823,8 +4825,8 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureCFrost;
                             }
 
-                            MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 500 && car.WagonTemperature < 14)
+                            MSGHeatingCycle += elapsedClockSeconds;
+                            if (MSGHeatingCycle > 180 && car.WagonTemperature < 14)
                             {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature < 14)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You're cold!"));
@@ -4858,7 +4860,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // Klimatizace
-                        if (car.CarOutsideTempC >= 20)
+                        if (car.CarOutsideTempC > 24)
                         {
                             float SetTempCHyst = 2.5f;                            
                             if (car.SetTemperatureCHeat == 0)
@@ -4867,8 +4869,8 @@ namespace Orts.Simulation.RollingStocks
                                 car.SetTempCThreshold = car.SetTemperatureCHeat;
                             }
 
-                            MSGHeatingCycle++;
-                            if (MSGHeatingCycle > 1000 && car.WagonTemperature > 30)
+                            MSGHeatingCycle += elapsedClockSeconds;
+                            if (MSGHeatingCycle > 180 && car.WagonTemperature > 30)
                             {
                                 if (car.WagonType == WagonTypes.Engine && !car.HasPassengerCapacity && WagonTemperature > 30)
                                     Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("You're hot!"));

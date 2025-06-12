@@ -1547,7 +1547,7 @@ namespace Orts.MultiPlayer
                     try
                     {
                         if (car == null) car = RollingStock.Load(MPManager.Simulator, wagonFilePath, null);
-                        car.CarLengthM = lengths[i];
+                        car.CarLengthM = (car as MSTSWagon).CarLengthM0;
                     }
                     catch (Exception error)
                     {
@@ -1584,7 +1584,7 @@ namespace Orts.MultiPlayer
                 try
                 {
                     car = RollingStock.Load(MPManager.Simulator, wagonFilePath, null);
-                    car.CarLengthM = lengths[i];
+                    car.CarLengthM = (car as MSTSWagon).CarLengthM0;
                 }
                 catch (Exception error)
                 {
@@ -3462,7 +3462,9 @@ namespace Orts.MultiPlayer
                             foreach (var h in s.SignalHeads)
                             {
                                 //System.Console.WriteLine(h.TDBIndex);
-                                signals.Add(h.TDBIndex * 100000 + h.trItemIndex, h);
+                                // Icik
+                                try { signals.Add(h.TDBIndex * 100000 + h.trItemIndex, h); }
+                                catch { continue; }
                             }
                     }
                 }
