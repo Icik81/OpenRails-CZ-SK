@@ -3173,7 +3173,7 @@ namespace Orts.Simulation.AIs
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
             if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))                            
-                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 15 : 20, distanceToGoM, this.Cars.Count > 3 ? 50 : 25);                            
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, distanceToGoM, this.Cars.Count > 3 ? 100 : 50);                            
             else
                 smoothDeceleration = false;
         }
