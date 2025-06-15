@@ -465,6 +465,14 @@ namespace Orts.Viewer3D
                     lodItem.VerticalPolylines = new ArrayList();
                     lodItem.VerticalPolylines.Add(vertical);
                     lodItem.VerticalAccumulate(vertical.Vertices.Count);
+
+                    vertical = VerticalWireProfile("Top", topHeight);
+                    lodItem.VerticalPolylines.Add(vertical);
+                    lodItem.VerticalAccumulate(vertical.Vertices.Count);
+
+                    vertical = VerticalWireProfile("Lower", topHeight - 1);
+                    lodItem.VerticalPolylines.Add(vertical);
+                    lodItem.VerticalAccumulate(vertical.Vertices.Count);
                 }
             }
 
@@ -478,11 +486,14 @@ namespace Orts.Viewer3D
             pl = new Polyline(this, name, 5);
             pl.DeltaTexCoord = new Vector2(0.00f, 0.00f);
 
-            pl.Vertices.Add(new Vertex(-0.00375f + xOffset, topHeight + 0.0075f, 0.0f, -normalvalue, normalvalue, 0f, u1, v1));
-            pl.Vertices.Add(new Vertex(0.00375f + xOffset, topHeight + 0.0075f, 0.0f, normalvalue, normalvalue, 0f, u1, v1));
-            pl.Vertices.Add(new Vertex(0.00375f + xOffset, topHeight, 0.0f, normalvalue, -normalvalue, 0f, u1, v1));
-            pl.Vertices.Add(new Vertex(-0.00375f + xOffset, topHeight, 0.0f, -normalvalue, -normalvalue, 0f, u1, v1));
-            pl.Vertices.Add(new Vertex(-0.00375f + xOffset, topHeight + 0.0075f, 0.0f, -normalvalue, normalvalue, 0f, u1, v1));
+            float CorrectOffset1 = 0.00375f * 1.5f;
+            float CorrectOffset2 = 0.0075f * 1.5f;
+
+            pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight + CorrectOffset2, 0.0f, -normalvalue, normalvalue, 0f, u1, v1));
+            pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight + CorrectOffset2, 0.0f, normalvalue, normalvalue, 0f, u1, v1));
+            pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, 0.0f, normalvalue, -normalvalue, 0f, u1, v1));
+            pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, 0.0f, -normalvalue, -normalvalue, 0f, u1, v1));
+            pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight + CorrectOffset2, 0.0f, -normalvalue, normalvalue, 0f, u1, v1));
 
             return pl;
         }
@@ -492,16 +503,42 @@ namespace Orts.Viewer3D
             Polyline pl;
             pl = new Polyline(this, name, 5);
             pl.DeltaTexCoord = new Vector2(0.00f, 0.00f);
+            
+            float CorrectOffset1 = 0.003f * 0.5f;
 
-            pl.Vertices.Add(new Vertex(-0.003f + xOffset, topHeight, 0.003f, -normalvalue, 0f, normalvalue, u1, v1));
-            pl.Vertices.Add(new Vertex(-.003f + xOffset, topHeight, -.003f, normalvalue, 0f, normalvalue, u1, v1));
-            pl.Vertices.Add(new Vertex(.003f + xOffset, topHeight, -.003f, normalvalue, 0f, -normalvalue, u1, v1));
-            pl.Vertices.Add(new Vertex(.003f + xOffset, topHeight, .003f, -normalvalue, 0f, -normalvalue, u1, v1));
-            pl.Vertices.Add(new Vertex(-.003f + xOffset, topHeight, .003f, -normalvalue, 0f, normalvalue, u1, v1));
+            if (name == "Top")
+            {
+                CorrectOffset1 = 0.003f * 2.5f;                
 
-            return pl;
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));                
+                return pl;
+            }
+            else
+            if (name == "Lower")
+            {
+                CorrectOffset1 = 0.003f * 2.5f;
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
+                return pl;
+            }
+            else            
+            {
+                CorrectOffset1 = 0.003f * 0.5f;
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, -normalvalue, u1, v1));
+                pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
+                return pl;
+            }            
         }
-
     }
 
     public class WirePrimitive : DynamicTrackPrimitive
@@ -809,18 +846,49 @@ namespace Orts.Viewer3D
         /// <param name="pl"></param>
         void LinearVerticalGen(uint stride, Polyline pl)
         {
-            Vector3 displacement = new Vector3(0, -topWireOffset, 0) + DDY;
-            float wrapLength = displacement.Length();
-            Vector2 uvDisplacement = pl.DeltaTexCoord * wrapLength;
+            if (pl.Name == "Top")
+            {
+                Vector3 displacement = new Vector3(0, -0.05f, 0) + DDY;
+                float wrapLength = displacement.Length();
+                Vector2 uvDisplacement = pl.DeltaTexCoord * wrapLength;
 
-            Vector3 p = VertexList[VertexIndex - stride].Position + displacement;
-            Vector3 n = VertexList[VertexIndex - stride].Normal;
-            Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
+                Vector3 p = VertexList[VertexIndex - stride].Position + displacement;
+                Vector3 n = VertexList[VertexIndex - stride].Normal;
+                Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
 
-            VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
-            VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
-            VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
+                VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
+            }
+            else
+            if (pl.Name == "Lower")
+            {
+                Vector3 displacement = new Vector3(0, 0.05f, 0) + DDY;
+                float wrapLength = displacement.Length();
+                Vector2 uvDisplacement = pl.DeltaTexCoord * wrapLength;
+
+                Vector3 p = VertexList[VertexIndex - stride].Position + displacement;
+                Vector3 n = VertexList[VertexIndex - stride].Normal;
+                Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
+
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
+                VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
+            }
+            else
+            {
+                Vector3 displacement = new Vector3(0, -topWireOffset, 0) + DDY;
+                float wrapLength = displacement.Length();
+                Vector2 uvDisplacement = pl.DeltaTexCoord * wrapLength;
+
+                Vector3 p = VertexList[VertexIndex - stride].Position + displacement;
+                Vector3 n = VertexList[VertexIndex - stride].Normal;
+                Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
+
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
+                VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
+            }
         }
-
     }
 }
