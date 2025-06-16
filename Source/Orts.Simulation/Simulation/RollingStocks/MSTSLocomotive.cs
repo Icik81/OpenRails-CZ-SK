@@ -4773,44 +4773,46 @@ namespace Orts.Simulation.RollingStocks
                         // Vliv otevření dveří u vozů
                         if (car.BrakeSystem.LeftDoorIsOpened)
                         {
-                            TempStepUpSlow += 50;
-                            TempStepDownSlow += 50;
+                            TempStepUpSlow += 25;
+                            TempStepDownSlow += 25;
                         }
                         if (car.BrakeSystem.RightDoorIsOpened)
                         {
-                            TempStepUpSlow += 50;
-                            TempStepDownSlow += 50;
+                            TempStepUpSlow += 25;
+                            TempStepDownSlow += 25;
                         }
 
                         // Ochlazování a oteplování vlivem protékajícího vzduchu a okolní teploty
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0;
 
                         // Otevření oken vozu                                                
-                        if (car.WagonTemperature > 22f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
+                        if (car.WagonTemperature > 26f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
                             CarWindowsIsOpened = true;
 
-                        if (car.WagonTemperature < 18f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
+                        if (car.WagonTemperature < 22f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
                             CarWindowsIsOpened = false;
 
                         if (car is MSTSLocomotive && !(car as MSTSLocomotive).PowerOn)
                             CarWindowsIsOpened = false;
 
+                        float CarWindowsIsOpenedDelta = 0;
                         if (CarWindowsIsOpened)
                         {
-                            TempStepUpSlow += 75;
-                            TempStepDownSlow += 75;
+                            TempStepUpSlow += 50;
+                            TempStepDownSlow += 50;
+                            CarWindowsIsOpenedDelta = car.CarOutsideTempC0 - (car.CarOutsideTempC0 * 0.80f);
                         }
 
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0)
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature > car.CarOutsideTempC0 - CarWindowsIsOpenedDelta)
                             car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 + (1 - (car.AbsSpeedMpS / (500 / 3.6f)))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0)
+                        if (car.AbsSpeedMpS > 0 && car.WagonTemperature < car.CarOutsideTempC0 - (CarWindowsIsOpenedDelta / 2f))
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * (1 - (car.AbsSpeedMpS / (2500 / 3.6f))) * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0)
+                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature < car.CarOutsideTempC0 - (CarWindowsIsOpenedDelta / 2f))
                             car.TempCDeltaAir = +TempStepUpSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                         else
-                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0)
+                        if (car.AbsSpeedMpS == 0 && car.WagonTemperature > car.CarOutsideTempC0 - CarWindowsIsOpenedDelta)
                             car.TempCDeltaAir = -TempStepDownSlow / CarAirVolumeM3 * TempCDeltaOutside * elapsedClockSeconds;
                         else
                             car.TempCDeltaAir = 0;
