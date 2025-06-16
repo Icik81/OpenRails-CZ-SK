@@ -424,7 +424,10 @@ namespace Orts.Simulation.RollingStocks
         public int MPBrakeCarMode = 0;
         public int MPBrakeCarModePL = 0;
         public bool CarIsOnLvlCrossover;
-        public bool WagonIsFlipped;        
+        public bool WagonIsFlipped;
+        public int TriggerHornNumber = -1;
+        public bool HornNumber1;
+        public bool HornNumber2;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

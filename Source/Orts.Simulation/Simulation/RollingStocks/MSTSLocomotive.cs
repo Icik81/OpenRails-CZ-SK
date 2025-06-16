@@ -8470,9 +8470,21 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         protected virtual void UpdateHornAndBell(float elapsedClockSeconds)
         {
-            Horn = ManualHorn || TCSHorn;
-            Horn2 = ManualHorn2;
-            Horn12 = ManualHorn12;
+            if (CarIsPlayerLoco)
+            {
+                Horn = ManualHorn || TCSHorn;
+                Horn2 = ManualHorn2;
+                Horn12 = ManualHorn12;
+            }
+            else
+            {
+                if (this.TriggerHornNumber == 1)
+                    Horn = ManualHorn || TCSHorn;
+                if (this.TriggerHornNumber == 2)
+                    Horn2 = ManualHorn;
+                if (this.TriggerHornNumber == 3)
+                    Horn = ManualHorn;
+            }
 
             if (Horn && !PreviousHorn)
             {
@@ -8488,25 +8500,25 @@ namespace Orts.Simulation.RollingStocks
             if (Horn2 && !PreviousHorn2)
             {
                 SignalEvent(Event.Horn2On);
-                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN2", 1)).ToString());
             }
             else if (!Horn2 && PreviousHorn2)
             {
                 SignalEvent(Event.Horn2Off);
-                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN2", 0)).ToString());
             }
 
             if (Horn12 && !PreviousHorn12)
             {
                 SignalEvent(Event.HornOn);
                 SignalEvent(Event.Horn2On);
-                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN12", 1)).ToString());
             }
             else if (!Horn12 && PreviousHorn12)
             {
                 SignalEvent(Event.HornOff);
                 SignalEvent(Event.Horn2Off);
-                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN12", 0)).ToString());
             }
 
             if (ManualBell)

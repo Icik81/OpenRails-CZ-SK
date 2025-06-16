@@ -54,6 +54,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using Event = Orts.Common.Event;
 using Events = Orts.Common.Events;
 
@@ -940,10 +941,32 @@ namespace Orts.Viewer3D
 
         public override bool Update()
         {
+            // Icik
+            // Určí typ houkačky pro AI
+            if (Car != null && Car.TriggerHornNumber == -1)
+            {
+                foreach (SoundStream stream in SoundStreams)
+                {
+                    foreach (ORTSTrigger trigger in stream.Triggers)
+                    {
+                        if (trigger is ORTSDiscreteTrigger)
+                        {
+                            if ((trigger as ORTSDiscreteTrigger).TriggerID == Event.HornOn) Car.HornNumber1 = true;
+                            if ((trigger as ORTSDiscreteTrigger).TriggerID == Event.Horn2On) Car.HornNumber2 = true;
+                        }
+                    }
+                }
+                if (Car.HornNumber1 && !Car.HornNumber2) Car.TriggerHornNumber = 1;
+                if (!Car.HornNumber1 && Car.HornNumber2) Car.TriggerHornNumber = 2;
+                if (Car.HornNumber1 && Car.HornNumber2) Car.TriggerHornNumber = 3;
+                // Pokud nenajde žádnou houkačku
+                if (Car.TriggerHornNumber == -1) Car.TriggerHornNumber = 0;
+            }
+
             if (Car != null && !Car.IsPartOfActiveTrain)
                 return false;
 
-            InitInitials();
+            InitInitials();            
 
             if (WasOutOfDistance)
             {

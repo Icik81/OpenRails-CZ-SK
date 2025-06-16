@@ -2103,6 +2103,23 @@ namespace Orts.MultiPlayer
                     MPManager.BroadCast(this.ToString()); //if the server, will broadcast
                 }
             }
+            else if (EventName == "HORN2")
+            {
+                if (t.LeadLocomotive != null)
+                {
+                    t.LeadLocomotive.SignalEvent(EventState == 0 ? Event.Horn2Off : Event.Horn2On);
+                    MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+                }
+            }
+            else if (EventName == "HORN12")
+            {
+                if (t.LeadLocomotive != null)
+                {
+                    t.LeadLocomotive.SignalEvent(EventState == 0 ? Event.HornOff : Event.HornOn);
+                    t.LeadLocomotive.SignalEvent(EventState == 0 ? Event.Horn2Off : Event.Horn2On);
+                    MPManager.BroadCast(this.ToString()); //if the server, will broadcast
+                }
+            }
             else if (EventName == "PANTO1")
             {
                 t.SignalEvent((EventState == 1 ? PowerSupplyEvent.RaisePantograph : PowerSupplyEvent.LowerPantograph), 1);

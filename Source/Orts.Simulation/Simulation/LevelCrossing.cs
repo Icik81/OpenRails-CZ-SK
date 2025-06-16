@@ -287,7 +287,14 @@ namespace Orts.Simulation
                                             if (car is MSTSLocomotive)
                                             {
                                                 if (AItrain.AIUnprotectedLevelCrossWarningType[crossingNr] == 1)
-                                                    car.SignalEvent(Common.Event.HornOn);
+                                                {
+                                                    if (car.TriggerHornNumber == 1)
+                                                        car.SignalEvent(Common.Event.HornOn);
+                                                    if (car.TriggerHornNumber == 2)
+                                                        car.SignalEvent(Common.Event.Horn2On);
+                                                    if (car.TriggerHornNumber == 3)                                                                                                            
+                                                        car.SignalEvent(Common.Event.HornOn);                                                                                                            
+                                                }
                                                 if (AItrain.AIUnprotectedLevelCrossWarningType[crossingNr] == 2)
                                                     car.SignalEvent(Common.Event.BellOn);
                                                 AItrain.AIUnprotectedLevelCrossHornOn[crossingNr] = true;
@@ -305,6 +312,7 @@ namespace Orts.Simulation
                                             if (car is MSTSLocomotive)
                                             {
                                                 car.SignalEvent(Common.Event.HornOff);
+                                                car.SignalEvent(Common.Event.Horn2Off);
                                                 car.SignalEvent(Common.Event.BellOff);
                                                 AItrain.AIUnprotectedLevelCrossHornOn[crossingNr] = false;
                                             }
