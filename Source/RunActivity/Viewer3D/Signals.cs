@@ -406,6 +406,9 @@ namespace Orts.Viewer3D
                             else
                                 isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
 
+                            if (SignalTypeData.Lights.Count > 2)
+                                isDay = false;
+
                             bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
                             if (SignalTypeData.CZRoutes && SignalTypeData.Semaphore && isDay)
@@ -511,6 +514,9 @@ namespace Orts.Viewer3D
                         isDay = Viewer.World.Sky.solarDirection.Y > 0;
                     else
                         isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
+                    
+                    if (SignalTypeData.Lights.Count > 2)
+                        isDay = false;
 
                     bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
 
