@@ -6482,7 +6482,7 @@ namespace Orts.Simulation.Physics
             }
             // if front is in platform and most of the train is as well, station is valid
             else if (((((endSectionRouteIndex != -1 && PresentPosition[0].RouteListIndex == endSectionRouteIndex) || (PresentPosition[0].RouteListIndex == -1 && PresentPosition[0].TCSectionIndex == endSectionIndex))
-                && PresentPosition[0].TCOffset <= platformEndOffset) && ((thisPlatform.Length - (platformEndOffset - PresentPosition[0].TCOffset)) > Length / 2)) ||
+                && PresentPosition[0].TCOffset <= platformEndOffset) && ((thisPlatform.Length - (platformEndOffset - PresentPosition[0].TCOffset)) > Length / 10)) ||
                 (PresentPosition[0].RouteListIndex != -1 && PresentPosition[0].RouteListIndex < endSectionRouteIndex &&
                 (PresentPosition[0].RouteListIndex > beginSectionRouteIndex || (PresentPosition[0].RouteListIndex == beginSectionRouteIndex && PresentPosition[0].TCOffset >= platformBeginOffset))))
             {
@@ -6490,7 +6490,7 @@ namespace Orts.Simulation.Physics
             }
             // if front is beyond platform and and most of the train is within it, station is valid (isn't it already covered by cases 1 or 4?)
             else if (endSectionRouteIndex != -1 && PresentPosition[0].RouteListIndex == endSectionRouteIndex && PresentPosition[0].TCOffset > platformEndOffset &&
-                     (PresentPosition[0].TCOffset - platformEndOffset) < (Length / 3))
+                     (PresentPosition[0].TCOffset - platformEndOffset) < (Length / 10))
             {
                 atStation = true;
             }
