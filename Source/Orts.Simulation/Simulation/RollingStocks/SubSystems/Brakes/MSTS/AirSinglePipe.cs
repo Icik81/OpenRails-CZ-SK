@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
+using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.Properties;
 using ORTS.Common;
@@ -649,7 +650,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             SetRetainer(RetainerSetting.Exhaust);
             TrainBrakePositionSet();
             MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (loco != null)
+            if (loco != null && Car.Train.IsActualPlayerTrain)
             {
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
                 if (loco.AuxCompressor)
@@ -1111,19 +1112,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 EmergResChargingRatePSIpS = MathHelper.Clamp(EmergResChargingRatePSIpS, 0.0f * 14.50377f, 0.5f * 14.50377f);
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 if (Car.Simulator.Settings.CorrectQuestionableBrakingParams && !ORCZSKSetUp)
-                {
-                    EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 6.2f, 7.0f);
+                {                    
+                    EmergAuxVolumeRatio = 6.2f;
+                    MaxAuxilaryChargingRatePSIpS = 0.25f * 14.50377f;
+                    EmergResChargingRatePSIpS = 0.25f * 14.50377f;
                     switch ((Car as MSTSWagon).WagonNumAxles)
                     {
                         case 2:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.100f, 0.150f);
+                            EmergResVolumeM3 = 0.150f;
                             break;
                         case 4:
                         case 6:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.250f, 0.300f);
+                            EmergResVolumeM3 = 0.250f;
                             break;
                         default:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.100f, 0.150f);
+                            EmergResVolumeM3 = 0.150f;
                             break;
                     }
                 }
@@ -1137,26 +1140,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 BrakePipeVolumeM3 = MathHelper.Clamp(BrakePipeVolumeM3, 0.0f, 0.030f);
                 if (Car.Simulator.Settings.CorrectQuestionableBrakingParams && !ORCZSKSetUp)
                 {
+                    MaxAuxilaryChargingRatePSIpS = 0.25f * 14.50377f;
+                    EmergResChargingRatePSIpS = 0.25f * 14.50377f;
                     switch ((Car as MSTSWagon).WagonNumAxles)
                     {
                         case 2:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.075f);
+                            EmergResVolumeM3 = 0.057f;
                             break;
                         case 4:
                         case 6:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.075f, 0.150f);
+                            EmergResVolumeM3 = 0.075f;
                             break;
                         default:
-                            EmergResVolumeM3 = MathHelper.Clamp(EmergResVolumeM3, 0.050f, 0.075f);
+                            EmergResVolumeM3 = 0.075f;
                             break;
                     }
                     if ((Car as MSTSWagon).HasPassengerCapacity)
                     {
-                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 1.2f, 1.5f);
+                        EmergAuxVolumeRatio = 1.2f;                        
                     }
                     else
                     {
-                        EmergAuxVolumeRatio = MathHelper.Clamp(EmergAuxVolumeRatio, 0.9f, 1.2f);
+                        EmergAuxVolumeRatio = 0.9f;                        
                     }
                 }
             }
@@ -1217,7 +1222,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Zjednodušený model pro AI
             #region AI
             if (!Car.IsPlayerTrain)
-            {   
+            {
+                // Určí lokomotivu, která bude napájet vzd. výzbroj
+                if (!Car.Train.HasAITrainCompressorMaster)
+                {
+                    foreach (TrainCar car in Car.Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)
+                        {
+                            car.AITrainCompressorMaster = true;
+                            Car.Train.HasAITrainCompressorMaster = true;
+                            break;
+                        }
+                    }
+                }
+
                 if (loco != null)
                 {
                     loco.EmergencyButtonPressed = false;
@@ -1227,19 +1246,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 UpdateTripleValveState(threshold);
 
                 if (loco != null && loco.CarFrameUpdateState < 3)
-                    loco.MainResPressurePSI = 8f * 14.50377f;
+                    loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
 
                 if (loco != null && loco.CarFrameUpdateState == 3)
                 {
-                    loco.MainResPressurePSI = 8f * 14.50377f;
+                    loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
                     if (loco.BrakeSystem.PowerForWagon)
                     {
-                        int MainResPressurePSI = Simulator.Random.Next(8, 10);
+                        int MainResPressurePSI = Simulator.Random.Next((int)((loco.MaxMainResPressurePSI - 14.50377f) / 14.50377f), (int)((loco.MaxMainResPressurePSI + 14.50377f) / 14.50377f));
                         loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
                     }
                     else
                     {
-                        int MainResPressurePSI = Simulator.Random.Next(0, 10);
+                        int MainResPressurePSI = Simulator.Random.Next(0, (int)((loco.MaxMainResPressurePSI + 14.50377f) / 14.50377f));
                         loco.MainResPressurePSI = MainResPressurePSI * 14.50377f;
                     }
                 }
@@ -1318,24 +1337,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
                     // AI vyčerpává hlavní jímku při odbrzďování
                     if (loco != null)
-                        loco.MainResPressurePSI -= loco.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3 / 14.50377f;
+                        loco.MainResPressurePSI -= (Car.Train.AITrainBrakePercent / 100f) * loco.TrainBrakeController.ApplyRatePSIpS * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3 / 14.50377f;
                 }
                 // AI vyčerpává hlavní jímku netěstnostmi v potrubí
-                if (loco != null)
+                if (loco != null && loco.AITrainCompressorMaster)
                 {
                     AITrainLeakage = 0.001f;
                     AITrainBrakePipeVolumeM3 = ((0.032f / 2f) * (0.032f / 2f) * (float)Math.PI) * (2f * Car.Train.Cars.Count + Car.Train.Length);
                     loco.MainResPressurePSI -= AITrainLeakage * elapsedClockSeconds * AITrainBrakePipeVolumeM3 / loco.MainResVolumeM3 / 14.50377f;
                 }
                 // AI spouští kompresor
-                if (loco != null && loco.BrakeSystem.PowerForWagon)
+                if (loco != null && loco.AITrainCompressorMaster && loco.BrakeSystem.PowerForWagon)
                 {
-                    if (loco.MainResPressurePSI < 7.0f * 14.50377f)
+                    if (loco.MainResPressurePSI < loco.MaxMainResPressurePSI - (14.50377f * 2f))
                     {
                         AICompressorOn = true;
                         AICompressorOff = false;
                     }
-                    if (loco.MainResPressurePSI > 9.0f * 14.50377f)
+                    if (loco.MainResPressurePSI > loco.MaxMainResPressurePSI)
                     {
                         AICompressorOn = false;
                         AICompressorOff = true;

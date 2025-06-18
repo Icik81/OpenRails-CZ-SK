@@ -99,6 +99,7 @@ namespace Orts.Simulation.Physics
         }
 
         // Icik
+        public bool HasAITrainCompressorMaster;
         public bool LocoIsAirEmpty;
         public float TotalTrainTrainPipeLeakRate;
         public float TotalCapacityMainResBrakePipe;

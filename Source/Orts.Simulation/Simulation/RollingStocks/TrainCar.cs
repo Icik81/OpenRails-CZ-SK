@@ -428,6 +428,7 @@ namespace Orts.Simulation.RollingStocks
         public int TriggerHornNumber = -1;
         public bool HornNumber1;
         public bool HornNumber2;
+        public bool AITrainCompressorMaster;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
