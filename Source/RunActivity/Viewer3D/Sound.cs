@@ -1492,10 +1492,7 @@ namespace Orts.Viewer3D
                     else
                     if (!car.BrakeSystem.ORCZSKSetUp && car.CarHasStartTrigger && car.Simulator.GameTime < 20f)
                         volume *= 0;
-                }
-                else
-                 // vagon                
-                    volume *= 0;                    
+                }                                    
             }
            ALSoundSource.Volume = volume;
         }

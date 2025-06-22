@@ -826,6 +826,10 @@ namespace Orts.Viewer3D
             else NumSections = (int)Math.Abs(MathHelper.ToDegrees(DTrackData.param1 / 3));
 
             if (NumSections < 1) NumSections = 1; // Very small radius track - zero avoidance
+
+            // Icik
+            if (NumSections > 2) NumSections = 2;
+
             //numSections = 10; //TESTING
             // TODO: Generalize count to profile file specification
 
