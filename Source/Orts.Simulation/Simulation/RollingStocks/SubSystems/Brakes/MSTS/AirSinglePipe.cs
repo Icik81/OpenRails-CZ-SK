@@ -1349,7 +1349,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // AI spouští kompresor
                 if (loco != null && loco.AITrainCompressorMaster && loco.BrakeSystem.PowerForWagon)
                 {
-                    if (loco.MainResPressurePSI < loco.MaxMainResPressurePSI - (14.50377f * 2f))
+                    if (loco.MainResPressurePSI < loco.CompressorRestartPressurePSI)
                     {
                         AICompressorOn = true;
                         AICompressorOff = false;

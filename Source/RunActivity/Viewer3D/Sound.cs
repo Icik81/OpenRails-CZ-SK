@@ -953,7 +953,8 @@ namespace Orts.Viewer3D
                         {
                             if ((trigger as ORTSDiscreteTrigger).TriggerID == Event.HornOn) Car.HornNumber1 = true;
                             if ((trigger as ORTSDiscreteTrigger).TriggerID == Event.Horn2On) Car.HornNumber2 = true;
-                        }
+                            if ((trigger as ORTSDiscreteTrigger).TriggerID == Event.EnginePowerOn) Car.CarHasStartTrigger = true;
+                        }                        
                     }
                 }
                 if (Car.HornNumber1 && !Car.HornNumber2) Car.TriggerHornNumber = 1;
@@ -961,7 +962,7 @@ namespace Orts.Viewer3D
                 if (Car.HornNumber1 && Car.HornNumber2) Car.TriggerHornNumber = 3;
                 // Pokud nenajde žádnou houkačku
                 if (Car.TriggerHornNumber == -1) Car.TriggerHornNumber = 0;
-            }
+            }            
 
             if (Car != null && !Car.IsPartOfActiveTrain)
                 return false;
@@ -1480,7 +1481,23 @@ namespace Orts.Viewer3D
                 else volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;
             }
 
-            ALSoundSource.Volume = volume;
+            // Zabezpečí vypnutý zvuk při odstavených lokomotivách a vozech
+            var car = SoundSource.Car;
+            if (car != null && !car.BrakeSystem.PowerForWagon)
+            {
+                if (car is MSTSLocomotive || car is MSTSControlUnit)
+                {
+                    if (!car.BrakeSystem.ORCZSKSetUp && !car.CarHasStartTrigger)
+                        volume *= 0;
+                    else
+                    if (!car.BrakeSystem.ORCZSKSetUp && car.CarHasStartTrigger && car.Simulator.GameTime < 20f)
+                        volume *= 0;
+                }
+                else
+                 // vagon                
+                    volume *= 0;                    
+            }
+           ALSoundSource.Volume = volume;
         }
 
         /// <summary>
@@ -1890,14 +1907,7 @@ namespace Orts.Viewer3D
         public override void Initialize()
         {
             if (Enabled)
-            {
-                // Icik
-                // Nepřehraje inicializační trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
-                if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
-                    return;
-                //if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
-                //    return;
-                
+            {                                
                 SoundStream.RepeatedTrigger = this == SoundStream.LastTriggered;
                 SoundCommand.Run();
                 SoundStream.LastTriggered = this;
@@ -1939,14 +1949,7 @@ namespace Orts.Viewer3D
         }
 
         public override void TryTrigger()
-        {
-            // Icik
-            // Nepřehraje random trigger, pokud je loko ve vypnutém stavu - neplatí pro OR CZ/SK ladění
-            if ((car as MSTSLocomotive) != null && (car as MSTSLocomotive).LocoIsStatic)
-                return;
-            if ((car as MSTSWagon) != null && !(car as MSTSWagon).BrakeSystem.PowerForWagon && !(car as MSTSWagon).BrakeSystem.ORCZSKSetUp)
-                return;
-
+        {            
             if (Simulator.ClockTime > triggerAtSeconds)
             {
                 Signaled = true;
