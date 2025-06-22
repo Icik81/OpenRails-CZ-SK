@@ -828,7 +828,7 @@ namespace Orts.Viewer3D
             if (NumSections < 1) NumSections = 1; // Very small radius track - zero avoidance
 
             // Icik
-            if (NumSections > 2) NumSections = 2;
+            if (NumSections > 10) NumSections = 10;
 
             //numSections = 10; //TESTING
             // TODO: Generalize count to profile file specification
