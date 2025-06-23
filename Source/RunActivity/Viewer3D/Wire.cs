@@ -486,8 +486,8 @@ namespace Orts.Viewer3D
             pl = new Polyline(this, name, 5);
             pl.DeltaTexCoord = new Vector2(0.00f, 0.00f);
 
-            float CorrectOffset1 = 0.00375f * 1.5f;
-            float CorrectOffset2 = 0.0075f * 1.5f;
+            float CorrectOffset1 = 0.00375f * 1.25f;
+            float CorrectOffset2 = 0.0075f * 1.25f;
 
             pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight + CorrectOffset2, 0.0f, -normalvalue, normalvalue, 0f, u1, v1));
             pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight + CorrectOffset2, 0.0f, normalvalue, normalvalue, 0f, u1, v1));
@@ -508,7 +508,7 @@ namespace Orts.Viewer3D
 
             if (name == "Top")
             {
-                CorrectOffset1 = 0.003f * 2.5f;                
+                CorrectOffset1 = 0.003f * 2.0f;                
 
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
@@ -520,7 +520,7 @@ namespace Orts.Viewer3D
             else
             if (name == "Lower")
             {
-                CorrectOffset1 = 0.003f * 2.5f;
+                CorrectOffset1 = 0.003f * 2.0f;
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
                 pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, -normalvalue, u1, v1));
@@ -530,7 +530,7 @@ namespace Orts.Viewer3D
             }
             else            
             {
-                CorrectOffset1 = 0.003f * 0.5f;
+                CorrectOffset1 = 0.003f * 0.25f;
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, CorrectOffset1, -normalvalue, 0f, normalvalue, u1, v1));
                 pl.Vertices.Add(new Vertex(-CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, normalvalue, u1, v1));
                 pl.Vertices.Add(new Vertex(CorrectOffset1 + xOffset, topHeight, -CorrectOffset1, normalvalue, 0f, -normalvalue, u1, v1));
@@ -625,6 +625,8 @@ namespace Orts.Viewer3D
         /// <param name="viewer">Viewer.</param>
         /// <param name="lodIndex">Index of LOD mesh to be generated from profile.</param>
         /// <param name="lodItemIndex">Index of LOD mesh to be generated from profile.</param>
+        float ZOffset;
+        float SegmentOffset;
         public ShapePrimitive BuildPrimitive(Viewer viewer, int lodIndex, int lodItemIndex)
         {
             // Call for track section to initialize itself
@@ -698,7 +700,16 @@ namespace Orts.Viewer3D
                 float coveredLength = SegmentLength;
 
                 for (uint i = 0; i < NumSections; i++)
-                {
+                {                    
+                    ZOffset = Simulator.Random.Next(-20, 20) / 100f;
+                    SegmentOffset = Simulator.Random.Next(-3, 0);
+
+                    if (DTrackData.IsCurved != 0 || i == 0 || i == NumSections - 1)
+                    {
+                        ZOffset = 0;
+                        SegmentOffset = 0;
+                    }
+
                     stride = 0;
                     radius = Vector3.Transform(OldRadius, sectionRotation);
                     Vector3 p;
@@ -720,21 +731,22 @@ namespace Orts.Viewer3D
                     else
                     {
                         foreach (Polyline pl in lodItem.VerticalPolylines)
-                        {
+                        {                    
                             foreach (Vertex v in pl.Vertices)
                             {
                                 if (DTrackData.IsCurved != 0)
-                                {
-
+                                {                                    
                                     OldV = v.Position - center - OldRadius;
                                     // Rotate the point about local origin and reposition it (including elevation change)
-                                    p = DDY + center + radius + v.Position;// +Vector3.Transform(OldV, sectionRotation);
+                                    p = DDY + center + radius + v.Position;// +Vector3.Transform(OldV, sectionRotation);                                    
                                     VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
-
                                 }
                                 else
                                 {
-                                    VertexList[VertexIndex].Position = v.Position + new Vector3(0, 0, -coveredLength);
+                                    if (pl.Name == "Lower")                                    
+                                        VertexList[VertexIndex].Position = v.Position + new Vector3(0, 0, -coveredLength + ZOffset + SegmentOffset);
+                                    else
+                                        VertexList[VertexIndex].Position = v.Position + new Vector3(0, 0, -coveredLength + SegmentOffset);
                                 }
 
                                 VertexList[VertexIndex].Normal = v.Normal;
@@ -746,10 +758,10 @@ namespace Orts.Viewer3D
                     }
 
                     foreach (Polyline pl in lodItem.VerticalPolylines)
-                    {
+                    {                        
                         uint plv = 0; // Polyline vertex index
                         foreach (Vertex v in pl.Vertices)
-                        {
+                        {                           
                             LinearVerticalGen(stride, pl); // Generation call
 
                             if (plv > 0)
@@ -788,6 +800,7 @@ namespace Orts.Viewer3D
         /// </summary>
         void LinearGen()
         {
+            WireProfile.expectedSegmentLength = 8;
             NumSections = 1;
 
             // Cute the lines to have vertical stuff if needed
@@ -807,6 +820,8 @@ namespace Orts.Viewer3D
         /// </summary>
         void CircArcGen()
         {
+            WireProfile.expectedSegmentLength = 15;
+
             float arcLength = Math.Abs(DTrackData.param2 * DTrackData.param1);
             // Define the number of track cross sections in addition to the base.
             // Assume one skewed straight section per degree of curvature
@@ -847,9 +862,9 @@ namespace Orts.Viewer3D
         /// Generates vertices for a vertical section (straight track).
         /// </summary>
         /// <param name="stride">Index increment between section-to-section vertices.</param>
-        /// <param name="pl"></param>
+        /// <param name="pl"></param>        
         void LinearVerticalGen(uint stride, Polyline pl)
-        {
+        {            
             if (pl.Name == "Top")
             {
                 Vector3 displacement = new Vector3(0, -0.05f, 0) + DDY;
@@ -860,7 +875,7 @@ namespace Orts.Viewer3D
                 Vector3 n = VertexList[VertexIndex - stride].Normal;
                 Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
 
-                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z + (ZOffset / 20f));
                 VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
                 VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
             }
@@ -875,7 +890,7 @@ namespace Orts.Viewer3D
                 Vector3 n = VertexList[VertexIndex - stride].Normal;
                 Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
 
-                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z - (ZOffset / 20f));
                 VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
                 VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
             }
@@ -889,7 +904,7 @@ namespace Orts.Viewer3D
                 Vector3 n = VertexList[VertexIndex - stride].Normal;
                 Vector2 uv = VertexList[VertexIndex - stride].TextureCoordinate + uvDisplacement;
 
-                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z);
+                VertexList[VertexIndex].Position = new Vector3(p.X, p.Y, p.Z + ZOffset);
                 VertexList[VertexIndex].Normal = new Vector3(n.X, n.Y, n.Z);
                 VertexList[VertexIndex].TextureCoordinate = new Vector2(uv.X, uv.Y);
             }
