@@ -2757,7 +2757,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             base.Initialize();
-            if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;            
+            if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;
         }
 
         public float DistanceToPowerSupplyStationM(int PowerSystem, out PowerSupplyStation myStation)
@@ -3109,7 +3109,7 @@ namespace Orts.Simulation.RollingStocks
                 airPipeSystem = BrakeSystem as AirSinglePipe;
                 DynamicBrake = true;
             }
-            
+
             // Vectron
             if (TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply && DynamicBrakeController != null)
                 ThrottleController.CurrentValue = 0f;
@@ -3243,7 +3243,7 @@ namespace Orts.Simulation.RollingStocks
             if (SlaveLoco)
             {
                 LocalThrottlePercent = 0;
-                LocalDynamicBrakePercent = -1;                
+                LocalDynamicBrakePercent = -1;
             }
 
             MasterSlaveTimer += Simulator.OneSecondLoop;
@@ -3370,7 +3370,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     else
                     {
-                        car.CarHasBrakePipeConnected = true;                        
+                        car.CarHasBrakePipeConnected = true;
                     }
                 }
                 else
@@ -3387,15 +3387,15 @@ namespace Orts.Simulation.RollingStocks
                         car.CarHasBrakePipeConnected = true;
                     }
                     if (!car.BrakeSystem.FrontBrakeHoseConnected || !car.BrakeSystem.AngleCockAOpen)
-                    {                                                
+                    {
                         NextCarDisconnected = true;
-                    }                                        
+                    }
                 }
 
                 if (!car.BrakeSystem.BrakeCarDeactivate && !CarDisconnected)
                 {
                     if (car.BrakeSystem.BrakeCarMode == 0)  // Režim G započítává jen 75% brzdící váhy
-                        CarBrakeMass += 0.75f * car.BrakeSystem.BrakeMassKG;                    
+                        CarBrakeMass += 0.75f * car.BrakeSystem.BrakeMassKG;
                     else
                         CarBrakeMass += car.BrakeSystem.BrakeMassKG;
                 }
@@ -3459,7 +3459,7 @@ namespace Orts.Simulation.RollingStocks
                         car.CarHasBrakePipeConnected = true;
                         NextCarDisconnected = true;
                     }
-                }                
+                }
 
                 if (!car.BrakeSystem.BrakeCarDeactivate && !CarDisconnected)
                 {
@@ -3468,7 +3468,7 @@ namespace Orts.Simulation.RollingStocks
                     else
                         CarBrakeMass += car.BrakeSystem.BrakeMassKG;
                 }
-                
+
                 if (CarDisconnected || NextCarDisconnected)
                 {
                     break;
@@ -3782,7 +3782,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Resetování nadproudové ochrany u dieselelektrických lokomotiv
-                if (this is MSTSDieselLocomotive && OverVoltage 
+                if (this is MSTSDieselLocomotive && OverVoltage
                     && (this as MSTSDieselLocomotive).DieselEngines[0].RealRPM < 1.01f * (this as MSTSDieselLocomotive).DieselEngines[0].IdleRPM
                     && LocalThrottlePercent == 0
                     && LocalDynamicBrakePercent == 0)
@@ -3830,7 +3830,7 @@ namespace Orts.Simulation.RollingStocks
             else
             if (!PowerOn)
             {
-                DynamicBrakeIntervention = -1;                
+                DynamicBrakeIntervention = -1;
             }
         }
 
@@ -3966,8 +3966,8 @@ namespace Orts.Simulation.RollingStocks
         {
             if (this is MSTSLocomotive)
             {
-                if (PowerReduction <                    
-                    + PowerReductionResult2
+                if (PowerReduction <
+                    +PowerReductionResult2
                     + PowerReductionResult3
                     + PowerReductionResult4
                     + PowerReductionResult5
@@ -3983,8 +3983,8 @@ namespace Orts.Simulation.RollingStocks
                     )
                     PowerReduction += 1 * elapsedClockSeconds;
 
-                if (PowerReduction >                    
-                    + PowerReductionResult2
+                if (PowerReduction >
+                    +PowerReductionResult2
                     + PowerReductionResult3
                     + PowerReductionResult4
                     + PowerReductionResult5
@@ -4009,7 +4009,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult11 = 1;
                 else
                 if (PowerReductionResult11 == 1 && LocalThrottlePercent == 0)
-                    PowerReductionResult11 = 0;                                                
+                    PowerReductionResult11 = 0;
             }
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("PowerReduction " + PowerReduction));
             //Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Celková ztráta výkonu "+ PowerReduction * MaxPowerW/1000 + " kW!"));            
@@ -4027,7 +4027,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         car.PowerReductionResult13 = Simulator.DoorSwitchDoorLocked && DoorSwitchTime == 0 ? 0 : 1;
                     }
-                    Simulator.DoorSwitchEnable = true;                                                                
+                    Simulator.DoorSwitchEnable = true;
                     Simulator.DoorSwitchPaxRequest = false;
 
                     switch (DoorSwitch[LocoStation])
@@ -4066,7 +4066,7 @@ namespace Orts.Simulation.RollingStocks
 
                     Simulator.DoorSwitchDoorOpened = false;
                     foreach (TrainCar car in Train.Cars)
-                    {                        
+                    {
                         if (car.BrakeSystem.DoorsOpen && (car as MSTSWagon).AutomaticDoors)
                         {
                             Simulator.DoorSwitchDoorOpened = true;
@@ -4199,7 +4199,7 @@ namespace Orts.Simulation.RollingStocks
         public float AirTMCoolingPower;
         public bool TMCoolingIsOn;
         public float TMTempTimeConstantSec;
-        public bool TMCoolingIsActivated;        
+        public bool TMCoolingIsActivated;
         public void TM_Temperature(float elapsedClockSeconds)
         {
             if (MaxTMTemperatureDegC == 0) return;
@@ -4214,12 +4214,12 @@ namespace Orts.Simulation.RollingStocks
             if (TMTempTimeConstantSec == 0) TMTempTimeConstantSec = 1500f;
 
             if (TMTemperature < CarOutsideTempC0)
-            {             
+            {
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
                     TMTemperature = CarOutsideTempC0;
                 else
                     TMTemperature = IdleTMTemperatureDegC;
-            }            
+            }
 
             // Fáze zahřívání vlivem zátěže TM
             float TMTemperatureDelta = elapsedClockSeconds * (CurrentLoadPercent * 0.01f * (MaxTMTemperatureDegC - IdleTMTemperatureDegC) + IdleTMTemperatureDegC - TMTemperature) * (CurrentLoadPercent * 0.5f) / TMTempTimeConstantSec;
@@ -4236,7 +4236,7 @@ namespace Orts.Simulation.RollingStocks
                 TMCoolingIsOn = false;
 
             // Ochlazení během aktivního chlazení
-            if (TMCoolingIsOn )
+            if (TMCoolingIsOn)
                 TMTemperature -= elapsedClockSeconds * (TMTemperature - (1.5f * CarOutsideTempCBase)) / TMTempTimeConstantSec * (AirTMCoolingPower / 500f);
 
             if (TMCoolingIsOn && !TMCoolingIsActivated)
@@ -4296,12 +4296,12 @@ namespace Orts.Simulation.RollingStocks
             if (DRTempTimeConstantSec == 0) DRTempTimeConstantSec = 1500f;
 
             if (DRTemperature < CarOutsideTempC0)
-            {                
+            {
                 if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
                     DRTemperature = CarOutsideTempC0;
                 else
                     DRTemperature = IdleDRTemperatureDegC;
-            }            
+            }
 
             // Fáze zahřívání vlivem zátěže DR
             float DRTemperatureDelta = elapsedClockSeconds * (DRTempCoef * CurrentLoadPercent * 0.01f * (MaxDRTemperatureDegC - IdleDRTemperatureDegC) + IdleDRTemperatureDegC - DRTemperature) * (CurrentLoadPercent * 0.5f) / DRTempTimeConstantSec;
@@ -4396,20 +4396,20 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SituationTimer_3 += elapsedClockSeconds;
                     if (SituationTimer_3 > RelayDelay[3])
-                    {                        
+                    {
                         DRCoolingIsOn = true;
                         SituationTimer_3 = 0;
                         //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Sepnutí relé chladících ventilátorů!"));
                     }
                 }
                 else
-                {                    
+                {
                     DRCoolingIsOn = false;
                     SituationTimer_3 = 0;
                 }
             }
             else
-            {                
+            {
                 DRCoolingIsOn = false;
                 SituationTimer_3 = 0;
             }
@@ -4479,7 +4479,7 @@ namespace Orts.Simulation.RollingStocks
             Train.CurrentSteamHeatPressurePSI = 0;
             Train.SteamHeatControllerCurrentValue = 0;
             HeatingIsOnLocoCount = 0;
-            
+
             foreach (TrainCar car in Train.Cars)
             {
                 if (Train.TrainHeatingStartOn && !Simulator.Settings.AirEmpty)
@@ -4503,7 +4503,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if ((car as MSTSLocomotive).CarSteamHeatOn)
                     {
-                        Train.CarSteamHeatOn = true;                       
+                        Train.CarSteamHeatOn = true;
                         Train.CurrentSteamHeatPressurePSI += (car as MSTSLocomotive).CurrentSteamHeatPressurePSI;
                         Train.SteamHeatControllerCurrentValue = (car as MSTSLocomotive).SteamHeatController.CurrentValue;
                         foreach (TrainCar car1 in Train.Cars)
@@ -4523,7 +4523,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-            Train.TrainHeatingStartOn = false;            
+            Train.TrainHeatingStartOn = false;
 
             // Aktivuje topení stanoviště při zapnutí baterií a nahození napájení
             if (CabHeating_OffOn[LocoStation] && !CarCabHeatingIsSetOn && Battery && PowerOn)
@@ -4533,7 +4533,7 @@ namespace Orts.Simulation.RollingStocks
             }
             // Deaktivuje vytápění stanoviště při shozených baterií nebo napájení
             if (CabHeating_OffOn[LocoStation] && CarCabHeatingIsSetOn && (!Battery || !PowerOn))
-            {                
+            {
                 SignalEvent(Event.CabHeating_OffOnOff);
                 CarCabHeatingIsSetOn = false;
             }
@@ -4786,7 +4786,7 @@ namespace Orts.Simulation.RollingStocks
                         TempCDeltaOutside = car.WagonTemperature / car.CarOutsideTempC0;
 
                         // Otevření oken vozu                                                
-                        if (car.WagonTemperature > 26f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))                        
+                        if (car.WagonTemperature > 26f && car.PowerReductionByAirCondition == 0 && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
                             CarWindowsIsOpened = true;
 
                         if (car.WagonTemperature < 22f && (car.PassengerList.Count > 0 || (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
@@ -4820,7 +4820,7 @@ namespace Orts.Simulation.RollingStocks
                         // Topení
                         if (car.CarOutsideTempC < 18)
                         {
-                            float SetTempCHyst = 3.5f;                            
+                            float SetTempCHyst = 3.5f;
                             if (car.SetTemperatureCFrost == 0)
                             {
                                 car.SetTemperatureCFrost = Simulator.Random.Next(19, 27);
@@ -4840,7 +4840,7 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, topení aktivní
                             if (((!car.LocomotiveCab && Train.HeatingIsOn && !Train.CarSteamHeatOn) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
-                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;                                
+                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
 
                                 if (car.DieselHeaterPower > 0)
                                     car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
@@ -4864,7 +4864,7 @@ namespace Orts.Simulation.RollingStocks
                         // Klimatizace
                         if (car.CarOutsideTempC > 24)
                         {
-                            float SetTempCHyst = 2.5f;                            
+                            float SetTempCHyst = 2.5f;
                             if (car.SetTemperatureCHeat == 0)
                             {
                                 car.SetTemperatureCHeat = Simulator.Random.Next(17, 25);
@@ -4939,11 +4939,11 @@ namespace Orts.Simulation.RollingStocks
                             if (!car.WagonCanEnableSteamHeating && !car.WagonHasStove)
                                 car.StatusHeatIsOn = false;
                         }
-                        else 
+                        else
                         {
                             car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
                         }
-                        
+
                         // Parní lokomotiva
                         if (car is MSTSSteamLocomotive && car.WagonTemperature < car.SteamLocoCabTemperatureBase)
                         {
@@ -4954,7 +4954,7 @@ namespace Orts.Simulation.RollingStocks
                                 car.WagonTemperature += (BoilerPowerKW * 1.0f * 1000 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds) + car.TempCDeltaAir;
 
                             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
-                        }                        
+                        }
                     }
                     //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Teplota " + car.WagonTemperature));
                 }
@@ -5018,7 +5018,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerReductionByHeatingWag = 0;
                 MaximalPowerReductionByHeating = 0;
                 MaximalPowerReductionByAirCondition = 0;
-                
+
                 foreach (TrainCar car in Train.Cars)
                 {
                     var mstsDieselLocomotive = car as MSTSDieselLocomotive;
@@ -5077,7 +5077,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                
+
                 if (HeatingIsOn)
                 {
                     PowerReductionByHeatingSum = PowerReductionByHeatingWag / HeatingIsOnLocoCount;
@@ -5147,7 +5147,7 @@ namespace Orts.Simulation.RollingStocks
                 }
                 PowerReductionByAuxEquipmentSum = PowerReductionByAuxEquipmentWag + PowerReductionByAuxEquipmentEng;
             }
-            
+
             //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Zvýšený odběr proudu, výkon zredukován "+ PowerReductionByAuxEquipmentSum * MaxPowerW/1000) + " kW!");                        
 
             if (HeatingIsOn || PowerReductionByAuxEquipmentSum >= 0)
@@ -5287,7 +5287,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car is MSTSLocomotive && car.AcceptCableSignals && !car.RDSTBreaker[1] && !car.RDSTBreaker[2])
                             RDSTBreakerRDSTState += 1;
-                    }                    
+                    }
                 }
                 if (RDSTBreakerRDSTState > 0)
                     TrainBrakeController.EmergencyBrakingPushButton = true;
@@ -5342,7 +5342,7 @@ namespace Orts.Simulation.RollingStocks
                         if (car is MSTSLocomotive && car.AcceptCableSignals && !car.RDSTBreaker[1] && !car.RDSTBreaker[2])
                             RDSTBreakerPowerState += 1;
                     }
-                }                
+                }
                 if (RDSTBreakerPowerState > 0)
                     PowerReductionResult8 = 1;
                 else
@@ -5358,7 +5358,7 @@ namespace Orts.Simulation.RollingStocks
         bool CarIsWaitingAtStation;
         bool CheckBellEvent;
         public void SetAIAction(float elapsedClockSeconds)
-        {            
+        {
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
             {
                 // Pokud je AI lokomotiva nahozená, má nahozené topení i topení ve vozech
@@ -5366,7 +5366,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars)
                     {
-                        car.CarHasHeatingReady = true;                        
+                        car.CarHasHeatingReady = true;
                     }
                 }
 
@@ -5380,7 +5380,7 @@ namespace Orts.Simulation.RollingStocks
                         case SeasonType.Autumn: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(15, 31); break;
                         case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
-                    (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f; 
+                    (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;
                 }
 
                 CarIsWaiting = false;
@@ -5388,13 +5388,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                         || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
-                        || (this as MSTSLocomotive).LocoIsStatic)                        
+                        || (this as MSTSLocomotive).LocoIsStatic)
                     {
                         if (this.BrakeSystem.PowerForWagon == true)
                         {
                             foreach (TrainCar car in (Train as AITrain).Cars)
                             {
-                                car.BrakeSystem.PowerForWagon = false;                               
+                                car.BrakeSystem.PowerForWagon = false;
                             }
                         }
                     }
@@ -5408,7 +5408,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             foreach (TrainCar car in (Train as AITrain).Cars)
                             {
-                                car.BrakeSystem.PowerForWagon = true;                                
+                                car.BrakeSystem.PowerForWagon = true;
                             }
                         }
                     }
@@ -5417,9 +5417,9 @@ namespace Orts.Simulation.RollingStocks
                 if (this.BrakeSystem.PowerForWagon == true)
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars)
-                    {                        
+                    {
                         if (car is MSTSLocomotive)
-                        {                     
+                        {
                             (car as MSTSLocomotive).Battery = true;
                         }
                     }
@@ -5489,7 +5489,7 @@ namespace Orts.Simulation.RollingStocks
                             if (AIActionPoint0.Delay >= 49900 && AIActionPoint0.Delay <= 49999)
                             {
                                 (Train as AITrain).NumberOfCarsToLeaveOrSteal = AIActionPoint0.Delay - 49900;
-                            }                            
+                            }
                         }
                     }
                 }
@@ -5504,12 +5504,12 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (AIActionPoint0.Delay > 49000 && AIActionPoint0.Delay < 49900)
                             {
-                                (Train as AITrain).AITrainOffsetStop = true;                                
+                                (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
                             }
                             if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
                             {
-                                (Train as AITrain).AITrainOffsetStop = true;                                
+                                (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
                             }
                         }
@@ -5524,10 +5524,10 @@ namespace Orts.Simulation.RollingStocks
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
-                            if (AIActionPoint0.Delay == 40000)                            
-                                Simulator.AIPreference = true;                                                                                         
+                            if (AIActionPoint0.Delay == 40000)
+                                Simulator.AIPreference = true;
                         }
-                    }                    
+                    }
                 }
 
                 // AI nezastaví na ABS WP, pokud uběhl čas
@@ -5569,7 +5569,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
-                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);                            
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
                             if (AbsSpeedMpS < 0.01f && (AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
                             {
                                 CarIsShunting = true;
@@ -5629,7 +5629,7 @@ namespace Orts.Simulation.RollingStocks
                 if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameShunting)
                     (Train as AITrain).AITrainNameShunting = "NOP";
                 if (this.AbsSpeedMpS > 0.5f && (Train as AITrain).Name == (Train as AITrain).AITrainNameReadyToDepart)
-                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";                
+                    (Train as AITrain).AITrainNameReadyToDepart = "NOP";
 
 
                 // Aktivuje parní topení pro AI, pokud je k dispozici               
@@ -5657,7 +5657,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((this as MSTSLocomotive).CarOutsideTempC > 18f || (Train as AITrain).Cars.Count < 2)
                         (Train as AITrain).CarSteamHeatOn = false;
                 }
-                
+
                 foreach (TrainCar car in (Train as AITrain).Cars)
                 {
                     if (!car.WagonHasTemperature)
@@ -5697,7 +5697,7 @@ namespace Orts.Simulation.RollingStocks
             if (Battery)
                 CarLightsPowerOn = true;
             else
-                CarLightsPowerOn = false;            
+                CarLightsPowerOn = false;
         }
 
         // Nastaví výkon na postrku
@@ -5729,7 +5729,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (IsLeadLocomotive())
-            {                
+            {
                 Simulator.ThrottleLocoHelper = (float)Math.Round(LocalThrottlePercent, 0);
                 Simulator.DynamicBrakeLocoHelper = 0; // Postrk nebrzdí EDB
                 Simulator.ControllerVoltsLocoHelper = ControllerVolts;
@@ -5750,7 +5750,7 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult12 = 1;
                 else
                     PowerReductionResult12 = 0;
-            }            
+            }
 
             // Postrk aktivován
             if (LocoHelperOn)
@@ -5758,12 +5758,12 @@ namespace Orts.Simulation.RollingStocks
                 CarPowerKey = true;
 
                 if (DynamicBrakeController != null)
-                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;                         
+                    DynamicBrakePercent = Simulator.DynamicBrakeLocoHelper;
 
                 if (WheelSlipWarning)
                 {
-                    AntiSlip = true;                    
-                    Sander = true;                    
+                    AntiSlip = true;
+                    Sander = true;
                 }
                 else
                     Sander = false;
@@ -5796,7 +5796,7 @@ namespace Orts.Simulation.RollingStocks
                                 && (Motor2.RealDieselOilTemperatureDeg < 1.1f * Motor2.HelperDieselMaxOilTemperatureDeg && Motor2.RealDieselWaterTemperatureDeg < 1.1f * Motor2.HelperDieselMaxWaterTemperatureDeg))
                             {
                                 if (Motor1.EngineStatus == DieselEngine.Status.Running)
-                                    Motor1.Stop(); 
+                                    Motor1.Stop();
                             }
                             // Při přehřátí motoru 2 dojde k jeho stopnutí
                             if ((Motor2.RealDieselOilTemperatureDeg > 1.1f * Motor2.HelperDieselMaxOilTemperatureDeg || Motor2.RealDieselWaterTemperatureDeg > 1.1f * Motor2.HelperDieselMaxWaterTemperatureDeg)
@@ -5850,7 +5850,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         HelperCoolDown = (Motor1.RealDieselOilTemperatureDeg < 0.95f * Motor1.HelperDieselMaxOilTemperatureDeg);
                         HelperCoolDown &= (Motor1.RealDieselWaterTemperatureDeg < 0.95f * Motor1.HelperDieselMaxWaterTemperatureDeg);
-                        HelperCoolDown &= (Motor2.RealDieselOilTemperatureDeg < 0.95f * Motor2.HelperDieselMaxOilTemperatureDeg);                        
+                        HelperCoolDown &= (Motor2.RealDieselOilTemperatureDeg < 0.95f * Motor2.HelperDieselMaxOilTemperatureDeg);
                         HelperCoolDown &= (Motor2.RealDieselWaterTemperatureDeg < 0.95f * Motor2.HelperDieselMaxWaterTemperatureDeg);
                         if (HelperCoolDown)
                             HelperOverheated = false;
@@ -5866,7 +5866,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (HelperOverheatedCritical)
                     {
-                        HelperCoolDownCritical = (Motor1.RealDieselOilTemperatureDeg < 1.05f * Motor1.HelperDieselMaxOilTemperatureDeg);                        
+                        HelperCoolDownCritical = (Motor1.RealDieselOilTemperatureDeg < 1.05f * Motor1.HelperDieselMaxOilTemperatureDeg);
                         HelperCoolDownCritical &= (Motor1.RealDieselWaterTemperatureDeg < 1.05f * Motor1.HelperDieselMaxWaterTemperatureDeg);
                         HelperCoolDownCritical &= (Motor2.RealDieselOilTemperatureDeg < 1.05f * Motor2.HelperDieselMaxOilTemperatureDeg);
                         HelperCoolDownCritical &= (Motor2.RealDieselWaterTemperatureDeg < 1.05f * Motor2.HelperDieselMaxWaterTemperatureDeg);
@@ -5890,11 +5890,11 @@ namespace Orts.Simulation.RollingStocks
                         || PowerCurrent1 > 0.95f * MaxCurrentPower
                         || (HelperOverheated && ThrottlePercent > 80f)
                         || HelperOverheatedCritical
-                        )                        
+                        )
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.05f)
-                        {                            
+                        {
                             if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
                             {
                                 if (WheelSlipWarning
@@ -5981,16 +5981,16 @@ namespace Orts.Simulation.RollingStocks
                                             LocalThrottlePercent--;
                                         HelperTimerDecrease = 0;
                                     }
-                                }                                
+                                }
                             }
                             if (LocalThrottlePercent == 0)
                                 WheelSpeedMpS = SpeedMpS;
-                        }                        
+                        }
                     }
                     else
                     if (AbsSpeedMpS * 3.6 < HelperSpeedPush - 1
-                        && HelperPushStart                      
-                        && !WheelSlip                        
+                        && HelperPushStart
+                        && !WheelSlip
                         && MSTSBrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0 - (0.5f * 14.50377f))
                     {
                         HelperTimerIncrease += elapsedClockSeconds;
@@ -6001,35 +6001,35 @@ namespace Orts.Simulation.RollingStocks
                             if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
                             {
                                 if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
-                                {                                    
+                                {
                                     ThrottleController.StartIncrease();
                                     ThrottleController.StopIncrease();
                                     LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
                                     HelperTimerIncrease = 0;
                                 }
                             }
-                            else                            
-                            {                                
+                            else
+                            {
                                 if (LocalThrottlePercent < 100)
                                     LocalThrottlePercent++;
                                 HelperTimerIncrease = 0;
                             }
-                        }                        
+                        }
                     }
-                                        
+
                     // Postrk zapíská
                     if (HelperStartOn && Train.IsFreight && !AcceptCableSignals)
                     {
                         HelperBellTimer += elapsedClockSeconds;
-                        if (HelperBellTimer > 1.0f)                        
-                            SignalEvent(Event.BellOn);                                                    
+                        if (HelperBellTimer > 1.0f)
+                            SignalEvent(Event.BellOn);
                         if (HelperBellTimer > 1.5f)
                         {
                             SignalEvent(Event.BellOff);
                             HelperBellTimer = 0;
                             HelperStartOn = false;
-                        }                        
-                    }                    
+                        }
+                    }
                 }
                 #endregion HelperLocoPush
 
@@ -6040,7 +6040,7 @@ namespace Orts.Simulation.RollingStocks
                         PowerReductionResult12 = 0;
                     HelperTimerDecrease += elapsedClockSeconds;
                     if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
-                    {                        
+                    {
                         if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
                         {
                             if (HelperTimerDecrease > 1.0f)
@@ -6071,7 +6071,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (ThrottlePercent > Simulator.ThrottleLocoHelper
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
-                        || PowerCurrent1 > 0.95f * MaxCurrentPower                        
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower
                         || WheelSlip
                         || (HelperOverheated && ThrottlePercent > 80f)
                         )
@@ -6195,11 +6195,11 @@ namespace Orts.Simulation.RollingStocks
                 }
                 #endregion HelperLocoFollow
 
-                LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);                
+                LocalThrottlePercent = MathHelper.Clamp(LocalThrottlePercent, 0, 100);
                 StepControllerValue = (int)(LocalThrottlePercent / 100f * Simulator.StepControllerMaxValue);
                 ControllerVolts = LocalThrottlePercent / 10f;
                 ForceHandleValue = LocalThrottlePercent;
-                TractionBlocked = false;                
+                TractionBlocked = false;
 
                 if (extendedPhysics != null)
                     extendedPhysics.Update(elapsedClockSeconds);
@@ -6232,7 +6232,7 @@ namespace Orts.Simulation.RollingStocks
                 //}
             }
         }
-        
+
         float WheelNoSlipWarningTimer;
         float WheelNoSlipTimer;
         public void CheckMUWheelSlip(float elapsedClockSeconds)
@@ -6309,8 +6309,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-        }        
-        
+        }
+
         public void CheckPantos()
         {
             Pantograph p1;
@@ -6365,11 +6365,11 @@ namespace Orts.Simulation.RollingStocks
                                 (car as MSTSWagon).Pantographs.List[3].State = p3.State;
                                 (car as MSTSWagon).Pantographs.List[2].State = p4.State;
                             }
-                        }                        
+                        }
                         break;
                     }
                 }
-            
+
             switch (PantoMode)
             {
                 case PantoModes.Auto:
@@ -6386,7 +6386,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (p3.State == PantographState.Up)
                                     p3.State = PantographState.Lowering;
                                 if (p4.State == PantographState.Up)
-                                    p4.State = PantographState.Lowering;                                                                
+                                    p4.State = PantographState.Lowering;
                             }
                             if (SwitchingVoltageMode == 0)
                             {
@@ -6406,7 +6406,7 @@ namespace Orts.Simulation.RollingStocks
                                 p1.State = PantographState.Raising;
                             if (p2.State == PantographState.Up && p1.State == PantographState.Up)
                                 p2.State = PantographState.Lowering;
-                        }                        
+                        }
                     }
                     break;
                 case PantoModes.Both:
@@ -6510,9 +6510,9 @@ namespace Orts.Simulation.RollingStocks
                             p2.State = PantographState.Raising;
                         if (p1.State == PantographState.Up && p2.State == PantographState.Up)
                             p1.State = PantographState.Lowering;
-                    }                    
+                    }
                     break;
-            }            
+            }
         }
 
 
@@ -6534,12 +6534,12 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && PlayerLocoSetUp)
             {
-                if (Wiper) SignalEvent(Event.WiperOff);                                
-                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;                
+                if (Wiper) SignalEvent(Event.WiperOff);
+                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
                 // Mirel                   
                 if (Mirel != null)
                 {
-                    Mirel.initTest = InitTest.Passed;                    
+                    Mirel.initTest = InitTest.Passed;
                     Mirel.selectedDriveMode = DriveMode.Normal;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     Mirel.BlueLight = true;
@@ -6554,13 +6554,13 @@ namespace Orts.Simulation.RollingStocks
                 AILocoSetUp = false;
 
             if (firstFrame && BrakeSystem.StartOn)
-            {                
+            {
                 HV5Switch[1] = HV5Switch[2] = 2;
                 LastStateHV5[1] = LastStateHV5[2] = 2;
                 HV4Switch[1] = HV4Switch[2] = -1;
                 LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
-                LastStateHV3[1] = LastStateHV3[2] = 1;                               
+                LastStateHV3[1] = LastStateHV3[2] = 1;
                 Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
                 Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
                 Pantograph5Switch[1] = Pantograph5Switch[2] = 0;
@@ -6593,7 +6593,7 @@ namespace Orts.Simulation.RollingStocks
                     LastStateHV3[1] = LastStateHV3[2] = 0;
                     if (CruiseControl != null)
                     {
-                        badNumber:                      
+                        badNumber:
                         CruiseControl.SelectedNumberOfAxles[LocoStation] = (int)(Simulator.Random.Next(50, 150) / 6.6f) + 4;
                         if (CruiseControl.SelectedNumberOfAxles[LocoStation] % 4 != 0)
                             goto badNumber;
@@ -6605,16 +6605,16 @@ namespace Orts.Simulation.RollingStocks
                     {
                         PlayerLocoSetUp = true;
                         Battery = true;
-                        ToggleCabRadio(true);                        
-                        HV4Switch[LocoStation] = 1;                        
+                        ToggleCabRadio(true);
+                        HV4Switch[LocoStation] = 1;
 
                         LocoStation = 1;
                         if (UsingRearCab)
-                            LocoStation = 2;                        
+                            LocoStation = 2;
 
                         // ARR
-                        if (CruiseControl != null)                        
-                            CruiseControl.SelectedNumberOfAxles[LocoStation] = (int)(Train.Length / 6.6f) + 4;                        
+                        if (CruiseControl != null)
+                            CruiseControl.SelectedNumberOfAxles[LocoStation] = (int)(Train.Length / 6.6f) + 4;
                         if (IsLeadLocomotive())
                         {
                             PowerKeyPosition[LocoStation] = 2;
@@ -6679,7 +6679,7 @@ namespace Orts.Simulation.RollingStocks
                                             HvPantoTimer = 0;
                                         }
                                     }
-                                }                                
+                                }
                             }
 
                             if (!CircuitBreakerOn && PantographDown && HvPantoTimer < 5)
@@ -6699,7 +6699,7 @@ namespace Orts.Simulation.RollingStocks
                                     && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising
                                     || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising
                                     || Pantographs.List[2].State == PantographState.Lowering || Pantographs.List[2].State == PantographState.Raising
-                                    || Pantographs.List[3].State == PantographState.Lowering || Pantographs.List[3].State == PantographState.Raising))                                    
+                                    || Pantographs.List[3].State == PantographState.Lowering || Pantographs.List[3].State == PantographState.Raising))
                                 {
                                     SystemAnnunciator = 3;
                                 }
@@ -6710,15 +6710,15 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     SystemAnnunciator = 3;
                                 }
-                            }                            
+                            }
 
                             if (Pantographs.Count == 4)
                             {
-                                if (CircuitBreakerOn 
+                                if (CircuitBreakerOn
                                     && (Pantographs.List[0].State == PantographState.Lowering || Pantographs.List[0].State == PantographState.Raising
                                     || Pantographs.List[1].State == PantographState.Lowering || Pantographs.List[1].State == PantographState.Raising
                                     || Pantographs.List[2].State == PantographState.Lowering || Pantographs.List[2].State == PantographState.Raising
-                                    || Pantographs.List[3].State == PantographState.Lowering || Pantographs.List[3].State == PantographState.Raising))                                    
+                                    || Pantographs.List[3].State == PantographState.Lowering || Pantographs.List[3].State == PantographState.Raising))
                                 {
                                     SystemAnnunciator = 3;
                                 }
@@ -6735,7 +6735,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 HvPantoTimer += elapsedClockSeconds;
                                 SystemAnnunciator = 4;
-                            }                            
+                            }
 
                             if (CircuitBreakerOn)
                             {
@@ -6758,7 +6758,7 @@ namespace Orts.Simulation.RollingStocks
                                                 }
                                             }
                                         }
-                                    Action:
+                                        Action:
                                         HvPantoTimer = 0;
                                         if (!motorDisabled)
                                         {
@@ -6769,12 +6769,12 @@ namespace Orts.Simulation.RollingStocks
                                             SystemAnnunciator = 6;
                                         }
                                     }
-                                }                                
+                                }
                             }
 
                             if (Pantographs.Count == 4)
                             {
-                                if (SystemAnnunciator == 3 && !CircuitBreakerOn 
+                                if (SystemAnnunciator == 3 && !CircuitBreakerOn
                                     && ((Pantographs.List[0].State == PantographState.Up && Pantographs.List[1].State == PantographState.Up) || (Pantographs.List[2].State == PantographState.Up && Pantographs.List[3].State == PantographState.Up))
                                     && HvPantoTimer > 6)
                                 {
@@ -6907,7 +6907,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                         }
-                        ControllerVolts = ForceHandleValue / 10;                        
+                        ControllerVolts = ForceHandleValue / 10;
                     }
 
                     float speedDiff = 0;
@@ -6961,19 +6961,19 @@ namespace Orts.Simulation.RollingStocks
 
                             // Extended Physics pro diesel lokomotivy
                             if (this is MSTSDieselLocomotive)
-                            {                                
+                            {
                                 ControllerVolts = ThrottleController.CurrentValue * 10f;
                             }
 
                             if (IsLeadLocomotive())
-                            {                                
+                            {
                                 if (AcceptCableSignals)
                                     Train.ControllerVolts = ControllerVolts;
                                 else
                                     Train.ControllerVolts = 0;
                             }
                             if (!IsLeadLocomotive())
-                            {                                
+                            {
                                 if (!LocoHelperOn)
                                 // Dvojčlen
                                 {
@@ -6991,7 +6991,7 @@ namespace Orts.Simulation.RollingStocks
                         if (wasRestored && !Simulator.Paused)
                             wasRestored = false;
 
-                        if (extendedPhysics != null) 
+                        if (extendedPhysics != null)
                             extendedPhysics.OverridenControllerVolts = ControllerVolts;
 
                         if (AntiWheelSpinEquipped)
@@ -7003,8 +7003,8 @@ namespace Orts.Simulation.RollingStocks
                                     TractiveForceN = MaxForceN;
                             }
                             else if (extendedPhysics != null && LocoType != LocoTypes.Vectron)
-                            {                                
-                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;                                
+                            {
+                                extendedPhysics.OverridenControllerVolts = Train.OverridenControllerVolts = ControllerVolts - skidSpeedDegratation;
                             }
                         }
                         if (extendedPhysics != null && extendedPhysics.OverridenControllerVolts > 10)
@@ -7055,7 +7055,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (LocoType == LocoTypes.Vectron && ControllerVolts > 0 && BrakeSystem.BrakeLine1PressurePSI > 72)
                         DynamicBrakePercent = 0;
-                    
+
                     if (DynamicBrakePercent > 0)
                     {
                         if (PowerOn)
@@ -7074,7 +7074,7 @@ namespace Orts.Simulation.RollingStocks
                         ControllerVolts = 0;
 
                     if (ControllerVolts == 0)
-                        SetDynamicBrakeValue(-1);                    
+                        SetDynamicBrakeValue(-1);
                 }
             }
 
@@ -7082,7 +7082,7 @@ namespace Orts.Simulation.RollingStocks
             MP_Messages();
             LocomotiveTypeDefinition();
             SetCarLightsPowerOn();
-            CarFrameUpdate(elapsedClockSeconds);            
+            CarFrameUpdate(elapsedClockSeconds);
             VentilationSwitch(elapsedClockSeconds);
             VentilationDR(elapsedClockSeconds);
             JVHack(elapsedClockSeconds);
@@ -7092,7 +7092,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsLeadLocomotive())
             {
-                CarIsPlayerLoco = true;                
+                CarIsPlayerLoco = true;
             }
             else
                 CarIsPlayerLoco = false;
@@ -7193,7 +7193,7 @@ namespace Orts.Simulation.RollingStocks
                             break;
                         else
                             wagon.WagonCanEnableSteamHeating = true;
-                    }                                            
+                    }
                 }
                 else
                 {
@@ -7201,13 +7201,13 @@ namespace Orts.Simulation.RollingStocks
                     CarSteamHeatOnSetTimer = 0;
                 }
             }
-            
+
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
                 SetAIAction(elapsedClockSeconds);
                 AcceptMUSignals = true;
                 PowerReduction = 0;
-                                
+
                 if (this.PowerOn)
                 {
                     AILocoSetUp = true;
@@ -7216,7 +7216,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     PowerKey = true;
-                    AuxResPressurePSI = MaxAuxResPressurePSI;                    
+                    AuxResPressurePSI = MaxAuxResPressurePSI;
 
                     TrainCar AIFirstLocomotive = null;
                     foreach (TrainCar car in Train.Cars)
@@ -7263,14 +7263,14 @@ namespace Orts.Simulation.RollingStocks
                     if (DriverUsingRearCab)
                         ToggleMirrors();
                     DriverUsingRearCab = false;
-                }                
+                }
             }
 
             if (IsPlayerTrain && !Simulator.Paused)
             {
                 // Odometer
                 if (IsLeadLocomotive())
-                {                 
+                {
                     Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;
                 }
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
@@ -7278,7 +7278,7 @@ namespace Orts.Simulation.RollingStocks
                 // StepController odpovídá v defaultu throttle
                 if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable && !HS198ControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
-                
+
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -7300,17 +7300,17 @@ namespace Orts.Simulation.RollingStocks
                 MirelRSController(elapsedClockSeconds);
                 HS198Controller(elapsedClockSeconds);
                 HS198AutoDriveSpeedSelector(elapsedClockSeconds);
-                AxleCounterDisplay(elapsedClockSeconds);                
-                CommandCylinder(elapsedClockSeconds);                
+                AxleCounterDisplay(elapsedClockSeconds);
+                CommandCylinder(elapsedClockSeconds);
                 TogglePantograph3Switch();
                 TogglePantograph4Switch();
-                TogglePantograph5Switch();                
+                TogglePantograph5Switch();
                 ToggleHV2Switch();
                 ToggleHV3Switch();
                 ToggleHV4Switch();
                 ToggleHV5Switch();
                 ToggleCompressorCombined();
-                ToggleCompressorCombined2();                
+                ToggleCompressorCombined2();
                 PantographPressedTesting(elapsedClockSeconds);
                 HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();
@@ -7326,7 +7326,7 @@ namespace Orts.Simulation.RollingStocks
                 HVOffbyAirPressureE();
                 HVOffbyAirPressureD();
                 TMFailure(elapsedClockSeconds);
-                PowerReductionResult(elapsedClockSeconds);                
+                PowerReductionResult(elapsedClockSeconds);
                 SetHelperLoco(elapsedClockSeconds);
                 PantoCanHVOff(elapsedClockSeconds);
                 DirectionButtonSetup();
@@ -7337,7 +7337,7 @@ namespace Orts.Simulation.RollingStocks
                 CabRadioOnOff();
                 CheckMUWheelSlip(elapsedClockSeconds);
                 DoorSwitchLogic();
-                TrainBrakePercent();                
+                TrainBrakePercent();
                 WireHeightSwitching();
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
@@ -7627,7 +7627,7 @@ namespace Orts.Simulation.RollingStocks
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || (LocoType == LocoTypes.Vectron && TractionBlocked))
                 TractiveForceN = 0;
 
-            MotiveForceN = TractiveForceN;            
+            MotiveForceN = TractiveForceN;
 
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
@@ -7674,7 +7674,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
                 if (LocoType != LocoTypes.Vectron && !ControlUnit)
-                    DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                                
+                DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                                
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
@@ -7735,8 +7735,8 @@ namespace Orts.Simulation.RollingStocks
                             CabControl.DynamicBrake,
                             DynamicBrakeController.UpdateValue > 0 ? CabSetting.Increase : CabSetting.Decrease,
                             DynamicBrakeController.CurrentValue * 100);
-                    }                    
-                    if (Simulator.UseAdvancedAdhesion /*&& !Simulator.Paused && Simulator.GameSpeed == 1*/)                     
+                    }
+                    if (Simulator.UseAdvancedAdhesion /*&& !Simulator.Paused && Simulator.GameSpeed == 1*/)
                     {
                         AdvancedAdhesion(elapsedClockSeconds); // Use advanced adhesion model
                         AdvancedAdhesionModel = true;  // Set flag to advise advanced adhesion model is in use
@@ -7811,7 +7811,7 @@ namespace Orts.Simulation.RollingStocks
 
             PrevMotiveForceN = MotiveForceN;
             base.Update(elapsedClockSeconds);
-            
+
 #if DEBUG_ADHESION
             // Timer to determine travel time - resets when locomotive stops
             if (AbsSpeedMpS > 0)
@@ -7901,7 +7901,7 @@ namespace Orts.Simulation.RollingStocks
 
             TrainBrakeController.Update(elapsedClockSeconds);
             if (TrainBrakeController != null)
-            {                
+            {
                 if (TrainBrakeController.UpdateValue > 0.0)
                 {
                     SignalEvent(Event.TrainBrakeChange);
@@ -7945,7 +7945,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Simulator.Confirmer.Update(CabControl.BrakemanBrake, CabSetting.Decrease, GetBrakemanBrakeStatus());
                 }
-            }            
+            }
 
             DynamicBrakeBlending(elapsedClockSeconds);
             if (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime > DynamicBrakeCommandStartTime) // use the latest command time
@@ -8073,7 +8073,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (ControlUnit)
                 return;
-            
+
             if (ThrottleOverriden != 0)
                 t = ThrottleOverriden;
             if (DynamicBrakeFullRangeIncreaseTimeSeconds == 0)
@@ -8247,14 +8247,14 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                         }
                         Simulator.Direction = Direction;
-                        
+
                         Train.LocoDirection = Direction;
                         if (Direction != Direction.N)
                         {
-                            if (Flipped ^ UsingRearCab)                                                            
-                                Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;                                                        
-                        }                        
-                    }                    
+                            if (Flipped ^ UsingRearCab)
+                                Train.LocoDirection = Direction == Direction.Forward ? Direction.Reverse : Direction.Forward;
+                        }
+                    }
 
                     if (!IsLeadLocomotive())
                     {
@@ -8271,11 +8271,11 @@ namespace Orts.Simulation.RollingStocks
                                 if (!MirelRSControllerEnable && !HS198ControllerEnable)
                                     TractiveForceN *= 0;
                                 break;
-                        }                        
+                        }
                     }
                 }
                 else // for AI locomotives
-                {                    
+                {
                     switch (Direction)
                     {
                         case Direction.Reverse:
@@ -8610,7 +8610,7 @@ namespace Orts.Simulation.RollingStocks
                     if (DriveAxleNumber[i] != 0) DriveAxleCount++;
                 }
 
-            SkipToZeroDriveAxleCount:
+                SkipToZeroDriveAxleCount:
                 DriveAxleNumberFirstRun = false;
             }
 
@@ -8651,7 +8651,7 @@ namespace Orts.Simulation.RollingStocks
                 // Icik                
                 if (PowerUnit)
                 {
-                    DriveForceN = LocomotiveAxle.DriveForceN;                    
+                    DriveForceN = LocomotiveAxle.DriveForceN;
                     LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
                 }
 
@@ -8661,8 +8661,8 @@ namespace Orts.Simulation.RollingStocks
                 // Výpočet celkové tíhy na hnací nápravy
                 if (InitialDrvWheelWeightKg == 0) // if DrvWheelWeightKg not in ENG file.                
                 {
-                    if (DriveAxleCount > 0)                    
-                        DrvWheelWeightKg = MassKG * DriveAxleCount / WagonNumAxles;                    
+                    if (DriveAxleCount > 0)
+                        DrvWheelWeightKg = MassKG * DriveAxleCount / WagonNumAxles;
                     else
                         DrvWheelWeightKg = MassKG * LocoNumDrvAxles / WagonNumAxles;
                 }
@@ -8672,7 +8672,7 @@ namespace Orts.Simulation.RollingStocks
                 LocomotiveAxle.DampingNs = MassKG / 1000.0f;
                 LocomotiveAxle.FrictionN = MassKG / 100.0f;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
-                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;                                                                 
+                LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
                 LocomotiveAxle.Sander = Sander;
                 LocomotiveAxle.ExtendedPhysics = extendedPhysics != null ? true : false;
                 LocomotiveAxle.GameSpeed = Simulator.GameSpeed;
@@ -8695,7 +8695,7 @@ namespace Orts.Simulation.RollingStocks
                     WheelSpeedMpS = LocomotiveAxle.AxleSpeedMpS;
                     SlipSpeedDiference = WheelSlipWarning ? Math.Abs(WheelSpeedMpS - LocomotiveAxle.WheelSlipThresholdMpS) - Math.Abs(SpeedMpS) : 0;
                 }
-                else                
+                else
                 {
                     // MotiveForceN je počítán v EP
                     if (elapsedClockSeconds > 0)
@@ -9008,7 +9008,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
             SanderSpeedOfMpS = 1000;
-            
+
             //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
             float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
@@ -9075,7 +9075,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((Sander) && (AbsSpeedMpS < SanderSpeedEffectUpToMpS))
                         {
                             // Icik
-                            SandingFrictionCoefficientFactor = 1.0f + (0.5f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));                            
+                            SandingFrictionCoefficientFactor = 1.0f + (0.5f * ((SanderSpeedEffectUpToMpS - AbsSpeedMpS) / SanderSpeedEffectUpToMpS));
                             BaseFrictionCoefficientFactor *= SandingFrictionCoefficientFactor;
                         }
                     }
@@ -9170,7 +9170,7 @@ namespace Orts.Simulation.RollingStocks
                 BaseFrictionCoefficientFactor *= 1.1f;
                 goto TreeLeavesSkip;
 
-            TreeLeaves: 
+                TreeLeaves:
                 if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
                 {
                     Time0 += elapsedClockSeconds;
@@ -9194,7 +9194,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                     BaseFrictionCoefficientFactor *= (1.0f - (TreeLeavesLevel / 100f));
                 }
-             TreeLeavesSkip:
+                TreeLeavesSkip:
 
                 // Adheze ovlivněna kvalitou tratě
                 BaseFrictionCoefficientFactor *= TrackFactor;
@@ -9218,7 +9218,7 @@ namespace Orts.Simulation.RollingStocks
             if (EngineType == EngineTypes.Steam && SteamDrvWheelWeightLbs < 10000 && Simulator.WeatherType == WeatherType.Clear)
             {
                 BaseFrictionCoefficientFactor *= 0.75f;  // Dry track - static friction for vehicles with wheel weights less then 10,000lbs - u = 0.25
-            }            
+            }
 
             // Icik
             Train.LocomotiveCoefficientFriction = BaseuMax * BaseFrictionCoefficientFactor * AdhesionMultiplier;  // Find friction coefficient factor for locomotive            
@@ -9226,10 +9226,10 @@ namespace Orts.Simulation.RollingStocks
             // Set adhesion conditions for diesel, electric or steam geared locomotives
             if (elapsedClockSeconds > 0 && Simulator.GameSpeed == 1)
             {
-                LocomotiveAxle.AdhesionConditions = AdhesionMultiplier * AdhesionFilter.Filter(BaseFrictionCoefficientFactor + AdhesionRandom, elapsedClockSeconds);                                                
+                LocomotiveAxle.AdhesionConditions = AdhesionMultiplier * AdhesionFilter.Filter(BaseFrictionCoefficientFactor + AdhesionRandom, elapsedClockSeconds);
                 LocomotiveAxle.AdhesionConditions = MathHelper.Clamp(LocomotiveAxle.AdhesionConditions, 0.05f, 2.5f); // Avoids NaNs in axle speed computing                
             }
-            
+
             // Set adhesion conditions for other steam locomotives
             if (EngineType == EngineTypes.Steam && SteamEngineType != MSTSSteamLocomotive.SteamEngineTypes.Geared)  // ToDo explore adhesion factors
             {
@@ -9252,7 +9252,7 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             TrackSanderSandConsumptionLpS = MathHelper.Clamp(TrackSanderSandConsumptionLpS, 0.025f, 0.05f);
             if (Sander)  // If sander is on adjust parameters
-            {                
+            {
                 if (!LocoSanderOn)
                     SignalEvent(Event.SanderOn);
                 LocoSanderOn = true;
@@ -9304,7 +9304,7 @@ namespace Orts.Simulation.RollingStocks
         #region Reverser
         public void SetDirection(Direction direction)
         {
-            if (Direction != direction && ThrottlePercent < 1)
+            if (Direction != direction && (ThrottlePercent < 1 || Simulator.ChangeCabActivated))
             {
                 Direction = direction;
                 // Icik
@@ -12544,7 +12544,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     foreach (TrainCar car in Train.Cars)
                     {
-                        if (car is MSTSLocomotive)
+                        if (car is MSTSLocomotive && Direction != Direction.N)
                         {
                             Direction = Direction.N;
                             //car.DirectionControllerBlocked = true;

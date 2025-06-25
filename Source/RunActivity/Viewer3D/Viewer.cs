@@ -1242,7 +1242,7 @@ namespace Orts.Viewer3D
                     // OneCab                    
                     new ChangeCabCommand(Log);
                     if ((PlayerLocomotive as MSTSLocomotive).AbsSpeedMpS > 0.1f / 3.6f)
-                    {                        
+                    {
                         if ((PlayerLocomotive as MSTSLocomotive).UsingRearCab && (PlayerLocomotive as MSTSLocomotive).StationIsActivated[1])
                         {
                             (PlayerLocomotive as MSTSLocomotive).UsingRearCab = false;
@@ -1253,7 +1253,7 @@ namespace Orts.Viewer3D
                         {
                             (PlayerLocomotive as MSTSLocomotive).UsingRearCab = true;
                             (PlayerLocomotive as MSTSLocomotive).OneCabDummyStation = true;
-                        }                                                
+                        }                        
                     }
                     return;
                 }
