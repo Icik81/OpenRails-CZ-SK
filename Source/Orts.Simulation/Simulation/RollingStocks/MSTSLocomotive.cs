@@ -8256,6 +8256,11 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
+                    if (OneCabDummyStation && Simulator.Direction == Direction.Reverse)
+                    {
+                        TractiveForceN *= -1;
+                    }
+
                     if (!IsLeadLocomotive())
                     {
                         switch (Direction)
@@ -12538,7 +12543,7 @@ namespace Orts.Simulation.RollingStocks
                             TractionBrakeTimer = 0;
                         }
                     }
-                }
+                }                
 
                 if (PowerKeyPosition[LocoStation] != 2 || !Battery)
                 {
