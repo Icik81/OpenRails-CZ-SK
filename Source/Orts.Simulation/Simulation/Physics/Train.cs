@@ -3361,6 +3361,10 @@ namespace Orts.Simulation.Physics
             {
                 if ((TrainMaxSpeedMpS <= 0f) && (this.LeadLocomotive != null))
                     TrainMaxSpeedMpS = (this.LeadLocomotive as MSTSLocomotive).MaxSpeedMpS;
+
+                // Icik
+                if (IsActualPlayerTrain) TrainMaxSpeedMpS = 500;
+
                 AllowedMaxSpeedMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
@@ -3444,6 +3448,7 @@ namespace Orts.Simulation.Physics
 
             // Icik
             AllowedMaxSpeedMpS = AllowedMaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : AllowedMaxSpeedMpS;
+            if (AllowedMaxSpeedMpS > (float)Simulator.TRK.Tr_RouteFile.SpeedLimit) AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
 
             //  get first item from train (irrespective of distance)
 
@@ -3609,8 +3614,11 @@ namespace Orts.Simulation.Physics
             bool listChanged = false;
             bool signalFound = false;
             bool speedlimFound = false;
-
+            
             ObjectItemInfo firstObject = null;
+
+            // Icik
+            if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
 
             //
             // get distance to first object
