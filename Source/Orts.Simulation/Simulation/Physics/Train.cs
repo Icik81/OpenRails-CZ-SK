@@ -163,7 +163,8 @@ namespace Orts.Simulation.Physics
         public float TrainTotalAirBrakeLengthM;
         public int TrainTotalAirBrakeCarsCount;
         public bool TrainIsNearToLvlCross;
-        public List<StationStop> StationTasks = new List<StationStop>();        
+        public List<StationStop> StationTasks = new List<StationStop>();
+        public bool NoSpeedLimit;
 
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
@@ -1806,6 +1807,10 @@ namespace Orts.Simulation.Physics
                     {
                         NoSignals = true;
                     }
+                    if (Simulator.conFileName.ToLower().Contains("nospeedlimit")) // bez omezení rychlosti a vykolejení
+                    {
+                        NoSpeedLimit = true;
+                    }
                 }
 
                 if (Simulator.ManualCouplingOverride)
@@ -3346,7 +3351,9 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// initialize signal array
         /// </summary>
-
+        float AllowedMaxSpeedMpSFront;
+        float AllowedMaxSpeedMpSRear;
+        float DistanceFromFront;
         public void InitializeSignals(bool existingSpeedLimits)
         {
             Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
@@ -3380,17 +3387,23 @@ namespace Orts.Simulation.Physics
                     {
                         speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
                                 PresentPosition[1].TCDirection, true, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        var thisSpeedpostFront = signalRef.SignalObjects[speedpostList[0]];
-                        var speed_infoFront = thisSpeedpostFront.this_lim_speed(MstsSignalFunction.SPEED);
-                        var AllowedMaxSpeedMpSFront = speed_infoFront.speed_freight;
-                        var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];                        
-                        float distanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));
+                        if (speedpostList.Count > 0)
+                        {
+                            var thisSpeedpostFront = signalRef.SignalObjects[speedpostList[0]];
+                            var speed_infoFront = thisSpeedpostFront.this_lim_speed(MstsSignalFunction.SPEED);
+                            AllowedMaxSpeedMpSFront = speed_infoFront.speed_freight;
+                            var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
+                            DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));
+                        }
 
                         speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
                                 PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        var thisSpeedpostRear = signalRef.SignalObjects[speedpostList[0]];
-                        var speed_infoRear = thisSpeedpostRear.this_lim_speed(MstsSignalFunction.SPEED);
-                        var AllowedMaxSpeedMpSRear = speed_infoRear.speed_freight;
+                        if (speedpostList.Count > 0)
+                        {
+                            var thisSpeedpostRear = signalRef.SignalObjects[speedpostList[0]];
+                            var speed_infoRear = thisSpeedpostRear.this_lim_speed(MstsSignalFunction.SPEED);
+                            AllowedMaxSpeedMpSRear = speed_infoRear.speed_freight;
+                        }
 
                         if (AllowedMaxSpeedMpSFront == AllowedMaxSpeedMpSRear)
                         {
@@ -3399,7 +3412,7 @@ namespace Orts.Simulation.Physics
                             allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
                         }
                         else
-                        if (AllowedMaxSpeedMpSFront > 0 && AllowedMaxSpeedMpSFront < AllowedMaxSpeedMpSRear && distanceFromFront < 300)
+                        if (AllowedMaxSpeedMpSFront > 0 && AllowedMaxSpeedMpSFront < AllowedMaxSpeedMpSRear && DistanceFromFront < 300)
                         {                            
                             AllowedMaxSpeedMpS = AllowedMaxSpeedMpSFront;
                             allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
