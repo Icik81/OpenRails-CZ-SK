@@ -1792,7 +1792,22 @@ namespace Orts.Simulation.Physics
         {            
             AITrainWillAttach = false;
             GeneratePaxDynamically();
-            // Icik            
+            
+            // Icik
+            // Kontrola aktuální rychlosti trati pro hráče
+            if (IsActualPlayerTrain)
+            {
+                speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
+                                PresentPosition[0].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
+                if (speedpostList.Count > 0)
+                {
+                    var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
+                    var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
+                    AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                    allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                }
+            }
+
             if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
 
             if (IsPlayerDriven)
@@ -3354,6 +3369,7 @@ namespace Orts.Simulation.Physics
         float AllowedMaxSpeedMpSFront;
         float AllowedMaxSpeedMpSRear;
         float DistanceFromFront;
+        List<int> speedpostList;
         public void InitializeSignals(bool existingSpeedLimits)
         {
             Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
@@ -3376,9 +3392,9 @@ namespace Orts.Simulation.Physics
                 allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
                 //  try to find first speed limits behind the train
-
-                List<int> speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
-                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
+                
+                speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
+                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);                
 
                 if (speedpostList.Count > 0)
                 {
@@ -3437,11 +3453,14 @@ namespace Orts.Simulation.Physics
                     {
                         speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
                                 PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                        var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
+                        if (speedpostList.Count > 0)
+                        {
+                            var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
+                            var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
 
-                        AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
-                        allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                            AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                            allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                        }
                     }
                 }
                 else
