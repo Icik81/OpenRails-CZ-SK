@@ -1800,9 +1800,13 @@ namespace Orts.Simulation.Physics
             if (speedpostList.Count > 0)
             {
                 var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
-                AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
-                allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);                
+                DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));                
+                if (DistanceFromFront >= Length)
+                {
+                    AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                    allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                }
             }            
 
             if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
