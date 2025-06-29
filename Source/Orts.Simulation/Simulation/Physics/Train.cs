@@ -1794,19 +1794,16 @@ namespace Orts.Simulation.Physics
             GeneratePaxDynamically();
             
             // Icik
-            // Kontrola aktuální rychlosti trati pro hráče
-            if (IsActualPlayerTrain)
+            // Kontrola aktuální rychlosti trati            
+            speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
+                        PresentPosition[0].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
+            if (speedpostList.Count > 0)
             {
-                speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
-                                PresentPosition[0].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                if (speedpostList.Count > 0)
-                {
-                    var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                    var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
-                    AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
-                    allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
-                }
-            }
+                var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
+                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
+                AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+                allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
+            }            
 
             if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
 
