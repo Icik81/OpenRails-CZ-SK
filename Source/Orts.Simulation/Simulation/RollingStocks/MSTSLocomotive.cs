@@ -17369,19 +17369,20 @@ namespace Orts.Simulation.RollingStocks
         // Kapky na oknech - oblast stěračů
         int WipersWindowPosition;
         int WipersWindowMaxPosition;
-        float WipersWindowTimer;
-        float WipersWindowTimeBegin;
+        float WipersWindowTimerDirt;
+        float WipersWindowTimerWiper;        
         float WipersWindowTimeDirt;
         float WipersWindowTimerNoRain;
         float WipersWindowTimeBeginNoRain = 20;
         bool WiperStatusChange;
         float WipersWindowPower;
+        public float WipersWindowTimeCleanBase;
         public float WipersWindowTimeClean;
+        public float WipersWindowTimeClean2;
         public void WipersWindow(float elapsedSeconds)
         {
             WipersWindowPower = WipersWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
-            WipersWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;
-            WipersWindowTimer += elapsedSeconds;
+            WipersWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;            
 
             // Kapky vysychají za sucha
             if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.02f)
@@ -17394,58 +17395,66 @@ namespace Orts.Simulation.RollingStocks
                         WipersWindowPosition--;
                         WipersWindowTimerNoRain = 0;
                     }
-                }
-                WipersWindowTimeBegin = 0;
+                }                
             }
-            if (WipersWindowTimer > WipersWindowTimeBegin)
+
+            // Prší
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f)
             {
-                // Stěrače vypnuty
-                if (!LocoWiper[LocoStation])
+                WipersWindowTimerDirt += elapsedSeconds;
+                // Kapky narůstají
+                if (WipersWindowTimerDirt > WipersWindowTimeDirt && WipersWindowPosition < WipersWindowPower)
                 {
-                    if (WiperStatusChange)
-                    {
-                        WiperStatusChange = false;
-                        WipersWindowTimeBegin = WipersWindowTimeDirt * 2.0f;
-                        WipersWindowTimer = 0;
-                        return;
-                    }
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f)
-                    {
-                        // Kapky narůstají
-                        if (WipersWindowTimer > WipersWindowTimeDirt && WipersWindowPosition < WipersWindowPower)
-                        {
-                            WipersWindowPosition++;
-                            WipersWindowTimer = 0;
-                            WipersWindowTimeBegin = 0;
-                        }
-                    }
+                    WipersWindowPosition++;
+                    WipersWindowTimerDirt = 0;                    
                 }
-                else
+                if (WipersWindowPosition >= WipersWindowPower) WipersWindowTimerDirt = 0;
+            }
+
+            // Stěrače vypnuty
+            if (!LocoWiper[LocoStation] && Wipers3SpeedSwitch[LocoStation] == 0)
+            {
+                if (WiperStatusChange)
                 {
-                    // Stěrače zapnuty
-                    if (!WiperStatusChange)
-                    {
-                        WiperStatusChange = true;
-                        WipersWindowTimeBegin = WipersWindowTimeClean / 2;
-                        WipersWindowTimer = 0;
-                        return;
-                    }
-                    // 
-                    if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f
-                        && WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition <= 0)
-                    {
-                        WipersWindowPosition = 3;
-                    }
-                    // Kapky se stírají
-                    if (WipersWindowTimer > WipersWindowTimeClean && WipersWindowPosition > 0)
-                    {
-                        WipersWindowPosition = WipersWindowPosition - 2;
-                        WipersWindowTimer = 0;
-                        WipersWindowTimeBegin = 0;
-                    }
+                    WiperStatusChange = false;                    
+                    WipersWindowTimerWiper = 0;
+                    return;
                 }
             }
-        }
+            else
+            {
+                WipersWindowTimerWiper += elapsedSeconds;
+                // Stěrače zapnuty
+                if (!WiperStatusChange)
+                {
+                    WiperStatusChange = true;
+                    if (LocoWiper[LocoStation])
+                    {
+                        WipersWindowTimeCleanBase = WipersWindowTimeClean;                        
+                    }
+                    WipersWindowTimerWiper = 0;
+                    return;
+                }
+                if (WiperStatusChange)
+                {
+                    if (Wipers3SpeedSwitch[LocoStation] == 1)
+                    {
+                        WipersWindowTimeCleanBase = WipersWindowTimeClean;                        
+                    }
+                    if (Wipers3SpeedSwitch[LocoStation] == 2)
+                    {
+                        WipersWindowTimeCleanBase = WipersWindowTimeClean2;                        
+                    }
+                }
+
+                // Kapky se stírají
+                if (WipersWindowTimerWiper > WipersWindowTimeCleanBase && WipersWindowPosition > 0)
+                {
+                    WipersWindowPosition--;
+                    WipersWindowTimerWiper = 0;                    
+                }
+            }
+        }        
 
         // Přepínač sezóny topení
         bool PreSeasonSwitchPosition;

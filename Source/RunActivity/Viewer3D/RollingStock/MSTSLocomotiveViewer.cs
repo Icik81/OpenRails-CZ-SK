@@ -6363,6 +6363,7 @@ namespace Orts.Viewer3D.RollingStock
             CycleTimeS2 = control.CycleTimeS2;
             // Icik
             locomotive.WipersWindowTimeClean = CycleTimeS;
+            locomotive.WipersWindowTimeClean2 = CycleTimeS2;
         }
 
         float WipersFrameIndex = 0;
