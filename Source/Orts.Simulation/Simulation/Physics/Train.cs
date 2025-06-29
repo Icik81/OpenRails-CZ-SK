@@ -1792,7 +1792,7 @@ namespace Orts.Simulation.Physics
         {            
             AITrainWillAttach = false;
             GeneratePaxDynamically();
-            
+
             // Icik
             // Kontrola aktuální rychlosti trati            
             speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
@@ -1800,14 +1800,14 @@ namespace Orts.Simulation.Physics
             if (speedpostList.Count > 0)
             {
                 var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);                
-                DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));                
+                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
+                DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));
                 if (DistanceFromFront >= Length)
                 {
                     AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
                     allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
                 }
-            }            
+            }
 
             if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
 
@@ -9348,8 +9348,16 @@ namespace Orts.Simulation.Physics
 
                 if (thisSpeedMpS > 0)
                 {
-                    if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0) allowedMaxSpeedLimitMpS = thisSpeedMpS;
-                    else allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
+                    //if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0) allowedMaxSpeedLimitMpS = thisSpeedMpS;
+                    //else allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
+
+                    // Icik
+                    if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0)
+                    {
+                        allowedMaxSpeedLimitMpS = thisSpeedMpS;
+                        allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
+                    }
+
                     if (Simulator.TimetableMode) AllowedMaxSpeedMpS = thisSpeedMpS;
                     else AllowedMaxSpeedMpS = Math.Min(allowedMaxSpeedLimitMpS, Math.Min(allowedMaxTempSpeedLimitMpS,
                                        allowedMaxSpeedSignalMpS == -1 ? 999 : allowedMaxSpeedSignalMpS));
