@@ -11199,34 +11199,40 @@ namespace Orts.Simulation.RollingStocks
                     case 180: case 181: case 182: case 183: case 184:
                     case 440: case 451: case 452: case 460: case 470: case 471: case 480:
                         LocomotivePowerVoltage = 3000;
+                        EnableControlVoltageChange = false;
                         break;
 
                     case 209: case 210: case 218: case 230: case 240: case 242: case 260: case 263: case 280:
                     case 530: case 550: case 560:
                         LocomotivePowerVoltage = 25000;
+                        EnableControlVoltageChange = false;
                         break;
                     
                     case 371: case 372:
                         MultiSystemEngine = true;
                         MultiSystemEnginePlayer = true;
                         LocomotivePowerVoltage = 15000;
+                        EnableControlVoltageChange = true;
                         break;
 
                     case 340: case 393:
                         MultiSystemEngine = true;
-                        MultiSystemEnginePlayer = true;                        
+                        MultiSystemEnginePlayer = true;
+                        EnableControlVoltageChange = true;
                         break;
 
                     case 380: case 381: case 383: case 193:
                     case 680: case 681: case 682:
                         MultiSystemEngine = true;
-                        MultiSystemEnginePlayer = true;                        
+                        MultiSystemEnginePlayer = true;
+                        EnableControlVoltageChange = true;
                         break;
 
                     case 350: case 361: case 362: case 363: case 365:
                     case 660: case 640: case 650: case 654: case 655: case 671:
                         MultiSystemEngine = true;
                         MultiSystemEnginePlayer = true;
+                        EnableControlVoltageChange = true;
                         break;
                 }
             }
