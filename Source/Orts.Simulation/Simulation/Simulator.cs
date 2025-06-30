@@ -240,6 +240,7 @@ namespace Orts.Simulation
         public bool PlayerLocomotiveChange;
         public int LeadLocomotiveIndex;
         public Direction Direction;
+        public Direction DirectionOneCabOneConsole;
         public bool ControlUnitInTrain;
         public bool ControlUnitIsLead;
         public bool MainResZero;

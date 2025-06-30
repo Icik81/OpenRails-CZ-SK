@@ -11105,6 +11105,7 @@ namespace Orts.Simulation.RollingStocks
         #region LocomotiveTypeDefinition
         public bool OneCab;
         public bool TwoCab;
+        public bool OneCabOneConsole;
         public void LocomotiveTypeDefinition()
         {
             switch (EngineType)
@@ -11224,6 +11225,19 @@ namespace Orts.Simulation.RollingStocks
                     case 350: case 361: case 362: case 363: case 365:
                     case 660: case 640: case 650: case 654: case 655: case 671:
                         MultiSystemEngine = true;
+                        break;
+                }
+            }
+
+            if (this is MSTSDieselLocomotive)
+            {
+                switch (LocomotiveTypeNumber)
+                {
+                    case 700: case 701: case 702: case 703:
+                    case 211: case 212: // T211
+                    case 435: case 458: // T435
+                    case 720: case 721:
+                        OneCabOneConsole = true; 
                         break;
                 }
             }
@@ -12270,7 +12284,7 @@ namespace Orts.Simulation.RollingStocks
             #endregion
 
             // Páry mají jen jedno stanoviště
-            if (this is MSTSSteamLocomotive)
+            if (this is MSTSSteamLocomotive || OneCabOneConsole)
             {
                 if (LocoStation == 1)
                     EngineBrakeValue[2] = EngineBrakeValue[1];
@@ -12373,7 +12387,7 @@ namespace Orts.Simulation.RollingStocks
                     BrakeSystem.BrakeControllerLap = false;
 
                 // Páry mají jen jedno stanoviště
-                if (this is MSTSSteamLocomotive)
+                if (this is MSTSSteamLocomotive || OneCabOneConsole)
                 {
                     if (LocoStation == 1)
                         LapActive[2] = LapActive[1];
@@ -12502,7 +12516,7 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakeValue[LocoStation] = TrainBrakeController.CurrentValue;
 
                 // Páry mají jen jedno stanoviště
-                if (this is MSTSSteamLocomotive)
+                if (this is MSTSSteamLocomotive || OneCabOneConsole)
                 {
                     if (LocoStation == 1)
                         TrainBrakeValue[2] = TrainBrakeValue[1];
@@ -12556,6 +12570,25 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                
 
+                if (OneCabOneConsole)
+                {
+                    if (Simulator.LocoStationChange)
+                    {
+                        switch (Simulator.DirectionOneCabOneConsole)
+                        {
+                            case Direction.Forward:
+                                DirectionPosition[LocoStation] = -1;
+                                break;
+                            case Direction.N:
+                                DirectionPosition[LocoStation] = 0;
+                                break;
+                            case Direction.Reverse:
+                                DirectionPosition[LocoStation] = 1;
+                                break;
+                        }
+                    }
+                }
+
                 if (PowerKeyPosition[LocoStation] != 2 || !Battery)
                 {
                     foreach (TrainCar car in Train.Cars)
@@ -12604,13 +12637,18 @@ namespace Orts.Simulation.RollingStocks
             }
             if (IsLeadLocomotive() && !AcceptMUSignals)
                 Simulator.TrainPowerKey = true;
-
+            
             if (this is MSTSSteamLocomotive)
             {
                 this.CarPowerKey = true;
                 Simulator.TrainPowerKey = true;
-                StationIsActivated[1] = StationIsActivated[2] = false;                
-                StationIsActivated[LocoStation] = true;                
+                StationIsActivated[1] = StationIsActivated[2] = false;
+                StationIsActivated[LocoStation] = true;                                
+            }
+            if (OneCabOneConsole)
+            {                                
+                StationIsActivated[2] = StationIsActivated[1];                
+                PowerKeyPosition[2] = PowerKeyPosition[1];
             }
         }
 

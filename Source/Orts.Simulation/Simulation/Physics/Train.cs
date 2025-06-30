@@ -1791,25 +1791,7 @@ namespace Orts.Simulation.Physics
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
         {            
             AITrainWillAttach = false;
-            GeneratePaxDynamically();
-
-            // Icik
-            // Kontrola aktuální rychlosti trati            
-            speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
-                        PresentPosition[0].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-            if (speedpostList.Count > 0)
-            {
-                var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
-                DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));
-                if (DistanceFromFront >= Length)
-                {
-                    AllowedMaxSpeedMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
-                    allowedAbsoluteMaxSpeedLimitMpS = IsFreight ? speed_info.speed_freight : speed_info.speed_pass;
-                }
-            }
-
-            if (IsActualPlayerTrain && (AllowedMaxSpeedMpS == 0 || AllowedMaxSpeedMpS == 500)) InitializeSignals(false);
+            GeneratePaxDynamically();                        
 
             if (IsPlayerDriven)
             {
@@ -3367,10 +3349,6 @@ namespace Orts.Simulation.Physics
         /// <summary>
         /// initialize signal array
         /// </summary>
-        float AllowedMaxSpeedMpSFront;
-        float AllowedMaxSpeedMpSRear;
-        float DistanceFromFront;
-        List<int> speedpostList;
         public void InitializeSignals(bool existingSpeedLimits)
         {
             Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
@@ -3389,88 +3367,24 @@ namespace Orts.Simulation.Physics
                     TrainMaxSpeedMpS = (this.LeadLocomotive as MSTSLocomotive).MaxSpeedMpS;
 
                 // Icik
-                if (IsActualPlayerTrain) TrainMaxSpeedMpS = 500;
+                TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+
+                AllowedMaxSpeedMpS = TrainMaxSpeedMpS;
                 allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
+                                                                  
                 //  try to find first speed limits behind the train
-                
-                speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
-                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);                
+                List<int> speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
+                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
 
                 if (speedpostList.Count > 0)
                 {
-                    // Icik
-                    if (AllowedMaxSpeedMpS == 0)
-                    {
-                        speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
-                                PresentPosition[1].TCDirection, true, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        if (speedpostList.Count > 0)
-                        {
-                            var thisSpeedpostFront = signalRef.SignalObjects[speedpostList[0]];
-                            var speed_infoFront = thisSpeedpostFront.this_lim_speed(MstsSignalFunction.SPEED);
-                            AllowedMaxSpeedMpSFront = speed_infoFront.speed_freight;
-                            var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                            DistanceFromFront = Math.Abs(Length - thisSpeedpost.DistanceTo(RearTDBTraveller));
-                        }
+                    var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
+                    var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
 
-                        speedpostList = signalRef.ScanRoute(null, PresentPosition[0].TCSectionIndex, PresentPosition[0].TCOffset,
-                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        if (speedpostList.Count > 0)
-                        {
-                            var thisSpeedpostRear = signalRef.SignalObjects[speedpostList[0]];
-                            var speed_infoRear = thisSpeedpostRear.this_lim_speed(MstsSignalFunction.SPEED);
-                            AllowedMaxSpeedMpSRear = speed_infoRear.speed_freight;
-                        }
-
-                        if (AllowedMaxSpeedMpSFront == AllowedMaxSpeedMpSRear)
-                        {
-                            AllowedMaxSpeedMpS = AllowedMaxSpeedMpSFront;
-                            allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
-                            allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
-                        }
-                        else
-                        if (AllowedMaxSpeedMpSFront > 0 && AllowedMaxSpeedMpSFront < AllowedMaxSpeedMpSRear && DistanceFromFront < 300)
-                        {                            
-                            AllowedMaxSpeedMpS = AllowedMaxSpeedMpSFront;
-                            allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
-                            allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
-                        }
-                        else
-                        if (AllowedMaxSpeedMpSRear > 0)
-                        {
-                            AllowedMaxSpeedMpS = AllowedMaxSpeedMpSRear;
-                            allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
-                            allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
-                        }
-                        else
-                        {
-                            AllowedMaxSpeedMpS = AllowedMaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : AllowedMaxSpeedMpS;
-                            if (AllowedMaxSpeedMpS > (float)Simulator.TRK.Tr_RouteFile.SpeedLimit) AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                            allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
-                            allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
-                        }
-                    }
-                    else
-                    {
-                        speedpostList = signalRef.ScanRoute(null, PresentPosition[1].TCSectionIndex, PresentPosition[1].TCOffset,
-                                PresentPosition[1].TCDirection, false, -1, false, true, false, false, false, false, false, true, false, IsFreight);
-                        if (speedpostList.Count > 0)
-                        {
-                            var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
-                            var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
-
-                            AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
-                            allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
-                        }
-                    }
-                }
-                else
-                {
-                    AllowedMaxSpeedMpS = AllowedMaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : AllowedMaxSpeedMpS;
-                    if (AllowedMaxSpeedMpS > (float)Simulator.TRK.Tr_RouteFile.SpeedLimit) AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                    allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
-                    allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
-                }
+                    AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                    allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                }                
 
                 float validSpeedMpS = AllowedMaxSpeedMpS;
 
@@ -3533,11 +3447,7 @@ namespace Orts.Simulation.Physics
                 }
 
                 allowedMaxSpeedLimitMpS = AllowedMaxSpeedMpS;   // set default
-            }
-
-            // Icik
-            AllowedMaxSpeedMpS = AllowedMaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : AllowedMaxSpeedMpS;
-            if (AllowedMaxSpeedMpS > (float)Simulator.TRK.Tr_RouteFile.SpeedLimit) AllowedMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+            }            
 
             //  get first item from train (irrespective of distance)
 
@@ -9348,15 +9258,8 @@ namespace Orts.Simulation.Physics
 
                 if (thisSpeedMpS > 0)
                 {
-                    //if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0) allowedMaxSpeedLimitMpS = thisSpeedMpS;
-                    //else allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
-
-                    // Icik
-                    if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0)
-                    {
-                        allowedMaxSpeedLimitMpS = thisSpeedMpS;
-                        allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
-                    }
+                    if (thisSpeedInfo.speed_noSpeedReductionOrIsTempSpeedReduction == 0) allowedMaxSpeedLimitMpS = thisSpeedMpS;
+                    else allowedMaxTempSpeedLimitMpS = thisSpeedMpS;
 
                     if (Simulator.TimetableMode) AllowedMaxSpeedMpS = thisSpeedMpS;
                     else AllowedMaxSpeedMpS = Math.Min(allowedMaxSpeedLimitMpS, Math.Min(allowedMaxTempSpeedLimitMpS,
