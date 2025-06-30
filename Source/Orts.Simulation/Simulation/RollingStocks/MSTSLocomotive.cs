@@ -11207,24 +11207,26 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     
                     case 371: case 372:
-                        LocomotivePowerVoltage = 3000;
-                        Loco15kV = true;                        
+                        MultiSystemEngine = true;
+                        MultiSystemEnginePlayer = true;
+                        LocomotivePowerVoltage = 15000;
                         break;
 
                     case 340: case 393:
-                        LocomotivePowerVoltage = 25000;
-                        Loco15kV = true;
+                        MultiSystemEngine = true;
+                        MultiSystemEnginePlayer = true;                        
                         break;
 
                     case 380: case 381: case 383: case 193:
-                    case 680:
+                    case 680: case 681: case 682:
                         MultiSystemEngine = true;
-                        Loco15kV = true;
+                        MultiSystemEnginePlayer = true;                        
                         break;
 
                     case 350: case 361: case 362: case 363: case 365:
                     case 660: case 640: case 650: case 654: case 655: case 671:
                         MultiSystemEngine = true;
+                        MultiSystemEnginePlayer = true;
                         break;
                 }
             }
@@ -20149,15 +20151,28 @@ namespace Orts.Simulation.RollingStocks
             SwitchingVoltageMode = 1;
             SwitchingVoltageMode_OffAC = false;
             SwitchingVoltageMode_OffDC = false;
+            MultiSystemEnginePlayer = false;
             switch (NumberChoice)
             {
                 case 1:
                     LocomotivePowerVoltage = 25000;
                     MultiSystemEngine = false;
+                    if (AcceptMUSignals)
+                        foreach (TrainCar car in Train.Cars)
+                        {
+                            if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
+                            {
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode = 2;
+                                (car as MSTSElectricLocomotive).LocomotivePowerVoltage = 25000;
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffAC = true;
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffDC = false;
+                            }
+                        }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 25kV."));
                     break;
                 case 2:
                     MultiSystemEngine = true;
+                    MultiSystemEnginePlayer = true;
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV + 15kV + 25kV."));
                     switch (RouteVoltageV)
                     {
@@ -20165,22 +20180,66 @@ namespace Orts.Simulation.RollingStocks
                             SwitchingVoltageMode = 0;
                             LocomotivePowerVoltage = 3000;
                             SwitchingVoltageMode_OffDC = true;
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
+                                    {
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode = 0;
+                                        (car as MSTSElectricLocomotive).LocomotivePowerVoltage = 3000;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffDC = true;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffAC = false;
+                                    }
+                                }
                             break;
                         case 15000:
                             SwitchingVoltageMode = 2;
                             LocomotivePowerVoltage = 15000;
                             SwitchingVoltageMode_OffAC = true;
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
+                                    {
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode = 2;
+                                        (car as MSTSElectricLocomotive).LocomotivePowerVoltage = 15000;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffAC = true;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffDC = false;
+                                    }
+                                }
                             break;
                         case 25000:
                             SwitchingVoltageMode = 2;
                             LocomotivePowerVoltage = 25000;
                             SwitchingVoltageMode_OffAC = true;
+                            if (AcceptMUSignals)
+                                foreach (TrainCar car in Train.Cars)
+                                {
+                                    if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
+                                    {
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode = 2;
+                                        (car as MSTSElectricLocomotive).LocomotivePowerVoltage = 25000;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffAC = true;
+                                        (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffDC = false;
+                                    }
+                                }
                             break;
                     }
                     break;
                 case 3:
                     LocomotivePowerVoltage = 3000;
                     MultiSystemEngine = false;
+                    if (AcceptMUSignals)
+                        foreach (TrainCar car in Train.Cars)
+                        {
+                            if (car is MSTSElectricLocomotive && car.AcceptMUSignals)
+                            {
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode = 0;
+                                (car as MSTSElectricLocomotive).LocomotivePowerVoltage = 3000;
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffDC = true;
+                                (car as MSTSElectricLocomotive).SwitchingVoltageMode_OffAC = false;
+                            }
+                        }
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Power system changed to 3kV."));
                     break;
             }

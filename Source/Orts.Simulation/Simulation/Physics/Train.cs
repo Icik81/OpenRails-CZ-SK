@@ -1706,11 +1706,14 @@ namespace Orts.Simulation.Physics
         {
             // Icik
             // Obejde volání signálu, pokud je aktivován HV2, HV3, HV5
-            MSTSLocomotive lead = (MSTSLocomotive)Cars[LeadLocomotiveIndex];
-            if (IsActualPlayerTrain && !lead.HV2Enable && !lead.HV3Enable && !lead.HV3NAEnable && !lead.HV4Enable && !lead.HV5Enable || !IsActualPlayerTrain)
+            if (LeadLocomotiveIndex > -1)
             {
-                foreach (TrainCar car in Cars)
-                    car.SignalEvent(evt);
+                MSTSLocomotive lead = (MSTSLocomotive)Cars[LeadLocomotiveIndex];
+                if (IsActualPlayerTrain && !lead.HV2Enable && !lead.HV3Enable && !lead.HV3NAEnable && !lead.HV4Enable && !lead.HV5Enable || !IsActualPlayerTrain)
+                {
+                    foreach (TrainCar car in Cars)
+                        car.SignalEvent(evt);
+                }
             }
         }
 
