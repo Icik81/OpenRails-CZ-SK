@@ -11253,7 +11253,7 @@ namespace Orts.Simulation.RollingStocks
         #endregion LocomotiveTypeDefinition
 
         public void TogglePowerKeyUp()
-        {
+        {            
             if (DieselDirectionController || DieselDirectionController2)
             {
                 if (!AcceptMUSignals)
@@ -11297,6 +11297,14 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                if (OneCabOneConsole)
+                {
+                    if (PowerKeyPosition[LocoStation] == 2)
+                    {
+                        PowerKeyPosition[1] = PowerKeyPosition[2] = 2;
+                    }
+                }
+
                 if (PowerKeyPosition[LocoStation] == 2)
                 {
                     this.CarPowerKey = true;
@@ -11330,6 +11338,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         PowerKeyPosition[LocoStation]++;
                         return;
+                    }
+                }
+
+                if (OneCabOneConsole)
+                {
+                    if (PowerKeyPosition[LocoStation] == 1)
+                    {
+                        PowerKeyPosition[1] = PowerKeyPosition[2] = 1;
                     }
                 }
 
@@ -11452,7 +11468,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 2:
                         if (TrainBrakeController.BS2ControllerOnStation)
-                            Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Trainbrake controller unlocked!"));
+                            Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Trainbrake controller unlocked!"));                        
                         break;
                 }
                 if (!PowerKey)
@@ -12655,9 +12671,11 @@ namespace Orts.Simulation.RollingStocks
             }
             if (OneCabOneConsole)
             {
-                StationIsActivated[1] = StationIsActivated[2] = false;
-                StationIsActivated[LocoStation] = true;                
-                PowerKeyPosition[2] = PowerKeyPosition[1];
+                StationIsActivated[1] = StationIsActivated[2] = false;                
+                if (PowerKeyPosition[LocoStation] == 2)
+                {                    
+                    StationIsActivated[LocoStation] = true;
+                }                
             }
         }
 
