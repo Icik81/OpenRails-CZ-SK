@@ -12654,8 +12654,9 @@ namespace Orts.Simulation.RollingStocks
                 StationIsActivated[LocoStation] = true;                                
             }
             if (OneCabOneConsole)
-            {                                
-                StationIsActivated[2] = StationIsActivated[1];                
+            {
+                StationIsActivated[1] = StationIsActivated[2] = false;
+                StationIsActivated[LocoStation] = true;                
                 PowerKeyPosition[2] = PowerKeyPosition[1];
             }
         }
