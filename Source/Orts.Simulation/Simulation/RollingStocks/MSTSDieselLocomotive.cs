@@ -980,13 +980,35 @@ namespace Orts.Simulation.RollingStocks
 
             if (!ControlUnit)
             {
-                status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine"),
-                  Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[0].EngineStatus)));
+                if (DieselEngines.Count > 1)
+                {
+                    status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine 1"),
+                      Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[0].EngineStatus)));
+                    
+                    if (DieselEngines.HasGearBox)
+                        status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[0].GearBox.CurrentGearIndex < 0
+                            ? Simulator.Catalog.GetParticularString("Gear", "N")
+                            : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
 
-                if (DieselEngines.HasGearBox)
-                    status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[0].GearBox.CurrentGearIndex < 0
-                        ? Simulator.Catalog.GetParticularString("Gear", "N")
-                        : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
+                    status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine 2"),
+                      Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[1].EngineStatus)));
+                    
+                    if (DieselEngines.HasGearBox)
+                        status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[1].GearBox.CurrentGearIndex < 0
+                            ? Simulator.Catalog.GetParticularString("Gear", "N")
+                            : (DieselEngines[1].GearBox.CurrentGearIndex + 1).ToString());
+                }
+                else
+                {
+                    status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Engine"),
+                      Simulator.Catalog.GetParticularString("Engine", GetStringAttribute.GetPrettyName(DieselEngines[0].EngineStatus)));
+
+                    if (DieselEngines.HasGearBox)
+                        status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Gear"), DieselEngines[0].GearBox.CurrentGearIndex < 0
+                            ? Simulator.Catalog.GetParticularString("Gear", "N")
+                            : (DieselEngines[0].GearBox.CurrentGearIndex + 1).ToString());
+                }
+               
             }
             else
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Control"),

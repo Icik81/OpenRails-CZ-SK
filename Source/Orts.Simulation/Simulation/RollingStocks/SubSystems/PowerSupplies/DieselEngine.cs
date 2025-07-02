@@ -932,6 +932,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
 
+                if (EngineStatus == Status.Stopped)
+                {
+                    RealRPM0 = 0;
+                }
+
                 if (EngineStatus == Status.Stopped && (locomotive.StopButtonReleased || locomotive.StopButtonReleased2))
                 {
                     RealRPM0 = 0;                    

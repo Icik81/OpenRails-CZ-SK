@@ -20679,8 +20679,10 @@ namespace Orts.Simulation.RollingStocks
         public bool PositiveMask = false;
         public bool NegativeMask = false;
         public float VibrationTimer;
+        public float VibrationTimer2;
         public float FakeOilPressureBase;
         public float FakeOilPressure;
+        public float FakeOilPressure2;
         float preControllerVolts;
         float ControllerVoltsDetectorTimer;
         float DoorSwitchTimer;
@@ -21644,7 +21646,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ORTS_OIL_PRESSURE:
                 case CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE:
-                    {
+                    {                        
                         if (cvc.ControlType == CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE)
                         {
                             foreach (TrainCar car in Train.Cars)
@@ -21682,9 +21684,9 @@ namespace Orts.Simulation.RollingStocks
                                                 FakeOilPressure = 0.99f * FakeOilPressureBase;
                                         }
 
-                                        if (VibrationTimer > 0.2f)
+                                        if (VibrationTimer > 0.3f)
                                             VibrationTimer = 0;
-
+                                        
                                         data = ConvertFromPSI(cvc, FakeOilPressure);
                                         break;
                                     }
@@ -21725,7 +21727,7 @@ namespace Orts.Simulation.RollingStocks
                                         FakeOilPressure = 0.99f * FakeOilPressureBase;
                                 }
 
-                                if (VibrationTimer > 0.2f)
+                                if (VibrationTimer > 0.3f)
                                     VibrationTimer = 0;
 
                                 data = ConvertFromPSI(cvc, FakeOilPressure);
@@ -21746,37 +21748,37 @@ namespace Orts.Simulation.RollingStocks
                                     if (mstsDieselLocomotive.DieselEngines.Count > 1)
                                     {
                                         FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
-                                        VibrationTimer += Simulator.OneSecondLoop;
+                                        VibrationTimer2 += Simulator.OneSecondLoop;
 
-                                        if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                                        if (FakeOilPressure2 > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
                                         {
-                                            if (VibrationTimer < 0.10f)
-                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure > 1.015f * FakeOilPressureBase)
-                                                FakeOilPressure = 1.015f * FakeOilPressureBase;
+                                            if (VibrationTimer2 < 0.10f)
+                                                FakeOilPressure2 += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure2 > 1.015f * FakeOilPressureBase)
+                                                FakeOilPressure2 = 1.015f * FakeOilPressureBase;
 
-                                            if (VibrationTimer > 0.10f)
-                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure < 0.985f * FakeOilPressureBase)
-                                                FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                            if (VibrationTimer2 > 0.10f)
+                                                FakeOilPressure2 -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure2 < 0.985f * FakeOilPressureBase)
+                                                FakeOilPressure2 = 0.985f * FakeOilPressureBase;
                                         }
                                         else
                                         {
-                                            if (VibrationTimer < 0.10f)
-                                                FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure > 1.01f * FakeOilPressureBase)
-                                                FakeOilPressure = 1.01f * FakeOilPressureBase;
+                                            if (VibrationTimer2 < 0.10f)
+                                                FakeOilPressure2 += 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure2 > 1.01f * FakeOilPressureBase)
+                                                FakeOilPressure2 = 1.01f * FakeOilPressureBase;
 
-                                            if (VibrationTimer > 0.10f)
-                                                FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                            if (FakeOilPressure < 0.99f * FakeOilPressureBase)
-                                                FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                            if (VibrationTimer2 > 0.10f)
+                                                FakeOilPressure2 -= 100f * Simulator.OneSecondLoop;
+                                            if (FakeOilPressure2 < 0.99f * FakeOilPressureBase)
+                                                FakeOilPressure2 = 0.99f * FakeOilPressureBase;
                                         }
 
-                                        if (VibrationTimer > 0.2f)
-                                            VibrationTimer = 0;
+                                        if (VibrationTimer2 > 0.4f)
+                                            VibrationTimer2 = 0;
 
-                                        data = ConvertFromPSI(cvc, FakeOilPressure);
+                                        data = ConvertFromPSI(cvc, FakeOilPressure2);
                                         break;
                                     }
                                 }
@@ -21789,37 +21791,37 @@ namespace Orts.Simulation.RollingStocks
                             if (mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines.Count > 1)
                             {
                                 FakeOilPressureBase = mstsDieselLocomotive.DieselEngines[1].DieselOilPressurePSI;
-                                VibrationTimer += Simulator.OneSecondLoop;
+                                VibrationTimer2 += Simulator.OneSecondLoop;
 
-                                if (FakeOilPressure > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
+                                if (FakeOilPressure2 > 2.0f / 3.0f * mstsDieselLocomotive.DieselEngines[1].DieselMaxOilPressurePSI)
                                 {
-                                    if (VibrationTimer < 0.10f)
-                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure > 1.015f * FakeOilPressureBase)
-                                        FakeOilPressure = 1.015f * FakeOilPressureBase;
+                                    if (VibrationTimer2 < 0.10f)
+                                        FakeOilPressure2 += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure2 > 1.015f * FakeOilPressureBase)
+                                        FakeOilPressure2 = 1.015f * FakeOilPressureBase;
 
-                                    if (VibrationTimer > 0.10f)
-                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure < 0.985f * FakeOilPressureBase)
-                                        FakeOilPressure = 0.985f * FakeOilPressureBase;
+                                    if (VibrationTimer2 > 0.10f)
+                                        FakeOilPressure2 -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure2 < 0.985f * FakeOilPressureBase)
+                                        FakeOilPressure2 = 0.985f * FakeOilPressureBase;
                                 }
                                 else
                                 {
-                                    if (VibrationTimer < 0.10f)
-                                        FakeOilPressure += 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure > 1.01f * FakeOilPressureBase)
-                                        FakeOilPressure = 1.01f * FakeOilPressureBase;
+                                    if (VibrationTimer2 < 0.10f)
+                                        FakeOilPressure2 += 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure2 > 1.01f * FakeOilPressureBase)
+                                        FakeOilPressure2 = 1.01f * FakeOilPressureBase;
 
-                                    if (VibrationTimer > 0.10f)
-                                        FakeOilPressure -= 100f * Simulator.OneSecondLoop;
-                                    if (FakeOilPressure < 0.99f * FakeOilPressureBase)
-                                        FakeOilPressure = 0.99f * FakeOilPressureBase;
+                                    if (VibrationTimer2 > 0.10f)
+                                        FakeOilPressure2 -= 100f * Simulator.OneSecondLoop;
+                                    if (FakeOilPressure2 < 0.99f * FakeOilPressureBase)
+                                        FakeOilPressure2 = 0.99f * FakeOilPressureBase;
                                 }
 
-                                if (VibrationTimer > 0.2f)
-                                    VibrationTimer = 0;
+                                if (VibrationTimer2 > 0.4f)
+                                    VibrationTimer2 = 0;
 
-                                data = ConvertFromPSI(cvc, FakeOilPressure);
+                                data = ConvertFromPSI(cvc, FakeOilPressure2);
                             }
                             break;
                         }

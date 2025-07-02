@@ -1576,8 +1576,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 
-                // WheelDamage - plošky na kolech při zaseknutých kolech                
-                if (BrakeSkid || WheelsSkiding)
+                // WheelDamage - plošky na kolech při zaseknutých kolech, které se tvoří při více jak 10 km/h                
+                if (Math.Abs(SpeedMpS) > 10f / 3.6f && (BrakeSkid || WheelsSkiding))
                 {
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
