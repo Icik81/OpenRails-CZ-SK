@@ -7501,33 +7501,36 @@ namespace Orts.Simulation.AIs
             //}
 
             // Icik
-            // Pískání pokud je doba 1s
-            if (durationS < 2)
+            if (durationS != 0)
             {
-                if (locomotive != null)
-                    locomotive.ManualBell = true;
-                yield return 1 - durationS.Value;
-
-                if (locomotive != null)
-                    locomotive.ManualBell = false;
-            }
-            // Houkání pokud je doba větší než 1s
-            else
-            {
-                if (locomotive != null)
-                    locomotive.ManualHorn = true;
-                yield return 2 - durationS.Value;
-
-                if (locomotive != null)
-                    locomotive.ManualHorn = false;
-            }
-
-            if (locomotive != null)
-            {
-                if (locomotive.DoesHornTriggerBell)
+                // Pískání pokud je doba 1s
+                if (durationS < 2)
                 {
-                    yield return 30 - durationS.Value;
-                    locomotive.BellState = MSTSLocomotive.SoundState.Stopped;
+                    if (locomotive != null)
+                        locomotive.ManualBell = true;
+                    yield return 1 - durationS.Value;
+
+                    if (locomotive != null)
+                        locomotive.ManualBell = false;
+                }
+                // Houkání pokud je doba větší než 1s
+                else
+                {
+                    if (locomotive != null)
+                        locomotive.ManualHorn = true;
+                    yield return 2 - durationS.Value;
+
+                    if (locomotive != null)
+                        locomotive.ManualHorn = false;
+                }
+
+                if (locomotive != null)
+                {
+                    if (locomotive.DoesHornTriggerBell)
+                    {
+                        yield return 30 - durationS.Value;
+                        locomotive.BellState = MSTSLocomotive.SoundState.Stopped;
+                    }
                 }
             }
         }
