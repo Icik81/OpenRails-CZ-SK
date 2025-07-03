@@ -1907,7 +1907,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }
             }
 
-            if ((EngineStatus == Status.Stopped) || (EngineStatus == Status.Stopping) || ((EngineStatus == Status.Starting) && (RealRPM < StartingRPM)))
+            if (EngineStatus == Status.Stopped)
             {
                 ExhaustParticles = 0;
                 DieselFlowLps = 0;
