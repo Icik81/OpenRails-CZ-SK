@@ -199,6 +199,8 @@ namespace ORTS
             trackAntiAliasing.Value = Settings.AntiAliasing == 0 ? 1 : Settings.AntiAliasing;
             trackAntiAliasing_ValueChanged(null, null);
             checkDoubleWire.Checked = Settings.DoubleWire;
+            checkBoxDieselSmoke.Checked = Settings.DieselSmoke;
+
             // Icik
             CabView_MSTSOR.Checked = Settings.CabView_MSTSOR;
             NightBrightnessTrackBar.Value = Settings.NightBrightness;
@@ -498,10 +500,10 @@ namespace ORTS
             Settings.ViewingFOV = (int)numericViewingFOV.Value;
             Settings.WorldObjectDensity = (int)numericWorldObjectDensity.Value;
             Settings.WindowSize = GetValidWindowSize(comboWindowSize.Text);
-
             Settings.DayAmbientLight = (int)trackDayAmbientLight.Value;
             Settings.DoubleWire = checkDoubleWire.Checked;
             Settings.AntiAliasing = trackAntiAliasing.Value;
+            Settings.DieselSmoke = checkBoxDieselSmoke.Checked;
 
             // Icik
             Settings.CabView_MSTSOR = CabView_MSTSOR.Checked;

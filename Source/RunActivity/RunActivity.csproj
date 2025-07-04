@@ -1140,6 +1140,7 @@
     <None Include="Content\AmbientSound\Thunder.sms" />
     <None Include="Content\AmbientSound\WinterDay.sms" />
     <None Include="Content\AmbientSound\WinterNight.sms" />
+    <None Include="Content\FX\dieselsmoke.ace" />
     <None Include="Content\GenericSound\2_Wheels\GenSound.sms" />
     <None Include="Content\GenericSound\2_Wheels\GenSound_ex.sms" />
     <None Include="Content\GenericSound\3_Wheels\GenSound.sms" />

@@ -280,6 +280,8 @@ namespace ORTS.Settings
         public int NightSignalLightGlowSize { get; set; }
         [Default(1)]
         public int ShadowSettings { get; set; }
+        [Default(true)]
+        public bool DieselSmoke { get; set; }
 
         // Simulation settings:
 

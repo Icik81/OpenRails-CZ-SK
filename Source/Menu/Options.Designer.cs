@@ -245,6 +245,7 @@
             this.ElevationText = new System.Windows.Forms.Label();
             this.pbLAA = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.checkBoxDieselSmoke = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericBrakePipeChargingRate)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -942,6 +943,7 @@
             // 
             // tabPageVideo
             // 
+            this.tabPageVideo.Controls.Add(this.checkBoxDieselSmoke);
             this.tabPageVideo.Controls.Add(this.labelLODBias);
             this.tabPageVideo.Controls.Add(this.label21);
             this.tabPageVideo.Controls.Add(this.trackLODBias);
@@ -3212,6 +3214,17 @@
             this.pbLAA.TabIndex = 0;
             this.pbLAA.TabStop = false;
             // 
+            // checkBoxDieselSmoke
+            // 
+            this.checkBoxDieselSmoke.AutoSize = true;
+            this.checkBoxDieselSmoke.Location = new System.Drawing.Point(8, 94);
+            this.checkBoxDieselSmoke.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxDieselSmoke.Name = "checkBoxDieselSmoke";
+            this.checkBoxDieselSmoke.Size = new System.Drawing.Size(133, 20);
+            this.checkBoxDieselSmoke.TabIndex = 60;
+            this.checkBoxDieselSmoke.Text = "Diesel Smoke FX";
+            this.checkBoxDieselSmoke.UseVisualStyleBackColor = true;
+            // 
             // OptionsForm
             // 
             this.AcceptButton = this.buttonOK;
@@ -3525,5 +3538,6 @@
         private System.Windows.Forms.Label label29;
         private System.Windows.Forms.CheckBox checkCorrectQuestionableBrakingParams;
         private System.Windows.Forms.CheckBox checkBoxHornLvlCrossing;
+        private System.Windows.Forms.CheckBox checkBoxDieselSmoke;
     }
 }
