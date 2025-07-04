@@ -203,6 +203,14 @@ namespace Orts.Formats.Msts
         FrontHeadLight, // 9
         RearHeadLight, // 10
     }
+
+    public enum LightGlowType
+    {
+        Bulb,  // 0
+        Led, // 1        
+        Star, // 2        
+        User, // 3      
+    }
     #endregion
 
     /// <summary>
@@ -226,6 +234,7 @@ namespace Orts.Formats.Msts
         public LightHandleCondition UnitSide;
         public LightHeadlightCondition HeadlightFront;
         public LightHeadlightCondition HeadlightRear;
+        public LightGlowType LightGlowType;
 
         public bool Cycle;
         public float FadeIn;
@@ -238,6 +247,7 @@ namespace Orts.Formats.Msts
             stf.MustMatch("(");
             stf.ParseBlock(new[] {
                 new STFReader.TokenProcessor("type", ()=>{ Type = (LightType)stf.ReadIntBlock(null); }),
+                new STFReader.TokenProcessor("lightglowtype", ()=>{ LightGlowType = (LightGlowType)stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("conditions", ()=>{ stf.MustMatch("("); stf.ParseBlock(new[] {
                     new STFReader.TokenProcessor("headlight", ()=>{ Headlight = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("unit", ()=>{ Unit = (LightUnitCondition)stf.ReadIntBlock(null); }),
@@ -250,7 +260,7 @@ namespace Orts.Formats.Msts
                     // Icik
                     new STFReader.TokenProcessor("unitside", ()=>{ UnitSide = (LightHandleCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("headlightfront", ()=>{ HeadlightFront = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
-                    new STFReader.TokenProcessor("headlightrear", ()=>{ HeadlightRear = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
+                    new STFReader.TokenProcessor("headlightrear", ()=>{ HeadlightRear = (LightHeadlightCondition)stf.ReadIntBlock(null); }),                    
                 });}),
                 new STFReader.TokenProcessor("cycle", ()=>{ Cycle = 0 != stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("fadein", ()=>{ FadeIn = stf.ReadFloatBlock(STFReader.UNITS.None, null); }),
@@ -292,6 +302,7 @@ namespace Orts.Formats.Msts
             UnitSide = light.UnitSide;
             HeadlightFront = light.HeadlightFront;
             HeadlightRear = light.HeadlightRear;
+            LightGlowType = light.LightGlowType;
 
             foreach (var state in light.States)
                 States.Add(new LightState(state, reverse));

@@ -697,6 +697,9 @@
     <Content Include="Content\ETCS\SE_04.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\FX\Bulb.png" />
+    <Content Include="Content\FX\Led.png" />
+    <Content Include="Content\FX\Star.png" />
     <Content Include="Content\GenericSound\2_Wheels\162.113_aero.wav" />
     <Content Include="Content\GenericSound\2_Wheels\240_sedacka_00.wav" />
     <Content Include="Content\GenericSound\2_Wheels\240_sedacka_01.wav" />

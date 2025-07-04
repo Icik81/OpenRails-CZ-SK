@@ -89,7 +89,7 @@ namespace Orts.Viewer3D
         {
             Viewer = viewer;
             Car = car;
-            LightGlowMaterial = viewer.MaterialManager.Load("LightGlow");
+            LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
             LightConeMaterial = viewer.MaterialManager.Load("LightCone");
 
             UpdateState();
@@ -101,6 +101,21 @@ namespace Orts.Viewer3D
                     {
                         case LightType.Glow:
                             LightPrimitives.Add(new LightGlowPrimitive(this, Viewer.RenderProcess, light));
+                            switch (light.LightGlowType)
+                            {
+                                case LightGlowType.Bulb:
+                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
+                                    break;
+                                case LightGlowType.Led:
+                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Led.png"));
+                                    break;
+                                case LightGlowType.Star:
+                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Star.png"));
+                                    break;
+                                case LightGlowType.User:
+                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\User.png"));
+                                    break;
+                            }                            
                             break;
                         case LightType.Cone:
                             LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));
@@ -183,13 +198,13 @@ namespace Orts.Viewer3D
             Vector3 mstsLocation = new Vector3(xnaDTileTranslation.Translation.X, xnaDTileTranslation.Translation.Y, -xnaDTileTranslation.Translation.Z);
 
             float objectRadius = 20; // Even more arbitrary.
-            float objectViewingDistance = Viewer.Settings.ViewingDistance; // Arbitrary.
+            float objectViewingDistance = Viewer.Settings.ViewingDistance; // Arbitrary.            
+
             if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
                 foreach (var lightPrimitive in LightPrimitives)
-                    if (lightPrimitive.Enabled || lightPrimitive.FadeOut)
-                        if (lightPrimitive is LightGlowPrimitive)
-                            frame.AddPrimitive(LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
-
+                    if ((lightPrimitive.Enabled || lightPrimitive.FadeOut) && lightPrimitive is LightGlowPrimitive)                    
+                        frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).SpecificGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
+                    
 #if DEBUG_LIGHT_CONE
             foreach (var lightPrimitive in LightPrimitives)
                 if (lightPrimitive.Enabled || lightPrimitive.FadeOut)
@@ -215,6 +230,9 @@ namespace Orts.Viewer3D
         {
             LightGlowMaterial.Mark();
             LightConeMaterial.Mark();
+            foreach (var lightPrimitive in LightPrimitives)
+                if (lightPrimitive is LightGlowPrimitive)                
+                    (lightPrimitive as LightGlowPrimitive).SpecificGlowMaterial.Mark();                
         }
 
         public static void CalculateLightCone(LightState lightState, out Vector3 position, out Vector3 direction, out float angle, out float radius, out float distance, out Vector4 color)
@@ -695,6 +713,7 @@ namespace Orts.Viewer3D
         static VertexDeclaration VertexDeclaration;
         VertexBuffer VertexBuffer;
         static IndexBuffer IndexBuffer;
+        public Material SpecificGlowMaterial;
 
         public LightGlowPrimitive(LightViewer lightViewer, RenderProcess renderProcess, Light light)
             : base(light)
@@ -941,19 +960,19 @@ namespace Orts.Viewer3D
     {
         readonly Texture2D LightGlowTexture;
 
-        public LightGlowMaterial(Viewer viewer)
-            : base(viewer, null)
+        public LightGlowMaterial(Viewer viewer, string textureName)
+            : base(viewer, textureName)
         {
             // TODO: This should happen on the loader thread.
-            LightGlowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Lightglow.png"));
+            LightGlowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, textureName);
         }
 
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
-        {
+        {            
             var shader = Viewer.MaterialManager.LightGlowShader;
             shader.CurrentTechnique = shader.Techniques["LightGlow"];
-            shader.LightGlowTexture = LightGlowTexture;
-
+            shader.LightGlowTexture = LightGlowTexture;           
+            
             graphicsDevice.BlendState = BlendState.NonPremultiplied;
             graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
         }
