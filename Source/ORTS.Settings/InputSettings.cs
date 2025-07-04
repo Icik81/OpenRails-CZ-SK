@@ -638,7 +638,9 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlTractionSwitchUp] = new UserCommandKeyInput(0x18);
             Commands[(int)UserCommand.ControlTractionSwitchDown] = new UserCommandKeyInput(0x18, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlWipers3ActivationSwitchUp] = new UserCommandKeyInput(0x2F);
-            Commands[(int)UserCommand.ControlWipers3ActivationSwitchDown] = new UserCommandKeyInput(0x2F, KeyModifiers.Shift);            
+            Commands[(int)UserCommand.ControlWipers3ActivationSwitchDown] = new UserCommandKeyInput(0x2F, KeyModifiers.Shift);
+            Commands[(int)UserCommand.ControlSwitchEngineUp] = new UserCommandKeyInput(0x15, KeyModifiers.Shift | KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlSwitchEngineDown] = new UserCommandKeyInput(0x15, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
         }
         #endregion
 

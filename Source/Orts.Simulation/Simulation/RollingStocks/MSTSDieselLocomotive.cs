@@ -1471,6 +1471,46 @@ namespace Orts.Simulation.RollingStocks
                 PowerKey = true;
             }
             
+            if (SwitchEngineEnable)
+            {                
+                if (StartButtonPressed)
+                {
+                    switch (SwitchEnginePosition[LocoStation])
+                    {
+                        case 0:                            
+                            StartButtonPressed = true;
+                            StartButtonPressed2 = false;                            
+                            break;
+                        case 1:
+                            StartButtonPressed = false;
+                            StartButtonPressed2 = true;                            
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                    }
+                }
+                if (StopButtonPressed)
+                {
+                    switch (SwitchEnginePosition[LocoStation])
+                    {
+                        case 0:
+                            StopButtonPressed = true;
+                            StopButtonPressed2 = false;
+                            break;
+                        case 1:
+                            StopButtonPressed = false;
+                            StopButtonPressed2 = true;
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            break;
+                    }
+                }
+            }
+
             // První motor
             // Spustí mazací čerpadlo při startu
             if ((StartButtonPressed || StartLooseCon || DieselEngines[0].OnePushStartButton)
@@ -1637,8 +1677,8 @@ namespace Orts.Simulation.RollingStocks
                             DieselEngines[1].Stop();
                         }
                     }
-                }
-                Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
+                }                
+                //Simulator.Confirmer.Confirm(CabControl.PlayerDiesel, StartButtonPressed ? CabSetting.On : CabSetting.Off);
             }
             else
             {

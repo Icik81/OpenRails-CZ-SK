@@ -773,6 +773,8 @@ namespace Orts.Simulation.RollingStocks
         public float Panto4AnimFrame;
         public int Panto3AnimFrameCount;
         public int Panto4AnimFrameCount;
+        public int[] SwitchEnginePosition = new int[4];
+        public bool SwitchEngineEnable;
 
 
         // Jindrich
@@ -2140,6 +2142,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(TractionSwitchPosition[2]);
             outf.Write(Wipers3ActivationSwitch[1]);
             outf.Write(Wipers3ActivationSwitch[2]);
+            outf.Write(SwitchEnginePosition[1]);
+            outf.Write(SwitchEnginePosition[2]);
             #endregion
 
             base.Save(outf);
@@ -2402,6 +2406,8 @@ namespace Orts.Simulation.RollingStocks
             TractionSwitchPosition[2] = inf.ReadInt32();
             Wipers3ActivationSwitch[1] = inf.ReadInt32();
             Wipers3ActivationSwitch[2] = inf.ReadInt32();
+            SwitchEnginePosition[1] = inf.ReadInt32();
+            SwitchEnginePosition[2] = inf.ReadInt32();
             #endregion
 
             base.Restore(inf);
@@ -16596,6 +16602,46 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
+        public void ToggleSwitchEngineUp()
+        {
+            SwitchEngineEnable = true;
+
+            if (!SwitchEngineEnable || !(this is MSTSDieselLocomotive)) return;
+            if (SwitchEnginePosition[LocoStation] < (this as MSTSDieselLocomotive).DieselEngines.Count - 1)
+            {
+                SwitchEnginePosition[LocoStation]++;
+                SignalEvent(Event.LightSwitchToggle);
+                SwitchEngines();
+            }
+        }
+        public void ToggleSwitchEngineDown()
+        {
+            if (!SwitchEngineEnable || !(this is MSTSDieselLocomotive)) return;
+            if (SwitchEnginePosition[LocoStation] > 0)
+            {
+                SwitchEnginePosition[LocoStation]--;
+                SignalEvent(Event.LightSwitchToggle);
+                SwitchEngines();
+            }
+        }
+        public void SwitchEngines()
+        {
+            switch (SwitchEnginePosition[LocoStation])
+            {
+                case 0:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine") + " 1");
+                    break;
+                case 1:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine") + " 2");
+                    break;
+                case 2:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine") + " 3");
+                    break;
+                case 3:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Engine") + " 4");
+                    break;
+            }
+        }
 
         public int LightsFrameUpdate = 0;
         public void LightPositionHandle()
@@ -22152,18 +22198,42 @@ namespace Orts.Simulation.RollingStocks
                         }
                         break;
                     }
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_SWITCHER:
+                    {
+                        SwitchEngineEnable = true;
+                        data = 0;
+                        if (this is MSTSDieselLocomotive)                                                                               
+                            data = SwitchEnginePosition[LocoStation] == 1 ? 1 : 0;                        
+                        break;
+                    }
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER:
                     {
                         data = 0;
                         if (this is MSTSDieselLocomotive)
                         {
-                            var dieselLoco = this as MSTSDieselLocomotive;
-                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
+                            var dieselLoco = this as MSTSDieselLocomotive;                                                        
+                            if (SwitchEngineEnable)
+                            {
+                                switch (SwitchEnginePosition[LocoStation])
+                                {
+                                    case 0:
+                                        data = StartButtonPressed ? 1 : 0;
+                                        break;
+                                    case 1:
+                                        data = StartButtonPressed2 ? 1 : 0;
+                                        break;
+                                    case 2:                                       
+                                        break;
+                                    case 3:                                        
+                                        break;
+                                }
+                            }
+                            else
                             if (LocomotiveTypeNumber == 809 || LocomotiveTypeNumber == 810
                             || LocomotiveTypeNumber == 811 || LocomotiveTypeNumber == 812
                             || LocomotiveTypeNumber == 151 || LocomotiveTypeNumber == 152)
                             {
-                                if (StartButtonPressed || StopButtonPressed) data = 1;                                
+                                if (StartButtonPressed || StopButtonPressed) data = 1;
                             }
                             else
                                 data = StartButtonPressed ? 1 : 0;
@@ -22176,15 +22246,31 @@ namespace Orts.Simulation.RollingStocks
                         if (this is MSTSDieselLocomotive)
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
-                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;
-                            data = StopButtonPressed ? 1 : 0;
+                            if (SwitchEngineEnable)
+                            {
+                                switch (SwitchEnginePosition[LocoStation])
+                                {
+                                    case 0:
+                                        data = StopButtonPressed ? 1 : 0;
+                                        break;
+                                    case 1:
+                                        data = StopButtonPressed2 ? 1 : 0;
+                                        break;
+                                    case 2:
+                                        break;
+                                    case 3:
+                                        break;
+                                }
+                            }
+                            else
+                                data = StopButtonPressed ? 1 : 0;
                         }
                         break;
                     }
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER2:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive)
+                        if (this is MSTSDieselLocomotive && !SwitchEngineEnable)
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
                             //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
@@ -22195,7 +22281,7 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER2:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive)
+                        if (this is MSTSDieselLocomotive && !SwitchEngineEnable)
                         {
                             var dieselLoco = this as MSTSDieselLocomotive;
                             //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;

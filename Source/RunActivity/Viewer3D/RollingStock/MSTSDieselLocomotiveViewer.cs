@@ -44,7 +44,7 @@ namespace Orts.Viewer3D.RollingStock
             // on what emitters we know about.
 
             string dieselTexture = viewer.Simulator.BasePath + @"\GLOBAL\TEXTURES\dieselsmoke.ace";
-
+            //string dieselTexture = System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Fx\\dieselsmoke.ace");            
 
             // Diesel Exhaust
             foreach (var drawers in from drawer in ParticleDrawers
@@ -99,7 +99,7 @@ namespace Orts.Viewer3D.RollingStock
         public override void InitializeUserInputCommands()
         {
             UserInputCommands.Add(UserCommand.ControlVacuumExhausterPressed, new Action[] { () => new VacuumExhausterCommand(Viewer.Log, false), () => new VacuumExhausterCommand(Viewer.Log, true) });
-            UserInputCommands.Add(UserCommand.ControlDieselPlayer, new Action[] { Noop, () => new TogglePlayerEngineCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlDieselPlayer, new Action[] { Noop, () => new TogglePlayerEngineCommand(Viewer.Log) });            
             UserInputCommands.Add(UserCommand.ControlDieselPlayer2, new Action[] { Noop, () => new TogglePlayerEngineCommand(Viewer.Log) });
             base.InitializeUserInputCommands();
         }

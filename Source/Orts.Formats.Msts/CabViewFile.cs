@@ -563,6 +563,7 @@ namespace Orts.Formats.Msts
         TRACTION_SWITCH,
         TRESHOLD_INDICATOR,
         WIPERS3_ACTIVATION_SWITCH,
+        ORTS_PLAYER_DIESEL_ENGINE_SWITCHER,
 
         // ORTS
         ORTS_SCREEN_SELECT,

@@ -2298,7 +2298,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarHasHeatingReady);
             outf.Write(CarOutsideTempCBase);
             outf.Write(SelectedCar);
-            outf.Write(WagonIsFlipped);
+            outf.Write(WagonIsFlipped);            
 
             BrakeSystem.Save(outf);
         }

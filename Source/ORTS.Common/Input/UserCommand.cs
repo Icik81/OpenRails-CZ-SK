@@ -336,6 +336,8 @@
         [GetString("Control_CZSK Traction Switch -")] ControlTractionSwitchDown,
         [GetString("Control_CZSK Wipers Switch +")] ControlWipers3ActivationSwitchUp,
         [GetString("Control_CZSK Wipers Switch -")] ControlWipers3ActivationSwitchDown,
+        [GetString("Control_CZSK Engine Switch +")] ControlSwitchEngineUp,
+        [GetString("Control_CZSK Engine Switch -")] ControlSwitchEngineDown,
 
         [GetString("Set Power Supply Station Location")] ControlPowerStationLocation,
         [GetString("Set Voltage 25k")] ControlSetVoltage25k,

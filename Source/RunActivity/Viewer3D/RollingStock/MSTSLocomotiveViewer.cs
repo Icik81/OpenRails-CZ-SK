@@ -418,6 +418,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlTractionSwitchDown, new Action[] { Noop, () => new ToggleTractionSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlWipers3ActivationSwitchUp, new Action[] { Noop, () => new ToggleWipers3ActivationSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlWipers3ActivationSwitchDown, new Action[] { Noop, () => new ToggleWipers3ActivationSwitchDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitchEngineUp, new Action[] { Noop, () => new SwitchEngineUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlSwitchEngineDown, new Action[] { Noop, () => new SwitchEngineDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -901,8 +903,50 @@ namespace Orts.Viewer3D.RollingStock
                     }
                 }
             }
+
+            // Ovládání společného tlačítka startu motoru
+            if ((Locomotive as MSTSDieselLocomotive) != null && Locomotive.SwitchEngineEnable)
+            {
+                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                {
+                    Locomotive.StartButtonPressed = false;
+                    Locomotive.StopButtonPressed = false;
+                    Locomotive.StartButtonPressed2 = false;
+                    Locomotive.StopButtonPressed2 = false;
+                }
+
+                if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                {
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && !Locomotive.StopButtonPressed)
+                        Locomotive.StartButtonPressed = true;
+
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && !Locomotive.StartButtonPressed)
+                        Locomotive.StopButtonPressed = true;
+                }
+                if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                {
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                    && !Locomotive.StopButtonPressed2)
+                        Locomotive.StartButtonPressed2 = true;
+
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && !Locomotive.StartButtonPressed2)
+                        Locomotive.StopButtonPressed2 = true;
+                }
+            }
+
             // Ovládání tlačítka startu motoru
-            if ((Locomotive as MSTSDieselLocomotive) != null)
+            if ((Locomotive as MSTSDieselLocomotive) != null && !Locomotive.SwitchEngineEnable)
             {
                 if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
                 {
@@ -923,7 +967,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.StopButtonPressed = true;
             }
             // Ovládání tlačítka startu motoru 2
-            if ((Locomotive as MSTSDieselLocomotive) != null)
+            if ((Locomotive as MSTSDieselLocomotive) != null && !Locomotive.SwitchEngineEnable)
             {
                 if (!UserInput.IsDown(UserCommand.ControlDieselPlayer2))
                 {
@@ -3656,7 +3700,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_BATTERY:
                 case CABViewControlTypes.ORTS_POWERKEY:
 
-                // Icik                
+                // Icik                                
                 case CABViewControlTypes.HV2:
                 case CABViewControlTypes.HV2BUTTON:
                 case CABViewControlTypes.HV3:
@@ -3795,6 +3839,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.TRACTION_SWITCH:
                 case CABViewControlTypes.TRESHOLD_INDICATOR:
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_SWITCHER:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4192,71 +4237,120 @@ namespace Orts.Viewer3D.RollingStock
                         }
                     }
                     break;
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_SWITCHER:                    
+                    if (ChangedValue(0) > 0 && !IsChanged && UserInput.IsMouseLeftButtonDown)
+                    {
+                        new SwitchEngineUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged && UserInput.IsMouseLeftButtonDown)
+                    {
+                        new SwitchEngineDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;                    
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
 
-                    // Motoráky startují a stopují jedním tlačítkem
-                    if (Locomotive.LocomotiveTypeNumber == 809 || Locomotive.LocomotiveTypeNumber == 810
-                        || Locomotive.LocomotiveTypeNumber == 811 || Locomotive.LocomotiveTypeNumber == 812
-                        || Locomotive.LocomotiveTypeNumber == 151 || Locomotive.LocomotiveTypeNumber == 152)
+                    if (Locomotive.SwitchEngineEnable)
                     {
-                        if (!StopButtonPressed && dieselLoco.DieselEngines[0].EngineStatus != DieselEngine.Status.Running &&
-                            UserInput.IsMouseLeftButtonDown)
+                        if (UserInput.IsMouseLeftButtonDown)
                         {
-                            Locomotive.StartButtonPressed = true;
-                            StartButtonPressed = true;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                                Locomotive.StartButtonPressed = true;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                                Locomotive.StartButtonPressed2 = true;
                             new TogglePlayerEngineCommand(Viewer.Log);
                         }
-
-                        if (StartButtonPressed && dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Running &&
-                            UserInput.IsMouseLeftButtonReleased)
+                        else
+                        if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
                         {
-                            StartButtonPressed = false;
-                        }
-
-                        if (!StartButtonPressed && dieselLoco.DieselEngines[0].EngineStatus != DieselEngine.Status.Stopped &&
-                            UserInput.IsMouseLeftButtonDown)
-                        {
-                            Locomotive.StopButtonPressed = true;
-                            StopButtonPressed = true;
-                            new TogglePlayerEngineCommand(Viewer.Log);
-                        }
-
-                        if (StopButtonPressed && dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped &&
-                            UserInput.IsMouseLeftButtonReleased)
-                        {
-                            StopButtonPressed = false;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                                Locomotive.StartButtonPressed = false;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                                Locomotive.StartButtonPressed2 = false;
                         }
                     }
                     else
                     {
-                        if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped &&*/
-                            UserInput.IsMouseLeftButtonDown)
+                        // Motoráky startují a stopují jedním tlačítkem
+                        if (Locomotive.LocomotiveTypeNumber == 809 || Locomotive.LocomotiveTypeNumber == 810
+                        || Locomotive.LocomotiveTypeNumber == 811 || Locomotive.LocomotiveTypeNumber == 812
+                        || Locomotive.LocomotiveTypeNumber == 151 || Locomotive.LocomotiveTypeNumber == 152)
                         {
-                            Locomotive.StartButtonPressed = true;
-                            new TogglePlayerEngineCommand(Viewer.Log);
+                            if (!StopButtonPressed && dieselLoco.DieselEngines[0].EngineStatus != DieselEngine.Status.Running &&
+                                UserInput.IsMouseLeftButtonDown)
+                            {
+                                Locomotive.StartButtonPressed = true;
+                                StartButtonPressed = true;
+                                new TogglePlayerEngineCommand(Viewer.Log);
+                            }
+
+                            if (StartButtonPressed && dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Running &&
+                                UserInput.IsMouseLeftButtonReleased)
+                            {
+                                StartButtonPressed = false;
+                            }
+
+                            if (!StartButtonPressed && dieselLoco.DieselEngines[0].EngineStatus != DieselEngine.Status.Stopped &&
+                                UserInput.IsMouseLeftButtonDown)
+                            {
+                                Locomotive.StopButtonPressed = true;
+                                StopButtonPressed = true;
+                                new TogglePlayerEngineCommand(Viewer.Log);
+                            }
+
+                            if (StopButtonPressed && dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped &&
+                                UserInput.IsMouseLeftButtonReleased)
+                            {
+                                StopButtonPressed = false;
+                            }
                         }
                         else
+                        {
+                            if (UserInput.IsMouseLeftButtonDown)
+                            {
+                                Locomotive.StartButtonPressed = true;
+                                new TogglePlayerEngineCommand(Viewer.Log);
+                            }
+                            else
                             if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
-                            Locomotive.StartButtonPressed = false;
+                                Locomotive.StartButtonPressed = false;
+                        }
                     }
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running &&*/
-                        UserInput.IsMouseLeftButtonDown)
+                    if (UserInput.IsMouseLeftButtonDown)
                     {
-                        Locomotive.StopButtonPressed = true;
+                        if (Locomotive.SwitchEngineEnable)
+                        {
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                                Locomotive.StopButtonPressed = true;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                                Locomotive.StopButtonPressed2 = true;
+                        }
+                        else
+                            Locomotive.StopButtonPressed = true;
                         new TogglePlayerEngineCommand(Viewer.Log);
                     }
                     else
-                        if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
-                        Locomotive.StopButtonPressed = false;
+                    if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                    {
+                        if (Locomotive.SwitchEngineEnable)
+                        {
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                                Locomotive.StopButtonPressed = false;
+                            if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                                Locomotive.StopButtonPressed2 = false;
+                        }
+                        else
+                            Locomotive.StopButtonPressed = false;
+                    }
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER2:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped &&*/
-                        UserInput.IsMouseLeftButtonDown)
+                    if (UserInput.IsMouseLeftButtonDown)
                     {
                         Locomotive.StartButtonPressed2 = true;
                         new TogglePlayerEngineCommand(Viewer.Log);
@@ -4267,8 +4361,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER2:
                     dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if (/*dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running &&*/
-                        UserInput.IsMouseLeftButtonDown)
+                    if (UserInput.IsMouseLeftButtonDown)
                     {
                         Locomotive.StopButtonPressed2 = true;
                         new TogglePlayerEngineCommand(Viewer.Log);

@@ -1115,6 +1115,38 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class SwitchEngineUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public SwitchEngineUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitchEngineUp();
+        }
+    }
+    [Serializable()]
+    public sealed class SwitchEngineDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public SwitchEngineDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleSwitchEngineDown();
+        }
+    }
+    [Serializable()]
     public sealed class Switch5LightUpCommand : Command
     {
         public static MSTSLocomotive Receiver { get; set; }
