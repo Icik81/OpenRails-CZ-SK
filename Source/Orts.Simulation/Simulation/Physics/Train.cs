@@ -3370,8 +3370,9 @@ namespace Orts.Simulation.Physics
                     TrainMaxSpeedMpS = (this.LeadLocomotive as MSTSLocomotive).MaxSpeedMpS;
 
                 // Icik
-                TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-
+                if (IsActualPlayerTrain)
+                    TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+                
                 AllowedMaxSpeedMpS = TrainMaxSpeedMpS;
                 allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default

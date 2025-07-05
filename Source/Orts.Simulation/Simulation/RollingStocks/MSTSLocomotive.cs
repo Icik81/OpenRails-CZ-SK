@@ -22201,7 +22201,7 @@ namespace Orts.Simulation.RollingStocks
                         SwitchEngineEnable = true;
                         data = 0;
                         if (this is MSTSDieselLocomotive)                                                                               
-                            data = SwitchEnginePosition[LocoStation] == 1 ? 1 : 0;                        
+                            data = SwitchEnginePosition[LocoStation];                        
                         break;
                     }
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER:
