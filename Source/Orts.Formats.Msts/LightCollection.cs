@@ -208,9 +208,8 @@ namespace Orts.Formats.Msts
     {
         Bulb,  // 0
         Led, // 1        
-        Star, // 2        
-        User, // 3      
-    }
+        Star, // 2                
+    }    
     #endregion
 
     /// <summary>
@@ -235,6 +234,7 @@ namespace Orts.Formats.Msts
         public LightHeadlightCondition HeadlightFront;
         public LightHeadlightCondition HeadlightRear;
         public LightGlowType LightGlowType;
+        public string LightGlowName;
 
         public bool Cycle;
         public float FadeIn;
@@ -248,6 +248,7 @@ namespace Orts.Formats.Msts
             stf.ParseBlock(new[] {
                 new STFReader.TokenProcessor("type", ()=>{ Type = (LightType)stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("lightglowtype", ()=>{ LightGlowType = (LightGlowType)stf.ReadIntBlock(null); }),
+                new STFReader.TokenProcessor("lightglowname", ()=>{ LightGlowName = stf.ReadStringBlock(null); }),
                 new STFReader.TokenProcessor("conditions", ()=>{ stf.MustMatch("("); stf.ParseBlock(new[] {
                     new STFReader.TokenProcessor("headlight", ()=>{ Headlight = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("unit", ()=>{ Unit = (LightUnitCondition)stf.ReadIntBlock(null); }),
@@ -303,6 +304,7 @@ namespace Orts.Formats.Msts
             HeadlightFront = light.HeadlightFront;
             HeadlightRear = light.HeadlightRear;
             LightGlowType = light.LightGlowType;
+            LightGlowName = light.LightGlowName;
 
             foreach (var state in light.States)
                 States.Add(new LightState(state, reverse));

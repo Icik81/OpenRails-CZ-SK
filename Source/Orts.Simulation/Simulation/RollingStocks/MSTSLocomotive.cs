@@ -16603,9 +16603,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void ToggleSwitchEngineUp()
-        {
-            SwitchEngineEnable = true;
-
+        {            
             if (!SwitchEngineEnable || !(this is MSTSDieselLocomotive)) return;
             if (SwitchEnginePosition[LocoStation] < (this as MSTSDieselLocomotive).DieselEngines.Count - 1)
             {

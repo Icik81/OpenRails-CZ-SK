@@ -101,21 +101,25 @@ namespace Orts.Viewer3D
                     {
                         case LightType.Glow:
                             LightPrimitives.Add(new LightGlowPrimitive(this, Viewer.RenderProcess, light));
+                            
+                            // Základní typy světelných masek
                             switch (light.LightGlowType)
                             {
                                 case LightGlowType.Bulb:
-                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
+                                    (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
                                     break;
                                 case LightGlowType.Led:
-                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Led.png"));
+                                    (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Led.png"));
                                     break;
                                 case LightGlowType.Star:
-                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Star.png"));
-                                    break;
-                                case LightGlowType.User:
-                                    (LightPrimitives.Last() as LightGlowPrimitive).SpecificGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\User.png"));
-                                    break;
-                            }                            
+                                    (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Star.png"));
+                                    break;                                                             
+                            }                           
+                            
+                            // Uživatelsky definovaná maska
+                            if (light.LightGlowName != null)                            
+                                (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\" + light.LightGlowName));                            
+
                             break;
                         case LightType.Cone:
                             LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));
@@ -203,7 +207,7 @@ namespace Orts.Viewer3D
             if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
                 foreach (var lightPrimitive in LightPrimitives)
                     if ((lightPrimitive.Enabled || lightPrimitive.FadeOut) && lightPrimitive is LightGlowPrimitive)                    
-                        frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).SpecificGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
+                        frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
                     
 #if DEBUG_LIGHT_CONE
             foreach (var lightPrimitive in LightPrimitives)
@@ -232,7 +236,7 @@ namespace Orts.Viewer3D
             LightConeMaterial.Mark();
             foreach (var lightPrimitive in LightPrimitives)
                 if (lightPrimitive is LightGlowPrimitive)                
-                    (lightPrimitive as LightGlowPrimitive).SpecificGlowMaterial.Mark();                
+                    (lightPrimitive as LightGlowPrimitive).LightGlowMaterial.Mark();                
         }
 
         public static void CalculateLightCone(LightState lightState, out Vector3 position, out Vector3 direction, out float angle, out float radius, out float distance, out Vector4 color)
@@ -713,7 +717,7 @@ namespace Orts.Viewer3D
         static VertexDeclaration VertexDeclaration;
         VertexBuffer VertexBuffer;
         static IndexBuffer IndexBuffer;
-        public Material SpecificGlowMaterial;
+        public Material LightGlowMaterial;
 
         public LightGlowPrimitive(LightViewer lightViewer, RenderProcess renderProcess, Light light)
             : base(light)
