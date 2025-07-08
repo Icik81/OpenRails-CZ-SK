@@ -17166,7 +17166,7 @@ namespace Orts.Simulation.Physics
         public void FillNames(Train train)
         {
             // Icik
-            if (StationStops.Count < 2) return;                                    
+            if (StationStops.Count < 2 || train.Cars.Count < 1) return;                                    
 
             if (numCars == 0)
             {

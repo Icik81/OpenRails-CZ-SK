@@ -223,6 +223,10 @@ namespace Orts.Viewer3D.RollingStock
         {
             var car = Car as MSTSSteamLocomotive;
 
+            // Static je částečně natopený
+            if (car.LocoIsStatic)
+                car.UpdateFX(car.Simulator.OneSecondLoop);
+
             foreach (var drawer in Cylinders)
                 drawer.SetOutput(car.Cylinders1SteamVelocityMpS, car.Cylinders1SteamVolumeM3pS, car.Cylinder1ParticleDurationS);
 

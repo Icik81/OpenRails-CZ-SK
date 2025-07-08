@@ -1483,7 +1483,7 @@ namespace Orts.Viewer3D
 
             // Zabezpečí vypnutý zvuk při odstavených lokomotivách a vozech
             var car = SoundSource.Car;
-            if (car != null && !car.BrakeSystem.PowerForWagon)
+            if (car != null && !car.BrakeSystem.PowerForWagon && !(car is MSTSSteamLocomotive))
             {
                 if (car is MSTSLocomotive || car is MSTSControlUnit)
                 {

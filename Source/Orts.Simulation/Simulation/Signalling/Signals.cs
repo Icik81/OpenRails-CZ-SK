@@ -7170,7 +7170,7 @@ namespace Orts.Simulation.Signalling
                             {
                                 // check if still ahead of us
 
-                                if (thisTrain != null && thisTrain.ValidRoute != null)
+                                if (thisTrain != null && thisTrain.ValidRoute != null && thisTrain.ValidRoute[0] != null)
                                 {
                                     int lastSectionIndex = thisTrain.ValidRoute[0].GetRouteIndex(nextRear.TCSectionIndex, thisTrain.PresentPosition[0].RouteListIndex);
                                     if (lastSectionIndex >= thisTrain.PresentPosition[0].RouteListIndex)

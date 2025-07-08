@@ -114,13 +114,20 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            var car = this.Car as MSTSDieselLocomotive;
+            var car = this.Car as MSTSDieselLocomotive;            
 
             // Diesel exhaust
             // Icik                        
             var exhaustParticles1 = car.DieselEngines[0].ExhaustParticles;
             var exhaustParticles2 = car.DieselEngines.Count > 1 ? car.DieselEngines[1].ExhaustParticles : 0;
-            
+
+            // Static nevypouští kouř
+            if (car.LocoIsStatic)
+            {
+                exhaustParticles1 = 0;
+                exhaustParticles2 = 0;
+            }
+
             // Ošetření kouře pro Static, pokud je NaN
             if (float.IsNaN(exhaustParticles1))
             {

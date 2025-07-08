@@ -2023,7 +2023,7 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// Update variables related to audiovisual effects (sound, steam)
         /// </summary>
-        private void UpdateFX(float elapsedClockSeconds)
+        public void UpdateFX(float elapsedClockSeconds)
         {
             // This section updates the various steam effects for the steam locomotive. It uses the particle drawer which has the following inputs.
             // Stack - steam velocity, steam volume, particle duration, colour, whislts all other effects use these inputs only, non-Stack - steam velocity, steam volume, particle duration
