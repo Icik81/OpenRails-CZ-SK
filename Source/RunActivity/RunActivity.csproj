@@ -700,6 +700,12 @@
     </Content>
     <Content Include="Content\FX\Bulb.png" />
     <Content Include="Content\FX\Led.png" />
+    <Content Include="Content\FX\LIGHT-LED-FULL.png" />
+    <Content Include="Content\FX\LIGHT-LED-HornaLED-kolmo.png" />
+    <Content Include="Content\FX\LIGHT-LED-Red.png" />
+    <Content Include="Content\FX\LIGHT-LED-Reflektor_PL_kolmo.png" />
+    <Content Include="Content\FX\LIGHT-LED-Reflektor_TL_kolmo.png" />
+    <Content Include="Content\FX\LIGHT-LED-White.png" />
     <Content Include="Content\FX\Star.png" />
     <Content Include="Content\GenericSound\2_Wheels\162.113_aero.wav" />
     <Content Include="Content\GenericSound\2_Wheels\240_sedacka_00.wav" />
