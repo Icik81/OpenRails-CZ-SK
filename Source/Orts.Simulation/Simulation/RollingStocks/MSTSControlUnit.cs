@@ -196,6 +196,10 @@ namespace Orts.Simulation.RollingStocks
                         if (!CompressorCombined2 && !CompressorOffAutoOn2)
                             CompressorMode2_OffAuto[LocoStation] = false;
                     }
+
+                    if (Pantograph4Enable)
+                        Pantograph4Switch[LocoStation] = 1;
+
                     HV4Switch[LocoStation] = 1;
                     Battery = true;                    
                 }
@@ -209,6 +213,7 @@ namespace Orts.Simulation.RollingStocks
                         var PU = car as MSTSElectricLocomotive;
 
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
+                        CircuitBreakerOn = PU.CircuitBreakerOn;
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
                         MaxForceN = PU.MaxForceN;
@@ -228,7 +233,7 @@ namespace Orts.Simulation.RollingStocks
                         LocoSwitchACDC = PU.LocoSwitchACDC;
                         SwitchingVoltageMode = PU.SwitchingVoltageMode;
                         PowerOn = PU.PowerOn;
-                        AuxPowerOn = PU.AuxPowerOn;
+                        AuxPowerOn = PU.AuxPowerOn;                        
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
@@ -242,7 +247,7 @@ namespace Orts.Simulation.RollingStocks
                                 Simulator.ControlUnitIsLead = true;
 
                             PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
-                            PU.PowerKey = PowerKey;
+                            PU.PowerKey = PowerKey;                                                                              
 
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
                             HVOn = false; HVOff = false;                            

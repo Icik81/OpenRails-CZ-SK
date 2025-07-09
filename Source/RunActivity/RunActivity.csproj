@@ -191,6 +191,7 @@
     <Compile Include="Viewer3D\RenderFrame.cs" />
     <Compile Include="Viewer3D\RoadCars.cs" />
     <Compile Include="Viewer3D\RollingStock\MSTSDieselLocomotiveViewer.cs" />
+    <Compile Include="Viewer3D\RollingStock\MSTSControlUnitViewer.cs" />
     <Compile Include="Viewer3D\RollingStock\MSTSElectricLocomotiveViewer.cs" />
     <Compile Include="Viewer3D\RollingStock\MSTSLocomotiveViewer.cs" />
     <Compile Include="Viewer3D\RollingStock\MSTSSteamLocomotiveViewer.cs" />

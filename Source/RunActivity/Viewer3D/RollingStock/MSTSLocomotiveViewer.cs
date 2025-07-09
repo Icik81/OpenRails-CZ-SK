@@ -664,7 +664,7 @@ namespace Orts.Viewer3D.RollingStock
             // Ovládání HV4 nearetované pozice
             if (Locomotive.HV4Enable)
             {
-                if (UserInput.IsPressed(UserCommand.ControlPantograph1))
+                if (UserInput.IsPressed(UserCommand.ControlPantograph1) || UserInput.IsPressed(UserCommand.ControlPantograph2) || UserInput.IsPressed(UserCommand.ControlPantograph3) || UserInput.IsPressed(UserCommand.ControlPantograph4))
                     return;
 
                 if (Locomotive.HV4Switch[Locomotive.LocoStation] == 2)
