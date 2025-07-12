@@ -2192,9 +2192,7 @@ namespace Orts.Simulation.Physics
 
             AddCouplerImpulseForces(elapsedClockSeconds);
             ComputeCouplerForces(elapsedClockSeconds);
-
-            if (IsActualPlayerTrain || ((this is AITrain) && !(this as AITrain).AIStayToRollOn))            
-                UpdateCarSpeeds(elapsedClockSeconds);                                        
+            UpdateCarSpeeds(elapsedClockSeconds);            
 
             UpdateCouplerSlack(elapsedClockSeconds);
 
@@ -5803,8 +5801,13 @@ namespace Orts.Simulation.Physics
             float NextCarSpeedMps = 0.0f;
             bool locoBehind = true;
             for (int iCar = 0; iCar < Cars.Count; iCar++)
-            {
+            {                
                 var car = Cars[iCar];
+                
+                // AI vozy zůstanou stát při rozjezdu
+                if ((this is AITrain) && (this as AITrain).AIStayToRollOn)
+                    car.TotalForceN = 0;
+
                 if (iCar < Cars.Count - 1) NextCarSpeedMps = Cars[iCar + 1].SpeedMpS;
                 if (TrainMaxSpeedMpS <= 0f)
                 {
