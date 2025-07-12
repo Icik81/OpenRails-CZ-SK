@@ -1293,7 +1293,7 @@ namespace Orts.Simulation.RollingStocks
 
         public override void Initialize()
         {
-            // Icik
+            // Icik                                    
             // Úprava spřáhel kvůli kompatibilitě v klasickém OR a MSTS
             CarLengthM0 = CarLengthM;
             if (CarLengthM > 1)

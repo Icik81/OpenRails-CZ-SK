@@ -1834,7 +1834,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     OL3active = false;
             }
 
-            if (Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
+            if (Car.IsPlayerTrain && Car is MSTSLocomotive && !(Car as MSTSLocomotive).PowerOn) PowerForWagon = false;
 
             if (Car is MSTSLocomotive && (Car as MSTSLocomotive).PowerOn
                 || Car is MSTSLocomotive && (Car as MSTSLocomotive).EDBIndependent && (Car as MSTSLocomotive).PowerOnFilter > 0)

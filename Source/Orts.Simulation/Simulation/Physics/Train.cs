@@ -165,7 +165,7 @@ namespace Orts.Simulation.Physics
         public bool TrainIsNearToLvlCross;
         public List<StationStop> StationTasks = new List<StationStop>();
         public bool NoSpeedLimit;
-
+        public int TrainLocoCount;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1792,9 +1792,9 @@ namespace Orts.Simulation.Physics
         public bool AITrainWillAttach;
         int AIPreferenceModeStep;        
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {            
+        {                        
             AITrainWillAttach = false;
-            GeneratePaxDynamically();                        
+            GeneratePaxDynamically();            
 
             if (IsPlayerDriven)
             {
@@ -2047,14 +2047,18 @@ namespace Orts.Simulation.Physics
             bool whlslpwrn = false;
             bool whlskd = false;
 
-            TrainCar uncoupleBehindCar = null;
+            TrainCar uncoupleBehindCar = null;            
 
             float massKg = 0f;
             foreach (TrainCar car in Cars)
-            {
+            {                
                 car.MotiveForceN = 0;
-                car.Update(elapsedClockSeconds);
+                car.Update(elapsedClockSeconds);                
 
+                // Zařídí, aby se AI lokomotivě netočily kolečka při stání na místě
+                if (this is AITrain && (this as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED)                                    
+                    if (car is MSTSLocomotive && car.SpeedMpS == 0) (car as MSTSLocomotive).WheelSpeedMpS = 0;                    
+                
                 // Set TotalForce at the start of each calculation cycle. This value is adjusted further through loop based upon forces acting on the train.
                 car.TotalForceN = car.MotiveForceN + car.GravityForceN;
 
@@ -2189,7 +2193,9 @@ namespace Orts.Simulation.Physics
             AddCouplerImpulseForces(elapsedClockSeconds);
             ComputeCouplerForces(elapsedClockSeconds);
 
-            UpdateCarSpeeds(elapsedClockSeconds);
+            if (IsActualPlayerTrain || ((this is AITrain) && !(this as AITrain).AIStayToRollOn))            
+                UpdateCarSpeeds(elapsedClockSeconds);                                        
+
             UpdateCouplerSlack(elapsedClockSeconds);
 
             // Update wind elements for the train, ie the wind speed, and direction, as well as the angle between the train and wind

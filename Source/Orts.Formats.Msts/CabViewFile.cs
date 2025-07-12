@@ -632,7 +632,8 @@ namespace Orts.Formats.Msts
         KILOMETRES,
 
         // Icik
-        PERCENT
+        PERCENT,
+        CELSIUS,
     }
 
     public class CabViewControls : List<CabViewControl>

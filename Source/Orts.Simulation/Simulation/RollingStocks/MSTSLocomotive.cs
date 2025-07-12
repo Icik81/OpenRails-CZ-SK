@@ -5363,8 +5363,10 @@ namespace Orts.Simulation.RollingStocks
         bool AIBellStartOn;
         bool CarIsWaitingAtStation;
         bool CheckBellEvent;
+        float AICutOffPowerTimer;
+        float AICutOffPowerTime;
         public void SetAIAction(float elapsedClockSeconds)
-        {
+        {            
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
             {
                 // Pokud je AI lokomotiva nahozená, má nahozené topení i topení ve vozech
@@ -5398,9 +5400,16 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (this.BrakeSystem.PowerForWagon == true)
                         {
-                            foreach (TrainCar car in (Train as AITrain).Cars)
+                            if (AICutOffPowerTimer == 0) AICutOffPowerTime = Simulator.Random.Next(10, 20);
+                            AICutOffPowerTimer += elapsedClockSeconds;
+                            if (AICutOffPowerTimer > AICutOffPowerTime)
                             {
-                                car.BrakeSystem.PowerForWagon = false;
+                                BrakeSystem.PowerForWagon = false;
+                                AICutOffPowerTimer = 0;
+                                foreach (TrainCar car in (Train as AITrain).Cars.Where(car => !(car is MSTSLocomotive)))
+                                {
+                                    car.BrakeSystem.PowerForWagon = false;
+                                }
                             }
                         }
                     }
@@ -7223,13 +7232,13 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 2;
                     PowerKey = true;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
-
+                                        
                     TrainCar AIFirstLocomotive = null;
                     foreach (TrainCar car in Train.Cars)
-                    {
+                    {                    
                         car.BrakeSystem.HeatingIsOn = true;
                         if (car is MSTSLocomotive)
-                        {
+                        {                     
                             if (AIFirstLocomotive == null)
                                 AIFirstLocomotive = car;
 
