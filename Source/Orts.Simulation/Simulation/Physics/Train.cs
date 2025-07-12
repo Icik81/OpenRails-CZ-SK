@@ -166,6 +166,7 @@ namespace Orts.Simulation.Physics
         public List<StationStop> StationTasks = new List<StationStop>();
         public bool NoSpeedLimit;
         public int TrainLocoCount;
+        public bool AIKeepRun;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1817,6 +1818,14 @@ namespace Orts.Simulation.Physics
                 if (Simulator.ManualCouplingOverride)
                     Simulator.Settings.ManualCoupling = true; // Vynucené ruční svěšování
             }
+            else
+            {
+                if (Simulator.conFileName.ToLower().Contains("keeprun")) // nebude vypínat motor při stání
+                {
+                    AIKeepRun = true;
+                }
+            }
+
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

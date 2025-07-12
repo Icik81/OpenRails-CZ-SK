@@ -5389,6 +5389,8 @@ namespace Orts.Simulation.RollingStocks
                         case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;
+
+                    if ((Train as AITrain).AIKeepRun) (Train as AITrain).TrainAISeasonWaitTimeOff = 24f * 60f * 60f; // Nevypíná motor po celý den
                 }
 
                 CarIsWaiting = false;
