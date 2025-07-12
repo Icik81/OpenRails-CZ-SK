@@ -1820,9 +1820,12 @@ namespace Orts.Simulation.Physics
             }
             else
             {
-                if (Simulator.conFileName.ToLower().Contains("keeprun")) // nebude vypínat motor při stání
+                if (Simulator.conFileName != null)
                 {
-                    AIKeepRun = true;
+                    if (Simulator.conFileName.ToLower().Contains("keeprun")) // nebude vypínat motor při stání
+                    {
+                        AIKeepRun = true;
+                    }
                 }
             }
 
