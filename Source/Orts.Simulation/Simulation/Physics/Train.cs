@@ -2027,18 +2027,24 @@ namespace Orts.Simulation.Physics
         {
             //if out of track, will set it to stop
             if ((FrontTDBTraveller != null && FrontTDBTraveller.IsEnd) || (RearTDBTraveller != null && RearTDBTraveller.IsEnd))
-            {
-                // Icik
-                TrainEndOfRoute = true;
-                //if (FrontTDBTraveller.IsEnd && RearTDBTraveller.IsEnd)
-                //{//if both travellers are out, very rare occation, but have to treat it
-                //    RearTDBTraveller.ReverseDirection();
-                //    RearTDBTraveller.NextTrackNode();
-                //}
-                //else if (FrontTDBTraveller.IsEnd) RearTDBTraveller.Move(-1);//if front is out, move back
-                //else if (RearTDBTraveller.IsEnd) RearTDBTraveller.Move(1);//if rear is out, move forward
-                //foreach (var car in Cars) { car.SpeedMpS = 0; } //can set crash here by setting XNA matrix
-                //SignalEvent(Event._ResetWheelSlip);//reset everything to 0 power
+            {                
+                if (MPManager.IsMultiPlayer())
+                {
+                    if (FrontTDBTraveller.IsEnd && RearTDBTraveller.IsEnd)
+                    {//if both travellers are out, very rare occation, but have to treat it
+                        RearTDBTraveller.ReverseDirection();
+                        RearTDBTraveller.NextTrackNode();
+                    }
+                    else if (FrontTDBTraveller.IsEnd) RearTDBTraveller.Move(-1);//if front is out, move back
+                    else if (RearTDBTraveller.IsEnd) RearTDBTraveller.Move(1);//if rear is out, move forward
+                    foreach (var car in Cars) { car.SpeedMpS = 0; } //can set crash here by setting XNA matrix
+                    SignalEvent(Event._ResetWheelSlip);//reset everything to 0 power
+                }
+                else
+                {
+                    // Icik
+                    TrainEndOfRoute = true;
+                }
             }
             else
             {
