@@ -1817,18 +1817,7 @@ namespace Orts.Simulation.Physics
 
                 if (Simulator.ManualCouplingOverride)
                     Simulator.Settings.ManualCoupling = true; // Vynucené ruční svěšování
-            }
-            else
-            {
-                if (Simulator.conFileName != null)
-                {
-                    if (Simulator.conFileName.ToLower().Contains("keeprun") || Simulator.conFileName.Contains("KpR")) // nebude vypínat motor při stání
-                    {
-                        AIKeepRun = true;
-                    }
-                }
-            }
-
+            }            
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

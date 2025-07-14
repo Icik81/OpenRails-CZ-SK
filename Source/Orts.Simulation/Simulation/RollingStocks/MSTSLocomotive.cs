@@ -5392,7 +5392,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if ((Train as AITrain).AIKeepRun) (Train as AITrain).TrainAISeasonWaitTimeOff = 24f * 60f * 60f; // Nevypíná motor po celý den
                 }
-
+                
                 CarIsWaiting = false;
                 if (this.LocoSetUpTimer > 1.0f)
                 {

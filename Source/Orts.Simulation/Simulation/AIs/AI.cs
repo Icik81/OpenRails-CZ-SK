@@ -869,6 +869,15 @@ namespace Orts.Simulation.AIs
                 return null;
             }
 
+            // Icik                        
+            if (srvFile.Train_Config != null)
+            {
+                if (srvFile.Train_Config.ToLower().Contains("keeprun") || srvFile.Train_Config.Contains("KpR")) // označí vlak, který se nebude deaktivovat
+                {                    
+                    srvFile.Name = srvFile.Name + " KpR";
+                }
+            }
+
             float maxVelocityA = conFile.Train.TrainCfg.MaxVelocity.A;
             // sd.Name is the name of the service file.
             // srvFile.Name points to the name of the service within the Name() category such as Name ( "Eastbound Freight Train" ) in the service file.
@@ -879,6 +888,15 @@ namespace Orts.Simulation.AIs
                 Simulator.NameDictionary.Add(train.Name.ToLower(), train);
 
             if (consistFileName.Contains("tilted")) train.IsTilting = true;
+
+            // Icik                        
+            if (srvFile.Train_Config != null)
+            {
+                if (srvFile.Train_Config.ToLower().Contains("keeprun") || srvFile.Train_Config.Contains("KpR")) // nebude vypínat motor při stání
+                {
+                    train.AIKeepRun = true;                    
+                }
+            }            
 
             // also set Route max speed for speedpost-processing in train.cs
             train.TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
