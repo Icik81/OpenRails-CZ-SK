@@ -1085,7 +1085,7 @@ namespace Orts.Simulation.AIs
         /// <summary>
         /// The duration of the horn blast, if specified by an activity event.
         /// </summary>
-        private int? DurationS { get; }
+        public int? DurationS { get; }
 
         /// <summary>
         /// The horn pattern to use.

@@ -4451,7 +4451,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, 0, hornPattern);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
                         action.Delay = waitingPoint[2];
                         AuxActionsContain.Add(action);
                     }
@@ -4460,7 +4460,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, 0, hornPattern);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
                         action.Delay = waitingPoint[2];
                         AuxActionsContain.Add(action);
                     }
@@ -4469,7 +4469,7 @@ namespace Orts.Simulation.AIs
                     {
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, 0, hornPattern);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
                         action.Delay = waitingPoint[2];
                         AuxActionsContain.Add(action);
                     }
@@ -4478,7 +4478,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, 0, hornPattern);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
                         action.Delay = waitingPoint[2];
                         AuxActionsContain.Add(action);
                     }
@@ -7541,7 +7541,7 @@ namespace Orts.Simulation.AIs
             //}
 
             // Icik
-            if (durationS != 0)
+            if (durationS != 0 && durationS < 60)
             {
                 // Pískání pokud je doba 1s
                 if (durationS < 2)
