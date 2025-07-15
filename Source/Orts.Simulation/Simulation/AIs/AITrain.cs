@@ -4005,9 +4005,6 @@ namespace Orts.Simulation.AIs
         public float AIRollOnStartTimer;
         float AITSethrottlePercent;
         float AIReqAccelMpSS;        
-        bool AIDieselTrain;
-        bool AIElectricTrain;
-        bool AISteamTrain;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -4061,7 +4058,11 @@ namespace Orts.Simulation.AIs
             }
             if (AIThrottleDownMode)
             {
-                AITSethrottlePercent = Math.Abs(AccelerationMpSpS.SmoothedValue) / reqAccelMpSS * 100f;                
+                AITSethrottlePercent = Math.Abs(AccelerationMpSpS.SmoothedValue) / reqAccelMpSS * 100f;
+
+                if (float.IsNaN(AITSethrottlePercent))                
+                    AITSethrottlePercent = 80;
+                
                 if (Math.Abs(SpeedMpS) < 0.80f * AbsAllowedMaxSpeed)
                     AIThrottleDownMode = false;
             }            
@@ -4075,21 +4076,12 @@ namespace Orts.Simulation.AIs
             }
 
             if (AIRollOnThrottle == 0)
-            {
-                TrainLocoCount = 0;
-                foreach (TrainCar car in Cars)
-                {
-                    if (car is MSTSLocomotive)
-                        TrainLocoCount++;
-                }                
-
+            {          
                 AIRollOnThrottle = Simulator.Random.Next(5, 11);
                 AIRollOnTime = Simulator.Random.Next(2, 5);
                 AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
+                AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);
 
-                AIDieselTrain = false;
-                AIElectricTrain = false;
-                AISteamTrain = false;
                 foreach (TrainCar car in Cars)
                 {
                     if (car is MSTSLocomotive)
@@ -4099,8 +4091,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(2, 5);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);
-                            AIDieselTrain = true;
+                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);                            
                             break;
                         }
                         else
@@ -4109,8 +4100,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(1, 3);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);
-                            AIElectricTrain = true;
+                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);                            
                             break;
                         }
                         else
@@ -4119,8 +4109,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(3, 5);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);
-                            AISteamTrain = true;
+                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / 1000f);                            
                             break;
                         }
                     }
@@ -4137,19 +4126,10 @@ namespace Orts.Simulation.AIs
                     else
                         AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, AIRollOnThrottle);
 
-                    if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)
-                    {
-                        if (AIDieselTrain)
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / (50f * MathHelper.Clamp(Cars.Count / 5f, 1, 10)));
-
-                        if (AIElectricTrain)
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / (50f * MathHelper.Clamp(Cars.Count / 5f, 1, 10)));
-
-                        if (AISteamTrain)
-                            AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / (50f * MathHelper.Clamp(Cars.Count / 5f, 1, 10)));
-                    }
-
-                    reqAccelMpSS = AIReqAccelMpSS;
+                    if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)                    
+                        AIReqAccelMpSS = reqAccelMpSS * (AITSethrottlePercent / (50f * MathHelper.Clamp(Cars.Count / 5f, 1, 10)));
+                    
+                    reqAccelMpSS = AIReqAccelMpSS;                    
                 }
                 else
                 {                    
@@ -4220,7 +4200,7 @@ namespace Orts.Simulation.AIs
             {
                 AITSethrottlePercent = 0;
                 AITrainThrottlePercent = 0;
-            }
+            }           
 
             SetPercentsFromTrainToTrainset();
         }
@@ -4451,8 +4431,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
-                        action.Delay = waitingPoint[2];
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
                     else
@@ -4460,8 +4439,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
-                        action.Delay = waitingPoint[2];
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
                     else
@@ -4469,8 +4447,7 @@ namespace Orts.Simulation.AIs
                     {
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
-                        action.Delay = waitingPoint[2];
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
                     else
@@ -4478,8 +4455,7 @@ namespace Orts.Simulation.AIs
                     {                        
                         AILevelCrossingHornPattern hornPattern;
                         hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
-                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);
-                        action.Delay = waitingPoint[2];
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
                     else

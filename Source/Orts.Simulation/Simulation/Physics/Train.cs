@@ -164,8 +164,7 @@ namespace Orts.Simulation.Physics
         public int TrainTotalAirBrakeCarsCount;
         public bool TrainIsNearToLvlCross;
         public List<StationStop> StationTasks = new List<StationStop>();
-        public bool NoSpeedLimit;
-        public int TrainLocoCount;
+        public bool NoSpeedLimit;        
         public bool AIKeepRun;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train

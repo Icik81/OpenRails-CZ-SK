@@ -5503,12 +5503,9 @@ namespace Orts.Simulation.RollingStocks
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
-                            if (AIActionPoint0.Delay == 0 && AIActionPoint0.DurationS > 49900 && AIActionPoint0.DurationS <= 49999)
-                                AIActionPoint0.Delay = (int)AIActionPoint0.DurationS;
-
-                            if (AIActionPoint0.Delay >= 49900 && AIActionPoint0.Delay <= 49999)
+                            if (AIActionPoint0.DurationS >= 49900 && AIActionPoint0.DurationS <= 49999)
                             {
-                                (Train as AITrain).NumberOfCarsToLeaveOrSteal = AIActionPoint0.Delay - 49900;
+                                (Train as AITrain).NumberOfCarsToLeaveOrSteal = (int)(AIActionPoint0.DurationS - 49900);
                             }
                         }
                     }
@@ -5521,23 +5518,17 @@ namespace Orts.Simulation.RollingStocks
                     {
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
-                        {
-                            if (AIActionPoint0.Delay == 0 && AIActionPoint0.DurationS > 49000 && AIActionPoint0.DurationS < 49900)                            
-                                AIActionPoint0.Delay = (int)AIActionPoint0.DurationS;                            
-
-                            if (AIActionPoint0.Delay > 49000 && AIActionPoint0.Delay < 49900)
+                        {                       
+                            if (AIActionPoint0.DurationS > 49000 && AIActionPoint0.DurationS < 49900)
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
-                                (Train as AITrain).AITrainOffsetStopDistance = AIActionPoint0.Delay - 49000;
-                            }
+                                (Train as AITrain).AITrainOffsetStopDistance = (int)(AIActionPoint0.DurationS - 49000);
+                            }                         
 
-                            if (AIActionPoint0.Delay == 0 && AIActionPoint0.DurationS > 59000 && AIActionPoint0.DurationS < 59900)
-                                AIActionPoint0.Delay = (int)AIActionPoint0.DurationS;
-
-                            if (AIActionPoint0.Delay > 59000 && AIActionPoint0.Delay < 59900)
+                            if (AIActionPoint0.DurationS > 59000 && AIActionPoint0.DurationS < 59900)
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
-                                (Train as AITrain).AITrainOffsetStopDistance = -AIActionPoint0.Delay + 59000;
+                                (Train as AITrain).AITrainOffsetStopDistance = (int)(-AIActionPoint0.DurationS + 59000);
                             }
                         }
                     }
@@ -5551,10 +5542,7 @@ namespace Orts.Simulation.RollingStocks
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
-                            if (AIActionPoint0.Delay == 0 && AIActionPoint0.DurationS == 40000)
-                                AIActionPoint0.Delay = (int)AIActionPoint0.DurationS;
-
-                            if (AIActionPoint0.Delay == 40000)
+                            if (AIActionPoint0.DurationS == 40000)
                                 Simulator.AIPreference = true;
                         }
                     }
