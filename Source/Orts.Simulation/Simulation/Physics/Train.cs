@@ -3379,27 +3379,29 @@ namespace Orts.Simulation.Physics
             float[] LocoMaxSpeedMpS = new float[100];
             float LocosMaxSpeedMpS;
             int LocoIndex = 0;
-            foreach (var car in Cars)
+            if (!(this is Timetables.TTTrain))
             {
-                if (car is MSTSLocomotive)
+                foreach (var car in Cars)
                 {
-                    LocoIndex++;
-                    LocoMaxSpeedMpS[LocoIndex] = (car as MSTSLocomotive).MaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : (car as MSTSLocomotive).MaxSpeedMpS;                    
+                    if (car is MSTSLocomotive)
+                    {
+                        LocoIndex++;
+                        LocoMaxSpeedMpS[LocoIndex] = (car as MSTSLocomotive).MaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : (car as MSTSLocomotive).MaxSpeedMpS;
+                    }
                 }
-            }                   
-            if (LocoIndex > 0)
-            {
-                LocoMaxSpeedMpS[LocoIndex + 1] = AIMaxTrainSpeedCalculatedFromConFile;
-                LocosMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                for (int i = 1; i < LocoIndex + 2; i++)
+                if (LocoIndex > 0)
                 {
-                    if (LocoMaxSpeedMpS[i] != 0)
-                        LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
+                    LocoMaxSpeedMpS[LocoIndex + 1] = AIMaxTrainSpeedCalculatedFromConFile;
+                    LocosMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+                    for (int i = 1; i < LocoIndex + 2; i++)
+                    {
+                        if (LocoMaxSpeedMpS[i] != 0)
+                            LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
+                    }
+                    if (!IsActualPlayerTrain)
+                        TrainMaxSpeedMpS = LocosMaxSpeedMpS;
                 }
-                if (!IsActualPlayerTrain)
-                    TrainMaxSpeedMpS = LocosMaxSpeedMpS;
             }
-            
 
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
