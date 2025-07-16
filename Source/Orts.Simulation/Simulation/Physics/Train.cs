@@ -3361,7 +3361,7 @@ namespace Orts.Simulation.Physics
         //================================================================================================//
         /// <summary>
         /// initialize signal array
-        /// </summary>
+        /// </summary>                
         public void InitializeSignals(bool existingSpeedLimits)
         {
             Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
@@ -3371,8 +3371,34 @@ namespace Orts.Simulation.Physics
 
             SignalObjectItems.Clear();
             IndexNextSignal = -1;
-            IndexNextSpeedlimit = -1;            
+            IndexNextSpeedlimit = -1;
 
+            // Icik
+            // Určí maximální rychlost vlaku danou maximální rychlostí nejpomalejší lokomotivy
+            float[] LocoMaxSpeedMpS = new float[100];
+            float LocosMaxSpeedMpS;
+            int LocoIndex = 0;
+            foreach (var car in Cars)
+            {
+                if (car is MSTSLocomotive)
+                {
+                    LocoIndex++;
+                    LocoMaxSpeedMpS[LocoIndex] = (car as MSTSLocomotive).MaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : (car as MSTSLocomotive).MaxSpeedMpS;                    
+                }
+            }            
+            if (LocoIndex > 0)
+            {
+                LocosMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+                for (int i = 1; i < LocoIndex + 1; i++)
+                {
+                    if (LocoMaxSpeedMpS[i] != 0)
+                        LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
+                }
+                if (!IsActualPlayerTrain)
+                    TrainMaxSpeedMpS = LocosMaxSpeedMpS;
+            }
+
+            
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
             {
@@ -3381,8 +3407,8 @@ namespace Orts.Simulation.Physics
 
                 // Icik
                 if (IsActualPlayerTrain)
-                    TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                
+                    TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;                
+
                 AllowedMaxSpeedMpS = TrainMaxSpeedMpS;
                 allowedMaxSpeedSignalMpS = TrainMaxSpeedMpS;   // set default
                 allowedMaxTempSpeedLimitMpS = AllowedMaxSpeedMpS; // set default
