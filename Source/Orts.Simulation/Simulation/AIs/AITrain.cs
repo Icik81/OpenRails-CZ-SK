@@ -4003,7 +4003,9 @@ namespace Orts.Simulation.AIs
         float AIRollOnCutOffSpeed;
         public float AIRollOnStartTimer;
         float AITSethrottlePercent;
-        float AIReqAccelMpSS;        
+        float AIReqAccelMpSS;
+        float AICheckSpeedTimer;
+        float AIPrevSpeedMpS;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -4074,12 +4076,14 @@ namespace Orts.Simulation.AIs
                 AIRollOnThrottle = 0;
             }
 
+            float AIEfficiencyCoef = 1.0f;           
+
             if (AIRollOnThrottle == 0)
             {          
                 AIRollOnThrottle = Simulator.Random.Next(5, 11);
                 AIRollOnTime = Simulator.Random.Next(2, 5);
                 AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
-                AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;
+                AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;                
 
                 foreach (TrainCar car in Cars)
                 {
@@ -4119,7 +4123,19 @@ namespace Orts.Simulation.AIs
             if (AIRollOn)
             {
                 if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
-                {                                        
+                {
+                    if (!AIStayToRollOn)
+                    {
+                        AICheckSpeedTimer += timeS;
+                        if (AICheckSpeedTimer > 2.0f)
+                        {
+                            if (SpeedMpS - AIPrevSpeedMpS < 0.1f / 3.6f)
+                                AIRollOnThrottle++;
+                            AIPrevSpeedMpS = SpeedMpS;
+                            AICheckSpeedTimer = 0;
+                        }
+                    }
+
                     if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)
                         AITSethrottlePercent += timeS;
                     else
@@ -4128,7 +4144,7 @@ namespace Orts.Simulation.AIs
                     if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)                    
                         AIReqAccelMpSS = reqAccelMpSS * AITSethrottlePercent / 100f / MathHelper.Clamp(Cars.Count / 5f, 1, 10);
 
-                    AIReqAccelMpSS = MathHelper.Clamp(AIReqAccelMpSS, 0.001f, reqAccelMpSS);
+                    AIReqAccelMpSS = MathHelper.Clamp(AIReqAccelMpSS * AIEfficiencyCoef, 0.001f, reqAccelMpSS);
                     reqAccelMpSS = AIReqAccelMpSS;                    
                 }
                 else
