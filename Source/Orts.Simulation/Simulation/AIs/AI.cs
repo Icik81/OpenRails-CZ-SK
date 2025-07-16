@@ -896,7 +896,8 @@ namespace Orts.Simulation.AIs
                 {
                     train.AIKeepRun = true;                    
                 }
-            }            
+            }
+            train.AIMaxTrainSpeedCalculatedFromConFile = maxVelocityA * train.Efficiency;
 
             // also set Route max speed for speedpost-processing in train.cs
             train.TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;

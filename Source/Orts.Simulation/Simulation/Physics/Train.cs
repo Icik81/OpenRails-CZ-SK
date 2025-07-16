@@ -166,6 +166,7 @@ namespace Orts.Simulation.Physics
         public List<StationStop> StationTasks = new List<StationStop>();
         public bool NoSpeedLimit;        
         public bool AIKeepRun;
+        public float AIMaxTrainSpeedCalculatedFromConFile;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -3385,11 +3386,12 @@ namespace Orts.Simulation.Physics
                     LocoIndex++;
                     LocoMaxSpeedMpS[LocoIndex] = (car as MSTSLocomotive).MaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : (car as MSTSLocomotive).MaxSpeedMpS;                    
                 }
-            }            
+            }                   
             if (LocoIndex > 0)
             {
+                LocoMaxSpeedMpS[LocoIndex + 1] = AIMaxTrainSpeedCalculatedFromConFile;
                 LocosMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                for (int i = 1; i < LocoIndex + 1; i++)
+                for (int i = 1; i < LocoIndex + 2; i++)
                 {
                     if (LocoMaxSpeedMpS[i] != 0)
                         LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
@@ -3397,8 +3399,8 @@ namespace Orts.Simulation.Physics
                 if (!IsActualPlayerTrain)
                     TrainMaxSpeedMpS = LocosMaxSpeedMpS;
             }
-
             
+
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
             {
