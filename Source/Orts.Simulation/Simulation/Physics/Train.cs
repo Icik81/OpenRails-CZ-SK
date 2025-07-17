@@ -5841,8 +5841,8 @@ namespace Orts.Simulation.Physics
                 var car = Cars[iCar];
                 
                 // AI vozy zůstanou stát při rozjezdu
-                if ((this is AITrain) && (this as AITrain).AIStayToRollOn)
-                    car.TotalForceN = 0;
+                //if ((this is AITrain) && (this as AITrain).AIStayToRollOn)
+                //    car.TotalForceN = 0;
 
                 if (iCar < Cars.Count - 1) NextCarSpeedMps = Cars[iCar + 1].SpeedMpS;
                 if (TrainMaxSpeedMpS <= 0f)
