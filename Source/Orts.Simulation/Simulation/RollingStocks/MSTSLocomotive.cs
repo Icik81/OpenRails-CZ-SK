@@ -16681,7 +16681,12 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (LocoStation == 1)
+                //if (!StationIsActivated[1] && !StationIsActivated[2])
+                //{
+                //    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
+                //    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
+                //}
+                if (StationIsActivated[1])
                 {
                     switch (Switch5LightPosition[1])
                     {
@@ -16725,19 +16730,19 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }
                 }
-                if (LocoStation == 2)
+                if (StationIsActivated[2])
                 {
                     switch (Switch5LightPosition[2])
                     {
-                        case 0: LightFrontLR = true; LightFrontRR = false; break;
+                        case 0: LightFrontRR = true; LightFrontLR = false; break;
                         case 1: LightFrontLR = true; LightFrontRR = true; break;
                         case 2: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
-                        case 3: LightFrontLW = true; LightFrontRW = false; break;
+                        case 3: LightFrontRW = true; LightFrontLW = false; break;
                         case 4: LightFrontLW = true; LightFrontRW = true; break;
                     }
                     switch (Switch6LightPosition[2])
                     {
-                        case 0: LightRearLR = false; LightRearRR = true; break;
+                        case 0: LightRearRR = false; LightRearLR = true; break;
                         case 1: LightRearLR = true; LightRearRR = true; break;
                         case 2:
                             {
@@ -16748,7 +16753,7 @@ namespace Orts.Simulation.RollingStocks
                                 LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
                             }
                             break;
-                        case 3: LightRearLW = false; LightRearRW = true; break;
+                        case 3: LightRearRW = false; LightRearLW = true; break;
                         case 4:
                             {
                                 if (HeadLightPosition[2] == 0)
