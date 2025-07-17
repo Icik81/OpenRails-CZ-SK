@@ -650,7 +650,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             SetRetainer(RetainerSetting.Exhaust);
             TrainBrakePositionSet();
             MSTSLocomotive loco = Car as MSTSLocomotive;
-            if (loco != null && Car.Train.IsActualPlayerTrain)
+            if (loco != null)
             {
                 loco.MainResPressurePSI = loco.MaxMainResPressurePSI;
                 if (loco.AuxCompressor)
