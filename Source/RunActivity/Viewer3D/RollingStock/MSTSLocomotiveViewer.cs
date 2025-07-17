@@ -443,10 +443,10 @@ namespace Orts.Viewer3D.RollingStock
         {
             bool Status2KeyPressed = false;
 
-            if (PressedCycleStart) PressedCycle++;
-            if (PressedCycle > 1 && PressedCycle < 20) Status2KeyPressed = true;
+            if (PressedCycleStart) PressedCycle += Locomotive.Simulator.OneSecondLoop;
+            if (PressedCycle > 0.1f && PressedCycle < 1.0f) Status2KeyPressed = true;
 
-            if (PressedCycle > 20)
+            if (PressedCycle > 1.0f)
             {
                 PressedCycle = 0;
                 PressedCycleStart = false;
