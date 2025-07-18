@@ -2133,6 +2133,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            if ((Train as AITrain).AIKeepRun)
+            {
+                AIPantoDownStop = false;                
+            }
+
             if (PowerOn)
                 AITimePowerRunning += elapsedClockSeconds;
 

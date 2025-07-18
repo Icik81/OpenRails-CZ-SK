@@ -4083,7 +4083,7 @@ namespace Orts.Simulation.AIs
                 AIRollOnThrottle = Simulator.Random.Next(5, 11);
                 AIRollOnTime = Simulator.Random.Next(2, 5);
                 AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;
-                AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;                
+                AIReqAccelMpSS = 0.5f * AITSethrottlePercent / 100f;                
 
                 foreach (TrainCar car in Cars)
                 {
@@ -4094,7 +4094,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(2, 5);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;                            
+                            AIReqAccelMpSS = 0.5f * AITSethrottlePercent / 100f;                            
                             break;
                         }
                         else
@@ -4103,7 +4103,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(1, 3);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;                            
+                            AIReqAccelMpSS = 0.5f * AITSethrottlePercent / 100f;                            
                             break;
                         }
                         else
@@ -4112,7 +4112,7 @@ namespace Orts.Simulation.AIs
                             AIRollOnThrottle = Simulator.Random.Next(5, 11);
                             AIRollOnTime = Simulator.Random.Next(3, 5);
                             AIRollOnCutOffSpeed = Simulator.Random.Next(1, 3) / 3.6f;                            
-                            AIReqAccelMpSS = 0.1f * AITSethrottlePercent / 100f;                            
+                            AIReqAccelMpSS = 0.5f * AITSethrottlePercent / 100f;                            
                             break;
                         }
                     }
@@ -4144,7 +4144,7 @@ namespace Orts.Simulation.AIs
                     if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)                    
                         AIReqAccelMpSS = reqAccelMpSS * AITSethrottlePercent / 100f / MathHelper.Clamp(Cars.Count / 5f, 1, 10);
 
-                    AIReqAccelMpSS = MathHelper.Clamp(AIReqAccelMpSS * AIEfficiencyCoef, 0.001f, reqAccelMpSS);
+                    AIReqAccelMpSS = MathHelper.Clamp(AIReqAccelMpSS * AIEfficiencyCoef, 0.025f, reqAccelMpSS);
                     reqAccelMpSS = AIReqAccelMpSS;                    
                 }
                 else

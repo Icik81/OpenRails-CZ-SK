@@ -5388,14 +5388,12 @@ namespace Orts.Simulation.RollingStocks
                         case SeasonType.Autumn: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(15, 31); break;
                         case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
-                    (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;
-
-                    if ((Train as AITrain).AIKeepRun) (Train as AITrain).TrainAISeasonWaitTimeOff = 24f * 60f * 60f; // Nevypíná motor po celý den
+                    (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
                 }
                 
                 CarIsWaiting = false;
                 if (this.LocoSetUpTimer > 1.0f)
-                {
+                {                    
                     if (((this as MSTSElectricLocomotive) != null && (this as MSTSElectricLocomotive).AIPantoDownStop)
                         || ((this as MSTSDieselLocomotive) != null && (this as MSTSDieselLocomotive).AIMotorStop)
                         || (this as MSTSLocomotive).LocoIsStatic)
