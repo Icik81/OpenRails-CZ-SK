@@ -11400,7 +11400,7 @@ namespace Orts.Simulation.RollingStocks
                 || (DieselDirectionController4 && DieselDirectionController2Position[LocoStation] != 1))
                 return;
 
-            if (!CarHavePocketPowerKey)
+            if (IsLeadLocomotive() && !CarHavePocketPowerKey)
             {
                 if (PowerKeyPosition[LocoStation] == 0)
                 {
