@@ -1264,7 +1264,7 @@ namespace Orts.Simulation.RollingStocks
                         AIMotorStop = false;
                 }
 
-                if ((Train as AITrain).AIKeepRun)
+                if (Train as AITrain != null && (Train as AITrain).AIKeepRun)
                 {
                     AIMotorStop = false;
                 }

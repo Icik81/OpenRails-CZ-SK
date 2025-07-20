@@ -2133,7 +2133,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if ((Train as AITrain).AIKeepRun)
+            if (Train as AITrain != null && (Train as AITrain).AIKeepRun)
             {
                 AIPantoDownStop = false;                
             }
