@@ -406,7 +406,7 @@ namespace Orts.Viewer3D
                             else
                                 isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
 
-                            if (SignalTypeData.Lights.Count > 2)
+                            if (!SignalTypeData.SignalIsMechanic)
                                 isDay = false;
 
                             bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
@@ -515,7 +515,7 @@ namespace Orts.Viewer3D
                     else
                         isDay = Viewer.World.MSTSSky.mstsskysolarDirection.Y > 0;
                     
-                    if (SignalTypeData.Lights.Count > 2)
+                    if (!SignalTypeData.SignalIsMechanic)
                         isDay = false;
 
                     bool isPoorVisibility = Viewer.Simulator.Weather.FogDistance < 500;
@@ -611,6 +611,7 @@ namespace Orts.Viewer3D
             public bool AreSemaphoresReindexed;
 
             public bool CZRoutes;
+            public bool SignalIsMechanic;
 
             public SignalTypeData(Viewer viewer, Orts.Formats.Msts.SignalType mstsSignalType)
             {                
@@ -646,7 +647,9 @@ namespace Orts.Viewer3D
                         if (mstsSignalType.FnType == MstsSignalFunction.INFO || mstsSignalType.FnType == MstsSignalFunction.SHUNTING) // These are good at identifying theatre boxes.
                             glowDay = glowNight = 0.0f;
 
-                        // Icik                        
+                        // Icik
+                        if (mstsSignalType.Name.ToLower().Contains("mech")) SignalIsMechanic = true;
+
                         if (mstsSignalType.LightTextureName.ToLower() == "ltex" || mstsSignalType.LightTextureName.ToLower() == "mtex")
                         {
                             switch (viewer.Simulator.RouteName.ToLower())
