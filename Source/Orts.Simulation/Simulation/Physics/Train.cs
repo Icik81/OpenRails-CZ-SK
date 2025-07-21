@@ -3360,28 +3360,20 @@ namespace Orts.Simulation.Physics
         }
 
         //================================================================================================//
+
         /// <summary>
-        /// initialize signal array
+        /// Nastaví maximální rychlost AI vlaku dle max. rychlosti lokomotiv ve vlaku
         /// </summary>                
-        public void InitializeSignals(bool existingSpeedLimits)
+        public void SetMaxAITrainSpeedByLocos()
         {
-            Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
-
-            // to initialize, use direction 0 only
-            // preset indices
-
-            SignalObjectItems.Clear();
-            IndexNextSignal = -1;
-            IndexNextSpeedlimit = -1;
-
             // Icik
             // Určí maximální rychlost vlaku danou maximální rychlostí nejpomalejší lokomotivy
             float[] LocoMaxSpeedMpS = new float[100];
             float LocosMaxSpeedMpS;
             int LocoIndex = 0;
-            if (!(this is Timetables.TTTrain))
+            if (!(this is Timetables.TTTrain) && !IsActualPlayerTrain)
             {
-                foreach (var car in Cars)
+                foreach (var car in Cars.Where(car => car is MSTSLocomotive))
                 {
                     if (car is MSTSLocomotive)
                     {
@@ -3398,10 +3390,27 @@ namespace Orts.Simulation.Physics
                         if (LocoMaxSpeedMpS[i] != 0)
                             LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
                     }
-                    if (!IsActualPlayerTrain)
-                        TrainMaxSpeedMpS = LocosMaxSpeedMpS;
+                    TrainMaxSpeedMpS = LocosMaxSpeedMpS;
                 }
             }
+        }
+
+        /// <summary>
+        /// initialize signal array
+        /// </summary>                
+        public void InitializeSignals(bool existingSpeedLimits)
+        {
+            Debug.Assert(signalRef != null, "Cannot InitializeSignals() without Simulator.Signals.");
+
+            // to initialize, use direction 0 only
+            // preset indices
+
+            SignalObjectItems.Clear();
+            IndexNextSignal = -1;
+            IndexNextSpeedlimit = -1;
+
+            // Icik
+            SetMaxAITrainSpeedByLocos();
 
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
