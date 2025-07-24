@@ -760,6 +760,8 @@ namespace Orts.Simulation.RollingStocks
         public int[] Switch5LightPosition = new int[3];
         public int[] Switch6LightPosition = new int[3];
         public bool Switch5LightEnable;
+        public bool Switch51LightEnable;
+        public bool Switch52LightEnable;
         public bool Switch6LightEnable;
         public int[] DriveAxleNumber = new int[11];
         public bool DriverUsingRearCab;
@@ -11806,7 +11808,7 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.LightSwitchToggle);
 
                 // Centrální světlo se spouští zvlášť přepínačem na pultu
-                if (Switch6LightEnable && HeadLightPosition[LocoStation] == 1)
+                if ((Switch6LightEnable || Switch51LightEnable || Switch52LightEnable) && HeadLightPosition[LocoStation] == 1)
                 {
                     HeadLightPosition[LocoStation] = 2;
                 }
@@ -11822,7 +11824,7 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.LightSwitchToggle);
 
                 // Centrální světlo se spouští zvlášť přepínačem na pultu
-                if (Switch6LightEnable && HeadLightPosition[LocoStation] == 1)
+                if ((Switch6LightEnable || Switch51LightEnable || Switch52LightEnable) && HeadLightPosition[LocoStation] == 1)
                 {
                     HeadLightPosition[LocoStation] = 0;
                 }
@@ -16653,14 +16655,14 @@ namespace Orts.Simulation.RollingStocks
 
         public int LightsFrameUpdate = 0;
         public void LightPositionHandle()
-        {            
+        {
             if (LightsFrameUpdate < 3)
                 LightsFrameUpdate++;
 
             FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
             RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
 
-            if (Switch5LightEnable || Switch6LightEnable)
+            if (Switch51LightEnable && Switch52LightEnable) // Vectron
             {
                 // Lights setup
                 if (LightsFrameUpdate == 2 && LocoReadyToGo)
@@ -16674,8 +16676,22 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            Switch5LightPosition[LocoStation] = 2;
-                            Switch6LightPosition[LocoStation] = 4;
+                            if (this == Train.Cars.First())
+                            {
+                                Switch5LightPosition[LocoStation] = 1;
+                                Switch6LightPosition[LocoStation] = 0;
+                            }
+                            else
+                            if (this == Train.Cars.Last())
+                            {
+                                Switch5LightPosition[LocoStation] = 0;
+                                Switch6LightPosition[LocoStation] = 4;
+                            }
+                            else
+                            {
+                                Switch5LightPosition[LocoStation] = 0;
+                                Switch6LightPosition[LocoStation] = 0;
+                            }
                         }
                     }
                 }
@@ -16684,6 +16700,99 @@ namespace Orts.Simulation.RollingStocks
                 //    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
                 //    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
                 //}
+                if (StationIsActivated[1])
+                {
+                    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
+                    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
+                    if (HeadLightPosition[1] == 0)
+                    {
+                        Headlight[1] = 0;
+                        Headlight[2] = 0;
+                        FrontHeadLight = false;
+                        RearHeadLight = false;
+                        switch (Switch5LightPosition[1])
+                        {
+                            case 0: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
+                            case 1: LightFrontLW = true; LightFrontRW = true; FrontHeadLight = true; Headlight[1] = 7; break;
+                            case 2: LightFrontLR = true; LightFrontRR = true; break;
+                            case 3: LightFrontLW = false; LightFrontRW = true; break;
+                            case 4: LightFrontLW = true; LightFrontRW = true; break;
+                        }
+                        
+                        switch (Switch6LightPosition[1])
+                        {
+                            case 0: LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false; break;
+                            case 1: LightRearLW = true; LightRearRW = true; RearHeadLight = true; Headlight[1] = 7; break;
+                            case 2: LightRearLR = true; LightRearRR = true; break;
+                            case 3: LightRearLW = true; LightRearRW = false; break;
+                            case 4: LightRearLW = true; LightRearRW = true; break;
+                        }
+                    }
+                }
+                if (StationIsActivated[2])
+                {
+                    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
+                    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
+                    if (HeadLightPosition[2] == 0)
+                    {
+                        Headlight[1] = 0;
+                        Headlight[2] = 0;
+                        FrontHeadLight = false;
+                        RearHeadLight = false;
+                        switch (Switch5LightPosition[2])
+                        {
+                            case 0: LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false; break;
+                            case 1: LightRearLW = true; LightRearRW = true; RearHeadLight = true; Headlight[2] = 7; break;
+                            case 2: LightRearLR = true; LightRearRR = true; break;
+                            case 3: LightRearRW = false; LightRearLW = true; break;
+                            case 4: LightRearLW = true; LightRearRW = true; break;
+                        }
+                        
+                        switch (Switch6LightPosition[2])
+                        {
+                            case 0: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
+                            case 1: LightFrontLW = true; LightFrontRW = true; FrontHeadLight = true; Headlight[2] = 7; break;
+                            case 2: LightFrontLR = true; LightFrontRR = true; break;
+                            case 3: LightFrontRW = true; LightFrontLW = false; break;
+                            case 4: LightFrontLW = true; LightFrontRW = true; break;
+                        }
+                    }
+                }
+            }
+            else
+            if (Switch5LightEnable && Switch6LightEnable) // 361
+            {
+                // Lights setup
+                if (LightsFrameUpdate == 2 && LocoReadyToGo)
+                {
+                    if (IsLeadLocomotive())
+                    {
+                        if (Train.Cars.Count == 1)
+                        {
+                            Switch5LightPosition[LocoStation] = 1;
+                            Switch6LightPosition[LocoStation] = 4;
+                        }
+                        else
+                        {
+                            if (this == Train.Cars.First())
+                            {
+                                Switch5LightPosition[LocoStation] = 2;
+                                Switch6LightPosition[LocoStation] = 4;
+                            }
+                            else
+                            if (this == Train.Cars.Last())
+                            {
+                                Switch5LightPosition[LocoStation] = 1;
+                                Switch6LightPosition[LocoStation] = 2;
+                            }
+                            else
+                            {
+                                Switch5LightPosition[LocoStation] = 2;
+                                Switch6LightPosition[LocoStation] = 2;
+                            }
+                        }                        
+                    }
+                }
                 if (StationIsActivated[1])
                 {
                     switch (Switch5LightPosition[1])
@@ -16798,14 +16907,14 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (LocoStation == 1)
                             {
-                                CircularSwitchWhitePosition[1] = 2;                                
+                                CircularSwitchWhitePosition[1] = 2;
                             }
                             if (LocoStation == 2)
                             {
-                                CircularSwitchWhitePosition[2] = 2;                                
+                                CircularSwitchWhitePosition[2] = 2;
                             }
                         }
-                    }                    
+                    }
                 }
                 switch (CircularSwitchWhitePosition[1])
                 {
@@ -17038,8 +17147,16 @@ namespace Orts.Simulation.RollingStocks
         
         public void ToggleSwitch5LightsUp()
         {
-            if (!Switch5LightEnable) return;
-            if (Switch5LightPosition[LocoStation] < 4)
+            if (!Switch5LightEnable && !Switch51LightEnable) return;
+            
+            if (Switch51LightEnable && Switch5LightPosition[LocoStation] < 4)
+            {
+                Switch5LightPosition[LocoStation]++;
+                SignalEvent(Event.LightSwitchToggle);
+                Switch51Lights();
+            }
+            else
+            if (Switch5LightEnable && Switch5LightPosition[LocoStation] < 4)
             {
                 Switch5LightPosition[LocoStation]++;
                 SignalEvent(Event.LightSwitchToggle);
@@ -17048,19 +17165,49 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch5LightsDown()
         {
-            if (!Switch5LightEnable) return;
-            if (Switch5LightPosition[LocoStation] > 0)
+            if (!Switch5LightEnable && !Switch51LightEnable) return;
+            
+            if (Switch51LightEnable && Switch5LightPosition[LocoStation] > 0)
+            {
+                Switch5LightPosition[LocoStation]--;
+                SignalEvent(Event.LightSwitchToggle);
+                Switch51Lights();
+            }
+            else
+            if (Switch5LightEnable && Switch5LightPosition[LocoStation] > 0)
             {
                 Switch5LightPosition[LocoStation]--;
                 SignalEvent(Event.LightSwitchToggle);
                 Switch5Lights();
             }
         }
-        public void Switch5Lights()
+        public void Switch51Lights()
         {            
             switch (Switch5LightPosition[LocoStation])
             {
-                case 0:                    
+                case 0:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Front lights off"));
+                    break;
+                case 1:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Delta front white lights"));
+                    break;
+                case 2:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Both front red lights"));
+                    break;
+                case 3:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Right front white light"));
+                    break;
+                case 4:                    
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Both front white lights"));
+                    break;                                                                                    
+            }
+        }
+
+        public void Switch5Lights()
+        {
+            switch (Switch5LightPosition[LocoStation])
+            {
+                case 0:
                     Simulator.Confirmer.Information(Simulator.Catalog.GetString("Left red light"));
                     break;
                 case 1:
@@ -17079,8 +17226,16 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch6LightsUp()
         {
-            if (!Switch6LightEnable) return;
-            if (Switch6LightPosition[LocoStation] < 5)
+            if (!Switch6LightEnable && !Switch52LightEnable) return;
+
+            if (Switch52LightEnable && Switch6LightPosition[LocoStation] < 4)
+            {
+                Switch6LightPosition[LocoStation]++;
+                SignalEvent(Event.LightSwitchToggle);
+                Switch52Lights();
+            }
+            else
+            if (Switch6LightEnable && Switch6LightPosition[LocoStation] < 5)
             {
                 Switch6LightPosition[LocoStation]++;
                 SignalEvent(Event.LightSwitchToggle);
@@ -17089,12 +17244,41 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleSwitch6LightsDown()
         {
-            if (!Switch6LightEnable) return;
-            if (Switch6LightPosition[LocoStation] > 0)
+            if (!Switch6LightEnable && !Switch52LightEnable) return;
+
+            if (Switch52LightEnable && Switch6LightPosition[LocoStation] > 0)
+            {
+                Switch6LightPosition[LocoStation]--;
+                SignalEvent(Event.LightSwitchToggle);
+                Switch52Lights();
+            }
+            else
+            if (Switch6LightEnable && Switch6LightPosition[LocoStation] > 0)
             {
                 Switch6LightPosition[LocoStation]--;
                 SignalEvent(Event.LightSwitchToggle);
                 Switch6Lights();
+            }
+        }
+        public void Switch52Lights()
+        {
+            switch (Switch6LightPosition[LocoStation])
+            {
+                case 0:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Rear lights off"));
+                    break;
+                case 1:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Delta rear white lights"));
+                    break;
+                case 2:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Both rear red lights"));
+                    break;
+                case 3:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Left rear white light"));
+                    break;
+                case 4:
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Both rear white lights"));
+                    break;
             }
         }
         public void Switch6Lights()
@@ -17126,7 +17310,7 @@ namespace Orts.Simulation.RollingStocks
         // Červené        
         public void ToggleLightFrontLUp()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
                 if (CircularSwitchWhitePosition[LocoStation] > 0)
@@ -17173,7 +17357,7 @@ namespace Orts.Simulation.RollingStocks
         // Bílé
         public void ToggleLightFrontLDown()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
                 if (CircularSwitchWhitePosition[LocoStation] < 3)
@@ -17222,7 +17406,7 @@ namespace Orts.Simulation.RollingStocks
         // Červené        
         public void ToggleLightFrontRUp()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
                 if (CircularSwitchRedPosition[LocoStation] > 0)
@@ -17269,7 +17453,7 @@ namespace Orts.Simulation.RollingStocks
         // Bílé
         public void ToggleLightFrontRDown()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
                 if (CircularSwitchRedPosition[LocoStation] < 3)
@@ -17318,7 +17502,7 @@ namespace Orts.Simulation.RollingStocks
         // Červené        
         public void ToggleLightRearLUp()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
 
@@ -17352,7 +17536,7 @@ namespace Orts.Simulation.RollingStocks
         // Bílé
         public void ToggleLightRearLDown()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
 
@@ -17387,7 +17571,7 @@ namespace Orts.Simulation.RollingStocks
         // Červené        
         public void ToggleLightRearRUp()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
 
@@ -17421,7 +17605,7 @@ namespace Orts.Simulation.RollingStocks
         // Bílé
         public void ToggleLightRearRDown()
         {
-            if (Switch5LightEnable || Switch6LightEnable) return;
+            if (Switch51LightEnable || Switch52LightEnable || Switch5LightEnable || Switch6LightEnable) return;
             if (CircularSwitchEnable)
             {
 
@@ -24081,18 +24265,30 @@ namespace Orts.Simulation.RollingStocks
                         data = Simulator.WheelSlip ? 1 : 0;
                         break;
                     }
+                case CABViewControlTypes.SWITCH51_LIGHT:
+                    {
+                        Switch51LightEnable = true;
+                        data = Switch5LightPosition[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.SWITCH52_LIGHT:
+                    {
+                        Switch52LightEnable = true;
+                        data = Switch6LightPosition[LocoStation];
+                        break;
+                    }
                 case CABViewControlTypes.SWITCH5_LIGHT:
                     {
                         Switch5LightEnable = true;
                         data = Switch5LightPosition[LocoStation];
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.SWITCH6_LIGHT:
                     {
                         Switch6LightEnable = true;
                         data = Switch6LightPosition[LocoStation];
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.EDB_STATE:
                     {                        
                         data = 0;

@@ -3822,7 +3822,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPH_4NC_PANTOPROTECT:
                 case CABViewControlTypes.PANTOGRAPH_4NC_PANTOCHECKACTION:
                 case CABViewControlTypes.HV3NA_HVCHECKACTION:
-                case CABViewControlTypes.HEATING_CHECKACTION:
+                case CABViewControlTypes.HEATING_CHECKACTION:                
+                case CABViewControlTypes.SWITCH51_LIGHT:
+                case CABViewControlTypes.SWITCH52_LIGHT:
                 case CABViewControlTypes.SWITCH5_LIGHT:
                 case CABViewControlTypes.SWITCH6_LIGHT:
                 case CABViewControlTypes.EDB_STATE:
@@ -4405,6 +4407,32 @@ namespace Orts.Viewer3D.RollingStock
                         }
                         break;
                     }
+
+                case CABViewControlTypes.SWITCH51_LIGHT:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new Switch5LightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new Switch5LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
+                case CABViewControlTypes.SWITCH52_LIGHT:
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        new Switch6LightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        new Switch6LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
 
                 case CABViewControlTypes.SWITCH5_LIGHT:
                     if (ChangedValue(0) < 0 && !IsChanged)

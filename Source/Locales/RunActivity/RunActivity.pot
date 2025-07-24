@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-07-04 19:06:12+0200\n"
-"PO-Revision-Date: 2025-07-04 19:06:12+0200\n"
+"POT-Creation-Date: 2025-07-24 17:02:51+0200\n"
+"PO-Revision-Date: 2025-07-24 17:02:52+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -29,35 +29,35 @@ msgstr[1] ""
 msgid "Free"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1075
+#: ../../RunActivity/Viewer3D/Cameras.cs:1111
 msgid "Outside Front"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1075
+#: ../../RunActivity/Viewer3D/Cameras.cs:1111
 msgid "Outside Rear"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1605
+#: ../../RunActivity/Viewer3D/Cameras.cs:1641
 msgid "Brakeman"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1902
+#: ../../RunActivity/Viewer3D/Cameras.cs:1938
 msgid "Passenger"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1996
+#: ../../RunActivity/Viewer3D/Cameras.cs:2032
 msgid "3D Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2097
+#: ../../RunActivity/Viewer3D/Cameras.cs:2133
 msgid "Head out"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2216
+#: ../../RunActivity/Viewer3D/Cameras.cs:2252
 msgid "Cab"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2499
+#: ../../RunActivity/Viewer3D/Cameras.cs:2535
 msgid "Trackside"
 msgstr ""
 
