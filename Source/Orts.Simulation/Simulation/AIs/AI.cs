@@ -889,14 +889,7 @@ namespace Orts.Simulation.AIs
 
             if (consistFileName.Contains("tilted")) train.IsTilting = true;
 
-            // Icik                        
-            if (srvFile.Train_Config != null)
-            {
-                if (srvFile.Train_Config.ToLower().Contains("keeprun") || srvFile.Train_Config.Contains("KpR")) // nebude vypínat motor při stání
-                {
-                    train.AIKeepRun = true;                    
-                }
-            }
+            // Icik                                    
             train.AIMaxTrainSpeedCalculatedFromConFile = maxVelocityA * train.Efficiency;
 
             // also set Route max speed for speedpost-processing in train.cs
