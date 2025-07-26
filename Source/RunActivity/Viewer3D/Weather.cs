@@ -1230,29 +1230,32 @@ namespace Orts.Viewer3D
                         Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                 }
             }
-            
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+
+            if (!Program.Simulator.WeatherChangesPresent && Viewer.Simulator.WeatherAdv == 7)
             {
-                if (Weather.PrecipitationLiquidity < 1.0f)
-                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
-                if (Weather.PrecipitationLiquidity > 1.0f)
-                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
-            }
-            else
-            if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
-            {                
-                if (Weather.PrecipitationLiquidity < 0.2f)
-                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
-                if (Weather.PrecipitationLiquidity > 0.2f)
-                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
-                Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.01f);                
-            }
-            else
-            {
-                if (Weather.PrecipitationLiquidity < 0.0f)
-                    Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
-                if (Weather.PrecipitationLiquidity > 0.0f)
-                    Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
+                {
+                    if (Weather.PrecipitationLiquidity < 1.0f)
+                        Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                    if (Weather.PrecipitationLiquidity > 1.0f)
+                        Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
+                }
+                else
+                if (Viewer.PlayerLocomotive.CarOutsideTempC > 0f)
+                {
+                    if (Weather.PrecipitationLiquidity < 0.2f)
+                        Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                    if (Weather.PrecipitationLiquidity > 0.2f)
+                        Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
+                    Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(Weather.PricipitationIntensityPPSPM2, 0, 0.01f);
+                }
+                else
+                {
+                    if (Weather.PrecipitationLiquidity < 0.0f)
+                        Weather.PrecipitationLiquidity += 0.01f * elapsedTime.ClockSeconds;
+                    if (Weather.PrecipitationLiquidity > 0.0f)
+                        Weather.PrecipitationLiquidity -= 0.01f * elapsedTime.ClockSeconds;
+                }
             }
 
             if (Weather.PricipitationIntensityPPSPM2 < 0.25f && Viewer.Simulator.WeatherType != WeatherType.Clear)
