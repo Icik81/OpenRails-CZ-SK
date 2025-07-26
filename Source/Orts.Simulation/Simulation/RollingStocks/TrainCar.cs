@@ -914,7 +914,7 @@ namespace Orts.Simulation.RollingStocks
         {                        
             if (!BrakeSystem.BrakeCarDeactivate && BrakeSystem.Status_CarHasMechanicStuckBrake_1)
             {
-                BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG / 3;
+                BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassG / 3f;
                 return;
             }
 
@@ -978,17 +978,35 @@ namespace Orts.Simulation.RollingStocks
                 }
 
             if (WagonType == WagonTypes.Freight || WagonType == WagonTypes.Tender)    //  Nákladní vozy a tendry            
+            {
+                float EmptyMassKG = 0; // Odhaduje hmotnost prázdného vozu kvůli výpočtu převodu pákoví
+                switch (WagonNumAxles)
+                {
+                    case 2:
+                    case 3:
+                        EmptyMassKG = MassKG > 15000 ? MathHelper.Clamp(MassKG / 2.5f, 10000, MassKG) : MassKG;
+                        break;
+                    case 4:
+                        EmptyMassKG = MassKG > 30000 ? MathHelper.Clamp(MassKG / 3f, 22000, MassKG) : MassKG;
+                        break;
+
+                    default:
+                        EmptyMassKG = MassKG > 30000 ? MathHelper.Clamp(MassKG / 3f, 22000, MassKG) : MassKG;
+                        break;
+                }
+
                 switch (BrakeSystem.BrakeCarModePL)
                 {
-                    case 0: // Režim Prázdný  
-                        if (BrakeSystem.BrakeMassEmpty == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
+                    case 0: // Režim Prázdný                           
+                        if (BrakeSystem.BrakeMassEmpty == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * EmptyMassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassEmpty;
                         break;
                     case 1: // Režim Ložený  
-                        if (BrakeSystem.BrakeMassLoaded == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * MassKG;
+                        if (BrakeSystem.BrakeMassLoaded == 0) BrakeSystem.BrakeMassKG = BrakeSystem.CoefMode * EmptyMassKG;
                         else BrakeSystem.BrakeMassKG = BrakeSystem.BrakeMassLoaded;
                         break;
                 }
+            }
         }
 
         // Icik
@@ -1157,7 +1175,7 @@ namespace Orts.Simulation.RollingStocks
                                 BrakeMassKG();
                                 break;
                             case 1: // Režim Ložený                    
-                                BrakeSystem.CoefMode = 0.58f;
+                                BrakeSystem.CoefMode = 2.00f;
                                 BrakeMassKG();
                                 break;
                         }

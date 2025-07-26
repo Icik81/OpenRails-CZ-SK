@@ -11090,6 +11090,13 @@ namespace Orts.Simulation.RollingStocks
             if (this is MSTSSteamLocomotive)
                 return;
             CabFloodLightOn[LocoStation] = !CabFloodLightOn[LocoStation];
+            
+            if (OneCab)
+            {
+                if (LocoStation == 1) CabFloodLightOn[2] = CabFloodLightOn[LocoStation];
+                if (LocoStation == 2) CabFloodLightOn[1] = CabFloodLightOn[LocoStation];
+            }
+            
             if (CabFloodLightOn[LocoStation])
                 CabLightOn[LocoStation] = false;
             else
