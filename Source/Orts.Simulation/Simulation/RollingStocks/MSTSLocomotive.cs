@@ -17765,7 +17765,7 @@ namespace Orts.Simulation.RollingStocks
                 // Kapky se stírají
                 if (WipersWindowTimerWiper > WipersWindowTimeCleanBase && WipersWindowPosition > 0)
                 {
-                    WipersWindowPosition--;
+                    WipersWindowPosition -= Simulator.Random.Next(1, 4);
                     WipersWindowTimerWiper = 0;                    
                 }
             }

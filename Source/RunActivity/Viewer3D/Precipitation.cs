@@ -141,7 +141,7 @@ namespace Orts.Viewer3D
         // "Rain  1.8 - 2.2mm  6.1 - 6.9m/s"
         const float RainVelocityMpS = 6.9f;
         // "Snow flakes of any size falls at about 1 m/s"
-        float SnowVelocityMpS = 1.0f;
+        float SnowVelocityMpS = 0.5f;
         // This is a fiddle factor because the above values feel too slow. Alternative suggestions welcome.
         const float ParticleVelocityFactor = 10.0f;
 
