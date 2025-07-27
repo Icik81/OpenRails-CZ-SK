@@ -143,7 +143,7 @@ namespace Orts.Simulation.Physics
         public int TrainHandBrakeCount = 1;
         public int HandBrakeNum = 0;
         public int? PlayerTrainStartTime = -1;
-        public int prevTrainCarsCount;
+        public int prevTrainCarsCount = -1;
         public bool TrainOutOfRoute;
         public bool TrainIsDerailed;
         public bool TrainIsDerailing;

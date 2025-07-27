@@ -398,6 +398,8 @@ namespace Orts.Viewer3D.RollingStock
             if (!Viewer.Simulator.GameWasRestored)
                 car.WagonIsFlipped = car.Flipped;
 
+            car.CarIsInitialized = true;
+
             InitializeUserInputCommands();
         }
 
