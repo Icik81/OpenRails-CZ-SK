@@ -1440,7 +1440,7 @@ namespace Orts.Viewer3D
                 }
                            
                 int ORTSPrecipitationIntensityChanceToChange = -1;
-                if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
+                if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {
                     // Inicializace 
                     if (Program.Simulator.GameTime == 0 && !Program.Simulator.GameWasRestored)
@@ -1617,13 +1617,16 @@ namespace Orts.Viewer3D
                 FinishPrecipitationIntensity = MathHelper.Clamp(FinishPrecipitationIntensity, 0, 1.0f);                
                 weatherControl.Weather.PricipitationIntensityPPSPM2 = MathHelper.Clamp(weatherControl.Weather.PricipitationIntensityPPSPM2, 0, 1.0f);
 
-                if (weatherControl.Weather.OvercastFactor < 0.6f)
-                    FinishPrecipitationIntensity = 0;                
+                if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
+                {
+                    if (weatherControl.Weather.OvercastFactor < 0.6f)
+                        FinishPrecipitationIntensity = 0;
 
-                if (FinishPrecipitationIntensity > weatherControl.Weather.PricipitationIntensityPPSPM2)
-                    weatherControl.Weather.PricipitationIntensityPPSPM2 += 0.01f * elapsedTime.ClockSeconds;
-                if (FinishPrecipitationIntensity < weatherControl.Weather.PricipitationIntensityPPSPM2)
-                    weatherControl.Weather.PricipitationIntensityPPSPM2 -= 0.01f * elapsedTime.ClockSeconds;                
+                    if (FinishPrecipitationIntensity > weatherControl.Weather.PricipitationIntensityPPSPM2)
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 += 0.01f * elapsedTime.ClockSeconds;
+                    if (FinishPrecipitationIntensity < weatherControl.Weather.PricipitationIntensityPPSPM2)
+                        weatherControl.Weather.PricipitationIntensityPPSPM2 -= 0.01f * elapsedTime.ClockSeconds;
+                }
 
                 if (ORTSPrecipitationIntensity >= 0 && precipitationIntensityDelayTimer == -1)
                 {
@@ -1632,7 +1635,7 @@ namespace Orts.Viewer3D
                     else if (weatherControl.RandomizedWeather == false) wChangeOn = true;
                     var oldPricipitationIntensityPPSPM2 = weatherControl.Weather.PricipitationIntensityPPSPM2;                    
 
-                    if (weatherControl.Viewer.Simulator.WeatherAdv == 7)
+                    if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
                     {
                         FinishPrecipitationIntensity = ORTSPrecipitationIntensity - precipitationIntensityTimer * (precipitationIntensityChangeRate2 / 1000f);
                         

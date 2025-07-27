@@ -248,7 +248,8 @@ namespace Orts.Viewer3D
 
             if (Program.Simulator.WeatherChangesPresent)                
             {
-                // Aktivitář používá své počasí                
+                // Aktivitář používá své počasí
+                Program.Simulator.Weather.FogDistance = Program.Simulator.FogDistanceFinal;                    
             }
             else
             {

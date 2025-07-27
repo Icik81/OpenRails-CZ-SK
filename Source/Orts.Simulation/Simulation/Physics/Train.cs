@@ -3419,7 +3419,7 @@ namespace Orts.Simulation.Physics
                     TrainMaxSpeedMpS = (this.LeadLocomotive as MSTSLocomotive).MaxSpeedMpS;
 
                 // Icik
-                if (IsActualPlayerTrain)
+                if (!(this is Timetables.TTTrain) && IsActualPlayerTrain)
                     TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;                
 
                 AllowedMaxSpeedMpS = TrainMaxSpeedMpS;
