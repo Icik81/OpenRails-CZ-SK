@@ -10145,7 +10145,8 @@ namespace Orts.Simulation.Timetables
                 }
             }
 
-            string nameString = Name.Substring(0, Math.Min(Name.Length, 6));
+            //string nameString = Name.Substring(0, Math.Min(Name.Length, 6));
+            string nameString = Name;
 
             string actString = "";
 

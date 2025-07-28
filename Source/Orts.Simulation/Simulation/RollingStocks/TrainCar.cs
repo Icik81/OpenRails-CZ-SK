@@ -3756,7 +3756,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.70f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(85, 95) / 100f;
+                    TrackFactor = Simulator.Random.Next(90, 96) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3769,7 +3769,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(75, 85) / 100f;
+                    TrackFactor = Simulator.Random.Next(85, 91) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3782,7 +3782,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 1.0f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(65, 75) / 100f;
+                    TrackFactor = Simulator.Random.Next(80, 86) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3794,7 +3794,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(75, 85) / 100f;
+                    TrackFactor = Simulator.Random.Next(85, 91) / 100f;
                     AdhCycle = 0;
                 }                
             }

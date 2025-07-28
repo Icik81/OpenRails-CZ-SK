@@ -9027,14 +9027,14 @@ namespace Orts.Simulation.RollingStocks
         float RandomDelay1;
         public virtual void UpdateFrictionCoefficient(float elapsedClockSeconds)
         {
-            SanderSpeedOfMpS = 1000;
+            SanderSpeedOfMpS = 1000;            
 
             //float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.00f;
             float BaseuMax = AdhesionEfficiencyKoef * (Curtius_KnifflerA / (MpS.ToKpH(AbsSpeedMpS) + Curtius_KnifflerB) + Curtius_KnifflerC); // Base Curtius - Kniffler equation - u = 0.33, all other values are scaled off this formula
             float SandingFrictionCoefficientFactor = 1.0f;
             //Set the friction coeff due to weather
-            if (Simulator.WeatherType == WeatherType.Rain || Simulator.WeatherType == WeatherType.Snow)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.001f)
             {
                 if (Train.SlipperySpotDistanceM < 0)
                 {
@@ -9045,7 +9045,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     BaseFrictionCoefficientFactor = 0.8f;
                 }
-                if (Simulator.WeatherType == WeatherType.Rain) // Wet weather
+                if (Simulator.Weather.PrecipitationLiquidity > 0.3f) // Wet weather
                 {
                     if (Simulator.Settings.AdhesionProportionalToWeather && AdvancedAdhesionModel && !Simulator.Paused)  // Adjust clear weather for precipitation presence - base friction value will be approximately between 0.15 and 0.2
                     // ie base value between 0.8 and 1.0 (TODO) 
@@ -9054,9 +9054,9 @@ namespace Orts.Simulation.RollingStocks
                         // Icik
                         float pric = Simulator.Weather.PricipitationIntensityPPSPM2; // Nabývá max 1
                         // precipitation will calculate a value between 0.15 (light rain) and 0.2 (heavy rain) - this will be a factor that is used to adjust the base value - assume linear value between upper and lower precipitation values
-                        if (pric >= 0.50f)
+                        if (pric > 0.5f)
                         {   //BaseFrictionCoefficientFactor = Math.Min((pric * 0.0078f + 0.45f), 0.8f); // should give a minimum value between 0.8 and 1.0
-                            BaseFrictionCoefficientFactor = Math.Min(pric - (0.1f * pric), 0.86f);
+                            BaseFrictionCoefficientFactor = Math.Min(pric - (0.05f * pric) + 0.15f, 0.95f);
                         }
                         else
                         {   //BaseFrictionCoefficientFactor = Math.Min((0.4539f + 1.0922f * (0.5f - pric)), 0.8f); // should give a minimum value between 0.8 and 1.0
@@ -9082,7 +9082,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         BaseFrictionCoefficientFactor = Math.Min(1 - (pric * 0.05f), BaseFrictionCoefficientFactor0);
                     }
-                    if (BaseFrictionCoefficientFactor < 0.72f) BaseFrictionCoefficientFactor = 0.72f;
+                    if (BaseFrictionCoefficientFactor < 0.82f) BaseFrictionCoefficientFactor = 0.82f;
                 }
 
                 //add sander - more effective in wet weather, so increases adhesion by more                
@@ -9159,7 +9159,7 @@ namespace Orts.Simulation.RollingStocks
             //if (!IsLeadLocomotive() && AcceptCableSignals)
             //    Simulator.Confirmer.MSG3("BaseFrictionCoefficientFactor: " + BaseFrictionCoefficientFactor);
             //if (IsLeadLocomotive())
-            //    Simulator.Confirmer.MSG2("BaseFrictionCoefficientFactor Lead: " + BaseFrictionCoefficientFactor);
+            //    Simulator.Confirmer.MSG2("BaseFrictionCoefficientFactor Lead: " + BaseFrictionCoefficientFactor + "     PricipitationIntensityPPSPM2: " + Simulator.Weather.PricipitationIntensityPPSPM2);
 
             if (IsPlayerTrain)
             {
@@ -9187,7 +9187,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Ostatní hnací vozidla za prvním budou mít zvýšenou adhezi o 10%
-                BaseFrictionCoefficientFactor *= 1.1f;
+                if (this != CarIsFirst) BaseFrictionCoefficientFactor *= 1.1f;
                 goto TreeLeavesSkip;
 
                 TreeLeaves:
