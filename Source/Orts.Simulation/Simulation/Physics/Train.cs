@@ -7682,9 +7682,12 @@ namespace Orts.Simulation.Physics
                     PresentPosition[1].CopyTo(ref PresentPosition[0]);
                     tempPosition.CopyTo(ref PresentPosition[1]);
 
-                    PresentPosition[0].Reverse(ValidRoute[0][PresentPosition[0].RouteListIndex].Direction, nextRoute, Length, signalRef);
-                    PresentPosition[0].CopyTo(ref PreviousPosition[0]);
-                    PresentPosition[1].Reverse(ValidRoute[0][PresentPosition[1].RouteListIndex].Direction, nextRoute, 0.0f, signalRef);
+                    if (PresentPosition[0].RouteListIndex >= 0)
+                    {
+                        PresentPosition[0].Reverse(ValidRoute[0][PresentPosition[0].RouteListIndex].Direction, nextRoute, Length, signalRef);
+                        PresentPosition[0].CopyTo(ref PreviousPosition[0]);
+                        PresentPosition[1].Reverse(ValidRoute[0][PresentPosition[1].RouteListIndex].Direction, nextRoute, 0.0f, signalRef);
+                    }
                 }
                 else
                 {

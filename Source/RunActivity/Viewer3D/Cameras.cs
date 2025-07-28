@@ -1173,13 +1173,17 @@ namespace Orts.Viewer3D
         }
 
         protected override void OnActivate(bool sameCamera)
-        {
+        {            
             BrowseMode = BrowseForwards = BrowseBackwards = false;
             if (attachedCar == null || (attachedCar.Train != null && attachedCar.Train != Viewer.SelectedTrain))
             {                
                 if (Front)
                 {
                     SetCameraCar(GetCameraCars().First());
+
+                    // Icik
+                    if (attachedCar.Train == null) attachedCar.Train = Viewer.PlayerTrain;                    
+                    
                     browsedTraveller = new Traveller(attachedCar.Train.FrontTDBTraveller);
                     ZDistanceM = -attachedCar.CarLengthM / 2;
                     HighWagonOffsetLimit = 0;
@@ -2625,7 +2629,10 @@ namespace Orts.Viewer3D
         public override void Update(ElapsedTime elapsedTime)
         {
             bool trainForwards;
-            var train = PrepUpdate(out trainForwards);            
+            var train = PrepUpdate(out trainForwards);
+
+            // Icik
+            if (train == null) train = Viewer.PlayerTrain;
 
             // Train is close enough if the last car we used is part of the same train and still close enough.
             var trainClose = (LastCheckCar != null) && (LastCheckCar.Train == train) && (WorldLocation.GetDistance2D(LastCheckCar.WorldPosition.WorldLocation, cameraLocation).Length() < MaximumDistance);
