@@ -1669,7 +1669,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (MirelType == Type.LS90)
                 {
                     if (interventionTimer < 4)
+                    {
                         Locomotive.SignalEvent(Common.Event.MirelUnwantedVigilancy);
+                        Locomotive.SignalEvent(Common.Event.MirelOff);
+                    }
                     else
                     {
                         Locomotive.SignalEvent(Common.Event.MirelOff);
