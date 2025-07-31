@@ -776,7 +776,7 @@ namespace Orts.Simulation.RollingStocks
         public int Panto3AnimFrameCount;
         public int Panto4AnimFrameCount;
         public int[] SwitchEnginePosition = new int[4];
-        public bool SwitchEngineEnable;
+        public bool SwitchEngineEnable;        
 
 
         // Jindrich
@@ -3843,6 +3843,82 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Icik
+        // Omezení účinku EDB podle nastavení PT
+        float EDBSelectedMaxAccelerationStepControllerVolts;
+        public bool EDBTrainBrakeCutOff;
+        public void EDBSelectedMaxAccelerationStep(float elapsedClockSeconds)
+        {
+            if (IsPlayerTrain && DynamicBrakeMaxForceAtSelectorStep > 0)
+            {
+                EDBTrainBrakeCutOff = false;
+                if (SelectedMaxAccelerationStep[LocoStation] == 1)
+                {
+                    float maxVolts = 0;
+                    if (EDBSelectedMaxAccelerationStepControllerVolts < maxVolts)
+                    {
+                        float step = 100 / DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        EDBSelectedMaxAccelerationStepControllerVolts += step;
+                        if (EDBSelectedMaxAccelerationStepControllerVolts > 100)
+                            EDBSelectedMaxAccelerationStepControllerVolts = 100;
+                    }
+                    if (EDBSelectedMaxAccelerationStepControllerVolts > maxVolts)
+                    {
+                        float step = 100 / DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        EDBSelectedMaxAccelerationStepControllerVolts -= step;
+                        if (EDBSelectedMaxAccelerationStepControllerVolts < -100)
+                            EDBSelectedMaxAccelerationStepControllerVolts = -100;
+                    }                               
+                    EDBTrainBrakeCutOff = true;
+                    BrakeSystem.BrakeCylReleaseEDBOn = false;                    
+                    ControllerVolts = MathHelper.Clamp(ControllerVolts, EDBSelectedMaxAccelerationStepControllerVolts / 10f, 10);
+                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);
+                }
+                else
+                if (ControllerVolts < 0 && SelectedMaxAccelerationStep[LocoStation] > 1)
+                {
+                    if (EDBSelectedMaxAccelerationStepControllerVolts > -100 && (DynamicBrakeMaxForceAtSelectorStep == 0 || SelectedMaxAccelerationStep[LocoStation] >= DynamicBrakeMaxForceAtSelectorStep))
+                    {
+                        float step = 100 / DynamicBrakeFullRangeIncreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        EDBSelectedMaxAccelerationStepControllerVolts -= step / 2;
+                    }
+                    float maxVolts = -100;
+                    if (DynamicBrakeMaxForceAtSelectorStep != 0)
+                    {
+                        if (SelectedMaxAccelerationStep[LocoStation] < DynamicBrakeMaxForceAtSelectorStep)
+                        {
+                            float difference = 100 / DynamicBrakeMaxForceAtSelectorStep;
+                            maxVolts = -difference * SelectedMaxAccelerationStep[LocoStation];
+                        }
+                    }
+                    if (EDBSelectedMaxAccelerationStepControllerVolts < maxVolts)
+                    {
+                        float step = 100 / DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        EDBSelectedMaxAccelerationStepControllerVolts += step;
+                        if (EDBSelectedMaxAccelerationStepControllerVolts > 100)
+                            EDBSelectedMaxAccelerationStepControllerVolts = 100;
+                    }
+                    if (EDBSelectedMaxAccelerationStepControllerVolts > maxVolts)
+                    {
+                        float step = 100 / DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        EDBSelectedMaxAccelerationStepControllerVolts -= step;
+                        if (EDBSelectedMaxAccelerationStepControllerVolts < -100)
+                            EDBSelectedMaxAccelerationStepControllerVolts = -100;
+                    }
+
+                    //if (ControllerVolts / (maxVolts / 10f) > 1)                    
+                    //    EDBTrainBrakeCutOff = true;                   
+
+                    ControllerVolts = MathHelper.Clamp(ControllerVolts, EDBSelectedMaxAccelerationStepControllerVolts / 10f, 10);
+                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);
+                }                
+            }
+        }
+
         // Při stisknutí vyřazení EDB zruší účinek EDB      
         public void EDBCancelByBreakEDBButton()
         {
@@ -7330,7 +7406,7 @@ namespace Orts.Simulation.RollingStocks
                 HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();
                 EDBCancelByEngineBrake();
-                EDBCancelByOL3BailOff();
+                EDBCancelByOL3BailOff();                
                 PowerOn_Filter(elapsedClockSeconds);
                 SetAuxPower();
                 TM_Temperature(elapsedClockSeconds);
@@ -7606,6 +7682,8 @@ namespace Orts.Simulation.RollingStocks
             else
                 if (CruiseControl != null && (TrainBrakeController.TCSEmergencyBraking || TrainBrakeController.TCSFullServiceBraking))
                 CruiseControl.WasBraking = true;
+
+            EDBSelectedMaxAccelerationStep(elapsedClockSeconds);
 
             if (LocoType != LocoTypes.Vectron || !IsPlayerTrain)
                 UpdateTractiveForce(elapsedClockSeconds, t, AbsSpeedMpS, AbsWheelSpeedMpS);

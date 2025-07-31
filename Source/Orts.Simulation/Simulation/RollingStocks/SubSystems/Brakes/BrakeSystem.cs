@@ -154,6 +154,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public float MainResChangeRate;
         public float prevTotalCapacityMainResBrakePipe;
         public float PressureConverterBase;
+        public float PressureConverterBaseTreshold;
         public float PressureConverterBaseTrainBrake;
         public float PressureConverterBaseEDB;
         public float PressureConverterBaseNoEDB;

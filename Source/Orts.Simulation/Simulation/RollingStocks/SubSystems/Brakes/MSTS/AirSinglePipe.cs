@@ -1856,14 +1856,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         BailOffOn = true;
                     }
-                }
+                }                
 
                 if (BailOffOnAntiSkid)
                 {
                     AutoCylPressurePSI0 -= MaxReleaseRatePSIpS * elapsedClockSeconds;
                 }
 
-                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn /*&& AutoCylPressurePSI0 > 0*/ && !BrakeCylReleaseEDBOn)
+                if (loco.EDBTrainBrakeCutOff)
+                {
+                    BailOffOn = false;                    
+                }
+
+                if (loco.LocoType != MSTSLocomotive.LocoTypes.Vectron && BailOffOn && !BrakeCylReleaseEDBOn)
                 {
                     ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
                     ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
@@ -1891,15 +1896,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
                 {                    
                     ThresholdBailOffOn = 0;
-                }
+                }                
 
                 // Automatické napuštění brzdového válce po uvadnutí EDB                
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
                 if ((Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
                 {
                     if (BrakeCylRelease)
-                        ThresholdBailOffOn = 0;
-
+                        ThresholdBailOffOn = 0;                    
+                    
                     if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
                         && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
                         && AuxResPressurePSI > 0)
@@ -1942,7 +1947,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 float thresholdBreakPoint = 4.84f * 14.50377f;
                 PressureConverterEnable = false;
-                if (BrakeCylApply || BrakeCylRelease) PressureConverterEnable = true;                
+                if (BrakeCylApply || BrakeCylRelease || loco.EDBTrainBrakeCutOff) PressureConverterEnable = true;                
                 
                 if (PressureConverterEnable)
                     PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
@@ -1960,6 +1965,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             if (loco != null && (!loco.Battery || loco.OverCurrent || (loco.DynamicBrake && loco.DynamicBrakePercent <= 0 && AutoCylPressurePSI0 < 0.1f * 14.50377f)))
                 PressureConverterBase = 0;
 
+            PressureConverterBaseTreshold = PressureConverterBase;
+
+            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0)            
+                PressureConverterBase = 0;
+            
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
                 PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS;
 
@@ -4290,6 +4300,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle1 = 2.0f;    
                     }
 
+                    lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverterBaseTreshold = lead.BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
+
                     if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         // Při vypnutém napájení nebo nedostupném EDB vstupní tlak do převodníku brzdy (používá se signál EDB)
@@ -4302,7 +4314,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
                         lead.CruiseControl.BrakeConverterPressureEngage = 1;
                         // Aktivace příznaku zásahu tlakové brzdy v režimu ARR
-                        if (lead.BrakeSystem.PressureConverter > lead.CruiseControl.BrakeConverterPressureEngage
+                        if (lead.BrakeSystem.PressureConverterBaseTreshold >= lead.CruiseControl.BrakeConverterPressureEngage
                             && (lead.BrakeSystem.ARRTrainBrakeCanEngage)
                             && lead.CruiseControl.SelectedSpeedMpS * 1.02f < lead.AbsWheelSpeedMpS)
                             lead.ARRTrainBrakeEngage = true;
@@ -4323,9 +4335,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }  
                     }
-                    lead.ARRAutoCylPressurePSI = lead.BrakeSystem.PressureConverter;
+                    
                     // Regulátor tlakové brzdy pro ARR
-                    float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 10;
+                    float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 20;
                     float TimeToResponseARRTrainBrake = 1.0f;
                     float TimeToResponseARRTrainBrake2 = 1.0f;
                     if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
