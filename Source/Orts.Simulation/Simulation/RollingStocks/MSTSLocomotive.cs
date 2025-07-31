@@ -5804,6 +5804,7 @@ namespace Orts.Simulation.RollingStocks
         bool HelperOverheatedCritical;
         bool HelperCoolDown = true;
         bool HelperCoolDownCritical = true;
+        bool HelperGearBoxManual;
         public void SetHelperLoco(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive() && (AcceptHelperSignals || PowerReductionResult12 > 0))
@@ -5831,6 +5832,18 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Simulator.ThrottleLocoHelper = 0;
                     Train.ControllerVolts = 0;
+                }
+
+                if (HelperGearBoxManual)
+                {
+                    if (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].HasGearBox)
+                    {
+                        if ((this as MSTSDieselLocomotive).GearBox.GearBoxOperation == GearBoxOperation.Automatic)
+                        {
+                            HelperGearBoxManual = false;
+                            (this as MSTSDieselLocomotive).GearBox.GearBoxOperation = GearBoxOperation.Manual;
+                        }
+                    }
                 }
             }
 
@@ -5873,6 +5886,15 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult12 = 1;
                 else
                     PowerReductionResult12 = 0;
+
+                if (this is MSTSDieselLocomotive && (this as MSTSDieselLocomotive).DieselEngines[0].HasGearBox)
+                {
+                    if ((this as MSTSDieselLocomotive).GearBox.GearBoxOperation == GearBoxOperation.Manual)
+                    {
+                        HelperGearBoxManual = true;
+                        (this as MSTSDieselLocomotive).GearBox.GearBoxOperation = GearBoxOperation.Automatic;
+                    }
+                }
 
                 #region Helper DieselEngine Overheating
                 if (this is MSTSDieselLocomotive)
