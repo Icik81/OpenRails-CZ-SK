@@ -1950,7 +1950,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (BrakeCylApply || BrakeCylRelease || loco.EDBTrainBrakeCutOff) PressureConverterEnable = true;                
                 
                 if (PressureConverterEnable)
-                    PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
+                    PressureConverterBaseTrainBrake = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase * ((4f * 14.50377f) / MCP_TrainBrake);
 
                 if (BrakeLine1PressurePSI > thresholdBreakPoint)
                     PressureConverterBaseTrainBrake = 0;
@@ -1967,7 +1967,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             PressureConverterBaseTreshold = PressureConverterBase;
 
-            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0)            
+            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0 && loco.DynamicBrakeController.CurrentValue == 0)            
                 PressureConverterBase = 0;
             
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
