@@ -776,7 +776,9 @@ namespace Orts.Simulation.RollingStocks
         public int Panto3AnimFrameCount;
         public int Panto4AnimFrameCount;
         public int[] SwitchEnginePosition = new int[4];
-        public bool SwitchEngineEnable;        
+        public bool SwitchEngineEnable;
+        public float PressureConverterControllerValue;
+        public float PressureConverterFake;
 
 
         // Jindrich
@@ -3845,7 +3847,7 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Omezení účinku EDB podle nastavení PT
         float EDBSelectedMaxAccelerationStepControllerVolts;
-        public bool EDBTrainBrakeCutOff;
+        public bool EDBTrainBrakeCutOff;        
         public void EDBSelectedMaxAccelerationStep(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && DynamicBrakeMaxForceAtSelectorStep > 0)
@@ -3908,15 +3910,11 @@ namespace Orts.Simulation.RollingStocks
                         EDBSelectedMaxAccelerationStepControllerVolts -= step;
                         if (EDBSelectedMaxAccelerationStepControllerVolts < -100)
                             EDBSelectedMaxAccelerationStepControllerVolts = -100;
-                    }
-
-                    //if (ControllerVolts / (maxVolts / 10f) > 1)                    
-                    //    EDBTrainBrakeCutOff = true;                   
-
+                    }             
                     ControllerVolts = MathHelper.Clamp(ControllerVolts, EDBSelectedMaxAccelerationStepControllerVolts / 10f, 10);
-                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);
+                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);                    
                 }                
-            }
+            }            
         }
 
         // Při stisknutí vyřazení EDB zruší účinek EDB      
@@ -23898,7 +23896,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.BRAKEFORCE_CONVERTER:
                     {
-                        data = ConvertFromPSI(cvc, BrakeSystem.PressureConverter);                       
+                        data = ConvertFromPSI(cvc, Math.Max(BrakeSystem.PressureConverter, PressureConverterFake));                       
                         break;
                     }
                 case CABViewControlTypes.ARIPOT_CONTROLLER:

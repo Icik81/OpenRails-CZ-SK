@@ -656,7 +656,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.AuxCompressor)
                     loco.AuxResPressurePSI = loco.MaxAuxResPressurePSI;
                 if (loco.HandBrakePresent)
-                    HandbrakePercent = 0;                
+                    HandbrakePercent = 0;
+                loco.PressureConverterControllerValue = 0;
+                loco.PressureConverterFake = 0;
+                PressureConverterBase = 0;
             }
         }
 

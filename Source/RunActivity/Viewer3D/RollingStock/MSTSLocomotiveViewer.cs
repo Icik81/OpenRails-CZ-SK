@@ -459,6 +459,38 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             DoublePressedKeyTest();
 
+            // Převodník brzdy
+            if (Locomotive.DynamicBrakeController != null)
+            {
+                if (Locomotive.Battery)
+                {
+                    if (Locomotive.MultiPositionController == null)
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlDynamicBrakeIncrease) && Locomotive.BrakeSystem.PressureConverterBase > 0.001f)
+                        {
+                            Locomotive.PressureConverterControllerValue += elapsedTime.ClockSeconds * 0.125f;
+                            if (Locomotive.PressureConverterControllerValue > 1.0f)
+                                Locomotive.PressureConverterControllerValue = 1.0f;
+                        }
+                        else
+                        if (UserInput.IsDown(UserCommand.ControlDynamicBrakeDecrease))
+                        {
+                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
+                            if (Locomotive.PressureConverterControllerValue < 0)
+                                Locomotive.PressureConverterControllerValue = 0;
+                        }
+                    }
+                }
+                else
+                {
+                    Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
+                    if (Locomotive.PressureConverterControllerValue < 0)
+                        Locomotive.PressureConverterControllerValue = 0;
+                }
+                Locomotive.PressureConverterFake = Locomotive.PressureConverterControllerValue * 4.0f * 14.50377f;
+                //Locomotive.Simulator.Confirmer.MSG("PressureConverterFake: " + Locomotive.PressureConverterControllerValue);
+            }            
+
             // Kontrola zvukového znamení hráče před nechráněným přejezdem
             if (Locomotive.IsLeadLocomotive() && Locomotive.Simulator.Settings.HornLvlCrossings && Locomotive.Train.TrainIsNearToLvlCross && Locomotive.Train.UnprotectedLevelCrossCount > 0)
             {

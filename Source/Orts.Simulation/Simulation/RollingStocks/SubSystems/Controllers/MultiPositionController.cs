@@ -206,6 +206,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
+
+                // Převodník brzdy
+                if (Locomotive.BrakeSystem.PressureConverterBase > 0.001f)
+                {
+                    Locomotive.PressureConverterControllerValue += elapsedClockSeconds * 0.125f;
+                    if (Locomotive.PressureConverterControllerValue > 1.0f)
+                        Locomotive.PressureConverterControllerValue = 1.0f;
+                }
             }
             else if (haveCruiseControl)
             {
@@ -230,13 +238,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             }
             if (controllerPosition == ControllerPosition.DynamicBrakeDecrease)
             {
-                Locomotive.DynamicBrakeController.StartDecrease();
-                if (Locomotive.DynamicBrakePercent == 0)
+                // Převodník brzdy
+                Locomotive.PressureConverterControllerValue -= elapsedClockSeconds * 0.125f;
+                if (Locomotive.PressureConverterControllerValue < 0)
+                    Locomotive.PressureConverterControllerValue = 0;
+
+                if (Locomotive.PressureConverterFake < Locomotive.BrakeSystem.PressureConverter)
                 {
-                    if (haveCruiseControl)
-                        Locomotive.CruiseControl.DynamicBrakePriority = false;
-                    Locomotive.DynamicBrakeChangeActiveState(false);
-                }
+                    Locomotive.DynamicBrakeController.StartDecrease();
+                    if (Locomotive.DynamicBrakePercent == 0)
+                    {
+                        if (haveCruiseControl)
+                            Locomotive.CruiseControl.DynamicBrakePriority = false;
+                        Locomotive.DynamicBrakeChangeActiveState(false);
+                    }
+                }                
             }
 
             ReloadPositions();
