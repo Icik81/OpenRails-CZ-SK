@@ -39,6 +39,7 @@
 
 //#define DEBUGSCR
 
+using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
@@ -1481,20 +1482,30 @@ namespace Orts.Viewer3D
                 else volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;
             }
 
-            // Zabezpečí vypnutý zvuk při odstavených lokomotivách a vozech
+            // Zabezpečí vypnutý zvuk při odstavených lokomotivách 
             var car = SoundSource.Car;
-            if (car != null && !car.BrakeSystem.PowerForWagon && !(car is MSTSSteamLocomotive))
+            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp)
             {
-                if (car is MSTSLocomotive || car is MSTSControlUnit)
-                {
-                    if (!car.BrakeSystem.ORCZSKSetUp && !car.CarHasStartTrigger)
-                        volume *= 0;
-                    else
-                    if (!car.BrakeSystem.ORCZSKSetUp && car.CarHasStartTrigger && car.Simulator.GameTime < 20f)
-                        volume *= 0;
-                }                                    
+                car.CarSoundActivationTimer = 0;
+                car.CarSoundDeactivationTimer += car.Simulator.OneSecondLoop;
+                if (car.CarSoundDeactivationTimer > 5)
+                {                    
+                    float volumeCutOff = 1f - ((car.CarSoundDeactivationTimer - 4f) / 10f);
+                    volumeCutOff = MathHelper.Clamp(volumeCutOff, 0, 1);
+                    volume *= volumeCutOff;
+                }
             }
-           ALSoundSource.Volume = volume;
+            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && car.CarSoundDeactivationTimer > 0)
+            {
+                car.CarSoundActivationTimer += car.Simulator.OneSecondLoop;
+                float volumeCutOff = car.CarSoundActivationTimer / 10f;
+                volumeCutOff = MathHelper.Clamp(volumeCutOff, 0, 1);
+                volume *= volumeCutOff;
+                if (volumeCutOff == 1.0f)                
+                    car.CarSoundDeactivationTimer = 0;                
+            }
+
+            ALSoundSource.Volume = volume;
         }
 
         /// <summary>
