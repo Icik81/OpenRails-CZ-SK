@@ -1966,8 +1966,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 PressureConverterBase = 0;
 
             PressureConverterBaseTreshold = PressureConverterBase;
-
-            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0 && loco.DynamicBrakeController.CurrentValue == 0)            
+            
+            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0 && loco.DynamicBrakeController != null && loco.DynamicBrakeController.CurrentValue == 0)            
                 PressureConverterBase = 0;
             
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
