@@ -797,6 +797,7 @@ namespace Orts.Simulation.RollingStocks
         public bool AutomaticParkingBrake = false;
         public float AutomaticParkingBrakeEngageSpeedKpH = 0;
         public float ParkingBrakeTargetPressurePSI = 0;
+        public bool ParkingBrakeReleaseTrainBrake;
         public bool AutomaticParkingBrakeEngaged = false;
         public bool ManualParkingBrakeReleaseRequired = true;
         public List<CabViewControl> ActiveScreens = new List<CabViewControl>();
@@ -1558,6 +1559,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(ortsautomaticparkingbrake(targetpressurepsi": ParkingBrakeTargetPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 30); break;
+                case "engine(ortsautomaticparkingbrake(parkingbrakereleasetrainbrake ": ParkingBrakeReleaseTrainBrake = stf.ReadBoolBlock(false); break;
                 case "engine(ortssplashscreen(minduration": SplashScreenWillBeDisplayed = true; SplashScreenMinDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
                 case "engine(ortssplashscreen(maxduration": SplashScreenWillBeDisplayed = true; SplashScreenMaxDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
@@ -1818,6 +1820,7 @@ namespace Orts.Simulation.RollingStocks
             AntiWheelSpinSpeedDiffThreshold = locoCopy.AntiWheelSpinSpeedDiffThreshold;
             DynamicBrakeMaxForceAtSelectorStep = locoCopy.DynamicBrakeMaxForceAtSelectorStep;
             SelectedMaxAccelerationStep[LocoStation] = locoCopy.SelectedMaxAccelerationStep[LocoStation];
+            ParkingBrakeReleaseTrainBrake = locoCopy.ParkingBrakeReleaseTrainBrake;
 
             if (locoCopy.CruiseControl != null)
                 CruiseControl = locoCopy.CruiseControl;
@@ -3852,7 +3855,7 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsPlayerTrain && DynamicBrakeMaxForceAtSelectorStep > 0)
             {
-                EDBTrainBrakeCutOff = false;
+                EDBTrainBrakeCutOff = false;                                                                    
                 if (SelectedMaxAccelerationStep[LocoStation] == 1)
                 {
                     float maxVolts = 0;
@@ -3871,9 +3874,9 @@ namespace Orts.Simulation.RollingStocks
                         EDBSelectedMaxAccelerationStepControllerVolts -= step;
                         if (EDBSelectedMaxAccelerationStepControllerVolts < -100)
                             EDBSelectedMaxAccelerationStepControllerVolts = -100;
-                    }                               
+                    }
                     EDBTrainBrakeCutOff = true;
-                    BrakeSystem.BrakeCylReleaseEDBOn = false;                    
+                    BrakeSystem.BrakeCylReleaseEDBOn = false;
                     ControllerVolts = MathHelper.Clamp(ControllerVolts, EDBSelectedMaxAccelerationStepControllerVolts / 10f, 10);
                     DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);
                 }
@@ -3910,10 +3913,10 @@ namespace Orts.Simulation.RollingStocks
                         EDBSelectedMaxAccelerationStepControllerVolts -= step;
                         if (EDBSelectedMaxAccelerationStepControllerVolts < -100)
                             EDBSelectedMaxAccelerationStepControllerVolts = -100;
-                    }             
+                    }
                     ControllerVolts = MathHelper.Clamp(ControllerVolts, EDBSelectedMaxAccelerationStepControllerVolts / 10f, 10);
-                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);                    
-                }                
+                    DynamicBrakePercent = MathHelper.Clamp(DynamicBrakePercent, -1, -EDBSelectedMaxAccelerationStepControllerVolts);
+                }                                 
             }            
         }
 
@@ -3945,12 +3948,14 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 2.0f;
                 if (DynamicBrakePercent < 0)
-                    DynamicBrakePercent = -1;
-                SetDynamicBrakePercent(DynamicBrakePercent);
+                    DynamicBrakePercent = -1;                
                 if (BrakeSystem.AutoCylPressurePSI1 < 10 && DynamicBrakePercent <= 0)
                 {
                     EngineBrakeEngageEDB = false;
+                    DynamicBrakePercent = PressureConverterControllerValue * 100f;                    
                 }
+                SetDynamicBrakePercent(DynamicBrakePercent);
+                BrakeSystem.PressureConverterBase = 0.0011f;
             }
         }
 

@@ -1970,7 +1970,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             PressureConverterBaseTreshold = PressureConverterBase;
             
-            if (loco != null && Car.Train.EqualReservoirPressurePSIorInHg == maxPressurePSI0 && loco.DynamicBrakeController != null && loco.DynamicBrakeController.CurrentValue == 0)            
+            if (loco != null && PressureConverterBaseTrainBrake == 0 && loco.DynamicBrakeController != null && loco.DynamicBrakeController.CurrentValue == 0)            
                 PressureConverterBase = 0;
             
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
@@ -4191,6 +4191,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     lead.ParkingBrakeTargetPressurePSI = 2 * 14.50377f;
                 }
 
+                if (lead.LocomotiveTypeNumber == 162 || lead.LocomotiveTypeNumber == 163 || lead.LocomotiveTypeNumber == 362 || lead.LocomotiveTypeNumber == 363)
+                {
+                    lead.ParkingBrakeReleaseTrainBrake = true;
+                }
+
+                // Automatické vyrovnání tlaků v průběžné brzdě při aktivaci parkovací brzdy
+                if (lead.AutomaticParkingBrakeEngaged && lead.ParkingBrakeReleaseTrainBrake
+                    && lead.MainResPressurePSI > 0 && lead.PowerKey && lead.BrakeSystem.AutoCylPressurePSI2 >= lead.ParkingBrakeTargetPressurePSI && lead.TrainBrakeController.TrainBrakeControllerState != ControllerState.Apply)
+                {
+                    float DeltaPressure = 0.4f * 14.50377f;
+                    lead.ARRTrainBrakeEngage_Apply = false;
+                    lead.ARRTrainBrakeEngage_Release = true;
+                    if (train.EqualReservoirPressurePSIorInHg < lead.TrainBrakeController.MaxPressurePSI)
+                        train.EqualReservoirPressurePSIorInHg += DeltaPressure * elapsedClockSeconds;
+                    if (train.EqualReservoirPressurePSIorInHg > lead.TrainBrakeController.MaxPressurePSI)
+                        train.EqualReservoirPressurePSIorInHg = lead.TrainBrakeController.MaxPressurePSI;
+                }
+
                 // Automatická parkovací brzda
                 if ((lead.AutomaticParkingBrakeEngaged)
                     && lead.MainResPressurePSI > 0
@@ -4274,8 +4292,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "ENGINEBRAKESTATE", 2)).ToString());
                             }
                             break;
-                    }
-
+                    }                
 
                 if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake && lead.PowerOn)
                 {
