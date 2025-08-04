@@ -16766,8 +16766,11 @@ namespace Orts.Simulation.RollingStocks
             if (LightsFrameUpdate < 3)
                 LightsFrameUpdate++;
 
-            FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
-            RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
+            if (!Switch51LightEnable && !Switch52LightEnable)
+            {
+                FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
+                RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
+            }
 
             if (Switch51LightEnable && Switch52LightEnable) // Vectron
             {
