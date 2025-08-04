@@ -16779,7 +16779,7 @@ namespace Orts.Simulation.RollingStocks
                         if (Train.Cars.Count == 1)
                         {
                             Switch5LightPosition[LocoStation] = 1;
-                            Switch6LightPosition[LocoStation] = 4;
+                            Switch6LightPosition[LocoStation] = 2;
                         }
                         else
                         {
@@ -16792,7 +16792,7 @@ namespace Orts.Simulation.RollingStocks
                             if (this == Train.Cars.Last())
                             {
                                 Switch5LightPosition[LocoStation] = 0;
-                                Switch6LightPosition[LocoStation] = 4;
+                                Switch6LightPosition[LocoStation] = 2;
                             }
                             else
                             {
@@ -16825,16 +16825,15 @@ namespace Orts.Simulation.RollingStocks
                             case 3: LightFrontLW = false; LightFrontRW = true; break;
                             case 4: LightFrontLW = true; LightFrontRW = true; break;
                         }
-                        
-                        switch (Switch6LightPosition[1])
-                        {
-                            case 0: LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false; break;
-                            case 1: LightRearLW = true; LightRearRW = true; RearHeadLight = true; Headlight[1] = 7; break;
-                            case 2: LightRearLR = true; LightRearRR = true; break;
-                            case 3: LightRearLW = true; LightRearRW = false; break;
-                            case 4: LightRearLW = true; LightRearRW = true; break;
-                        }
                     }
+                    switch (Switch6LightPosition[1])
+                    {
+                        case 0: LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false; break;
+                        case 1: LightRearLW = true; LightRearRW = true; RearHeadLight = true; Headlight[2] = 7; break;
+                        case 2: LightRearLR = true; LightRearRR = true; break;
+                        case 3: LightRearLW = true; LightRearRW = false; break;
+                        case 4: LightRearLW = true; LightRearRW = true; break;
+                    }                    
                 }
                 if (StationIsActivated[2])
                 {
@@ -16854,16 +16853,15 @@ namespace Orts.Simulation.RollingStocks
                             case 3: LightRearRW = false; LightRearLW = true; break;
                             case 4: LightRearLW = true; LightRearRW = true; break;
                         }
-                        
-                        switch (Switch6LightPosition[2])
-                        {
-                            case 0: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
-                            case 1: LightFrontLW = true; LightFrontRW = true; FrontHeadLight = true; Headlight[2] = 7; break;
-                            case 2: LightFrontLR = true; LightFrontRR = true; break;
-                            case 3: LightFrontRW = true; LightFrontLW = false; break;
-                            case 4: LightFrontLW = true; LightFrontRW = true; break;
-                        }
                     }
+                    switch (Switch6LightPosition[2])
+                    {
+                        case 0: LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false; break;
+                        case 1: LightFrontLW = true; LightFrontRW = true; FrontHeadLight = true; Headlight[1] = 7; break;
+                        case 2: LightFrontLR = true; LightFrontRR = true; break;
+                        case 3: LightFrontRW = true; LightFrontLW = false; break;
+                        case 4: LightFrontLW = true; LightFrontRW = true; break;
+                    }                    
                 }
             }
             else

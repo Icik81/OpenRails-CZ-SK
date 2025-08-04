@@ -310,7 +310,7 @@ namespace Orts.Viewer3D
             var newCarRearHeadLight = Car.RearHeadLight;
             var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
             var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;
-
+            
             // AI
             if (!newCarIsPlayer)
             {
