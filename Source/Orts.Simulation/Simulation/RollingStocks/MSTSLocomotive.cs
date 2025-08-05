@@ -6693,9 +6693,7 @@ namespace Orts.Simulation.RollingStocks
                 VentilationSwitchPosition[1] = VentilationSwitchPosition[2] = 1;
                 PantoActivationSwitch[1] = PantoActivationSwitch[2] = 1;
                 VoltageSelectionSwitch[1] = VoltageSelectionSwitch[2] = 1;
-                HV3NASwitch[1] = HV3NASwitch[2] = 1;
-                Switch5LightPosition[1] = Switch5LightPosition[2] = 2;
-                Switch6LightPosition[1] = Switch6LightPosition[2] = 2;
+                HV3NASwitch[1] = HV3NASwitch[2] = 1;                
                 CompressorSwitch[1] = CompressorSwitch[2] = 1;
 
                 if (CruiseControl != null)
@@ -16781,6 +16779,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Train.Cars.Count == 1)
                         {
+                            Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;                             
                             Switch5LightPosition[LocoStation] = 1;
                             Switch6LightPosition[LocoStation] = 2;
                         }
@@ -16788,17 +16787,20 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (this == Train.Cars.First())
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 1;
                                 Switch6LightPosition[LocoStation] = 0;
                             }
                             else
                             if (this == Train.Cars.Last())
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 0;
                                 Switch6LightPosition[LocoStation] = 2;
                             }
                             else
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 0;
                                 Switch6LightPosition[LocoStation] = 0;
                             }
@@ -16877,6 +16879,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Train.Cars.Count == 1)
                         {
+                            Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                             Switch5LightPosition[LocoStation] = 1;
                             Switch6LightPosition[LocoStation] = 4;
                         }
@@ -16884,17 +16887,20 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (this == Train.Cars.First())
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 2;
                                 Switch6LightPosition[LocoStation] = 4;
                             }
                             else
                             if (this == Train.Cars.Last())
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 1;
                                 Switch6LightPosition[LocoStation] = 2;
                             }
                             else
                             {
+                                Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                                 Switch5LightPosition[LocoStation] = 2;
                                 Switch6LightPosition[LocoStation] = 2;
                             }
