@@ -11,7 +11,7 @@
     <AssemblyName>Contrib.TrackViewer</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>..\..\ORTS.ico</ApplicationIcon>
+    <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup />
@@ -250,6 +250,8 @@
     <Content Include="Content\Steamtrain.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpenRailsCZSK.ico" />
+    <Content Include="openrails_czsk_icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">

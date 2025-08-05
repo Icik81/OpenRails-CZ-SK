@@ -11,7 +11,7 @@
     <AssemblyName>RunActivity</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>..\ORTS.ico</ApplicationIcon>
+    <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
@@ -1042,6 +1042,8 @@
     <Content Include="Copying.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="OpenRailsCZSK.ico" />
+    <Content Include="openrails_czsk_icon.ico" />
     <Content Include="Readme.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

@@ -11,7 +11,7 @@
     <AssemblyName>Contrib.ActivityEditor</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <ApplicationIcon>..\..\..\ORTS.ico</ApplicationIcon>
+    <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
     <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
@@ -378,6 +378,8 @@
   <ItemGroup />
   <ItemGroup>
     <None Include="Resources\metasegment.bmp" />
+    <Content Include="OpenRailsCZSK.ico" />
+    <Content Include="openrails_czsk_icon.ico" />
     <Content Include="Resources\metasegment.png" />
   </ItemGroup>
   <ItemGroup>
