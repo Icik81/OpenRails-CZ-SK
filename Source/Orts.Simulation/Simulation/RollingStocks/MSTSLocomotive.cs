@@ -779,6 +779,7 @@ namespace Orts.Simulation.RollingStocks
         public bool SwitchEngineEnable;
         public float PressureConverterControllerValue;
         public float PressureConverterFake;
+        public float EDBCutOffBrakePipePressurePSI;
 
 
         // Jindrich
@@ -1515,6 +1516,8 @@ namespace Orts.Simulation.RollingStocks
                     DriveAxleNumber[10] = stf.ReadInt(null);
                     stf.SkipRestOfBlock();
                     break;
+                case "engine(edbcutoffbrakepipepressure": EDBCutOffBrakePipePressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
+                    
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1795,6 +1798,7 @@ namespace Orts.Simulation.RollingStocks
             CoefStepControllerCurves = locoCopy.CoefStepControllerCurves;
             CurrentSpeedStepACCurves = locoCopy.CurrentSpeedStepACCurves;
             CurrentSpeedStepDCCurves = locoCopy.CurrentSpeedStepDCCurves;
+            EDBCutOffBrakePipePressurePSI = locoCopy.EDBCutOffBrakePipePressurePSI;
 
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
@@ -3964,6 +3968,24 @@ namespace Orts.Simulation.RollingStocks
         public void EDBCancelByOL3BailOff()
         {
             if (BrakeSystem.OL3active)
+            {
+                if (DynamicBrakeIntervention > -1)
+                    DynamicBrakeIntervention -= 0.5f;
+                if (DynamicBrakeIntervention < 0)
+                    DynamicBrakeIntervention = -1;
+                DynamicBrakePercent -= 1.0f;
+                if (DynamicBrakePercent < 0)
+                    DynamicBrakePercent = -1;
+                SetDynamicBrakePercent(DynamicBrakePercent);
+            }
+        }
+
+        // Icik
+        // Odpad nezapočitatelné EDB při poklesu tlaku vyvolaného rychlobrzdou
+        public void EDBCancelByEmergencyPressureDrop()
+        {
+            //if (EDBCutOffBrakePipePressurePSI == 0) EDBCutOffBrakePipePressurePSI = 3.5f * 14.503077f; // default 3.5bar
+            if (!EDBIndependent && BrakeSystem.BrakeLine1PressurePSI < EDBCutOffBrakePipePressurePSI && (EmergencyButtonPressed || TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency))
             {
                 if (DynamicBrakeIntervention > -1)
                     DynamicBrakeIntervention -= 0.5f;
@@ -7429,7 +7451,8 @@ namespace Orts.Simulation.RollingStocks
                 HVPressedTesting(elapsedClockSeconds);
                 EDBCancelByBreakEDBButton();
                 EDBCancelByEngineBrake();
-                EDBCancelByOL3BailOff();                
+                EDBCancelByOL3BailOff();
+                EDBCancelByEmergencyPressureDrop();
                 PowerOn_Filter(elapsedClockSeconds);
                 SetAuxPower();
                 TM_Temperature(elapsedClockSeconds);

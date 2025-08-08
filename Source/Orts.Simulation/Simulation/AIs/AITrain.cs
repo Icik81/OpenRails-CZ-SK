@@ -301,12 +301,12 @@ namespace Orts.Simulation.AIs
                 var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
                 foreach (MSTSWagon car in Cars)
                 {
-                    if (thisStation.PlatformItem.PlatformSide[0] && car.PassengerCapacity > -1)
+                    if (thisStation.PlatformItem.PlatformSide[0])
                     {
                         //open left doors
                         ToggleDoors(frontIsFront, true);
                     }
-                    if (thisStation.PlatformItem.PlatformSide[1] && car.PassengerCapacity > -1)
+                    if (thisStation.PlatformItem.PlatformSide[1])
                     {
                         //open right doors
                         ToggleDoors(!frontIsFront, true);

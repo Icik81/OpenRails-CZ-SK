@@ -16818,7 +16818,7 @@ namespace Orts.Simulation.Physics
             {
                 var wagon = car as MSTSWagon;
 
-                if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride)
+                if (!wagon.LeftDoorOpenOverride && !wagon.RightDoorOpenOverride && car.PassengerCapacity > -1)
                 {
                     if (open && !wagon.BrakeSystem.LeftDoorIsOpened && !wagon.BrakeSystem.RightDoorIsOpened)
                         wagon.SignalEvent(open ? Event.DoorOpen : Event.DoorClose); // hook for sound trigger
