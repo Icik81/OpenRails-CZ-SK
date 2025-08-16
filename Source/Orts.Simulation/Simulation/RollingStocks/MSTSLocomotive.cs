@@ -8027,6 +8027,9 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the states and physical variables of the locomotive's controllers.
         /// </summary>
         bool EDBOn;
+        float LastStateDynamicBrakePercent = -1;
+        bool DynamicBrakeInterventionNormalState;
+        float LastStatePressureConverterControllerValue;
         protected virtual void UpdateControllers(float elapsedClockSeconds)
         {
             SteamHeatController.Update(elapsedClockSeconds);
@@ -8090,6 +8093,9 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime > DynamicBrakeCommandStartTime) // use the latest command time
                 DynamicBrakeCommandStartTime = DynamicBrakeController.CommandStartTime;
 
+
+            //Simulator.Confirmer.MSG("LastStateDynamicBrakePercent: " + LastStateDynamicBrakePercent + "      DynamicBrakeInterventionNormalState: " + DynamicBrakeInterventionNormalState);
+
             // Icik
             //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
@@ -8116,18 +8122,38 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeController.Update(elapsedClockSeconds);
 
                         if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
-                        {
-                            DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                            LocalDynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                        {                            
+                            float DynamicBrakePercentTrainBrake = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
 
+                            if ((DynamicBrakePercentTrainBrake > 0 && LastStateDynamicBrakePercent == -1) || (DynamicBrakePercentTrainBrake > 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue))                                
+                                LastStateDynamicBrakePercent = DynamicBrakePercent;
+
+                            if (DynamicBrakePercentTrainBrake == 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue)
+                                LastStateDynamicBrakePercent = PressureConverterControllerValue * 100f;
+
+                            LastStatePressureConverterControllerValue = PressureConverterControllerValue;                            
+
+                            if (DynamicBrakePercentTrainBrake > 0)
+                                DynamicBrakePercent = Math.Max(LastStateDynamicBrakePercent, DynamicBrakePercentTrainBrake);
+
+                            if (DynamicBrakePercentTrainBrake > LastStateDynamicBrakePercent && LastStateDynamicBrakePercent > 0)
+                                DynamicBrakeInterventionNormalState = true;
+                            
+                            if (DynamicBrakeInterventionNormalState)                            
+                                DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                            
+                            LocalDynamicBrakePercent = DynamicBrakePercent;
+                            
                             // Icik
                             if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
                                 EDBOn = true;
-                            if (DynamicBrakeIntervention == -1 && EDBOn && DynamicBrakeController.CurrentValue == 0)
+                            if (DynamicBrakeIntervention == -1 && EDBOn && PressureConverterControllerValue == 0f && DynamicBrakeInterventionNormalState)
                             {
                                 DynamicBrakePercent = -1;
                                 LocalDynamicBrakePercent = -1;
                                 EDBOn = false;
+                                LastStateDynamicBrakePercent = -1;
+                                DynamicBrakeInterventionNormalState = false;
                             }
                         }
                     }
@@ -8151,7 +8177,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // <CScomment> accordingly to shown documentation dynamic brake delay is required only when engaging
                 //           if (DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)
-                //           {
+                //           {                
                 EDBOn = false;
                 DynamicBrake = false; // Disengage
                 if (LocoType != LocoTypes.Vectron)
@@ -8162,6 +8188,7 @@ namespace Orts.Simulation.RollingStocks
                 //            else if (IsLeadLocomotive())
                 //               Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.On); // Keeping status string on screen so user knows what's happening
             }
+            
 
             //Currently the ThrottlePercent is global to the entire train
             //So only the lead locomotive updates it, the others only updates the controller (actually useless)           
@@ -11080,6 +11107,9 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakePercent = -1;
                 DynamicBrakeController.CommandStartTime = Simulator.ClockTime;
                 StopDynamicBrakeIncrease();
+                LastStateDynamicBrakePercent = -1;
+                EDBOn = false;
+                DynamicBrakeInterventionNormalState = false;
             }
         }
 
@@ -16932,6 +16962,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (StationIsActivated[1])
                 {
+                    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
+                    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
                     switch (Switch5LightPosition[1])
                     {
                         case 0: LightRearLR = true; LightRearRR = false; break;
@@ -16976,6 +17008,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (StationIsActivated[2])
                 {
+                    LightFrontLR = false; LightFrontRR = false; LightFrontLW = false; LightFrontRW = false;
+                    LightRearLR = false; LightRearRR = false; LightRearLW = false; LightRearRW = false;
                     switch (Switch5LightPosition[2])
                     {
                         case 0: LightFrontRR = true; LightFrontLR = false; break;
