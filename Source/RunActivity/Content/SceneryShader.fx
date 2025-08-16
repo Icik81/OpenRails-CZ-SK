@@ -402,12 +402,12 @@ float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
 	float3 moments;
 	moments = _PSGetShadowEffect(In);
 
-	bool not_shadowed = moments.z - moments.x < 0.000000001;
+	bool not_shadowed = moments.z - moments.x < 0.0001;
 	float E_x2 = moments.y;
 	float Ex_2 = moments.x * moments.x;
-	float variance = clamp(E_x2 - Ex_2, 0.001, 1.0);
+	float variance = clamp(E_x2 - Ex_2, 0.0001, 1.0);
 	float m_d = moments.z - moments.x;
-	float p = pow(variance / (variance + m_d * m_d), 3000);
+	float p = pow(variance / (variance + m_d * m_d), 1500);
 	if (NormalLighting)
 		return saturate(not_shadowed + p) * saturate(In.Normal_Light.w * 5 - 2 );
 	return saturate(not_shadowed + p);
