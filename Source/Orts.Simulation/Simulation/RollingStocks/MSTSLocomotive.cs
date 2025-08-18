@@ -7478,6 +7478,7 @@ namespace Orts.Simulation.RollingStocks
                 WireHeightSwitching();
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
+                ThunderSound();
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -11888,6 +11889,40 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+        float ThunderSoundTimer;
+        float ThunderSoundTime;
+        int WorldThunderCount;
+        int WorldThunderNr;
+        public void ThunderSound()
+        {
+            if (!IsLeadLocomotive()) return;
+
+            if (Simulator.Weather.OvercastFactor > 0.6f && Simulator.Weather.PricipitationIntensityPPSPM2 > 0.6f && Simulator.Weather.PrecipitationLiquidity > 0.9f)
+            {
+                if (ThunderSoundTimer == 0)
+                {
+                    ThunderSoundTime = Math.Max(Simulator.Random.Next(17, 50) * 1f / Simulator.Weather.PricipitationIntensityPPSPM2, 30);
+                    WorldThunderCount = Simulator.Random.Next(2, 5);
+                }                
+                
+                Simulator.WorldThunderTime = Simulator.Random.Next(1, 6) / 10f;                
+                ThunderSoundTimer += Simulator.OneSecondLoop;
+                
+                if (ThunderSoundTimer > ThunderSoundTime)
+                {
+                    if (!Simulator.WorldThunder) WorldThunderNr++;
+                    Simulator.WorldThunder = true;                    
+                    SignalEvent(Event.ThunderSound);
+                }
+
+                if (WorldThunderNr >= WorldThunderCount)
+                {
+                    WorldThunderNr = 0;
+                    ThunderSoundTimer = 0;
+                }
+            }
+        }
+
         public bool Wipers3ActivationEnable;
         public int[] Wipers3ActivationSwitch = new int[3];
         public int[] LastStateWipers3Activation = new int[3];

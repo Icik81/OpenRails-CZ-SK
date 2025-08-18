@@ -278,6 +278,8 @@ namespace Orts.Simulation
         public float RunTimeCabMouseControll;
         public bool AIPreference;
         public bool WeatherChangesPresent;
+        public bool WorldThunder;
+        public float WorldThunderTime;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

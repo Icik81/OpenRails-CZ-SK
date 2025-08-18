@@ -414,6 +414,7 @@ namespace Orts.Common
         Pantograph2Down15kVAC,
         WheelsSkidingStart,
         WheelsSkidingStop,
+        ThunderSound,
     }
 
     public static class Events
@@ -842,6 +843,7 @@ namespace Orts.Common
                         case 20167: return Event.Pantograph2Down15kVAC;
                         case 20168: return Event.WheelsSkidingStart;
                         case 20169: return Event.WheelsSkidingStop;
+                        case 20170: return Event.ThunderSound;
 
                         default: return 0;
                     }
@@ -875,6 +877,7 @@ namespace Orts.Common
                         case 60: return Event.PermissionToDepart;
                         case 61: return Event.PermissionGranted;
                         case 62: return Event.PermissionDenied;
+                        
                         default: return 0;
                     }
                 case Source.MSTSSignal:

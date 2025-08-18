@@ -240,6 +240,7 @@
     </Content>
     <Content Include="Content\ActivitySound\pistalka.wav" />
     <Content Include="Content\ActivitySound\pistalka_1.wav" />
+    <Content Include="Content\ActivitySound\ThunderSound.wav" />
     <Content Include="Content\AmbientSound\birdsong1.wav" />
     <Content Include="Content\AmbientSound\ColdWind.wav" />
     <Content Include="Content\AmbientSound\crow-1.wav" />
@@ -975,9 +976,11 @@
     <Content Include="Content\Season\SpringClouds.png" />
     <Content Include="Content\Season\SpringSkyDome.png" />
     <Content Include="Content\Season\SummerClouds.png" />
+    <Content Include="Content\Season\SummerCloudsThunder.png" />
     <Content Include="Content\Season\SummerSkyDome.png" />
     <Content Include="Content\Season\SummerSkyDomeClear.png" />
     <Content Include="Content\Season\WinterClouds.png" />
+    <Content Include="Content\Season\WinterCloudsThunder.png" />
     <Content Include="Content\Season\WinterSkyDome.png" />
     <Content Include="Content\ShadowMap.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

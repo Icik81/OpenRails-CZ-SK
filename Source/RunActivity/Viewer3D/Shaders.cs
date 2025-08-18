@@ -149,6 +149,10 @@ namespace Orts.Viewer3D
         float MorningFogHour;
         float EveningFogHour;
         bool MorningFogFirstRun = true;
+        float WorldThunderTimer = -1;
+        float WorldThunderTime;
+        float LastStateBrightness;
+        float WorldThunderStartTime;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -252,7 +256,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.Weather.FogDistance = Program.Simulator.FogDistanceFinal;                    
             }
             else
-            {
+            {                
                 // Ranní mlha
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
                 {
@@ -336,10 +340,29 @@ namespace Orts.Viewer3D
                 vIn = Program.Simulator.Settings.DayAmbientLight;
                 Program.Simulator.CabInDarkTunnel = false;                
             }
-            
+           
+            // Záblesk od blesku
+            if (Program.Simulator.WorldThunder)
+            {
+                if (WorldThunderTimer == -1)
+                {
+                    LastStateBrightness = Program.Simulator.DayTimeAmbientLightCoef;
+                    WorldThunderStartTime = (float)Program.Simulator.ClockTime;
+                    WorldThunderTime = Program.Simulator.WorldThunderTime;
+                }
+                if (!Program.Simulator.CabInDarkTunnel) Program.Simulator.DayTimeAmbientLightCoef = 2;
+                WorldThunderTimer = (float)Program.Simulator.ClockTime - WorldThunderStartTime;
+                if (WorldThunderTimer > WorldThunderTime || Program.Simulator.CabInDarkTunnel)
+                {
+                    WorldThunderTimer = -1;
+                    Program.Simulator.WorldThunder = false;
+                    Program.Simulator.DayTimeAmbientLightCoef = LastStateBrightness;
+                }
+            }            
+
             float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;            
             NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
-
+           
             if (_imageTextureIsNight)
             {
                 nightColorModifier.SetValue(FullBrightness);
@@ -533,8 +556,7 @@ namespace Orts.Viewer3D
         readonly EffectParameter moonMapTexture;
         readonly EffectParameter moonMaskTexture;
         readonly EffectParameter cloudMapTexture;
-
-
+        
         public Vector3 LightVector
         {
             set
@@ -547,6 +569,12 @@ namespace Orts.Viewer3D
                 var skyColor3 = 0.001f / (0.8f * Math.Abs(value.Y - 0.1f));
                 skyColor.SetValue(new Vector3(skyColor1, skyColor2, skyColor3));
 
+                if (Program.Simulator.WorldThunder && Program.Simulator.Weather.FogDistance < 2200)
+                {
+                    cloudColor.SetValue(Day2Night(50, 50, 50, 0));
+                    skyColor.SetValue(new Vector3(50, 50, 50));
+                }
+
                 // Fade moon during daylight
                 var moonColor1 = value.Y > 0.1f ? (1 - value.Y) / 1.5f : 1;
                 // Mask stars behind dark side (mask fades in)
@@ -557,8 +585,8 @@ namespace Orts.Viewer3D
 
         public void SetFog(float depth, ref Color color)
         {
-            fogColor.SetValue(new Vector3(color.R / 255f, color.G / 255f, color.B / 255f));
-            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));
+            fogColor.SetValue(new Vector3(color.R / 255f, color.G / 255f, color.B / 255f));            
+            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));            
         }
 
         float _time;
@@ -862,6 +890,10 @@ namespace Orts.Viewer3D
         float CabnightColorModifier;
         float CabnightColorModifierValue;
         bool IsNightTexture;
+        float WorldThunderTimer = -1;
+        float LastStateBrightness;
+        float WorldThunderStartTime;
+        float WorldThunderTime;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
             IsNightTexture = false;
@@ -910,7 +942,25 @@ namespace Orts.Viewer3D
                 else
                     nightColorModifier.SetValue(Math.Max(nightColorModifier.GetValueSingle(), 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
             }
-            
+
+            // Záblesk od blesku
+            if (Program.Simulator.WorldThunder)
+            {
+                if (WorldThunderTimer == -1)
+                {
+                    LastStateBrightness = nightColorModifier.GetValueSingle();
+                    WorldThunderStartTime = (float)Program.Simulator.ClockTime;
+                    WorldThunderTime = Program.Simulator.WorldThunderTime;
+                }
+                if (!Program.Simulator.CabInDarkTunnel) nightColorModifier.SetValue(1f);
+                WorldThunderTimer = (float)Program.Simulator.ClockTime - WorldThunderStartTime;
+                if (WorldThunderTimer > WorldThunderTime || Program.Simulator.CabInDarkTunnel)
+                {
+                    WorldThunderTimer = -1;                    
+                    nightColorModifier.SetValue(LastStateBrightness);
+                }
+            }
+
             Program.Simulator.DashLightCanActivate = false;
             if (CabnightColorModifierValue < 0.30f || IsNightTexture)
             {
