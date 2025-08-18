@@ -441,9 +441,22 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
 // Applies distance fog to the pixel.
 void _PSApplyFog(inout float3 Color, in VERTEX_OUTPUT In)
 {
-	Fog.rgb = Fog.rgb * 1.25;
-	Color = lerp(Color, Fog.rgb, In.LightDir_Fog.w);
+    // základní barva mlhy
+    float3 fogColor = Fog.rgb * 1.25;
+
+    // vzdálenost pixelu od kamery (ve world space)
+    float dist = length(In.RelPosition.xyz);    
+
+	float Opar_scena = 2.05;
+    float Opar_horizont = 2.35;
+
+	float fogT = (Opar_scena / (1.0 + exp(dist * Opar_horizont * Fog.a * -2.0))) - 1.0;
+	fogT = min(max(fogT, 0.0), 1.025);
+
+    // interpolace barvy scény s mlhou    
+	Color = lerp(Color, fogColor, saturate(fogT));
 }
+
 
 void _PSSceneryFade(inout float4 Color, in VERTEX_OUTPUT In)
 {
