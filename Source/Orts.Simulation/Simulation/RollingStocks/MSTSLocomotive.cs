@@ -1562,7 +1562,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortsautomaticparkingbrake": AutomaticParkingBrake = true; break;
                 case "engine(ortsautomaticparkingbrake(engagespeed": AutomaticParkingBrakeEngageSpeedKpH = stf.ReadFloatBlock(STFReader.UNITS.Speed, 0); break;
                 case "engine(ortsautomaticparkingbrake(targetpressurepsi": ParkingBrakeTargetPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, 30); break;
-                case "engine(ortsautomaticparkingbrake(parkingbrakereleasetrainbrake ": ParkingBrakeReleaseTrainBrake = stf.ReadBoolBlock(false); break;
+                case "engine(ortsautomaticparkingbrake(parkingbrakereleasetrainbrake": ParkingBrakeReleaseTrainBrake = stf.ReadBoolBlock(false); break;
                 case "engine(ortssplashscreen(minduration": SplashScreenWillBeDisplayed = true; SplashScreenMinDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
                 case "engine(ortssplashscreen(maxduration": SplashScreenWillBeDisplayed = true; SplashScreenMaxDuration = stf.ReadFloatBlock(STFReader.UNITS.Time, 0); break;
                 case "engine(antiwheelspinequipped": AntiWheelSpinEquipped = stf.ReadBoolBlock(false); break;
