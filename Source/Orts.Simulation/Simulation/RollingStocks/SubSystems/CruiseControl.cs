@@ -1259,6 +1259,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority)
                 {
+                    if (controllerVolts > 0)
+                    {
+                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
+
+                        step *= elapsedClockSeconds;
+                        controllerVolts -= step;
+                        if (controllerVolts < 0) controllerVolts = 0;
+                        if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
+                    }
+
                     if (Locomotive.DynamicBrakePercent > 0)
                     {
                         if (wheelSpeedMpS == 0)
@@ -1266,6 +1276,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.SetDynamicBrakePercent(0);
                             Locomotive.DynamicBrakeChangeActiveState(false);
                         }
+                        controllerVolts = Locomotive.DynamicBrakePercent / 10f;
                     }
                     if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
                     throttleIsZero = true;
