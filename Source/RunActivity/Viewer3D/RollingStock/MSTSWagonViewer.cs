@@ -1293,6 +1293,12 @@ namespace Orts.Viewer3D.RollingStock
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                     }
 
+                    if (MSTSWagon is MSTSLocomotive && MSTSWagon.IsPlayerTrain)
+                    {
+                        smsGenericFilePath = "..\\Content\\ActivitySound\\AmbientSound.sms";
+                        Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
+                    }
+
                     MSTSWagon.CarSoundLoaded = true;
                 }
             }

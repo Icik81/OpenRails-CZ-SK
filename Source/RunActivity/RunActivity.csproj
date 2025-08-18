@@ -1143,6 +1143,7 @@
     </None>
     <None Include="app.config" />
     <None Include="Content\ActivitySound\ActivitySound.sms" />
+    <None Include="Content\ActivitySound\AmbientSound.sms" />
     <None Include="Content\AmbientSound\AutumnDay.sms" />
     <None Include="Content\AmbientSound\AutumnNight.sms" />
     <None Include="Content\AmbientSound\clear_ex.sms" />
