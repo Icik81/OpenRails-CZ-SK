@@ -977,10 +977,16 @@
     <Content Include="Content\Season\SpringSkyDome.png" />
     <Content Include="Content\Season\SummerClouds.png" />
     <Content Include="Content\Season\SummerCloudsThunder.png" />
+    <Content Include="Content\Season\SummerCloudsThunder1.png" />
+    <Content Include="Content\Season\SummerCloudsThunder2.png" />
+    <Content Include="Content\Season\SummerCloudsThunder3.png" />
     <Content Include="Content\Season\SummerSkyDome.png" />
     <Content Include="Content\Season\SummerSkyDomeClear.png" />
     <Content Include="Content\Season\WinterClouds.png" />
     <Content Include="Content\Season\WinterCloudsThunder.png" />
+    <Content Include="Content\Season\WinterCloudsThunder1.png" />
+    <Content Include="Content\Season\WinterCloudsThunder2.png" />
+    <Content Include="Content\Season\WinterCloudsThunder3.png" />
     <Content Include="Content\Season\WinterSkyDome.png" />
     <Content Include="Content\ShadowMap.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
