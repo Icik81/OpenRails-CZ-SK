@@ -11889,36 +11889,48 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
-        float ThunderSoundTimer;
+        float ThunderSoundTimerOn;
+        float ThunderSoundTimerOff;
         float ThunderSoundTime;
         int WorldThunderCount;
         int WorldThunderNr;
         public void ThunderSound()
         {
             if (!IsLeadLocomotive()) return;
-
+            
             if (Simulator.Weather.OvercastFactor > 0.6f && Simulator.Weather.PricipitationIntensityPPSPM2 > 0.6f && Simulator.Weather.PrecipitationLiquidity > 0.9f)
             {
-                if (ThunderSoundTimer == 0)
+                if (ThunderSoundTimerOn == 0)
                 {
                     ThunderSoundTime = Math.Max(Simulator.Random.Next(17, 50) * 1f / Simulator.Weather.PricipitationIntensityPPSPM2, 30);
                     WorldThunderCount = Simulator.Random.Next(2, 5);
                 }                
                 
                 Simulator.WorldThunderTime = Simulator.Random.Next(1, 6) / 10f;                
-                ThunderSoundTimer += Simulator.OneSecondLoop;
+                ThunderSoundTimerOn += Simulator.OneSecondLoop;
                 
-                if (ThunderSoundTimer > ThunderSoundTime)
+                if (ThunderSoundTimerOn > ThunderSoundTime)
                 {
                     if (!Simulator.WorldThunder) WorldThunderNr++;
                     Simulator.WorldThunder = true;                    
-                    SignalEvent(Event.ThunderSound);
+                    SignalEvent(Event.ThunderSoundOn);
+                    if (ThunderSoundTimerOff == 0) ThunderSoundTimerOff = 0.01f;
+                }                
+
+                if (ThunderSoundTimerOff > 0)
+                {
+                    ThunderSoundTimerOff += Simulator.OneSecondLoop;
+                    if (ThunderSoundTimerOff > 17)
+                    {
+                        ThunderSoundTimerOff = 0;
+                        SignalEvent(Event.ThunderSoundOff);
+                    }
                 }
 
                 if (WorldThunderNr >= WorldThunderCount)
                 {
                     WorldThunderNr = 0;
-                    ThunderSoundTimer = 0;
+                    ThunderSoundTimerOn = 0;
                 }
             }
         }

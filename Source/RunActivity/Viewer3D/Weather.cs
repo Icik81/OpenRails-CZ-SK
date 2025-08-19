@@ -502,14 +502,14 @@ namespace Orts.Viewer3D
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.75f;
-                            Weather.FogDistance = 1500f;
+                            Weather.FogDistance = 750f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.75f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.90f;
-                            Weather.FogDistance = 750f;
+                            Weather.FogDistance = 500f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.7f;
                             break;
@@ -524,7 +524,7 @@ namespace Orts.Viewer3D
                             Weather.SnowVelocityMpS = 1.2f;
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
                             Weather.OvercastFactor = 0.35f;
-                            Weather.FogDistance = 950f;
+                            Weather.FogDistance = 500f;
                             Weather.PrecipitationLiquidity = 0.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.95f;
                             break;

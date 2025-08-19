@@ -414,7 +414,8 @@ namespace Orts.Common
         Pantograph2Down15kVAC,
         WheelsSkidingStart,
         WheelsSkidingStop,
-        ThunderSound,
+        ThunderSoundOn,
+        ThunderSoundOff,
     }
 
     public static class Events
@@ -843,7 +844,8 @@ namespace Orts.Common
                         case 20167: return Event.Pantograph2Down15kVAC;
                         case 20168: return Event.WheelsSkidingStart;
                         case 20169: return Event.WheelsSkidingStop;
-                        case 20170: return Event.ThunderSound;
+                        case 20170: return Event.ThunderSoundOn;
+                        case 20171: return Event.ThunderSoundOff;
 
                         default: return 0;
                     }
