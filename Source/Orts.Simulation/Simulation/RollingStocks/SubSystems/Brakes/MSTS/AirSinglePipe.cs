@@ -3048,6 +3048,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             }
                         }
 
+                        // Lokomotivy 363.5                        
+                        if (loco.LocomotiveTypeLongNumber == 3635)
+                        {
+                            if (loco.CompressorSwitch[loco.LocoStation] == 2)
+                            {
+                                loco.AuxCompressorMode_OffOn[loco.LocoStation] = true;
+                            }                            
+                        }
+
                         // Lokomotivy připojené přes kabel mají kompresory řízené přes kabel
                         if (train.MasterCarNumber > train.Cars.Count - 1 || train.SlaveCarNumber1 > train.Cars.Count - 1)
                         {

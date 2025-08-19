@@ -15378,6 +15378,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     case 3:
                         {
+                            AuxCompressorMode_OffOn[LocoStation] = false;
                             CompressorMode_OffAuto[LocoStation] = false;
                             Compressor_I_HandMode[LocoStation] = true;
                         }
