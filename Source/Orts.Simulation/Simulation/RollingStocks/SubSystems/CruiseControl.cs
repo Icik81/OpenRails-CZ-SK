@@ -1256,33 +1256,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
 
             if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Auto || SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV)
-            {
-                if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority)
+            {                
+                if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Parking || SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Neutral || SpeedSelMode[Locomotive.LocoStation] < SpeedSelectorMode.Start && !SpeedRegulatorOptions.Contains("startfromzero") && wheelSpeedMpS < SafeSpeedForAutomaticOperationMpS)
                 {
-                    if (controllerVolts > 0)
+                    if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority)
                     {
-                        float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
-
-                        step *= elapsedClockSeconds;
-                        controllerVolts -= step;
-                        if (controllerVolts < 0) controllerVolts = 0;
-                        if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
-                    }
-
-                    if (Locomotive.DynamicBrakePercent > 0)
-                    {
-                        if (wheelSpeedMpS == 0)
+                        if (Locomotive.DynamicBrakePercent > 0)
                         {
-                            Locomotive.SetDynamicBrakePercent(0);
-                            Locomotive.DynamicBrakeChangeActiveState(false);
+                            if (wheelSpeedMpS == 0)
+                            {
+                                Locomotive.SetDynamicBrakePercent(0);
+                                Locomotive.DynamicBrakeChangeActiveState(false);
+                            }
                         }
-                        controllerVolts = Locomotive.DynamicBrakePercent / 10f;
+                        if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
+                        throttleIsZero = true;
                     }
-                    if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
-                    throttleIsZero = true;
-                }
-                else if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Neutral || SpeedSelMode[Locomotive.LocoStation] < SpeedSelectorMode.Start && !SpeedRegulatorOptions.Contains("startfromzero") && wheelSpeedMpS < SafeSpeedForAutomaticOperationMpS)
-                {
+
                     float delta = 0;
                     if (!RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
                         delta = SelectedSpeedMpS - wheelSpeedMpS;
