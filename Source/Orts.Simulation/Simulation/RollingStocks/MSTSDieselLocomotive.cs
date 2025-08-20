@@ -767,7 +767,8 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the locomotive's sound variables.
         /// </summary>        
         bool SoundMotorOff;
-        bool SoundMotorOn;        
+        bool SoundMotorOn;
+        bool SoundFirstRunUpdate;
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             // Aripot
@@ -878,6 +879,13 @@ namespace Orts.Simulation.RollingStocks
             // Hack pro start zvuku motoru JV ladění
             if (JVSetup)
             {
+                if (!SoundFirstRunUpdate)
+                {
+                    SoundFirstRunUpdate = true;
+                    if (BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)                    
+                        SignalEvent(Event.EnginePowerOn);                    
+                }
+
                 if (SoundMotorOn && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
                 {                    
                     SignalEvent(Event.EnginePowerOff);
@@ -896,7 +904,7 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     SoundMotorOn = true;
                     SoundMotorOff = false;
-                    Variable2 = 0.01f;                 
+                    Variable2 = Math.Max(0.01f, Variable2);                 
                 }
                 else
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
