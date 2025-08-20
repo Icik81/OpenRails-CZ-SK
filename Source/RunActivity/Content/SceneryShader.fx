@@ -217,32 +217,32 @@ void _VSLightsAndShadows(in float4 InPosition, inout VERTEX_OUTPUT Out)
 	Out.LightDir_Fog.xyz = mul(InPosition, World).xyz - HeadlightPosition.xyz;
 
 	// Fog fading
-	float Opar_scena = 2.05; 
-	float Opar_horizont = 2.35;
+	float Haze_scenery = 2.05; 
+	float Haze_horizon = 2.35;
 	float MaxDim;
 	
 	//Přidá opar do světa, pokud je jasno
 	if (Overcast.x < 0.40)
 		{
 			MaxDim = (1.40 - Overcast.x);
-			Opar_scena = Opar_scena * MaxDim;
-			if (Opar_scena > 2.15) Opar_scena = 2.15;
+			Haze_scenery = Haze_scenery * MaxDim;
+			if (Haze_scenery > 2.15) Haze_scenery = 2.15;
 		}	
 	else
 	if (Overcast.x > 0.60)
 		{
 			MaxDim = (1.60 - Overcast.x);
-			Opar_scena = Opar_scena * MaxDim;
-			if (Opar_scena < 2.0) Opar_scena = 2.0;
+			Haze_scenery = Haze_scenery * MaxDim;
+			if (Haze_scenery < 2.0) Haze_scenery = 2.0;
 		}	
 	
 	if (Fog.a > 0.1)
 	{
-		Opar_scena = 2.0;
-		Opar_horizont = 1.0;
+		Haze_scenery = 2.0;
+		Haze_horizon = 1.0;
 	}
 	
-	Out.LightDir_Fog.w = (Opar_scena / (1.0 + exp(length(Out.Position.xyz) * Opar_horizont * Fog.a * -2.0))) - 1.0;
+	Out.LightDir_Fog.w = (Haze_scenery / (1.0 + exp(length(Out.Position.xyz) * Haze_horizon * Fog.a * -2.0))) - 1.0;
 	if (Out.LightDir_Fog.w > 1.025) Out.LightDir_Fog.w = 1.025;
 
 	// Absolute position for shadow mapping
@@ -447,10 +447,10 @@ void _PSApplyFog(inout float3 Color, in VERTEX_OUTPUT In)
     // vzdálenost pixelu od kamery (ve world space)
     float dist = length(In.RelPosition.xyz);    
 
-	float Opar_scena = 2.05;
-    float Opar_horizont = 2.35;
+	float Haze_scenery = 2.05;
+    float Haze_horizon = 2.35;
 
-	float fogT = (Opar_scena / (1.0 + exp(dist * Opar_horizont * Fog.a * -2.0))) - 1.0;
+	float fogT = (Haze_scenery / (1.0 + exp(dist * Haze_horizon * Fog.a * -2.0))) - 1.0;
 	fogT = min(max(fogT, 0.0), 1.025);
 
     // interpolace barvy scény s mlhou    
