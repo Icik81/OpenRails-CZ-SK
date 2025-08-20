@@ -3952,14 +3952,17 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeIntervention = -1;
                 DynamicBrakePercent -= 2.0f;
                 if (DynamicBrakePercent < 0)
-                    DynamicBrakePercent = -1;                
+                    DynamicBrakePercent = -1;      
+                
                 if (BrakeSystem.AutoCylPressurePSI1 < 10 && DynamicBrakePercent <= 0)
                 {
                     EngineBrakeEngageEDB = false;
                     DynamicBrakePercent = PressureConverterControllerValue * 100f;                    
                 }
                 SetDynamicBrakePercent(DynamicBrakePercent);
-                BrakeSystem.PressureConverterBase = 0.0011f;
+                
+                if (!HS198ControllerEnable && !MirerControllerEnable)
+                    BrakeSystem.PressureConverterBase = 0.0011f;                
             }
         }
 

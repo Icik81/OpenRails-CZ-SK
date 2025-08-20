@@ -1484,7 +1484,7 @@ namespace Orts.Viewer3D
 
             // Zabezpečí vypnutý zvuk při odstavených lokomotivách 
             var car = SoundSource.Car;
-            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp)
+            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup)
             {
                 car.CarSoundActivationTimer = 0;
                 car.CarSoundDeactivationTimer += car.Simulator.OneSecondLoop;
@@ -1495,7 +1495,7 @@ namespace Orts.Viewer3D
                     volume *= volumeCutOff;
                 }
             }
-            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && car.CarSoundDeactivationTimer > 0)
+            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup && car.CarSoundDeactivationTimer > 0)
             {
                 car.CarSoundActivationTimer += car.Simulator.OneSecondLoop;
                 float volumeCutOff = car.CarSoundActivationTimer / 10f;

@@ -766,8 +766,8 @@ namespace Orts.Simulation.RollingStocks
         /// <summary>
         /// This function updates periodically the locomotive's sound variables.
         /// </summary>        
-        bool SoundVariableFirstRun;
-        bool JVMotorStartCycleActivated;
+        bool SoundMotorOff;
+        bool SoundMotorOn;        
         protected override void UpdateSoundVariables(float elapsedClockSeconds)
         {
             // Aripot
@@ -878,24 +878,34 @@ namespace Orts.Simulation.RollingStocks
             // Hack pro start zvuku motoru JV ladění
             if (JVSetup)
             {
-                if (!this.BrakeSystem.PowerForWagon && !SoundVariableFirstRun && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
-                {
+                if (SoundMotorOn && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
+                {                    
                     SignalEvent(Event.EnginePowerOff);
+                    SoundMotorOff = true;
+                    SoundMotorOn = false;                    
                 }
                 else
-                if (this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer > 1f && LocoSetUpTimer < 2f && !JVMotorStartCycleActivated)
-                {
+                if (SoundMotorOff && DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
+                {                 
                     SignalEvent(Event.EnginePowerOn);
-                    JVMotorStartCycleActivated = true;
+                    SoundMotorOn = true;
+                    SoundMotorOff = false;                    
                 }
                 else
-                if (!this.BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                {                    
+                    SoundMotorOn = true;
+                    SoundMotorOff = false;
+                    Variable2 = 0.01f;                 
+                }
+                else
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
                 {
-                    Variable2 = 0.01f;
+                    SoundMotorOn = false;
+                    SoundMotorOff = true;                                        
                 }
                 preAITimeMotorRunning = AITimeMotorRunning;
-            }
-            SoundVariableFirstRun = true;
+            }            
         }
 
         public override void ChangeGearUp()
