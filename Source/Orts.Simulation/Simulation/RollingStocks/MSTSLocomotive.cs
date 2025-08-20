@@ -3962,7 +3962,12 @@ namespace Orts.Simulation.RollingStocks
                 SetDynamicBrakePercent(DynamicBrakePercent);
                 
                 if (!HS198ControllerEnable && !MirerControllerEnable)
-                    BrakeSystem.PressureConverterBase = 0.0011f;                
+                    BrakeSystem.PressureConverterBase = 0.0011f;
+
+                if (HS198ControllerEnable || MirerControllerEnable)
+                {
+                    HS198ControllerEDBValue = MirelRSControllerEDBValue = 0;                    
+                }
             }
         }
 
@@ -24299,7 +24304,7 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime = 0;
                             if (LocomotiveTypeNumber == 151)
                             {
-                                if (DynamicBrakePercent == 0)
+                                if (DynamicBrake && DynamicBrakePercent == 0)
                                     cvc.PreviousData = 1;
                                 else
                                 if (DynamicBrakePercent > 0)
@@ -24324,7 +24329,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {
-                                if (DynamicBrakePercent == 0)
+                                if (DynamicBrake && DynamicBrakePercent == 0)
                                     cvc.PreviousData = 1;
                                 else
                                 if (DynamicBrakePercent > 0)

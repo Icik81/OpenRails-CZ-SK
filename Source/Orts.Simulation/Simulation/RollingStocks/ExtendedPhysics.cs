@@ -895,7 +895,7 @@ namespace Orts.Simulation.RollingStocks
             if (!Locomotive.PowerOn && Locomotive.RouteVoltageV > 3000)
             {
                 ForceN = maxForceN = Locomotive.DynamicBrakeForceN = 0;
-                Locomotive.SetDynamicBrakePercent(0);
+                Locomotive.SetDynamicBrakePercent(-1);
             }
             if (Locomotive.LocoType == LocoTypes.Vectron && Locomotive.ControllerVolts < 0)
             {
