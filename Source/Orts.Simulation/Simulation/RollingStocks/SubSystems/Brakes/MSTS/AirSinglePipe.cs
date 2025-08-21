@@ -2209,7 +2209,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable) BrakePipeChargingRateCoef = 1.0f;
                 BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 5.0f);
 
-                BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * ((lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3) / train.TrainTotalAirBrakeVolumeM3);
+                float RatioResVolumeM3 = MathHelper.Clamp(lead.BrakeSystem.EmergResVolumeM3 + lead.BrakeSystem.BrakePipeVolumeM3Base, 0.250f, 0.350f); // Omezí objem poměrové jímky, aby byl zachován dostatečný průtok vzduchu do potrubí
+                BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (RatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
             }
                                 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;            
