@@ -475,7 +475,7 @@ namespace Orts.Viewer3D.RollingStock
                         else
                         if (UserInput.IsDown(UserCommand.ControlDynamicBrakeDecrease))
                         {
-                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
+                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.225f;
                             if (Locomotive.PressureConverterControllerValue < 0)
                                 Locomotive.PressureConverterControllerValue = 0;
                         }
@@ -483,10 +483,10 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 else
                 {
-                    Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
+                    Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.225f;
                     if (Locomotive.PressureConverterControllerValue < 0)
                         Locomotive.PressureConverterControllerValue = 0;
-                }
+                }                
                 Locomotive.PressureConverterFake = Locomotive.PressureConverterControllerValue * 4.0f * 14.50377f;
                 //Locomotive.Simulator.Confirmer.MSG("PressureConverterFake: " + Locomotive.PressureConverterControllerValue);
             }            

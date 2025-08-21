@@ -239,9 +239,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
             if (controllerPosition == ControllerPosition.DynamicBrakeDecrease)
             {
                 // Převodník brzdy
-                Locomotive.PressureConverterControllerValue -= elapsedClockSeconds * 0.125f;
+                Locomotive.PressureConverterControllerValue -= elapsedClockSeconds * 0.225f;
                 if (Locomotive.PressureConverterControllerValue < 0)
-                    Locomotive.PressureConverterControllerValue = 0;
+                    Locomotive.PressureConverterControllerValue = 0;                
 
                 if (Locomotive.PressureConverterFake < Locomotive.BrakeSystem.PressureConverter)
                 {
