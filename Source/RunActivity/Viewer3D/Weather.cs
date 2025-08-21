@@ -1424,7 +1424,7 @@ namespace Orts.Viewer3D
                     weatherControl.Weather.OvercastFactor = MathHelper.Clamp(ORTSOvercast - overcastTimer * overcastChangeRate, 0, 1);
                     if (overcastTimer == 0) ORTSOvercast = -1;
                 }
-                if (ORTSFog >= 0 && weatherControl.Weather.PricipitationIntensityPPSPM2 < 0.3f)
+                if (ORTSFog >= 0)
                 {
                     fogTimer -= elapsedTime.ClockSeconds;
                     if (fogTimer <= 0) fogTimer = 0;

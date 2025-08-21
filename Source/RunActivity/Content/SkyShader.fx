@@ -176,9 +176,11 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	// Adjust sky color brightness for time of day
 	skyColor *= SkyColor.y;
 	
-	// Stars 
+	// Stars 	
+	float starColorCoef = clamp(1.0 - Overcast.z, 0.1, 1.0);	
 	skyColor = lerp(starColor, skyColor, SkyColor.y);
-	
+	skyColor *= starColorCoef;
+
 	// Fogging
 	FogColor.rgb = FogColor.rgb * 1.3;
 	skyColor.rgb = lerp(skyColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
