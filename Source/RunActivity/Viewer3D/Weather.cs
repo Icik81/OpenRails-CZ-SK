@@ -1413,6 +1413,7 @@ namespace Orts.Viewer3D
             float precipitationIntensityChangeRate2 = 1;
             public float FinishPrecipitationIntensity;
             float preFogDistanceFinal = -1;
+            float FogRatioCoef;
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {                
                 var wChangeOn = false;
@@ -1424,7 +1425,7 @@ namespace Orts.Viewer3D
                     weatherControl.Weather.OvercastFactor = MathHelper.Clamp(ORTSOvercast - overcastTimer * overcastChangeRate, 0, 1);
                     if (overcastTimer == 0) ORTSOvercast = -1;
                 }
-                if (ORTSFog >= 0)
+                if (ORTSFog >= 0 && !Program.Simulator.MorningFogRun)
                 {
                     fogTimer -= elapsedTime.ClockSeconds;
                     if (fogTimer <= 0) fogTimer = 0;
@@ -1436,9 +1437,20 @@ namespace Orts.Viewer3D
                         var fogTimerDifference = ORTSFogTransitionTimeS - fogTimer;
                         Program.Simulator.FogDistanceFinal = MathHelper.Clamp(ORTSFog - fogTimerDifference * fogTimerDifference * fogChangeRate, 50, 100000);
                     }                    
-                    if (fogTimer == 0) ORTSFog = -1;
-                }
-                           
+                    if (fogTimer == 0) ORTSFog = -1;                    
+                }                
+
+                if (Program.Simulator.MorningFogRun)
+                    FogRatioCoef = MathHelper.Clamp(Math.Abs(Program.Simulator.Weather.FogDistance - Program.Simulator.FogDistanceFinal) / 100f, 1, 100);
+                else
+                    FogRatioCoef = 100;
+
+                // Mlha
+                if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
+                    Program.Simulator.Weather.FogDistance += FogRatioCoef * elapsedTime.ClockSeconds;
+                if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
+                    Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
+
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
                 {

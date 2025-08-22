@@ -147,12 +147,12 @@ namespace Orts.Viewer3D
         float DayTimeAmbientLightChangeCoef;
         float MorningFogDistance;
         float MorningFogHour;
-        float EveningFogHour;
-        bool MorningFogFirstRun = true;
+        float EveningFogHour;        
         float WorldThunderTimer = -1;
         float WorldThunderTime;
         float LastStateBrightness;
         float WorldThunderStartTime;
+        float LastStateFogDistanceFinal = -1;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -260,21 +260,20 @@ namespace Orts.Viewer3D
                 // Ranní mlha
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
                 {
-                    if (Program.Simulator.Weather.FogDistance > MorningFogDistance)
-                        Program.Simulator.Weather.FogDistance -= 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                    if (Program.Simulator.Weather.FogDistance < MorningFogDistance)
-                        Program.Simulator.Weather.FogDistance += 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                    //if (MorningFogFirstRun)                
-                    //    Program.Simulator.Weather.FogDistance = MorningFogDistance;                        
+                    if (LastStateFogDistanceFinal == -1) LastStateFogDistanceFinal = Program.Simulator.FogDistanceFinal;
+                    Program.Simulator.FogDistanceFinal = MorningFogDistance;
+                    Program.Simulator.MorningFogRun = true;
                 }
                 else
                 {
-                    if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
-                        Program.Simulator.Weather.FogDistance += 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                    if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
-                        Program.Simulator.Weather.FogDistance -= 0.050f * Program.Simulator.OneSecondLoop * Program.Simulator.TimeSpeedCoef;
-                }
-                MorningFogFirstRun = false;
+                    if (LastStateFogDistanceFinal != -1)
+                    {
+                        Program.Simulator.FogDistanceFinal = LastStateFogDistanceFinal;
+                        LastStateFogDistanceFinal = -1;
+                    }
+                    if (Program.Simulator.Weather.FogDistance < 1.01f * Program.Simulator.FogDistanceFinal && Program.Simulator.Weather.FogDistance > 0.99f * Program.Simulator.FogDistanceFinal)
+                        Program.Simulator.MorningFogRun = false;
+                }                
             }
             
             // Mění intenzitu okolního světla v závislosti na zatažení oblohy
