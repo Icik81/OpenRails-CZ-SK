@@ -141,7 +141,7 @@ namespace Orts.Viewer3D
         // "Rain  1.8 - 2.2mm  6.1 - 6.9m/s"
         const float RainVelocityMpS = 6.9f;
         // "Snow flakes of any size falls at about 1 m/s"
-        float SnowVelocityMpS = 0.5f;
+        float SnowVelocityMpS = 0.75f;
         // This is a fiddle factor because the above values feel too slow. Alternative suggestions welcome.
         const float ParticleVelocityFactor = 10.0f;
 
@@ -151,7 +151,11 @@ namespace Orts.Viewer3D
 
         // Icik
         float ParticleBoxHeightMDynamic;
+        float ParticleBoxLengthMDynamic;
+        float ParticleBoxWidthMDynamic;
+        float ParticleBoxWidthMDynamicMinimum = 200;
         float ParticleBoxHeightMDynamicMinimum = 15;
+        float ParticleBoxLengthMDynamicMinimum = 200;
         public float MaxIntensityKoef = 1;
 
         // 16bit Box Parameters
@@ -222,7 +226,7 @@ namespace Orts.Viewer3D
                 // Icik                
                 ParticleBoxLengthM = 500;
                 ParticleBoxWidthM = 500;
-                ParticleBoxHeightM = 25;                
+                ParticleBoxHeightM = 50;                
             }
             else
             {
@@ -407,17 +411,23 @@ namespace Orts.Viewer3D
             ParticleBoxHeightMDynamic = ParticleBoxHeightM / particlesPerSecondPerM2 / 4;
             ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM);
 
+            ParticleBoxLengthMDynamic = ParticleBoxLengthM / particlesPerSecondPerM2 / 2;
+            ParticleBoxLengthMDynamic = MathHelper.Clamp(ParticleBoxLengthMDynamic, ParticleBoxLengthMDynamicMinimum, ParticleBoxLengthM);
+
+            ParticleBoxWidthMDynamic = ParticleBoxWidthM / particlesPerSecondPerM2 / 2;
+            ParticleBoxWidthMDynamic = MathHelper.Clamp(ParticleBoxWidthMDynamic, ParticleBoxWidthMDynamicMinimum, ParticleBoxWidthM);
+
             if (TimeParticlesLastEmitted == 0)
             {
                 TimeParticlesLastEmitted = currentTime - ParticleDuration;
-                ParticlesToEmit += ParticleDuration * particlesPerSecondPerM2 * ParticleBoxLengthM * ParticleBoxWidthM;
+                ParticlesToEmit += ParticleDuration * particlesPerSecondPerM2 * ParticleBoxLengthMDynamic * ParticleBoxWidthMDynamic;
             }
             else
             {
                 RetireActiveParticles(currentTime);
                 FreeRetiredParticles();
 
-                ParticlesToEmit += elapsedTime.ClockSeconds * particlesPerSecondPerM2 * ParticleBoxLengthM * ParticleBoxWidthM;
+                ParticlesToEmit += elapsedTime.ClockSeconds * particlesPerSecondPerM2 * ParticleBoxLengthMDynamic * ParticleBoxWidthMDynamic;
             }
 
             var numParticlesAdded = 0;
@@ -452,7 +462,7 @@ namespace Orts.Viewer3D
                     {
                         Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);
                         Vertices[vertex + j].StartPosition_StartTime.X += StartTimeChaosX;
-                        Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;
+                        Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;                        
                         Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
                         Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
                     }

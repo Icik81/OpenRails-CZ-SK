@@ -78,12 +78,16 @@ VERTEX_OUTPUT VSPrecipitation(in VERTEX_INPUT In)
 	float3 right = invView[0].xyz;
 	float3 up = normalize(In.StartPosition_StartTime.xyz - In.EndPosition_EndTime.xyz);
 	
-	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz, age * 2);
+	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz, age);
 	In.StartPosition_StartTime.xz += (cameraTileXZ - In.TileXZ_Vertex.xy) * float2(-2048, 2048);
 	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.02;
 	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize * 0.10;
 	
-	Out.Position = mul(float4(In.StartPosition_StartTime.xyz, 1), worldViewProjection);
+	// posuò èástice dolù 
+	float4 pos = float4(In.StartPosition_StartTime.xyz, 1.0);
+	pos.y -= 10.0;
+
+	Out.Position = mul(pos, worldViewProjection);		
 	Out.TexCoord = texCoords[vertIdx];
 	
 	return Out;
@@ -119,9 +123,18 @@ void _PSApplyDay2Night(inout float4 Color)
 
 float4 PSPrecipitation(in VERTEX_OUTPUT In) : COLOR0
 {
-	float4 color = tex2D(PrecipitationSamp, In.TexCoord);
-	_PSApplyDay2Night(color);
-	return color;
+    float4 color = tex2D(PrecipitationSamp, In.TexCoord);
+
+    // Zahodit jen úplnì neviditelné fragmenty
+    if (color.a < 0.05) discard;
+
+    // Aplikace den/noc stmavení
+    _PSApplyDay2Night(color);
+
+    // Jemné zesvìtlení kapek, aby nezmizely úplnì    
+    color.rgb = lerp(color.rgb, float3(0.8, 0.8, 0.8), 0.2);
+
+    return color;
 }
 
 ////////////////////    T E C H N I Q U E S    /////////////////////////////////
