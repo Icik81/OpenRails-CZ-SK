@@ -178,8 +178,8 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	
 	// Stars 	
 	float starColorCoef = clamp(1.0 - Overcast.z, 0.1, 1.0);	
-	skyColor = lerp(starColor, skyColor, SkyColor.y);
-	skyColor *= starColorCoef;
+	starColor *= starColorCoef;
+	skyColor = lerp(starColor, skyColor, SkyColor.y);	
 
 	// Fogging
 	FogColor.rgb = FogColor.rgb * 1.3;
