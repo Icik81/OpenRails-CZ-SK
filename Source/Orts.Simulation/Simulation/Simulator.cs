@@ -268,6 +268,7 @@ namespace Orts.Simulation
         public float DayTimeAmbientLightCoef;
         public float OvercastAmbientLightCoef;
         public float FogDistanceFinal;
+        public float FogDistanceFinalBase;
         public float TimeSpeedCoef;
         public bool HandBrakeStatusChange;
         public int TrainOperationsMenuTextWidth;

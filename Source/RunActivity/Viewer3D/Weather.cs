@@ -284,6 +284,11 @@ namespace Orts.Viewer3D
                 // Profily poèasí jsou nadøazené uloženým hodnotám
                 SetInitialWeatherParameters();
             }
+            if (Viewer.Simulator.WeatherAdv == 7 && !Program.Simulator.WeatherChangesPresent)
+            {
+                RandomizedWeather = true;
+                weatherChangeOn = true;                
+            }
 
             UpdateVolume();
             
@@ -535,6 +540,7 @@ namespace Orts.Viewer3D
                     break;
             }            
             Program.Simulator.FogDistanceFinal = Weather.FogDistance;
+            Program.Simulator.FogDistanceFinalBase = Weather.FogDistance;
         }
 
         public void UpdateWeatherParameters()
@@ -1167,7 +1173,27 @@ namespace Orts.Viewer3D
             if (RandomizedWeather && !weatherChangeOn) // time to prepare a new weather change
                 dynamicWeather.WeatherChange_NextRandomization(elapsedTime, this);
 
-            // Icik            
+            // Icik
+            float FogRatioCoef;
+            if (Program.Simulator.MorningFogRun)
+            {
+                if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
+                {
+                    float MaxFogDistance = Math.Max(Program.Simulator.Weather.FogDistance, Program.Simulator.FogDistanceFinal);
+                    FogRatioCoef = MathHelper.Clamp((MaxFogDistance - Math.Abs(Program.Simulator.Weather.FogDistance - Program.Simulator.FogDistanceFinal)) / 200f, 1, 100);
+                }
+                else
+                    FogRatioCoef = MathHelper.Clamp(Math.Abs(Program.Simulator.Weather.FogDistance - Program.Simulator.FogDistanceFinal) / 200f, 1, 100);
+            }
+            else
+                FogRatioCoef = 100;
+
+            // Mlha
+            if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
+                Program.Simulator.Weather.FogDistance += FogRatioCoef * elapsedTime.ClockSeconds;
+            if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
+                Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
+
             if (Viewer.Simulator.GameTime < 0.5f)
             {
                 Viewer.SoundProcess.RemoveSoundSources(this);
@@ -1412,8 +1438,7 @@ namespace Orts.Viewer3D
 
             float precipitationIntensityChangeRate2 = 1;
             public float FinishPrecipitationIntensity;
-            float preFogDistanceFinal = -1;
-            float FogRatioCoef;
+            float preFogDistanceFinal = -1;            
             public void WeatherChange_Update(ElapsedTime elapsedTime, WeatherControl weatherControl)
             {                
                 var wChangeOn = false;
@@ -1439,17 +1464,6 @@ namespace Orts.Viewer3D
                     }                    
                     if (fogTimer == 0) ORTSFog = -1;                    
                 }                
-
-                if (Program.Simulator.MorningFogRun)
-                    FogRatioCoef = MathHelper.Clamp(Math.Abs(Program.Simulator.Weather.FogDistance - Program.Simulator.FogDistanceFinal) / 100f, 1, 100);
-                else
-                    FogRatioCoef = 100;
-
-                // Mlha
-                if (Program.Simulator.Weather.FogDistance < Program.Simulator.FogDistanceFinal)
-                    Program.Simulator.Weather.FogDistance += FogRatioCoef * elapsedTime.ClockSeconds;
-                if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
-                    Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
 
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
