@@ -8104,6 +8104,7 @@ namespace Orts.Simulation.RollingStocks
 
 
             //Simulator.Confirmer.MSG("LastStateDynamicBrakePercent: " + LastStateDynamicBrakePercent + "      DynamicBrakeInterventionNormalState: " + DynamicBrakeInterventionNormalState);
+            //Simulator.Confirmer.MSG2("PressureConverterControllerValue: " + PressureConverterControllerValue);
 
             // Icik
             //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
@@ -8150,7 +8151,10 @@ namespace Orts.Simulation.RollingStocks
                             
                             if (DynamicBrakeInterventionNormalState)                            
                                 DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-                            
+
+                            if (DynamicBrakeIntervention == -1 && DynamicBrakeController.CurrentValue == 0)
+                                DynamicBrakePercent = 0;
+
                             LocalDynamicBrakePercent = DynamicBrakePercent;
                             
                             // Icik
