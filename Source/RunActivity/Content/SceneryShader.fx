@@ -742,7 +742,7 @@ float4 PSFullBright(in VERTEX_OUTPUT In) : COLOR0
 
 float4 PSSignalLight(in VERTEX_OUTPUT In) : COLOR0
 {
-	float4 Color = tex2D(Image, In.TexCoords.xy);
+	float4 Color = tex2D(Image, In.TexCoords.xy);	
 
 	// Alpha testing:
 	clip(Color.a - ReferenceAlpha);
@@ -754,6 +754,8 @@ float4 PSSignalLight(in VERTEX_OUTPUT In) : COLOR0
 
 	// Aplikace mlhy na světlo
     _PSApplyFog(litColor, In);
+
+	litColor = lerp(litColor, In.Color.rgb, clamp(0.025 / NightColorModifier, 0.025, 0.5));
 
 	// No specular effect, overcast effect, night-time darkening, headlights effect for signal lights.
 	return float4(litColor, Color.a * SignalLightIntensity);
