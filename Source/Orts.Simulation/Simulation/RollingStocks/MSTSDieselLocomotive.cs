@@ -883,7 +883,9 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SoundFirstRunUpdate = true;
                     if (BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)                    
-                        SignalEvent(Event.EnginePowerOn);                    
+                        SignalEvent(Event.EnginePowerOn);
+                    else
+                        SignalEvent(Event.EnginePowerOff);
                 }
 
                 if (SoundMotorOn && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)

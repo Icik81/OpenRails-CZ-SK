@@ -710,7 +710,7 @@ namespace Orts.Viewer3D
                             if (mstsSignalType.NightGlow.HasValue && viewer.Simulator.Settings.NightSignalLightGlowSize == 0)
                             {
                                 glowNight = mstsSignalType.NightGlow.Value;
-                            }
+                            }                            
                         }
 
                         foreach (var mstsSignalLight in mstsSignalType.Lights)
@@ -935,7 +935,12 @@ namespace Orts.Viewer3D
                 foreach (var item in renderItems)
                 {
                     var slp = item.RenderPrimitive as SignalLightPrimitive;
-                    SceneryShader.ZBias = MathHelper.Lerp(slp.GlowIntensityDay, slp.GlowIntensityNight, NightEffect);
+
+                    // Zesílení záře v závislosti na mlze
+                    float glowDayFogCoef = MathHelper.Clamp(150 / Viewer.Simulator.Weather.FogDistance, 1, 3);
+                    float glowNightFogCoef = MathHelper.Clamp(150 / Viewer.Simulator.Weather.FogDistance, 1, 3);
+
+                    SceneryShader.ZBias = MathHelper.Lerp(slp.GlowIntensityDay * glowDayFogCoef, slp.GlowIntensityNight * glowNightFogCoef, NightEffect);
                     SceneryShader.SignalLightIntensity = (item.ItemData as SignalLightState).GetIntensity();
                     SceneryShader.SetMatrix(item.XNAMatrix, ref XNAViewMatrix, ref XNAProjectionMatrix);
                     pass.Apply();
