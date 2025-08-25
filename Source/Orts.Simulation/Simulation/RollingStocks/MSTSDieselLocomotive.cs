@@ -881,11 +881,17 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (!SoundFirstRunUpdate)
                 {
-                    SoundFirstRunUpdate = true;
-                    if (BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)                    
+                    if (BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && LocoSetUpTimer > 2)
+                    {
                         SignalEvent(Event.EnginePowerOn);
+                        SoundFirstRunUpdate = true;
+                    }
                     else
+                    if (!BrakeSystem.PowerForWagon && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                    {
                         SignalEvent(Event.EnginePowerOff);
+                        SoundFirstRunUpdate = true;
+                    }
                 }
 
                 if (SoundMotorOn && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
