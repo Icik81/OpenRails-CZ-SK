@@ -6203,8 +6203,10 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             if (LocalThrottlePercent > 0 && HelperTimerDecrease > 0.2f)
+                            {
                                 LocalThrottlePercent--;
-                            HelperTimerDecrease = 0;
+                                HelperTimerDecrease = 0;
+                            }
                         }
                         if (LocalThrottlePercent == 0)
                             WheelSpeedMpS = SpeedMpS;
