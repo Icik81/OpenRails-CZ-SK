@@ -965,7 +965,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if ((Car as MSTSWagon).HandBrakePresent)
                     {                                                
                         if (!(Car as MSTSWagon).IsDriveable)
-                        {
+                        {                            
                             int HandBrakeTotalCount = (int)(Car.Train.Cars.Count / 2f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 2f);                                                                                  
                             Car.Train.TrainCurrentCarHandBrake++;
                             if (Car.Train.TrainHandBrakeCount <= HandBrakeTotalCount)
@@ -997,7 +997,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 HandBrakeActive = false;
                                 HandBrakeDeactive = true;
-                            }
+                            }                            
                         }
                         if ((Car as MSTSWagon).CarIsPlayerLoco)
                         {
@@ -2166,7 +2166,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
-            var lead = trainCar as MSTSLocomotive;
+            var lead = (train.IsActualPlayerTrain) ? (trainCar is MSTSLocomotive) ? (trainCar as MSTSLocomotive).IsLeadLocomotive() ? (trainCar as MSTSLocomotive) : null : null : (trainCar as MSTSLocomotive);
 
             if (lead != null)
             {
@@ -2615,22 +2615,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (train.Cars.Count == 1 && (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen))
                     {
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (car.BrakeSystem.AngleCockAOpen && car.BrakeSystem.AngleCockBOpen)
-                            car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;                        
+                        {
+                            car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                            if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
+                        }
                         if (lead != null)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                     }
                     else
                     if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
                     {
-                        car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;                        
+                        car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (lead != null && car.CarHasBrakePipeConnected)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                     }
                     else
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
                     {
-                        car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;                        
+                        car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                        if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (lead != null && car.CarHasBrakePipeConnected)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                     }
@@ -2639,21 +2645,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
                         {
-                            car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;                            
+                            car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                            if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                             if (lead != null && car.CarHasBrakePipeConnected)
                                 lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                         }
 
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
-                            car0.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;                            
+                            car0.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
+                            if (car0.BrakeSystem.BrakeLine1PressurePSI < 0) car0.BrakeSystem.BrakeLine1PressurePSI = 0;
                             if (lead != null && car.CarHasBrakePipeConnected)
                                 lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = -1;
                         }
                     }
                     
-                    if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
-
                     p0 = car.BrakeSystem.BrakeLine1PressurePSI;
                     car0 = car;
                     brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;
