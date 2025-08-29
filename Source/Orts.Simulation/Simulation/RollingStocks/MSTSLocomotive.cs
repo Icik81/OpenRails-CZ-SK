@@ -8104,12 +8104,10 @@ namespace Orts.Simulation.RollingStocks
             if (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime > DynamicBrakeCommandStartTime) // use the latest command time
                 DynamicBrakeCommandStartTime = DynamicBrakeController.CommandStartTime;
 
-
+            // Icik
             //Simulator.Confirmer.MSG("LastStateDynamicBrakePercent: " + LastStateDynamicBrakePercent + "      DynamicBrakeInterventionNormalState: " + DynamicBrakeInterventionNormalState);
             //Simulator.Confirmer.MSG2("PressureConverterControllerValue: " + PressureConverterControllerValue);
 
-            // Icik
-            //if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || IsLeadLocomotive() && DynamicBrakeIntervention >= 0))
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {
                 if (!DynamicBrake)

@@ -471,13 +471,15 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.PressureConverterControllerValue += elapsedTime.ClockSeconds * 0.125f;
                             if (Locomotive.PressureConverterControllerValue > 1.0f)
                                 Locomotive.PressureConverterControllerValue = 1.0f;
+                            Locomotive.DynamicBrakeController.CurrentValue = Math.Max(Locomotive.PressureConverterControllerValue, Locomotive.DynamicBrakeController.CurrentValue);
                         }
                         else
                         if (UserInput.IsDown(UserCommand.ControlDynamicBrakeDecrease))
                         {
-                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.225f;
+                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
                             if (Locomotive.PressureConverterControllerValue < 0)
                                 Locomotive.PressureConverterControllerValue = 0;
+                            Locomotive.DynamicBrakeController.CurrentValue = Math.Min(Locomotive.PressureConverterControllerValue, Locomotive.DynamicBrakeController.CurrentValue); 
                         }
                     }
                 }
@@ -486,6 +488,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.225f;
                     if (Locomotive.PressureConverterControllerValue < 0)
                         Locomotive.PressureConverterControllerValue = 0;
+                    Locomotive.DynamicBrakeController.CurrentValue = Math.Min(Locomotive.PressureConverterControllerValue, Locomotive.DynamicBrakeController.CurrentValue);
                 }                
                 Locomotive.PressureConverterFake = Locomotive.PressureConverterControllerValue * 4.0f * 14.50377f;
                 //Locomotive.Simulator.Confirmer.MSG("PressureConverterFake: " + Locomotive.PressureConverterControllerValue);
