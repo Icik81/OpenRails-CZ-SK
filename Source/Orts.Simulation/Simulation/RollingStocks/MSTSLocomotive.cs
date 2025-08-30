@@ -6044,7 +6044,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.05f)
                         {
-                            if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
+                            if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                             {
                                 if (WheelSlipWarning
                                     || WheelSlip)
@@ -6147,7 +6147,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (LocalThrottlePercent == 0 && SpeedMpS == 0)
                                 HelperStartOn = true;
-                            if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
+                            if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                             {
                                 if (HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {
@@ -6190,7 +6190,7 @@ namespace Orts.Simulation.RollingStocks
                     HelperTimerDecrease += elapsedClockSeconds;
                     if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
                     {
-                        if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
+                        if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                         {
                             if (HelperTimerDecrease > 1.0f)
                             {
@@ -6230,7 +6230,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerDecrease += elapsedClockSeconds;
                         if (HelperTimerDecrease > 0.1f)
                         {
-                            if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
+                            if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                             {
                                 if (ThrottlePercent > 1.2f * Simulator.ThrottleLocoHelper && HelperTimerDecrease > 1.0f)
                                 {
@@ -6325,7 +6325,7 @@ namespace Orts.Simulation.RollingStocks
                         HelperTimerIncrease += elapsedClockSeconds;
                         if (HelperTimerIncrease > ((Simulator.Weather.PricipitationIntensityPPSPM2 / 2.0f) + 0.25f))
                         {
-                            if (ThrottleController.NotchCount() > 1 && this is MSTSDieselLocomotive)
+                            if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                             {
                                 if (ThrottlePercent < 0.9f * Simulator.ThrottleLocoHelper && HelperTimerIncrease > Simulator.Weather.PricipitationIntensityPPSPM2 + 3.0f)
                                 {

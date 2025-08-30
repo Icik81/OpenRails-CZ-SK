@@ -149,7 +149,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
         public const float StandardBoost = 5.0f; // standard step size multiplier
         public const float FastBoost = 20.0f;
         public float StepSize = 0.01f;
-        private List<MSTSNotch> Notches = new List<MSTSNotch>();
+        public List<MSTSNotch> Notches = new List<MSTSNotch>();
         public int CurrentNotch { get; set; }
         public bool ToZero = false; // true if controller zero command;
 
