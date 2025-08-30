@@ -212,8 +212,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     Locomotive.PressureConverterControllerValue += elapsedClockSeconds * 0.125f;
                     if (Locomotive.PressureConverterControllerValue > 1.0f)
-                        Locomotive.PressureConverterControllerValue = 1.0f;
-                    Locomotive.DynamicBrakeController.CurrentValue = Math.Min(Locomotive.PressureConverterControllerValue, Locomotive.DynamicBrakeController.CurrentValue);
+                        Locomotive.PressureConverterControllerValue = 1.0f;                    
                 }
             }
             else if (haveCruiseControl)
@@ -242,8 +241,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 // Převodník brzdy
                 Locomotive.PressureConverterControllerValue -= elapsedClockSeconds * 0.225f;
                 if (Locomotive.PressureConverterControllerValue < 0)
-                    Locomotive.PressureConverterControllerValue = 0;
-                Locomotive.DynamicBrakeController.CurrentValue = Math.Min(Locomotive.PressureConverterControllerValue, Locomotive.DynamicBrakeController.CurrentValue);
+                    Locomotive.PressureConverterControllerValue = 0;                
 
                 if (Locomotive.PressureConverterFake < Locomotive.BrakeSystem.PressureConverter)
                 {
