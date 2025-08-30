@@ -1482,32 +1482,31 @@ namespace Orts.Simulation.RollingStocks
         
         public float TrackFactor = 1;
         float WheelDrivedLength;        
-        public bool WheelsSkiding;
+        public bool HandBrakeReactToWheels;
         public virtual void UpdateBrakeSlideCalculation(float elapsedClockSeconds)
         {
             float WheelSpeedMpS = (this as MSTSWagon).WheelSpeedMpS;
 
-            // Šoupaní stojících kol o kolejnici                                    
+            // Šoupaní zdrží o kola při aktivní ruční brzdě                                    
             if (IsPlayerTrain)
             {
                 // Trigger 20168
-                if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && WheelsSkiding)
+                if ((this as MSTSWagon).AbsSpeedMpS > 0.01f && HandBrakeReactToWheels)
                 {
-                    this.SignalEvent(Event.WheelsSkidingStart);
-                    (this as MSTSWagon).WheelSpeedMpS = 0;
+                    this.SignalEvent(Event.HandBrakeReactToWheelsStart);                    
                 }
                 // Trigger 20169
-                if (!WheelsSkiding || (this as MSTSWagon).AbsSpeedMpS < 0.01f)
+                if (!HandBrakeReactToWheels || (this as MSTSWagon).AbsSpeedMpS < 0.01f)
                 {
-                    this.SignalEvent(Event.WheelsSkidingStop);
+                    this.SignalEvent(Event.HandBrakeReactToWheelsStop);
                 }
             }
-
+            
             // WheelDamage 
             if (!(this is MSTSSteamLocomotive))            
             {
                 //WheelDamageValue = 10;
-                if (!BrakeSkid && !WheelsSkiding && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
+                if (!BrakeSkid && (this as MSTSWagon).AbsWheelSpeedMpS > 0 && WheelDamageValue > 0)
                 {
                     float Wheel_sCoef = (1f + ((this as MSTSWagon).AbsWheelSpeedMpS / 60f));
                     float Wheel_s = 2.0f * MathHelper.Pi * (this as MSTSWagon).WheelRadiusM;
@@ -1598,12 +1597,12 @@ namespace Orts.Simulation.RollingStocks
                 }
                 
                 // WheelDamage - plošky na kolech při zaseknutých kolech, které se tvoří při více jak 10 km/h                
-                if (Math.Abs(SpeedMpS) > 10f / 3.6f && (BrakeSkid || WheelsSkiding))
+                if (Math.Abs(SpeedMpS) > 10f / 3.6f && BrakeSkid)
                 {
                     // Spustí trigger BrakeSkid
                     if (WheelDamageValue == 0)
                         this.SignalEvent(Event.BrakeSkidStart);
-                    WheelDamageValue += 0.1f * elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2) * (1 - (1 - (this.MassKG / 85000)));                    
+                    WheelDamageValue += elapsedClockSeconds * (1.2f - Simulator.Weather.PricipitationIntensityPPSPM2) * (1 - (1 - (this.MassKG / 85000)));                    
                 }
                 else
                 {

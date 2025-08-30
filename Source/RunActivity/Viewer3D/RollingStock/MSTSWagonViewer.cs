@@ -744,20 +744,17 @@ namespace Orts.Viewer3D.RollingStock
                 distanceTravelledDrivenM = 0.0f;
             }
 
-            // Zaseknutá kola ruční brzdou
-            Car.WheelsSkiding = false;
+            // Ruční brzda reaguje na kola, pokud je zatažena
+            Car.HandBrakeReactToWheels = false;
             if ((Car as MSTSWagon).HandBrakePresent && (Car as MSTSWagon).BrakeSystem.HandBrakeActive)
             {
                 if (!(Car is MSTSLocomotive))                                 
-                    Car.WheelsSkiding = true;
+                    Car.HandBrakeReactToWheels = true;
                 else
                 {
                     if ((Car as MSTSLocomotive).WagonNumAxles > (Car as MSTSLocomotive).DriveAxleCount)                    
-                        Car.WheelsSkiding = true;                    
-                }
-
-                distanceTravelledM = 0.0f;
-                distanceTravelledDrivenM = 0.0f;
+                        Car.HandBrakeReactToWheels = true;                    
+                }                
             }
 
             // Running gear and drive wheel rotation (animation) in steam locomotives
@@ -1245,26 +1242,24 @@ namespace Orts.Viewer3D.RollingStock
         protected void LoadCarSound(string wagonFolderSlash, string filename)
         {
             if (filename == null)
-                return;
+                goto LoadGenSound;
             string smsFilePath = wagonFolderSlash + @"sound\" + filename;
-            
+
             if (!File.Exists(smsFilePath))
                 smsFilePath = Viewer.Simulator.BasePath + @"\sound\" + filename;
             if (!File.Exists(smsFilePath))
-            {
                 Trace.TraceWarning("Cannot find {1} car sound file {0}", filename, wagonFolderSlash);
-                return;
-            }
+            else
+                Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
 
+            LoadGenSound:
             try
             {
-                Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, smsFilePath));
-                
                 // Icik
                 if (MSTSWagon.CarSoundLoaded == false)
                 {
                     string smsGenericFilePath = ""; // Default
-                    // GenSound
+                                                    // GenSound
                     if (!MSTSWagon.GenSoundOff && Program.Simulator.Settings.GenSound && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
                     {
                         switch (MSTSWagon.WagonNumAxles)
@@ -1278,14 +1273,14 @@ namespace Orts.Viewer3D.RollingStock
                             case 4:
                                 smsGenericFilePath = "..\\Content\\GenericSound\\4_Wheels\\GenSound_ex.sms";
                                 break;
-                                
+
                             default:
                                 smsGenericFilePath = "..\\Content\\GenericSound\\6_Wheels\\GenSound_ex.sms";
                                 break;
                         }
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                     }
-                    
+
                     // ActivitySound
                     if (MSTSWagon is MSTSLocomotive && MSTSWagon.CarLengthM > 1.0f && !MSTSWagon.WagonIsServis)
                     {
