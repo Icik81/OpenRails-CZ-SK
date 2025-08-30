@@ -1202,6 +1202,11 @@ namespace Orts.Viewer3D
     /// </summary>
     public class SoundStream : IDisposable
     {
+        // Icik
+        bool MSTSStreamSoundOff;
+        bool MSTSStreamSoundOffInit = true;
+        bool MSTSStreamSoundStartStop;
+
         /// <summary>
         /// Owner SoundSource
         /// </summary>
@@ -1482,29 +1487,70 @@ namespace Orts.Viewer3D
                 else volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;
             }
 
-            // Zabezpečí vypnutý zvuk při odstavených lokomotivách 
+            // Shodí příznak MSTSStreamSoundOffInit pro aktivní vozidla
             var car = SoundSource.Car;
-            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup)
+            if (car != null && car is MSTSLocomotive && car.BrakeSystem.PowerForWagon && MSTSStreamSoundOffInit)            
+                MSTSStreamSoundOffInit = false;
+
+            MSTSStreamSoundOff = false;
+            if (MSTSStream != null)
             {
-                car.CarSoundActivationTimer = 0;
-                car.CarSoundDeactivationTimer += car.Simulator.OneSecondLoop;
-                if (car.CarSoundDeactivationTimer > 5)
-                {                    
-                    float volumeCutOff = 1f - ((car.CarSoundDeactivationTimer - 4f) / 10f);
+                // Vyhledá zvuk start/stop motoru
+                foreach (var trigger in Triggers)
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if ((name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine")) && name.ToLower().Contains("start"))
+                                {
+                                    MSTSStreamSoundStartStop = true;
+                                    goto SkipMSTSStreamSoundOff;
+                                }
+                            }
+
+                // Vyhledá zvuky motoru a nastaví příznak MSTSStreamSoundOff
+                foreach (var trigger in Triggers)
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine"))
+                                {
+                                    MSTSStreamSoundOff = true;
+                                    goto SkipMSTSStreamSoundOff;
+                                }
+                            }                            
+            }
+        
+        SkipMSTSStreamSoundOff:
+            if (MSTSStreamSoundOff && !MSTSStreamSoundStartStop)
+            {
+                // Plynule ztišší zvuk motoru                 
+                if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon /*&& !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup*/)
+                {
+                    if (MSTSStreamSoundOffInit) car.CarSoundDeactivationTimer = 100;
+                    car.CarSoundActivationTimer = 0;
+                    car.CarSoundDeactivationTimer += car.Simulator.OneSecondLoop;
+                    if (car.CarSoundDeactivationTimer > 5)
+                    {
+                        float volumeCutOff = 1f - ((car.CarSoundDeactivationTimer - 4f) / 10f);
+                        volumeCutOff = MathHelper.Clamp(volumeCutOff, 0, 1);
+                        volume *= volumeCutOff;
+                    }
+                }
+                // Plynule zesílí zvuk motoru
+                if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon /*&& !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup*/ && car.CarSoundDeactivationTimer > 0)
+                {
+                    if (MSTSStreamSoundOffInit) car.CarSoundActivationTimer = 100;
+                    car.CarSoundActivationTimer += car.Simulator.OneSecondLoop;
+                    float volumeCutOff = car.CarSoundActivationTimer / 10f;
                     volumeCutOff = MathHelper.Clamp(volumeCutOff, 0, 1);
                     volume *= volumeCutOff;
+                    if (volumeCutOff == 1.0f)
+                        car.CarSoundDeactivationTimer = 0;
                 }
-            }
-            if (car != null && car is MSTSLocomotive && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon && !car.BrakeSystem.ORCZSKSetUp && !car.JVSetup && car.CarSoundDeactivationTimer > 0)
-            {
-                car.CarSoundActivationTimer += car.Simulator.OneSecondLoop;
-                float volumeCutOff = car.CarSoundActivationTimer / 10f;
-                volumeCutOff = MathHelper.Clamp(volumeCutOff, 0, 1);
-                volume *= volumeCutOff;
-                if (volumeCutOff == 1.0f)                
-                    car.CarSoundDeactivationTimer = 0;                
-            }
-
+                MSTSStreamSoundOffInit = false;
+            }            
             ALSoundSource.Volume = volume;
         }
 
