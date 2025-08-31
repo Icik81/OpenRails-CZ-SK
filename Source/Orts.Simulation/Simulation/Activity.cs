@@ -1540,7 +1540,7 @@ namespace Orts.Simulation
                 string MessagesText = e.Outcomes.DisplayMessage;
                 EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                 Simulator.ClockTime.ToString("HH:mm:ss");
-                if (MessagesText.Length > 0)
+                if (MessagesText != null && MessagesText.Length > 0)
                     Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
             }
         }
@@ -1899,7 +1899,7 @@ namespace Orts.Simulation
                 string MessagesText = e.Outcomes.DisplayMessage;
                 EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                 Simulator.ClockTime.ToString("HH:mm:ss");
-                if (MessagesText.Length > 0)
+                if (MessagesText != null && MessagesText.Length > 0)
                     Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
             }
         }
@@ -2045,7 +2045,7 @@ namespace Orts.Simulation
                 string MessagesText = e.Outcomes.DisplayMessage;
                 EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                 Simulator.ClockTime.ToString("HH:mm:ss");
-                if (MessagesText.Length > 0)
+                if (MessagesText != null && MessagesText.Length > 0)
                     Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
             }
         }
