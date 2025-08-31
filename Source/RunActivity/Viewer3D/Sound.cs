@@ -1501,7 +1501,7 @@ namespace Orts.Viewer3D
                         foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                             if (name != null)
                             {
-                                if ((name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine")) && name.ToLower().Contains("start"))
+                                if (name.ToLower().Contains("start") || name.ToLower().Contains("mazani"))
                                 {
                                     MSTSStreamSoundStartStop = true;
                                     goto SkipMSTSStreamSoundOff;
