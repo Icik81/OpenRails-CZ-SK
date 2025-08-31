@@ -381,6 +381,9 @@ namespace Orts.Formats.Msts
 
     public class Tr_Activity_Header
     {
+        // Icik
+        public string Messages = "";
+
         public string RouteID;
         public string Name;					// AE Display Name
         public string Description = " ";

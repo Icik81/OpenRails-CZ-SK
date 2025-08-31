@@ -342,6 +342,9 @@ namespace Orts.Simulation
         {
             Int32 noval = -1;
 
+            // Icik
+            outf.Write(Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages);
+
             // Save passenger activity
             outf.Write((Int64)StartTime.Ticks);
             outf.Write((Int32)Tasks.Count);
@@ -398,6 +401,9 @@ namespace Orts.Simulation
         public void RestoreThis(BinaryReader inf, Simulator simulator, List<EventWrapper> oldEventList)
         {
             Int32 rdval;
+
+            // Icik
+            Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages = inf.ReadString();
 
             // Restore passenger activity
             ActivityTask task;
@@ -1494,9 +1500,9 @@ namespace Orts.Simulation
         }
 
     }
-
+    
     public class EventCategoryActionWrapper : EventWrapper
-    {
+    {        
         SidingItem SidingEnd1;
         SidingItem SidingEnd2;
         List<string> ChangeWagonIdList;   // Wagons to be assembled, picked up or dropped off.
@@ -1526,6 +1532,19 @@ namespace Orts.Simulation
         }
 
         //Icik
+        public DateTime? EventClock;
+        public void RecordDisplayMessage(EventCategoryAction e, bool triggered)
+        {
+            if (triggered)
+            {
+                string MessagesText = e.Outcomes.DisplayMessage;
+                EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
+                Simulator.ClockTime.ToString("HH:mm:ss");
+                if (MessagesText.Length > 0)
+                    Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
+            }
+        }
+
         bool DelayedMessage;
         float DelayedMessageTimer;
         float ChangeWagonIdListLengthM;
@@ -1607,9 +1626,10 @@ namespace Orts.Simulation
             {
                 triggered = true;
                 DelayedMessage = false;
-                DelayedMessageTimer = 0;
+                DelayedMessageTimer = 0;                
             }
 
+            RecordDisplayMessage(e, triggered);
             return triggered;
         }
         /// <summary>
@@ -1871,6 +1891,19 @@ namespace Orts.Simulation
         {
         }
 
+        public DateTime? EventClock;
+        public void RecordDisplayMessage(EventCategoryLocation e, bool triggered)
+        {
+            if (triggered)
+            {
+                string MessagesText = e.Outcomes.DisplayMessage;
+                EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
+                Simulator.ClockTime.ToString("HH:mm:ss");
+                if (MessagesText.Length > 0)
+                    Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
+            }
+        }
+
         float CarLength;
         float RideLength;
         int CarLengthMark;
@@ -1944,6 +1977,7 @@ namespace Orts.Simulation
 
                 if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
                 {
+                    RecordDisplayMessage(e, true);
                     return true;
                 }
 
@@ -1956,6 +1990,7 @@ namespace Orts.Simulation
                     Simulator.Confirmer.MSG3(Simulator.Catalog.GetString("Precise stop required!") + "   " + Simulator.Catalog.GetString("We're here, we can stop!") + "   " + RestLength + " m");                    
                     if (Math.Abs(train.SpeedMpS) < 0.01f)
                     {
+                        RecordDisplayMessage(e, true);
                         return true;
                     }
                     return false;
@@ -1969,6 +2004,7 @@ namespace Orts.Simulation
                 // Is train still moving?
                 if (Math.Abs(train.SpeedMpS) > 0.032f)
                 {
+                    RecordDisplayMessage(e, triggered);
                     return triggered;
                 }
             }
@@ -1981,11 +2017,16 @@ namespace Orts.Simulation
                 trainFrontPosition.ReverseDirection();
                 distance = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, e.RadiusM);
                 if (distance == -1)
+                {
+                    RecordDisplayMessage(e, triggered);
                     return triggered;
+                }
             }
             if (distance < e.RadiusM) { triggered = true; }
+
+            RecordDisplayMessage(e, triggered);
             return triggered;
-        }
+        }        
     }
 
     public class EventCategoryTimeWrapper : EventWrapper
@@ -1996,12 +2037,27 @@ namespace Orts.Simulation
         {
         }
 
+        public DateTime? EventClock;
+        public void RecordDisplayMessage(EventCategoryTime e, bool triggered)
+        {
+            if (triggered)
+            {
+                string MessagesText = e.Outcomes.DisplayMessage;
+                EventClock = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
+                Simulator.ClockTime.ToString("HH:mm:ss");
+                if (MessagesText.Length > 0)
+                    Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages += EventClock.Value.ToString("HH:mm:ss") + "\n" + MessagesText + "\n\n";
+            }
+        }
+
         override public Boolean Triggered(Activity activity)
         {
             var e = this.ParsedObject as Orts.Formats.Msts.EventCategoryTime;
             if (e == null) return false;
             Train = Simulator.PlayerLocomotive.Train;
             var triggered = (e.Time <= (int)Simulator.ClockTime - activity.StartTimeS);
+
+            RecordDisplayMessage(e, triggered);
             return triggered;
         }
     }

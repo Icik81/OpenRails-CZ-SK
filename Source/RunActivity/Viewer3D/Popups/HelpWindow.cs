@@ -180,6 +180,17 @@ namespace Orts.Viewer3D.Popups
                         owner.Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_Header.Briefing.Length > 0)
                     {
                         scrollbox.Add(new TextFlow(scrollbox.RemainingWidth, owner.Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_Header.Briefing));
+                    }                    
+                }));
+                Tabs.Add(new TabData(Tab.ActivityBriefing, Viewer.Catalog.GetString("Messages"), (cl) =>
+                {
+                    var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);
+                    if (owner.Viewer.Simulator.Activity != null &&
+                        owner.Viewer.Simulator.Activity.Tr_Activity != null &&
+                        owner.Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_Header != null &&
+                        owner.Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages.Length > 0)
+                    {
+                        scrollbox.Add(new TextFlow(scrollbox.RemainingWidth, owner.Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_Header.Messages));
                     }
                 }));
                 Tabs.Add(new TabData(Tab.ActivityTimetable, Viewer.Catalog.GetString("Timetable"), (cl) =>
