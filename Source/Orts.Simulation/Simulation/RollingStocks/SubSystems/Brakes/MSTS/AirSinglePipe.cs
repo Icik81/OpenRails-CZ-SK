@@ -2170,6 +2170,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
             if (lead != null)
             {
+                lead.BrakeSystem.EmergResVolumeM3 = 0;
+
                 lead.BrakePipeTimeFactorS = MathHelper.Clamp(lead.BrakePipeTimeFactorS, 0.0025f, 0.0035f);
 
                 if (lead.BrakePipeChargingRatePSIorInHgpS != lead.Simulator.Settings.BrakePipeChargingRate)
@@ -4402,7 +4404,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.BrakeSystem.FirstRunARRTrainBrake)
                     {
                         lead.BrakeSystem.ARRTrainBrakeCycle0 += elapsedClockSeconds;
-                        if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 5.0f) // Náskok EDB před tlakovou 5s
+                        if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 10.0f) // Náskok EDB před tlakovou 10s
                             lead.BrakeSystem.FirstRunARRTrainBrake = false;
                     }
 

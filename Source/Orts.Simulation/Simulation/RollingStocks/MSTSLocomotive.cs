@@ -811,7 +811,7 @@ namespace Orts.Simulation.RollingStocks
         public float DynamicBrakeFullRangeIncreaseTimeSeconds = 3;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds = 3;
         public float MaxControllerVolts = 10;
-        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Braking;
+        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Accelerating;
         public float AcceleratingToBrakingChangeTime = 0;
         public enum DriverStation { None, Station1, Station2 };
         public DriverStation ActiveStation = DriverStation.None;
@@ -8150,10 +8150,7 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeInterventionNormalState = true;
                             
                             if (DynamicBrakeInterventionNormalState)                            
-                                DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
-
-                            if (DynamicBrakeIntervention == -1 && DynamicBrakeController.CurrentValue == 0)
-                                DynamicBrakePercent = 0;
+                                DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                            
 
                             LocalDynamicBrakePercent = DynamicBrakePercent;
                             
