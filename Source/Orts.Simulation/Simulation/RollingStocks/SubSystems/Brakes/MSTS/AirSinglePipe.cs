@@ -2220,8 +2220,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.TrainTotalAirBrakeLengthM / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.TrainTotalAirBrakeCarsCount);
             
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 5f;  // Vytvoří zpoždění tlakové vlny při odbržďování
-            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10f;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength / 2f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
             float brakePipeTimeFactorSBase = brakePipeTimeFactorS_Release;

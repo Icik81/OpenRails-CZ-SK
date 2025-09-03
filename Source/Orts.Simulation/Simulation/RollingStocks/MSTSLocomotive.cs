@@ -811,7 +811,7 @@ namespace Orts.Simulation.RollingStocks
         public float DynamicBrakeFullRangeIncreaseTimeSeconds = 3;
         public float DynamicBrakeFullRangeDecreaseTimeSeconds = 3;
         public float MaxControllerVolts = 10;
-        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.Accelerating;
+        public CurrentDirectionEnum CurrentDirection = CurrentDirectionEnum.None;
         public float AcceleratingToBrakingChangeTime = 0;
         public enum DriverStation { None, Station1, Station2 };
         public DriverStation ActiveStation = DriverStation.None;
@@ -8471,6 +8471,7 @@ namespace Orts.Simulation.RollingStocks
 
         public enum CurrentDirectionEnum // used for drive or dynamic brake
         {
+            None,
             Accelerating,
             Braking
         };
@@ -11142,11 +11143,11 @@ namespace Orts.Simulation.RollingStocks
         #endregion
 
 
-        public float CanAccelerateTime = 0;
+        public float CanAccelerateTime = 0;        
         public bool CanAccelerate(float elapsedClockTime, float controllerVolts)
         {
             bool ret = false;
-            if (CurrentDirection == CurrentDirectionEnum.Braking && CanAccelerateTime < AcceleratingToBrakingChangeTime + 0.01f)
+            if (CurrentDirection != CurrentDirectionEnum.Accelerating && CanAccelerateTime < AcceleratingToBrakingChangeTime + 0.01f)
             {
                 CanAccelerateTime += elapsedClockTime;
             }
@@ -11163,7 +11164,7 @@ namespace Orts.Simulation.RollingStocks
         public bool CanBrake(float elapsedClockTime, float controllerVolts)
         {
             bool ret = false;
-            if (CurrentDirection == CurrentDirectionEnum.Accelerating && CanBrakeTime < AcceleratingToBrakingChangeTime + 0.01f)
+            if (CurrentDirection != CurrentDirectionEnum.Braking && CanBrakeTime < AcceleratingToBrakingChangeTime + 0.01f)
             {
                 CanBrakeTime += elapsedClockTime;
             }
