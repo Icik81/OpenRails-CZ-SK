@@ -246,7 +246,7 @@ namespace Orts.Formats.Msts
             Index = index;
             stf.MustMatch("(");
             stf.ParseBlock(new[] {
-                new STFReader.TokenProcessor("type", ()=>{ Type = (LightType)stf.ReadIntBlock(null); }),
+                new STFReader.TokenProcessor("type", ()=>{ Type = (LightType)stf.ReadIntBlock(null);  if (Type == LightType.Cone) Unit = LightUnitCondition.First; }),
                 new STFReader.TokenProcessor("lightglowtype", ()=>{ LightGlowType = (LightGlowType)stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("lightglowname", ()=>{ LightGlowName = stf.ReadStringBlock(null); }),
                 new STFReader.TokenProcessor("conditions", ()=>{ stf.MustMatch("("); stf.ParseBlock(new[] {
