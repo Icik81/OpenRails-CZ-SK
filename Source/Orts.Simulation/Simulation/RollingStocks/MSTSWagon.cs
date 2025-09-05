@@ -2295,9 +2295,9 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSLocomotive)
                 {
                     (this as MSTSLocomotive).CentralHandlingDoors = false;
-                    (this as MSTSLocomotive).DoorSwitchEnable = true;
-                    this.BrakeSystem.AirOK_DoorCanManipulate = true;
+                    (this as MSTSLocomotive).DoorSwitchEnable = true;                    
                 }
+                BrakeSystem.AirOK_DoorCanManipulate = true;
                 Simulator.DoorSwitchEnable = false;
             }
 
