@@ -2771,7 +2771,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         T = 1;
                     }
                     else
-                    if ((lead.MainResPressurePSI > 5 * 14.50377f && T == 0) || lead.TramRailUnit) // 5bar default
+                    if ((lead.MainResPressurePSI > 5 * 14.50377f) || lead.TramRailUnit) // 5bar default
                         MSTSWagon.AirOK_DoorCanManipulate = true;
                     else
                         MSTSWagon.AirOK_DoorCanManipulate = false;

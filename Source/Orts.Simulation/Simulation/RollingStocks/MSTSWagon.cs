@@ -2287,6 +2287,20 @@ namespace Orts.Simulation.RollingStocks
             if (WagonName.Contains(" ms") && !WagonName.Contains(Simulator.Catalog.GetString(" - out of order")))
                 WagonName = string.Concat(WagonName, Simulator.Catalog.GetString(" - out of order"));
 
+            // Ovládání dveří ve volné jízdě
+            if (Simulator.ActivityRun == null)
+            {
+                FreightDoors = true;
+                AutomaticDoors = false;
+                if (this is MSTSLocomotive)
+                {
+                    (this as MSTSLocomotive).CentralHandlingDoors = false;
+                    (this as MSTSLocomotive).DoorSwitchEnable = true;
+                    this.BrakeSystem.AirOK_DoorCanManipulate = true;
+                }
+                Simulator.DoorSwitchEnable = false;
+            }
+
             MP_Messages();
             DetermineFirstCarHeadOfTrain();
             ToggleHeatingCarOperationsWindow();
@@ -4111,7 +4125,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {
                         var mstsWagon = car as MSTSWagon;
-                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
+                        if ((mstsWagon.AutomaticDoors || mstsWagon.FreightDoors) && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
                         {
                             mstsWagon.DoorRightOpen = false;
                             mstsWagon.DoorLeftOpen = false;
@@ -4226,7 +4240,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Train.Cars)
                     {                        
                         var mstsWagon = car as MSTSWagon;                        
-                        if (mstsWagon.AutomaticDoors && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
+                        if ((mstsWagon.AutomaticDoors || mstsWagon.FreightDoors) && mstsWagon.BrakeSystem.AirOK_DoorCanManipulate && (mstsWagon.DoorLeftOpen || mstsWagon.DoorRightOpen))
                         {
                             mstsWagon.DoorRightOpen = false;
                             mstsWagon.DoorLeftOpen = false;
