@@ -4376,6 +4376,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     
                     // Regulátor tlakové brzdy pro ARR
                     float ARRSpeedDeccelaration = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) / 20;
+                    float ARRSpeedDeltaKpH = (lead.AbsWheelSpeedMpS - lead.CruiseControl.SelectedSpeedMpS) * 3.6f;
                     float TimeToResponseARRTrainBrake = 1.0f;
                     float TimeToResponseARRTrainBrake2 = 1.0f;
                     if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
@@ -4403,9 +4404,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     
                     if (lead.BrakeSystem.FirstRunARRTrainBrake)
                     {
-                        lead.BrakeSystem.ARRTrainBrakeCycle0 += elapsedClockSeconds;
-                        if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 10.0f) // Náskok EDB před tlakovou 10s
-                            lead.BrakeSystem.FirstRunARRTrainBrake = false;
+                        if (lead.DynamicBrakeAvailable)
+                        {
+                            lead.BrakeSystem.ARRTrainBrakeCycle0 += elapsedClockSeconds;
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 1.0f) // Zpoždění reakce tlakové brzdy 1s
+                            {
+                                if (ARRSpeedDeltaKpH > 2.0f) // Rozdíl rychlostí větší než 2 km/h
+                                    lead.BrakeSystem.FirstRunARRTrainBrake = false; // Začne tlaková brzda reagovat
+                                else
+                                {
+                                    lead.BrakeSystem.FirstRunARRTrainBrake = true;
+                                    lead.BrakeSystem.ARRTrainBrakeCycle0 = 0;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            lead.BrakeSystem.ARRTrainBrakeCycle0 += elapsedClockSeconds;
+                            if (lead.BrakeSystem.ARRTrainBrakeCycle0 > 1.0f) // Zpoždění reakce tlakové brzdy 1s
+                            {
+                                lead.BrakeSystem.FirstRunARRTrainBrake = false;
+                            }
+                        }
                     }
 
                     // Pokud nebude aktivní EDB, naskočí tlaková okamžitě 
