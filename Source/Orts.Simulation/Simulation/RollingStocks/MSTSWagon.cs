@@ -2288,7 +2288,7 @@ namespace Orts.Simulation.RollingStocks
                 WagonName = string.Concat(WagonName, Simulator.Catalog.GetString(" - out of order"));
 
             // Ovládání dveří ve volné jízdě
-            if (Simulator.ActivityRun == null)
+            if (Simulator.ActivityRun == null && !Simulator.TimetableMode)
             {
                 FreightDoors = true;
                 AutomaticDoors = false;
