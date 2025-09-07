@@ -141,7 +141,8 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
-                this.MSTSLocomotive.Battery = false;                
+                this.MSTSLocomotive.Battery = false;
+                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && mstsElectricLocomotive.PowerOn)
@@ -159,6 +160,7 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;
+                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsControlUnit != null && mstsControlUnit.PowerOn)
@@ -176,6 +178,7 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;
+                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && mstsSteamLocomotive.PowerOn)
@@ -192,7 +195,8 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
-                this.MSTSLocomotive.Battery = false;                                
+                this.MSTSLocomotive.Battery = false;   
+                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;                
             }
             // STATIC je nastartovaný po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
@@ -202,6 +206,12 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
+            }
+
+            if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && !this.MSTSLocomotive.BrakeSystem.PowerForWagon)
+            {
+                foreach (var Car in this.MSTSLocomotive.Train.Cars)
+                    Car.BrakeSystem.PowerForWagon = false;
             }
 
             if (this.MSTSLocomotive.Battery)
