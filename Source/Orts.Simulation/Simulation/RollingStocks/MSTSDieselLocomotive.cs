@@ -875,7 +875,7 @@ namespace Orts.Simulation.RollingStocks
                 EngineRPMderivation = (EngineRPM - EngineRPMold) / elapsedClockSeconds;
                 EngineRPMold = EngineRPM;
             }
-
+            
             if (JVSetup)
             {
                 if (SoundFirstRunUpdate)
@@ -886,13 +886,6 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.EnginePowerOff2);
                     }                    
                 }
-                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
-                    Variable2 = Math.Max(0.01f, Variable2);
-
-                if (DieselEngines.Count > 1)
-                    if (DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
-                        Variable22 = Math.Max(0.01f, Variable22);
-
                 SoundFirstRunUpdate = false;
             }
         }
