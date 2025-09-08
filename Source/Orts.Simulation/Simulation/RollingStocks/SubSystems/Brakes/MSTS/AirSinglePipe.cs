@@ -2171,20 +2171,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             var lead = (train.IsActualPlayerTrain) ? (trainCar is MSTSLocomotive) ? (trainCar as MSTSLocomotive).IsLeadLocomotive() ? (trainCar as MSTSLocomotive) : null : null : (trainCar as MSTSLocomotive);
 
             if (lead != null)
-            {
-                lead.BrakeSystem.EmergResVolumeM3 = 0;
-
+            {                
                 lead.BrakePipeTimeFactorS = MathHelper.Clamp(lead.BrakePipeTimeFactorS, 0.0025f, 0.0035f);
 
                 if (lead.BrakePipeChargingRatePSIorInHgpS != lead.Simulator.Settings.BrakePipeChargingRate)
-                    lead.BrakePipeChargingRatePSIorInHgpS = MathHelper.Clamp(lead.BrakePipeChargingRatePSIorInHgpS, 9.0f * 14.50377f, 12.0f * 14.50377f);
+                    lead.BrakePipeChargingRatePSIorInHgpS = MathHelper.Clamp(lead.BrakePipeChargingRatePSIorInHgpS, 0.0f * 14.50377f, 12.0f * 14.50377f);
 
+                // Výpočet objemu potrubí pro obsazenou lokomotivu
+                if (lead.BrakeSystem.BrakePipeVolumeM3Base == 0) lead.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + lead.CarLengthM);
+
+                // Výpočet objemu potrubí a jímky obsazené lokomotivy
                 train.TrainTotalAirBrakeVolumeM3 = lead.BrakeSystem.BrakePipeVolumeM3Base + lead.BrakeSystem.EmergResVolumeM3;
                 train.TrainTotalAirBrakeLengthM = lead.CarLengthM + 2;
                 train.TrainTotalAirBrakeCarsCount = 1;
             }
             var brakePipeTimeFactorS = lead == null ? 0.003f : lead.BrakePipeTimeFactorS; // Průrazná rychlost tlakové vlny 250m/s 
-            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 10.0f * 14.50377f : lead.BrakePipeChargingRatePSIorInHgpS; // Výchozí napouštění jímky lokomotivy 9 bar/s
+            var BrakePipeChargingRatePSIorInHgpS0 = lead == null ? 10.0f * 14.50377f : lead.BrakePipeChargingRatePSIorInHgpS; // Výchozí napouštění jímky lokomotivy 10 bar/s
 
             if (lead != null && lead.Simulator.Settings.CorrectQuestionableBrakingParams)
             {
@@ -2196,14 +2198,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             {
                 // Výpočet objemu potrubí pro každý vůz
                 if (car.BrakeSystem.BrakePipeVolumeM3Base == 0) car.BrakeSystem.BrakePipeVolumeM3Base = ((0.032f / 2) * (0.032f / 2) * (float)Math.PI) * (2 + car.CarLengthM);
-                // Výpočet celkového objemu potrubí a jímek
-                if (car.CarHasBrakePipeConnected)
+                
+                // Výpočet celkového objemu potrubí a jímek celého vlaku
+                if (car.CarHasBrakePipeConnected && car != lead)
                 {
                     train.TrainTotalAirBrakeVolumeM3 += car.BrakeSystem.BrakePipeVolumeM3Base + car.BrakeSystem.EmergResVolumeM3;
                     train.TrainTotalAirBrakeLengthM += car.CarLengthM + 2;
                     train.TrainTotalAirBrakeCarsCount += 1;
                 }
             }
+
             // Výpočet výsledné rychlosti napouštění potrubí a jímek pro celý vlak
             if (lead != null)
             {
@@ -2213,11 +2217,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable) BrakePipeChargingRateCoef = 1.0f;
                 BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 5.0f);
 
-                float RatioResVolumeM3 = lead.BrakeSystem.EmergResVolumeM3 + lead.BrakeSystem.BrakePipeVolumeM3Base; // Referenční objem jímky a potrubí lokomotivy
-                if (lead.Simulator.Settings.CorrectQuestionableBrakingParams)                
-                    RatioResVolumeM3 = MathHelper.Clamp(lead.BrakeSystem.EmergResVolumeM3 + lead.BrakeSystem.BrakePipeVolumeM3Base, 0.250f, 0.350f); // Omezí referenční objem poměrové jímky, aby byl zachován dostatečný průtok vzduchu do potrubí                
+                float ReferenceRatioResVolumeM3 = 0;                
+                if (lead.TrainBrakeController.BS2ControllerOnStation)
+                    ReferenceRatioResVolumeM3 = (200.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro BS2 ovladač
+                else
+                    ReferenceRatioResVolumeM3 = (250.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
 
-                BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (RatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
+                BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (ReferenceRatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
             }
                                 
             float brakePipeTimeFactorCorection = 0.003f / brakePipeTimeFactorS * 10f;            
