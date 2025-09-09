@@ -4652,11 +4652,15 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of locomotiveless static consists in the advanced way,
                 // to allow proper shunting operations.
+                foreach (TrainCar car in Cars)                
+                    car.BrakeSystem.LastStateBrakeLine1PressurePSI = car.BrakeSystem.BrakeLine1PressurePSI;                
+
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
                 int CurrentCar = 0;
                 int HandBrakeCount = 1;
                 foreach (TrainCar car in Cars)
                 {
+                    car.WagonIsStatic = true;
                     if ((car is MSTSLocomotive))
                     {
                         var loco = car as MSTSLocomotive;
@@ -4669,17 +4673,23 @@ namespace Orts.Simulation.Physics
                         if (loco.AuxCompressorIsOn)
                             SignalEvent(Event.AuxCompressorOff);
                     }
-
-                    if (Cars.Count > 3)
+                    
+                    if (!IsActualPlayerTrain)
                     {
-                        car.BrakeSystem.FrontBrakeHoseConnected = true;
-                        Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                        Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                        if (Cars.Count > 3)
+                        {
+                            car.BrakeSystem.FrontBrakeHoseConnected = true;
+                            Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                            Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                        }
                     }
 
-                    if (Simulator.AICouplingAction)
-                    {                        
-                        car.WagonIsStatic = true;
+                    if (car.BrakeSystem.LastStateBrakeLine1PressurePSI > car.BrakeSystem.BrakeLine1PressurePSI)                    
+                        car.SignalEvent(Event.TrainBrakePressureIncrease); // Zvuk zabrždění vozů                                           
+
+                    // Odstavené vozy AI vlaků nevypouštějí vzduch
+                    if (!IsActualPlayerTrain && Simulator.AICouplingAction)
+                    {                                               
                         int HandBrakeTotalCount = (int)(Cars.Count / 2f) == 0 ? 1 : (int)(Cars.Count / 2f);
                         CurrentCar++;
                         if (HandBrakeCount <= HandBrakeTotalCount)
@@ -4702,10 +4712,10 @@ namespace Orts.Simulation.Physics
                         car.BrakeSystem.FrontBrakeHoseConnected = true;
                         Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
                         Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                        SignalEvent(Event.TrainBrakePressureStoppedChanging);                        
                     }                    
                 }
                 Simulator.AICouplingAction = false;
-                SignalEvent(Event.TrainBrakePressureStoppedChanging);
                 ToggleDoors(true, false);
                 ToggleDoors(false, false);
             }
