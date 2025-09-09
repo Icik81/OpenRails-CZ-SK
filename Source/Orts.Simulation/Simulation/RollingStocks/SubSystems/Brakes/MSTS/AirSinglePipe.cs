@@ -903,7 +903,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             if (wagon != null && wagon.WagonIsStatic)
             {                       
-                PrevAuxResPressurePSI = AuxResPressurePSI = Math.Min(AuxResPressurePSI, maxPressurePSI0 - (AutoCylPressurePSI0 / AuxCylVolumeRatioBase));                                                    
+                AuxResPressurePSI = Math.Min(AuxResPressurePSI, maxPressurePSI0 - (AutoCylPressurePSI0 / AuxCylVolumeRatioBase));
+                PrevAuxResPressurePSI = maxPressurePSI0;
             }
 
             if (!StartOn && wagon.HandBrakePresent)
