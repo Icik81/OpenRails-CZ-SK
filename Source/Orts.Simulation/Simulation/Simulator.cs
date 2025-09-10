@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.IO;
 
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
 
 namespace Orts.Simulation
@@ -1105,11 +1106,17 @@ namespace Orts.Simulation
         public bool TryToCoupleFront;
         public bool DontCouple;
         float MinimalDistanceToCouple = 0.05f;
+        public float LastStateSpeedMpS;
         /// <summary>
         /// Scan other trains
         /// </summary>
         public void CheckForCoupling(Train drivenTrain, float elapsedClockSeconds)
         {
+            drivenTrain.LastStateCarCount = drivenTrain.Cars.Count; // Zapamatování počtu vozů ve vlaku pro nastavení static vozů 
+            
+            if (drivenTrain.IsActualPlayerTrain)
+                LastStateSpeedMpS = PlayerUsingRearCab ? -drivenTrain.SpeedMpS : drivenTrain.SpeedMpS; // Zapamatování rychlosti vlaku hráče pro nastavení static vozů
+
             //if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (CarDerailed) return;
 
