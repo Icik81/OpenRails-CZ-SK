@@ -979,15 +979,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 HandBrakeActive = true;
                                 HandBrakeDeactive = false;                                
                             }
-                            if (!(Car as MSTSWagon).Simulator.Settings.ManualCoupling)
+
+                            if (Car.Simulator.Settings.ManualCoupling)
+                            {
+                                if (Car.Train.Cars.Count > 3)
+                                {
+                                    FrontBrakeHoseConnected = true;                                    
+                                    Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
+                                    Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
+                                    Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.FrontBrakeHoseConnected = false;
+                                }
+                            }
+                            if (!Car.Simulator.Settings.ManualCoupling)
                             {
                                 if (Car.Train.Cars.Count > 4)
                                 {
                                     FrontBrakeHoseConnected = true;
-                                    Car.Train.Cars[1].BrakeSystem.FrontBrakeHoseConnected = false;
-                                    Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
+                                    Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
+                                    Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                                    Car.Train.Cars[Car.Train.Cars.Count - 2].BrakeSystem.AngleCockBOpen = false;                                    
                                 }
                             }
+
                             Car.Train.HandBrakeNum++;
                             if (Car.Train.HandBrakeNum == 1 && Car.Train.Cars.Count > 1 && HandBrakeTotalCount > 1)
                             {

@@ -4672,17 +4672,7 @@ namespace Orts.Simulation.Physics
                             SignalEvent(Event.Compressor2Off);
                         if (loco.AuxCompressorIsOn)
                             SignalEvent(Event.AuxCompressorOff);
-                    }
-                    
-                    if (!IsActualPlayerTrain)
-                    {
-                        if (Cars.Count > 3)
-                        {
-                            car.BrakeSystem.FrontBrakeHoseConnected = true;
-                            Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                            Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                        }
-                    }
+                    }                                       
 
                     if (car.BrakeSystem.LastStateBrakeLine1PressurePSI > car.BrakeSystem.BrakeLine1PressurePSI)                    
                         car.SignalEvent(Event.TrainBrakePressureIncrease); // Zvuk zabrždění vozů                                           
