@@ -1115,7 +1115,7 @@ namespace Orts.Simulation
             drivenTrain.LastStateCarCount = drivenTrain.Cars.Count; // Zapamatování počtu vozů ve vlaku pro nastavení static vozů 
             
             if (drivenTrain.IsActualPlayerTrain)
-                LastStateSpeedMpS = PlayerUsingRearCab ? -drivenTrain.SpeedMpS : drivenTrain.SpeedMpS; // Zapamatování rychlosti vlaku hráče pro nastavení static vozů
+                LastStateSpeedMpS = drivenTrain.SpeedMpS; // Zapamatování rychlosti vlaku hráče pro nastavení static vozů
 
             //if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
             if (CarDerailed) return;
