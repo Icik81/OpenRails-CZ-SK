@@ -416,6 +416,9 @@ namespace Orts.Common
         HandBrakeReactToWheelsStop,
         ThunderSoundOn,
         ThunderSoundOff,
+        BrakePipeAirLossOn,
+        BrakePipeAirLossOff,
+        StaticBrakePipeAirLoss,
     }
 
     public static class Events
@@ -846,6 +849,9 @@ namespace Orts.Common
                         case 20169: return Event.HandBrakeReactToWheelsStop;
                         case 20170: return Event.ThunderSoundOn;
                         case 20171: return Event.ThunderSoundOff;
+                        case 20172: return Event.BrakePipeAirLossOn;
+                        case 20173: return Event.BrakePipeAirLossOff;
+                        case 20174: return Event.StaticBrakePipeAirLoss;
 
                         default: return 0;
                     }

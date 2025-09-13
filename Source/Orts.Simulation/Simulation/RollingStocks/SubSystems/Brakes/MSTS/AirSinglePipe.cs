@@ -2111,6 +2111,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             
             (Car as MSTSWagon).Variable10 = Math.Abs(MainResPressurePSI - BrakeLine1PressurePSI) / maxPressurePSI0;
             (Car as MSTSWagon).Variable11 = MainResPressurePSI / MaxMainResPressurePSI;
+            (Car as MSTSWagon).Variable13 = BrakeLine1PressurePSI / 14.50377f; // Pro únik vzduchu z brzdového potrubí
 
             //if (loco != null)
             //    loco.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("BrakePipeThreshold " + BrakePipeThreshold / 14.50377f));
@@ -2703,9 +2704,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (car.CarHasBrakePipeConnected && lead != null && TrainPipePressureDiffPropogationPSI < -0.001f)
                             lead.BrakeSystem.TrainPipePressureDiffPropogationPSI = TrainPipePressureDiffPropogationPSI;
                     }
-                    
+
+                    car.BrakePipeAirLoss = false;
                     if (train.Cars.Count == 1 && (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen))
                     {
+                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOn);
+                            car.BrakePipeAirLoss = true;
+                        }
+                        else
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOff);
+                            car.BrakePipeAirLoss = false;
+                        }
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (car.BrakeSystem.AngleCockAOpen && car.BrakeSystem.AngleCockBOpen)
@@ -2720,12 +2732,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             {
                                 if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                
                                     AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                    
-                                AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;                                
+                                AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
+                                if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    else
+                    
                     if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
                     {
+                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOn);
+                            car.BrakePipeAirLoss = true;
+                        }
+                        else
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOff);
+                            car.BrakePipeAirLoss = false;
+                        }
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (lead != null && car.CarHasBrakePipeConnected)
@@ -2736,11 +2759,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                
                                     AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                    
                                 AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
+                                if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    else
+                    
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
                     {
+                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOn);
+                            car.BrakePipeAirLoss = true;
+                        }
+                        else
+                        {
+                            car.SignalEvent(Event.BrakePipeAirLossOff);
+                            car.BrakePipeAirLoss = false;
+                        }
                         car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                         if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                         if (lead != null && car.CarHasBrakePipeConnected)
@@ -2751,13 +2785,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                
                                     AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                    
                                 AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
+                                if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    else
+                    
                     if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
                         {
+                            if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                            {
+                                car.SignalEvent(Event.BrakePipeAirLossOn);
+                                car.BrakePipeAirLoss = true;
+                            }
+                            else
+                            {
+                                car.SignalEvent(Event.BrakePipeAirLossOff);
+                                car.BrakePipeAirLoss = false;
+                            }
                             car.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                             if (car.BrakeSystem.BrakeLine1PressurePSI < 0) car.BrakeSystem.BrakeLine1PressurePSI = 0;
                             if (lead != null && car.CarHasBrakePipeConnected)
@@ -2768,11 +2813,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                    
                                         AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                            
                                     AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
+                                    if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                                 }
                         }
 
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
+                            if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                            {
+                                car.SignalEvent(Event.BrakePipeAirLossOn);
+                                car.BrakePipeAirLoss = true;
+                            }
+                            else
+                            {
+                                car.SignalEvent(Event.BrakePipeAirLossOff);
+                                car.BrakePipeAirLoss = false;
+                            }
                             car0.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                             if (car0.BrakeSystem.BrakeLine1PressurePSI < 0) car0.BrakeSystem.BrakeLine1PressurePSI = 0;
                             if (lead != null && car.CarHasBrakePipeConnected)
@@ -2783,10 +2839,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                    
                                         AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                            
                                     AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
+                                    if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                                 }
                         }
-                    }
+                    }                    
                     
+                    if (!car.BrakePipeAirLoss) car.SignalEvent(Event.BrakePipeAirLossOff);
+
                     p0 = car.BrakeSystem.BrakeLine1PressurePSI;
                     car0 = car;
                     brakePipeVolumeM30 = car0.BrakeSystem.BrakePipeVolumeM3;

@@ -224,6 +224,7 @@ namespace Orts.Formats.Msts
             Variable10Controlled,
             Variable11Controlled,
             Variable12Controlled,
+            Variable13Controlled,
             TrainBrakeControllerControlled,
             EngineBrakeControllerControlled,
             BrakePipeChangeRateControlled,
@@ -288,6 +289,7 @@ namespace Orts.Formats.Msts
                 case "variable10controlled": Control = Controls.Variable10Controlled; break;
                 case "variable11controlled": Control = Controls.Variable11Controlled; break;
                 case "variable12controlled": Control = Controls.Variable12Controlled; break;
+                case "variable13controlled": Control = Controls.Variable13Controlled; break;
                 case "trainbrakecontrollercontrolled": Control = Controls.TrainBrakeControllerControlled; break;
                 case "enginebrakecontrollercontrolled": Control = Controls.EngineBrakeControllerControlled; break;
                 case "brakepipechangeratecontrolled": Control = Controls.BrakePipeChangeRateControlled; break;

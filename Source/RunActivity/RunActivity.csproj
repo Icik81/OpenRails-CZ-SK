@@ -727,6 +727,7 @@
     <Content Include="Content\GenericSound\2_Wheels\240_sedacka_12.wav" />
     <Content Include="Content\GenericSound\2_Wheels\40km.wav" />
     <Content Include="Content\GenericSound\2_Wheels\60km.wav" />
+    <Content Include="Content\GenericSound\2_Wheels\airloss.wav" />
     <Content Include="Content\GenericSound\2_Wheels\buch1.wav" />
     <Content Include="Content\GenericSound\2_Wheels\buch1_ex.wav" />
     <Content Include="Content\GenericSound\2_Wheels\buch2.wav" />
@@ -824,6 +825,7 @@
     <Content Include="Content\GenericSound\4_Wheels\7.wav" />
     <Content Include="Content\GenericSound\4_Wheels\8.wav" />
     <Content Include="Content\GenericSound\4_Wheels\9.wav" />
+    <Content Include="Content\GenericSound\4_Wheels\airloss.wav" />
     <Content Include="Content\GenericSound\4_Wheels\buch1.wav" />
     <Content Include="Content\GenericSound\4_Wheels\buch1_ex.wav" />
     <Content Include="Content\GenericSound\4_Wheels\buch2.wav" />

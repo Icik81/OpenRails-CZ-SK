@@ -16,7 +16,46 @@ Tr_SMS (
 		)
 		Stereo ()
 		Volume (0.6)
-		Streams (10
+		Streams (12
+		
+		Stream (
+                Skip (** Únik vzduchu z brzdového potrubí **)
+				Priority ( 6 )
+				Volume ( 0.6 )
+				Triggers ( 2
+        				Discrete_Trigger (  20172 StartLoopRelease ( 1 File ( "airloss.wav" -1 ) SelectionMethod ( SequentialSelection ) ) )
+        				Discrete_Trigger (  20173 ReleaseLoopReleaseWithJump ())
+                )
+                FrequencyCurve(
+					Variable13Controlled
+					CurvePoints ( 4
+						   0.0		 40000
+						   1.0		 44000
+						   3.0		 48000
+						   5.0		 50000
+					)
+					Granularity ( 100 )
+				)
+				VolumeCurve(
+					Variable13Controlled
+					CurvePoints ( 4
+						   0.0		 0.0
+						   1.0		 0.5
+						   3.0		 0.8
+						   5.0		 1.0
+					)
+					Granularity ( 0.01 )
+				)
+			)
+		
+			Stream (
+                Skip (** Únik vzduchu z brzdového potrubí static**)
+				Priority ( 6 )
+				Volume ( 0.6 )
+				Triggers ( 1						        				
+						Discrete_Trigger ( 20174 PlayOneShot ( 1 	File ( "airloss.wav" -1 ) SelectionMethod (SequentialSelection) ) )
+                )                
+			)
 		
 			Stream (
 				Skip (** Otěr **)
