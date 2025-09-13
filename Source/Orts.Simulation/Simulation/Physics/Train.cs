@@ -4653,8 +4653,14 @@ namespace Orts.Simulation.Physics
             {
                 // Propagate brake pressure of locomotiveless static consists in the advanced way,
                 // to allow proper shunting operations.
-                foreach (TrainCar car in Cars)                
-                    car.BrakeSystem.LastStateBrakeLine1PressurePSI = car.BrakeSystem.BrakeLine1PressurePSI;                
+                foreach (TrainCar car in Cars)
+                {
+                    if (car.BrakeSystem.BrakeLine1PressurePSI > car.BrakeSystem.maxPressurePSI0 - (car.BrakeSystem.MCP / car.BrakeSystem.WagonAuxCylVolumeRatio))
+                        car.BrakeSystem.LastStateBrakeLine1PressurePSI = car.BrakeSystem.BrakeLine1PressurePSI;
+                    else
+                        car.BrakeSystem.LastStateBrakeLine1PressurePSI = 0;
+                    car.SignalEvent(Event.TrainBrakePressureStoppedChanging);
+                }
 
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
                 int CurrentCar = 0;
@@ -4703,7 +4709,7 @@ namespace Orts.Simulation.Physics
                         car.BrakeSystem.FrontBrakeHoseConnected = true;
                         Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
                         Cars[Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                        SignalEvent(Event.TrainBrakePressureStoppedChanging);                        
+                        car.SignalEvent(Event.TrainBrakePressureStoppedChanging);                        
                     }                    
                 }
                 Simulator.AICouplingAction = false;

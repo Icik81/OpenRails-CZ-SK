@@ -903,8 +903,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             }
             if (wagon != null && wagon.WagonIsStatic)
             {                       
-                AuxResPressurePSI = Math.Min(AuxResPressurePSI, maxPressurePSI0 - (AutoCylPressurePSI0 / AuxCylVolumeRatioBase));
+                AuxResPressurePSI = Math.Min(AuxResPressurePSI, maxPressurePSI0 - (AutoCylPressurePSI0/ AuxCylVolumeRatioBase));
                 PrevAuxResPressurePSI = maxPressurePSI0;
+                AutoCylPressurePSI = AutoCylPressurePSI0;
             }
 
             if (!StartOn && wagon.HandBrakePresent)
@@ -2819,15 +2820,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
-                            if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                            if (car0.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                             {
-                                car.SignalEvent(Event.BrakePipeAirLossOn);
-                                car.BrakePipeAirLoss = true;
+                                car0.SignalEvent(Event.BrakePipeAirLossOn);
+                                car0.BrakePipeAirLoss = true;
                             }
                             else
                             {
-                                car.SignalEvent(Event.BrakePipeAirLossOff);
-                                car.BrakePipeAirLoss = false;
+                                car0.SignalEvent(Event.BrakePipeAirLossOff);
+                                car0.BrakePipeAirLoss = false;
                             }
                             car0.BrakeSystem.BrakeLine1PressurePSI -= AngleCockLeakRateCoef * elapsedClockSeconds;
                             if (car0.BrakeSystem.BrakeLine1PressurePSI < 0) car0.BrakeSystem.BrakeLine1PressurePSI = 0;
