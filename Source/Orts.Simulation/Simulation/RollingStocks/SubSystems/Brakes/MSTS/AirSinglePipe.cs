@@ -997,37 +997,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     if (Car.Train.Cars.Count > 3)
                                     {
                                         FrontBrakeHoseConnected = true;
-                                        if (Car.Flipped)
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.FrontBrakeHoseConnected = false;
-                                        }
-                                        else
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.FrontBrakeHoseConnected = false;
-                                        }
+                                        Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
+                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
+                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.FrontBrakeHoseConnected = false;
                                     }
                                 }
                                 if (!Car.Simulator.Settings.ManualCoupling) // Automatické zapojení static vozů obsahuje všechny vozy ve vlaku
                                 {
                                     if (Car.Train.Cars.Count > 4)
-                                    {                                        
+                                    {
                                         FrontBrakeHoseConnected = true;
-                                        if (Car.Flipped)
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
-                                            Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - (1 + Car.Train.LastStateCarCount)].BrakeSystem.AngleCockAOpen = false;
-                                        }
-                                        else
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
-                                            Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - (1 + Car.Train.LastStateCarCount)].BrakeSystem.AngleCockBOpen = false;
-                                        }
+                                        Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
+                                        Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                                        Car.Train.Cars[Car.Train.Cars.Count - (1 + Car.Train.LastStateCarCount)].BrakeSystem.AngleCockBOpen = false;
                                     }
                                 }
                             }
@@ -1039,18 +1021,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     if (Car.Train.Cars.Count > 3)
                                     {
                                         FrontBrakeHoseConnected = true;
-                                        if (Car.Flipped)
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
-                                            Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
-                                        }
-                                        else
-                                        {
-                                            Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
-                                            Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                                        }
+                                        Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
+                                        Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
+                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
                                     }
                                 }
                                 if (!Car.Simulator.Settings.ManualCoupling) // Automatické zapojení static vozů obsahuje všechny vozy ve vlaku
@@ -1058,18 +1031,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                     if (Car.Train.Cars.Count > 4)
                                     {
                                         FrontBrakeHoseConnected = true;
-                                        if (Car.Flipped)
-                                        {
-                                            Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.AngleCockBOpen = false;
-                                            Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
-                                        }
-                                        else
-                                        {
-                                            Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.AngleCockAOpen = false;
-                                            Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.FrontBrakeHoseConnected = false;
-                                            Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                                        }
+                                        Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.AngleCockAOpen = false;
+                                        Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.FrontBrakeHoseConnected = false;
+                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
                                     }
                                 }
                             }                            
@@ -2737,7 +2701,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    
+                    else
                     if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
                     {
                         if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
@@ -2757,13 +2721,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (!train.IsActualPlayerTrain)
                             foreach (var AIcar in train.Cars)
                             {
-                                if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                
-                                    AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                    
+                                if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)
+                                    AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                                 AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
                                 if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    
+                    else
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
                     {
                         if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
@@ -2783,13 +2747,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (!train.IsActualPlayerTrain)
                             foreach (var AIcar in train.Cars)
                             {
-                                if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                
-                                    AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                    
+                                if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)
+                                    AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                                 AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
                                 if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                             }
                     }
-                    
+                    else
                     if (!car.BrakeSystem.FrontBrakeHoseConnected)  // Car front brake hose not connected
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
@@ -2811,13 +2775,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (!train.IsActualPlayerTrain)
                                 foreach (var AIcar in train.Cars)
                                 {
-                                    if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                    
-                                        AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                            
+                                    if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)
+                                        AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                                     AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
                                     if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                                 }
                         }
-
+                        else
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
                             if (car0.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
@@ -2837,8 +2801,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (!train.IsActualPlayerTrain)
                                 foreach (var AIcar in train.Cars)
                                 {
-                                    if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)                                    
-                                        AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);                                                                            
+                                    if (AIcar.BrakeSystem.BrakeLine1PressurePSI > 0)
+                                        AIcar.BrakeSystem.AutoCylPressurePSI0 = MathHelper.Clamp(AIcar.BrakeSystem.BrakeLine1PressurePSI * AIcar.BrakeSystem.WagonAuxCylVolumeRatio, 0, AIcar.BrakeSystem.BrakeCylinderMaxSystemPressurePSI);
                                     AIcar.BrakeSystem.BrakeLine1PressurePSI = 0;
                                     if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f) car.SignalEvent(Event.StaticBrakePipeAirLoss);
                                 }
