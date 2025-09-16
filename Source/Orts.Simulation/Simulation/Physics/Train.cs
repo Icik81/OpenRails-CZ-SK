@@ -98,8 +98,7 @@ namespace Orts.Simulation.Physics
             }
         }
 
-        // Icik        
-        public int LastStateCarCount;        
+        // Icik                     
         public bool HasAITrainCompressorMaster;
         public bool LocoIsAirEmpty;
         public float TotalTrainTrainPipeLeakRate;
@@ -765,7 +764,7 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik                        
+            // Icik            
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
@@ -1153,7 +1152,7 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
-            // Icik                       
+            // Icik            
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
@@ -2040,7 +2039,7 @@ namespace Orts.Simulation.Physics
             {
                 TrainEndOfRoute = false;
                 TrainImpactSoundEvent = false;
-            }
+            }            
 
             if (this.TrainType == TRAINTYPE.REMOTE || updateMSGReceived == true) //server tolds me this train (may include mine) needs to update position
             {
@@ -4434,7 +4433,9 @@ namespace Orts.Simulation.Physics
                 // Initialize static consists airless for allowing proper shunting operations,
                 // but set AI trains pumped up with air.
                 if (TrainType == TRAINTYPE.STATIC)
-                    maxPressurePSI = 0;
+                {
+                    maxPressurePSI = 0;                    
+                }
                 BrakeLine4 = -1;
             }
             foreach (TrainCar car in Cars)
@@ -4685,7 +4686,7 @@ namespace Orts.Simulation.Physics
                         car.SignalEvent(Event.TrainBrakePressureIncrease); // Zvuk zabrždění vozů                                           
 
                     // Odstavené vozy AI vlaků nevypouštějí vzduch
-                    if (!IsActualPlayerTrain && Simulator.AICouplingAction)
+                    if (Simulator.AICouplingAction)
                     {                                               
                         int HandBrakeTotalCount = (int)(Cars.Count / 2f) == 0 ? 1 : (int)(Cars.Count / 2f);
                         CurrentCar++;

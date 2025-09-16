@@ -181,7 +181,7 @@ namespace Orts.Simulation.RollingStocks
         public float CarHeatCurrentCompartmentHeatW;
         public float CarCurrentCarriageHeatTempC;
         public float TotalPossibleCarHeatW; // Total possible heat of the car, based upon the desired car temperature
-        public float CarCurrentCarriageHeatDeltaTempC;
+        public float CarCurrentCarriageHeatDeltaTempC;        
 
         // some properties of this car
         public float CarWidthM = 2.5f;
@@ -434,6 +434,7 @@ namespace Orts.Simulation.RollingStocks
         public float CarSoundDeactivationTimer;
         public float CarSoundActivationTimer;
         public bool BrakePipeAirLoss;
+        public bool StaticSet;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2319,7 +2320,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(CarHasHeatingReady);
             outf.Write(CarOutsideTempCBase);
             outf.Write(SelectedCar);
-            outf.Write(WagonIsFlipped);            
+            outf.Write(WagonIsFlipped);
+            outf.Write(StaticSet);
 
             BrakeSystem.Save(outf);
         }
@@ -2386,6 +2388,7 @@ namespace Orts.Simulation.RollingStocks
             CarOutsideTempCBase = inf.ReadSingle();
             SelectedCar = inf.ReadBoolean();
             WagonIsFlipped = inf.ReadBoolean();
+            StaticSet = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

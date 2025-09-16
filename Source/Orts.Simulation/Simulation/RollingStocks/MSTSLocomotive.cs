@@ -4184,7 +4184,7 @@ namespace Orts.Simulation.RollingStocks
                     Simulator.DoorSwitchDoorOpened = false;
                     foreach (TrainCar car in Train.Cars)
                     {
-                        if (car.BrakeSystem.DoorsOpen && (car as MSTSWagon).AutomaticDoors)
+                        if (car.BrakeSystem.DoorsOpen && ((car as MSTSWagon).AutomaticDoors || ((car as MSTSWagon).FreightDoors && Simulator.Activity == null && !Simulator.TimetableMode)))
                         {
                             Simulator.DoorSwitchDoorOpened = true;
                             Simulator.DoorSwitchDoorWasOpened = true;

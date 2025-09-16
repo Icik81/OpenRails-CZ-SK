@@ -881,8 +881,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 IsAirFull = false;
                 if (loco.HandBrakePresent) HandBrakeActive = true;
                 ForceTwoPipesConnection = false;
-                AngleCockAOpen = false;
-                AngleCockBOpen = false;
+                if (Car.Train.Cars.Count == 1)
+                {
+                    AngleCockAOpen = false;
+                    AngleCockBOpen = false;
+                }
                 if (BrakeLine1PressurePSI == 0)
                     loco.LocoIsStatic = false;
                 else
@@ -902,7 +905,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
             }
             if (wagon != null && wagon.WagonIsStatic)
-            {                       
+            {
+                IsAirEmpty = true;
+                IsAirFull = false;
                 AuxResPressurePSI = Math.Min(AuxResPressurePSI, maxPressurePSI0 - (AutoCylPressurePSI0/ AuxCylVolumeRatioBase));
                 PrevAuxResPressurePSI = maxPressurePSI0;
                 AutoCylPressurePSI = AutoCylPressurePSI0;
@@ -933,7 +938,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }                
                 // Vyfouká lokomotivu při AirEmpty a nastaví ruční brzdy
                 if (IsAirEmpty || !IsAirFull)
-                {
+                {                    
                     if (loco != null)
                     {
                         loco.MainResPressurePSI = 0;
@@ -979,64 +984,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                                 Car.Train.TrainHandBrakeCount++;
                                 HandBrakeActive = true;
                                 HandBrakeDeactive = false;
-                            }
-
-                            var CarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Simulator.PlayerLocomotive.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car.Simulator.PlayerLocomotive);
-                            var CarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Simulator.PlayerLocomotive.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car.Simulator.PlayerLocomotive);
-
-                            if (Car.Simulator.PlayerUsingRearCab)
-                            {
-                                CarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Simulator.PlayerLocomotive.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car.Simulator.PlayerLocomotive);
-                                CarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Simulator.PlayerLocomotive.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car.Simulator.PlayerLocomotive);
-                            }
-
-                            if (CarCoupledFront && Car.Simulator.LastStateSpeedMpS > 0)
-                            {
-                                if (Car.Simulator.Settings.ManualCoupling) // Ruční zapojení static vozů obsahuje jen počet static vozů
-                                {
-                                    if (Car.Train.Cars.Count > 3)
-                                    {
-                                        FrontBrakeHoseConnected = true;
-                                        Car.Train.Cars[0].BrakeSystem.AngleCockBOpen = false;
-                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockAOpen = false;
-                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.FrontBrakeHoseConnected = false;
-                                    }
-                                }
-                                if (!Car.Simulator.Settings.ManualCoupling) // Automatické zapojení static vozů obsahuje všechny vozy ve vlaku
-                                {
-                                    if (Car.Train.Cars.Count > 4)
-                                    {
-                                        FrontBrakeHoseConnected = true;
-                                        Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
-                                        Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                        Car.Train.Cars[Car.Train.Cars.Count - (1 + Car.Train.LastStateCarCount)].BrakeSystem.AngleCockBOpen = false;
-                                    }
-                                }
-                            }
-                            
-                            if (CarCoupledRear && Car.Simulator.LastStateSpeedMpS < 0)
-                            {
-                                if (Car.Simulator.Settings.ManualCoupling) // Ruční zapojení static vozů obsahuje jen počet static vozů
-                                {
-                                    if (Car.Train.Cars.Count > 3)
-                                    {
-                                        FrontBrakeHoseConnected = true;
-                                        Car.Train.Cars[0].BrakeSystem.AngleCockAOpen = false;
-                                        Car.Train.Cars[0].BrakeSystem.FrontBrakeHoseConnected = false;
-                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                                    }
-                                }
-                                if (!Car.Simulator.Settings.ManualCoupling) // Automatické zapojení static vozů obsahuje všechny vozy ve vlaku
-                                {
-                                    if (Car.Train.Cars.Count > 4)
-                                    {
-                                        FrontBrakeHoseConnected = true;
-                                        Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.AngleCockAOpen = false;
-                                        Car.Train.Cars[Car.Train.LastStateCarCount].BrakeSystem.FrontBrakeHoseConnected = false;
-                                        Car.Train.Cars[Car.Train.Cars.Count - 1].BrakeSystem.AngleCockBOpen = false;
-                                    }
-                                }
-                            }                            
+                            }                                                                                    
 
                             Car.Train.HandBrakeNum++;
                             if (Car.Train.HandBrakeNum == 1 && Car.Train.Cars.Count > 1 && HandBrakeTotalCount > 1)

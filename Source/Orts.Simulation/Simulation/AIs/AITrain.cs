@@ -751,7 +751,7 @@ namespace Orts.Simulation.AIs
             {
                 savedActionInfo = nextActionInfo;
             }
-#endif
+#endif            
 
             if (TrainType == TRAINTYPE.AI_INCORPORATED || TrainType == TRAINTYPE.STATIC || MovementState == AI_MOVEMENT_STATE.SUSPENDED || MovementState == AI_MOVEMENT_STATE.FROZEN)
                 return;
