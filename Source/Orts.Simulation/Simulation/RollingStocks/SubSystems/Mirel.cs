@@ -112,6 +112,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool NoAlertOnRestrictedSignal = false;
         public List<MirelSignal> MirelSignals = new List<MirelSignal>();
         public float PressureForTestPassBar = 4.9f;
+        public bool MirelMini;
 
         public void Initialize()
         {
@@ -536,8 +537,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                         case Confirming.PRE:
                             {
-                                UpdateSpeedNumbers(0, true);
+                                UpdateSpeedNumbers(0, true);                                
                                 driveMode = DriveMode.Normal;
+                                if (MirelMini) driveMode = DriveMode.Trailing;
                                 break;
                             }
                         case Confirming.ZAV:

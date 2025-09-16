@@ -1548,6 +1548,12 @@ namespace Orts.Simulation.RollingStocks
                                     Mirel.MirelType = Mirel.Type.LS90;
                                     break;
                                 }
+                            case "mini":
+                                {
+                                    Mirel.MirelType = Mirel.Type.Full;
+                                    Mirel.MirelMini = true;
+                                    break;
+                                }
                             default:
                                 {
                                     Mirel.MirelType = Mirel.Type.Full;
