@@ -206,12 +206,27 @@ namespace Orts.Viewer3D.RollingStock
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
-            }
+            }            
 
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && !this.MSTSLocomotive.BrakeSystem.PowerForWagon)
             {
                 foreach (var Car in this.MSTSLocomotive.Train.Cars)
                     Car.BrakeSystem.PowerForWagon = false;
+            }
+
+            // Start a stop dieselu na začátku hry pro JVSetup
+            if (mstsDieselLocomotive != null && mstsDieselLocomotive.JVSetup)
+            {
+                if (this.MSTSLocomotive.Train.TrainType != Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && mstsDieselLocomotive.BrakeSystem.PowerForWagon)
+                {
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn2);
+                }
+                if (this.MSTSLocomotive.Train.TrainType != Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && !mstsDieselLocomotive.BrakeSystem.PowerForWagon)
+                {
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                }
             }
 
             if (this.MSTSLocomotive.Battery)

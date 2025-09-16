@@ -874,20 +874,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 EngineRPMderivation = (EngineRPM - EngineRPMold) / elapsedClockSeconds;
                 EngineRPMold = EngineRPM;
-            }
-            
-            if (JVSetup)
-            {
-                if (SoundFirstRunUpdate)
-                {
-                    if (!BrakeSystem.PowerForWagon)
-                    {
-                        SignalEvent(Event.EnginePowerOff);
-                        SignalEvent(Event.EnginePowerOff2);
-                    }                    
-                }
-                SoundFirstRunUpdate = false;
-            }
+            }                        
         }
 
         public override void ChangeGearUp()
