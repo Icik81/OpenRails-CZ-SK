@@ -708,6 +708,7 @@
     <Content Include="Content\FX\LIGHT-LED-Reflektor_PL_kolmo.png" />
     <Content Include="Content\FX\LIGHT-LED-Reflektor_TL_kolmo.png" />
     <Content Include="Content\FX\LIGHT-LED-White.png" />
+    <Content Include="Content\FX\LIGHTS_CKD.png" />
     <Content Include="Content\FX\LIGHTS_XC64_W_E.png" />
     <Content Include="Content\FX\LIGHTS_XC64_W_F.png" />
     <Content Include="Content\FX\Star.png" />
