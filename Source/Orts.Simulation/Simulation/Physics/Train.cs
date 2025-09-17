@@ -4852,7 +4852,7 @@ namespace Orts.Simulation.Physics
                     PassengerCarsNumber++;
                     AITrainIsMixed = true;
                 }
-                if (car.IsDriveable && (car as MSTSLocomotive).CabViewList.Count > 0) IsPlayable = true;
+                if (car.IsDriveable && ((car as MSTSLocomotive).CabViewList.Count > 0 || (car as MSTSLocomotive).HasFront3DCab || (car as MSTSLocomotive).HasRear3DCab)) IsPlayable = true;
             }
             if (TrainType == TRAINTYPE.AI_INCORPORATED && IncorporatingTrainNo > -1) IsPlayable = true;
         } // CheckFreight

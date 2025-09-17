@@ -826,7 +826,14 @@ namespace Orts.Viewer3D
                 CabXOffsetPixels = CabExceedsDisplayHorizontally / 2;
                 CabXLetterboxPixels = CabYLetterboxPixels = 0;
             }
-            if (CabCamera.IsAvailable) CabCamera.Initialize();
+
+            // Icik                        
+            // 3D kabina
+            if ((PlayerLocomotive as MSTSLocomotive).CabViewList.Count == 0 && ((PlayerLocomotive as MSTSLocomotive).HasRear3DCab || (PlayerLocomotive as MSTSLocomotive).HasFront3DCab))
+                ThreeDimCabCamera.Activate();
+            else
+            // 2D kabina
+                if (CabCamera.IsAvailable) CabCamera.Initialize();
         }
 
         public float ComputeCabTextureInverseRatio(string cabTextureFileName)
