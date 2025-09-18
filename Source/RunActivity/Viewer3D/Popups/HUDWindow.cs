@@ -447,7 +447,7 @@ namespace Orts.Viewer3D.Popups
             var showRetainers = playerTrain.RetainerSetting != RetainerSetting.Exhaust;
             var engineBrakeStatus = Viewer.PlayerLocomotive.GetEngineBrakeStatus();
             var brakemanBrakeStatus = Viewer.PlayerLocomotive.GetBrakemanBrakeStatus();
-            var dynamicBrakeStatus = Viewer.PlayerLocomotive.GetDynamicBrakeStatus();
+            var dynamicBrakeStatus = Viewer.PlayerLocomotive.GetDynamicBrakeStatus() != "-1%" ? Viewer.PlayerLocomotive.GetDynamicBrakeStatus() : "";
             var locomotiveStatus = Viewer.PlayerLocomotive.GetStatus();
             var stretched = playerTrain.Cars.Count > 1 && playerTrain.NPull == playerTrain.Cars.Count - 1;
             var bunched = !stretched && playerTrain.Cars.Count > 1 && playerTrain.NPush == playerTrain.Cars.Count - 1;

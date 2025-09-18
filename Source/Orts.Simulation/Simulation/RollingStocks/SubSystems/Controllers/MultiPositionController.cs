@@ -390,7 +390,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 // Icik
                 // Po zastavení plynule odpadá EDB
                 if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
-                {
+                {                    
+                    if (Locomotive.DynamicBrakePercent > -1) Locomotive.SetThrottlePercent(0);                    
+
                     if (Locomotive.AbsSpeedMpS < 1f / 3.6f)
                     {
                         float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
@@ -623,7 +625,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                if ((controllerPosition == ControllerPosition.Drive || controllerPosition == ControllerPosition.ThrottleHold) && Locomotive.ThrottlePercent > 0)
+                if ((controllerPosition == ControllerPosition.Drive && Locomotive.ThrottlePercent >= 0) || (controllerPosition == ControllerPosition.ThrottleHold && Locomotive.ThrottlePercent > 0))
                 {
                     if (Locomotive.DynamicBrakePercent < 2 && Locomotive.DynamicBrakePercent > -1)
                     {
