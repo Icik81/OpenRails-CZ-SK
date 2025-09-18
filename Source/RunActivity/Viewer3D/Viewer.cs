@@ -247,6 +247,8 @@ namespace Orts.Viewer3D
         public static double DbfEvalIniAutoPilotTimeS = 0;//Debrief eval  
         public bool DbfEvalAutoPilot = false;//DebriefEval
 
+        public bool Try3DCabSetOn;
+
         /// <summary>
         /// Finds time of last entry to set ReplayEndsAt and provide the Replay started message.
         /// </summary>
@@ -826,14 +828,10 @@ namespace Orts.Viewer3D
                 CabXOffsetPixels = CabExceedsDisplayHorizontally / 2;
                 CabXLetterboxPixels = CabYLetterboxPixels = 0;
             }
-
-            // Icik                        
-            // 3D kabina
-            if ((PlayerLocomotive as MSTSLocomotive).CabViewList.Count == 0 && ((PlayerLocomotive as MSTSLocomotive).HasRear3DCab || (PlayerLocomotive as MSTSLocomotive).HasFront3DCab))
-                ThreeDimCabCamera.Activate();
-            else
-            // 2D kabina
-                if (CabCamera.IsAvailable) CabCamera.Initialize();
+            
+            if (CabCamera.IsAvailable) CabCamera.Initialize();
+            
+            Try3DCabSetOn = true;            
         }
 
         public float ComputeCabTextureInverseRatio(string cabTextureFileName)
@@ -889,6 +887,13 @@ namespace Orts.Viewer3D
         [CallOnThread("Updater")]
         public void Update(RenderFrame frame, float elapsedRealTime)
         {
+            // Icik
+            if (Try3DCabSetOn)
+            {
+                Try3DCabSetOn = false;
+                if (ThreeDimCabCamera.IsAvailable) ThreeDimCabCamera.Activate();                                    
+            }
+
             RealTime += elapsedRealTime;
             var elapsedTime = new ElapsedTime(Simulator.GetElapsedClockSeconds(elapsedRealTime), elapsedRealTime);
 
