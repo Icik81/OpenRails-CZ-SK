@@ -539,7 +539,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 UpdateSpeedNumbers(0, true);                                
                                 driveMode = DriveMode.Normal;
-                                if (MirelMini) driveMode = DriveMode.Trailing;
+                                if (MirelMini) driveMode = DriveMode.Lockout;
                                 break;
                             }
                         case Confirming.ZAV:
