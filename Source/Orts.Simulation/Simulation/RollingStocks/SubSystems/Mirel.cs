@@ -538,8 +538,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         case Confirming.PRE:
                             {
                                 UpdateSpeedNumbers(0, true);                                
-                                driveMode = DriveMode.Normal;
-                                if (MirelMini) driveMode = DriveMode.Lockout;
+                                driveMode = DriveMode.Normal;                                
                                 break;
                             }
                         case Confirming.ZAV:
@@ -1824,6 +1823,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 RecievingRepeaterSignal = false;
             }
+
+            // Mirel MINI
+            if (selectedDriveMode == DriveMode.Normal && MirelMini)
+            {
+                RecievingRepeaterSignal = false;
+            }
+
             if (selectedDriveMode == DriveMode.Shunting)
             {
                 if (Locomotive.AbsSpeedMpS > 0.01f)
@@ -1919,7 +1925,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = true;
                 }
             }
-            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting)
+            if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting && !MirelMini)
             {
                 /* if ((recieverState == RecieverState.Off || !RecievingRepeaterSignal) && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119.9f)
                  {
@@ -2632,7 +2638,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 CheckSpeed(elapsedTimeSeconds);
             }
 
-            if (selectedDriveMode == DriveMode.Lockout)
+            if (selectedDriveMode == DriveMode.Lockout || MirelMini)
             {
                 // Cyklická kontrola bdělosti
                 float maxSpeed = 120;
