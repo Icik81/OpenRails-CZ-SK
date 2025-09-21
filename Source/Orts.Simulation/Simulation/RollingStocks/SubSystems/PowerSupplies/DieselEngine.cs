@@ -2033,7 +2033,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
 
-                    //DieselOptimalWaterTemperatureDegC = 54;
+                    //DieselOptimalWaterTemperatureDegC = 4;
+                    //DieselOptimalOilTemperatureDegC = 4;
                     //DieselOptimalTemperatureDegC = 100;
                     //WaterTempCoolingOffAnimationDelayS = 5;
                     //WaterCoolingPlatesUpS = 1;

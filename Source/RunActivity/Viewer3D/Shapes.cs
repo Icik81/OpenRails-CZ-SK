@@ -548,10 +548,10 @@ namespace Orts.Viewer3D
                             if (TimeAction[2] == 0f)
                             {
                                 (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow = Simulator.Random.Next(3, 11) / 10f;
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh = Simulator.Random.Next(10, 25) / 100f;
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
                                 TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow;
                             }
-
+                            
                             TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / TimeAction[2];
 
                             AnimationKey[2] += elapsedTime.ClockSeconds * TCoef;
@@ -593,11 +593,11 @@ namespace Orts.Viewer3D
                                 if (TimeAction[3] < 100.0f)
                                     TimeAction[3] += 0.1f * elapsedTime.ClockSeconds;
                             }
-
+                            
                             if (TimeAction[3] == 0f)
                             {
                                 (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow = Simulator.Random.Next(3, 11) / 10f;
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh = Simulator.Random.Next(10, 25) / 100f;
+                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
                                 TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow;
                             }
 
