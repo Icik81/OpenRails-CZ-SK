@@ -2470,7 +2470,7 @@ namespace Orts.Viewer3D.RollingStock
                             ExtendedCVF.TranslatedColor(_Locomotive.CabViewList[(int)CabViewType.Front].ExtendedCVF.Light1Color),
                             ExtendedCVF.TranslatedColor(_Locomotive.CabViewList[(int)CabViewType.Front].ExtendedCVF.Light2Color));
                         }
-                        _SpriteShader2DCabView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", null, 0, 0, ShaderKey, _Shader);
+                        _SpriteShader2DCabView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", _Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], 0, 0, ShaderKey, _Shader);
                         firstOne = false;
                     }
 
@@ -2865,7 +2865,7 @@ namespace Orts.Viewer3D.RollingStock
             Control = control;
             Shader = shader;
 
-            CabShaderControlView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", null, 0, 0, ShaderKey, Shader);
+            CabShaderControlView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", Control.ACEFile, 0, 0, ShaderKey, Shader);
 
             HasCabLightDirectory = CABTextureManager.LoadTextures(Viewer, Control.ACEFile);
         }

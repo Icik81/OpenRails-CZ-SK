@@ -339,10 +339,11 @@ namespace Orts.Viewer3D
         }
         public Material Load(string materialName, string textureName, int options, float mipMapBias, int cabShaderKey, CabShader cabShader)
         {
-            if (textureName != null)
-                textureName = textureName.ToLower();
-
-            var materialKey = String.Format("{0}:{1}:{2}:{3}:{4}", materialName, textureName, options, mipMapBias, cabShaderKey);
+            string TextureName = textureName;
+            if (textureName != null)            
+                textureName = textureName.ToLower();                            
+            
+            var materialKey = String.Format("{0}:{1}:{2}:{3}:{4}", materialName, textureName, options, mipMapBias, cabShaderKey);            
 
             if (!Materials.ContainsKey(materialKey))
             {
@@ -397,7 +398,16 @@ namespace Orts.Viewer3D
                         Materials[materialKey] = new SpriteBatchMaterial(Viewer);
                         break;
                     case "CabSpriteBatch":
-                        Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
+                        //Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
+                        if (!string.IsNullOrEmpty(TextureName) && TextureName.Contains("LIGHT"))
+                        {
+                            // Kontrolka = vždy plně čitelná textura, bez vlivu shaderu
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null);
+                        }
+                        else
+                        {
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
+                        }
                         break;
                     case "Terrain":
                         Materials[materialKey] = new TerrainMaterial(Viewer, textureName, SharedMaterialManager.MissingTexture);
