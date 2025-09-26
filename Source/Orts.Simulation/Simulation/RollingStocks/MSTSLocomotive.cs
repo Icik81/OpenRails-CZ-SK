@@ -1554,6 +1554,12 @@ namespace Orts.Simulation.RollingStocks
                                     Mirel.MirelMini = true;
                                     break;
                                 }
+                            case "nocodingls90":
+                                {
+                                    Mirel.MirelType = Mirel.Type.LS90;
+                                    Mirel.MirelMini = true;
+                                    break;
+                                }
                             default:
                                 {
                                     Mirel.MirelType = Mirel.Type.Full;
@@ -6691,7 +6697,10 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain && PlayerLocoSetUp)
             {
                 if (Wiper) SignalEvent(Event.WiperOff);
-                ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                else
+                    PowerKey = false;
                 // Mirel                   
                 if (Mirel != null)
                 {
@@ -11674,6 +11683,15 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.PowerKeyOn);
                         SetPowerKeySound = true;
                     }
+
+                    if (DieselDirectionController || DieselDirectionController2 || DieselDirectionController3 || DieselDirectionController4)
+                    {
+                        if (PowerKeyPosition[LocoStation] > 0)
+                            PowerKey = true;
+                        else
+                            PowerKey = false;
+                    }
+
                     if (ActiveStation == DriverStation.None && PowerKey)
                     {
                         ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;

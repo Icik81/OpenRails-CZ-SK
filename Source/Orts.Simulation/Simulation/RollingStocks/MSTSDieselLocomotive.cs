@@ -1274,7 +1274,7 @@ namespace Orts.Simulation.RollingStocks
                     MotorSoundStopCycle++;
                 }
 
-                if (!PowerKey)
+                if (!PowerKey && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
                 {
                     SignalEvent(Event.PowerKeyOn);
                     PowerKey = true;
@@ -1452,7 +1452,8 @@ namespace Orts.Simulation.RollingStocks
             if (StartLooseCon)
             {
                 Battery = true;
-                PowerKey = true;
+                if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+                    PowerKey = true;
             }
             
             if (SwitchEngineEnable)

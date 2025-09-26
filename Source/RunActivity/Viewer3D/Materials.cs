@@ -399,7 +399,7 @@ namespace Orts.Viewer3D
                         break;
                     case "CabSpriteBatch":
                         //Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
-                        if (!string.IsNullOrEmpty(TextureName) && TextureName.Contains("LIGHT"))
+                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
                             // Kontrolka = vždy plně čitelná textura, bez vlivu shaderu
                             Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null);
