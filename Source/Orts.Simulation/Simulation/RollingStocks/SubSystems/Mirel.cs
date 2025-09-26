@@ -2686,7 +2686,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         vigilanceActive = false;
                 }
                 if (ManualMode) vigilanceActive = true;
-                if (vigilanceActive)
+                if (vigilanceActive && !MirelMini)
                 {
                     interventionTimer += elapsedTimeSeconds;
                     if (interventionTimer > 8.5)
