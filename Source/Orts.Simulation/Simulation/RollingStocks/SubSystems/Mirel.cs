@@ -2638,7 +2638,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 CheckSpeed(elapsedTimeSeconds);
             }
 
-            if (selectedDriveMode == DriveMode.Lockout || MirelMini)
+            if (selectedDriveMode == DriveMode.Lockout || (MirelMini && selectedDriveMode == DriveMode.Normal))
             {
                 // Cyklická kontrola bdělosti
                 float maxSpeed = 120;
