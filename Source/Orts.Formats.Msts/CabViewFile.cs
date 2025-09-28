@@ -1141,6 +1141,24 @@ namespace Orts.Formats.Msts
                     ScreenContainer = (int)stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("maxneedlespeed", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeed = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeedup", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedUp = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeeddown", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedDown = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
                 // ORTS
                 new STFReader.TokenProcessor("ortsdisplay", ()=>{ParseDisplay(stf); }),
                 new STFReader.TokenProcessor("ortsscreenpage", () => {ParseScreen(stf); }),
@@ -1355,6 +1373,24 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("feature", ()=>{
                     stf.MustMatch("(");
                     Feature = stf.ReadString();
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeed", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeed = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeedup", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedUp = stf.ReadFloat(STFReader.UNITS.None, 0);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("maxneedlespeeddown", () =>
+                {
+                    stf.MustMatch("(");
+                    MaxNeedleSpeedDown = stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
                 // ORTS
