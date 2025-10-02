@@ -6398,12 +6398,16 @@ namespace Orts.Simulation.RollingStocks
 
         float WheelNoSlipWarningTimer;
         float WheelNoSlipTimer;
+        float PlayerWheelNoSlipWarningTimer;
+        float PlayerWheelNoSlipTimer;
         public void CheckMUWheelSlip(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive())
             {
                 Simulator.WheelSlipWarning = false;
                 Simulator.WheelSlip = false;
+                Simulator.PlayerWheelSlipWarning = false;
+                Simulator.PlayerWheelSlip = false;
             }
 
             if (Simulator.MUCableLocoCount > 1)
@@ -6469,6 +6473,57 @@ namespace Orts.Simulation.RollingStocks
                         WheelNoSlipTimer = 0.0f;
                         Simulator.MU_WheelSlipOn = false;
                         SignalEvent(Event.MUWheelSlipOff);
+                    }
+                }
+            }
+
+            // Hlavní lokomotiva - hráč
+            if (IsLeadLocomotive())
+            {                
+                if (WheelSlipWarning)
+                {
+                    Simulator.PlayerWheelSlipWarning = true;
+                    Simulator.PlayerIsWheelSlipWarning = true;
+                }
+                if (WheelSlip)
+                {
+                    Simulator.PlayerWheelSlip = true;
+                    Simulator.PlayerIsWheelSlip = true;
+                }
+
+                if (!Simulator.Player_WheelSlipWarningOn && Simulator.PlayerWheelSlipWarning)
+                {
+                    Simulator.Player_WheelSlipWarningOn = true;
+                    SignalEvent(Event.PlayerWheelSlipWarningOn);
+                }
+                if (!Simulator.Player_WheelSlipOn && Simulator.PlayerWheelSlip)
+                {
+                    Simulator.Player_WheelSlipOn = true;
+                    SignalEvent(Event.PlayerWheelSlipOn);
+                }
+
+                if (Simulator.PlayerIsWheelSlipWarning)
+                {
+                    if (!Simulator.PlayerWheelSlipWarning)
+                        PlayerWheelNoSlipWarningTimer += elapsedClockSeconds;
+                    if (PlayerWheelNoSlipWarningTimer > 1.0f)
+                    {
+                        Simulator.PlayerIsWheelSlipWarning = false;
+                        PlayerWheelNoSlipWarningTimer = 0.0f;
+                        Simulator.Player_WheelSlipWarningOn = false;
+                        SignalEvent(Event.PlayerWheelSlipWarningOff);
+                    }
+                }
+                if (Simulator.PlayerIsWheelSlip)
+                {
+                    if (!Simulator.PlayerWheelSlip)
+                        PlayerWheelNoSlipTimer += elapsedClockSeconds;
+                    if (PlayerWheelNoSlipTimer > 1.0f)
+                    {
+                        Simulator.PlayerIsWheelSlip = false;
+                        PlayerWheelNoSlipTimer = 0.0f;
+                        Simulator.Player_WheelSlipOn = false;
+                        SignalEvent(Event.PlayerWheelSlipOff);
                     }
                 }
             }

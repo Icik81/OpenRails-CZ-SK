@@ -630,6 +630,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             IndependentOilPlates = copy.IndependentOilPlates;
             WaterTempCoolingOffAnimationDelayS = copy.WaterTempCoolingOffAnimationDelayS;
             OilTempCoolingOffAnimationDelayS = copy.OilTempCoolingOffAnimationDelayS;
+            WaterFanStopIdle = copy.WaterFanStopIdle;
+            OilFanStopIdle = copy.OilFanStopIdle;
 
             if (copy.GearBox != null)
             {
@@ -1061,6 +1063,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float OilTempCoolingOffAnimDelayTimer;
         public bool TopWaterPlatesOpened;
         public bool TopOilPlatesOpened;
+        public bool WaterFanStopIdle;
+        public bool OilFanStopIdle;
 
         /// <summary>
         /// Load of the engine
@@ -1216,6 +1220,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "independentoilplates": IndependentOilPlates = stf.ReadBoolBlock(false); break;
                     case "watertempcoolingoffanimationdelay": WaterTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
                     case "oiltempcoolingoffanimationdelay": OilTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
+                    case "WaterFanStopIdle": WaterFanStopIdle = stf.ReadBoolBlock(false); break;
+                    case "OilFanStopIdle": OilFanStopIdle = stf.ReadBoolBlock(false); break;
 
                     default:
                         end = true;
@@ -1938,7 +1944,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             }
 
             // Icik
-            DieselMotorTempControl(elapsedClockSeconds); // Řízení chování teploty motoru
+            DieselMotorTempControl(elapsedClockSeconds); // Řízení chování teploty motoru            
 
             switch (EngineCooling)
             {
@@ -2033,12 +2039,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
 
-                    //DieselOptimalWaterTemperatureDegC = 4;
-                    //DieselOptimalOilTemperatureDegC = 4;
+                    //DieselOptimalWaterTemperatureDegC = 94;
+                    //DieselOptimalOilTemperatureDegC = 94;
                     //DieselOptimalTemperatureDegC = 100;
                     //WaterTempCoolingOffAnimationDelayS = 5;
                     //WaterCoolingPlatesUpS = 1;
                     //IndependentWaterPlates = false;
+                    //WaterFanStopIdle = true;
+                    //OilFanStopIdle = true;
 
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))

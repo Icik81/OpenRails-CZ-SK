@@ -227,10 +227,16 @@ namespace Orts.Simulation
         public int FailedSignalsCount;
         public bool WheelSlipWarning;
         public bool WheelSlip;
+        public bool PlayerWheelSlipWarning;
+        public bool PlayerWheelSlip;
         public bool MU_WheelSlipWarningOn;
         public bool MU_WheelSlipOn;
+        public bool Player_WheelSlipWarningOn;
+        public bool Player_WheelSlipOn;
         public bool IsWheelSlipWarning;
         public bool IsWheelSlip;
+        public bool PlayerIsWheelSlipWarning;
+        public bool PlayerIsWheelSlip;
         public bool AIRequestSignal;        
         public bool GameSwitchManualModeOverdrive;
         public TrainCar MSTSWagon;        

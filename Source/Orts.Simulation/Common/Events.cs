@@ -419,6 +419,10 @@ namespace Orts.Common
         BrakePipeAirLossOn,
         BrakePipeAirLossOff,
         StaticBrakePipeAirLoss,
+        PlayerWheelSlipWarningOn,
+        PlayerWheelSlipWarningOff,
+        PlayerWheelSlipOn,
+        PlayerWheelSlipOff,
     }
 
     public static class Events
@@ -852,6 +856,10 @@ namespace Orts.Common
                         case 20172: return Event.BrakePipeAirLossOn;
                         case 20173: return Event.BrakePipeAirLossOff;
                         case 20174: return Event.StaticBrakePipeAirLoss;
+                        case 20175: return Event.PlayerWheelSlipWarningOn;
+                        case 20176: return Event.PlayerWheelSlipWarningOff;
+                        case 20177: return Event.PlayerWheelSlipOn;
+                        case 20178: return Event.PlayerWheelSlipOff;
 
                         default: return 0;
                     }
