@@ -413,8 +413,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 result.AppendFormat("\t {0:F1} {1}", eng.TurboPressureBar, FormatStrings.bar);
 
                 result.AppendFormat("\t {0:F1}%", eng.TurboLoad);
-                
-                GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
+
+                result.AppendFormat("\t {0:F1}A", Locomotive.PowerCurrent1);
+
+                result.AppendFormat("\t {0:F1}A", Locomotive.PowerCurrent2);
+
+                result.AppendFormat("\t {0:F1}A", Locomotive.BrakeCurrent1);
+
+                result.AppendFormat("\t {0:F1}A", Locomotive.BrakeCurrent2);
+
+                GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
             }
             return GetStatusDieselEngine[0];
         }
@@ -1220,8 +1228,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     case "independentoilplates": IndependentOilPlates = stf.ReadBoolBlock(false); break;
                     case "watertempcoolingoffanimationdelay": WaterTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
                     case "oiltempcoolingoffanimationdelay": OilTempCoolingOffAnimationDelayS = stf.ReadFloatBlock(STFReader.UNITS.Time, 0.0f); break;
-                    case "WaterFanStopIdle": WaterFanStopIdle = stf.ReadBoolBlock(false); break;
-                    case "OilFanStopIdle": OilFanStopIdle = stf.ReadBoolBlock(false); break;
+                    case "waterfanstopidle": WaterFanStopIdle = stf.ReadBoolBlock(false); break;
+                    case "oilfanstopidle": OilFanStopIdle = stf.ReadBoolBlock(false); break;
 
                     default:
                         end = true;
@@ -1399,7 +1407,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 ExhaustParticles = InitialExhaust;
                 ExhaustMagnitude = InitialMagnitude;
                 ExhaustColor = ExhaustSteadyColor;
-            }
+            }            
             // Startování a zastavování SM má svoji rychlost změny 
             if (EngineStatus == Status.Starting || EngineStatus == Status.Stopping || RealRPM < IdleRPM)
             {
@@ -1607,7 +1615,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         case 741:
                         case 742:
                         case 743:
-                        case 749:
+                        case 749:                        
+                        case 751:
                         case 754:
                         case 770:
                         case 771:

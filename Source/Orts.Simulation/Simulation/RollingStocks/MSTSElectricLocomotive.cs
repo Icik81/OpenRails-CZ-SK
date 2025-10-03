@@ -4004,16 +4004,22 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Engine"));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(DRTemperature, IsMetric, false));
-                status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
-                //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
+                status.AppendFormat("{0}\t\t ", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
+                status.AppendFormat("{0:F1}A\t ", PowerCurrent1);
+                status.AppendFormat("{0:F1}A\t ", PowerCurrent2);
+                status.AppendFormat("{0:F1}A\t ", BrakeCurrent1);
+                status.AppendFormat("{0:F1}A", BrakeCurrent2);                
             }            
             if (LocoHelperOn)
             {
                 status.AppendFormat("{0}\t", Simulator.Catalog.GetString("Helper"));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(TMTemperature, IsMetric, false));
                 status.AppendFormat("{0}\t", FormatStrings.FormatTemperature(DRTemperature, IsMetric, false));
-                status.AppendFormat("{0}", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
-                //status.AppendFormat("{0}", Simulator.Catalog.GetString("PSPantoVoltage: " + PowerSupply.PantographVoltageV));
+                status.AppendFormat("{0}\t\t ", Simulator.Catalog.GetString(MathHelper.Clamp((int)(PantographVoltageV - 1), 0, (int)(RouteVoltageV * 1.2f)) + "V"));
+                status.AppendFormat("{0:F1}A\t ", PowerCurrent1);
+                status.AppendFormat("{0:F1}A\t ", PowerCurrent2);
+                status.AppendFormat("{0:F1}A\t ", BrakeCurrent1);
+                status.AppendFormat("{0:F1}A", BrakeCurrent2);
             }
 
             if (IsSteamHeatFitted && Train.PassengerCarsNumber > 0 && this.IsLeadLocomotive() && Train.CarSteamHeatOn)

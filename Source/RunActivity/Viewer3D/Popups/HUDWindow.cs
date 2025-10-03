@@ -802,9 +802,9 @@ namespace Orts.Viewer3D.Popups
                         if (line.Contains(car.CarID) && !statusHeader.Contains(car.CarID))
                         {                                                       
                             //Header. Supports different types of locomotives.                            
-                            string LocoTypeSteam = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}";
-                            string LocoTypeDiesel = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t {20}\t {21}";
-                            string LocoTypeElectric = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t{20}\t{21}";
+                            string LocoTypeSteam = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t {20}\t {21}\t {22}\t {23}\t {24}\t {25}";
+                            string LocoTypeDiesel = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t{13}\t{14}\t{15}\t{16}\t{17}\t{18}\t{19}\t {20}\t {21}\t {22}\t {23}\t {24}\t {25}";
+                            string LocoTypeElectric = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{6}\t{7}\t{8}\t{9}\t\t{10}\t{11}\t{12}\t\t{13}\t{14}\t{15}\t{16}\t\t {22}\t {23}\t {24}\t {25}";
                             string LocoTypeControl = "{0}\t{1}\t{2}\t{3}\t{4}\t{5}\t\t{13}";
 
                             string LocoType =
@@ -884,7 +884,23 @@ namespace Orts.Viewer3D.Popups
                             //21
                             car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :                            
                             car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("TurboLoad") :
-                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString("")
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("") : Viewer.Catalog.GetString(""),
+                            //22
+                            car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("PwrCurr1") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PwrCurr1") : Viewer.Catalog.GetString(""),
+                            //23
+                            car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("PwrCurr2") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("PwrCurr2") : Viewer.Catalog.GetString(""),
+                            //24
+                            car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("BrCurr1") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("BrCurr1") : Viewer.Catalog.GetString(""),
+                            //25
+                            car is MSTSSteamLocomotive ? Viewer.Catalog.GetString("") :
+                            car is MSTSDieselLocomotive ? Viewer.Catalog.GetString("BrCurr2") :
+                            car is MSTSElectricLocomotive ? Viewer.Catalog.GetString("BrCurr2") : Viewer.Catalog.GetString("")
                             //Add new Locomotive header here, if required.
                             ));
 

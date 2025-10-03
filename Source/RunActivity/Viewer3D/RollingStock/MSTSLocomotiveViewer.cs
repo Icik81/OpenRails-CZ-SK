@@ -3803,13 +3803,21 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP:
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP_SLAVE:
                 case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2:
+                case CABViewControlTypes.DIESEL_CHECK_POWER_MOTOR_LAMP2_SLAVE:
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP:
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP_SLAVE:
                 case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2:
+                case CABViewControlTypes.DIESEL_MOTOR_WATER_TEMP2_SLAVE:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP:
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP_SLAVE:
                 case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2:
+                case CABViewControlTypes.DIESEL_MOTOR_OIL_TEMP2_SLAVE:
                 case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING:
-                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2:
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING_SLAVE:
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2:                
+                case CABViewControlTypes.DIESEL_MOTOR_TEMP_WARNING2_SLAVE:
                 case CABViewControlTypes.RDST_BREAKER_RDST:
                 case CABViewControlTypes.RDST_BREAKER_VZ:
                 case CABViewControlTypes.RDST_BREAKER_POWER:
@@ -3837,8 +3845,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.MIRER_CONTROLLER:
                 case CABViewControlTypes.MIRER_DISPLAY:
                 case CABViewControlTypes.MIRER_DISPLAY2:
+                case CABViewControlTypes.RPM_SLAVE:
+                case CABViewControlTypes.RPM2_SLAVE:
+                case CABViewControlTypes.AMMETER_SLAVE:
                 case CABViewControlTypes.AMMETER2:
-                case CABViewControlTypes.AMMETER2_ABS:
+                case CABViewControlTypes.AMMETER2_SLAVE:
+                case CABViewControlTypes.AMMETER2_ABS:                
                 case CABViewControlTypes.LTS410_DISPLAY:
                 case CABViewControlTypes.LTS510_DISPLAY:
                 case CABViewControlTypes.COMMAND_CYLINDER:
@@ -3899,6 +3911,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.TRESHOLD_INDICATOR:
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_SWITCHER:
+                case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE_SLAVE:
+                case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2_SLAVE:
+                case CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE:
+                case CABViewControlTypes.ORTS_OIL_PRESSURE2_SLAVE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
