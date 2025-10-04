@@ -6406,7 +6406,7 @@ namespace Orts.Simulation.RollingStocks
         float WheelNoSlipTimer;
         float PlayerWheelNoSlipWarningTimer;
         float PlayerWheelNoSlipTimer;
-        public void CheckMUWheelSlip(float elapsedClockSeconds)
+        public void CheckWheelSlip(float elapsedClockSeconds)
         {
             if (IsLeadLocomotive())
             {
@@ -7558,7 +7558,7 @@ namespace Orts.Simulation.RollingStocks
                 RainWindow(elapsedClockSeconds);
                 WipersWindow(elapsedClockSeconds);
                 CabRadioOnOff();
-                CheckMUWheelSlip(elapsedClockSeconds);
+                CheckWheelSlip(elapsedClockSeconds);
                 DoorSwitchLogic();
                 TrainBrakePercent();
                 WireHeightSwitching();
@@ -22096,6 +22096,8 @@ namespace Orts.Simulation.RollingStocks
                                         FakeRPMBase = mstsDieselLocomotive.DieselEngines[0].RealRPM;
                                         RPMVibrationTimer += Simulator.OneSecondLoop;
 
+                                        if (mstsDieselLocomotive.LocoSetUpTimer == 0) FakeRPM = FakeRPMBase;
+
                                         if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting
                                         || (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPM < 0.99f * FakeRPMBase))
                                         {
@@ -22133,6 +22135,8 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 FakeRPMBase = mstsDieselLocomotive.DieselEngines[0].RealRPM;
                                 RPMVibrationTimer += Simulator.OneSecondLoop;
+
+                                if (mstsDieselLocomotive.LocoSetUpTimer == 0) FakeRPM = FakeRPMBase;
 
                                 if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting
                                 || (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPM < 0.99f * FakeRPMBase))
@@ -22198,6 +22202,8 @@ namespace Orts.Simulation.RollingStocks
                                         FakeRPMBase = mstsDieselLocomotive.DieselEngines[1].RealRPM;
                                         RPMVibrationTimer += Simulator.OneSecondLoop;
 
+                                        if (mstsDieselLocomotive.LocoSetUpTimer == 0) FakeRPM = FakeRPMBase;
+
                                         if (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Starting
                                         || (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM < 0.99f * FakeRPMBase))
                                         {
@@ -22235,6 +22241,8 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 FakeRPMBase = mstsDieselLocomotive.DieselEngines[1].RealRPM;
                                 RPMVibrationTimer += Simulator.OneSecondLoop;
+
+                                if (mstsDieselLocomotive.LocoSetUpTimer == 0) FakeRPM = FakeRPMBase;
 
                                 if (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Starting
                                 || (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM < 0.99f * FakeRPMBase))

@@ -441,21 +441,21 @@ namespace Orts.Viewer3D
                             Weather.OvercastFactor = 0.90f;
                             Weather.FogDistance = 4750f;
                             Weather.PrecipitationLiquidity = 0.55f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.060f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.01f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.85f;
                             Weather.FogDistance = 2550f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.1f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.02f;
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.28f;
                             Weather.FogDistance = 2200f;
                             Weather.PrecipitationLiquidity = 0.22f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.04f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.03f;
                             break;
                         case 3:  // Zima
                             Weather.SnowVelocityMpS = 0.1f;
@@ -475,14 +475,14 @@ namespace Orts.Viewer3D
                             Weather.OvercastFactor = 0.35f;
                             Weather.FogDistance = 2500f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.4f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.3f;
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.2f;
                             Weather.FogDistance = 1500f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.85f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.4f;
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;

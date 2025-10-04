@@ -316,14 +316,20 @@ namespace Orts.Simulation.RollingStocks
                     if ((SlipSpeedPercent > (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return true;
                     else
+                    if ((SlipSpeedPercent < 0.3f * (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return false;
+                    else
+                        return LastStateIsWheelSlipWarning;
                 }
                 if (SlipSpeedMpS < 0.0f)
                 {
                     if ((SlipSpeedPercent < (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return true;
                     else
+                    if ((SlipSpeedPercent > 0.3f * (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return false;
+                    else
+                        return LastStateIsWheelSlipWarning;
                 }
                 else
                     return false;
@@ -362,14 +368,22 @@ namespace Orts.Simulation.RollingStocks
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
+                if (Math.Abs(SlipSpeedMpS) < 0.3f * WheelSlipThresholdMpS)
                     return false;
+                else
+                return LastStateIsWheelSlip;
             }
         }
 
         float FakeDynamicBrakePercent;
         public float AxleForceNSum;
+        bool LastStateIsWheelSlipWarning;
+        bool LastStateIsWheelSlip;
         public void Update(float elapsedClockSeconds)
         {
+            LastStateIsWheelSlipWarning = IsWheelSlipWarning;
+            LastStateIsWheelSlip = IsWheelSlip;
+
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
                 GeneratoricModeBlocked = true;
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)

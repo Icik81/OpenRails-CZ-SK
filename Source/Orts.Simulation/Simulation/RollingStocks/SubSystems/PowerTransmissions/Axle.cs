@@ -390,7 +390,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
+                if (Math.Abs(SlipSpeedMpS) < 0.3f * WheelSlipThresholdMpS)
                     return false;
+                else
+                    return LastStateIsWheelSlip;
             }
         }
 
@@ -430,17 +433,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             {
                 if (SlipSpeedMpS > 0.0f)
                 {
-                    if ((SlipSpeedPercent > (SlipWarningTresholdPercent)))
+                    if (SlipSpeedPercent > (SlipWarningTresholdPercent))
                         return true;
                     else
+                    if (SlipSpeedPercent < 0.3f * (SlipWarningTresholdPercent))
                         return false;
-                }
+                    else
+                        return LastStateIsWheelSlipWarning;
+                }                
                 if (SlipSpeedMpS < 0.0f)
                 {
-                    if ((SlipSpeedPercent < (-SlipWarningTresholdPercent)))
+                    if (SlipSpeedPercent < (-SlipWarningTresholdPercent))
                         return true;
                     else
+                    if (SlipSpeedPercent > 0.3f * (-SlipWarningTresholdPercent))
                         return false;
+                    else
+                        return LastStateIsWheelSlipWarning;
                 }
                 else
                     return false;
@@ -695,8 +704,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         }
 
         public float DriveDirectionMarker;
+        bool LastStateIsWheelSlip;
+        bool LastStateIsWheelSlipWarning;
         public virtual void Update(float timeSpan)
         {
+            LastStateIsWheelSlip = IsWheelSlip;
+            LastStateIsWheelSlipWarning = IsWheelSlipWarning;
+            
             //Update axle force ( = k * loadTorqueNm)
             axleForceN = AxleWeightN * SlipCharacteristics(AxleSpeedMpS - TrainSpeedMpS, TrainSpeedMpS, AdhesionK, AdhesionConditions, Adhesion2);
 
