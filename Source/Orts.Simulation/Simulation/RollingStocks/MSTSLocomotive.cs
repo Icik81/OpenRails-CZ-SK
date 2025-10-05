@@ -6485,7 +6485,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!Simulator.WheelSlipWarning)
                         WheelNoSlipWarningTimer += elapsedClockSeconds;
-                    if (WheelNoSlipWarningTimer > 1.0f)
+                    if (WheelNoSlipWarningTimer > 0.0f)
                     {
                         Simulator.IsWheelSlipWarning = false;
                         WheelNoSlipWarningTimer = 0.0f;
@@ -6497,7 +6497,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!Simulator.WheelSlip)
                         WheelNoSlipTimer += elapsedClockSeconds;
-                    if (WheelNoSlipTimer > 1.0f)
+                    if (WheelNoSlipTimer > 0.0f)
                     {
                         Simulator.IsWheelSlip = false;
                         WheelNoSlipTimer = 0.0f;
@@ -6536,7 +6536,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!Simulator.PlayerWheelSlipWarning)
                         PlayerWheelNoSlipWarningTimer += elapsedClockSeconds;
-                    if (PlayerWheelNoSlipWarningTimer > 1.0f)
+                    if (PlayerWheelNoSlipWarningTimer > 0.0f)
                     {
                         Simulator.PlayerIsWheelSlipWarning = false;
                         PlayerWheelNoSlipWarningTimer = 0.0f;
@@ -6548,7 +6548,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (!Simulator.PlayerWheelSlip)
                         PlayerWheelNoSlipTimer += elapsedClockSeconds;
-                    if (PlayerWheelNoSlipTimer > 1.0f)
+                    if (PlayerWheelNoSlipTimer > 0.0f)
                     {
                         Simulator.PlayerIsWheelSlip = false;
                         PlayerWheelNoSlipTimer = 0.0f;

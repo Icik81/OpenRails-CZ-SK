@@ -316,7 +316,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((SlipSpeedPercent > (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return true;
                     else
-                    if ((SlipSpeedPercent < 0.3f * (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
+                    if ((SlipSpeedPercent < 0.75f * (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return false;
                     else
                         return LastStateIsWheelSlipWarning;
@@ -326,7 +326,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((SlipSpeedPercent < (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return true;
                     else
-                    if ((SlipSpeedPercent > 0.3f * (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
+                    if ((SlipSpeedPercent > 0.75f * (-Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
                         return false;
                     else
                         return LastStateIsWheelSlipWarning;
@@ -368,21 +368,19 @@ namespace Orts.Simulation.RollingStocks
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
-                if (Math.Abs(SlipSpeedMpS) < 0.3f * WheelSlipThresholdMpS)
+                if (Math.Abs(SlipSpeedMpS) < WheelSlipThresholdMpS)
                     return false;
                 else
-                return LastStateIsWheelSlip;
+                return false;
             }
         }
 
         float FakeDynamicBrakePercent;
         public float AxleForceNSum;
-        bool LastStateIsWheelSlipWarning;
-        bool LastStateIsWheelSlip;
+        bool LastStateIsWheelSlipWarning;        
         public void Update(float elapsedClockSeconds)
         {
-            LastStateIsWheelSlipWarning = IsWheelSlipWarning;
-            LastStateIsWheelSlip = IsWheelSlip;
+            LastStateIsWheelSlipWarning = IsWheelSlipWarning;            
 
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
                 GeneratoricModeBlocked = true;

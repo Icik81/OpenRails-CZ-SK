@@ -390,10 +390,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
-                if (Math.Abs(SlipSpeedMpS) < 0.3f * WheelSlipThresholdMpS)
+                if (Math.Abs(SlipSpeedMpS) < WheelSlipThresholdMpS)
                     return false;
                 else
-                    return LastStateIsWheelSlip;
+                    return false;                
             }
         }
 
@@ -436,7 +436,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     if (SlipSpeedPercent > (SlipWarningTresholdPercent))
                         return true;
                     else
-                    if (SlipSpeedPercent < 0.3f * (SlipWarningTresholdPercent))
+                    if (SlipSpeedPercent < 0.75f * (SlipWarningTresholdPercent))
                         return false;
                     else
                         return LastStateIsWheelSlipWarning;
@@ -446,7 +446,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
                     if (SlipSpeedPercent < (-SlipWarningTresholdPercent))
                         return true;
                     else
-                    if (SlipSpeedPercent > 0.3f * (-SlipWarningTresholdPercent))
+                    if (SlipSpeedPercent > 0.75f * (-SlipWarningTresholdPercent))
                         return false;
                     else
                         return LastStateIsWheelSlipWarning;
@@ -703,12 +703,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
             Update(timeSpan);
         }
 
-        public float DriveDirectionMarker;
-        bool LastStateIsWheelSlip;
+        public float DriveDirectionMarker;        
         bool LastStateIsWheelSlipWarning;
         public virtual void Update(float timeSpan)
-        {
-            LastStateIsWheelSlip = IsWheelSlip;
+        {            
             LastStateIsWheelSlipWarning = IsWheelSlipWarning;
             
             //Update axle force ( = k * loadTorqueNm)
