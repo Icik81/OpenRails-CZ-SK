@@ -3356,6 +3356,30 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion Master & Slave
 
+        #region CheckMotorTemp
+        public void CheckMotorTemp()
+        {
+            // Otestuje zda některá z lokomotiv má přehřátý motor
+            if (!IsLeadLocomotive()) return;
+            Simulator.DieselMotorTempWarning = false;
+            foreach (TrainCar car in Train.Cars.Where(car => car is MSTSDieselLocomotive))
+            {
+                if (car.CarIsPlayerLoco || car.SlaveLoco)
+                {
+                    if ((car as MSTSDieselLocomotive).DieselMotorTempWarning || (car as MSTSDieselLocomotive).DieselMotorTempWarning2)
+                    {
+                        Simulator.DieselMotorTempWarning = true;
+                        break;
+                    }
+                }
+            }
+            if (Simulator.DieselMotorTempWarning)
+                SignalEvent(Event.DieselMotorTempWarning);
+            else
+                SignalEvent(Event.DieselMotorTempWarningOff);
+        }
+        #endregion CheckMotorTemp
+
         #region TrainBrakePercentages
         float prePlayerTrainBrakePercent = 0;
         public virtual void TrainBrakePercent()
@@ -7505,6 +7529,7 @@ namespace Orts.Simulation.RollingStocks
                 PowerKeyLogic();
                 MUCableLogic();
                 MasterSlave();
+                CheckMotorTemp();
                 TrainAlerterLogic();
                 EngineBrakeValueLogic(elapsedClockSeconds);
                 TrainBrakeValueLogic();

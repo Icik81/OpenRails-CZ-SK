@@ -289,6 +289,7 @@ namespace Orts.Simulation
         public bool WorldThunder;
         public float WorldThunderTime;
         public bool MorningFogRun;
+        public bool DieselMotorTempWarning;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
