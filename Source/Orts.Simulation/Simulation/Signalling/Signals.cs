@@ -3984,7 +3984,7 @@ namespace Orts.Simulation.Signalling
             bool endOfRoute = false;
             List<int> foundItems = new List<int>();
             List<int> foundObject = new List<int>();
-
+            
             while (!endOfRoute)
             {
 
@@ -4033,7 +4033,7 @@ namespace Orts.Simulation.Signalling
                                 {
                                     foundObject.Add(thisItem.SignalRef.thisRef);
                                     endOfRoute = true;
-                                }
+                                }                                
                             }
                         }
                     }
@@ -4086,9 +4086,19 @@ namespace Orts.Simulation.Signalling
                             if ((isFreight && speed_info.speed_freight > 0) || (!isFreight && speed_info.speed_pass > 0) || speed_info.speed_reset == 1)
                             {
                                 if (thisItem.SignalLocation < thisSection.Length - offset)
-                                {
+                                {                                 
                                     endOfRoute = true;
                                     foundObject.Add(-(thisItem.SignalRef.thisRef));
+                                }
+
+                                // Icik
+                                if (thisSpeedpost.LocoSpeedPost)
+                                {
+                                    if (thisItem.SignalLocation < thisTrain.PresentPosition[0].TCOffset)
+                                    {
+                                        endOfRoute = true;
+                                        foundObject.Add(-(thisItem.SignalRef.thisRef));
+                                    }
                                 }
                             }
                         }
@@ -4108,6 +4118,16 @@ namespace Orts.Simulation.Signalling
                                 {
                                     endOfRoute = true;
                                     foundObject.Add(-(thisItem.SignalRef.thisRef));
+                                }
+
+                                // Icik
+                                if (thisSpeedpost.LocoSpeedPost)
+                                {
+                                    if (thisItem.SignalLocation < thisTrain.PresentPosition[0].TCOffset)
+                                    {
+                                        endOfRoute = true;
+                                        foundObject.Add(-(thisItem.SignalRef.thisRef));
+                                    }
                                 }
                             }
                         }
@@ -8442,6 +8462,9 @@ namespace Orts.Simulation.Signalling
         protected List<KeyValuePair<int, int>> LockedTrains;
 
         public bool CallOnEnabled = false;      // set if signal script file uses CallOn functionality
+
+        // Icik
+        public bool LocoSpeedPost;
 
         public bool enabled
         {
@@ -12817,10 +12840,12 @@ namespace Orts.Simulation.Signalling
         //================================================================================================//
         /// <summary>
         /// Constructor for speedposts
-        /// </summary>
-
+        /// </summary>        
         public SignalHead(SignalObject sigOoject, int trItem, int TDBRef, SpeedPostItem speedItem)
         {
+            // Icik
+            sigOoject.LocoSpeedPost = speedItem.SpeedPostLoco;
+
             mainSignal = sigOoject;
             trItemIndex = trItem;
             TDBIndex = TDBRef;

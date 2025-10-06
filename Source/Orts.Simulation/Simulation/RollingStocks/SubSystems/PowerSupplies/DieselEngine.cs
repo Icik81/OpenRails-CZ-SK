@@ -2049,6 +2049,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (DieselOptimalWaterTemperatureDegC != 0)
                         DieselOptimalTemperatureDegC = DieselOptimalWaterTemperatureDegC;
 
+                    // Debug
                     //DieselOptimalWaterTemperatureDegC = 94;
                     //DieselOptimalOilTemperatureDegC = 94;
                     //DieselOptimalTemperatureDegC = 100;
@@ -2058,10 +2059,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     //WaterFanStopIdle = true;
                     //OilFanStopIdle = true;
                     //RealDieselOilTemperatureDeg = 10;
-                    //if (locomotive.SlaveLoco)
-                    //{
-                    //    RealDieselOilTemperatureDeg = 100;
-                    //}
+                    //RealDieselWaterTemperatureDeg = 10;
+                    
+                    if (locomotive.SlaveLoco)
+                    {
+                        //RealDieselOilTemperatureDeg = 10;
+                        //RealDieselWaterTemperatureDeg = 10;
+                    }
 
                     if ((CoolingEnableRPM == 0 && (RealDieselWaterTemperatureDeg > DieselOptimalTemperatureDegC + DieselTempCoolingHyst))
                         || (CoolingEnableRPM > 0 && locomotive.EngineRPM >= CoolingEnableRPM))
@@ -2231,7 +2235,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             //DieselIdleTemperatureDegC = 60;
             //DieselWaterTempTimeConstantSec = 720;
             //DieselOilTempTimeConstantSec = 1440;
-            //DieselTempCoolingHyst = 10;
+            //DieselTempCoolingHyst = 10;            
 
             // Inicializační setup teplot
             if (locomotive.BrakeSystem.StartOn || (RunCycle > 0 && DieselMotorWaterInitTemp == 0))
@@ -2427,10 +2431,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         OverHeatTimer[i] = 0;
                         
                         if (locomotive.DieselEngines.DieselEngine1)
-                            locomotive.DieselMotorTempWarning = false;
+                            locomotive.DieselMotorTempWarning[i] = false;
 
                         if (locomotive.DieselEngines.DieselEngine2)
-                            locomotive.DieselMotorTempWarning2 = false;                        
+                            locomotive.DieselMotorTempWarning2[i] = false;                        
                     }
 
                     if (OverHeatTimer[i] > 120)
@@ -2460,10 +2464,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     if (OverHeatTimer[i] > 1)
                     {
                         if (locomotive.DieselEngines.DieselEngine1)
-                            locomotive.DieselMotorTempWarning = true;
+                            locomotive.DieselMotorTempWarning[i] = true;
 
                         if (locomotive.DieselEngines.DieselEngine2)
-                            locomotive.DieselMotorTempWarning2 = true;                        
+                            locomotive.DieselMotorTempWarning2[i] = true;                        
 
                         if (i == 0 && RealDieselWaterTemperatureDeg > DieselMaxTemperatureDeg)
                             locomotive.Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("The engine is overheating! Water temperature:") + " " + Math.Round(RealDieselWaterTemperatureDeg, 2) + "°C");

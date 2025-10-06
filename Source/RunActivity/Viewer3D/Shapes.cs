@@ -1065,7 +1065,7 @@ namespace Orts.Viewer3D
                     if (item.IsFreight == true && item.IsPassenger == false) speed += "F";
                     else if (item.IsFreight == false && item.IsPassenger == true) speed += "P";
 
-                    if (item != null) speed += item.SpeedInd;
+                    if (item != null) speed += item.SpeedInd;                    
                 }
                 VertexList = new VertexPositionNormalTexture[maxVertex];
                 TriangleListIndices = new short[maxVertex / 2 * 3]; // as is NumIndices

@@ -1025,6 +1025,7 @@ namespace Orts.Formats.Msts
         public float RestrictedZoneSpeed { get; set; }
         public float RestrictedZoneWarningPosition { get; set; }
         public string RestrictedZoneLocation { get; set; }
+        public bool SpeedPostLoco { get; set; }
 
         /// <summary>Get the direction the signal is NOT facing</summary>
         public int ReverseDirection
@@ -1077,10 +1078,17 @@ namespace Orts.Formats.Msts
                     //  The number of parameters depends on the flags seeting
                     //  To do: Check flags seetings and parse accordingly.
 		            if (!IsResume)
-                    {
+                    {                        
                         //SpeedInd = stf.ReadFloat(STFReader.UNITS.None, null);
                         if (IsMilePost && ((Flags & (1 << 9)) == 0)) SpeedInd = (float)Math.Truncate(stf.ReadDouble(null));
-                        else SpeedInd = stf.ReadFloat(STFReader.UNITS.None, null);
+                        else SpeedInd = stf.ReadFloat(STFReader.UNITS.None, null);                        
+
+                        // Rychlostník se symbolem lokomotivy
+                        if (SpeedInd > 1000)
+                        {
+                            SpeedInd -= 1000;
+                            SpeedPostLoco = true;
+                        }
                     }
 
                     if (ShowNumber)

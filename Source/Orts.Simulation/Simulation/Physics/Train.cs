@@ -9323,7 +9323,7 @@ namespace Orts.Simulation.Physics
             {
                 var speedLimit = signalRef.SignalObjects[Math.Abs(foundSpeedLimit[0])];
                 var thisSpeedInfo = speedLimit.this_lim_speed(MstsSignalFunction.SPEED);
-                float thisSpeedMpS = IsFreight ? thisSpeedInfo.speed_freight : thisSpeedInfo.speed_pass;
+                float thisSpeedMpS = IsFreight ? thisSpeedInfo.speed_freight : thisSpeedInfo.speed_pass;                
 
                 if (thisSpeedMpS > 0)
                 {

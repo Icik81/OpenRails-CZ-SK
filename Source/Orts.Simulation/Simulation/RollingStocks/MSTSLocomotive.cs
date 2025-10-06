@@ -645,8 +645,8 @@ namespace Orts.Simulation.RollingStocks
         public bool DieselCheckPowerMotorLamp2;
         public bool DieselMotorDefected;
         public bool DieselMotorDefected2;
-        public bool DieselMotorTempWarning;
-        public bool DieselMotorTempWarning2;
+        public bool[] DieselMotorTempWarning = new bool[2];
+        public bool[] DieselMotorTempWarning2 = new bool[2];
         public bool DieselMotorPowerLost;
         public bool DieselMotorPowerLost2;
         public bool DieselLocoTempReady;
@@ -3366,10 +3366,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car.CarIsPlayerLoco || car.SlaveLoco)
                 {
-                    if ((car as MSTSDieselLocomotive).DieselMotorTempWarning || (car as MSTSDieselLocomotive).DieselMotorTempWarning2)
+                    for (int i = 0; i < 2; i++)
                     {
-                        Simulator.DieselMotorTempWarning = true;
-                        break;
+                        if ((car as MSTSDieselLocomotive).DieselMotorTempWarning[i] || (car as MSTSDieselLocomotive).DieselMotorTempWarning2[i])
+                        {
+                            Simulator.DieselMotorTempWarning = true;
+                            break;
+                        }
                     }
                 }
             }
@@ -24095,7 +24098,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (car is MSTSDieselLocomotive && car.SlaveLoco)
                                 {
                                     var mstsDieselLocomotive = car as MSTSDieselLocomotive;
-                                    if (mstsDieselLocomotive.DieselMotorTempWarning)
+                                    if (mstsDieselLocomotive.DieselMotorTempWarning[0] || mstsDieselLocomotive.DieselMotorTempWarning[1])
                                         data = 1;
                                     else
                                         data = 0;
@@ -24106,7 +24109,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            if (DieselMotorTempWarning)
+                            if (DieselMotorTempWarning[0] || DieselMotorTempWarning[1])
                                 data = 1;
                             else
                                 data = 0;
@@ -24123,7 +24126,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (car is MSTSDieselLocomotive && car.SlaveLoco)
                                 {
                                     var mstsDieselLocomotive = car as MSTSDieselLocomotive;
-                                    if (mstsDieselLocomotive.DieselMotorTempWarning2)
+                                    if (mstsDieselLocomotive.DieselMotorTempWarning2[0] || mstsDieselLocomotive.DieselMotorTempWarning2[1])
                                         data = 1;
                                     else
                                         data = 0;
@@ -24134,7 +24137,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            if (DieselMotorTempWarning2)
+                            if (DieselMotorTempWarning2[0] || DieselMotorTempWarning2[1])
                                 data = 1;
                             else
                                 data = 0;
