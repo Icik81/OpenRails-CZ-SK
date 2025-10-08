@@ -157,6 +157,9 @@ namespace Orts.Simulation
     , AutoDriveButton
     , Horn2
     , Horn12
+    , EngineStopperSlaveButton
+    , ARRSpeedPlusButton
+    , ARRSpeedMinusButton
 
     }
 
@@ -342,6 +345,9 @@ namespace Orts.Simulation
                 , new string [] { GetString("Automatic start-up button"), GetString("off"), null, GetString("on")}
                 , new string [] { GetString("Horn 2"), GetString("off"), null, GetParticularString("Horn 2", "sound") }
                 , new string [] { GetString("Horn 1+2"), GetString("off"), null, GetParticularString("Horn 1+2", "sound") }
+                , new string [] { GetString("Engine stopper slave"), GetString("off"), null, GetParticularString("Engine stopper slave", "on") }
+                , new string [] { GetString("ARR speed plus"), GetString("off"), null, GetParticularString("ARR speed plus", "on") }
+                , new string [] { GetString("ARR speed minus"), GetString("off"), null, GetParticularString("ARR speed minus", "on") }
 
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");

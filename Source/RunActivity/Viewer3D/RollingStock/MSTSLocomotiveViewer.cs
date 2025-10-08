@@ -3915,6 +3915,9 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_DIESEL_TEMPERATURE2_SLAVE:
                 case CABViewControlTypes.ORTS_OIL_PRESSURE_SLAVE:
                 case CABViewControlTypes.ORTS_OIL_PRESSURE2_SLAVE:
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER_SLAVE:
+                case CABViewControlTypes.ARR_SPEED_PLUS:
+                case CABViewControlTypes.ARR_SPEED_MINUS:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -5537,8 +5540,6 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.ToggleAxleCounterRestrictedSpeedZoneActive(false);                    
                     break;
 
-
-
                 case CABViewControlTypes.ORTS_LS90_POWER:
                     if (Locomotive.Mirel.MirelType == Mirel.Type.LS90)
                     {
@@ -5562,6 +5563,27 @@ namespace Orts.Viewer3D.RollingStock
                             IsChanged = true;
                         }
                     }
+                    break;
+
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER_SLAVE:
+                    if (UserInput.IsMouseLeftButtonDown)
+                        Locomotive.ToggleEngineStopperSlaveButton(true);
+                    else
+                        Locomotive.ToggleEngineStopperSlaveButton(false);
+                    break;
+
+                case CABViewControlTypes.ARR_SPEED_PLUS:
+                    if (UserInput.IsMouseLeftButtonDown)
+                        Locomotive.ToggleARRSpeedPlusButton(true);
+                    else
+                        Locomotive.ToggleARRSpeedPlusButton(false);
+                    break;
+
+                case CABViewControlTypes.ARR_SPEED_MINUS:
+                    if (UserInput.IsMouseLeftButtonDown)
+                        Locomotive.ToggleARRSpeedMinusButton(true);
+                    else
+                        Locomotive.ToggleARRSpeedMinusButton(false);
                     break;
 
                 // Train Control System controls

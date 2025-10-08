@@ -16537,7 +16537,123 @@ namespace Orts.Simulation.RollingStocks
             else
                 SignalEvent(Event.RDSTOff);
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, RDSTBreaker[LocoStation] ? CabSetting.On : CabSetting.Off);
-        }        
+        }
+
+        // Ovládání tlačítka nouzového zastavení motoru (Engine Stopper Slave Button)
+        bool EngineStopperSlaveButtonEnable;
+        public bool EngineStopperSlaveButton;
+        bool EngineStopperSlaveButtonPressed;
+        float EngineStopperSlaveButtonTimer;
+        public void ToggleEngineStopperSlaveButton(bool engineStopperSlaveButton)
+        {
+            if (EngineStopperSlaveButtonEnable)
+            {
+                EngineStopperSlaveButton = engineStopperSlaveButton;
+                if (EngineStopperSlaveButton && !EngineStopperSlaveButtonPressed)
+                {
+                    SignalEvent(Event.ButtonPressed);
+                    EngineStopperSlaveButtonPressed = true;                                        
+                }
+                if (!EngineStopperSlaveButton && EngineStopperSlaveButtonPressed)
+                {
+                    SignalEvent(Event.ButtonReleased);
+                    EngineStopperSlaveButtonPressed = false;
+                    EngineStopperSlaveButtonTimer = 0;
+                }
+                if (EngineStopperSlaveButton)
+                {
+                    EngineStopperSlaveButtonTimer += Simulator.OneSecondLoop;
+                    if (EngineStopperSlaveButtonTimer > 1f)
+                    {
+                        EngineStopperSlaveButtonTimer = 0;
+                        foreach (var car in Train.Cars)
+                        {
+                            if (car is MSTSDieselLocomotive && car.SlaveLoco)
+                            {
+                                (car as MSTSDieselLocomotive).EngineStopperSlaveButton = engineStopperSlaveButton;
+                                (car as MSTSDieselLocomotive).DieselEngines.DEList[0].Stop();
+                                if ((car as MSTSDieselLocomotive).DieselEngines.Count > 1)
+                                    (car as MSTSDieselLocomotive).DieselEngines.DEList[1].Stop();
+                            }
+                        }
+                    }
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.EngineStopperSlaveButton, engineStopperSlaveButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        // Ovládání tlačítka pro zvýšení rychlosti ARR (ARR Speed Plus Button)
+        bool ARRSpeedPlusButtonEnable;
+        bool ARRSpeedPlusButton;
+        bool ARRSpeedPlusButtonPressed;
+        public void ToggleARRSpeedPlusButton(bool aRRSpeedPlusButton)
+        {
+            if (ARRSpeedPlusButtonEnable)
+            {
+                ARRSpeedPlusButton = aRRSpeedPlusButton;
+                if (ARRSpeedPlusButton && !ARRSpeedPlusButtonPressed)
+                {
+                    SignalEvent(Event.ButtonPressed);
+                    ARRSpeedPlusButtonPressed = true;
+                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                    {                        
+                        float rest = (float)Math.Round(CruiseControl.SelectedSpeedMpS * 3.6f, 0) % 5f;                        
+                        float TargetSpeedKpH = 0;
+                        if (rest == 0)                                                    
+                            TargetSpeedKpH = (CruiseControl.SelectedSpeedMpS * 3.6f) + 5f;                        
+                        else
+                            TargetSpeedKpH = (CruiseControl.SelectedSpeedMpS * 3.6f) + (5 - rest);
+                        CruiseControl.SelectedSpeedMpS = TargetSpeedKpH / 3.6f;
+                        if (CruiseControl.SelectedSpeedMpS > MaxSpeedMpS)
+                            CruiseControl.SelectedSpeedMpS = MaxSpeedMpS;
+                        Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Selected speed changed to ") + Math.Round(MpS.FromMpS(CruiseControl.SelectedSpeedMpS, true), 0, MidpointRounding.AwayFromZero).ToString() + " km/h");
+                    }
+                }
+                if (!ARRSpeedPlusButton && ARRSpeedPlusButtonPressed)
+                {
+                    SignalEvent(Event.ButtonReleased);
+                    ARRSpeedPlusButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedPlusButton, aRRSpeedPlusButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
+        // Ovládání tlačítka pro snížení rychlosti ARR (ARR Speed Minus Button)
+        bool ARRSpeedMinusButtonEnable;
+        bool ARRSpeedMinusButton;
+        bool ARRSpeedMinusButtonPressed;
+        public void ToggleARRSpeedMinusButton(bool aRRSpeedMinusButton)
+        {
+            if (ARRSpeedMinusButtonEnable)
+            {
+                ARRSpeedMinusButton = aRRSpeedMinusButton;
+                if (ARRSpeedMinusButton && !ARRSpeedMinusButtonPressed)
+                {
+                    SignalEvent(Event.ButtonPressed);
+                    ARRSpeedMinusButtonPressed = true;
+                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                    {                        
+                        float rest = (float)Math.Round(CruiseControl.SelectedSpeedMpS * 3.6f, 0) % 5f;
+                        float TargetSpeedKpH = 0;
+                        if (rest == 0)
+                            TargetSpeedKpH = (CruiseControl.SelectedSpeedMpS * 3.6f) - 5f;
+                        else
+                            TargetSpeedKpH = (CruiseControl.SelectedSpeedMpS * 3.6f) - rest;                                               
+                        CruiseControl.SelectedSpeedMpS = TargetSpeedKpH / 3.6f;
+                        if (CruiseControl.SelectedSpeedMpS < 0)
+                            CruiseControl.SelectedSpeedMpS = 0;
+                        Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Selected speed changed to ") + Math.Round(MpS.FromMpS(CruiseControl.SelectedSpeedMpS, true), 0, MidpointRounding.AwayFromZero).ToString() + " km/h");
+                    }
+                }
+                if (!ARRSpeedMinusButton && ARRSpeedMinusButtonPressed)
+                {
+                    SignalEvent(Event.ButtonReleased);
+                    ARRSpeedMinusButtonPressed = false;
+                }
+                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedMinusButton, aRRSpeedMinusButton ? CabSetting.On : CabSetting.Off);
+            }
+        }
+
         // Znovu načte objekty světa
         public void ToggleRefreshWorld(bool refreshWorld)
         {
@@ -24949,6 +25065,30 @@ namespace Orts.Simulation.RollingStocks
                     {
                         Wipers3ActivationEnable = true;
                         data = Wipers3ActivationSwitch[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER_SLAVE:
+                    {
+                        EngineStopperSlaveButtonEnable = true;                        
+                        if (EngineStopperSlaveButton)
+                            data = 1;
+                        else data = 0;                        
+                        break;
+                    }
+                case CABViewControlTypes.ARR_SPEED_PLUS:
+                    {
+                        ARRSpeedPlusButtonEnable = true;
+                        if (ARRSpeedPlusButton)
+                            data = 1;
+                        else data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.ARR_SPEED_MINUS:
+                    {
+                        ARRSpeedMinusButtonEnable = true;
+                        if (ARRSpeedMinusButton)
+                            data = 1;
+                        else data = 0;
                         break;
                     }
 

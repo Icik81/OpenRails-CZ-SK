@@ -1546,7 +1546,10 @@ namespace Orts.Simulation.RollingStocks
             if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
                 DERunningStatus = true;
             if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+            {
                 DERunningStatus = false;
+                if (!IsLeadLocomotive()) EngineStopperSlaveButton = false;
+            }
 
             // Předčasně uvolněné stop tlačítko
             if (Battery && DERunningStatus && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)

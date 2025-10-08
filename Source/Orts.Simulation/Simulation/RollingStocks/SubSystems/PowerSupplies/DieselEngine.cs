@@ -2530,14 +2530,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         EngineStatus = Status.Stopped;
                     }
                     else
-                    if (locomotive.DieselEngines.DieselEngine1 && locomotive.StopButtonReleased) // Přerušený stop motoru
+                    if (locomotive.DieselEngines.DieselEngine1 && locomotive.StopButtonReleased && !locomotive.EngineStopperSlaveButton) // Přerušený stop motoru
                     {                        
                         DemandedRPM = IdleRPM;
                         EngineStatus = Status.Running;
                         locomotive.SignalEvent(Event.MotorStopBreak);
                     }
                     else
-                    if (locomotive.DieselEngines.DieselEngine2 && locomotive.StopButtonReleased2) // Přerušený stop motoru
+                    if (locomotive.DieselEngines.DieselEngine2 && locomotive.StopButtonReleased2 && !locomotive.EngineStopperSlaveButton) // Přerušený stop motoru
                     {
                         DemandedRPM = IdleRPM;
                         EngineStatus = Status.Running;
@@ -2564,13 +2564,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     else
                     if (locomotive.CarFrameUpdateState > 9 && !locomotive.DieselDirectionController && !locomotive.DieselDirectionController2 && !locomotive.DieselDirectionController3 && !locomotive.DieselDirectionController4)
                     {
-                        if (locomotive.DieselEngines.DieselEngine1)
+                        if (locomotive.DieselEngines.DieselEngine1 && !locomotive.EngineStopperSlaveButton)
                         {
                             DemandedRPM = StartingRPM;
                             EngineStatus = Status.Starting;
                             locomotive.SignalEvent(Event.EnginePowerOn); // power on sound hook
                         }
-                        if (locomotive.DieselEngines.DieselEngine2)
+                        if (locomotive.DieselEngines.DieselEngine2 && !locomotive.EngineStopperSlaveButton)
                         {
                             DemandedRPM = StartingRPM;
                             EngineStatus = Status.Starting;
