@@ -956,6 +956,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 if (RealRPM0 == 0 && EngineStatus == Status.Running)
                     RealRPM0 = RealRPM;
 
+                // Ochrana proti NaN
+                if (float.IsNaN(RealRPM0))                
+                    RealRPM0 = 0;               
+                
                 if (EngineStatus == Status.Starting)
                 {
                     if (RealRPM0 < IdleRPM)
@@ -2058,12 +2062,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     //IndependentWaterPlates = false;
                     //WaterFanStopIdle = true;
                     //OilFanStopIdle = true;
-                    //RealDieselOilTemperatureDeg = 10;
-                    //RealDieselWaterTemperatureDeg = 10;
+                    //RealDieselOilTemperatureDeg = 60;
+                    //RealDieselWaterTemperatureDeg = 60;
                     
+                    //if (locomotive.MasterLoco)
+                    //{
+                    //    RealDieselOilTemperatureDeg = 10;
+                    //    RealDieselWaterTemperatureDeg = 10;
+                    //}
                     if (locomotive.SlaveLoco)
                     {
-                        //RealDieselOilTemperatureDeg = 10;
+                        //RealDieselOilTemperatureDeg = 90;
                         //RealDieselWaterTemperatureDeg = 10;
                     }
 
