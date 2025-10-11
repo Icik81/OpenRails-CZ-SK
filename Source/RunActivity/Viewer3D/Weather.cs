@@ -128,23 +128,12 @@ namespace Orts.Viewer3D
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\SummerNight.sms"), false),
-                    };
-
-                    if (Viewer.Simulator.ActivityRun != null && Viewer.Simulator.WeatherAdv < 4)
-                    {
-                        RainSound = new List<SoundSourceBase>() {
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),                        
-                        };
-                    }
-                    else
-                    {
-                        RainSound = new List<SoundSourceBase>() {
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Thunder.sms"), false),
-                        };
-                    }
+                    };                    
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Thunder.sms"), false),
+                    };                    
                     SnowSound = new List<SoundSourceBase>() {
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
@@ -180,22 +169,12 @@ namespace Orts.Viewer3D
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\WinterNight.sms"), false),
-                    };
-                    if (Viewer.Simulator.ActivityRun != null && Viewer.Simulator.WeatherAdv < 4)
-                    {
-                        RainSound = new List<SoundSourceBase>() {
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),                        
-                        };
-                    }
-                    else
-                    {
-                        RainSound = new List<SoundSourceBase>() {
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
-                        new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Thunder.sms"), false),
-                        };
-                    }
+                    };                    
+                    RainSound = new List<SoundSourceBase>() {
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_in.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Rain_ex.sms"), false),
+                    new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Thunder.sms"), false),
+                    };                    
                     SnowSound = new List<SoundSourceBase>() {
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_in.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),

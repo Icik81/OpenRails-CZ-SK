@@ -351,6 +351,7 @@ namespace Orts.Viewer3D
             // Záblesk od blesku
             if (Program.Simulator.WorldThunder)
             {
+                if (WorldThunderStartTime > (float)Program.Simulator.ClockTime) WorldThunderTimer = -1;
                 if (WorldThunderTimer == -1)
                 {
                     LastStateBrightness = Program.Simulator.DayTimeAmbientLightCoef;
@@ -904,7 +905,7 @@ namespace Orts.Viewer3D
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
         {
             IsNightTexture = false;
-            if (Program.Simulator.CabInDarkTunnel || Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f)
+            if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
             {
                 IsNightTexture = true;
             }
@@ -953,6 +954,7 @@ namespace Orts.Viewer3D
             // Záblesk od blesku
             if (Program.Simulator.WorldThunder)
             {
+                if (WorldThunderStartTime > (float)Program.Simulator.ClockTime) WorldThunderTimer = -1;
                 if (WorldThunderTimer == -1)
                 {
                     LastStateBrightness = nightColorModifier.GetValueSingle();
