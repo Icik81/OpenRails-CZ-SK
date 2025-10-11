@@ -167,6 +167,7 @@ namespace Orts.Viewer3D.Debugging
                         var Variable1 = selectedSoundSource.Car.Variable1;
                         var Variable2 = selectedSoundSource.Car.Variable2;
                         var Variable3 = selectedSoundSource.Car.Variable3;
+                        var Variable5 = selectedSoundSource.Car.Variable5;
 
                         if (selectedSoundSource.Car is MSTSSteamLocomotive)
                         {
@@ -180,9 +181,10 @@ namespace Orts.Viewer3D.Debugging
                             Variable2 /= 100f;
                         }
 
-                        variable1.Text = Variable1.ToString("0.#%");
-                        variable2.Text = Variable2.ToString("0.#%");
-                        variable3.Text = Variable3.ToString("0.#%");
+                        variable1.Text = Variable1.ToString("0.# %");
+                        variable2.Text = Variable2.ToString("0.# %");
+                        variable3.Text = Variable3.ToString("0.# %");
+                        textBox5.Text = Variable5.ToString("0.# kN");
                     }
                     else
                     {
@@ -190,11 +192,12 @@ namespace Orts.Viewer3D.Debugging
                         variable1.Text = "-";
                         variable2.Text = "-";
                         variable3.Text = "-";
+                        textBox5.Text = "-";
                     }
 
                     float gain;
                     OpenAL.alGetSourcef(soundSourceID, OpenAL.AL_GAIN, out gain);
-                    smsVolume.Text = gain.ToString("0.#%");
+                    smsVolume.Text = gain.ToString("0.# %");
                 }
                 else
                 {
@@ -203,6 +206,7 @@ namespace Orts.Viewer3D.Debugging
                     variable1.Text = "-";
                     variable2.Text = "-";
                     variable3.Text = "-";
+                    textBox5.Text = "-";
                     smsVolume.Text = "-";
                     activeSoundList.SelectedNode = null;
                     inactiveSoundList.SelectedNode = null;
