@@ -50,6 +50,7 @@ using Orts.Simulation.Signalling;
 using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using ORTS.Settings;
+using Swan;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -1487,7 +1488,13 @@ namespace Orts.Viewer3D
                 else volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;
             }
 
-            
+            // Včetně zvuků v *_in.sms pro kabiny
+            if (!SoundSource.IsExternal && SoundSource.SMSFileName != null && SoundSource.SMSFileName.ToLower().Contains("_in.sms") && SoundSource.Viewer.Camera.Style != Camera.Styles.External)
+            {        
+                if (((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent > -1)
+                    volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;                
+            }
+
             var car = SoundSource.Car;
             // Shodí příznak MSTSStreamSoundOffInit pro aktivní vozidla
             if (car != null && car.BrakeSystem.PowerForWagon && MSTSStreamSoundOffInit)
