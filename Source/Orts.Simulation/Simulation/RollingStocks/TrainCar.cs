@@ -3383,8 +3383,15 @@ namespace Orts.Simulation.RollingStocks
                 if (PushZFinalMarker == 0)
                 {
                     PushZFinalMarker = prevSpeedMpS != 0 ? prevSpeedMpS / Math.Abs(prevSpeedMpS) : 1;
-                    if (Flipped)
-                        PushZFinalMarker = -PushZFinalMarker;                    
+
+                    if (this is MSTSLocomotive)
+                    {
+                        if (Flipped ^ (this as MSTSLocomotive).UsingRearCab)
+                            PushZFinalMarker = -PushZFinalMarker;
+                    }
+                    else
+                        if (Flipped)
+                            PushZFinalMarker = -PushZFinalMarker;
                 }
 
                 if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)
@@ -3988,14 +3995,14 @@ namespace Orts.Simulation.RollingStocks
                         {
                             case 2:
                             case 3:
-                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.100f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
                                 break;
                             case 4:
-                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.050f;
                                 break;
 
                             default:
-                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.075f;
+                                VibrationRotationVelocityRadpS.Z += SpeedFactor * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.050f;
                                 break;
                         }
                     }
