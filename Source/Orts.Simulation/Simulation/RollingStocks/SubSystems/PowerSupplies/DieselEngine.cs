@@ -423,7 +423,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 result.AppendFormat("\t {0:F1}A", Locomotive.BrakeCurrent2);
 
-                GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
+                GetStatusDieselEngine[i] = i > 0 ? ("\t\t\t\t\t\t\t\t\t\t\t") + result.ToString() : GetStatusDieselEngine[i] = result.ToString();                                                   
             }
             return GetStatusDieselEngine[0];
         }

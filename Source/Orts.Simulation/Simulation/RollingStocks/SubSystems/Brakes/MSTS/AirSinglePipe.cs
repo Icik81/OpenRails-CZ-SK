@@ -1746,7 +1746,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (TripleValveState == ValveState.Lap)
                 {
-                    OLBailOffActivated = false;
+                    OLBailOffActivated = false;                    
                 }
 
                 // triple valve set to release pressure in brake cylinder and EP valve set
@@ -1892,7 +1892,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (AutoCylPressurePSI < 1)
                     BailOffOn = false;
 
-                if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507 || loco is MSTSDieselLocomotive)  // ? možná
                 {                    
                     ThresholdBailOffOn = 0;
                 }                
@@ -4412,7 +4412,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.CruiseControl != null && lead.CruiseControl.UsePressuredTrainBrake && lead.PowerOn)
                 {
                     // Použití průběžné brzdy v režimu automatiky ARR                
-                    if (lead.ControllerVolts >= 0 && lead.BrakeSystem.PressureConverter < lead.CruiseControl.BrakeConverterPressureEngage)
+                    if ((lead.ControllerVolts >= 0 || lead.DynamicBrakeForceN == 0) && lead.BrakeSystem.PressureConverter < lead.CruiseControl.BrakeConverterPressureEngage)
                     {
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = true;
                         lead.BrakeSystem.ARRTrainBrakeCycle1 = 2.0f;

@@ -2122,23 +2122,23 @@ namespace Orts.Simulation.Physics
                 // Vyhodnocení selhání TM
                 if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain && car.CarIsPlayerLoco && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
                 {
+                    float TMFailureForceN = 10000; // kriticá síla působící na převodovku
                     float TMFailureSpeed = 30.0f / 3.6f;  // kritická rychlost kdy dojde ke zničení TM                     
                     if (car.Flipped ^ ((MSTSLocomotive)car).UsingRearCab)
                     {
-                        if (car.TractiveForceN > 0 && car.SpeedMpS > TMFailureSpeed)
+                        if (car.TractiveForceN > TMFailureForceN && car.SpeedMpS > TMFailureSpeed)
                             TMFailure = true;
-                        if (car.TractiveForceN < 0 && car.SpeedMpS < -TMFailureSpeed)
+                        if (car.TractiveForceN < -TMFailureForceN && car.SpeedMpS < -TMFailureSpeed)
                             TMFailure = true;
                     }
                     else
                     {
-                        if (car.TractiveForceN > 0 && car.SpeedMpS < -TMFailureSpeed)
+                        if (car.TractiveForceN > TMFailureForceN && car.SpeedMpS < -TMFailureSpeed)
                             TMFailure = true;
-                        if (car.TractiveForceN < 0 && car.SpeedMpS > TMFailureSpeed)
+                        if (car.TractiveForceN < -TMFailureForceN && car.SpeedMpS > TMFailureSpeed)
                             TMFailure = true;
                     }
-                }
-
+                }                
 
                 if (car.WheelSlip)
                     whlslp = true;

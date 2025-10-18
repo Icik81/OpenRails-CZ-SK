@@ -2245,7 +2245,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                     else if (!IReallyWantToBrake)
                     {
-                        Locomotive.ControllerVolts = 0;
+                        if (Locomotive.LocomotiveTypeNumber != 843)
+                            Locomotive.ControllerVolts = 0; 
                         breakout = true;
                     }
                 }
