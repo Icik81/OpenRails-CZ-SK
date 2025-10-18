@@ -3918,6 +3918,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER_SLAVE:
                 case CABViewControlTypes.ARR_SPEED_PLUS:
                 case CABViewControlTypes.ARR_SPEED_MINUS:
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_UP:
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_DOWN:
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_UP:
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_DOWN:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:
@@ -4506,6 +4510,35 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         new Switch6LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_UP:
+                    if (UserInput.IsMouseLeftButtonDown && !IsChanged)
+                    {
+                        new Switch5LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }                    
+                    break;
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_DOWN:                    
+                    if (UserInput.IsMouseLeftButtonDown && !IsChanged)
+                    {
+                        new Switch5LightUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_UP:
+                    if (UserInput.IsMouseLeftButtonDown && !IsChanged)
+                    {
+                        new Switch6LightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_DOWN:
+                    if (UserInput.IsMouseLeftButtonDown && !IsChanged)
+                    {
+                        new Switch6LightUpCommand(Viewer.Log);
                         IsChanged = true;
                     }
                     break;

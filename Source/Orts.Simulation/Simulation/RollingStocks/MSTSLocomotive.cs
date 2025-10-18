@@ -24878,17 +24878,21 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.SWITCH51_LIGHT:
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_UP:
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_DOWN:
                     {
                         Switch51LightEnable = true;
                         data = Switch5LightPosition[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.SWITCH52_LIGHT:
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_UP:
+                case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_DOWN:
                     {
                         Switch52LightEnable = true;
                         data = Switch6LightPosition[LocoStation];
                         break;
-                    }
+                    }                                                                        
                 case CABViewControlTypes.SWITCH5_LIGHT:
                     {
                         Switch5LightEnable = true;
