@@ -1844,18 +1844,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 else EmergencyBrakeForWagon = false;
 
                 BailOffOn = false;
-                if (loco.DynamicBrakeAutoBailOff && loco.DynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves == null)
+                if (loco.DynamicBrakeAutoBailOff && loco.DynamicBrakePercent > 0)
                 {
                     BailOffOn = true;
-                }
-                else if (loco.DynamicBrakeAutoBailOff && loco.DynamicBrakePercent > 0 && loco.DynamicBrakeForceCurves != null)
-                {
-                    var dynforce = loco.DynamicBrakeForceCurves.Get(1.0f, loco.AbsSpeedMpS);  // max dynforce at that speed
-                    if ((loco.MaxDynamicBrakeForceN == 0 && dynforce > 0) || dynforce > loco.MaxDynamicBrakeForceN * 0.05f)
-                    {
-                        BailOffOn = true;
-                    }
-                }                
+                }                            
 
                 if (BailOffOnAntiSkid)
                 {
@@ -1891,12 +1883,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (AutoCylPressurePSI < 1)
                     BailOffOn = false;
-
-                if (loco.LocoType == MSTSLocomotive.LocoTypes.Katr7507 || loco is MSTSDieselLocomotive)  // ? možná
-                {                    
-                    ThresholdBailOffOn = 0;
-                }                
-
+             
                 // Automatické napuštění brzdového válce po uvadnutí EDB                
                 AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
                 if ((Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB

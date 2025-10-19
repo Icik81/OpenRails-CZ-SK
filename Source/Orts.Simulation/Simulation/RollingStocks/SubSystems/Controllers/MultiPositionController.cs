@@ -18,6 +18,7 @@
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Parsers.Msts;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -390,7 +391,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 // Icik
                 // Po zastavení plynule odpadá EDB
                 if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
-                {                    
+                {
+                    if (controllerPosition == ControllerPosition.Drive) Locomotive.BrakeSystem.BrakeCylRelease = true;
                     if (Locomotive.DynamicBrakePercent > -1) Locomotive.SetThrottlePercent(0);                    
 
                     if (Locomotive.AbsSpeedMpS < 1f / 3.6f)
