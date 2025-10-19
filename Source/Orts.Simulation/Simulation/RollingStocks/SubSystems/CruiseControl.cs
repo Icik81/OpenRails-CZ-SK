@@ -2300,6 +2300,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
         }
 
+        public float FakeControllerVolts;
         private float previousSelectedSpeed = 0;
         public float GetDataOf(CabViewControl cvc)
         {
@@ -2372,8 +2373,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     data = Locomotive.MaxForceN;
                     break;
                 case CABViewControlTypes.ORTS_FORCE_IN_PERCENT_THROTTLE_AND_DYNAMIC_BRAKE:
-                    data = Locomotive.ControllerVolts * 10;                    
                     // Icik
+                    // Vhodné pro plynulý chod ukazatele přístroje                                                            
+                    if (FakeControllerVolts < Locomotive.ControllerVolts)
+                        FakeControllerVolts += Locomotive.elapsedTime * 2;
+                    if (FakeControllerVolts > Locomotive.ControllerVolts)
+                        FakeControllerVolts -= Locomotive.elapsedTime * 2;
+                    data = FakeControllerVolts * 10;                                        
                     if (AripotEquipment && SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Manual)                    
                         data = 0;                    
                     break;
