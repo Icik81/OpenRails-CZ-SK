@@ -8142,7 +8142,7 @@ namespace Orts.Simulation.RollingStocks
         /// This function updates periodically the states and physical variables of the locomotive's controllers.
         /// </summary>
         bool EDBOn;
-        float LastStateDynamicBrakePercent = -1;
+        public float LastStateDynamicBrakePercent = -1;
         bool DynamicBrakeInterventionNormalState;
         float LastStatePressureConverterControllerValue;
         protected virtual void UpdateControllers(float elapsedClockSeconds)
@@ -8211,6 +8211,9 @@ namespace Orts.Simulation.RollingStocks
             // Icik
             //Simulator.Confirmer.MSG("LastStateDynamicBrakePercent: " + LastStateDynamicBrakePercent + "      DynamicBrakeInterventionNormalState: " + DynamicBrakeInterventionNormalState);
             //Simulator.Confirmer.MSG2("PressureConverterControllerValue: " + PressureConverterControllerValue);
+
+            // Resetování hodnoty pro případ že není zapnutá baterie
+            if (!Battery) LastStateDynamicBrakePercent = -1;
 
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {

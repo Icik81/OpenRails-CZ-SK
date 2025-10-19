@@ -4479,7 +4479,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.CruiseControl.SpeedRegMode[lead.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {                                                    
                         if (lead.AVVBraking)
-                            ARRSpeedDeccelaration = (lead.SpeedMpS * lead.SpeedMpS) / (2 * (lead.AvvDistanceToNext - 10)); // 10m před cílem                    
+                            ARRSpeedDeccelaration = (lead.SpeedMpS * lead.SpeedMpS) / (2 * (lead.AvvDistanceToNext - 15)); // 15 m před cílem                    
                         TimeToResponseARRTrainBrake = 0.5f;
                         TimeToResponseARRTrainBrake2 = 0.5f;
                         if (train.IsFreight)
