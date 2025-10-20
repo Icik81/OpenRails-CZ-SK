@@ -2421,6 +2421,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCanEngage = false;
                         lead.BrakeSystem.PressureConverterBaseEDB = 0;
                     }
+                    if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral)
+                    {                        
+                        lead.BrakeSystem.BrakeCylRelease = false;                        
+                    }
 
                     float MainResChangeRateSensitivity = 0.001f * 14.50377f;
                     // Kontrolka doplňování vzduchu (průtoku)                    
@@ -4525,6 +4529,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         lead.BrakeSystem.ARRTrainBrakeCycle3 = 0;                    
 
                     if (!lead.BrakeSystem.FirstRunARRTrainBrake
+                        && !lead.BrakeSystem.BrakeCylRelease
                         && lead.ARRTrainBrakeEngage 
                         && lead.AbsWheelSpeedMpS > 0
                         && lead.MainResPressurePSI > 0

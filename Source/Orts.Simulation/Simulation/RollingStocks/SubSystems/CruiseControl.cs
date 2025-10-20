@@ -2244,9 +2244,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.ControllerVolts = controllerVolts / 10;
                     }
                     else if (!IReallyWantToBrake)
-                    {
-                        if (Locomotive.LocomotiveTypeNumber != 843)
-                            Locomotive.ControllerVolts = 0; 
+                    {                                                
                         breakout = true;
                     }
                 }
@@ -2379,7 +2377,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         FakeControllerVolts += Locomotive.elapsedTime * 2;
                     if (FakeControllerVolts > Locomotive.ControllerVolts)
                         FakeControllerVolts -= Locomotive.elapsedTime * 2;
-                    data = FakeControllerVolts * 10;                                        
+                    data = (float)Math.Round(FakeControllerVolts * 10, 0);                                        
                     if (AripotEquipment && SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Manual)                    
                         data = 0;                    
                     break;

@@ -16598,7 +16598,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SignalEvent(Event.ButtonPressed);
                     ARRSpeedPlusButtonPressed = true;
-                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                    if (CruiseControl != null && (CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.AVV))
                     {                        
                         float rest = (float)Math.Round(CruiseControl.SelectedSpeedMpS * 3.6f, 0) % 5f;                        
                         float TargetSpeedKpH = 0;
@@ -16617,7 +16617,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.ButtonReleased);
                     ARRSpeedPlusButtonPressed = false;
                 }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedPlusButton, aRRSpeedPlusButton ? CabSetting.On : CabSetting.Off);
+                //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedPlusButton, aRRSpeedPlusButton ? CabSetting.On : CabSetting.Off);
             }
         }
 
@@ -16634,7 +16634,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     SignalEvent(Event.ButtonPressed);
                     ARRSpeedMinusButtonPressed = true;
-                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
+                    if (CruiseControl != null && (CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.AVV))
                     {                        
                         float rest = (float)Math.Round(CruiseControl.SelectedSpeedMpS * 3.6f, 0) % 5f;
                         float TargetSpeedKpH = 0;
@@ -16653,7 +16653,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.ButtonReleased);
                     ARRSpeedMinusButtonPressed = false;
                 }
-                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedMinusButton, aRRSpeedMinusButton ? CabSetting.On : CabSetting.Off);
+                //if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.ARRSpeedMinusButton, aRRSpeedMinusButton ? CabSetting.On : CabSetting.Off);
             }
         }
 

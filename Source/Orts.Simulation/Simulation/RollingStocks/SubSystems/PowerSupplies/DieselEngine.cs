@@ -943,7 +943,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     }
                 }
 
-                if (EngineStatus == Status.Stopped)
+                if (EngineStatus == Status.Stopped && !locomotive.StartButtonPressed && !locomotive.StartButtonPressed2 && !locomotive.StartLooseCon && !OnePushStartButton)
                 {
                     RealRPM0 = 0;
                 }
@@ -999,7 +999,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 }                
 
                 if (res < 0f)
-                    res = 0f;                                
+                    res = 0f;
+
+                //locomotive.Simulator.Confirmer.Information("res: " + res);
 
                 return res;
             }
