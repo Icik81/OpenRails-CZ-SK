@@ -392,7 +392,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 // Po zastavení plynule odpadá EDB
                 if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
                 {
-                    if (controllerPosition == ControllerPosition.Drive) Locomotive.BrakeSystem.BrakeCylRelease = true;                    
+                    if (controllerPosition == ControllerPosition.Drive)
+                    {
+                        Locomotive.BrakeSystem.BrakeCylRelease = true;
+                        Locomotive.BrakeSystem.BrakeCylReleaseEDBOn = false;
+                    }
                     if (Locomotive.DynamicBrakePercent > -1) Locomotive.SetThrottlePercent(0);                    
 
                     if (Locomotive.AbsSpeedMpS < 1f / 3.6f)
