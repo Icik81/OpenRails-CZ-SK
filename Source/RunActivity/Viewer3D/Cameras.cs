@@ -256,7 +256,7 @@ namespace Orts.Viewer3D
             mstsObjectCenter.Y -= cameraLocation.Location.Y;
             mstsObjectCenter.Z -= cameraLocation.Location.Z;
             // TODO: This *2 is a complete fiddle because some objects don't currently pass in a correct radius and e.g. track sections vanish.
-            objectRadius *= 2;
+            objectRadius *= 5;
             if (frustumLeft.X * mstsObjectCenter.X + frustumLeft.Y * mstsObjectCenter.Y - frustumLeft.Z * mstsObjectCenter.Z > objectRadius)
                 return false;
             if (frustumRight.X * mstsObjectCenter.X + frustumRight.Y * mstsObjectCenter.Y - frustumRight.Z * mstsObjectCenter.Z > objectRadius)
