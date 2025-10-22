@@ -89,9 +89,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         protected bool NotConnected = false;
         protected float ThresholdBailOffOn = 0;
         protected ValveState PrevTripleValveStateState;
-        protected float AutomaticDoorsCycle = 0;
-        protected float AirWithEDBMotiveForceN;
+        protected float AutomaticDoorsCycle = 0;        
         protected bool PressureConverterEnable;        
+        protected bool EDBCutOffActivated;
 
         protected bool AICompressorOn;
         protected bool AICompressorOff;
@@ -1624,8 +1624,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
 
                     // Pro loco typu Vectron nenapouští brzdový válec vzduchem při průběžném brždění
-                    if (loco != null && (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.BreakEDBButton_Activated)
-                        && (Math.Abs(loco.DynamicBrakeForceN) > AirWithEDBMotiveForceN || loco.AbsSpeedMpS > 11f / 3.6f))
+                    if (loco != null && loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.BreakEDBButton_Activated && loco.AbsSpeedMpS > 3f / 3.6f && !EDBCutOffActivated)
                     {
                         if (loco.PowerOn /*|| (loco.EDBIndependent && loco.PowerOnFilter > 0)*/)
                         {
@@ -1859,48 +1858,90 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BailOffOn = false;                    
                 }
 
-                if (BailOffOn && !BrakeCylReleaseEDBOn)
+                EDBCutOffActivated = false;
+                
+                // Vectron
+                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.PowerOn)
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
-                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
-                    AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
-                    if (AutoCylPressurePSI0 < 1.0f)
-                        BrakeCylReleaseEDBOn = true;
+                    BailOffOn = false;
+                    EDBCutOffActivated = true;                    
                 }
 
-                if (loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.PowerOn)                
-                    BailOffOn = false;                                
-
-                if (AutoCylPressurePSI < 1)
-                    BailOffOn = false;
-             
-                // Automatické napuštění brzdového válce po uvadnutí EDB                
-                AirWithEDBMotiveForceN = loco.MaxDynamicBrakeForceN * 0.05f;
-                if ((Math.Abs(loco.DynamicBrakeForceN) <= AirWithEDBMotiveForceN || loco.AbsSpeedMpS < 11 / 3.6f)) // Napustí brzdový válec pod limit síly k EDB
+                #region Automatické napuštění brzdového válce po uvadnutí EDB
+                // Nastavení výchozích hodnot pro odvětrání EDB                
+                if (loco.EDBCutOffSpeedMpS == 0 && loco.EDBCutOffPercentMaxEDBForce == 0 && loco.EDBCutOffEDBCurrent == 0)
                 {
-                    if (BrakeCylRelease)
-                        ThresholdBailOffOn = 0;                    
-                    
-                    if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
-                        && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
-                        && AuxResPressurePSI > 0)
+                    loco.EDBCutOffSpeedMpS = 11 / 3.6f; // Výchozí hodnota 11km/h
+                    loco.EDBCutOffPercentMaxEDBForce = 0.05f; // Výchozí hodnota 5%
+                    loco.EDBCutOffEDBCurrent = 0f; // Výchozí hodnota 0A                                        
+                }
+
+                if (BailOffOn)
+                {
+                    // Všechny podmínky cut-off
+                    if (loco.EDBCutOffSpeedMpS != 0 && loco.EDBCutOffPercentMaxEDBForce != 0 && loco.EDBCutOffEDBCurrent != 0)
+                        EDBCutOffActivated = loco.AbsSpeedMpS < loco.EDBCutOffSpeedMpS || Math.Abs(loco.DynamicBrakeForceN) < loco.MaxDynamicBrakeForceN * loco.EDBCutOffPercentMaxEDBForce || loco.BrakeCurrent1 < loco.EDBCutOffEDBCurrent;
+
+                    // Speed cut-off only
+                    if (loco.EDBCutOffSpeedMpS != 0 && loco.EDBCutOffPercentMaxEDBForce == 0 && loco.EDBCutOffEDBCurrent == 0)
+                        EDBCutOffActivated = loco.AbsSpeedMpS < loco.EDBCutOffSpeedMpS;
+
+                    // Percent cut-off only
+                    if (loco.EDBCutOffSpeedMpS == 0 && loco.EDBCutOffPercentMaxEDBForce != 0 && loco.EDBCutOffEDBCurrent == 0)
+                        EDBCutOffActivated = Math.Abs(loco.DynamicBrakeForceN) < loco.MaxDynamicBrakeForceN * loco.EDBCutOffPercentMaxEDBForce;
+
+                    // Current cut-off only
+                    if (loco.EDBCutOffSpeedMpS == 0 && loco.EDBCutOffPercentMaxEDBForce == 0 && loco.EDBCutOffEDBCurrent != 0)
+                        EDBCutOffActivated = loco.BrakeCurrent1 < loco.EDBCutOffEDBCurrent;
+
+                    // Speed and Percent cut-off
+                    if (loco.EDBCutOffSpeedMpS != 0 && loco.EDBCutOffPercentMaxEDBForce != 0 && loco.EDBCutOffEDBCurrent == 0)
+                        EDBCutOffActivated = loco.AbsSpeedMpS < loco.EDBCutOffSpeedMpS || Math.Abs(loco.DynamicBrakeForceN) < loco.MaxDynamicBrakeForceN * loco.EDBCutOffPercentMaxEDBForce;
+
+                    // Speed and Current cut-off                
+                    if (loco.EDBCutOffSpeedMpS != 0 && loco.EDBCutOffPercentMaxEDBForce == 0 && loco.EDBCutOffEDBCurrent != 0)
+                        EDBCutOffActivated = loco.AbsSpeedMpS < loco.EDBCutOffSpeedMpS || loco.BrakeCurrent1 < loco.EDBCutOffEDBCurrent;
+
+                    // Percent and Current cut-off
+                    if (loco.EDBCutOffSpeedMpS == 0 && loco.EDBCutOffPercentMaxEDBForce != 0 && loco.EDBCutOffEDBCurrent != 0)
+                        EDBCutOffActivated = Math.Abs(loco.DynamicBrakeForceN) < loco.MaxDynamicBrakeForceN * loco.EDBCutOffPercentMaxEDBForce || loco.BrakeCurrent1 < loco.EDBCutOffEDBCurrent;
+
+                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
+                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
+
+                    if (!EDBCutOffActivated)
+                        AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS; // Rychlost odvětrání při EDB                    
+
+                    if (AutoCylPressurePSI0 < 1.0f) BrakeCylReleaseEDBOn = true;
+
+                    if (EDBCutOffActivated) // Napustí brzdový válec pod uvadnutí EDB
                     {
-                        if (!OL3active)                                                    
-                            AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS; // Rychlost napouštění po uvadnutí EDB                                                                                
-                    }
-                    else
-                    if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
-                    {
-                        threshold = ThresholdBailOffOn;
-                        EDBEngineBrakeDelay = 0;
-                    }
+                        if (BrakeCylRelease)
+                            ThresholdBailOffOn = 0;
+
+                        if (AutoCylPressurePSI0 < 0.99f * ThresholdBailOffOn && ThresholdBailOffOn > 1.0f
+                            && AutoCylPressurePSI0 < loco.BrakeSystem.BrakeCylinderMaxSystemPressurePSI
+                            && AuxResPressurePSI > 0)
+                        {
+                            if (!OL3active)
+                                AutoCylPressurePSI0 += elapsedClockSeconds * MaxApplicationRatePSIpS; // Rychlost napouštění po uvadnutí EDB                                                                                
+                        }
+                        else
+                        if (AutoCylPressurePSI0 >= ThresholdBailOffOn)
+                        {
+                            threshold = ThresholdBailOffOn;
+                            EDBEngineBrakeDelay = 0;
+                        }
+                    }                    
                 }
                 else
+                    ThresholdBailOffOn = 0;
+
+                if (AutoCylPressurePSI < 1)
                 {
-                    ThresholdBailOffOn = (maxPressurePSI0 - BrakeLine1PressurePSI) * AuxCylVolumeRatioBase;
-                    ThresholdBailOffOn = MathHelper.Clamp(ThresholdBailOffOn, 0, MCP_TrainBrake);
+                    BailOffOn = false;
                 }
-                
+                                
                 thresholdOld = threshold;
 
                 if (loco.DynamicBrakeForceCurves != null || loco.DynamicBrakePercent > 1)
@@ -1917,6 +1958,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 ThresholdBailOffOn = 0;
                 BrakeCylReleaseEDBOn = false;
             }
+            #endregion Automatické napuštění brzdového válce po uvadnutí EDB
+
 
             // Převodník brzdné síly                          
             if (loco != null && maxPressurePSI0 < loco.MainResPressurePSI)
@@ -4464,16 +4507,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         TimeToResponseARRTrainBrake = 0.5f;
                         TimeToResponseARRTrainBrake2 = 0.5f;
                         if (train.IsFreight)
-                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.5f);                   
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.25f, 1.5f);                   
                         else
-                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.0f);
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.25f, 1.0f);
                     }
                     else
                     {                        
                         if (train.IsFreight)
-                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 1.0f);
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.25f, 1.0f);
                         else
-                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.0f, 0.5f);
+                            ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.25f, 0.5f);
                     }
 
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    

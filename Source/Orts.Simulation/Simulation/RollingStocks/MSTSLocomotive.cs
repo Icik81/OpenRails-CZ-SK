@@ -780,6 +780,9 @@ namespace Orts.Simulation.RollingStocks
         public float PressureConverterControllerValue;
         public float PressureConverterFake;
         public float EDBCutOffBrakePipePressurePSI;
+        public float EDBCutOffSpeedMpS;
+        public float EDBCutOffPercentMaxEDBForce;
+        public float EDBCutOffEDBCurrent;
 
 
         // Jindrich
@@ -1517,7 +1520,10 @@ namespace Orts.Simulation.RollingStocks
                     stf.SkipRestOfBlock();
                     break;
                 case "engine(edbcutoffbrakepipepressure": EDBCutOffBrakePipePressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                    
+                case "engine(edbcutoffspeed": EDBCutOffSpeedMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
+                case "engine(edbcutoffpercentmaxedbforce": EDBCutOffPercentMaxEDBForce = stf.ReadFloatBlock(STFReader.UNITS.None, null) / 100f; break;
+                case "engine(edbcutoffedbcurrent": EDBCutOffEDBCurrent = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
+
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1811,6 +1817,9 @@ namespace Orts.Simulation.RollingStocks
             CurrentSpeedStepACCurves = locoCopy.CurrentSpeedStepACCurves;
             CurrentSpeedStepDCCurves = locoCopy.CurrentSpeedStepDCCurves;
             EDBCutOffBrakePipePressurePSI = locoCopy.EDBCutOffBrakePipePressurePSI;
+            EDBCutOffSpeedMpS = locoCopy.EDBCutOffSpeedMpS;
+            EDBCutOffPercentMaxEDBForce = locoCopy.EDBCutOffPercentMaxEDBForce;
+            EDBCutOffEDBCurrent = locoCopy.EDBCutOffEDBCurrent;
 
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
