@@ -573,6 +573,7 @@ namespace Orts.Formats.Msts
         SWITCH51_LIGHT_BUTTON_DOWN,
         SWITCH52_LIGHT_BUTTON_UP,
         SWITCH52_LIGHT_BUTTON_DOWN,
+        PANTOGRAPHS_CURRENT,
 
         // ORTS
         ORTS_SCREEN_SELECT,

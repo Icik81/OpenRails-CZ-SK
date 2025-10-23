@@ -1571,7 +1571,13 @@ namespace Orts.Simulation.RollingStocks
             UnderVoltageProtection(elapsedClockSeconds);
 
             if (IsPlayerTrain)
-            {
+            {                
+                if (PantographVoltageV > 0)
+                    PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                else
+                    PantographsCurrent = 0;
+                //Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
+
                 if (LocoType != LocoTypes.Vectron && MultiSystemEngine && LocomotivePowerVoltage == 15000)
                 {
                     Loco15kV = SwitchingVoltageMode_OffAC ? true : false;                    
@@ -3884,7 +3890,7 @@ namespace Orts.Simulation.RollingStocks
                         if (PowerReductionResult10 == 1)
                             data = 1;
                     }
-                    break;
+                    break;                
 
                 default:
                     data = base.GetDataOf(cvc);

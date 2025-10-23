@@ -783,6 +783,7 @@ namespace Orts.Simulation.RollingStocks
         public float EDBCutOffSpeedMpS;
         public float EDBCutOffPercentMaxEDBForce;
         public float EDBCutOffEDBCurrent;
+        public float PantographsCurrent;
 
 
         // Jindrich
@@ -25105,6 +25106,21 @@ namespace Orts.Simulation.RollingStocks
                         if (ARRSpeedMinusButton)
                             data = 1;
                         else data = 0;
+                        break;
+                    }
+
+                case CABViewControlTypes.PANTOGRAPHS_CURRENT:
+                    {
+                        if (cvc.UpdateTime > cvc.ElapsedTime)
+                        {
+                            data = cvc.PreviousData;
+                            cvc.ElapsedTime += elapsedTime;
+                            break;
+                        }
+                        data = PantographsCurrent;
+                        if (cvc.UpdateTime > 0)
+                            cvc.PreviousData = data;
+                        cvc.ElapsedTime = 0;
                         break;
                     }
 

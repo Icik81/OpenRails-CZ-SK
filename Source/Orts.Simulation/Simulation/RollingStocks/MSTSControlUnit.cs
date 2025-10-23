@@ -237,7 +237,9 @@ namespace Orts.Simulation.RollingStocks
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
-                        AuxResPressurePSI = PU.AuxResPressurePSI;                                                
+                        AuxResPressurePSI = PU.AuxResPressurePSI;
+                        PantographsCurrent = PU.PantographsCurrent;
+                        //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);
 
                         // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
@@ -346,7 +348,7 @@ namespace Orts.Simulation.RollingStocks
                 AuxPowerOn = false;
                 PantoCanHVOffon = false;
                 SwitchingVoltageMode_OffAC = false;
-                SwitchingVoltageMode_OffDC = false;
+                SwitchingVoltageMode_OffDC = false;                
             }
         }
 
@@ -358,7 +360,7 @@ namespace Orts.Simulation.RollingStocks
             if (ControlUnitType == ControlUnitTypes.Electric && PowerSupply.CircuitBreaker != null)
             {
                 switch (cvc.ControlType)
-                {
+                {                    
                     case CABViewControlTypes.LINE_VOLTAGE:
                         if (cvc.UpdateTime != 0)
                             UpdateTimeEnable = true;
