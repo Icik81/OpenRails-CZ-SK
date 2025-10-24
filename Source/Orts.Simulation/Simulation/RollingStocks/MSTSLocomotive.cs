@@ -8081,8 +8081,7 @@ namespace Orts.Simulation.RollingStocks
 
             if (LocoType == LocoTypes.Katr7507)
                 TryKeepDeceleration(elapsedClockSeconds);
-
-            PrevMotiveForceN = MotiveForceN;
+            
             base.Update(elapsedClockSeconds);
 
 #if DEBUG_ADHESION

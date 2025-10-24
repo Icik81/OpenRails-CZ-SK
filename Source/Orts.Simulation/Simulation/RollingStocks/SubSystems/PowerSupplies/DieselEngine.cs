@@ -1091,8 +1091,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 // Icik
                 //return (CurrentDieselOutputPowerW <= 0f ? 0f : (OutputPowerW * 100f / CurrentDieselOutputPowerW)) ;
                 if (EngineStatus != Status.Running) return 0;
-                return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW * 100f / MaximumDieselPowerW + (LoadSMCoef * MaximumDieselPowerW * 100f/ MaximumDieselPowerW))
-                : (((CurrentDieselOutputPowerW / 0.85f * locomotive.TractiveForceN / locomotive.MaxForceN) + (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) + (LoadSMCoef * MaximumDieselPowerW * 100f / MaximumDieselPowerW)), 0, 100); 
+                return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 / 0.85f * 100f + (LoadSMCoef * 100f))
+                : ((OutputPowerW / 0.85f / MaximumDieselPowerW * 100f) + (locomotive.PowerReductionResult1 / 0.85f * 100f) + (LoadSMCoef * 100f))), 0, 100); 
             }
         }
         // Icik
@@ -1378,12 +1378,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             else
                 DemandedThrottlePercent = 0f;
 
-            if (locomotive.Direction == Direction.Reverse)
-                locomotive.PrevMotiveForceN *= -1f;
-
             if ((EngineStatus == DieselEngine.Status.Running) && (locomotive.ThrottlePercent > 0))
             {
-                OutputPowerW = (locomotive.PrevMotiveForceN > 0 ? locomotive.PrevMotiveForceN * locomotive.AbsSpeedMpS : 0) / locomotive.DieselEngines.NumOfActiveEngines;
+                OutputPowerW = (Math.Abs(locomotive.TractiveForceN) > 0 ? Math.Abs(locomotive.TractiveForceN) * locomotive.AbsWheelSpeedMpS : 0) / locomotive.DieselEngines.NumOfActiveEngines;
             }
             else
             {
