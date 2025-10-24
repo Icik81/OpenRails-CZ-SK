@@ -784,6 +784,7 @@ namespace Orts.Simulation.RollingStocks
         public float EDBCutOffPercentMaxEDBForce;
         public float EDBCutOffEDBCurrent;
         public float PantographsCurrent;
+        public bool LocoRecuperationOn;
 
 
         // Jindrich
@@ -5100,7 +5101,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                         // Parní topení počítá teplotu svým algoritmem
                         if (Train.CarSteamHeatOn && car.DieselHeaterPower == 0)
-                        {
+                        {                            
                             if (!car.WagonHasStove && car.WagonCanEnableSteamHeating && !car.LocomotiveCab)
                             {
                                 car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
@@ -5108,8 +5109,16 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                                 car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                            
                             if (!car.WagonCanEnableSteamHeating && !car.WagonHasStove)
                                 car.StatusHeatIsOn = false;
+
+                            // Povolí vytápění stanoviště kaloriferem nebo elektrikou
+                            if (!car.WagonHasStove && !car.WagonCanEnableSteamHeating && car.LocomotiveCab && car.CabHeatingIsOn)
+                            {
+                                car.WagonTemperature += car.TempCDelta + car.TempCDeltaAir;
+                                car.StatusHeatIsOn = true;
+                            }                            
                         }
                         else
                         {
@@ -8250,7 +8259,7 @@ namespace Orts.Simulation.RollingStocks
 
                         if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
                         {                            
-                            float DynamicBrakePercentTrainBrake = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                            float DynamicBrakePercentTrainBrake = (DynamicBrakeIntervention < 0.0f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
 
                             if ((DynamicBrakePercentTrainBrake > 0 && LastStateDynamicBrakePercent == -1) || (DynamicBrakePercentTrainBrake > 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue))                                
                                 LastStateDynamicBrakePercent = DynamicBrakePercent;
@@ -8274,6 +8283,7 @@ namespace Orts.Simulation.RollingStocks
                             // Icik
                             if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
                                 EDBOn = true;
+                            
                             if (DynamicBrakeIntervention == -1 && EDBOn && PressureConverterControllerValue == 0f && DynamicBrakeInterventionNormalState)
                             {
                                 DynamicBrakePercent = -1;

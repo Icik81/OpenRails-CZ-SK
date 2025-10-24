@@ -1572,12 +1572,6 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsPlayerTrain)
             {                
-                if (PantographVoltageV > 0)
-                    PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
-                else
-                    PantographsCurrent = 0;
-                //Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
-
                 if (LocoType != LocoTypes.Vectron && MultiSystemEngine && LocomotivePowerVoltage == 15000)
                 {
                     Loco15kV = SwitchingVoltageMode_OffAC ? true : false;                    
@@ -1587,7 +1581,8 @@ namespace Orts.Simulation.RollingStocks
                 FaultByPlayer(elapsedClockSeconds);
                 MUCableCommunication();
                 HelperLoco();
-                                
+                Pantographs_Current(elapsedClockSeconds);
+
                 if (!Simulator.TrainPowerKey)
                 {
                     if (LocoType != LocoTypes.Vectron)
@@ -2506,6 +2501,86 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }        
+
+        public void Pantographs_Current(float elapsedClockSeconds)
+        {
+            float WheelSpeedMarker = WheelSpeedMpS == 0 ? 1 : (WheelSpeedMpS / AbsWheelSpeedMpS);
+            PantographsCurrent = 0;
+
+            switch (LocomotiveTypeNumber)
+            {
+                // Odporové lokomotivy
+                case 110: case 111: case 112: case 114: 
+                case 121: case 122: case 123: case 124: case 125:
+                case 130: case 131:
+                case 140: case 141:
+                case 150: case 151:                
+                case 169:
+                case 180: case 181: case 182: case 183: case 184:                
+                case 209:
+                case 210: case 218:
+                case 230:
+                case 240: case 242:
+                case 260: case 263:
+                case 280:
+                case 340:
+                case 350:
+                case 365:
+                case 371: case 372:
+                case 393:
+                case 381:
+                case 440:
+                case 451: case 452:
+                case 460:
+                case 470: case 471:
+                case 480:
+                case 530:
+                case 550:
+                case 560:
+                case 640:
+                case 650:
+                case 654: case 655:
+                case 660:
+                case 671:
+                case 680: case 681: case 682:                
+                    {
+                        // Proud je dán součtem příkonu topení, pomocných spotřebičů a trakčního výkonu
+                        if (PantographVoltageV > 0)
+                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);                                                   
+                    }
+                    break;
+                // Tyristorové lokomotivy
+                case 162: case 163:                                
+                case 361: case 362: case 363:                                                                
+                    {
+                        if (PantographVoltageV > 0)
+                        {
+                            bool BrakeChokeOn = WheelSpeedMarker * TractiveForceN > 0 ? false : true;
+                            
+                            if (BrakeChokeOn) // Proud se maří v brzdovém odporu
+                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
+                            else
+                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * TractiveForceN * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                        }
+                    }
+                    break;
+
+                // Rekuperační lokomotivy
+                case 193:
+                case 380: case 383:
+                    {
+                        bool BrakeChokeOn = WheelSpeedMarker * TractiveForceN > 0 ? false : true;
+
+                        if (BrakeChokeOn && !LocoRecuperationOn) // Proud se maří v brzdovém odporu
+                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
+                        else
+                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * TractiveForceN * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                    }
+                    break;
+            }
+                        
+            //if (IsLeadLocomotive()) Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
+        }
 
         // Výpočet spotřeby vzduchu, jímka pomocného kompresoru
         protected void AuxAirConsumption(float elapsedClockSeconds)

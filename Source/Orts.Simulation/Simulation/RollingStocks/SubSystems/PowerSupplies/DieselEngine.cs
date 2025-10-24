@@ -1092,7 +1092,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 //return (CurrentDieselOutputPowerW <= 0f ? 0f : (OutputPowerW * 100f / CurrentDieselOutputPowerW)) ;
                 if (EngineStatus != Status.Running) return 0;
                 return MathHelper.Clamp((Math.Abs(locomotive.TractiveForceN) == 0f ? (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW * 100f / MaximumDieselPowerW + (LoadSMCoef * MaximumDieselPowerW * 100f/ MaximumDieselPowerW))
-                : (((OutputPowerW / 0.85f) + (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) + (LoadSMCoef * MaximumDieselPowerW * 100f / MaximumDieselPowerW)), 0, 100); 
+                : (((CurrentDieselOutputPowerW / 0.85f * locomotive.TractiveForceN / locomotive.MaxForceN) + (locomotive.PowerReductionResult1 / 0.85f * MaximumDieselPowerW)) * 100f / MaximumDieselPowerW) + (LoadSMCoef * MaximumDieselPowerW * 100f / MaximumDieselPowerW)), 0, 100); 
             }
         }
         // Icik
