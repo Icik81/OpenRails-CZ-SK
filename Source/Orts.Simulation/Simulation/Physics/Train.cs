@@ -167,6 +167,8 @@ namespace Orts.Simulation.Physics
         public bool NoSpeedLimit;        
         public bool AIKeepRun;
         public float AIMaxTrainSpeedCalculatedFromConFile;
+        public float SteamGeneratorRatio;
+        public float SteamGeneratorTempSetPointC;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -2412,7 +2414,7 @@ namespace Orts.Simulation.Physics
         // The model calculates the heat capacity of each car at a default temperature, and the various heat losses, such as heat loss from the cars, main steam pipe, leaks, etc are 
         // subtracted from this value. Heat gain from the radiation heat exchange area are added to this value. If all is ok then a balance should be achieved.
 
-        // Leaks in system, loss of heat (and pressure) as steam moves along train        
+        // Leaks in system, loss of heat (and pressure) as steam moves along train                
         public void UpdateCarSteamHeat(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
@@ -2459,20 +2461,21 @@ namespace Orts.Simulation.Physics
                 }
                 else
                     SteamHeatingIsAvailable = false;
-
-                mstsLocomotive.SteamGeneratorEnable = true;
-                if (mstsLocomotive.SteamGeneratorEnable)
+                
+                // Parogenerátor
+                SteamGeneratorRatio = 1.0f;
+                if (mstsLocomotive is MSTSDieselLocomotive && mstsLocomotive.SteamGeneratorEnable && mstsLocomotive.WagonHasTemperature)
                 {
                     // Update teploty páry generátoru
                     if (mstsLocomotive.MaxSteamGeneratorTempC == 0) mstsLocomotive.MaxSteamGeneratorTempC = 185.0f; // Max teplota páry generátoru                
-                    if (mstsLocomotive.SteamGeneratorPowerW == 0) mstsLocomotive.SteamGeneratorPowerW = 30000; // Max výkon parního generátoru v W  
+                    if (mstsLocomotive.SteamGeneratorPowerW == 0) mstsLocomotive.SteamGeneratorPowerW = 10000; // Max výkon parního generátoru v W  
                     if (mstsLocomotive.SteamGeneratorTempC == -1000) mstsLocomotive.SteamGeneratorTempC = mstsLocomotive.WagonTemperature; // Initial value
 
                     float TempCDeltaOutside = mstsLocomotive.WagonTemperature / mstsLocomotive.CarOutsideTempC0;
-                    float SteamGeneratorTempSetPointC = SteamHeatControllerCurrentValue == 0 ? 0 : (mstsLocomotive.MaxSteamGeneratorTempC / 2f) + (SteamHeatControllerCurrentValue * mstsLocomotive.MaxSteamGeneratorTempC / 2f);
+                    SteamGeneratorTempSetPointC = SteamHeatControllerCurrentValue == 0 ? 0 : (mstsLocomotive.MaxSteamGeneratorTempC / 2f) + (SteamHeatControllerCurrentValue * mstsLocomotive.MaxSteamGeneratorTempC / 2f);
                     SteamGeneratorTempSetPointC = MathHelper.Clamp(SteamGeneratorTempSetPointC, mstsLocomotive.WagonTemperature, mstsLocomotive.MaxSteamGeneratorTempC);
 
-                    if (mstsLocomotive.SteamGeneratorTempC < 0.90f * SteamGeneratorTempSetPointC)
+                    if (mstsLocomotive.SteamGeneratorTempC < 0.90f * SteamGeneratorTempSetPointC && (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
                     {
                         if (!mstsLocomotive.SteamGeneratorOn)
                             mstsLocomotive.SignalEvent(Event.SteamGeneratorOn);
@@ -2486,16 +2489,23 @@ namespace Orts.Simulation.Physics
                         mstsLocomotive.SteamGeneratorOn = false;
                     }
 
+                    if (mstsLocomotive.SteamGeneratorOn && (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
+                        mstsLocomotive.SteamGeneratorOn = false;
+
                     if (mstsLocomotive.SteamGeneratorOn)
-                        mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds;
+                        mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds * mstsLocomotive.SteamGeneratorTempC / SteamGeneratorTempSetPointC;
                     else
                         mstsLocomotive.SteamGeneratorTempC -= TempCDeltaOutside * elapsedClockSeconds / 10f;
 
                     mstsLocomotive.SteamGeneratorTempC = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC, mstsLocomotive.WagonTemperature, mstsLocomotive.MaxSteamGeneratorTempC);
+
+                    // Výpočet poměru aktuální teploty a nastavené teploty generátoru páry
+                    SteamGeneratorRatio = mstsLocomotive.SteamGeneratorTempC / SteamGeneratorTempSetPointC;
+
                     if (mstsLocomotive.IsLeadLocomotive())
                     {
-                        Simulator.Confirmer.MSG("SteamGeneratorTempSetPointC: " + (float)Math.Round(SteamGeneratorTempSetPointC, 2));
-                        Simulator.Confirmer.MSG2("SteamGeneratorTempC: " + (float)Math.Round(mstsLocomotive.SteamGeneratorTempC, 2));
+                        //Simulator.Confirmer.MSG("SteamGeneratorTempSetPointC: " + (float)Math.Round(SteamGeneratorTempSetPointC, 2));
+                        //Simulator.Confirmer.MSG2("SteamGeneratorTempC: " + (float)Math.Round(mstsLocomotive.SteamGeneratorTempC, 2));
                     }
                 }
 
@@ -2764,8 +2774,7 @@ namespace Orts.Simulation.Physics
                             car.CarHeatCurrentCompartmentHeatW -= car.CarNetSteamHeatLossWpTime * elapsedClockSeconds;  // Losses per elapsed time
                         }
                         else
-                        {
-
+                        {                            
                             car.CarHeatCurrentCompartmentHeatW += car.CarNetSteamHeatLossWpTime * elapsedClockSeconds;  // Gains per elapsed time         
                         }
 

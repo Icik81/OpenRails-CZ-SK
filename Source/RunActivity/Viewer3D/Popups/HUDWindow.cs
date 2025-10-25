@@ -637,7 +637,7 @@ namespace Orts.Viewer3D.Popups
                 string NoText = "";
                 string TypeHeatText;
                 var j = (i == 0) ? 0 : i;
-                var car = train.Cars[j];
+                var car = train.Cars[j];                
 
                 if (car.WagonHasTemperature && car.DieselHeaterPower > 0 && !car.LocomotiveCab)
                     TypeHeatText = Viewer.Catalog.GetString("DieselHeat");
@@ -667,8 +667,8 @@ namespace Orts.Viewer3D.Popups
 
                 statusConsist.Add(car.CarID + "\t" +
                     (car.Flipped ? Viewer.Catalog.GetString("Yes") : Viewer.Catalog.GetString("No")) + "\t" +
-                    (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +
-                    (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +
+                    (train.IsFreight ? Viewer.Catalog.GetString("Freight") : Viewer.Catalog.GetString("Pass")) + "\t" +                    
+                    (car.WagonHasTemperature ? Math.Round(car.WagonTemperature).ToString() + " °C" : NoText) + "\t" +                    
                     ((car.WagonHasTemperature && car.StatusHeatIsOn) || (car.Train.CarSteamHeatOn && !car.LocomotiveCab && car.StatusHeatIsOn) || (car.LocomotiveCab && car.StatusHeatIsOn) ? Viewer.Catalog.GetString("Active") : NoText) + "\t" +
                     (car.WagonHasTemperature && car.BrakeSystem.HeatingIsOn ? Viewer.Catalog.GetString("On") : Viewer.Catalog.GetString("Off")) + "\t" +
                     (TypeHeatText) + "\t" +

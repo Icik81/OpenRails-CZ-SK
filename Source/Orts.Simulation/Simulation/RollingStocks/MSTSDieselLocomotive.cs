@@ -993,6 +993,15 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0} = {1}\n", Simulator.Catalog.GetString("Control"),
                     Simulator.Catalog.GetParticularString("Control", ""));
 
+            if (SteamGeneratorEnable && IsLeadLocomotive())
+            {
+                status.AppendFormat("{0} = {1}", Simulator.Catalog.GetString("Steam Generator"),
+                    Simulator.Catalog.GetParticularString("Steam Temperature", ((float)Math.Round(SteamGeneratorTempC, 0)).ToString() + " °C"));
+
+                status.AppendFormat("{0} / {1}\n", Simulator.Catalog.GetString(""),
+                    Simulator.Catalog.GetParticularString("Steam Generator ", ((float)Math.Round(Train.SteamGeneratorTempSetPointC, 0)).ToString() + " °C"));
+            }            
+
             return status.ToString();
         }
 
@@ -1159,9 +1168,8 @@ namespace Orts.Simulation.RollingStocks
 
             if (IsSteamHeatFitted /*&& this.IsLeadLocomotive()*/)  // Only Update steam heating if train and locomotive fitted with steam heating
             {
-
                 CurrentSteamHeatPressurePSI = SteamHeatController.CurrentValue * MaxSteamHeatPressurePSI;
-
+             
                 // Calculate steam boiler usage values
                 // Don't turn steam heat on until pressure valve has been opened, water and fuel capacity also needs to be present, and steam boiler is not locked out
                 if (CurrentSteamHeatPressurePSI > 0.1 && CurrentLocomotiveSteamHeatBoilerWaterCapacityL > 0 && DieselLevelL > 0 && !IsSteamHeatBoilerLockedOut)
@@ -1173,18 +1181,20 @@ namespace Orts.Simulation.RollingStocks
 
                     // Calculate fuel usage for steam heat boiler
                     float FuelUsageLpS = L.FromGUK(pS.FrompH(TrainHeatBoilerFuelUsageGalukpH[pS.TopH(CalculatedCarHeaterSteamUsageLBpS)]));
-                    DieselLevelL -= FuelUsageLpS * elapsedClockSeconds; // Reduce Tank capacity as fuel used.
+                    
+                    if (SteamGeneratorOn)
+                        DieselLevelL -= FuelUsageLpS * elapsedClockSeconds; // Reduce Tank capacity as fuel used.
 
                     // Calculate water usage for steam heat boiler
                     float WaterUsageLpS = L.FromGUK(pS.FrompH(TrainHeatBoilerWaterUsageGalukpH[pS.TopH(CalculatedCarHeaterSteamUsageLBpS)]));
-                    CurrentLocomotiveSteamHeatBoilerWaterCapacityL -= WaterUsageLpS * elapsedClockSeconds; // Reduce Tank capacity as water used.
+                    
+                    if (SteamGeneratorTempC > 100.0f) // Only use water if steam generator is up to temperature
+                        CurrentLocomotiveSteamHeatBoilerWaterCapacityL -= WaterUsageLpS * elapsedClockSeconds; // Reduce Tank capacity as water used.
                 }
                 else
                 {
                     this.CarSteamHeatOn = false; // turn on steam effects on wagons
                 }
-
-
             }
         }
 

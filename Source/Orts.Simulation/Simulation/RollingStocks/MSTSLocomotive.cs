@@ -5114,7 +5114,7 @@ namespace Orts.Simulation.RollingStocks
                         {                            
                             if (!car.WagonHasStove && car.WagonCanEnableSteamHeating && !car.LocomotiveCab)
                             {
-                                car.WagonTemperature += car.CarCurrentCarriageHeatDeltaTempC + car.TempCDeltaAir;
+                                car.WagonTemperature += (car.CarCurrentCarriageHeatDeltaTempC * Train.SteamGeneratorRatio) + car.TempCDeltaAir;
                                 car.StatusHeatIsOn = true;
                             }
                             else

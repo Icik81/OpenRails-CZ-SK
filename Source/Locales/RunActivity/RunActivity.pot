@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-10-08 21:49:48+0200\n"
-"PO-Revision-Date: 2025-10-08 21:49:48+0200\n"
+"POT-Creation-Date: 2025-10-25 20:06:10+0200\n"
+"PO-Revision-Date: 2025-10-25 20:06:10+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -196,13 +196,13 @@ msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:262
+#: ../../RunActivity/Viewer3D/Weather.cs:241
 msgid ""
 "Restoring wrong weather type : trying to restore dynamic weather but save "
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2658
+#: ../../RunActivity/Viewer3D/Weather.cs:2637
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -445,43 +445,57 @@ msgid "MessageViewer"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:157
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:189
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:190
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:191
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:192
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:201
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:202
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:203
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:193
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:194
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:195
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:204
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:205
 #: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:206
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:207
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:208
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:209
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.cs:210
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:356
 #: ../../RunActivity/Viewer3D/Popups/TrainDrivingWindow.cs:864
 #: ../../RunActivity/Viewer3D/WebServices/TrainDrivingDisplay.cs:658
 msgid "-"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:149
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:159
 msgid "Active sounds"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:160
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:172
 msgid "Inactive sounds"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:192
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:207
 msgid "Sound cache"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:204
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:280
+msgid "WavCache"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:341
+msgid "AL Sources"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:375
 msgid "Selected sound"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:216
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:388
 msgid "3D"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:284
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:443
+msgid "Var. 5"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:484
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:471
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:828
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1671
@@ -494,38 +508,27 @@ msgstr ""
 msgid "Speed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:312
-msgid "Variable 2"
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:515
+msgid "Var. 2"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:331
-msgid "Variable 3"
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:536
+msgid "Var. 3"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:341
-msgid "Variable 1"
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:547
+msgid "Var. 1"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:351
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1677
-#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1679
-#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:80
-msgid "Distance"
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:558
+msgid "Dist."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:361
-msgid "Volume"
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:569
+msgid "Vol."
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:429
-msgid "WavCache"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:484
-msgid "AL Sources"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:513
+#: ../../RunActivity/Viewer3D/Debugging/SoundDebugForm.Designer.cs:581
 msgid "Sound Debug"
 msgstr ""
 
@@ -2220,6 +2223,12 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1676
 msgid "Auth"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1677
+#: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1679
+#: ../../RunActivity/Viewer3D/Popups/NextStationWindow.cs:80
+msgid "Distance"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1678
