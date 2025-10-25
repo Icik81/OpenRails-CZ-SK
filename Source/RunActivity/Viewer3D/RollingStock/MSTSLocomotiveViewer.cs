@@ -3923,6 +3923,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_UP:
                 case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_DOWN:
                 case CABViewControlTypes.PANTOGRAPHS_CURRENT:
+                case CABViewControlTypes.STEAMGENERATOR_TEMP:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

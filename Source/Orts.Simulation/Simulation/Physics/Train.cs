@@ -2412,8 +2412,7 @@ namespace Orts.Simulation.Physics
         // The model calculates the heat capacity of each car at a default temperature, and the various heat losses, such as heat loss from the cars, main steam pipe, leaks, etc are 
         // subtracted from this value. Heat gain from the radiation heat exchange area are added to this value. If all is ok then a balance should be achieved.
 
-        // Leaks in system, loss of heat (and pressure) as steam moves along train
-
+        // Leaks in system, loss of heat (and pressure) as steam moves along train        
         public void UpdateCarSteamHeat(float elapsedClockSeconds)
         {
             if (Simulator.Paused)
@@ -2460,6 +2459,45 @@ namespace Orts.Simulation.Physics
                 }
                 else
                     SteamHeatingIsAvailable = false;
+
+                mstsLocomotive.SteamGeneratorEnable = true;
+                if (mstsLocomotive.SteamGeneratorEnable)
+                {
+                    // Update teploty páry generátoru
+                    if (mstsLocomotive.MaxSteamGeneratorTempC == 0) mstsLocomotive.MaxSteamGeneratorTempC = 185.0f; // Max teplota páry generátoru                
+                    if (mstsLocomotive.SteamGeneratorPowerW == 0) mstsLocomotive.SteamGeneratorPowerW = 30000; // Max výkon parního generátoru v W  
+                    if (mstsLocomotive.SteamGeneratorTempC == -1000) mstsLocomotive.SteamGeneratorTempC = mstsLocomotive.WagonTemperature; // Initial value
+
+                    float TempCDeltaOutside = mstsLocomotive.WagonTemperature / mstsLocomotive.CarOutsideTempC0;
+                    float SteamGeneratorTempSetPointC = SteamHeatControllerCurrentValue == 0 ? 0 : (mstsLocomotive.MaxSteamGeneratorTempC / 2f) + (SteamHeatControllerCurrentValue * mstsLocomotive.MaxSteamGeneratorTempC / 2f);
+                    SteamGeneratorTempSetPointC = MathHelper.Clamp(SteamGeneratorTempSetPointC, mstsLocomotive.WagonTemperature, mstsLocomotive.MaxSteamGeneratorTempC);
+
+                    if (mstsLocomotive.SteamGeneratorTempC < 0.90f * SteamGeneratorTempSetPointC)
+                    {
+                        if (!mstsLocomotive.SteamGeneratorOn)
+                            mstsLocomotive.SignalEvent(Event.SteamGeneratorOn);
+                        mstsLocomotive.SteamGeneratorOn = true;
+                    }
+
+                    if (mstsLocomotive.SteamGeneratorTempC > 1.01f * SteamGeneratorTempSetPointC)
+                    {
+                        if (mstsLocomotive.SteamGeneratorOn)
+                            mstsLocomotive.SignalEvent(Event.SteamGeneratorOff);
+                        mstsLocomotive.SteamGeneratorOn = false;
+                    }
+
+                    if (mstsLocomotive.SteamGeneratorOn)
+                        mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds;
+                    else
+                        mstsLocomotive.SteamGeneratorTempC -= TempCDeltaOutside * elapsedClockSeconds / 10f;
+
+                    mstsLocomotive.SteamGeneratorTempC = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC, mstsLocomotive.WagonTemperature, mstsLocomotive.MaxSteamGeneratorTempC);
+                    if (mstsLocomotive.IsLeadLocomotive())
+                    {
+                        Simulator.Confirmer.MSG("SteamGeneratorTempSetPointC: " + (float)Math.Round(SteamGeneratorTempSetPointC, 2));
+                        Simulator.Confirmer.MSG2("SteamGeneratorTempC: " + (float)Math.Round(mstsLocomotive.SteamGeneratorTempC, 2));
+                    }
+                }
 
                 // Check to confirm that train is player driven and has passenger cars in the consist. Steam heating is OFF if steam heat valve is closed and no pressure is present
                 if (IsPlayerDriven && (PassengerCarsNumber > 0 || HeatedCarAttached) && (mstsLocomotive.IsSteamHeatFitted || HeatingBoilerCarAttached) && CurrentSteamHeatPressurePSI > 0)

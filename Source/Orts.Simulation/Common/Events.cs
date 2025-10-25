@@ -423,6 +423,8 @@ namespace Orts.Common
         PlayerWheelSlipWarningOff,
         PlayerWheelSlipOn,
         PlayerWheelSlipOff,
+        SteamGeneratorOn,
+        SteamGeneratorOff,
     }
 
     public static class Events
@@ -860,6 +862,8 @@ namespace Orts.Common
                         case 20176: return Event.PlayerWheelSlipWarningOff;
                         case 20177: return Event.PlayerWheelSlipOn;
                         case 20178: return Event.PlayerWheelSlipOff;
+                        case 20179: return Event.SteamGeneratorOn;
+                        case 20180: return Event.SteamGeneratorOff;
 
                         default: return 0;
                     }

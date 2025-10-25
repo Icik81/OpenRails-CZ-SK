@@ -574,6 +574,7 @@ namespace Orts.Formats.Msts
         SWITCH52_LIGHT_BUTTON_UP,
         SWITCH52_LIGHT_BUTTON_DOWN,
         PANTOGRAPHS_CURRENT,
+        STEAMGENERATOR_TEMP,
 
         // ORTS
         ORTS_SCREEN_SELECT,

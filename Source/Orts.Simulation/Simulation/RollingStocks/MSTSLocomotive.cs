@@ -785,7 +785,12 @@ namespace Orts.Simulation.RollingStocks
         public float EDBCutOffEDBCurrent;
         public float PantographsCurrent;
         public bool LocoRecuperationOn;
-
+        public bool SteamGeneratorEnable;
+        public float SteamGeneratorTempC = -1000;
+        public float MaxSteamGeneratorTempC;
+        public float SteamGeneratorPowerW;
+        public bool SteamGeneratorOn;
+        public bool SteamGeneratorOff;
 
         // Jindrich
         public bool IsActive = false;
@@ -1525,7 +1530,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(edbcutoffspeed": EDBCutOffSpeedMpS = stf.ReadFloatBlock(STFReader.UNITS.Speed, null); break;
                 case "engine(edbcutoffpercentmaxedbforce": EDBCutOffPercentMaxEDBForce = stf.ReadFloatBlock(STFReader.UNITS.None, null) / 100f; break;
                 case "engine(edbcutoffedbcurrent": EDBCutOffEDBCurrent = stf.ReadFloatBlock(STFReader.UNITS.Current, null); break;
-
+                case "engine(maxsteamgeneratortemp": MaxSteamGeneratorTempC = stf.ReadFloatBlock(STFReader.UNITS.Temperature, null); break;
+                case "engine(steamgeneratorpower": SteamGeneratorPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1822,6 +1828,8 @@ namespace Orts.Simulation.RollingStocks
             EDBCutOffSpeedMpS = locoCopy.EDBCutOffSpeedMpS;
             EDBCutOffPercentMaxEDBForce = locoCopy.EDBCutOffPercentMaxEDBForce;
             EDBCutOffEDBCurrent = locoCopy.EDBCutOffEDBCurrent;
+            MaxSteamGeneratorTempC = locoCopy.MaxSteamGeneratorTempC;
+            SteamGeneratorPowerW = locoCopy.SteamGeneratorPowerW;
 
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
@@ -2178,6 +2186,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(Wipers3ActivationSwitch[2]);
             outf.Write(SwitchEnginePosition[1]);
             outf.Write(SwitchEnginePosition[2]);
+            outf.Write(SteamGeneratorTempC);
             #endregion
 
             base.Save(outf);
@@ -2442,6 +2451,7 @@ namespace Orts.Simulation.RollingStocks
             Wipers3ActivationSwitch[2] = inf.ReadInt32();
             SwitchEnginePosition[1] = inf.ReadInt32();
             SwitchEnginePosition[2] = inf.ReadInt32();
+            SteamGeneratorTempC = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -5347,6 +5357,14 @@ namespace Orts.Simulation.RollingStocks
                     PowerReductionResult1 /= 1000000f;
                     PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
                 }
+                if (WagonType == WagonTypes.Engine && this is MSTSDieselLocomotive && SteamGeneratorOn) // Diesel lokomotivy s parním topením
+                {
+                    // Výpočet celkového úbytku výkonu 
+                    if (MaxPowerW == 0) MaxPowerW = 1000000f; // Default pro výkon, který nesmí být 0kW
+                    PowerReductionResult1 = (PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (SteamGeneratorPowerW * Train.SteamHeatControllerCurrentValue)) * (1000000f / MaxPowerW);
+                    PowerReductionResult1 /= 1000000f;
+                    PowerReductionResult1 = MathHelper.Clamp(PowerReductionResult1, 0, 1);
+                }
             }
         }
 
@@ -7426,7 +7444,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Testuje připojené potrubí pro vozy s parním vytápěním            
-            if (Train.CarSteamHeatOn && Train.prevTrainCarsCount != Train.Cars.Count)
+            if (/*Train.CarSteamHeatOn &&*/ Train.prevTrainCarsCount != Train.Cars.Count)
             {
                 int SteamHeatCarPosition = 0;
                 int CarPosition = 0;
@@ -7714,7 +7732,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-
+            
             if (IsSteamHeatFitted)
             {
                 UpdateCarSteamHeat(elapsedClockSeconds);
@@ -25117,7 +25135,6 @@ namespace Orts.Simulation.RollingStocks
                         else data = 0;
                         break;
                     }
-
                 case CABViewControlTypes.PANTOGRAPHS_CURRENT:
                     {
                         if (cvc.UpdateTime > cvc.ElapsedTime)
@@ -25130,6 +25147,12 @@ namespace Orts.Simulation.RollingStocks
                         if (cvc.UpdateTime > 0)
                             cvc.PreviousData = data;
                         cvc.ElapsedTime = 0;
+                        break;
+                    }
+                case CABViewControlTypes.STEAMGENERATOR_TEMP:
+                    {
+                        SteamGeneratorEnable = true;
+                        data = (float)Math.Round(SteamGeneratorTempC, 2);                        
                         break;
                     }
 
