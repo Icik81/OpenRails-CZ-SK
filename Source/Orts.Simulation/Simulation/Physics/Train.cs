@@ -169,6 +169,8 @@ namespace Orts.Simulation.Physics
         public float AIMaxTrainSpeedCalculatedFromConFile;
         public float SteamGeneratorRatio;
         public float SteamGeneratorTempSetPointC;
+        public bool SteamGeneratorEnable;
+        public float SteamGeneratorTempC;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -2463,13 +2465,15 @@ namespace Orts.Simulation.Physics
                     SteamHeatingIsAvailable = false;
                 
                 // Parogenerátor
-                SteamGeneratorRatio = 1.0f;
+                SteamGeneratorRatio = 1.0f;                
                 if (mstsLocomotive is MSTSDieselLocomotive && mstsLocomotive.SteamGeneratorEnable && mstsLocomotive.WagonHasTemperature)
                 {
                     // Update teploty páry generátoru
                     if (mstsLocomotive.MaxSteamGeneratorTempC == 0) mstsLocomotive.MaxSteamGeneratorTempC = 185.0f; // Max teplota páry generátoru                
                     if (mstsLocomotive.SteamGeneratorPowerW == 0) mstsLocomotive.SteamGeneratorPowerW = 10000; // Max výkon parního generátoru v W  
-                    if (mstsLocomotive.SteamGeneratorTempC == -1000) mstsLocomotive.SteamGeneratorTempC = mstsLocomotive.WagonTemperature; // Initial value
+                    if (mstsLocomotive.SteamGeneratorTempC == -1000) mstsLocomotive.SteamGeneratorTempC = mstsLocomotive.WagonTemperature; // Počáteční teplota páry generátoru
+                    if (mstsLocomotive.SteamGeneratorMinPressureLimitPSI == 0) mstsLocomotive.SteamGeneratorMinPressureLimitPSI = 5.0f * 14.50377f; // Default minimální tlak pro provoz parogenerátoru v PSI
+                    if (mstsLocomotive.SteamGeneratorAirComsumptionLpS == 0) mstsLocomotive.SteamGeneratorAirComsumptionLpS = 250.0f / 60f; // Default spotřeba vzduchu v litrech za sekundu
 
                     float TempCDeltaOutside = mstsLocomotive.WagonTemperature / mstsLocomotive.CarOutsideTempC0;
                     SteamGeneratorTempSetPointC = SteamHeatControllerCurrentValue == 0 ? 0 : (mstsLocomotive.MaxSteamGeneratorTempC / 2f) + (SteamHeatControllerCurrentValue * mstsLocomotive.MaxSteamGeneratorTempC / 2f);
@@ -2479,10 +2483,11 @@ namespace Orts.Simulation.Physics
                     {
                         if (!mstsLocomotive.SteamGeneratorOn)
                             mstsLocomotive.SignalEvent(Event.SteamGeneratorOn);
-                        mstsLocomotive.SteamGeneratorOn = true;
+                        if (mstsLocomotive.MainResPressurePSI > mstsLocomotive.SteamGeneratorMinPressureLimitPSI)
+                            mstsLocomotive.SteamGeneratorOn = true;
                     }
 
-                    if (mstsLocomotive.SteamGeneratorTempC > 1.01f * SteamGeneratorTempSetPointC)
+                    if (mstsLocomotive.SteamGeneratorTempC > 1.01f * SteamGeneratorTempSetPointC || mstsLocomotive.MainResPressurePSI < mstsLocomotive.SteamGeneratorMinPressureLimitPSI)
                     {
                         if (mstsLocomotive.SteamGeneratorOn)
                             mstsLocomotive.SignalEvent(Event.SteamGeneratorOff);
@@ -2492,15 +2497,27 @@ namespace Orts.Simulation.Physics
                     if (mstsLocomotive.SteamGeneratorOn && (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
                         mstsLocomotive.SteamGeneratorOn = false;
 
-                    if (mstsLocomotive.SteamGeneratorOn)
-                        mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds * mstsLocomotive.SteamGeneratorTempC / SteamGeneratorTempSetPointC;
+                    float SteamGeneratorTempCoef = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC / (mstsLocomotive.MaxSteamGeneratorTempC / 2f) * ((mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0 / (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].IdleRPM), 0, 1.5f);
+
+                    if (mstsLocomotive.SteamGeneratorOn)                                         
+                        mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds * SteamGeneratorTempCoef;                    
                     else
                         mstsLocomotive.SteamGeneratorTempC -= TempCDeltaOutside * elapsedClockSeconds / 10f;
 
+                    SteamGeneratorTempC = mstsLocomotive.SteamGeneratorTempC;
                     mstsLocomotive.SteamGeneratorTempC = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC, mstsLocomotive.WagonTemperature, mstsLocomotive.MaxSteamGeneratorTempC);
 
                     // Výpočet poměru aktuální teploty a nastavené teploty generátoru páry
                     SteamGeneratorRatio = mstsLocomotive.SteamGeneratorTempC / SteamGeneratorTempSetPointC;
+
+                    // Výpočet spotřeby vzduchu generátoru
+                    if (mstsLocomotive.SteamGeneratorOn)
+                    {
+                        float ActualAirConsumptionM3pS = mstsLocomotive.SteamGeneratorAirComsumptionLpS * elapsedClockSeconds / 1000f;
+                        float SteamGeneratorPressureDiffPSI = ActualAirConsumptionM3pS / mstsLocomotive.MainResVolumeM3 / 14.50377f;
+                        mstsLocomotive.MainResPressurePSI -= SteamGeneratorPressureDiffPSI;
+                        mstsLocomotive.MainResPressurePSI = MathHelper.Clamp(mstsLocomotive.MainResPressurePSI, 0.001f, mstsLocomotive.MaxMainResPressurePSI);
+                    }
 
                     if (mstsLocomotive.IsLeadLocomotive())
                     {

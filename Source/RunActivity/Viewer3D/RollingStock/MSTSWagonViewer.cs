@@ -585,7 +585,7 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            Viewer.Simulator.MSTSWagon = Car;
+            Viewer.Simulator.MSTSWagon = Car;            
             Pantograph1.UpdateStatePanto1(MSTSWagon.Pantographs[1].CommandUp, elapsedTime);
             Pantograph2.UpdateStatePanto2(MSTSWagon.Pantographs[2].CommandUp, elapsedTime);
             if (MSTSWagon.Pantographs.List.Count > 2) Pantograph3.UpdateStatePanto3(MSTSWagon.Pantographs[3].CommandUp, elapsedTime);
@@ -601,6 +601,10 @@ namespace Orts.Viewer3D.RollingStock
             // Steam leak in heating hose
             foreach (var drawer in HeatingHose)
             {
+                // Icik
+                if (!car.BrakeSystem.HeatingIsOn || (Car.Train.SteamGeneratorEnable && Car.Train.SteamGeneratorTempC < 100))
+                    car.HeatingHoseSteamVolumeM3pS = 0;                
+
                 drawer.SetOutput(car.HeatingHoseSteamVelocityMpS, car.HeatingHoseSteamVolumeM3pS, car.HeatingHoseParticleDurationS);
             }
 

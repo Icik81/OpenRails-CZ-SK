@@ -198,18 +198,14 @@ namespace Orts.Viewer3D.Popups
             vbox.AddHorizontalSeparator();
 
 
-            if ((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
+            if (((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) && !(Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
             {
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonCanEnableSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
                 {
-                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)
-                    {
-                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Stove Heating"), LabelAlignment.Center));
-                        if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
-                            buttonHeating.Color = Color.LightGreen;
-                    }
-                    else
-                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Steam Heating"), LabelAlignment.Center));
+                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)                    
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Stove Heating"), LabelAlignment.Center));                                            
+                    else                    
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Steam Heating"), LabelAlignment.Center));                                            
                 }
                 else
                 {
@@ -222,10 +218,10 @@ namespace Orts.Viewer3D.Popups
                         && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).EngineType != TrainCar.EngineTypes.Control)
                         vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Calorifer Heating"), LabelAlignment.Center));
                     else
-                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));
-                    if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
-                        buttonHeating.Color = Color.LightGreen;
+                        vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Electric Heating/Air"), LabelAlignment.Center));                    
                 }
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingIsOn)
+                    buttonHeating.Color = Color.LightGreen;
             }
             else
             {
@@ -569,7 +565,7 @@ namespace Orts.Viewer3D.Popups
 
         void buttonHeating_Click(Control arg1, Point arg2)
         {
-            if ((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
+            if (((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) && !(Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
             {
                 new HeatingCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.HeatingMenu += 1);
 
