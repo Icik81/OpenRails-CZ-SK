@@ -9627,10 +9627,8 @@ namespace Orts.Simulation.RollingStocks
                 }
                 CurrentTrackSandBoxCapacityKG = (float)Math.Round(CurrentTrackSandBoxCapacityL * 1.4f, 2);
 
-                // Calculate air consumption and change in main air reservoir pressure
-                float ActualAirConsumptionM3pS = TrackSanderAirComsumptionLpS * elapsedClockSeconds / 1000f;
-                float SanderPressureDiffPSI = ActualAirConsumptionM3pS / MainResVolumeM3 / 14.50377f;
-                MainResPressurePSI -= SanderPressureDiffPSI;
+                // Calculate air consumption and change in main air reservoir pressure                
+                MainResPressurePSI -= TrackSanderAirComsumptionLpS * elapsedClockSeconds / MainResVolumeM3 / 1000f * 14.50377f;
                 MainResPressurePSI = MathHelper.Clamp(MainResPressurePSI, 0.001f, MaxMainResPressurePSI);
                 if (IsLeadLocomotive())
                     Simulator.Confirmer.Message(ConfirmLevel.Information, CurrentTrackSandBoxCapacityKG + " Kg");

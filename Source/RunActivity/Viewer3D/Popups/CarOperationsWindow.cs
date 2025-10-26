@@ -200,7 +200,7 @@ namespace Orts.Viewer3D.Popups
 
             if (((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) && !(Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
             {
-                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonCanEnableSteamHeating || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
+                if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasSteamHeating || (!(Viewer.PlayerTrain.Cars[CarPosition] is MSTSDieselLocomotive) && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonCanEnableSteamHeating) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon) is MSTSSteamLocomotive)
                 {
                     if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonHasStove)                    
                         vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Stove Heating"), LabelAlignment.Center));                                            

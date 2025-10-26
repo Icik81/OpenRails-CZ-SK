@@ -2497,7 +2497,7 @@ namespace Orts.Simulation.Physics
                     if (mstsLocomotive.SteamGeneratorOn && (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus != RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running)
                         mstsLocomotive.SteamGeneratorOn = false;
 
-                    float SteamGeneratorTempCoef = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC / (mstsLocomotive.MaxSteamGeneratorTempC / 2f) * ((mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0 / (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].IdleRPM), 0, 1.5f);
+                    float SteamGeneratorTempCoef = MathHelper.Clamp(mstsLocomotive.SteamGeneratorTempC / (mstsLocomotive.MaxSteamGeneratorTempC / 2f) * ((mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].RealRPM0 / (mstsLocomotive as MSTSDieselLocomotive).DieselEngines[0].IdleRPM), 0.5f, 1.5f);
 
                     if (mstsLocomotive.SteamGeneratorOn)                                         
                         mstsLocomotive.SteamGeneratorTempC += mstsLocomotive.SteamGeneratorPowerW / 10000f * elapsedClockSeconds * SteamGeneratorTempCoef;                    
@@ -2513,9 +2513,7 @@ namespace Orts.Simulation.Physics
                     // Výpočet spotřeby vzduchu generátoru
                     if (mstsLocomotive.SteamGeneratorOn)
                     {
-                        float ActualAirConsumptionM3pS = mstsLocomotive.SteamGeneratorAirComsumptionLpS * elapsedClockSeconds / 1000f;
-                        float SteamGeneratorPressureDiffPSI = ActualAirConsumptionM3pS / mstsLocomotive.MainResVolumeM3 / 14.50377f;
-                        mstsLocomotive.MainResPressurePSI -= SteamGeneratorPressureDiffPSI;
+                        mstsLocomotive.MainResPressurePSI -= mstsLocomotive.SteamGeneratorAirComsumptionLpS * elapsedClockSeconds / mstsLocomotive.MainResVolumeM3 / 1000f * 14.50377f; 
                         mstsLocomotive.MainResPressurePSI = MathHelper.Clamp(mstsLocomotive.MainResPressurePSI, 0.001f, mstsLocomotive.MaxMainResPressurePSI);
                     }
 

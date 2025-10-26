@@ -623,6 +623,9 @@ namespace Orts.Viewer3D.RollingStock
             // Heating Steam Boiler Exhaust
             foreach (var drawer in HeatingSteamBoiler)
             {
+                if (car is MSTSDieselLocomotive && (car as MSTSDieselLocomotive).SteamGeneratorEnable && !(car as MSTSDieselLocomotive).SteamGeneratorOn)
+                    car.HeatingSteamBoilerVolumeM3pS = 0;
+
                 drawer.SetOutput(car.HeatingSteamBoilerVolumeM3pS, car.HeatingSteamBoilerDurationS, car.HeatingSteamBoilerSteadyColor);
             }
 
