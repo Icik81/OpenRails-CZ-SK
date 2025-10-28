@@ -311,7 +311,8 @@ namespace Orts.Viewer3D
             DayBrightnessCoef = Program.Simulator.Settings.DayAmbientLight / 20.0f;
             // Zařídí tmu v tunelu
             Program.Simulator.TunnelActivateM = 0;
-            if (Program.Simulator.TunnelLengthM > 35 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            Program.Simulator.CabInDarkTunnel = false;
+            if (Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
                 {
@@ -321,7 +322,8 @@ namespace Orts.Viewer3D
 
                     NightBrightness = NightBrightnessValue;
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelBeginM * (NightBrightnessValue / 35.0f));
-                    if (NightBrightness < 0.05f) NightBrightness = 0.05f;                    
+                    if (NightBrightness < 0.05f) NightBrightness = 0.05f;
+                    Program.Simulator.CabInDarkTunnel = false;
                 }
                 else
                 if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < 35)
@@ -333,12 +335,14 @@ namespace Orts.Viewer3D
                     NightBrightness = NightBrightnessValue;
                     NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelEndM * (NightBrightnessValue / 35.0f));
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
+                    Program.Simulator.CabInDarkTunnel = false;
                 }
                 else
-                if (Program.Simulator.CabInDarkTunnel)
-                {
+                if (Program.Simulator.PlayerCarIsInTunnel)
+                {                    
                     NightBrightness = 0.05f;
                     vIn = NightBrightnessValue;
+                    Program.Simulator.CabInDarkTunnel = true;
                 }
             }
 
@@ -919,7 +923,7 @@ namespace Orts.Viewer3D
             // Icik
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 35 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            if (Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)

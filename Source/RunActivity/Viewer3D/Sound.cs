@@ -1535,7 +1535,8 @@ namespace Orts.Viewer3D
                         foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                             if (name != null)
                             {
-                                if (name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine") || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace"))
+                                if (name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine") 
+                                    || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace") || name.ToLower().Contains("kompresor"))
                                 {
                                     MSTSStreamSoundOff = true;
                                     break;
