@@ -17170,13 +17170,13 @@ namespace Orts.Simulation.RollingStocks
                 LightsFrameUpdate++;
 
             FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
-            RearHeadLight = HeadLightPosition[2] > 0 ? true : false;            
+            RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
 
             if (Switch51LightEnable && Switch52LightEnable) // Vectron
             {
                 if (StationIsActivated[1] && FrontHeadLight) RearHeadLight = false;
                 if (StationIsActivated[2] && RearHeadLight) FrontHeadLight = false;
-                
+
                 // Lights setup
                 if (LightsFrameUpdate == 2 && LocoReadyToGo)
                 {
@@ -17184,7 +17184,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Train.Cars.Count == 1)
                         {
-                            Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;                             
+                            Switch5LightPosition[1] = Switch5LightPosition[2] = Switch6LightPosition[1] = Switch6LightPosition[2] = 0;
                             Switch5LightPosition[LocoStation] = 1;
                             Switch6LightPosition[LocoStation] = 2;
                         }
@@ -17243,7 +17243,7 @@ namespace Orts.Simulation.RollingStocks
                         case 2: LightRearLR = true; LightRearRR = true; break;
                         case 3: LightRearLW = true; LightRearRW = false; break;
                         case 4: LightRearLW = true; LightRearRW = true; break;
-                    }                    
+                    }
                 }
                 if (StationIsActivated[2])
                 {
@@ -17271,7 +17271,7 @@ namespace Orts.Simulation.RollingStocks
                         case 2: LightFrontLR = true; LightFrontRR = true; break;
                         case 3: LightFrontRW = true; LightFrontLW = false; break;
                         case 4: LightFrontLW = true; LightFrontRW = true; break;
-                    }                    
+                    }
                 }
             }
             else
@@ -17309,7 +17309,7 @@ namespace Orts.Simulation.RollingStocks
                                 Switch5LightPosition[LocoStation] = 2;
                                 Switch6LightPosition[LocoStation] = 2;
                             }
-                        }                        
+                        }
                     }
                 }
                 if (StationIsActivated[1])
@@ -17470,12 +17470,69 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                // Lights setup
-                if (LightsFrameUpdate == 2 && LocoReadyToGo)
+                if ((LocomotiveTypeNumber != 131 && LocomotiveTypeNumber != 471 && LocomotiveTypeNumber != 671 && LocomotiveTypeNumber != 971) 
+                    ||
+                    (!SlaveLoco && (LocomotiveTypeNumber == 131 || LocomotiveTypeNumber == 471 || LocomotiveTypeNumber == 671 || LocomotiveTypeNumber == 971))
+                    )
                 {
-                    if (IsLeadLocomotive() && !AcceptMUSignals)
+                    // Lights setup
+                    if (LightsFrameUpdate == 2 && LocoReadyToGo)
                     {
-                        if (Train.Cars.Count == 1)
+                        if (IsLeadLocomotive() && !AcceptMUSignals)
+                        {
+                            if (Train.Cars.Count == 1)
+                            {
+                                LightFrontLPosition = -1;
+                                LightFrontRPosition = -1;
+                                LightRearLPosition = 1;
+                                LightRearRPosition = 1;
+                            }
+                            else
+                            {
+                                LightFrontLPosition = -1;
+                                LightFrontRPosition = -1;
+                            }
+                        }
+                        if (IsLeadLocomotive() && AcceptMUSignals)
+                        {
+                            LightFrontLPosition = -1;
+                            LightFrontRPosition = -1;
+                            LightRearLPosition = 1;
+                            LightRearRPosition = 1;
+                        }
+                    }
+                    switch (LightFrontLPosition)
+                    {
+                        case -1: LightFrontLW = true; LightFrontLR = false; break;
+                        case 0: LightFrontLW = false; LightFrontLR = false; break;
+                        case 1: LightFrontLW = false; LightFrontLR = true; break;
+                    }
+                    switch (LightFrontRPosition)
+                    {
+                        case -1: LightFrontRW = true; LightFrontRR = false; break;
+                        case 0: LightFrontRW = false; LightFrontRR = false; break;
+                        case 1: LightFrontRW = false; LightFrontRR = true; break;
+                    }
+                    switch (LightRearLPosition)
+                    {
+                        case -1: LightRearLW = true; LightRearLR = false; break;
+                        case 0: LightRearLW = false; LightRearLR = false; break;
+                        case 1: LightRearLW = false; LightRearLR = true; break;
+                    }
+                    switch (LightRearRPosition)
+                    {
+                        case -1: LightRearRW = true; LightRearRR = false; break;
+                        case 0: LightRearRW = false; LightRearRR = false; break;
+                        case 1: LightRearRW = false; LightRearRR = true; break;
+                    }
+                }
+                // Světla řízená přes kabel MU
+                if (MasterLoco && (LocomotiveTypeNumber == 131 || LocomotiveTypeNumber == 471 || LocomotiveTypeNumber == 671 || LocomotiveTypeNumber == 971))
+                {
+                    // Lights setup
+                    if (LightsFrameUpdate == 2 && LocoReadyToGo)
+                    {
+                        if (Train.Cars.Count == 2)
                         {
                             LightFrontLPosition = -1;
                             LightFrontRPosition = -1;
@@ -17488,143 +17545,73 @@ namespace Orts.Simulation.RollingStocks
                             LightFrontRPosition = -1;
                         }
                     }
-                    if (IsLeadLocomotive() && AcceptMUSignals)
-                    {
-                        LightFrontLPosition = -1;
-                        LightFrontRPosition = -1;
-                        LightRearLPosition = 1;
-                        LightRearRPosition = 1;
-                    }
-                }
-                switch (LightFrontLPosition)
-                {
-                    case -1: LightFrontLW = true; LightFrontLR = false; break;
-                    case 0: LightFrontLW = false; LightFrontLR = false; break;
-                    case 1: LightFrontLW = false; LightFrontLR = true; break;
-                }
-                switch (LightFrontRPosition)
-                {
-                    case -1: LightFrontRW = true; LightFrontRR = false; break;
-                    case 0: LightFrontRW = false; LightFrontRR = false; break;
-                    case 1: LightFrontRW = false; LightFrontRR = true; break;
-                }
-                switch (LightRearLPosition)
-                {
-                    case -1: LightRearLW = true; LightRearLR = false; break;
-                    case 0: LightRearLW = false; LightRearLR = false; break;
-                    case 1: LightRearLW = false; LightRearLR = true; break;
-                }
-                switch (LightRearRPosition)
-                {
-                    case -1: LightRearRW = true; LightRearRR = false; break;
-                    case 0: LightRearRW = false; LightRearRR = false; break;
-                    case 1: LightRearRW = false; LightRearRR = true; break;
-                }
-
-                // Světla řízená přes kabel MU
-                if (IsLeadLocomotive() && AcceptMUSignals)
-                {
                     foreach (TrainCar car in Train.Cars)
                     {
-
-                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar && car.CarIsPlayerLoco)
+                        if (car.SlaveLoco && car.Flipped)
                         {
-                            if (!Flipped)
+                            car.LightFrontLR = false; car.LightFrontRR = false; car.LightFrontLW = false; car.LightFrontRW = false;
+                            car.LightRearLR = false; car.LightRearRR = false; car.LightRearLW = false; car.LightRearRW = false;
+
+                            switch (LightFrontLPosition)
                             {
-                                car.LightRearLPosition = 0;
-                                car.LightRearRPosition = 0;
+                                case -1: car.LightRearRW = true; car.LightRearRR = false; break;
+                                case 0: car.LightRearRW = false; car.LightRearRR = false; break;
+                                case 1: car.LightRearRW = false; car.LightRearRR = true; break;
                             }
-                            if (Flipped)
+                            switch (LightFrontRPosition)
                             {
-                                car.LightFrontLPosition = 0;
-                                car.LightFrontRPosition = 0;
+                                case -1: car.LightRearLW = true; car.LightRearLR = false; break;
+                                case 0: car.LightRearLW = false; car.LightRearLR = false; break;
+                                case 1: car.LightRearLW = false; car.LightRearLR = true; break;
+                            }
+                            switch (LightRearLPosition)
+                            {
+                                case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
+                                case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
+                                case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
+                            }
+                            switch (LightRearRPosition)
+                            {
+                                case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
+                                case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
+                                case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
                             }
                         }
                         else
-                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && car.CarIsPlayerLoco)
+                        if (car.SlaveLoco && !car.Flipped)
                         {
-                            if (Flipped)
-                            {
-                                car.LightRearLPosition = 0;
-                                car.LightRearRPosition = 0;
-                            }
-                            if (!Flipped)
-                            {
-                                car.LightFrontLPosition = 0;
-                                car.LightFrontRPosition = 0;
-                            }
-                        }
+                            car.LightFrontLR = false; car.LightFrontRR = false; car.LightFrontLW = false; car.LightFrontRW = false;
+                            car.LightRearLR = false; car.LightRearRR = false; car.LightRearLW = false; car.LightRearRW = false;
 
-                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.FirstCar && !car.CarIsPlayerLoco)
-                        {
-                            if (!car.Flipped)
+                            switch (LightFrontLPosition)
                             {
-                                if (!Flipped)
-                                {
-                                    car.LightFrontLPosition = -LightRearLPosition;
-                                    car.LightFrontRPosition = -LightRearRPosition;
-                                }
-                                if (Flipped)
-                                {
-                                    car.LightFrontLPosition = -LightFrontLPosition;
-                                    car.LightFrontRPosition = -LightFrontRPosition;
-                                }
-                                car.LightRearLPosition = 0;
-                                car.LightRearRPosition = 0;
+                                case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
+                                case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
+                                case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
                             }
-                            else
+                            switch (LightFrontRPosition)
                             {
-                                if (!Flipped)
-                                {
-                                    car.LightRearLPosition = -LightRearLPosition;
-                                    car.LightRearRPosition = -LightRearRPosition;
-                                }
-                                if (Flipped)
-                                {
-                                    car.LightRearLPosition = -LightFrontLPosition;
-                                    car.LightRearRPosition = -LightFrontRPosition;
-                                }
-                                car.LightFrontLPosition = 0;
-                                car.LightFrontRPosition = 0;
+                                case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
+                                case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
+                                case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
                             }
-                        }
-                        else
-                        if (car is MSTSLocomotive && car.AcceptMUSignals && car == Train.LastCar && !car.CarIsPlayerLoco)
-                        {
-                            if (!car.Flipped)
+                            switch (LightRearLPosition)
                             {
-                                if (!Flipped)
-                                {
-                                    car.LightRearLPosition = -LightFrontLPosition;
-                                    car.LightRearRPosition = -LightFrontRPosition;
-                                }
-                                if (Flipped)
-                                {
-                                    car.LightRearLPosition = -LightRearLPosition;
-                                    car.LightRearRPosition = -LightRearRPosition;
-                                }
-                                car.LightFrontLPosition = 0;
-                                car.LightFrontRPosition = 0;
+                                case -1: car.LightRearLW = true; car.LightRearLR = false; break;
+                                case 0: car.LightRearLW = false; car.LightRearLR = false; break;
+                                case 1: car.LightRearLW = false; car.LightRearLR = true; break;
                             }
-                            else
+                            switch (LightRearRPosition)
                             {
-                                if (!Flipped)
-                                {
-                                    car.LightFrontLPosition = -LightFrontLPosition;
-                                    car.LightFrontRPosition = -LightFrontRPosition;
-                                }
-                                if (Flipped)
-                                {
-                                    car.LightFrontLPosition = -LightRearLPosition;
-                                    car.LightFrontRPosition = -LightRearRPosition;
-                                }
-                                car.LightRearLPosition = 0;
-                                car.LightRearRPosition = 0;
+                                case -1: car.LightRearRW = true; car.LightRearRR = false; break;
+                                case 0: car.LightRearRW = false; car.LightRearRR = false; break;
+                                case 1: car.LightRearRW = false; car.LightRearRR = true; break;
                             }
                         }
                     }
                 }
             }
+
             // Nastavení světel pro postrk
             if (!IsLeadLocomotive() && this is MSTSLocomotive && this.LocoHelperOn)
             {
