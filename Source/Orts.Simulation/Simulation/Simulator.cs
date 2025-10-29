@@ -547,6 +547,7 @@ namespace Orts.Simulation
                 ActivityRun.AddRestrictZones(TRK.Tr_RouteFile, TSectionDat, TDB.TrackDB, Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones);
             }
             IsAutopilotMode = true;
+            ChanceToMorningFog = Random.Next(0, 10);
         }
         public void SetExplore(string path, string consist, string start, string season, string weather)
         {
@@ -581,6 +582,7 @@ namespace Orts.Simulation
             Season = (SeasonType)int.Parse(season);
             WeatherType = (WeatherType)int.Parse(weather);
             IsAutopilotMode = true;
+            ChanceToMorningFog = Random.Next(0, 10);
         }
 
         public void Start(CancellationToken cancellation)
@@ -655,6 +657,7 @@ namespace Orts.Simulation
                 if (!TrainDictionary.ContainsKey(playerTTTrain.Number)) TrainDictionary.Add(playerTTTrain.Number, playerTTTrain);
                 if (!NameDictionary.ContainsKey(playerTTTrain.Name.ToLower())) NameDictionary.Add(playerTTTrain.Name.ToLower(), playerTTTrain);
             }
+            ChanceToMorningFog = Random.Next(0, 10);
         }
 
         public void Stop()
