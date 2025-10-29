@@ -259,18 +259,21 @@ namespace Orts.Viewer3D
             {                   
                 // Ranní mlha
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
-                {
+                {                    
                     if (Program.Simulator.WeatherAdv != 7) // Profily
                         LastStateFogDistanceFinal = Program.Simulator.FogDistanceFinalBase;
                     else
                     if (LastStateFogDistanceFinal == -1) 
                         LastStateFogDistanceFinal = Program.Simulator.FogDistanceFinal;
-
-                    if (Program.Simulator.GameTime == 0)
+                    
+                    if (Program.Simulator.ChanceToMorningFog < 3) // 30% šance na mlhu
+                    {
+                        if (Program.Simulator.GameTime == 0)
                         Program.Simulator.Weather.FogDistance = MorningFogDistance;
-
-                    Program.Simulator.FogDistanceFinal = MorningFogDistance;
-                    Program.Simulator.MorningFogRun = true;
+                    
+                        Program.Simulator.FogDistanceFinal = MorningFogDistance;
+                        Program.Simulator.MorningFogRun = true;
+                    }
                 }
                 else
                 {

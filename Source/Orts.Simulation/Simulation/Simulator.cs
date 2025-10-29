@@ -290,6 +290,7 @@ namespace Orts.Simulation
         public float WorldThunderTime;
         public bool MorningFogRun;
         public bool DieselMotorTempWarning;
+        public int ChanceToMorningFog = 10;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -558,6 +559,7 @@ namespace Orts.Simulation
             ClockTime = StartTime.TotalSeconds;
             Season = (SeasonType)int.Parse(season);
             WeatherType = (WeatherType)int.Parse(weather);
+            ChanceToMorningFog = Random.Next(0, 10);
         }
 
         public void SetExploreThroughActivity(string path, string consist, string start, string season, string weather)
