@@ -424,6 +424,7 @@ namespace Orts.Simulation.RollingStocks
         public int MPBrakeCarMode = 0;
         public int MPBrakeCarModePL = 0;
         public bool CarIsOnLvlCrossover;
+        public bool CarIsOnLvlCrossoverRun;
         public bool WagonIsFlipped;
         public int TriggerHornNumber = -1;
         public bool HornNumber1;

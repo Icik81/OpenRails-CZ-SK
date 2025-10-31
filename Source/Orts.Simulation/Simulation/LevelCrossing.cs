@@ -156,7 +156,7 @@ namespace Orts.Simulation
                     
                     foreach (TrainCar Car in train.Cars)
                     {
-                        if (WorldLocation.Within(crossing.Location, Car.WorldPosition.WorldLocation, 2))
+                        if (WorldLocation.Within(crossing.Location, Car.WorldPosition.WorldLocation, 5))
                             Car.CarIsOnLvlCrossover = true; // Vůz je na přejezdu                    
                         else
                             Car.CarIsOnLvlCrossover = false;

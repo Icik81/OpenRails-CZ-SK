@@ -9354,7 +9354,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         float Time0;
         float Time1;
-        bool TimeToGenerate;
+        bool TimeToGenerate;        
         public float TreeLeavesLevel;
         float RandomDelay0;
         float RandomDelay1;
@@ -9527,21 +9527,36 @@ namespace Orts.Simulation.RollingStocks
                 if (Simulator.Season == SeasonType.Autumn && AbsSpeedMpS > 0.1f)
                 {
                     Time0 += elapsedClockSeconds;
-                    if (Time0 < 0.5f)
+                    if (Time0 < 0.5f && !CarIsOnLvlCrossoverRun)
                         RandomDelay0 = Simulator.Random.Next(50, 90);
+
+                    if (CarIsOnLvlCrossover && !CarIsOnLvlCrossoverRun)
+                    {
+                        RandomDelay0 = Simulator.Random.Next(0, 2);
+                        CarIsOnLvlCrossoverRun = true;
+                    }
+
+                    if (!CarIsOnLvlCrossover && CarIsOnLvlCrossoverRun)
+                    {                        
+                        CarIsOnLvlCrossoverRun = false;
+                    }
+
                     if (Time0 > RandomDelay0 || TimeToGenerate)
                     {
-                        if (!TimeToGenerate)
+                        if (!TimeToGenerate)                        
                             TreeLeavesLevel = Simulator.Random.Next(10, 40);
+                        
                         Time1 += elapsedClockSeconds;
+                        
                         if (Time1 < 0.5f)
                             RandomDelay1 = Simulator.Random.Next(5, 10);
+                        
                         TimeToGenerate = true;
                         if (Time1 > RandomDelay1)
                         {
                             Time1 = 0;
                             TimeToGenerate = false;
-                            TreeLeavesLevel = 0;
+                            TreeLeavesLevel = 0;                            
                         }
                         Time0 = 0;
                     }
