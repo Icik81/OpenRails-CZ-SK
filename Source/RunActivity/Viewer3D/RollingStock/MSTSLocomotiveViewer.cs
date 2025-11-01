@@ -493,14 +493,14 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         if (UserInput.IsDown(UserCommand.ControlDynamicBrakeIncrease) && Locomotive.BrakeSystem.PressureConverterBase > 0.001f)
                         {
-                            Locomotive.PressureConverterControllerValue += elapsedTime.ClockSeconds * 0.125f;
+                            Locomotive.PressureConverterControllerValue += elapsedTime.ClockSeconds * 0.225f;
                             if (Locomotive.PressureConverterControllerValue > 1.0f)
                                 Locomotive.PressureConverterControllerValue = 1.0f;                            
                         }
                         else
                         if (UserInput.IsDown(UserCommand.ControlDynamicBrakeDecrease))
                         {
-                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.125f;
+                            Locomotive.PressureConverterControllerValue -= elapsedTime.ClockSeconds * 0.225f;
                             if (Locomotive.PressureConverterControllerValue < 0)
                                 Locomotive.PressureConverterControllerValue = 0;                            
                         }

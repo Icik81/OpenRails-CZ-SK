@@ -1990,11 +1990,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 PressureConverterBase = 0;
             
             if (loco != null && loco.Battery && Math.Round(PressureConverterBase) > Math.Round(PressureConverter))
-                PressureConverter += elapsedClockSeconds * MaxApplicationRatePSIpS;
+                PressureConverter += elapsedClockSeconds * 0.225f * MCP_TrainBrake;
 
             if (loco != null && Math.Round(PressureConverterBase) < Math.Round(PressureConverter))
-                PressureConverter -= elapsedClockSeconds * MaxReleaseRatePSIpS;
-            
+                PressureConverter -= elapsedClockSeconds * 0.225f * MCP_TrainBrake;
+
             if (AutoCylPressurePSI0 < 0)
                 AutoCylPressurePSI0 = 0;
 
