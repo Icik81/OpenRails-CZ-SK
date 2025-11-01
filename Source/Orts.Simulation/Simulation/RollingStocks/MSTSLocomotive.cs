@@ -3366,6 +3366,23 @@ namespace Orts.Simulation.RollingStocks
                 SlaveCarNumber2++;
             }
 
+            // Slave 3
+            int SlaveCarNumber3 = 0;
+            foreach (TrainCar car in Train.Cars)
+            {
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
+                {
+                    if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber3 == SlaveCarNumber2 + 1 || SlaveCarNumber3 == SlaveCarNumber2 - 1 || SlaveCarNumber3 == SlaveCarNumber2 + 2 || SlaveCarNumber3 == SlaveCarNumber2 - 2))
+                    {
+                        Train.SlaveLoco3 = car;
+                        Train.SlaveCarNumber3 = SlaveCarNumber3;
+                        car.SlaveLoco = true;
+                        break;
+                    }
+                }
+                SlaveCarNumber3++;
+            }
+
             if (Train.SlaveLoco1 == null)
             {
                 Train.SlaveCarNumber1 = -1;
@@ -3373,6 +3390,10 @@ namespace Orts.Simulation.RollingStocks
             if (Train.SlaveLoco2 == null)
             {
                 Train.SlaveCarNumber2 = -1;
+            }
+            if (Train.SlaveLoco3 == null)
+            {
+                Train.SlaveCarNumber3 = -1;
             }
 
             if (Train.MasterLoco != null && Train.SlaveLoco1 != null)
@@ -8276,7 +8297,15 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Confirmer.MSG2("PressureConverterControllerValue: " + PressureConverterControllerValue);
 
             // Resetování hodnoty pro případ že není zapnutá baterie
-            if (!Battery) LastStateDynamicBrakePercent = -1;
+            if (!Battery)
+            {
+                DynamicBrakePercent = -1;
+                LocalDynamicBrakePercent = -1;
+                EDBOn = false;
+                LastStateDynamicBrakePercent = -1;
+                DynamicBrakeInterventionNormalState = false;
+                DynamicBrakeController.CurrentValue = 0;
+            }
 
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {
@@ -8335,6 +8364,7 @@ namespace Orts.Simulation.RollingStocks
                                 EDBOn = false;
                                 LastStateDynamicBrakePercent = -1;
                                 DynamicBrakeInterventionNormalState = false;
+                                DynamicBrakeController.CurrentValue = 0;
                             }
                         }
                     }
@@ -11298,13 +11328,15 @@ namespace Orts.Simulation.RollingStocks
             }
             else if (!toState && DynamicBrake && DynamicBrakePercent > -1 && DynamicBrakeIntervention < 0)
             {
-                SignalEvent(Event.DynamicBrakeOff);
-                DynamicBrakePercent = -1;
+                SignalEvent(Event.DynamicBrakeOff);                
                 DynamicBrakeController.CommandStartTime = Simulator.ClockTime;
                 StopDynamicBrakeIncrease();
-                LastStateDynamicBrakePercent = -1;
+                DynamicBrakePercent = -1;
+                LocalDynamicBrakePercent = -1;
                 EDBOn = false;
+                LastStateDynamicBrakePercent = -1;
                 DynamicBrakeInterventionNormalState = false;
+                DynamicBrakeController.CurrentValue = 0;
             }
         }
 

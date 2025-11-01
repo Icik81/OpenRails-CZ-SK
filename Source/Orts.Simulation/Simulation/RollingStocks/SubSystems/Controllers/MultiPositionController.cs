@@ -410,8 +410,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         if (Locomotive.ControllerVolts < 0)
                             Locomotive.ControllerVolts = 0;
                         Locomotive.RequiredDecelerationPercent = 0;                        
-                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
-                        Locomotive.LastStateDynamicBrakePercent = -1;
+                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);                        
+                        Locomotive.LastStateDynamicBrakePercent = -1;                        
                     }
                 }
             }
