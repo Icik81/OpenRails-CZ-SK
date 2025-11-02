@@ -8297,7 +8297,7 @@ namespace Orts.Simulation.RollingStocks
             //Simulator.Confirmer.MSG2("PressureConverterControllerValue: " + PressureConverterControllerValue);
 
             // Resetování hodnoty pro případ že není zapnutá baterie
-            if (!Battery)
+            if (!Battery && DynamicBrakeController != null)
             {
                 DynamicBrakePercent = -1;
                 LocalDynamicBrakePercent = -1;
