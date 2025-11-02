@@ -199,7 +199,10 @@ namespace Orts.Simulation
         public float TunnelActivateM;
         public bool CabLightActivate;
         public bool CabFloodLightActivate;
+        public bool HasCabLightDirectory;
+        public bool HasCabNightDirectory;
         public bool CabInDarkTunnel;
+        public bool CarInDarkTunnel;
         public float _NightBrightnessValue;
         public bool RefreshWorld;
         public bool RefreshWire;
