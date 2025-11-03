@@ -2121,7 +2121,7 @@ namespace Orts.Viewer3D.RollingStock
             if (DayTextures.Keys.Contains(FileName))
                 return false;
 
-            DayTextures.Add(FileName, viewer.TextureManager.Get(FileName, true));
+            DayTextures.Add(FileName, viewer.TextureManager.Get(FileName, true));            
 
             string lightdirectory = "";
             // Icik
@@ -2135,21 +2135,19 @@ namespace Orts.Viewer3D.RollingStock
             }
             else
             {
-                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "night")))
-                {
-                    viewer.PlayerLocomotive.HasCabNightDirectory = true;
-                    var nightpath = Path.Combine(Path.Combine(Path.GetDirectoryName(FileName), "night"), Path.GetFileName(FileName));
-                    NightTextures.Add(FileName, viewer.TextureManager.Get(nightpath));
-                }
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "night")))                
+                    viewer.PlayerLocomotive.HasCabNightDirectory = true;                                    
 
-                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "cablight")))
-                {
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "cablight")))                
                     viewer.PlayerLocomotive.HasCabLightDirectory = true;
-                    lightdirectory = Path.Combine(Path.GetDirectoryName(FileName), "cablight");
-                    var lightpath = Path.Combine(lightdirectory, Path.GetFileName(FileName));
-                    var lightTexture = viewer.TextureManager.Get(lightpath);
-                    LightTextures.Add(FileName, lightTexture);
-                }
+
+                var nightpath = Path.Combine(Path.Combine(Path.GetDirectoryName(FileName), "night"), Path.GetFileName(FileName));
+                NightTextures.Add(FileName, viewer.TextureManager.Get(nightpath));
+
+                lightdirectory = Path.Combine(Path.GetDirectoryName(FileName), "cablight");
+                var lightpath = Path.Combine(lightdirectory, Path.GetFileName(FileName));
+                var lightTexture = viewer.TextureManager.Get(lightpath);
+                LightTextures.Add(FileName, lightTexture);
             }
                                                            
             return Directory.Exists(lightdirectory);
