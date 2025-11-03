@@ -1536,7 +1536,7 @@ namespace Orts.Viewer3D
                             if (name != null)
                             {
                                 if (name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine") 
-                                    || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace") || name.ToLower().Contains("kompresor"))
+                                    || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace") || (!car.IsPlayerTrain && name.ToLower().Contains("kompresor")))
                                 {
                                     MSTSStreamSoundOff = true;
                                     break;
@@ -1546,7 +1546,7 @@ namespace Orts.Viewer3D
                 }
             }
                 
-            if (car != null && !car.IsPlayerTrain && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
+            if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
             {
                 // Plynule ztišší zvuk motoru                 
                 if (car != null && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon)

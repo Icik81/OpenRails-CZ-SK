@@ -920,7 +920,7 @@ namespace Orts.Viewer3D
                     IsNightTexture = true;
             }            
 
-            if (!IsNightTexture)
+            if (!IsNightTexture || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)) * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
             
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
@@ -955,13 +955,16 @@ namespace Orts.Viewer3D
             
             LastStateCabnightColorModifierValue = CabnightColorModifierValue;
 
-            if (IsNightTexture)
+            if (IsNightTexture && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = 0.9f;
 
             if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate)
             {
                 if (Program.Simulator.CabFloodLightActivate)
                     CabnightColorModifierValue = (Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
+                else
+                if (Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
+                    CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
                 else
                 if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0));
@@ -998,7 +1001,7 @@ namespace Orts.Viewer3D
             Program.Simulator.DashLightCanActivate = false;
             float CabnightColorModifierNightReference = 0.15f;
             
-            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierNightReference = 0.35f;
 
             if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)

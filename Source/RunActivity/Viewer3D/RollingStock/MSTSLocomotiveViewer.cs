@@ -2386,7 +2386,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         retval = LightTextures[FileName];
                         if (retval == SharedMaterialManager.MissingTexture)
-                            retval = hasCabLightDirectory && NightTextures.Count > 0? NightTextures[FileName] : DayTextures[FileName];                        
+                            retval = hasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory ? NightTextures[FileName] : DayTextures[FileName];                        
                     }
 
                     // Osvětlení přístrojů v kabině
@@ -2398,7 +2398,7 @@ namespace Orts.Viewer3D.RollingStock
                 else if (isDark)
                 {
                     // Darkness: use night texture, if available.
-                    if (NightTextures.Count > 0)
+                    if (!Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                         retval = NightTextures[FileName];
                     // Only use night texture as-is in this situation.
                     isNightTexture = retval != SharedMaterialManager.MissingTexture;
