@@ -402,7 +402,7 @@ namespace Orts.Viewer3D
                         if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
                             // Kontrolka = vždy plně čitelná textura, bez vlivu shaderu
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null);
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null);                            
                         }
                         else
                         {

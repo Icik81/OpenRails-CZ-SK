@@ -916,7 +916,7 @@ namespace Orts.Viewer3D
             if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
             {
                 // Noční textury se aktivují jen pokud jsou k dispozici v NIGHT složce
-                if (Program.Simulator.HasCabNightDirectory)
+                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory)
                     IsNightTexture = true;
             }            
 
@@ -952,7 +952,7 @@ namespace Orts.Viewer3D
                     Program.Simulator.CabInDarkTunnel = true;                    
                 }
             }
-
+            
             LastStateCabnightColorModifierValue = CabnightColorModifierValue;
 
             if (IsNightTexture)
@@ -963,16 +963,16 @@ namespace Orts.Viewer3D
                 if (Program.Simulator.CabFloodLightActivate)
                     CabnightColorModifierValue = (Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
                 else
-                if (Program.Simulator.HasCabNightDirectory && !Program.Simulator.HasCabLightDirectory)
+                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0));
                 else
-                if (Program.Simulator.HasCabNightDirectory && Program.Simulator.HasCabLightDirectory)
+                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
                 else
-                if (!Program.Simulator.HasCabNightDirectory && Program.Simulator.HasCabLightDirectory)
+                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
                 else
-                if (!Program.Simulator.HasCabNightDirectory && !Program.Simulator.HasCabLightDirectory)
+                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));                                
             }            
 
@@ -998,7 +998,7 @@ namespace Orts.Viewer3D
             Program.Simulator.DashLightCanActivate = false;
             float CabnightColorModifierNightReference = 0.15f;
             
-            if (Program.Simulator.HasCabNightDirectory && Program.Simulator.HasCabLightDirectory)
+            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                 CabnightColorModifierNightReference = 0.35f;
 
             if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)

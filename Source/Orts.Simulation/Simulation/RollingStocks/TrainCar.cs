@@ -436,6 +436,9 @@ namespace Orts.Simulation.RollingStocks
         public float CarSoundActivationTimer;
         public bool BrakePipeAirLoss;
         public bool StaticSet;
+        public bool HasCabLightDirectory;
+        public bool HasCabNightDirectory;
+        public bool HasORTSCabLightDirectory;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

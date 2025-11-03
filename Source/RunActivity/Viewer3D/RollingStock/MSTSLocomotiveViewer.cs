@@ -2123,20 +2123,35 @@ namespace Orts.Viewer3D.RollingStock
 
             DayTextures.Add(FileName, viewer.TextureManager.Get(FileName, true));
 
-            var nightpath = Path.Combine(Path.Combine(Path.GetDirectoryName(FileName), "night"), Path.GetFileName(FileName));
-            NightTextures.Add(FileName, viewer.TextureManager.Get(nightpath));
-
+            string lightdirectory = "";
             // Icik
-            if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "night")))            
-                Program.Simulator.HasCabNightDirectory = true;
-            
-            if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "cablight")))
-                Program.Simulator.HasCabLightDirectory = true;
+            if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "ortscablight")))
+            {
+                viewer.PlayerLocomotive.HasORTSCabLightDirectory = true;
+                lightdirectory = Path.Combine(Path.GetDirectoryName(FileName), "ortscablight");
+                var lightpath = Path.Combine(lightdirectory, Path.GetFileName(FileName));
+                var lightTexture = viewer.TextureManager.Get(lightpath);
+                LightTextures.Add(FileName, lightTexture);
+            }
+            else
+            {
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "night")))
+                {
+                    viewer.PlayerLocomotive.HasCabNightDirectory = true;
+                    var nightpath = Path.Combine(Path.Combine(Path.GetDirectoryName(FileName), "night"), Path.GetFileName(FileName));
+                    NightTextures.Add(FileName, viewer.TextureManager.Get(nightpath));
+                }
 
-            var lightdirectory = Path.Combine(Path.GetDirectoryName(FileName), "cablight");
-            var lightpath = Path.Combine(lightdirectory, Path.GetFileName(FileName));
-            var lightTexture = viewer.TextureManager.Get(lightpath);
-            LightTextures.Add(FileName, lightTexture);
+                if (Directory.Exists(Path.Combine(Path.GetDirectoryName(FileName), "cablight")))
+                {
+                    viewer.PlayerLocomotive.HasCabLightDirectory = true;
+                    lightdirectory = Path.Combine(Path.GetDirectoryName(FileName), "cablight");
+                    var lightpath = Path.Combine(lightdirectory, Path.GetFileName(FileName));
+                    var lightTexture = viewer.TextureManager.Get(lightpath);
+                    LightTextures.Add(FileName, lightTexture);
+                }
+            }
+                                                           
             return Directory.Exists(lightdirectory);
         }
 
@@ -2371,7 +2386,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         retval = LightTextures[FileName];
                         if (retval == SharedMaterialManager.MissingTexture)
-                            retval = hasCabLightDirectory ? NightTextures[FileName] : DayTextures[FileName];
+                            retval = hasCabLightDirectory && NightTextures.Count > 0? NightTextures[FileName] : DayTextures[FileName];                        
                     }
 
                     // Osvětlení přístrojů v kabině
@@ -2383,7 +2398,8 @@ namespace Orts.Viewer3D.RollingStock
                 else if (isDark)
                 {
                     // Darkness: use night texture, if available.
-                    retval = NightTextures[FileName];
+                    if (NightTextures.Count > 0)
+                        retval = NightTextures[FileName];
                     // Only use night texture as-is in this situation.
                     isNightTexture = retval != SharedMaterialManager.MissingTexture;
                 }
@@ -2461,7 +2477,7 @@ namespace Orts.Viewer3D.RollingStock
                     // Loading ACE files, skip displaying ERROR messages
                     foreach (var cabfile in cabView.CVFFile.TwoDViews)
                     {
-                        HasCabLightDirectory = CABTextureManager.LoadTextures(viewer, cabfile);
+                        HasCabLightDirectory = CABTextureManager.LoadTextures(viewer, cabfile);                        
                     }
 
                     if (firstOne)

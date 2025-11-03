@@ -2625,6 +2625,7 @@ namespace Orts.Simulation.RollingStocks
                         case PantographState.Lowering:
                         case PantographState.Down:
                             {
+                                T_PantoUp[i] = 0;
                                 if (!AirForPantograph)
                                     Pantographs[i].PantographsUpBlocked = true;
                                 else Pantographs[i].PantographsUpBlocked = false;
