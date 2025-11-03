@@ -1546,7 +1546,7 @@ namespace Orts.Viewer3D
                 }
             }
                 
-            if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
+            if (car != null && !car.IsPlayerTrain && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
             {
                 // Plynule ztišší zvuk motoru                 
                 if (car != null && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon)
