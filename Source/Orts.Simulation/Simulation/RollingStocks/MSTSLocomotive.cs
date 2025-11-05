@@ -10118,6 +10118,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StartSteamHeatIncrease(float? target)
         {
+            if (this is MSTSDieselLocomotive && !SteamGeneratorEnable) return;
             SteamHeatController.CommandStartTime = Simulator.ClockTime;
             if (IsPlayerTrain)
                 Simulator.Confirmer.ConfirmWithPerCent(CabControl.SteamHeat, CabSetting.Increase, SteamHeatController.CurrentValue * 100);
@@ -10127,12 +10128,14 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopSteamHeatIncrease()
         {
+            if (this is MSTSDieselLocomotive && !SteamGeneratorEnable) return;
             SteamHeatController.StopIncrease();
             new ContinuousSteamHeatCommand(Simulator.Log, 1, true, SteamHeatController.CurrentValue, SteamHeatController.CommandStartTime);
         }
 
         public void StartSteamHeatDecrease(float? target)
         {
+            if (this is MSTSDieselLocomotive && !SteamGeneratorEnable) return;
             if (IsPlayerTrain)
                 Simulator.Confirmer.ConfirmWithPerCent(CabControl.SteamHeat, CabSetting.Decrease, SteamHeatController.CurrentValue * 100);
             SteamHeatController.StartDecrease(target);
@@ -10141,6 +10144,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopSteamHeatDecrease()
         {
+            if (this is MSTSDieselLocomotive && !SteamGeneratorEnable) return;
             SteamHeatController.StopDecrease();
             if (IsPlayerTrain)
                 new ContinuousSteamHeatCommand(Simulator.Log, 1, false, SteamHeatController.CurrentValue, SteamHeatController.CommandStartTime);

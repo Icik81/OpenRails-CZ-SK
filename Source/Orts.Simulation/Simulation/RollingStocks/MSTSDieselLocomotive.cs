@@ -998,8 +998,11 @@ namespace Orts.Simulation.RollingStocks
                 status.AppendFormat("{0} = {1}", Simulator.Catalog.GetString("Steam Generator"),
                     Simulator.Catalog.GetParticularString("Steam Temperature", ((float)Math.Round(SteamGeneratorTempC, 0)).ToString() + " °C"));
 
-                status.AppendFormat("{0} / {1}\n", Simulator.Catalog.GetString(""),
+                status.AppendFormat("{0} / {1}", Simulator.Catalog.GetString(""),
                     Simulator.Catalog.GetParticularString("Steam Generator ", ((float)Math.Round(Train.SteamGeneratorTempSetPointC, 0)).ToString() + " °C"));
+
+                status.AppendFormat("{0} / {1}\n", Simulator.Catalog.GetString(""),
+                    Simulator.Catalog.GetParticularString("Steam Generator ", ((float)Math.Round(CurrentLocomotiveSteamHeatBoilerWaterCapacityL, 0)).ToString() + " l"));
             }            
 
             return status.ToString();
@@ -1166,7 +1169,9 @@ namespace Orts.Simulation.RollingStocks
 
             // TO DO - Add test to see if cars are coupled, if Light Engine, disable steam heating.
 
-            if (IsSteamHeatFitted /*&& this.IsLeadLocomotive()*/)  // Only Update steam heating if train and locomotive fitted with steam heating
+            if (!IsPlayerTrain && IsSteamHeatFitted) SteamGeneratorEnable = true; // AI always have steam heating enabled if fitted.
+
+            if (SteamGeneratorEnable && IsSteamHeatFitted /*&& this.IsLeadLocomotive()*/)  // Only Update steam heating if train and locomotive fitted with steam heating
             {
                 CurrentSteamHeatPressurePSI = SteamHeatController.CurrentValue * MaxSteamHeatPressurePSI;
              
