@@ -3766,6 +3766,9 @@ namespace Orts.Simulation.RollingStocks
             if (LocoType == LocoTypes.Vectron || Train.NoSpeedLimit)
                 return;
 
+            if (!IsLeadLocomotive())
+                return;
+
             if (MaxCurrentA > 0 && (this is MSTSElectricLocomotive || this is MSTSDieselLocomotive))  // Zohlední jen elektrické a dieselelektrické lokomotivy
             {
                 // Nadproudová ochrana                        
@@ -4557,6 +4560,9 @@ namespace Orts.Simulation.RollingStocks
         float SituationTimer_3;
         public void StepControllerSituation(float elapsedClockSeconds)
         {
+            if (!IsLeadLocomotive())
+                return;
+
             if (CoefStepControllerCurves != null)
             {
                 SituationCoef_1 = (int)CoefStepControllerCurves.Get(StepControllerValue, 1);
