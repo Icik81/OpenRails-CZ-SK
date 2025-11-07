@@ -27,7 +27,7 @@ namespace Orts.Formats.Msts
     public class SpeedpostDatFileCZSK
     {
         public string[] TempSpeedShapeNamesCZSK = new string[5];
-        public string[] TempWarningSpeedShapeNamesCZSK = new string[10];
+        public string[] TempWarningSpeedShapeNamesCZSK = new string[20];
 
         public SpeedpostDatFileCZSK(string filePath, string shapePath)
         {
@@ -101,6 +101,58 @@ namespace Orts.Formats.Msts
                              }
                          }
                          ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_60_cz", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[5] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_70_cz", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[6] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_80_cz", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[7] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_90_cz", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[8] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
                     new STFReader.TokenProcessor("restricted_shape_cz", ()=>
                          {
                             var dataItem = stf.ReadStringBlock(null);
@@ -136,7 +188,7 @@ namespace Orts.Formats.Msts
                              {
                                 dataItem = shapePath + dataItem;
                                 if (File.Exists(dataItem))
-                                    TempWarningSpeedShapeNamesCZSK[5] = dataItem;
+                                    TempWarningSpeedShapeNamesCZSK[9] = dataItem;
                                 else
                                     STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
                              }
@@ -149,7 +201,7 @@ namespace Orts.Formats.Msts
                              {
                                 dataItem = shapePath + dataItem;
                                 if (File.Exists(dataItem))
-                                    TempWarningSpeedShapeNamesCZSK[6] = dataItem;
+                                    TempWarningSpeedShapeNamesCZSK[10] = dataItem;
                                 else
                                     STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
                              }
@@ -162,7 +214,7 @@ namespace Orts.Formats.Msts
                              {
                                 dataItem = shapePath + dataItem;
                                 if (File.Exists(dataItem))
-                                    TempWarningSpeedShapeNamesCZSK[7] = dataItem;
+                                    TempWarningSpeedShapeNamesCZSK[11] = dataItem;
                                 else
                                     STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
                              }
@@ -175,7 +227,7 @@ namespace Orts.Formats.Msts
                              {
                                 dataItem = shapePath + dataItem;
                                 if (File.Exists(dataItem))
-                                    TempWarningSpeedShapeNamesCZSK[8] = dataItem;
+                                    TempWarningSpeedShapeNamesCZSK[12] = dataItem;
                                 else
                                     STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
                              }
@@ -188,7 +240,59 @@ namespace Orts.Formats.Msts
                              {
                                 dataItem = shapePath + dataItem;
                                 if (File.Exists(dataItem))
-                                    TempWarningSpeedShapeNamesCZSK[9] = dataItem;
+                                    TempWarningSpeedShapeNamesCZSK[13] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_60_sk", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[14] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_70_sk", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[15] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_80_sk", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[16] = dataItem;
+                                else
+                                    STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
+                             }
+                         }
+                         ),
+                    new STFReader.TokenProcessor("speed_warning_sign_shape_90_sk", ()=>
+                         {
+                             var dataItem = stf.ReadStringBlock(null);
+                             if (dataItem != null)
+                             {
+                                dataItem = shapePath + dataItem;
+                                if (File.Exists(dataItem))
+                                    TempWarningSpeedShapeNamesCZSK[17] = dataItem;
                                 else
                                     STFException.TraceWarning(stf, String.Format("Non-existent shape file {0} referenced", dataItem));
                              }

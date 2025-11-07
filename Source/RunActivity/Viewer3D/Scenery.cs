@@ -607,6 +607,18 @@ namespace Orts.Viewer3D
                                             case 50:
                                                 TempWarningSpeedShapeNamesNr = 4;
                                                 break;
+                                            case 60:
+                                                TempWarningSpeedShapeNamesNr = 5;
+                                                break;
+                                            case 70:
+                                                TempWarningSpeedShapeNamesNr = 6;
+                                                break;
+                                            case 80:
+                                                TempWarningSpeedShapeNamesNr = 7;
+                                                break;
+                                            case 90:
+                                                TempWarningSpeedShapeNamesNr = 8;
+                                                break;
                                         }
                                     }
                                     // SK
@@ -617,22 +629,34 @@ namespace Orts.Viewer3D
                                             case 5:
                                             case 10:
                                             case 15:
-                                                TempWarningSpeedShapeNamesNr = 5;
+                                                TempWarningSpeedShapeNamesNr = 9;
                                                 break;
                                             case 20:
                                             case 25:
-                                                TempWarningSpeedShapeNamesNr = 6;
+                                                TempWarningSpeedShapeNamesNr = 10;
                                                 break;
                                             case 30:
                                             case 35:
-                                                TempWarningSpeedShapeNamesNr = 7;
+                                                TempWarningSpeedShapeNamesNr = 11;
                                                 break;
                                             case 40:
                                             case 45:
-                                                TempWarningSpeedShapeNamesNr = 8;
+                                                TempWarningSpeedShapeNamesNr = 12;
                                                 break;
                                             case 50:
-                                                TempWarningSpeedShapeNamesNr = 9;
+                                                TempWarningSpeedShapeNamesNr = 13;
+                                                break;
+                                            case 60:
+                                                TempWarningSpeedShapeNamesNr = 14;
+                                                break;
+                                            case 70:
+                                                TempWarningSpeedShapeNamesNr = 15;
+                                                break;
+                                            case 80:
+                                                TempWarningSpeedShapeNamesNr = 16;
+                                                break;
+                                            case 90:
+                                                TempWarningSpeedShapeNamesNr = 17;
                                                 break;
                                         }
                                     }

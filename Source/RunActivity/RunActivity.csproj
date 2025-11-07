@@ -972,6 +972,14 @@
     <Content Include="Content\RestrictedSpeedPost\pred_4_SK.s" />
     <Content Include="Content\RestrictedSpeedPost\pred_5_CZ.s" />
     <Content Include="Content\RestrictedSpeedPost\pred_5_SK.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_6_CZ.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_6_SK.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_7_CZ.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_7_SK.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_8_CZ.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_8_SK.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_9_CZ.s" />
+    <Content Include="Content\RestrictedSpeedPost\pred_9_SK.s" />
     <Content Include="Content\SceneryShader.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1181,6 +1189,7 @@
     <None Include="Content\RestrictedSpeedPost\PJ-CZ.ace" />
     <None Include="Content\RestrictedSpeedPost\PJ-SK.ace" />
     <None Include="Content\RestrictedSpeedPost\predzvestnik_PJ.ace" />
+    <None Include="Content\RestrictedSpeedPost\predzvestnik_PJ2.ace" />
     <None Include="Content\RestrictedSpeedPost\RestrictedSpeedPost.dat" />
     <None Include="Content\SignalLight\SignalLight128.ace" />
     <None Include="Content\SignalLight\SignalLight256.ace" />
