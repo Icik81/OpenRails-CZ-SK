@@ -262,7 +262,7 @@ VERTEX_OUTPUT VSGeneral(in VERTEX_INPUT In)
 	_VSLightsAndShadows(In.Position, Out);
 
 	// Z-bias to reduce and eliminate z-fighting on track ballast. ZBias is 0 or 1.
-	Out.Position.z -= ZBias_Lighting.x * saturate(In.TexCoords.x) / 1000;
+	Out.Position.z += ZBias_Lighting.x * saturate(In.TexCoords.x) / 1000;
 	
 	return Out;
 }
@@ -273,7 +273,7 @@ VERTEX_OUTPUT VSTransfer(in VERTEX_INPUT_TRANSFER In)
 	_VSLightsAndShadows(In.Position, Out);
 
 	// Z-bias to reduce and eliminate z-fighting on track ballast. ZBias is 0 or 1.
-	Out.Position.z -= ZBias_Lighting.x * saturate(In.TexCoords.x) / 1000;
+	Out.Position.z += ZBias_Lighting.x * saturate(In.TexCoords.x) / 1000;
 
 	return Out;
 }
