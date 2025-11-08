@@ -3764,10 +3764,7 @@ namespace Orts.Simulation.RollingStocks
         public void Overcurrent_Protection()
         {
             if (LocoType == LocoTypes.Vectron || Train.NoSpeedLimit)
-                return;
-
-            if (!IsLeadLocomotive())
-                return;
+                return;            
 
             if (MaxCurrentA > 0 && (this is MSTSElectricLocomotive || this is MSTSDieselLocomotive))  // Zohlední jen elektrické a dieselelektrické lokomotivy
             {
@@ -6096,31 +6093,31 @@ namespace Orts.Simulation.RollingStocks
                     if (Motor1.HelperDieselMaxWaterTemperatureDeg == 0)
                     {
                         if (Motor1.DieselMaxWaterTemperatureDeg != 0)
-                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor1.DieselMaxWaterTemperatureDeg;
+                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.975f * Motor1.DieselMaxWaterTemperatureDeg;
                         else
-                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor1.DieselMaxTemperatureDeg;
+                            Motor1.HelperDieselMaxWaterTemperatureDeg = 0.975f * Motor1.DieselMaxTemperatureDeg;
                     }
                     if (Motor2.HelperDieselMaxWaterTemperatureDeg == 0)
                     {
                         if (Motor2.DieselMaxWaterTemperatureDeg != 0)
-                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor2.DieselMaxWaterTemperatureDeg;
+                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.975f * Motor2.DieselMaxWaterTemperatureDeg;
                         else
-                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.90f * Motor2.DieselMaxTemperatureDeg;
+                            Motor2.HelperDieselMaxWaterTemperatureDeg = 0.975f * Motor2.DieselMaxTemperatureDeg;
                     }
 
                     if (Motor1.HelperDieselMaxOilTemperatureDeg == 0)
                     {
                         if (Motor1.DieselMaxOilTemperatureDeg != 0)
-                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor1.DieselMaxOilTemperatureDeg;
+                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.975f * Motor1.DieselMaxOilTemperatureDeg;
                         else
-                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor1.DieselMaxTemperatureDeg;
+                            Motor1.HelperDieselMaxOilTemperatureDeg = 0.975f * Motor1.DieselMaxTemperatureDeg;
                     }
                     if (Motor2.HelperDieselMaxOilTemperatureDeg == 0)
                     {
                         if (Motor2.DieselMaxOilTemperatureDeg != 0)
-                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor2.DieselMaxOilTemperatureDeg;
+                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.975f * Motor2.DieselMaxOilTemperatureDeg;
                         else
-                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.90f * Motor2.DieselMaxTemperatureDeg;
+                            Motor2.HelperDieselMaxOilTemperatureDeg = 0.975f * Motor2.DieselMaxTemperatureDeg;
                     }
 
                     if (!HelperOverheated)
@@ -6172,9 +6169,10 @@ namespace Orts.Simulation.RollingStocks
                         || Simulator.ControllerVoltsLocoHelper < -1.5f
                         || Direction == Direction.N
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
-                        || PowerCurrent1 > 0.95f * MaxCurrentPower
+                        || PowerCurrent1 > 0.85f * MaxCurrentPower
                         || (HelperOverheated && ThrottlePercent > 80f)
                         || HelperOverheatedCritical
+                        || OverCurrent
                         )
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -6206,6 +6204,17 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 else
                                 if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (OverCurrent)
                                 {
                                     if (HelperTimerDecrease > 1.0f)
                                     {
@@ -6250,6 +6259,16 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 else
                                 if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (OverCurrent)
                                 {
                                     if (HelperTimerDecrease > 0.2f)
                                     {
@@ -6324,7 +6343,10 @@ namespace Orts.Simulation.RollingStocks
                     if (Simulator.ThrottleLocoHelper != 0)
                         PowerReductionResult12 = 0;
                     HelperTimerDecrease += elapsedClockSeconds;
-                    if (HelperTimerDecrease > 0.1f || (this is MSTSElectricLocomotive && !CircuitBreakerOn) || PowerCurrent1 > 0.95f * MaxCurrentPower)
+                    if (HelperTimerDecrease > 0.1f 
+                        || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
+                        || PowerCurrent1 > 0.95f * MaxCurrentPower
+                        || OverCurrent)
                     {
                         if (ThrottleController.NotchCount() > 1 && !ThrottleController.Notches[ThrottleController.CurrentNotch].Smooth)
                         {
@@ -6358,9 +6380,11 @@ namespace Orts.Simulation.RollingStocks
 
                     if (ThrottlePercent > Simulator.ThrottleLocoHelper
                         || (this is MSTSElectricLocomotive && !CircuitBreakerOn)
-                        || PowerCurrent1 > 0.95f * MaxCurrentPower
+                        || PowerCurrent1 > 0.85f * MaxCurrentPower
                         || WheelSlip
                         || (HelperOverheated && ThrottlePercent > 80f)
+                        || HelperOverheatedCritical
+                        || OverCurrent
                         )
                     {
                         HelperTimerDecrease += elapsedClockSeconds;
@@ -6409,6 +6433,17 @@ namespace Orts.Simulation.RollingStocks
                                         HelperTimerDecrease = 0;
                                     }
                                 }
+                                else
+                                if (OverCurrent)
+                                {
+                                    if (HelperTimerDecrease > 1.0f)
+                                    {
+                                        ThrottleController.StartDecrease();
+                                        ThrottleController.StopIncrease();
+                                        LocalThrottlePercent = ThrottleController.CurrentValue * 100f;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
                             }
                             else
                             {
@@ -6441,6 +6476,16 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 else
                                 if (HelperOverheatedCritical)
+                                {
+                                    if (HelperTimerDecrease > 0.2f)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent--;
+                                        HelperTimerDecrease = 0;
+                                    }
+                                }
+                                else
+                                if (OverCurrent)
                                 {
                                     if (HelperTimerDecrease > 0.2f)
                                     {

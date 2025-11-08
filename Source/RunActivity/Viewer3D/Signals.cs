@@ -654,6 +654,11 @@ namespace Orts.Viewer3D
                         {
                             switch (viewer.Simulator.RouteName.ToLower())
                             {
+                                case "086 liberecko":
+                                    glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
+                                    CZRoutes = true;
+                                    break;
+
                                 // 64x64 Malá   
                                 case "breclav - praha":
                                 case "dvoukolejka":
