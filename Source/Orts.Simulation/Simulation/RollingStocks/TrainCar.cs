@@ -431,6 +431,8 @@ namespace Orts.Simulation.RollingStocks
         public bool HornNumber2;
         public bool AITrainCompressorMaster;
         public bool CarHasStartTrigger;
+        public bool CarHasInitStartTrigger;
+        public bool CarInitStopSoundOff;
         public bool CarIsInitialized;
         public float CarSoundDeactivationTimer;
         public float CarSoundActivationTimer;

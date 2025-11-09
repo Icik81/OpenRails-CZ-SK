@@ -1511,16 +1511,17 @@ namespace Orts.Viewer3D
                         if (trigger.SoundCommand is ORTSSoundPlayCommand)
                             foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                                 if (name != null)
-                                {
+                                {                                                                                                              
                                     if (name.ToLower().Contains("start") || name.ToLower().Contains("mazani"))
                                     {
-                                        car.CarHasStartTrigger = true;
-                                        break;
+                                        car.CarHasStartTrigger = true;                                        
                                     }
-                                }
-                        if (car.CarHasStartTrigger) break;
-                    }
-                    if (car.CarHasStartTrigger) break;
+                                    if (trigger is ORTSInitialTrigger && (name.ToLower().Contains("motor") || name.ToLower().Contains("volnobeh")))
+                                    {
+                                        car.CarHasInitStartTrigger = true;
+                                    }
+                                }                        
+                    }                    
                 }
                 MSTSStreamSoundInit = false;
             }
@@ -1534,18 +1535,24 @@ namespace Orts.Viewer3D
                     if (trigger.SoundCommand is ORTSSoundPlayCommand)
                         foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                             if (name != null)
-                            {
+                            {                                
                                 if (name.ToLower().Contains("motor") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine") 
                                     || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace") || (!car.IsPlayerTrain && name.ToLower().Contains("kompresor")))
                                 {
                                     MSTSStreamSoundOff = true;
                                     break;
                                 }
-                            }
+                            }                    
                     if (MSTSStreamSoundOff) break;
                 }
             }
-                
+            
+            // Ztišší zvuk vypínání motoru při automatické inicializaci volnoběhu
+            if (car != null && car.CarInitStopSoundOff)
+            {
+                volume *= 0;
+            }
+
             if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
             {
                 // Plynule ztišší zvuk motoru                 

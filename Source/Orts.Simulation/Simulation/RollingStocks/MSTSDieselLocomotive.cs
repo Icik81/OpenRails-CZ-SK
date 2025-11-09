@@ -1289,6 +1289,16 @@ namespace Orts.Simulation.RollingStocks
                     MotorSoundStopCycle++;
                 }
 
+                if (CarHasInitStartTrigger && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped && MotorSoundStopCycle == 0)
+                {
+                    SignalEvent(Event.EnginePowerOff);
+                    SignalEvent(Event.EnginePowerOff2);
+                    MotorSoundStopCycle++;
+                    CarInitStopSoundOff = true;
+                }
+
+                if (CarInitStopSoundOff && Simulator.GameTime > 10.0f) CarInitStopSoundOff = false;
+
                 if (!PowerKey && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
                 {
                     SignalEvent(Event.PowerKeyOn);
