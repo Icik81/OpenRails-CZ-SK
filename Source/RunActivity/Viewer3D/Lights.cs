@@ -347,15 +347,15 @@ namespace Orts.Viewer3D
             if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
             {
                 // AI posunuje
-                if (Car.CarIsShunting)                
-                    newTrainHeadlight = 0;                
+                if (Car.CarIsShunting)
+                    newTrainHeadlight = 0;
                 else
                 // AI vyčkává na místě
-                if (Car.CarIsWaiting)                
-                    newTrainHeadlight = 1;                                    
+                if (Car.CarIsWaiting)
+                    newTrainHeadlight = 1;
                 else
-                if (!newIsDay)
-                    newTrainHeadlight = 2;
+                if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)                
+                    newTrainHeadlight = 2;                                    
                 else
                     newTrainHeadlight = 1;                
             }            
