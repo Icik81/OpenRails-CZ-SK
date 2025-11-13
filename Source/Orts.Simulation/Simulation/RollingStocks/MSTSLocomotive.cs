@@ -20973,7 +20973,7 @@ namespace Orts.Simulation.RollingStocks
                         var wagon = Train.Cars[i];
 
                         // Elektrické lokomotivy a řídící vozy mají vždy zásuvku
-                        if (wagon is MSTSElectricLocomotive || wagon is MSTSControlUnit) (wagon as MSTSElectricLocomotive).CarHasElectricHeatingPlug = true;
+                        if (wagon is MSTSElectricLocomotive || wagon is MSTSControlUnit) (wagon as MSTSLocomotive).CarHasElectricHeatingPlug = true;
 
                         if (!(wagon as MSTSWagon).CarHasElectricHeatingPlug && (wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove || wagon.DieselHeaterPower > 0 || wagon is MSTSLocomotive))
                             break;
@@ -20986,7 +20986,7 @@ namespace Orts.Simulation.RollingStocks
                         var wagon = Train.Cars[i];
 
                         // Elektrické lokomotivy a řídící vozy mají vždy zásuvku
-                        if (wagon is MSTSElectricLocomotive || wagon is MSTSControlUnit) (wagon as MSTSElectricLocomotive).CarHasElectricHeatingPlug = true;
+                        if (wagon is MSTSElectricLocomotive || wagon is MSTSControlUnit) (wagon as MSTSLocomotive).CarHasElectricHeatingPlug = true;
 
                         if (!(wagon as MSTSWagon).CarHasElectricHeatingPlug && (wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove || wagon.DieselHeaterPower > 0 || wagon is MSTSLocomotive))
                             break;
