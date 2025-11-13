@@ -297,6 +297,8 @@ namespace Orts.Viewer3D.Popups
                     Text = TextGap + Viewer.Catalog.GetString("Car ID") + " " + car.CarID + "  -  " + (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonName;
             }
 
+            //if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).WagonCanEnableElectricHeating) Text += " el.";
+
             Click += new Action<Control, Point>(TrainOperationsLabel_Click);
 
             // Icik            

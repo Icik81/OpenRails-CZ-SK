@@ -396,8 +396,9 @@ namespace Orts.Simulation.RollingStocks
         public bool LightRearLR;
         public bool LightRearRR;
         public bool HasWagonSmoke;
-        public bool HasWagonSteamHeatingElements;
+        public bool HasWagonSteamHeatingElements;        
         public bool WagonCanEnableSteamHeating;
+        public bool WagonCanEnableElectricHeating;        
         public bool WagonHasStove;
         public bool WagonHasSteamHeating;
         public bool CarPowerKey;

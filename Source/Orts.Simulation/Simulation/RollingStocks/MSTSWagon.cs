@@ -201,6 +201,7 @@ namespace Orts.Simulation.RollingStocks
         public int MPWagonLoadPercent;
         public int MPFreightWeight;
         public bool JVSetup;
+        public bool CarHasElectricHeatingPlug;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1797,6 +1798,7 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(dieselheatertankcapacity": DieselHeaterTankCapacity = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(gensoundoff": GenSoundOff = stf.ReadBoolBlock(false); break;
                 case "wagon(name": stf.MustMatch("("); WagonName = stf.ReadString(); break;
+                case "wagon(electricheatingplug": CarHasElectricHeatingPlug = stf.ReadBoolBlock(false); break;                    
             }
         }
 
@@ -1989,7 +1991,8 @@ namespace Orts.Simulation.RollingStocks
             DieselHeaterTankCapacity = copy.DieselHeaterTankCapacity;
             GenSoundOff = copy.GenSoundOff;
             WagonName = copy.WagonName;            
-            WagFilePathOrigin = copy.WagFilePathOrigin;            
+            WagFilePathOrigin = copy.WagFilePathOrigin;
+            CarHasElectricHeatingPlug = copy.CarHasElectricHeatingPlug;
 
             if (copy.IntakePointList != null)
             {
