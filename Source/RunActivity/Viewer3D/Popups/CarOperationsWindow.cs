@@ -39,17 +39,18 @@ namespace Orts.Viewer3D.Popups
             get;
         }
 
-        public bool HelperOptionsOpened;
+        public bool HelperOptionsOpened;      
+        public bool HeatingOptionsOpened;
 
         public CarOperationsWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height * 20) + (ControlLayout.SeparatorSize * 19), Viewer.Catalog.GetString("Car Operation Menu"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 23, Window.DecorationSize.Y + (owner.TextFontDefault.Height * 21) + (ControlLayout.SeparatorSize * 20), Viewer.Catalog.GetString("Car Operation Menu"))
         {
             Viewer = owner.Viewer;
         }
 
         protected override ControlLayout Layout(ControlLayout layout)
         {
-            Label ID, buttonLocoChange, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarModeOptions, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonClose;
+            Label ID, buttonLocoChange, buttonHandbrake, buttonTogglePower, buttonToggleMUCable, buttonToggleMUPower, buttonToggleHelper, buttonToggleHelperOptions, buttonToggleBrakeHose, buttonToggleAngleCockA, buttonToggleAngleCockB, buttonToggleBleedOffValve, buttonBrakeCarModeOptions, buttonBrakeCarDeactivate, buttonTwoPipesConnection, buttonLeftDoor, buttonRightDoor, buttonNoPaxsMode, buttonHeating, buttonToggleHeatingOptions, buttonClose;
 
             var vbox = base.Layout(layout).AddLayoutVertical();
 
@@ -228,7 +229,13 @@ namespace Orts.Viewer3D.Popups
                 vbox.Add(buttonHeating = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
                 buttonHeating.Color = Color.Gray;
             }
-            
+
+            vbox.AddHorizontalSeparator();
+            vbox.Add(buttonToggleHeatingOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Heating Options"), LabelAlignment.Center));            
+            buttonToggleHeatingOptions.Color = Color.White;            
+            if (HeatingOptionsOpened)
+                buttonToggleHeatingOptions.Color = Color.LightGreen;
+
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));
             buttonLocoChange.Click += new Action<Control, Point>(buttonLocoChange_Click);
@@ -249,6 +256,7 @@ namespace Orts.Viewer3D.Popups
             buttonRightDoor.Click += new Action<Control, Point>(buttonRightDoor_Click);
             buttonNoPaxsMode.Click += new Action<Control, Point>(buttonNoPaxsMode_Click);
             buttonHeating.Click += new Action<Control, Point>(buttonHeating_Click);
+            buttonToggleHeatingOptions.Click += new Action<Control, Point>(buttonToggleHeatingOptions_Click);
             buttonClose.Click += new Action<Control, Point>(buttonClose_Click);
 
             return vbox;
@@ -584,5 +592,13 @@ namespace Orts.Viewer3D.Popups
             }
         }
 
+        void buttonToggleHeatingOptions_Click(Control arg1, Point arg2)
+        {
+            if (((Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive) && !(Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)) || (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HasPassengerCapacity)
+            {
+                HeatingOptionsOpened = true;
+                Viewer.HeatingOptionsWindow.Visible = true;
+            }
+        }
     }
 }

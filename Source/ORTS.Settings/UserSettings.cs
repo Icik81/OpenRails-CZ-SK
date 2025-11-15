@@ -489,13 +489,15 @@ namespace ORTS.Settings
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_Derail { get; set; }        
         [Default(new[] { 50, 25 })]
-        public int[] WindowPosition_UnprotectedLvlCrossWindow { get; set; }
+        public int[] WindowPosition_UnprotectedLvlCross { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_HelperOptions { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_HelperSpeedSelect { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_BrakeModeOptions { get; set; }
+        [Default(new[] { 50, 25 })]
+        public int[] WindowPosition_HeatingOptions { get; set; }
 
         // Menu-game communication settings:
         [Default(false)]

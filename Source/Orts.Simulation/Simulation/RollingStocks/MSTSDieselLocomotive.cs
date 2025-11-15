@@ -640,17 +640,19 @@ namespace Orts.Simulation.RollingStocks
                 float AvailableSMPowerW = DieselEngines.DEList[0].CurrentDieselInputPowerW - (DieselEngines.DEList[0].LoadSMCoef * DieselEngines.DEList[0].MaximumDieselPowerW);
                 
                 if (DieselEngines.Count > 1)                
-                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);                
+                    AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);
+
+                if (AvailableSMPowerW < 0) AvailableSMPowerW = 0;
 
                 // Alternátor
                 // Zde bude interpolační křivka přetížení alternátoru
                 float AlternatorPowerW = 400000f / 1470000f * MaximumDieselEnginePowerW; // Poměrově určený výkon alternátoru - 420 kVA = 400 kW pro řadu 754 s výkonem 1470 kW
 
-                float MaximalPowerReduction = 1;
+                float MaximalPowerReduction = 1;                
                 if (MaximalPowerReductionByHeating > 0)
                     MaximalPowerReduction = MaximalPowerReductionByHeating;
                 if (MaximalPowerReductionByAirCondition > 0)
-                    MaximalPowerReduction = MaximalPowerReductionByAirCondition;
+                    MaximalPowerReduction = MaximalPowerReductionByAirCondition;                
 
                 // 1 a více ... 3000 V plný výkon
                 // 0.66 a méně ... 2000 V a vybavuje ochrana podpětí
@@ -661,6 +663,12 @@ namespace Orts.Simulation.RollingStocks
                 // méně než 1 ... snížený výkon topení
                 HeatingOverloadCoef = AvailableSMPowerW / MaximalPowerReduction;
                 HeatingOverloadCoef = MathHelper.Clamp(HeatingOverloadCoef, 0, 1);
+
+                if (IsLeadLocomotive())
+                {
+                    Simulator.AlternatorOverloadCoef = AlternatorOverloadCoef;
+                    Simulator.HeatingOverloadCoef = HeatingOverloadCoef;
+                }
 
                 // Vypnutí topení při přetíženém alternátoru
                 if (PowerReductionResult1 > 0 && AlternatorOverloadCoef < 0.66f) HeatingOverCurrent = true;

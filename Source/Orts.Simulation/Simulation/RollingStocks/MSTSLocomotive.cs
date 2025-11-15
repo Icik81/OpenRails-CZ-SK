@@ -685,7 +685,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HelperLocoFollow;
         public int HelperSpeedPush = 40;
         public bool HelperPushStart;
-        public bool HelperOptionsOpened;
+        public bool HelperOptionsOpened;        
         public bool MirerControllerEnable;
         public int MirerControllerPosition;
         public int prevMirerControllerPosition;
@@ -4834,6 +4834,10 @@ namespace Orts.Simulation.RollingStocks
                         // Defaulty
                         if (!car.WagonHasTemperature && LocoSetUpTimer > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                         {
+                            // Přeskočí nastavení výchozích hodnot el.topení pokud je nalezeno topení párou nebo kamny
+                            if (car.HasWagonSteamHeatingElements || car.WagonHasStove) goto skipDefaultHeaterValue;
+
+                            // Nastaví výchozí hodnoty topení pro vozy bez specifikovaných hodnot
                             if (car.WagonType == WagonTypes.Engine)
                             {
                                 // Motorové vozy
@@ -4892,9 +4896,11 @@ namespace Orts.Simulation.RollingStocks
                                     if (car.DieselHeaterTankCapacity == 0) car.DieselHeaterTankCapacity = 70; // 70l
                                 }
                             }
-
+                            
                             car.PowerReductionByHeating = MathHelper.Clamp(car.PowerReductionByHeating, 0, 50.0f * 1000);
                             car.PowerReductionByAirCondition = MathHelper.Clamp(car.PowerReductionByAirCondition, 0, 50.0f * 1000);
+
+                        skipDefaultHeaterValue:
 
                             // Zapne jednotky topení/klimy 
                             if (!car.WagonHasTemperature && car.CarHasHeatingReady)
@@ -5041,7 +5047,7 @@ namespace Orts.Simulation.RollingStocks
                         if (car.CarOutsideTempC < 18)
                         {
                             float SetTempCHyst = 3.5f;
-                            if (car.SetTemperatureCFrost == 0)
+                            if (car.SetTemperatureCFrost == 0 && car.SetTempCThreshold == 0)
                             {
                                 car.SetTemperatureCFrost = Simulator.Random.Next(19, 27);
                                 car.SetTempCThreshold = car.SetTemperatureCFrost;
@@ -5060,13 +5066,18 @@ namespace Orts.Simulation.RollingStocks
                             // Termostat vypnutý, topení aktivní
                             if (((!car.LocomotiveCab && Train.HeatingIsOn && !Train.CarSteamHeatOn && car.WagonCanEnableElectricHeating) || car.DieselHeaterPower > 0 || (car.LocomotiveCab && car.CabHeatingIsOn)) && car.WagonTemperature < car.SetTempCThreshold && !car.ThermostatOn)
                             {
-                                car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
+                                if (car.PowerReductionByHeating > 0)
+                                    car.TempCDelta = +car.PowerReductionByHeating0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
 
                                 if (car.DieselHeaterPower > 0)
                                     car.TempCDelta = +car.DieselHeaterPower0 / TempStepUp / CarAirVolumeM3 * elapsedClockSeconds;
-                                if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
-                                    car.ThermostatOn = true;
-                                car.StatusHeatIsOn = true;
+
+                                if (car.PowerReductionByHeating > 0 || car.DieselHeaterPower > 0)
+                                {
+                                    if (car.WagonTemperature > car.SetTempCThreshold - 0.1f)
+                                        car.ThermostatOn = true;
+                                    car.StatusHeatIsOn = true;
+                                }
                             }
                             else
                             {
@@ -5085,7 +5096,7 @@ namespace Orts.Simulation.RollingStocks
                         if (car.CarOutsideTempC > 24)
                         {
                             float SetTempCHyst = 2.5f;
-                            if (car.SetTemperatureCHeat == 0)
+                            if (car.SetTemperatureCHeat == 0 && car.SetTempCThreshold == 0)
                             {
                                 car.SetTemperatureCHeat = Simulator.Random.Next(17, 25);
                                 car.SetTempCThreshold = car.SetTemperatureCHeat;
@@ -5282,10 +5293,10 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else
                         {
-                            car.PowerReductionByHeating0 = car.PowerReductionByHeating * AlternatorOverloadCoef * HeatingOverloadCoef;
+                            car.PowerReductionByHeating0 = car.PowerReductionByHeating * Simulator.AlternatorOverloadCoef * Simulator.HeatingOverloadCoef;
                             MaximalPowerReductionByHeating += car.PowerReductionByHeating;
                         }
-                        car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition * AlternatorOverloadCoef * HeatingOverloadCoef;
+                        car.PowerReductionByAirCondition0 = car.PowerReductionByAirCondition * Simulator.AlternatorOverloadCoef * Simulator.HeatingOverloadCoef;
                         MaximalPowerReductionByAirCondition += car.PowerReductionByAirCondition;
                     }
 
@@ -21075,7 +21086,7 @@ namespace Orts.Simulation.RollingStocks
         }
         #endregion JVHack
 
-        #endregion
+        #endregion Icik`s code
 
 
         // Zatím povoleno kvůli kompatibilitě

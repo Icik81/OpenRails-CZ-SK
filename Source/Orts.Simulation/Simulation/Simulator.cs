@@ -292,6 +292,8 @@ namespace Orts.Simulation
         public bool MorningFogRun;
         public bool DieselMotorTempWarning;
         public int ChanceToMorningFog = 10;
+        public float AlternatorOverloadCoef;
+        public float HeatingOverloadCoef;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

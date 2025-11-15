@@ -106,6 +106,7 @@ namespace Orts.Viewer3D
         public HelperOptionsWindow HelperOptionsWindow { get; private set; } // Helper Options window
         public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
         public BrakeModeOptionsWindow BrakeModeOptionsWindow { get; private set; } // Brake Mode Options window
+        public HeatingOptionsWindow HeatingOptionsWindow { get; private set; } // Heating Options window
 
         // Route Information
         public TileManager Tiles { get; private set; }
@@ -391,7 +392,7 @@ namespace Orts.Viewer3D
 
             // Icik
             outf.Write(HelperOptionsWindow.CarID);
-            outf.Write(CarOperationsWindow.CarPosition);
+            outf.Write(CarOperationsWindow.CarPosition);            
         }
 
         [CallOnThread("Render")]
@@ -494,6 +495,7 @@ namespace Orts.Viewer3D
             HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
             HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
             BrakeModeOptionsWindow = new BrakeModeOptionsWindow(WindowManager);
+            HeatingOptionsWindow = new HeatingOptionsWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);

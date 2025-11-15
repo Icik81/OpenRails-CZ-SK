@@ -441,7 +441,7 @@ namespace Orts.Simulation.RollingStocks
         public bool StaticSet;
         public bool HasCabLightDirectory;
         public bool HasCabNightDirectory;
-        public bool HasORTSCabLightDirectory;
+        public bool HasORTSCabLightDirectory;        
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2328,6 +2328,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SelectedCar);
             outf.Write(WagonIsFlipped);
             outf.Write(StaticSet);
+            outf.Write(SetTempCThreshold);
 
             BrakeSystem.Save(outf);
         }
@@ -2395,6 +2396,7 @@ namespace Orts.Simulation.RollingStocks
             SelectedCar = inf.ReadBoolean();
             WagonIsFlipped = inf.ReadBoolean();
             StaticSet = inf.ReadBoolean();
+            SetTempCThreshold = inf.ReadSingle();
 
             BrakeSystem.Restore(inf);
         }
