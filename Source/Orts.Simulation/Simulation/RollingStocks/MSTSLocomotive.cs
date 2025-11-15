@@ -5088,7 +5088,7 @@ namespace Orts.Simulation.RollingStocks
                                 car.StatusHeatIsOn = false;
                             }
 
-                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, car.CarOutsideTempC - 1.0f, car.SetTempCThreshold + 1.0f);
+                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, car.CarOutsideTempC - 1.0f, 100f);
                             car.SetTemperatureCHeat = 0;
                         }
 
@@ -5129,7 +5129,7 @@ namespace Orts.Simulation.RollingStocks
                                 car.StatusHeatIsOn = false;
                             }
 
-                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, car.SetTempCThreshold - 1.0f, car.CarOutsideTempC + 1.0f);
+                            car.WagonTemperature = MathHelper.Clamp(car.WagonTemperature, -100f, car.CarOutsideTempC + 1.0f);
                             car.SetTemperatureCFrost = 0;
                         }
 
@@ -20969,7 +20969,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     car.WagonCanEnableElectricHeating = false;
-                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).HeatingEnable)
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && ((car as MSTSLocomotive).Heating_OffOn[1] || (car as MSTSLocomotive).Heating_OffOn[2]))
                     {
                         ElectricHeatCarPosition = CarPosition;
                         (car as MSTSLocomotive).CarHasElectricHeatingPlug = true;
