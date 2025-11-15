@@ -230,11 +230,23 @@ namespace Orts.Viewer3D.Popups
                 buttonHeating.Color = Color.Gray;
             }
 
-            vbox.AddHorizontalSeparator();
-            vbox.Add(buttonToggleHeatingOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Heating Options"), LabelAlignment.Center));            
-            buttonToggleHeatingOptions.Color = Color.White;            
-            if (HeatingOptionsOpened)
+            vbox.AddHorizontalSeparator();                        
+            if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSSteamLocomotive)
+            {
+                vbox.Add(buttonToggleHeatingOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("N/A"), LabelAlignment.Center));
+                buttonToggleHeatingOptions.Color = Color.Gray;
+                Viewer.HeatingOptionsWindow.Visible = false;
+                Viewer.CarOperationsWindow.HeatingOptionsOpened = false;
+            }
+            else
+            {
+                vbox.Add(buttonToggleHeatingOptions = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Heating Options"), LabelAlignment.Center));
+                buttonToggleHeatingOptions.Color = Color.White;
+            }
+
+            if (Viewer.HeatingOptionsWindow.Visible)
                 buttonToggleHeatingOptions.Color = Color.LightGreen;
+            
 
             vbox.AddHorizontalSeparator();
             vbox.Add(buttonClose = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetString("Close window"), LabelAlignment.Center));

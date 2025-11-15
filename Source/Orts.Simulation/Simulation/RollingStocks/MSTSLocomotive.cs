@@ -20956,20 +20956,16 @@ namespace Orts.Simulation.RollingStocks
         public void TrainCarHeatInitialize()
         {
             // Inicializace vytápění vlaků
-            if (Train.prevTrainCarsCount != Train.Cars.Count)
+            if (Simulator.GameTimeCyklus10 == 0)
             {
                 int ElectricHeatCarPosition = -1;
-                int CarPosition = 0;
-                foreach (TrainCar car in Train.Cars)
-                {
-                    if (!car.CarIsInitialized) goto CarNotInitialized;                    
-                }
+                int CarPosition = 0;                
                 
                 // Testuje připojené potrubí pro vozy s elektrickým vytápěním
                 foreach (TrainCar car in Train.Cars)
                 {
                     car.WagonCanEnableElectricHeating = false;
-                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && ((car as MSTSLocomotive).Heating_OffOn[1] || (car as MSTSLocomotive).Heating_OffOn[2]))
+                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && ((car as MSTSLocomotive).HeatingEnable || (car as MSTSLocomotive).Heating_OffOn[1] || (car as MSTSLocomotive).Heating_OffOn[2]))
                     {
                         ElectricHeatCarPosition = CarPosition;
                         (car as MSTSLocomotive).CarHasElectricHeatingPlug = true;
@@ -21043,14 +21039,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                             wagon.WagonCanEnableSteamHeating = true;
                     }
-                }
-                
-                if (LocoSetUpTimer > 2)
-                    Train.prevTrainCarsCount = Train.Cars.Count;
-                
-                CarNotInitialized: 
-                if (Train.prevTrainCarsCount != Train.Cars.Count)
-                    Train.prevTrainCarsCount = -1;
+                }                                
             }            
         }
         #endregion Vytápění vlaků
