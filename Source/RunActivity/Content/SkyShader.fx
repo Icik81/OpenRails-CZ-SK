@@ -34,6 +34,7 @@ float4   Fog;
 float2   MoonColor;
 float2   MoonTexCoord;
 float    CloudColor;
+float    ThunderColor;
 float3   RightVector;
 float3   UpVector;
 texture  SkyMapTexture;
@@ -41,6 +42,7 @@ texture  StarMapTexture;
 texture  MoonMapTexture;
 texture  MoonMaskTexture;
 texture  CloudMapTexture;
+texture  ThunderMapTexture;
 
 sampler SkyMapSampler = sampler_state
 {
@@ -89,6 +91,17 @@ sampler MoonMaskSampler = sampler_state
 sampler CloudMapSampler = sampler_state
 {
 	Texture = (CloudMapTexture);
+	MAGFILTER = LINEAR;
+	MINFILTER = LINEAR;
+	MIPFILTER = LINEAR;
+	MIPLODBIAS = 0.000000;
+	AddressU = wrap;
+	AddressV = wrap;
+};
+
+sampler ThunderMapSampler = sampler_state
+{
+	Texture = (ThunderMapTexture);
 	MAGFILTER = LINEAR;
 	MINFILTER = LINEAR;
 	MIPFILTER = LINEAR;
@@ -294,6 +307,15 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 	return cloudColor;
 }
 
+float4 PSThunder(VERTEX_OUTPUT In) : COLOR
+{	
+	float2 TexCoord = float2(In.TexCoord.x * 4 + WindDisplacement.x, In.TexCoord.y * 4 + WindDisplacement.y);
+	float4 thunderColor = tex2D(ThunderMapSampler, TexCoord);
+	float alpha = thunderColor.a;						    			
+	
+	return thunderColor;
+}
+
 ///////////////////////////    T E C H N I Q U E S    ///////////////////////////////
 
 // These techniques are all the same, but we'll keep them separate for now.
@@ -316,5 +338,12 @@ technique Clouds {
    pass Pass_0 {
 	  VertexShader = compile vs_4_0_level_9_3 VSSky();
 	  PixelShader = compile ps_4_0_level_9_3 PSClouds();
+   }
+}
+
+technique Thunder {
+   pass Pass_0 {
+	  VertexShader = compile vs_4_0_level_9_3 VSSky();
+	  PixelShader = compile ps_4_0_level_9_3 PSThunder();
    }
 }

@@ -385,28 +385,28 @@ namespace Orts.Viewer3D
                         case 0:  // Jaro
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.05f;
-                            Weather.FogDistance = 800f;
+                            Weather.FogDistance = 1300f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.0f;
-                            Weather.FogDistance = 500f;
+                            Weather.FogDistance = 1000f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
                         case 2:  // Podzim
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.15f;
-                            Weather.FogDistance = 50f;
+                            Weather.FogDistance = 150f;
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.05f;                            
                             break;
                         case 3:  // Zima
                             Viewer.Simulator.WeatherType = WeatherType.Snow;
                             Weather.OvercastFactor = 0.15f;
-                            Weather.FogDistance = 300f;
+                            Weather.FogDistance = 500f;
                             Weather.PrecipitationLiquidity = 0.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
@@ -822,7 +822,7 @@ namespace Orts.Viewer3D
                     break;
                 case SeasonType.Autumn:
                     randValue = Simulator.Random.Next(2000);
-                    SeasonFogMin = 100;
+                    SeasonFogMin = 150;
                     SeasonFogMax = 20000;
                     break;
                 case SeasonType.Winter:
@@ -1802,7 +1802,7 @@ namespace Orts.Viewer3D
                         break;
                     case SeasonType.Autumn:
                         randValue = Simulator.Random.Next(2000);
-                        SeasonFogMin = 100;
+                        SeasonFogMin = 150;
                         SeasonFogMax = 20000;
                         break;
                     case SeasonType.Winter:

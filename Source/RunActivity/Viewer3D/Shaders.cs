@@ -564,6 +564,7 @@ namespace Orts.Viewer3D
         readonly EffectParameter moonColor;
         readonly EffectParameter moonTexCoord;
         readonly EffectParameter cloudColor;
+        readonly EffectParameter thunderColor;
         readonly EffectParameter rightVector;
         readonly EffectParameter upVector;
         readonly EffectParameter skyMapTexture;
@@ -571,7 +572,8 @@ namespace Orts.Viewer3D
         readonly EffectParameter moonMapTexture;
         readonly EffectParameter moonMaskTexture;
         readonly EffectParameter cloudMapTexture;
-        
+        readonly EffectParameter thunderMapTexture;
+
         public Vector3 LightVector
         {
             set
@@ -579,10 +581,11 @@ namespace Orts.Viewer3D
                 lightVector.SetValue(new Vector4(value, 1f / value.Length()));
 
                 cloudColor.SetValue(Day2Night(0.2f, -0.2f, 0.15f, value.Y));
+                thunderColor.SetValue(Day2Night(0.2f, -0.2f, 0.15f, value.Y));
                 var skyColor1 = Day2Night(0.25f, -0.25f, -0.5f, value.Y);
                 var skyColor2 = MathHelper.Clamp(skyColor1 + 0.55f, 0, 1);
                 var skyColor3 = 0.001f / (0.8f * Math.Abs(value.Y - 0.1f));
-                skyColor.SetValue(new Vector3(skyColor1, skyColor2, skyColor3));
+                skyColor.SetValue(new Vector3(skyColor1, skyColor2, skyColor3));                
 
                 if (Program.Simulator.WorldThunder && Program.Simulator.Weather.FogDistance < 2200)
                 {
@@ -654,6 +657,7 @@ namespace Orts.Viewer3D
         public Texture2D MoonMapTexture { set { moonMapTexture.SetValue(value); } }
         public Texture2D MoonMaskTexture { set { moonMaskTexture.SetValue(value); } }
         public Texture2D CloudMapTexture { set { cloudMapTexture.SetValue(value); } }
+        public Texture2D ThunderMapTexture { set { thunderMapTexture.SetValue(value); } }
 
         public void SetViewMatrix(ref Matrix view)
         {
@@ -688,6 +692,7 @@ namespace Orts.Viewer3D
             moonColor = Parameters["MoonColor"];
             moonTexCoord = Parameters["MoonTexCoord"];
             cloudColor = Parameters["CloudColor"];
+            thunderColor = Parameters["ThunderColor"];
             rightVector = Parameters["RightVector"];
             upVector = Parameters["UpVector"];
             skyMapTexture = Parameters["SkyMapTexture"];
@@ -695,6 +700,7 @@ namespace Orts.Viewer3D
             moonMapTexture = Parameters["MoonMapTexture"];
             moonMaskTexture = Parameters["MoonMaskTexture"];
             cloudMapTexture = Parameters["CloudMapTexture"];
+            thunderMapTexture = Parameters["ThunderMapTexture"];
         }
 
 

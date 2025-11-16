@@ -294,6 +294,7 @@ namespace Orts.Simulation
         public int ChanceToMorningFog = 10;
         public float AlternatorOverloadCoef;
         public float HeatingOverloadCoef;
+        public int CloudIndex = -1;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -671,6 +672,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            CloudIndex = inf.ReadInt32();
             DoorSwitchDoorLocked = inf.ReadBoolean();
             TrainOperationsMenuSetScrollPosition = inf.ReadInt32();
             WireHeigth = inf.ReadInt32();
@@ -717,6 +719,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(CloudIndex);
             outf.Write(DoorSwitchDoorLocked);
             outf.Write(TrainOperationsMenuSetScrollPosition);
             outf.Write(WireHeigth);
