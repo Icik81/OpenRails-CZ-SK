@@ -5936,6 +5936,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         car.WagonTemperature = Simulator.Random.Next(18, 25);
                         car.WagonHasTemperature = true;
+                        car.SetTempCThreshold = Simulator.Random.Next(18, 25);
                     }
                 }
             }
@@ -21009,7 +21010,7 @@ namespace Orts.Simulation.RollingStocks
                 foreach (TrainCar car in Train.Cars)
                 {
                     car.WagonCanEnableSteamHeating = false;
-                    if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive() && (car as MSTSLocomotive).IsSteamHeatFitted)
+                    if (car is MSTSLocomotive && ((car as MSTSLocomotive).IsLeadLocomotive() || !IsPlayerTrain) && (car as MSTSLocomotive).IsSteamHeatFitted)
                     {
                         SteamHeatCarPosition = CarPosition;
                         break;
