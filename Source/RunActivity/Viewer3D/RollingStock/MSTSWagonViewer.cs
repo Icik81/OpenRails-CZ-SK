@@ -22,6 +22,7 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Common;
+using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems;
@@ -381,7 +382,7 @@ namespace Orts.Viewer3D.RollingStock
             car.SetUpWheels();
 
             // If we have two pantographs, 2 is the forwards pantograph, unlike when there's only one.
-            if (!(car.Flipped ^ (car.Train.IsActualPlayerTrain && Viewer.PlayerLocomotive.Flipped)) && !Pantograph1.Empty() && !Pantograph2.Empty())
+            if (!(car.Flipped ^ (car.Train != null && car.Train.IsActualPlayerTrain && Viewer.PlayerLocomotive.Flipped)) && !Pantograph1.Empty() && !Pantograph2.Empty())
                 AnimatedPart.Swap(ref Pantograph1, ref Pantograph2);
 
             Pantograph1.SetState(MSTSWagon.Pantographs[1].CommandUp);

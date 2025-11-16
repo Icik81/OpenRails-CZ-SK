@@ -134,6 +134,7 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             // Icik
+            if (MSTSLocomotive.Train == null) return;
             // Inicializace STATIC            
             var mstsElectricLocomotive = car as MSTSElectricLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && !mstsElectricLocomotive.PowerOn)

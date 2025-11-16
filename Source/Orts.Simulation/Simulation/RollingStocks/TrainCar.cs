@@ -2884,7 +2884,7 @@ namespace Orts.Simulation.RollingStocks
             // and the rest left out.
             bool articulatedFront = !WheelAxles.Any(a => a.OffsetM < 0);
             bool articulatedRear = !WheelAxles.Any(a => a.OffsetM > 0);
-            var carIndex = Train.Cars.IndexOf(this);
+            var carIndex = Train != null ? Train.Cars.IndexOf(this) : 0;
             //Certain locomotives are testing as articulated wagons for some reason.
             if (WagonType != WagonTypes.Engine)
                 if (WheelAxles.Count >= 2)
