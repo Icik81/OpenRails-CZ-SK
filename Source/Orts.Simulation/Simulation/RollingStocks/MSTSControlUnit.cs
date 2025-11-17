@@ -239,6 +239,8 @@ namespace Orts.Simulation.RollingStocks
                         SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
                         AuxResPressurePSI = PU.AuxResPressurePSI;
                         PantographsCurrent = PU.PantographsCurrent;
+                        Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
+                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;
                         //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);
 
                         // Řídící jednotka je obsazená
@@ -286,6 +288,8 @@ namespace Orts.Simulation.RollingStocks
                         PowerOn = PU.PowerOn;
                         AuxPowerOn = PU.AuxPowerOn;                        
                         AuxResPressurePSI = PU.AuxResPressurePSI;
+                        Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
+                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;
 
                         FakeDieselWaterTemperatureDeg = PU.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         FakeDieselOilTemperatureDeg = PU.DieselEngines[0].FakeDieselOilTemperatureDeg;

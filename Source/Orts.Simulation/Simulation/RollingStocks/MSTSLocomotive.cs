@@ -488,8 +488,8 @@ namespace Orts.Simulation.RollingStocks
         public float MaximalPowerReductionByAirCondition;
         public float PowerReductionByAuxEquipmentEng;
         public float PowerReductionByAuxEquipmentWag;
-        public float AlternatorOverloadCoef = 1.0f;
-        public float HeatingOverloadCoef = 1.0f;
+        public float AlternatorOverloadCoef = 1;
+        public float HeatingOverloadCoef = 1;
         public float PowerReduction0;
         public float PowerReduction1;
         public float TElevatedConsumption = 0;
@@ -5267,6 +5267,14 @@ namespace Orts.Simulation.RollingStocks
 
             // Elektrické topení a klimatizace
             PowerReductionByHeatingSum = 0;
+
+            // Reset koeficientů přetížení pro elektrické a parní lokomotivy
+            if (IsLeadLocomotive() && !(this is MSTSDieselLocomotive) && !(this is MSTSControlUnit))
+            {
+                Simulator.AlternatorOverloadCoef = 1;
+                Simulator.HeatingOverloadCoef = 1;
+            }
+
             if (Train.HeatingIsOn || this.CabHeatingIsOn)
             {
                 PowerReductionByHeatingWag = 0;

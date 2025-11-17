@@ -664,6 +664,7 @@ namespace Orts.Simulation.RollingStocks
                 HeatingOverloadCoef = AvailableSMPowerW / MaximalPowerReduction;
                 HeatingOverloadCoef = MathHelper.Clamp(HeatingOverloadCoef, 0, 1);
 
+                // Jen vedoucí lokomotiva předává hodnoty přetížení do simulátoru
                 if (IsLeadLocomotive())
                 {
                     Simulator.AlternatorOverloadCoef = AlternatorOverloadCoef;
