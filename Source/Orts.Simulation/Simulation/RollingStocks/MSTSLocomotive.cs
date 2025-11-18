@@ -4728,7 +4728,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
 
-                    if (SteamGeneratorEnable)
+                    if (IsLeadLocomotive() && SteamGeneratorEnable)
                         Train.SteamGeneratorEnable = true;
                     else
                         Train.SteamGeneratorEnable = false;
@@ -8362,8 +8362,11 @@ namespace Orts.Simulation.RollingStocks
                         if (LocoType != LocoTypes.Vectron || DynamicBrakeIntervention > 0)
                         {                            
                             float DynamicBrakePercentTrainBrake = (DynamicBrakeIntervention < 0.0f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;
+                            
+                            if (LocoType == LocoTypes.Katr7507)
+                                DynamicBrakePercentTrainBrake = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                            
 
-                            if ((DynamicBrakePercentTrainBrake > 0 && LastStateDynamicBrakePercent == -1) || (DynamicBrakePercentTrainBrake > 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue))                                
+                            if ((DynamicBrakePercentTrainBrake > 0 && LastStateDynamicBrakePercent == -1) || (DynamicBrakePercentTrainBrake > 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue))
                                 LastStateDynamicBrakePercent = DynamicBrakePercent;
 
                             if (DynamicBrakePercentTrainBrake == 0 && PressureConverterControllerValue != LastStatePressureConverterControllerValue)
@@ -10641,20 +10644,21 @@ namespace Orts.Simulation.RollingStocks
                 if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && CruiseControl.SpeedRegMode[LocoStation] != CruiseControl.SpeedRegulatorMode.Manual)
                     Mirel.AlerterPressed(true);
                 else
-                if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0)
+                if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && MultiPositionControllers == null)
                     Mirel.AlerterPressed(true);
+                
             if (MultiPositionControllers != null)
-            {
-                foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
-                    if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                    foreach (MultiPositionController mpc in MultiPositionControllers)
                     {
-                        mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                        SignalEvent(Event.TrainBrakeChange);
-                        return;
+                        if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
+                        {
+                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
+                            SignalEvent(Event.TrainBrakeChange);
+                            return;
+                        }
                     }
                 }
-            }
 
             if (TrainBrakeController.CurrentNotch != -1 && TrainBrakeController.Notches[TrainBrakeController.CurrentNotch].SpringLoaded)
                 TrainBrakeController.StartIncrease();
@@ -21013,6 +21017,10 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Testuje připojené potrubí pro vozy s parním vytápěním             
+                if (MaxSteamHeatPressurePSI == 0)                     
+                    IsSteamHeatFitted = false;                
+                else                
+                    IsSteamHeatFitted = true;                
                 int SteamHeatCarPosition = -1;
                 CarPosition = 0;                
                 foreach (TrainCar car in Train.Cars)

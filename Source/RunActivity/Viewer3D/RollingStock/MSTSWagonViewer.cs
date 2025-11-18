@@ -603,7 +603,7 @@ namespace Orts.Viewer3D.RollingStock
             foreach (var drawer in HeatingHose)
             {
                 // Icik
-                if (!car.BrakeSystem.HeatingIsOn || (Car.Train.SteamGeneratorEnable && Car.Train.SteamGeneratorTempC < 100))
+                if (!car.BrakeSystem.HeatingIsOn || (Car.Train != null && Car.Train.SteamGeneratorEnable && Car.Train.SteamGeneratorTempC < 100))
                     car.HeatingHoseSteamVolumeM3pS = 0;                
 
                 drawer.SetOutput(car.HeatingHoseSteamVelocityMpS, car.HeatingHoseSteamVolumeM3pS, car.HeatingHoseParticleDurationS);
