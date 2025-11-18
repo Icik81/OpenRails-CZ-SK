@@ -10621,7 +10621,7 @@ namespace Orts.Simulation.RollingStocks
             if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
                 return;
 
-            if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0) Mirel.AlerterPressed(true);
+            if (!TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed && SpeedMpS > 0 && MultiPositionControllers == null) Mirel.AlerterPressed(true);
             if (MultiPositionControllers != null)
             {
                 foreach (MultiPositionController mpc in MultiPositionControllers)
