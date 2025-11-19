@@ -1741,6 +1741,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             AutoCylPressurePSI0 = threshold;
                     }
                     else BrakeCylRelease = false;
+
+                    if (BrakeLine1PressurePSI > thresholdBreakPoint) BrakeCylRelease = false;
                 }
 
                 if (TripleValveState == ValveState.Lap)

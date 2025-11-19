@@ -348,7 +348,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.Drive)
                     {
-                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && !Locomotive.AVVBraking)
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && ((!Locomotive.AVVBraking && !Locomotive.ARRTrainBrakeEngage) || Locomotive.BrakeSystem.BrakeCylRelease))
                         {
                             if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
                                 Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
@@ -393,8 +393,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
                 {
                     if (controllerPosition == ControllerPosition.Drive)
-                    {
-                        Locomotive.BrakeSystem.BrakeCylRelease = true;
+                    {                        
                         Locomotive.BrakeSystem.BrakeCylReleaseEDBOn = false;
                     }
                     if (Locomotive.DynamicBrakePercent > -1) Locomotive.SetThrottlePercent(0);                    
