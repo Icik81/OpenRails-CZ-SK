@@ -348,7 +348,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                     if (controllerPosition == ControllerPosition.Drive)
                     {
-                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && ((!Locomotive.AVVBraking && !Locomotive.ARRTrainBrakeEngage) || Locomotive.BrakeSystem.BrakeCylRelease))
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507 && !Locomotive.AVVBraking && !Locomotive.ARRTrainBrakeEngage)
                         {
                             if (Locomotive.Train.EqualReservoirPressurePSIorInHg < Locomotive.TrainBrakeController.MaxPressurePSI)
                                 Locomotive.Train.EqualReservoirPressurePSIorInHg += Locomotive.TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;

@@ -3688,7 +3688,7 @@ namespace Orts.Simulation.Timetables
                 {
                     if ((!IsFreight || AITrainIsMixed) && Simulator.OpenDoorsInAITrains)
                     {
-                        var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+                        var frontIsFront = thisStation.Direction == 0;
                         if (doorOpenDelay > 0)
                         {
                             doorOpenDelay -= elapsedClockSeconds;
