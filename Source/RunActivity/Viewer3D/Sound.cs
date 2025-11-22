@@ -1547,10 +1547,42 @@ namespace Orts.Viewer3D
                 }
             }
             
-            // Ztišší zvuk vypínání motoru při automatické inicializaci volnoběhu
-            if (car != null && car.CarInitStopSoundOff)
+            // Ztiší zvuk vypínání motoru při automatické inicializaci volnoběhu
+            if (car != null && MSTSStream != null && car.CarInitStopSoundOff)
             {
-                volume *= 0;
+                // Vyhledá zvuk start/stop motoru
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("motor") && name.ToLower().Contains("stop"))
+                                {
+                                    volume *= 0;
+                                    break;
+                                }
+                            }
+                }
+            }
+
+            // Ztiší zvuk start motoru při automatické inicializaci startu motoru
+            if (car != null && MSTSStream != null && car.CarInitStartSoundOff)
+            {
+                // Vyhledá zvuk start/stop motoru
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("motor") && name.ToLower().Contains("start"))
+                                {
+                                    volume *= 0;
+                                    break;
+                                }                                
+                            }
+                }                
             }
 
             if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))

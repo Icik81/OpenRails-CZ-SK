@@ -431,6 +431,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                             Locomotive.ControllerVolts = Locomotive.MaxControllerVolts;
                         //Locomotive.Train.ControllerVolts = Locomotive.ControllerVolts;
                         Locomotive.SetThrottlePercent(Locomotive.ControllerVolts * 10);
+                        Simulator.Confirmer.ConfirmWithPerCent(CabControl.Throttle, Locomotive.ControllerVolts * 10);
 
                         // Icik
                         if (Locomotive.ControllerVolts > 0.1f)

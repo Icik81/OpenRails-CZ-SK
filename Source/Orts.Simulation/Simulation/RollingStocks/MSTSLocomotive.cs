@@ -9880,7 +9880,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
 
             if (target != null) ThrottleController.StartIncrease(target);
-            else new NotchedThrottleCommand(Simulator.Log, true);
+            else new NotchedThrottleCommand(Simulator.Log, true);            
 
             SignalEvent(Event.ThrottleChange);
             AlerterReset(TCSEvent.ThrottleChanged);
@@ -9904,7 +9904,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
             }
             if (MultiPositionControllers != null)
-            {
+            {                
                 foreach (MultiPositionController mpc in MultiPositionControllers)
                 {
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.Throttle || mpc.controllerBinding == MultiPositionController.ControllerBinding.Combined)
@@ -9912,8 +9912,8 @@ namespace Orts.Simulation.RollingStocks
                         if (!mpc.StateChanged)
                         {
                             mpc.StateChanged = true;
-                            mpc.DoMovement(MultiPositionController.Movement.Forward);
-                        }
+                            mpc.DoMovement(MultiPositionController.Movement.Forward);                            
+                        }                        
                         return;
                     }
                 }
@@ -9974,8 +9974,8 @@ namespace Orts.Simulation.RollingStocks
                         if (mpc.StateChanged)
                         {
                             mpc.StateChanged = false;
-                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                        }
+                            mpc.DoMovement(MultiPositionController.Movement.Neutral);                            
+                        }                        
                         return;
                     }
                 }

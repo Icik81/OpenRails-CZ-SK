@@ -1216,11 +1216,13 @@ namespace Orts.Simulation.RollingStocks
         public bool AIMotorStop;
         public bool AIMotorStart;
         float MotorSoundStopCycle;
+        float MotorSoundStartCycle;
         bool DERunningStatus;
         bool DERunningStatus2;
         float AITimeToMotorStop;
         float AITimeMotorRunning;
-        float preAITimeMotorRunning;
+        float preAITimeMotorRunning;        
+        float JVSetupStartUpTimer;
         public void DieselStartUpTime(float elapsedClockSeconds)
         {
             // Vynechá servisy jako například posunovače
@@ -1452,6 +1454,33 @@ namespace Orts.Simulation.RollingStocks
             
             if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
                 DieselDirection_Start = true;
+
+            // JV Setup pro start zvuku motoru, kvůli nechtěnému startu zvuku start motoru při zapnutém motoru
+            if (JVSetup)
+            {
+                if (CarHasStartTrigger && CarHasInitStartTrigger && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && MotorSoundStartCycle < 1)
+                {
+                    MotorSoundStartCycle++;
+                    CarInitStartSoundOff = true;
+                }
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped)
+                {
+                    MotorSoundStartCycle = 0;                    
+                    JVSetupStartUpTimer = 0;
+                }
+                if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+                {                    
+                    if (MotorSoundStartCycle == 1)
+                    {
+                        JVSetupStartUpTimer += elapsedClockSeconds;
+                        if (JVSetupStartUpTimer > 2.0f)
+                        {
+                            Variable2 = 0.01f; // Aktivuje volnoběhu motoru                            
+                        }
+                    }
+                }
+                if (CarInitStartSoundOff && Simulator.GameTime > 10.0f) CarInitStartSoundOff = false;
+            }           
 
             // Kontrolní žárovka pro dobíjení baterií
             if (Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
