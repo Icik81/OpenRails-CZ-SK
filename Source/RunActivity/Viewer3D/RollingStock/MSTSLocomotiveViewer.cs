@@ -45,6 +45,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
+using static Orts.Viewer3D.SkyViewer;
 using Event = Orts.Common.Event;
 
 namespace Orts.Viewer3D.RollingStock
@@ -2619,7 +2620,7 @@ namespace Orts.Viewer3D.RollingStock
 
             #region Create Control renderers
             ControlMap = new Dictionary<int, CabViewControlRenderer>();
-            int[] count = new int[256];//enough to hold all types, count the occurence of each type
+            int[] count = new int[512];//enough to hold all types, count the occurence of each type
             var i = 0;
 
             var controlSortIndex = 1;  // Controls are drawn atop the cabview and in order they appear in the CVF file.
@@ -2713,6 +2714,23 @@ namespace Orts.Viewer3D.RollingStock
                         count[(int)cvc.ControlType]++;
                         continue;
                     }
+                }
+            }
+
+            // Aktivování extra kabinových prvků pro 3D kabiny
+            foreach (var cvcrControl in CabViewControlRenderersList[i])
+            {
+                if (cvcrControl.Control.ControlType == CABViewControlTypes.STEAMGENERATOR_TEMP)
+                {
+                    car.SteamGeneratorEnable = true;                    
+                }
+                if (cvcrControl.Control.ControlType == CABViewControlTypes.HEATING_OFFON)
+                {
+                    car.HeatingEnable = true;
+                }
+                if (cvcrControl.Control.ControlType == CABViewControlTypes.CABHEATING_OFFON)
+                {
+                    car.CabHeatingEnable = true;
                 }
             }
             #endregion
@@ -2902,7 +2920,8 @@ namespace Orts.Viewer3D.RollingStock
         /// <returns>Data value as fraction (from 0 to 1) of the range between Min and Max values</returns>
         public float GetRangeFraction()
         {
-            var data = Locomotive.GetDataOf(Control);
+            var data = Locomotive.GetDataOf(Control);            
+
             if (Control.MinValueExtendedPhysics != 0 || Control.MaxValueExtendedPhysics != 0 && Locomotive.extendedPhysics != null)
             {
                 if (data < Control.MinValueExtendedPhysics)
@@ -2955,7 +2974,7 @@ namespace Orts.Viewer3D.RollingStock
             }
             if (!display)
                 return;
-            frame.AddPrimitive(CabShaderControlView, this, RenderPrimitiveGroup.Cab, ref Matrix);
+            frame.AddPrimitive(CabShaderControlView, this, RenderPrimitiveGroup.Cab, ref Matrix);            
         }
 
         internal void Mark()
@@ -3035,7 +3054,7 @@ namespace Orts.Viewer3D.RollingStock
                 TimeSpan ts = DateTime.Now - Locomotive.SelectedSpeedChangedAt;
                 if (ts.TotalSeconds < 5)
                     display = true;
-            }
+            }            
 
             if (!Control.IsVisible)
             {
@@ -3521,9 +3540,9 @@ namespace Orts.Viewer3D.RollingStock
         {
             var data = Locomotive.GetDataOf(Control);
 
-            var index = 0;
+            var index = 0;            
             switch (ControlDiscrete.ControlType)
-            {
+            {                
                 case CABViewControlTypes.ENGINE_BRAKE:
                 case CABViewControlTypes.BRAKEMAN_BRAKE:
                 case CABViewControlTypes.TRAIN_BRAKE:
@@ -3951,7 +3970,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ODOMETER_DISPLAY_START:
                 case CABViewControlTypes.ODOMETER_DISPLAY:
                     index = (int)data;
-                    break;
+                    break;                
 
                 // ORTS
                 case CABViewControlTypes.ORTS_SCREEN_SELECT:
@@ -7175,7 +7194,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         key = 1000 * (int)type + order;
                         switch (type)
-                        {
+                        {                            
                             case CABViewControlTypes.EXTERNALWIPERS:
                             case CABViewControlTypes.MIRRORS:
                             case CABViewControlTypes.LEFTDOOR:
@@ -7183,7 +7202,7 @@ namespace Orts.Viewer3D.RollingStock
                             case CABViewControlTypes.ORTS_ITEM1CONTINUOUS:
                             case CABViewControlTypes.ORTS_ITEM2CONTINUOUS:
                             case CABViewControlTypes.ORTS_ITEM1TWOSTATE:
-                            case CABViewControlTypes.ORTS_ITEM2TWOSTATE:
+                            case CABViewControlTypes.ORTS_ITEM2TWOSTATE:                            
                                 break;
                             default:
                                 //cvf file has no external wipers, left door, right door and mirrors key word
