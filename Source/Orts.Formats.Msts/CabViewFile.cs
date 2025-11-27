@@ -488,6 +488,7 @@ namespace Orts.Formats.Msts
         HIGHVOLTAGE_DCOFFAC,
         LAP_BUTTON,
         DIRECTION_BUTTON,
+        DIRECTION_BUTTON_LIGHT,
         FORCE_INCREASE,
         FORCE_DECREASE,
         BREAK_EDB_BUTTON,

@@ -3870,6 +3870,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HIGHVOLTAGE_DCOFFAC:
                 case CABViewControlTypes.LAP_BUTTON:
                 case CABViewControlTypes.DIRECTION_BUTTON:
+                case CABViewControlTypes.DIRECTION_BUTTON_LIGHT:
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
                 case CABViewControlTypes.BREAK_EDB_DISPLAY:

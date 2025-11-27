@@ -664,6 +664,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LocoIsStatic;
         public float PantoCanHVOffSpeedKpH;
         public bool DirectionButton;
+        public bool DirectionButtonLight;
         public int DirectionButtonPosition = 2;
         public int MemDirectionButtonPosition = -1;
         public int DirectionButtonPositionOffset;
@@ -24605,29 +24606,69 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.DIRECTION_BUTTON:
                     {
-                        DirectionButton = true;                        
+                        DirectionButton = true;  
+                        int ButtonNoLightOffset = 6;
+
+                        if (!DirectionButtonLight)
+                            ButtonNoLightOffset = 0;
+
                         switch (DirectionButtonPosition)
                         {
                             case 0:
-                                data = 4 + DirectionButtonPositionOffset;
+                                data = 4 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                             case 1:
-                                data = 5 + DirectionButtonPositionOffset;
+                                data = 5 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                             case 2:
-                                data = 2 + DirectionButtonPositionOffset;
+                                data = 2 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                             case 3:
-                                data = 3 + DirectionButtonPositionOffset;
+                                data = 3 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                             case 4:
-                                data = 1 + DirectionButtonPositionOffset;
+                                data = 1 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                             case 5:
-                                data = 0 + DirectionButtonPositionOffset;
+                                data = 0 + DirectionButtonPositionOffset + ButtonNoLightOffset;
                                 break;
                         }
-                        if (!Battery) data = 10;
+                        if (!Battery) data = DirectionButtonLight ? 0 : 10; // Kvůli staršímu nastavení prvku tlačítka
+                        break;
+                    }
+                case CABViewControlTypes.DIRECTION_BUTTON_LIGHT:
+                    {
+                        DirectionButtonLight = true;                        
+
+                        if (AbsSpeedMpS > 5.0f / 3.6f) // 5 km/h
+                        {
+                            data = 12; // Neutral                            
+                        }
+                        else
+                        {
+                            switch (DirectionButtonPosition)
+                            {
+                                case 0:
+                                    data = 4 + DirectionButtonPositionOffset;
+                                    break;
+                                case 1:
+                                    data = 5 + DirectionButtonPositionOffset;
+                                    break;
+                                case 2:
+                                    data = 2 + DirectionButtonPositionOffset;
+                                    break;
+                                case 3:
+                                    data = 3 + DirectionButtonPositionOffset;
+                                    break;
+                                case 4:
+                                    data = 1 + DirectionButtonPositionOffset;
+                                    break;
+                                case 5:
+                                    data = 0 + DirectionButtonPositionOffset;
+                                    break;
+                            }
+                        }
+                        if (!Battery) data = 12;
                         break;
                     }
                 case CABViewControlTypes.TURBO_PRESSURE:
