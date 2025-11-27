@@ -310,10 +310,10 @@ namespace Orts.Viewer3D.Processes
             var ratio = (float)DisplaySize.X / DisplaySize.Y;
             var fov = MathHelper.ToRadians(Game.Settings.ViewingFOV * 1.33f);
             var n = (float)0.5;
-            var f = (float)Game.Settings.ViewingDistance;
+            var f = (float)Game.Settings.ShadowMapDistance * 2;
             if (f == 0)
                 f = Game.Settings.ViewingDistance / 2;
-
+            
             var m = (float)ShadowMapCount;
             var LastC = n;
             for (var shadowMapIndex = 0; shadowMapIndex < ShadowMapCount; shadowMapIndex++)
