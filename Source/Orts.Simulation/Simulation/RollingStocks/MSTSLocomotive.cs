@@ -11651,10 +11651,25 @@ namespace Orts.Simulation.RollingStocks
                     case 140: case 141:
                     case 150: case 151:
                     case 162: case 163: case 169:
-                    case 180: case 181: case 182: case 183: case 184:
+                    case 181: case 182: case 183: case 184:
                     case 440: case 451: case 452: case 460: case 470: case 471: case 480:
                         LocomotivePowerVoltage = 3000;
                         EnableControlVoltageChange = false;
+                        break;
+
+                    case 180: // DB
+                        if (WagonNumAxles > 4)
+                        {
+                            LocomotivePowerVoltage = 3000;
+                            EnableControlVoltageChange = false;
+                        }
+                        else
+                        {
+                            MultiSystemEngine = true;
+                            MultiSystemEnginePlayer = true;
+                            LocomotivePowerVoltage = 15000;
+                            EnableControlVoltageChange = true;
+                        }
                         break;
 
                     case 209: case 210: case 218: case 230: case 240: case 242: case 260: case 263: case 280:
