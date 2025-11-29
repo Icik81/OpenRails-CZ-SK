@@ -2173,7 +2173,12 @@ namespace Orts.Viewer3D
             car = Viewer.PlayerTrain.LeadLocomotive;
             base.SetCameraCar(car);
             if (attachedCar.HeadOutViewpoints.Count > 0)
+            {
                 attachedLocation = attachedCar.HeadOutViewpoints[CurrentViewpointIndex].Location;
+                HeadOutZ[1] = attachedCar.HeadOutViewpoints[0].Location.Z;
+                if (attachedCar.HeadOutViewpoints.Count > 1)
+                    HeadOutZ[2] = attachedCar.HeadOutViewpoints[1].Location.Z;
+            }
 
             if (!Forwards)
                 attachedLocation.X *= -1;
