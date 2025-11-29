@@ -295,6 +295,7 @@ namespace Orts.Simulation
         public float AlternatorOverloadCoef = 1;
         public float HeatingOverloadCoef = 1;
         public int CloudIndex = -1;
+        public bool PowerSupplyInit;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

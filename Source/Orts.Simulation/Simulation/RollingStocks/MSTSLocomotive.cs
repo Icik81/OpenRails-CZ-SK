@@ -2557,11 +2557,15 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public override void Initialize()
         {
-            // Jindřich - napaječky a voltage markery
-            Simulator.powerSupplyStations = new List<PowerSupplyStation>();
-            SetUpPowerSupplyStations();
-            Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
-            SetUpVoltageChangeMarkers();
+            if (!Simulator.PowerSupplyInit)
+            {
+                // Jindřich - napaječky a voltage markery
+                Simulator.powerSupplyStations = new List<PowerSupplyStation>();
+                SetUpPowerSupplyStations();
+                Simulator.voltageChangeMarkers = new List<VoltageChangeMarker>();
+                SetUpVoltageChangeMarkers();
+                Simulator.PowerSupplyInit = true;
+            }
 
             if (MaxPowerWAC != 0)
                 MaxPowerWBase = MaxPowerWAC;
@@ -3029,26 +3033,36 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (nodeId.Name == "Longitude")
                                 {
-                                    try
+                                    if (nodeId.InnerText.Contains(","))
                                     {
                                         nextNodeLon = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
-                                    catch
-                                    {
-                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
-                                    }
+
+                                    //try
+                                    //{
+                                    //    nextNodeLon = double.Parse(nodeId.InnerText.Replace(",", "."));
+                                    //}
+                                    //catch
+                                    //{
+                                    //    nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    //}
 
                                 }
                                 if (nodeId.Name == "Latitude")
                                 {
-                                    try
+                                    if (nodeId.InnerText.Contains(","))
                                     {
                                         nextNodeLat = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
-                                    catch
-                                    {
-                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
-                                    }
+                                                                        
+                                    //try
+                                    //{
+                                    //    nextNodeLat = double.Parse(nodeId.InnerText.Replace(",", "."));
+                                    //}
+                                    //catch
+                                    //{
+                                    //    nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    //}
                                 }
                                 if (nodeId.Name == "PowerSystem")
                                     nextNodePowerSystem = int.Parse(nodeId.InnerText);
