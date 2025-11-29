@@ -868,6 +868,7 @@ namespace Orts.Simulation
         public int RestOfPax = -1;
         int ClearForDepartGenerate;
         int TimeToClearForDepart;
+        public bool WasAtStation;
 
         public DateTime SchArrive;
         public DateTime SchDepart;
@@ -1047,6 +1048,7 @@ namespace Orts.Simulation
             {                                                                
                 if (arrived)
                 {
+                    WasAtStation = false;
                     MyPlayerTrain.ActualStationNumber++;                    
                     
                     if (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
@@ -1200,7 +1202,7 @@ namespace Orts.Simulation
                                 {
                                     TimeToClearForDepart++;
                                     if (TimeToClearForDepart > ClearForDepartGenerate * 30f)
-                                    {
+                                    {                                        
                                         maydepart = true;
                                         DisplayColor = Color.LightGreen;
                                         DisplayMessage = Simulator.Catalog.GetString("Clear to go!");
@@ -1290,9 +1292,12 @@ namespace Orts.Simulation
                         // Checking missed station
                         int tmp = (int)(Simulator.ClockTime % 10);
                         if (tmp != TimerChk)
-                        {
-                            if (IsMissedStation() && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
+                        {                            
+                            if (IsAtStation(MyPlayerTrain)) WasAtStation = true;
+
+                            if (WasAtStation && IsMissedStation() && (MyPlayerTrain.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING))
                             {
+                                WasAtStation = false;
                                 MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
                                 IsCompleted = false;
                                 MyPlayerTrain.ActualStationNumber++;

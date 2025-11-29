@@ -1781,14 +1781,18 @@ namespace Orts.Viewer3D
                     foreach (var animatedPart in animatedParts)
                     {
                         var key = animatedPart.Value.Key;
-                        try
-                        {
-                            cabRenderer = controlMap[key];
-                        }
-                        catch
-                        {
+
+                        if (!controlMap.TryGetValue(key, out cabRenderer))
                             continue;
-                        }
+
+                        //try
+                        //{
+                        //    cabRenderer = controlMap[key];
+                        //}
+                        //catch
+                        //{
+                        //    continue;
+                        //}
                         var control = cabRenderer.Control;
                         if (cabRenderer is CabViewDiscreteRenderer)
                         {
@@ -1860,14 +1864,18 @@ namespace Orts.Viewer3D
                     foreach (var animatedPart in animatedParts)
                     {
                         var key = animatedPart.Value.Key;
-                        try
-                        {
-                            cabRenderer = controlMap[key];
-                        }
-                        catch
-                        {
+                        
+                        if (!controlMap.TryGetValue(key, out cabRenderer))
                             continue;
-                        }
+                        
+                        //try
+                        //{
+                        //    cabRenderer = controlMap[key];
+                        //}
+                        //catch
+                        //{
+                        //    continue;
+                        //}
                         var control = cabRenderer.Control;
                         if (cabRenderer is CabViewDiscreteRenderer)
                         {
