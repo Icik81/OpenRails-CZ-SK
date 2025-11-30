@@ -1763,7 +1763,22 @@ namespace Orts.Viewer3D.RollingStock
             {(uint)MSTSWagon.PickupType.FreightLivestock, Viewer.Catalog.GetString("freight-livestock")},
             {(uint)MSTSWagon.PickupType.FreightFuel, Viewer.Catalog.GetString("freight-fuel")},
             {(uint)MSTSWagon.PickupType.FreightMilk, Viewer.Catalog.GetString("freight-milk")},
-            {(uint)MSTSWagon.PickupType.SpecialMail, Viewer.Catalog.GetString("mail")}
+            {(uint)MSTSWagon.PickupType.SpecialMail, Viewer.Catalog.GetString("mail")},
+            {(uint)MSTSWagon.PickupType.FreightOre, Viewer.Catalog.GetString("freight-ore")},
+            {(uint)MSTSWagon.PickupType.FreightSteel, Viewer.Catalog.GetString("freight-steel")},
+            {(uint)MSTSWagon.PickupType.FreightWood, Viewer.Catalog.GetString("freight-wood")},
+            {(uint)MSTSWagon.PickupType.FreightChemicals, Viewer.Catalog.GetString("freight-chemicals")},
+            {(uint)MSTSWagon.PickupType.FreightContainers, Viewer.Catalog.GetString("freight-containers")},
+            {(uint)MSTSWagon.PickupType.FreightCement, Viewer.Catalog.GetString("freight-cement")},
+            {(uint)MSTSWagon.PickupType.FreightScrap, Viewer.Catalog.GetString("freight-scrap")},
+            {(uint)MSTSWagon.PickupType.FreightVehicles, Viewer.Catalog.GetString("freight-vehicles")},
+            {(uint)MSTSWagon.PickupType.FreightTextiles, Viewer.Catalog.GetString("freight-textiles")},
+            {(uint)MSTSWagon.PickupType.FreightFood, Viewer.Catalog.GetString("freight-food")},
+            {(uint)MSTSWagon.PickupType.FreightBeer, Viewer.Catalog.GetString("freight-beer")},
+            {(uint)MSTSWagon.PickupType.FreightSugar, Viewer.Catalog.GetString("freight-sugar")},
+            {(uint)MSTSWagon.PickupType.FreightFertilizer, Viewer.Catalog.GetString("freight-fertilizer")},
+            {(uint)MSTSWagon.PickupType.FreightGoods, Viewer.Catalog.GetString("freight-goods")},
+            {(uint)MSTSWagon.PickupType.FreightAsh, Viewer.Catalog.GetString("freight-ash")}
         };
 
         /// <summary>

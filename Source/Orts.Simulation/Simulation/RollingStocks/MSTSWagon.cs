@@ -394,7 +394,22 @@ namespace Orts.Simulation.RollingStocks
             FreightLivestock = 11,  // New to OR
             FreightFuel = 12,  // New to OR
             FreightMilk = 13,   // New to OR
-            SpecialMail = 14  // New to OR
+            SpecialMail = 14,  // New to OR
+            FreightOre = 15,
+            FreightSteel = 16,
+            FreightWood = 17,
+            FreightChemicals = 18,
+            FreightContainers = 19,
+            FreightCement = 20,
+            FreightScrap = 21,
+            FreightVehicles = 22,
+            FreightTextiles = 23,
+            FreightFood = 24,
+            FreightBeer = 25,
+            FreightSugar = 26,
+            FreightFertilizer = 27,
+            FreightGoods = 28,
+            FreightAsh = 29
         }
 
         public class RefillProcess
