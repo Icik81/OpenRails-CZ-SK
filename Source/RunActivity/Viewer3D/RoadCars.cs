@@ -31,7 +31,7 @@ namespace Orts.Viewer3D
     // TODO: Move to simulator!
     public class RoadCarSpawner
     {
-        public const float StopDistance = 10;
+        public const float StopDistance = 6;
         const float RampLength = 2;
         const float TrackHalfWidth = 1;
         const float TrackMergeDistance = 7; // Must be >= 2 * (RampLength + TrackHalfWidth).
@@ -223,12 +223,45 @@ namespace Orts.Viewer3D
         int NextCrossingIndex;
         public int CarSpawnerListIdx;
 
+        // Icik
+        int TypeGenCount = 5;
+        int TypeGenNr = 0;
+        int LastType;
+        int TypeGenChanceToRelease;
+
         public RoadCar(Viewer viewer, RoadCarSpawner spawner, float averageSpeed, int carSpawnerListIdx)
         {
             Spawner = spawner;
             CarSpawnerListIdx = carSpawnerListIdx;
+        
+        RepeatGen:
             Type = Viewer.Random.Next() % viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].shapeNames.Length;
             Length = viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].distanceFrom[Type];
+
+            // Icik
+            Length += MathHelper.Clamp(Viewer.Random.Next(-25, 25) / 100f * Length, -1, 0.5f);
+            if (LastType != Type)
+            {
+                LastType = Type;
+                TypeGenChanceToRelease = Length > 5 ? Viewer.Random.Next(15) : Viewer.Random.Next(10);
+                if (TypeGenChanceToRelease == 0) goto SkipRepeatGen;
+            }
+            else
+                goto RepeatGen;
+
+            if (Length > 5)
+            {
+                TypeGenNr++;
+                if (TypeGenNr < TypeGenCount)                
+                    goto RepeatGen;                
+                else
+                    TypeGenNr = 0;
+            }
+            else
+                TypeGenNr = 0;
+
+         SkipRepeatGen:
+
             // Front and rear travellers approximate wheel positions at 25% and 75% along vehicle.
             FrontTraveller = new Traveller(spawner.Traveller);
             FrontTraveller.Move(Length * 0.15f);
