@@ -428,8 +428,8 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
 {
 	float3 headlightToSurface = normalize(In.LightDir_Fog.xyz);
-	float coneDot = dot(headlightToSurface, HeadlightDirection.xyz);
-
+	float coneDot = dot(headlightToSurface, HeadlightDirection.xyz);	
+	headlightToSurface = 0;	
 	float shading = step(0, coneDot);
 	shading *= step(0, dot(In.Normal_Light.xyz, -headlightToSurface));
 	shading *= saturate(HeadlightDirection.w / (1 - coneDot));
