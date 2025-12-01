@@ -16940,6 +16940,11 @@ namespace Orts.Simulation.Physics
                     bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
                     var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
 
+                    if (this is Timetables.TTTrain)
+                    {
+                        frontIsFront = thisStation.Direction == 0;
+                    }
+
                     if (loco.UsingRearCab)
                     {
                         if (right)
@@ -16988,7 +16993,12 @@ namespace Orts.Simulation.Physics
             StationStop thisStation = StationStops[0];            
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
             bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;            
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+            if (this is Timetables.TTTrain)
+            {
+                frontIsFront = thisStation.Direction == 0;
+            }
 
             if (!frontIsFront)
             {
@@ -17544,7 +17554,12 @@ namespace Orts.Simulation.Physics
             bool platformSide = train.StationStops[0].PlatformItem.PlatformSide[0] ? true : false;            
             bool LeftPlatformSide = thisStation.PlatformItem.PlatformSide[1];
             bool RightPlatformSide = thisStation.PlatformItem.PlatformSide[0];
-            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;                                  
+            var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
+
+            if (this is Timetables.TTTrain)
+            {
+                frontIsFront = thisStation.Direction == 0;
+            }
 
             if (!frontIsFront)
             {                

@@ -7997,8 +7997,11 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
+            //if (float.IsNaN(TractiveForceN))
+            //    Debugger.Break();
+
             if (float.IsNaN(TractiveForceN))
-                Debugger.Break();
+                TractiveForceN = 0;
 
             ApplyDirectionToTractiveForce();
 

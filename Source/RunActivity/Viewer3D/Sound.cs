@@ -205,6 +205,10 @@ namespace Orts.Viewer3D
                     return;
 
                 var CarNo = Car.Train.Cars.IndexOf(Car);
+                
+                // Icik
+                if (CarNo < 0 || CarNo > Car.Train.Cars.Count - 1) return;
+
                 float trackSoundDistSquared = 0;
 
                 if (CarNo == CarLeading)
