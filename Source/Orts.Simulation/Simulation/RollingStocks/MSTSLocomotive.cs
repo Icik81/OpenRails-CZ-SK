@@ -25415,6 +25415,44 @@ namespace Orts.Simulation.RollingStocks
                         cvc.ElapsedTime = 0;
                         break;
                     }
+                case CABViewControlTypes.PANTOGRAPHS_CURRENT_AC:
+                    {
+                        if (SwitchingVoltageMode_OffAC)
+                        {
+                            if (cvc.UpdateTime > cvc.ElapsedTime)
+                            {
+                                data = cvc.PreviousData;
+                                cvc.ElapsedTime += elapsedTime;
+                                break;
+                            }
+                            data = PantographsCurrent;
+                            if (cvc.UpdateTime > 0)
+                                cvc.PreviousData = data;
+                            cvc.ElapsedTime = 0;
+                        }
+                        else
+                            data = 0;
+                        break;
+                    }
+                case CABViewControlTypes.PANTOGRAPHS_CURRENT_DC:
+                    {
+                        if (SwitchingVoltageMode_OffDC)
+                        {
+                            if (cvc.UpdateTime > cvc.ElapsedTime)
+                            {
+                                data = cvc.PreviousData;
+                                cvc.ElapsedTime += elapsedTime;
+                                break;
+                            }
+                            data = PantographsCurrent;
+                            if (cvc.UpdateTime > 0)
+                                cvc.PreviousData = data;
+                            cvc.ElapsedTime = 0;
+                        }
+                        else
+                            data = 0;
+                        break;
+                    }
                 case CABViewControlTypes.STEAMGENERATOR_TEMP:
                     {
                         SteamGeneratorEnable = true;                        
