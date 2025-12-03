@@ -2578,7 +2578,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                     break;
             }
-                        
+
+            // Nedořešené
+            if (PantographVoltageV > 0)
+                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+
             //if (IsLeadLocomotive()) Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
         }
 

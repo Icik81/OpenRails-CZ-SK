@@ -25409,7 +25409,7 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime += elapsedTime;
                             break;
                         }
-                        data = PantographsCurrent;
+                        data = PantographsCurrent;                        
                         if (cvc.UpdateTime > 0)
                             cvc.PreviousData = data;
                         cvc.ElapsedTime = 0;
@@ -25488,7 +25488,15 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
             }
-            
+
+            // Precision
+            if (cvc.Precision > 0)
+            {
+                data = data / cvc.Precision;
+                data = (float)Math.Round(data, 0);
+                data = data * cvc.Precision;
+            }
+
             // max needle speed
             if (cvc.MaxNeedleSpeed > 0 && elapsedTime > 0)
             {

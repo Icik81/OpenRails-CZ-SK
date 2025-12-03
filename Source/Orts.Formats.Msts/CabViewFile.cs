@@ -1171,6 +1171,18 @@ namespace Orts.Formats.Msts
                     MaxNeedleSpeedDown = stf.ReadFloat(STFReader.UNITS.None, 0);
                     stf.SkipRestOfBlock();
                 }),
+                new STFReader.TokenProcessor("updatetime", () =>
+                {
+                    stf.MustMatch("(");
+                    UpdateTime = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                }),
+                new STFReader.TokenProcessor("precision", () =>
+                {
+                    stf.MustMatch("(");
+                    Precision = stf.ReadFloat(STFReader.UNITS.None, null);
+                    stf.SkipRestOfBlock();
+                }),
                 // ORTS
                 new STFReader.TokenProcessor("ortsdisplay", ()=>{ParseDisplay(stf); }),
                 new STFReader.TokenProcessor("ortsscreenpage", () => {ParseScreen(stf); }),
