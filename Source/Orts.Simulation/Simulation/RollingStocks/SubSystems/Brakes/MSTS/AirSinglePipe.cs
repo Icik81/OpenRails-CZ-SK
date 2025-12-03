@@ -2647,7 +2647,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     car.BrakePipeAirLoss = false;
                     if (train.Cars.Count == 1 && (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen))
                     {
-                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        if (train.IsActualPlayerTrain && car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                         {
                             car.SignalEvent(Event.BrakePipeAirLossOn);
                             car.BrakePipeAirLoss = true;
@@ -2678,7 +2678,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                     if (car == train.Cars[0] && car.BrakeSystem.AngleCockAOpen)
                     {
-                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        if (train.IsActualPlayerTrain && car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                         {
                             car.SignalEvent(Event.BrakePipeAirLossOn);
                             car.BrakePipeAirLoss = true;
@@ -2704,7 +2704,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                     if (car == train.Cars[train.Cars.Count - 1] && car.BrakeSystem.AngleCockBOpen) // Last car in train and rear cock of wagon open
                     {
-                        if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                        if (train.IsActualPlayerTrain && car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                         {
                             car.SignalEvent(Event.BrakePipeAirLossOn);
                             car.BrakePipeAirLoss = true;
@@ -2732,7 +2732,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (car.BrakeSystem.AngleCockAOpen) //  AND Front brake cock opened
                         {
-                            if (car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                            if (train.IsActualPlayerTrain && car.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                             {
                                 car.SignalEvent(Event.BrakePipeAirLossOn);
                                 car.BrakePipeAirLoss = true;
@@ -2758,7 +2758,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         else
                         if (car0.BrakeSystem.AngleCockBOpen && car != car0) //  AND Rear cock of wagon opened, and car is not the first wagon
                         {
-                            if (car0.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
+                            if (train.IsActualPlayerTrain && car0.BrakeSystem.BrakeLine1PressurePSI > 0.01f)
                             {
                                 car0.SignalEvent(Event.BrakePipeAirLossOn);
                                 car0.BrakePipeAirLoss = true;
