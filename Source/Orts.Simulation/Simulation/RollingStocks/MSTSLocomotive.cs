@@ -3033,36 +3033,26 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (nodeId.Name == "Longitude")
                                 {
-                                    if (nodeId.InnerText.Contains(","))
+                                    try
                                     {
                                         nextNodeLon = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
-
-                                    //try
-                                    //{
-                                    //    nextNodeLon = double.Parse(nodeId.InnerText.Replace(",", "."));
-                                    //}
-                                    //catch
-                                    //{
-                                    //    nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
-                                    //}
+                                    catch
+                                    {
+                                        nextNodeLon = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
 
                                 }
                                 if (nodeId.Name == "Latitude")
                                 {
-                                    if (nodeId.InnerText.Contains(","))
+                                    try
                                     {
                                         nextNodeLat = double.Parse(nodeId.InnerText.Replace(",", "."));
                                     }
-                                                                        
-                                    //try
-                                    //{
-                                    //    nextNodeLat = double.Parse(nodeId.InnerText.Replace(",", "."));
-                                    //}
-                                    //catch
-                                    //{
-                                    //    nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
-                                    //}
+                                    catch
+                                    {
+                                        nextNodeLat = double.Parse(nodeId.InnerText.Replace(".", ","));
+                                    }
                                 }
                                 if (nodeId.Name == "PowerSystem")
                                     nextNodePowerSystem = int.Parse(nodeId.InnerText);

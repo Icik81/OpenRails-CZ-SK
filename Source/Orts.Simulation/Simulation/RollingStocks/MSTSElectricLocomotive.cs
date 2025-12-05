@@ -516,7 +516,7 @@ namespace Orts.Simulation.RollingStocks
             MultiSystemEngine = MultiSystemEnginePlayer;
 
             // výpočet napětí dle proudu a odporu k napaječce
-            float watts = TractiveForceN > 0 ? (TractiveForceN * 1f + TractiveForceN * AbsSpeedMpS) : 0;
+            float watts = TractiveForceN > 0 ? (TractiveForceN * AbsSpeedMpS) : 0;
             if ((Flipped || Direction == Direction.Reverse) && watts < 0)
                 watts = -watts;
 
