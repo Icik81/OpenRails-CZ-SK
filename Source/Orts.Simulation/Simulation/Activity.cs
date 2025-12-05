@@ -921,9 +921,11 @@ namespace Orts.Simulation
         public bool IsAtStation(Train myTrain)
         {
             if (myTrain.StationStops.Count == 0) return false;
-            var thisStation = myTrain.StationStops[0];            
+            var thisStation = myTrain.StationStops[0];
 
-            if (myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
+            thisStation.DistanceToStationM = myTrain.ComputeDistanceToNextStation(thisStation) > -1 ? Math.Abs(myTrain.ComputeDistanceToNextStation(thisStation)) : -1;
+
+            if ((thisStation.DistanceToStationM > -1 && thisStation.DistanceToStationM < 200) && myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
                 return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
 
             return false;

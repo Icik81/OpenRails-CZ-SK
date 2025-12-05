@@ -22240,6 +22240,9 @@ namespace Orts.Simulation.Physics
             public DateTime arrivalDT;
             public DateTime departureDT;
             public bool Passed;
+            
+            // Icik
+            public float DistanceToStationM;
 
             // variables for activity mode only
             public const int NumSecPerPass = 10; // number of seconds to board of a passengers
