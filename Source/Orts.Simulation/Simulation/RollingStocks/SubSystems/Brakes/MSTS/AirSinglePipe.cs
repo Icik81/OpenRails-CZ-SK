@@ -4581,6 +4581,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             ARRSpeedDeccelaration = MathHelper.Clamp(ARRSpeedDeccelaration, 0.25f, 0.5f);
                     }
 
+                    if (lead.CruiseControl.SelectedSpeedMpS > lead.AbsWheelSpeedMpS)
+                    {
+                        ARRSpeedDeccelaration = 0;
+                        ARRSpeedDeltaKpH = 0;
+                    }
+
                     //lead.Simulator.Confirmer.Information("ARRSpeedDeccelaration = " + ARRSpeedDeccelaration);                    
 
                     // První náběh ARR brzdy dá náskok EDB před aktivací tlakové brzdy                    

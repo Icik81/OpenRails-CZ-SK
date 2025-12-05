@@ -926,8 +926,9 @@ namespace Orts.Simulation
             thisStation.TrueStopAtStation = false;
             if (myTrain.IsActualPlayerTrain) // Jen pro hrace pocita vzdalenost k stanici
             {
+                float DistanceToStationMTolerance = myTrain.Length + 200;
                 thisStation.DistanceToStationM = myTrain.ComputeDistanceToStation(thisStation);                
-                thisStation.TrueStopAtStation = thisStation.DistanceToStationM > -200 && thisStation.DistanceToStationM < 200;
+                thisStation.TrueStopAtStation = thisStation.DistanceToStationM > -DistanceToStationMTolerance && thisStation.DistanceToStationM < DistanceToStationMTolerance;
                 //Simulator.Confirmer.MSG("DistanceToStationM: " + thisStation.DistanceToStationM);
             }
             else
