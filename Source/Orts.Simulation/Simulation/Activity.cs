@@ -18,6 +18,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
+using Orts.MultiPlayer;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
@@ -920,17 +921,21 @@ namespace Orts.Simulation
         public bool IsAtStation(Train myTrain)
         {
             if (myTrain.StationStops.Count == 0) return false;
-            var thisStation = myTrain.StationStops[0];
-            if (myTrain.StationStops[0].SubrouteIndex != myTrain.TCRoute.activeSubpath) return false;
-            return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
+            var thisStation = myTrain.StationStops[0];            
+
+            if (myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
+                return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
+
+            return false;
         }
 
         public bool IsMissedStation()
         {
             // Check if station is in present train path
 
-            if (MyPlayerTrain.StationStops.Count == 0 ||
-                MyPlayerTrain.TCRoute.activeSubpath != MyPlayerTrain.StationStops[0].SubrouteIndex || !(MyPlayerTrain.ControlMode == Train.TRAIN_CONTROL.AUTO_NODE || MyPlayerTrain.ControlMode == Train.TRAIN_CONTROL.AUTO_SIGNAL))
+            if (MyPlayerTrain.StationStops.Count == 0 
+                || MyPlayerTrain.TCRoute.activeSubpath != MyPlayerTrain.StationStops[0].SubrouteIndex                 
+                || !(MyPlayerTrain.ControlMode == Train.TRAIN_CONTROL.AUTO_NODE || MyPlayerTrain.ControlMode == Train.TRAIN_CONTROL.AUTO_SIGNAL))
             {
                 return (false);
             }
