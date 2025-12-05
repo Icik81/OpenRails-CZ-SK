@@ -6869,6 +6869,148 @@ namespace Orts.Simulation.Physics
             return distanceToTrainM;
         }
 
+        public float ComputeDistanceToStation(StationStop thisStation)
+        {
+            int thisSectionIndex = PresentPosition[0].TCSectionIndex;
+            TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisSectionIndex];
+            float leftInSectionM = thisSection.Length - PresentPosition[0].TCOffset;
+            float distanceToTrainM = -1;
+            int stationIndex;
+
+            if (thisStation.SubrouteIndex > TCRoute.activeSubpath && !Simulator.TimetableMode)
+            // if the station is in a further subpath, distance computation is longer
+            {
+                // first compute distance up to end or reverse point of activeSubpath. To be restudied for subpaths with no reversal
+                if (TCRoute.ReversalInfo[TCRoute.activeSubpath].Valid)
+                    distanceToTrainM = ComputeDistanceToReversalPoint();
+                else
+                {
+                    int lastSectionRouteIndex = TCRoute.TCRouteSubpaths[TCRoute.activeSubpath].Count - 1;
+                    float lastSectionLength = signalRef.TrackCircuitList[TCRoute.TCRouteSubpaths[TCRoute.activeSubpath][lastSectionRouteIndex].TCSectionIndex].Length;
+                    distanceToTrainM = TCRoute.TCRouteSubpaths[TCRoute.activeSubpath].GetDistanceAlongRoute(PresentPosition[0].RouteListIndex,
+                 leftInSectionM, lastSectionRouteIndex, lastSectionLength, true, signalRef);
+                }
+                float lengthOfIntSubpath = 0;
+                int firstSection = 0;
+                float firstSectionOffsetToGo = 0;
+                int lastSection = 0;
+                float lastSectionOffsetToGo = 0;
+                int tempSectionTCSectionIndex;
+                if (distanceToTrainM >= 0)
+                {
+
+                    // compute length of intermediate subpaths, if any, from reversal or section at beginning to reversal or section at end
+
+                    for (int iSubpath = TCRoute.activeSubpath + 1; iSubpath < thisStation.SubrouteIndex; iSubpath++)
+                    {
+                        if (TCRoute.ReversalInfo[iSubpath - 1].Valid)
+                        // skip sections before reversal at beginning of path
+                        {
+                            for (int iSection = 0; iSection < TCRoute.TCRouteSubpaths[iSubpath].Count; iSection++)
+                            {
+                                if (TCRoute.TCRouteSubpaths[iSubpath][iSection].TCSectionIndex == TCRoute.ReversalInfo[iSubpath - 1].ReversalSectionIndex)
+                                {
+                                    firstSection = iSection;
+                                    firstSectionOffsetToGo = TCRoute.ReversalInfo[iSubpath - 1].ReverseReversalOffset;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            for (int iSection = 0; iSection < TCRoute.TCRouteSubpaths[iSubpath].Count; iSection++)
+                            {
+                                if (TCRoute.TCRouteSubpaths[iSubpath][iSection].TCSectionIndex ==
+                                    TCRoute.TCRouteSubpaths[iSubpath - 1][TCRoute.TCRouteSubpaths[iSubpath - 1].Count - 1].TCSectionIndex)
+                                {
+                                    firstSection = iSection + 1;
+                                    tempSectionTCSectionIndex = TCRoute.TCRouteSubpaths[iSubpath][firstSection].TCSectionIndex;
+                                    firstSectionOffsetToGo = signalRef.TrackCircuitList[tempSectionTCSectionIndex].Length;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (TCRoute.ReversalInfo[iSubpath].Valid)
+                        // skip sections before reversal at beginning of path
+                        {
+                            for (int iSection = TCRoute.TCRouteSubpaths[iSubpath].Count - 1; iSection >= 0; iSection--)
+                            {
+                                if (TCRoute.TCRouteSubpaths[iSubpath][iSection].TCSectionIndex == TCRoute.ReversalInfo[iSubpath].ReversalSectionIndex)
+                                {
+                                    lastSection = iSection;
+                                    lastSectionOffsetToGo = TCRoute.ReversalInfo[iSubpath].ReverseReversalOffset;
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            lastSection = TCRoute.TCRouteSubpaths[iSubpath].Count - 1;
+                            tempSectionTCSectionIndex = TCRoute.TCRouteSubpaths[iSubpath][lastSection].TCSectionIndex;
+                            lastSectionOffsetToGo = signalRef.TrackCircuitList[tempSectionTCSectionIndex].Length;
+                        }
+
+                        lengthOfIntSubpath = TCRoute.TCRouteSubpaths[iSubpath].GetDistanceAlongRoute(firstSection,
+                            firstSectionOffsetToGo, lastSection, lastSectionOffsetToGo, true, signalRef);
+                        if (lengthOfIntSubpath < 0)
+                        {
+                            distanceToTrainM = -1;
+                            break;
+                        }
+                        distanceToTrainM += lengthOfIntSubpath;
+                    }
+                }
+                if (distanceToTrainM >= 0)
+                {
+                    // finally compute distance from start of station subpath up to station
+                    if (TCRoute.ReversalInfo[thisStation.SubrouteIndex - 1].Valid)
+                    // skip sections before reversal at beginning of path
+                    {
+                        for (int iSection = 0; iSection < TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex].Count; iSection++)
+                        {
+                            if (TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex][iSection].TCSectionIndex == TCRoute.ReversalInfo[thisStation.SubrouteIndex - 1].ReversalSectionIndex)
+                            {
+                                firstSection = iSection;
+                                firstSectionOffsetToGo = TCRoute.ReversalInfo[thisStation.SubrouteIndex - 1].ReverseReversalOffset;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        for (int iSection = 0; iSection < TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex].Count; iSection++)
+                        {
+                            if (TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex][iSection].TCSectionIndex ==
+                                TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex - 1][TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex - 1].Count - 1].TCSectionIndex)
+                            {
+                                firstSection = iSection + 1;
+                                tempSectionTCSectionIndex = TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex][firstSection].TCSectionIndex;
+                                firstSectionOffsetToGo = signalRef.TrackCircuitList[tempSectionTCSectionIndex].Length;
+                                break;
+                            }
+                        }
+                    }
+
+                    stationIndex = thisStation.RouteIndex;
+                    float distanceFromStartOfsubPath = TCRoute.TCRouteSubpaths[thisStation.SubrouteIndex].GetDistanceAlongRoute(firstSection,
+                        firstSectionOffsetToGo, stationIndex, thisStation.StopOffset, true, signalRef);
+                    if (distanceFromStartOfsubPath < 0) distanceToTrainM = -1;
+                    else distanceToTrainM += distanceFromStartOfsubPath;
+                }
+            }
+
+            else
+            {
+                // No enhanced compatibility, simple computation
+                // if present position off route, try rear position
+                // if both off route, skip station stop
+                stationIndex = ValidRoute[0].GetRouteIndex(thisStation.TCSectionIndex, PresentPosition[0].RouteListIndex);
+                distanceToTrainM = ValidRoute[0].GetDistanceAlongRoute(PresentPosition[0].RouteListIndex,
+                    leftInSectionM, stationIndex, thisStation.StopOffset, true, signalRef);
+            }
+            return distanceToTrainM == -1 ? -1000 : distanceToTrainM;
+        }
 
         //================================================================================================//
         /// <summary>
@@ -22243,6 +22385,7 @@ namespace Orts.Simulation.Physics
             
             // Icik
             public float DistanceToStationM;
+            public bool TrueStopAtStation;
 
             // variables for activity mode only
             public const int NumSecPerPass = 10; // number of seconds to board of a passengers

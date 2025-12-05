@@ -922,10 +922,18 @@ namespace Orts.Simulation
         {
             if (myTrain.StationStops.Count == 0) return false;
             var thisStation = myTrain.StationStops[0];
+                                               
+            thisStation.TrueStopAtStation = false;
+            if (myTrain.IsActualPlayerTrain) // Jen pro hrace pocita vzdalenost k stanici
+            {
+                thisStation.DistanceToStationM = myTrain.ComputeDistanceToStation(thisStation);                
+                thisStation.TrueStopAtStation = thisStation.DistanceToStationM > -200 && thisStation.DistanceToStationM < 200;
+                //Simulator.Confirmer.MSG("DistanceToStationM: " + thisStation.DistanceToStationM);
+            }
+            else
+                thisStation.TrueStopAtStation = true; // AI vlaky to resi jinak
 
-            thisStation.DistanceToStationM = myTrain.ComputeDistanceToNextStation(thisStation) > -1 ? Math.Abs(myTrain.ComputeDistanceToNextStation(thisStation)) : -1;
-
-            if ((thisStation.DistanceToStationM > -1 && thisStation.DistanceToStationM < 200) && myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
+            if (thisStation.TrueStopAtStation && myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
                 return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
 
             return false;
