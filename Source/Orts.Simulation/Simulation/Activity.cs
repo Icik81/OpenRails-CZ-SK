@@ -927,14 +927,19 @@ namespace Orts.Simulation
             if (myTrain.IsActualPlayerTrain) // Jen pro hrace pocita vzdalenost k stanici
             {
                 float DistanceToStationMTolerance = myTrain.Length + 200;
-                thisStation.DistanceToStationM = myTrain.ComputeDistanceToStation(thisStation);                
+                
+                thisStation.DistanceToStationM = myTrain.ComputeDistanceToStation(thisStation);                                
                 thisStation.TrueStopAtStation = thisStation.DistanceToStationM > -DistanceToStationMTolerance && thisStation.DistanceToStationM < DistanceToStationMTolerance;
+                
+                if (thisStation.DistanceToStationM == -1000 && myTrain.StationStops[0].TCSectionIndex != myTrain.PresentPosition[0].TCSectionIndex)
+                    thisStation.TrueStopAtStation = true; // Pokud vlak stojí na jiné sekci než je stanice, tak to neřešíme vzdáleností
+
                 //Simulator.Confirmer.MSG("DistanceToStationM: " + thisStation.DistanceToStationM);
             }
             else
                 thisStation.TrueStopAtStation = true; // AI vlaky to resi jinak
 
-            if (thisStation.TrueStopAtStation && myTrain.StationStops[0].TCSectionIndex == myTrain.PresentPosition[0].TCSectionIndex && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
+            if (thisStation.TrueStopAtStation && myTrain.StationStops[0].SubrouteIndex == myTrain.TCRoute.activeSubpath)
                 return myTrain.CheckStationPosition(thisStation.PlatformItem, thisStation.Direction, thisStation.TCSectionIndex);
 
             return false;
