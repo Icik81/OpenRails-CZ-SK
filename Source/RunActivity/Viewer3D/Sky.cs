@@ -523,48 +523,62 @@ namespace Orts.Viewer3D
             StarTextureS = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Starmap_S.png"));
             MoonTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "MoonMap.png"));
             MoonMask = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "MoonMask.png"));
-
+                            
             // Náhodně vybereme texturu pro oblohu 
             SkyIndex = Viewer.Simulator.SkyIndex;
+        NewReadSkyTexture:
             if (SkyIndex == -1)
             {
-                SkyIndex = Viewer.Random.Next(0, 7);
-                if (Viewer.Simulator.WeatherAdv == 0) SkyIndex = Viewer.Random.Next(0, 2);                
+                SkyIndex = Viewer.Random.Next(0, 20);
+                if (Viewer.Simulator.WeatherAdv == 0) SkyIndex = Viewer.Random.Next(0, 2);
                 Viewer.Simulator.SkyIndex = SkyIndex;
             }
             string skyIndex = SkyIndex.ToString();
 
+            try
+            {
+                SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
+            }
+            catch
+            {
+                SkyIndex = -1;
+                goto NewReadSkyTexture;
+            }
+        
             // Náhodně vybereme texturu pro mraky 
             CloudIndex = Viewer.Simulator.CloudIndex;
+        NewReadCloudTexture:
             if (CloudIndex == -1)
             {
-                CloudIndex = Viewer.Random.Next(0, 5);
+                CloudIndex = Viewer.Random.Next(0, 20);
                 Viewer.Simulator.CloudIndex = CloudIndex;
             }
-            string cloudIndex = CloudIndex.ToString();            
+            string cloudIndex = CloudIndex.ToString();
+
+            try
+            {
+                CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+            }
+            catch
+            {
+                CloudIndex = -1;
+                goto NewReadCloudTexture;
+            }
 
             // Icik            
             switch ((int)Viewer.Simulator.Season)
             {
-                case 0:
-                    SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
-                    CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));                    
+                case 0:                                    
                     break;
-                case 1:
-                    SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
-                    CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+                case 1:                    
                     ThunderTexture[0] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt.png"));
                     ThunderTexture[1] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt1.png"));
                     ThunderTexture[2] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt2.png"));
                     ThunderTexture[3] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt3.png"));                    
                     break;
-                case 2:
-                    SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
-                    CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+                case 2:                   
                     break;
-                case 3:
-                    SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
-                    CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+                case 3:                    
                     ThunderTexture[0] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt.png"));
                     ThunderTexture[1] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt1.png"));
                     ThunderTexture[2] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\ThunderBolt2.png"));
