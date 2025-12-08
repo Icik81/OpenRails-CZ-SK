@@ -984,24 +984,22 @@
     <Content Include="Content\SceneryShader.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Season\AutumnClouds.png" />
-    <Content Include="Content\Season\AutumnSkyDome.png" />
-    <Content Include="Content\Season\SpringClouds.png" />
-    <Content Include="Content\Season\SpringSkyDome.png" />
-    <Content Include="Content\Season\SummerClouds.png" />
-    <Content Include="Content\Season\SummerClouds1.png" />
-    <Content Include="Content\Season\SummerCloudsThunder.png" />
-    <Content Include="Content\Season\SummerCloudsThunder1.png" />
-    <Content Include="Content\Season\SummerCloudsThunder2.png" />
-    <Content Include="Content\Season\SummerCloudsThunder3.png" />
-    <Content Include="Content\Season\SummerSkyDome.png" />
-    <Content Include="Content\Season\SummerSkyDomeClear.png" />
-    <Content Include="Content\Season\WinterClouds.png" />
-    <Content Include="Content\Season\WinterCloudsThunder.png" />
-    <Content Include="Content\Season\WinterCloudsThunder1.png" />
-    <Content Include="Content\Season\WinterCloudsThunder2.png" />
-    <Content Include="Content\Season\WinterCloudsThunder3.png" />
-    <Content Include="Content\Season\WinterSkyDome.png" />
+    <Content Include="Content\Season\Clouds0.png" />
+    <Content Include="Content\Season\Clouds1.png" />
+    <Content Include="Content\Season\Clouds2.png" />
+    <Content Include="Content\Season\Clouds3.png" />
+    <Content Include="Content\Season\Clouds4.png" />
+    <Content Include="Content\Season\SkyDome0.png" />
+    <Content Include="Content\Season\SkyDome1.png" />
+    <Content Include="Content\Season\SkyDome2.png" />
+    <Content Include="Content\Season\SkyDome3.png" />
+    <Content Include="Content\Season\SkyDome4.png" />
+    <Content Include="Content\Season\SkyDome5.png" />
+    <Content Include="Content\Season\SkyDome6.png" />
+    <Content Include="Content\Season\ThunderBolt.png" />
+    <Content Include="Content\Season\ThunderBolt1.png" />
+    <Content Include="Content\Season\ThunderBolt2.png" />
+    <Content Include="Content\Season\ThunderBolt3.png" />
     <Content Include="Content\ShadowMap.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

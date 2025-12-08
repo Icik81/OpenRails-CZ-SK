@@ -295,6 +295,7 @@ namespace Orts.Simulation
         public float AlternatorOverloadCoef = 1;
         public float HeatingOverloadCoef = 1;
         public int CloudIndex = -1;
+        public int SkyIndex = -1;
         public bool PowerSupplyInit;
 
         public List<PowerSupplyStation> powerSupplyStations;
@@ -673,6 +674,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            SkyIndex = inf.ReadInt32();
             CloudIndex = inf.ReadInt32();
             DoorSwitchDoorLocked = inf.ReadBoolean();
             TrainOperationsMenuSetScrollPosition = inf.ReadInt32();
@@ -720,6 +722,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(SkyIndex);
             outf.Write(CloudIndex);
             outf.Write(DoorSwitchDoorLocked);
             outf.Write(TrainOperationsMenuSetScrollPosition);
