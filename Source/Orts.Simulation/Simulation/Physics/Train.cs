@@ -771,7 +771,8 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik            
+            // Icik
+            TrainStopAtLevelCrossTimer = inf.ReadSingle();
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
             PlayerTrainStartTime = inf.ReadInt32();
@@ -1159,7 +1160,8 @@ namespace Orts.Simulation.Physics
 
         public virtual void Save(BinaryWriter outf)
         {
-            // Icik            
+            // Icik
+            outf.Write(TrainStopAtLevelCrossTimer);
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
             outf.Write((int)PlayerTrainStartTime);
