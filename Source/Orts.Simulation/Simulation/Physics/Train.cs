@@ -173,6 +173,7 @@ namespace Orts.Simulation.Physics
         public float SteamGeneratorTempSetPointC;
         public bool SteamGeneratorEnable;
         public float SteamGeneratorTempC;
+        public float TrainStopAtLevelCrossTimer;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

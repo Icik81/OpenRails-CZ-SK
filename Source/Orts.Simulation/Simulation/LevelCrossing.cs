@@ -376,7 +376,7 @@ namespace Orts.Simulation
                 {
                     //  Add generic actions if needed
                     aiTrain.AuxActionsContain.CheckGenActions(this.GetType(), crossing.Location, rearDist, frontDist, crossing.TrackIndex, aiTrain.LevelCrossingHornPattern);
-                }                
+                }
 
                 // The tests below is to allow the crossings operate like the crossings under MSTS
                 // Tests as follows
@@ -390,6 +390,8 @@ namespace Orts.Simulation
                 // MSTS did not simulate a timeout, I introduced a simple timout using speedMpS.
 
                 // Depending upon future development in this area, it would probably be best to have the current operation in its own class followed by any new region specific operations. 
+
+                if (absSpeedMpS > 5f / 3.6f) train.TrainStopAtLevelCrossTimer = 0; // Reset časovače při rychlosti vlaku vyšší než 5 km/h
 
                 // Recognizing static consists at crossings.
                 if ((train.TrainType == Train.TRAINTYPE.STATIC) && validStaticConsist)
@@ -441,13 +443,25 @@ namespace Orts.Simulation
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER || train.TrainType == Train.TRAINTYPE.REMOTE) && Math.Abs(speedMpS) <= Simulator.MaxStoppedMpS && frontDist <= reqDist && (train.ReservedTrackLengthM <= 0 || frontDist < train.ReservedTrackLengthM) && rearDist <= minimumDist)
                 {
                     // First test is to simulate a timeout if a train comes to a stop before minimumDist
-                    if (frontDist > minimumDist && Simulator.Trains.Contains(train))
+                    
+                    float DistanceToOpenCrossing = 250f; // Vzdálenost pro otevření přejezdu po zastavení vlaku před přejezdem
+                    if (frontDist > DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
                     {
-                        crossing.RemoveTrain(train);
+                        crossing.RemoveTrain(train); // Přejezd se nezavře, pokud je vlak vzdálen více jak DistanceToOpenCrossing                       
                     }
+                    
                     // This test is to factor in the train sitting on the crossing at the start of the activity.
-                    else
-                        crossing.AddTrain(train);
+                    if (frontDist <= DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
+                    {
+                        crossing.AddTrain(train); // Přejezd se zavře, pokud je vlak ve vzdálenosti DistanceToOpenCrossing a méně od přejezdu
+                        train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
+                    }
+
+                    float TrainStopAtLevelCrossWaitTime = 3f * 60f; // Vteřinový časový limit pro otevření přejezdu po zastavení vlaku před přejezdem
+                    if (train.TrainStopAtLevelCrossTimer > TrainStopAtLevelCrossWaitTime && Simulator.Trains.Contains(train))
+                    {
+                        crossing.RemoveTrain(train); // Otevření přejezdu po zastavení vlaku před minimální vzdáleností                       
+                    }
                 }
 
                 // Train is travelling toward crossing below 11.1mph.
