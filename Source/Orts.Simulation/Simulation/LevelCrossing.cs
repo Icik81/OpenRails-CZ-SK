@@ -92,7 +92,7 @@ namespace Orts.Simulation
 
         [CallOnThread("Updater")]        
         void UpdateCrossings(Train train, float elapsedTime)
-        {
+        {            
             var speedMpS = train.SpeedMpS;
             var absSpeedMpS = Math.Abs(speedMpS);
             var maxSpeedMpS = train.AllowedMaxSpeedMpS;
@@ -454,7 +454,7 @@ namespace Orts.Simulation
                     if (frontDist <= DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
                     {
                         crossing.AddTrain(train); // Přejezd se zavře, pokud je vlak ve vzdálenosti DistanceToOpenCrossing a méně od přejezdu
-                        train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
+                        if (train.TrainStopAtLevelCrossTimer == 0) train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
                     }
 
                     float TrainStopAtLevelCrossWaitTime = 3f * 60f; // Vteřinový časový limit pro otevření přejezdu po zastavení vlaku před přejezdem
@@ -497,7 +497,7 @@ namespace Orts.Simulation
                 }
 
                 else
-                {
+                {                    
                     crossing.RemoveTrain(train);
                 }                
             }

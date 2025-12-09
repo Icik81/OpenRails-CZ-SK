@@ -1806,6 +1806,8 @@ namespace Orts.Simulation.Physics
             AITrainWillAttach = false;
             GeneratePaxDynamically();            
 
+            if (TrainStopAtLevelCrossTimer > 0) TrainStopAtLevelCrossTimer += elapsedClockSeconds;
+
             if (IsPlayerDriven)
             {
                 if (Simulator.conFileName != null)
