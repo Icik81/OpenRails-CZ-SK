@@ -330,7 +330,7 @@ VERTEX_OUTPUT VSSignalLightGlow(in VERTEX_INPUT_SIGNAL In)
 // Gets the ambient light effect.
 float _PSGetAmbientEffect(in VERTEX_OUTPUT In)
 {
-	return In.Normal_Light.w * ZBias_Lighting.y * 2;
+	return In.Normal_Light.w * ZBias_Lighting.y;
 }
 
 // Gets the specular light effect.
