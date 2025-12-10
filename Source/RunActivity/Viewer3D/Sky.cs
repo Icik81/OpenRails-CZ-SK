@@ -531,7 +531,7 @@ namespace Orts.Viewer3D
             {
                 SkyIndex = Viewer.Random.Next(0, 20);
                 if (Viewer.Simulator.WeatherAdv == 0) SkyIndex = Viewer.Random.Next(0, 2);
-                //SkyIndex = 8; // Testovací nastavení
+                //SkyIndex = 11; // Testovací nastavení
                 Viewer.Simulator.SkyIndex = SkyIndex;
             }
             string skyIndex = SkyIndex.ToString();
