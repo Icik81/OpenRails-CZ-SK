@@ -232,7 +232,7 @@ namespace Orts.Viewer3D
                     break;
                 case SeasonType.Winter:
                     {
-                        SeasonAmbientLightCoef = 0.6f;
+                        SeasonAmbientLightCoef = 0.8f;
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 12f;
                         DayTimeAmbientLightChangeCoef = 1f;
@@ -1008,11 +1008,14 @@ namespace Orts.Viewer3D
             float CabnightColorModifierNightReference = 0.15f;
             
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierNightReference = 0.35f;
+                CabnightColorModifierNightReference = 0.40f;
 
-            if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)
+            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory || Program.Viewer.PlayerLocomotive.HasCabLightDirectory || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
             {
-                Program.Simulator.DashLightCanActivate = true;
+                if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)
+                {
+                    Program.Simulator.DashLightCanActivate = true;
+                }
             }
 
             nightColorModifier.SetValue(CabnightColorModifierValue);
