@@ -2507,6 +2507,8 @@ namespace Orts.Simulation.RollingStocks
             float WheelSpeedMarker = WheelSpeedMpS == 0 ? 1 : (WheelSpeedMpS / AbsWheelSpeedMpS);
             PantographsCurrent = 0;
 
+            float tractiveForce = extendedPhysics != null ? TotalForceN : TractiveForceN;
+
             switch (LocomotiveTypeNumber)
             {
                 // Odporové lokomotivy
@@ -2546,7 +2548,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         // Proud je dán součtem příkonu topení, pomocných spotřebičů a trakčního výkonu
                         if (PantographVoltageV > 0)
-                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);                                                   
+                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(tractiveForce) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);                                                   
                     }
                     break;
                 // Tyristorové lokomotivy
@@ -2555,12 +2557,12 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (PantographVoltageV > 0)
                         {
-                            bool BrakeChokeOn = WheelSpeedMarker * TractiveForceN > 0 ? false : true;
+                            bool BrakeChokeOn = WheelSpeedMarker * tractiveForce > 0 ? false : true;
                             
                             if (BrakeChokeOn) // Proud se maří v brzdovém odporu
                                 PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
                             else
-                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * TractiveForceN * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * tractiveForce * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
                         }
                     }
                     break;
@@ -2569,20 +2571,20 @@ namespace Orts.Simulation.RollingStocks
                 case 193:
                 case 380: case 383:
                     {
-                        bool BrakeChokeOn = WheelSpeedMarker * TractiveForceN > 0 ? false : true;
+                        bool BrakeChokeOn = WheelSpeedMarker * tractiveForce > 0 ? false : true;
 
                         if (BrakeChokeOn && !LocoRecuperationOn) // Proud se maří v brzdovém odporu
                             PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
                         else
-                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * TractiveForceN * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * tractiveForce * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
                     }
                     break;
             }
 
             // Nedořešené
-            if (PantographVoltageV > 0)
-                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(TractiveForceN) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
-
+            if (PantographVoltageV > 0)            
+                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(tractiveForce) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+            
             //if (IsLeadLocomotive()) Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
         }
 
