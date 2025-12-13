@@ -879,7 +879,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {
-                    OverridenMaximalForce += OverridenMaximalForce < 25 ? elapsedClockSeconds * 10.0f : OverridenMaximalForce < 50 ? elapsedClockSeconds * 5.0f : elapsedClockSeconds * 2.5f; // 2.5% per second
+                    OverridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
@@ -1284,7 +1284,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
                         step *= elapsedClockSeconds;
-                        controllerVolts -= step;
+                        controllerVolts -= step / 2;
                         if (controllerVolts < 0) controllerVolts = 0;
                         if (controllerVolts > 0 && controllerVolts < 0.1) controllerVolts = 0;
                     }
@@ -1295,7 +1295,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                             step *= elapsedClockSeconds;
-                            controllerVolts += step;
+                            controllerVolts += step / 2;
                             if (controllerVolts > 100)
                                 controllerVolts = 100;
                         }
@@ -1305,7 +1305,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             float step = 100 / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
 
                             step *= elapsedClockSeconds;
-                            controllerVolts -= step;
+                            controllerVolts -= step / 2;
                         }
                         else
                         {
@@ -1324,7 +1324,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MpS.ToKpH(delta) < -2)
                                 step *= 10;
                             step *= elapsedClockSeconds;
-                            controllerVolts -= step;
+                            controllerVolts -= step / 2;
                         }
                         else if (true)
                         {
@@ -1349,7 +1349,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                                         step *= elapsedClockSeconds;
-                                        controllerVolts -= step;
+                                        controllerVolts -= step / 2;
                                     }
                                 }
                                 if (maxForceN == 0)
@@ -1382,23 +1382,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                                     float difference = 100 / Locomotive.DynamicBrakeMaxForceAtSelectorStep;
                                                     maxVolts = -difference * Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation];
                                                 }
+                                                if (controllerVolts < maxVolts)
+                                                {
+                                                    float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                                                    step *= elapsedClockSeconds;
+                                                    controllerVolts += step / 2;
+                                                    if (controllerVolts > 100)
+                                                        controllerVolts = 100;
+                                                }
+                                                if (controllerVolts > maxVolts)
+                                                {
+                                                    float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                                                    step *= elapsedClockSeconds;
+                                                    controllerVolts -= step / 2;
+                                                }
                                             }
                                             if (controllerVolts < -100)
                                                 controllerVolts = -100;
-                                            if (controllerVolts < maxVolts)
-                                            {
-                                                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
-                                                step *= elapsedClockSeconds;
-                                                controllerVolts += step;
-                                                if (controllerVolts > 100)
-                                                    controllerVolts = 100;
-                                            }
-                                            if (controllerVolts > maxVolts)
-                                            {
-                                                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
-                                                step *= elapsedClockSeconds;
-                                                controllerVolts -= step;
-                                            }
                                         }
                                     }
                                     else
@@ -1540,7 +1540,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 {
                                     float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
                                     step *= elapsedClockSeconds;
-                                    controllerVolts += step;
+                                    controllerVolts += step / 2;
                                     if (controllerVolts > 100)
                                         controllerVolts = 100;
                                 }
@@ -1623,7 +1623,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
                             step *= elapsedClockSeconds;
-                            controllerVolts += step;
+                            controllerVolts += step / 2;
                             if (controllerVolts > 100)
                                 controllerVolts = 100;
                         }
@@ -1644,7 +1644,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (MpS.ToKpH(delta) < -2)
                                 step *= 10;
                             step *= elapsedClockSeconds;
-                            controllerVolts -= step;
+                            controllerVolts -= step / 2;
                         }
                         else if (true)
                         {
@@ -1669,7 +1669,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     {
                                         float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                                         step *= elapsedClockSeconds;
-                                        controllerVolts -= step;
+                                        controllerVolts -= step / 2;
                                     }
                                 }
                                 if (maxForceN == 0)
@@ -1702,24 +1702,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                                     float difference = 100 / Locomotive.DynamicBrakeMaxForceAtSelectorStep;
                                                     maxVolts = -difference * Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation];
                                                 }
+                                                if (controllerVolts < maxVolts)
+                                                {
+                                                    float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                                                    step *= elapsedClockSeconds;
+                                                    controllerVolts += step;
+                                                    if (controllerVolts > 100)
+                                                        controllerVolts = 100;
+                                                }
+                                                if (controllerVolts > maxVolts)
+                                                {
+                                                    float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                                                    step *= elapsedClockSeconds;
+                                                    controllerVolts -= step / 2;
+                                                }
                                             }
+
                                             if (controllerVolts < -100)
                                                 controllerVolts = -100;
-                                            if (controllerVolts < maxVolts)
-                                            {
-                                                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
-                                                step *= elapsedClockSeconds;
-                                                controllerVolts += step;
-                                                if (controllerVolts > 100)
-                                                    controllerVolts = 100;
-                                            }
-                                            if (controllerVolts > maxVolts)
-                                            {
-                                                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
-                                                step *= elapsedClockSeconds;
-                                                controllerVolts -= step;
-                                            }
-                                            
+
                                             if (Math.Abs(wheelSpeedMpS) < 0.1f)
                                                 controllerVolts = 0;
                                         }
