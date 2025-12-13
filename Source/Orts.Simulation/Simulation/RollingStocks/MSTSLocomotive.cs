@@ -25550,7 +25550,7 @@ namespace Orts.Simulation.RollingStocks
             CruiseControl.CurrentSelectedSpeedMpS = CruiseControl.SelectedSpeedMpS = CruiseControl.NextSelectedSpeedMps;
             CruiseControl.SpeedChanged = true;
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("Selected speed confirmed."));
-            CruiseControl.OverridenMaximalForce = 50;
+            CruiseControl.OverridenMaximalForce = ControllerVolts * 10f;
         }
 
         public float AvvDistanceToNext = 1000000;
