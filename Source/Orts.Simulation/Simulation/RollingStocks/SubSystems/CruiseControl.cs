@@ -868,24 +868,29 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ForceHandleValue == 0)
                 {
                     if (Locomotive.AbsSpeedMpS > 0)
-                        OverridenMaximalForce = 50;
+                        OverridenMaximalForce = 0;
                 }
                 if (Locomotive.AbsSpeedMpS == 0 && Locomotive.ForceHandleValue == 0)
                     OverridenMaximalForce = 10;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 100;
-                //if (requestedMaxAcceleration > 0.3f)
-                //    requestedMaxAcceleration = 0.3f;
+                //if (requestedMaxAcceleration > 0.75f)
+                //    requestedMaxAcceleration = 0.75f;
                 bool testConditions = true;
                 if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
-                if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
+                if (Locomotive.AccelerationMpSS > 0)
                 {
-                    OverridenMaximalForce += OverridenMaximalForce < 50 ? elapsedClockSeconds * 7.5f : elapsedClockSeconds * 5; // 5% per second
+                    if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
+                    {
+                        OverridenMaximalForce += OverridenMaximalForce < 50 ? elapsedClockSeconds * 5.0f : elapsedClockSeconds * 2.5f; // 2.5% per second
+                    }
+                    if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
+                    {
+                        OverridenMaximalForce -= elapsedClockSeconds * 10;
+                    }
                 }
-                if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
-                {
-                    OverridenMaximalForce -= elapsedClockSeconds * 10;
-                }
+                else
+                    OverridenMaximalForce = 0;
             }
 
             if (OverridenMaximalForce > 100)
@@ -1551,7 +1556,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 if ((wheelSpeedMpS > SafeSpeedForAutomaticOperationMpS || SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Start || SpeedRegulatorOptions.Contains("startfromzero")) && (SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Neutral && SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking) && canAddForce)
-                {
+                {                                       
                     float delta = 0;
 
                     if (!RestrictedSpeedActive && (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron || Locomotive.SelectedSpeedConfirmed))
@@ -1674,7 +1679,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     }
                                 }
                                 if (maxForceN == 0)
-                                {
+                                {                                    
                                     if (!UseThrottle) Locomotive.ThrottleController.SetPercent(0);
                                     if (Locomotive.AccelerationMpSS > demand)
                                     {
@@ -1720,6 +1725,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                                 step *= elapsedClockSeconds;
                                                 controllerVolts -= step;
                                             }
+                                            
+                                            if (Math.Abs(wheelSpeedMpS) < 0.1f)
+                                                controllerVolts = 0;
                                         }
                                     }
                                     else
