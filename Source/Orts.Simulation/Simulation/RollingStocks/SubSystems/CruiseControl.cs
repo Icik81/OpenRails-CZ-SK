@@ -115,8 +115,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float BrakeConverterPressureEngage = 1.0f * 14.50377f;
         public bool AripotEquipment;
         float PreSelectedSpeedMpS;
-        float AFBThrottleIncreasePercentPerSeconds = 5;
-        float AFBThrottleDecreasePercentPerSeconds = 10;
+        float AFBThrottleIncreasePercentPerSecond = 5;
+        float AFBThrottleDecreasePercentPerSecond = 10;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -200,8 +200,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(maxtrainbrakepressuredrop": MaxTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortscruisecontrol(brakeconverterpressureengage": BrakeConverterPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortscruisecontrol(aripotequipment": AripotEquipment = stf.ReadBoolBlock(false); break;                
-                case "engine(ortscruisecontrol(AFBThrottleIncreasePercentPerSeconds": AFBThrottleIncreasePercentPerSeconds = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
-                case "engine(ortscruisecontrol(AFBThrottleDecreasePercentPerSeconds": AFBThrottleDecreasePercentPerSeconds = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(ortscruisecontrol(afbthrottleincreasepercentpersecond": AFBThrottleIncreasePercentPerSecond = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(ortscruisecontrol(afbthrottledecreasepercentpersecond": AFBThrottleDecreasePercentPerSecond = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
             }
         }
 
@@ -883,11 +883,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {
-                    OverridenMaximalForce += elapsedClockSeconds * AFBThrottleIncreasePercentPerSeconds; // default 5% per second
+                    OverridenMaximalForce += elapsedClockSeconds * AFBThrottleIncreasePercentPerSecond; // default 5% per second
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
-                    OverridenMaximalForce -= elapsedClockSeconds * AFBThrottleDecreasePercentPerSeconds; // default 10% per second
+                    OverridenMaximalForce -= elapsedClockSeconds * AFBThrottleDecreasePercentPerSecond; // default 10% per second
                 }
             }
 
