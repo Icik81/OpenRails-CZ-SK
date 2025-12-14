@@ -115,6 +115,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public float BrakeConverterPressureEngage = 1.0f * 14.50377f;
         public bool AripotEquipment;
         float PreSelectedSpeedMpS;
+        float AFBThrottleIncreasePercentPerSeconds = 5;
+        float AFBThrottleDecreasePercentPerSeconds = 10;
 
         public void Parse(string lowercasetoken, STFReader stf)
         {
@@ -197,7 +199,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 case "engine(ortscruisecontrol(usepressuredtrainbrake": UsePressuredTrainBrake = stf.ReadBoolBlock(false); break;
                 case "engine(ortscruisecontrol(maxtrainbrakepressuredrop": MaxTrainBrakePressureDrop = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(ortscruisecontrol(brakeconverterpressureengage": BrakeConverterPressureEngage = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
-                case "engine(ortscruisecontrol(aripotequipment": AripotEquipment = stf.ReadBoolBlock(false); break;
+                case "engine(ortscruisecontrol(aripotequipment": AripotEquipment = stf.ReadBoolBlock(false); break;                
+                case "engine(ortscruisecontrol(AFBThrottleIncreasePercentPerSeconds": AFBThrottleIncreasePercentPerSeconds = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
+                case "engine(ortscruisecontrol(AFBThrottleDecreasePercentPerSeconds": AFBThrottleDecreasePercentPerSeconds = stf.ReadFloatBlock(STFReader.UNITS.None, null); break;
             }
         }
 
@@ -867,8 +871,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.SystemAnnunciator != 0 ||
                     Locomotive.ForceHandleValue == 0)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0)
-                        OverridenMaximalForce = Locomotive.ControllerVolts * 10f;
+                    //if (Locomotive.AbsSpeedMpS > 0)
+                    //    OverridenMaximalForce = 10;
                 }
                 if (Locomotive.AbsSpeedMpS == 0 && Locomotive.ForceHandleValue == 0)
                     OverridenMaximalForce = 0;
@@ -879,11 +883,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
                 {
-                    OverridenMaximalForce += elapsedClockSeconds * 5; // 5% per second
+                    OverridenMaximalForce += elapsedClockSeconds * AFBThrottleIncreasePercentPerSeconds; // default 5% per second
                 }
                 if (Locomotive.AccelerationMpSS > requestedMaxAcceleration + 0.05f)
                 {
-                    OverridenMaximalForce -= elapsedClockSeconds * 10;
+                    OverridenMaximalForce -= elapsedClockSeconds * AFBThrottleDecreasePercentPerSeconds; // default 10% per second
                 }
             }
 
