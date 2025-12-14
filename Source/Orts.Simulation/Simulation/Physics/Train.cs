@@ -2108,14 +2108,15 @@ namespace Orts.Simulation.Physics
                         CyklusCouplerImpuls--;
                         if (CyklusCouplerImpuls == 0)
                         {
+                            float SpeedReductionFactor = 1f / 2f; // faktor snížení rychlosti při nárazu
                             if (TrainMassKG1 <= TrainMassKG2)
                             {
-                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1));
+                                car.SpeedMpS = -(SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1) * SpeedReductionFactor);
                                 car.SpeedMpS = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -car.SpeedMpS : car.SpeedMpS;
                             }
                             else
                             {
-                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1));
+                                car.SpeedMpS = (SpeedMpS0 / Math.Abs(SpeedMpS0) * Math.Abs(SpeedMpS1) * SpeedReductionFactor);
                                 car.SpeedMpS = (car.Flipped ^ (car.IsDriveable && car.Train.IsActualPlayerTrain && ((MSTSLocomotive)car).UsingRearCab)) ? -car.SpeedMpS : car.SpeedMpS;
                             }
                             HasCarCoupleSpeed = false;
