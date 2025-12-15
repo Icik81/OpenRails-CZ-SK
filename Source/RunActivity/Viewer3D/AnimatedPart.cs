@@ -212,7 +212,7 @@ namespace Orts.Viewer3D
                     pantoVibrates = false;
                     pantoVibratesDone = false;
                 }
-
+                
                 if (state)
                 {
                     PantoAnimSlowingDownTimer = 0;

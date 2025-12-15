@@ -88,7 +88,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             for (int i = 0; i < n; i++)
             {
                 List.Add(new Pantograph(Wagon));
-                List.Last().Restore(inf);
+                List.Last().Restore(inf);                
             }
         }
 
@@ -304,6 +304,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             State = (PantographState)Enum.Parse(typeof(PantographState), inf.ReadString());
             DelayS = inf.ReadSingle();
             TimeS = inf.ReadSingle();
+            AnimCorrectTimeCoefUp = inf.ReadSingle();
+            AnimCorrectTimeCoefDown = inf.ReadSingle();
+            Panto57HeightCorrection = inf.ReadSingle();
+            PantoIs62 = inf.ReadBoolean();                        
         }
 
         public void InitializeMoving()
@@ -426,6 +430,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             outf.Write(State.ToString());
             outf.Write(DelayS);
             outf.Write(TimeS);
+            outf.Write(AnimCorrectTimeCoefUp);
+            outf.Write(AnimCorrectTimeCoefDown);
+            outf.Write(Panto57HeightCorrection);
+            outf.Write(PantoIs62);
         }
     }
 }
