@@ -1005,7 +1005,7 @@ namespace Orts.Viewer3D
             }
 
             Program.Simulator.DashLightCanActivate = false;
-            float CabnightColorModifierNightReference = 0.15f;
+            float CabnightColorModifierNightReference = 0.30f;
             
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierNightReference = 0.40f;
