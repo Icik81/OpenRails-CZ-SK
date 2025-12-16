@@ -305,6 +305,149 @@ namespace Orts.Viewer3D
             WellKnownCameras.Add(new FreeRoamCamera(this, FrontCamera)); // Any existing camera will suffice to satisfy .Save() and .Restore()
             WellKnownCameras.Add(ThreeDimCabCamera = new ThreeDimCabCamera(this));
 
+            // Icik
+            #region Profily počasí
+            switch (Simulator.WeatherAdv)
+            {
+                case 0: // Clear                                        
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                    }
+                    break;
+                case 1: // Cloudy                                
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                    }
+                    break;
+                case 2: // Overcast                                        
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Clear;
+                            break;
+                    }
+                    break;
+                case 3: // Foggy day                                    
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Snow;
+                            break;
+                    }
+                    break;
+                case 4: // Rain/snowing day                                        
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Snow;
+                            break;
+                    }
+                    break;
+                case 5: // Heavy rain/snow                    
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Snow;
+                            break;
+                    }
+                    break;
+                case 6: // Storm
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Snow;
+                            break;
+                    }
+                    break;
+                case 7: // Náhodné
+                    switch ((int)Simulator.Season)
+                    {
+                        case 0:  // Jaro
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 1:  // Léto
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 2:  // Podzim
+                            Simulator.WeatherType = WeatherType.Rain;
+                            break;
+                        case 3:  // Zima
+                            Simulator.WeatherType = WeatherType.Snow;
+                            break;
+                    }
+                    break;
+            }
+            #endregion Profily počasí
+
             string ORfilepath = System.IO.Path.Combine(Simulator.RoutePath, "OpenRails");
             ContentPath = Game.ContentPath;
             Trace.Write(" ENV");
