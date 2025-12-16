@@ -2507,7 +2507,7 @@ namespace Orts.Simulation.RollingStocks
             float WheelSpeedMarker = WheelSpeedMpS == 0 ? 1 : (WheelSpeedMpS / AbsWheelSpeedMpS);
             PantographsCurrent = 0;
 
-            float tractiveForce = extendedPhysics != null ? TotalForceN : TractiveForceN;
+            float tractiveForce = LocomotiveAxle.DriveForceN;
 
             switch (LocomotiveTypeNumber)
             {
@@ -2547,7 +2547,7 @@ namespace Orts.Simulation.RollingStocks
                 case 680: case 681: case 682:                
                     {
                         // Proud je dán součtem příkonu topení, pomocných spotřebičů a trakčního výkonu
-                        if (PantographVoltageV > 0)
+                        if (PantographUp)
                             PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(tractiveForce) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);                                                   
                     }
                     break;
@@ -2555,7 +2555,7 @@ namespace Orts.Simulation.RollingStocks
                 case 162: case 163:                                
                 case 361: case 362: case 363:                                                                
                     {
-                        if (PantographVoltageV > 0)
+                        if (PantographUp)
                         {
                             bool BrakeChokeOn = WheelSpeedMarker * tractiveForce > 0 ? false : true;
                             
@@ -2572,17 +2572,19 @@ namespace Orts.Simulation.RollingStocks
                 case 380: case 383:
                     {
                         bool BrakeChokeOn = WheelSpeedMarker * tractiveForce > 0 ? false : true;
-
-                        if (BrakeChokeOn && !LocoRecuperationOn) // Proud se maří v brzdovém odporu
-                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
-                        else
-                            PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * tractiveForce * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                        if (PantographUp)
+                        {
+                            if (BrakeChokeOn && !LocoRecuperationOn) // Proud se maří v brzdovém odporu
+                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum) / PantographVoltageV, 0);
+                            else
+                                PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (WheelSpeedMarker * tractiveForce * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
+                        }
                     }
                     break;
             }
 
             // Nedořešené
-            if (PantographVoltageV > 0)            
+            if (PantographUp)            
                 PantographsCurrent = (float)Math.Round((PowerReductionByHeatingSum + PowerReductionByAuxEquipmentSum + (Math.Abs(tractiveForce) * AbsTractionSpeedMpS)) / PantographVoltageV, 0);
             
             //if (IsLeadLocomotive()) Simulator.Confirmer.MSG("Proud sberace: " + PantographsCurrent);
