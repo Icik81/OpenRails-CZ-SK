@@ -60,7 +60,7 @@ float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 	MaxDim = NightColorModifier * NightColorModifier;	
 	if (MaxDim < 0.1) MaxDim = 0.1;
 
-	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color * 1.2;
+	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color;
 	float3 shadColor = origColor.rgb * MaxDim;
 	
  	if (LightOn)

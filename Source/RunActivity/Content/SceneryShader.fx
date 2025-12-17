@@ -330,7 +330,7 @@ VERTEX_OUTPUT VSSignalLightGlow(in VERTEX_INPUT_SIGNAL In)
 // Gets the ambient light effect.
 float _PSGetAmbientEffect(in VERTEX_OUTPUT In)
 {
-	return In.Normal_Light.w * ZBias_Lighting.y;
+	return In.Normal_Light.w * ZBias_Lighting.y * 2.0;
 }
 
 // Gets the specular light effect.
@@ -405,7 +405,7 @@ float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
 	bool not_shadowed = moments.z - moments.x < 0.000001;
 	float E_x2 = moments.y;
 	float Ex_2 = moments.x * moments.x;
-	float variance = clamp(E_x2 - Ex_2, 0.001, 1.0);
+	float variance = clamp(E_x2 - Ex_2, 0.0001, 1.0);
 	float m_d = moments.z - moments.x;
 	float p = pow(variance / (variance + m_d * m_d), 3000);
 	if (NormalLighting)
@@ -481,8 +481,8 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	clip(Color.a - ReferenceAlpha);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 2.75;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 2.75;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.0;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
@@ -503,7 +503,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 5.0;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
@@ -514,8 +514,11 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	MaxDim3 = MaxDim1 + MaxDim2;
 	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
+	float AmbientLightCoef = 1.0;
+	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
+
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.6 * (3.0 - MaxDim3);
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef;
 	
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -551,8 +554,8 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	clip(Color.a - ReferenceAlpha);
 	
 	// Ambient effect applies first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.25;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.25;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 5.0;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 5.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
@@ -573,7 +576,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 5.0;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
@@ -584,8 +587,11 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	MaxDim3 = MaxDim1 + MaxDim2;
 	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
+	float AmbientLightCoef = 1.0;
+	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
+
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.6 * (3.0 - MaxDim3);
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef;
 
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -606,8 +612,8 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	float4 Color = tex2D(Image, In.TexCoords.xy);
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
-	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 2.75;
-	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 2.75;
+	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 4.0;
+	if (Fog.a < 0.0001) MaxShadowBrightness = 0.0001 * 1000 * 4.0;
 	if (MaxShadowBrightness > 1.0) MaxShadowBrightness = 1.0;
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
@@ -627,7 +633,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 1.5;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 5.0;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
