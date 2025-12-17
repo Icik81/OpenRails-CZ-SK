@@ -58,7 +58,7 @@ struct PIXEL_INPUT
 float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 {
 	MaxDim = NightColorModifier * NightColorModifier;	
-	if (MaxDim < 0.1) MaxDim = 0.1;
+	if (MaxDim < 0.125) MaxDim = 0.125;
 
 	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color;
 	float3 shadColor = origColor.rgb * MaxDim;

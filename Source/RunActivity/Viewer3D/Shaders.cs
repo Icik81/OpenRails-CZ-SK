@@ -178,7 +178,7 @@ namespace Orts.Viewer3D
             {
                 case SeasonType.Spring:
                     {
-                        SeasonAmbientLightCoef = 0.9f;
+                        SeasonAmbientLightCoef = 1.0f;
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 12f;
                         DayTimeAmbientLightChangeCoef = 1f;
@@ -232,7 +232,7 @@ namespace Orts.Viewer3D
                     break;
                 case SeasonType.Winter:
                     {
-                        SeasonAmbientLightCoef = 0.8f;
+                        SeasonAmbientLightCoef = 0.9f;
                         GameTimeToHoursLowBorder = 10f;
                         GameTimeToHoursHighBorder = 12f;
                         DayTimeAmbientLightChangeCoef = 1f;
@@ -927,7 +927,7 @@ namespace Orts.Viewer3D
             }            
 
             if (!IsNightTexture || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)) * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
+                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)) * (Program.Simulator.SeasonAmbientLightCoef * 1.1f) * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
             
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
@@ -1005,7 +1005,7 @@ namespace Orts.Viewer3D
             }
 
             Program.Simulator.DashLightCanActivate = false;
-            float CabnightColorModifierNightReference = 0.30f;
+            float CabnightColorModifierNightReference = 0.35f;
             
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierNightReference = 0.40f;
