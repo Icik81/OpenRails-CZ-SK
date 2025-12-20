@@ -21310,6 +21310,7 @@ namespace Orts.Simulation.RollingStocks
             }
         Save:
             voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            powerMarkesReaded = false;
             SetUpVoltageChangeMarkers();
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("The marker has been deleted and marked for deletion in an external database."));
         }
@@ -21438,6 +21439,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
             voltageMarkersXml.Save(Simulator.RoutePath + "\\VoltageChangeMarkers.xml");
+            powerMarkesReaded = false;
             SetUpVoltageChangeMarkers();
             Simulator.Confirmer.Information(Simulator.Catalog.GetString("Set ") + Voltage.ToString() + Simulator.Catalog.GetString("V and stored in an external database."));
         }
