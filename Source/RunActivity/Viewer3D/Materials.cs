@@ -287,7 +287,7 @@ namespace Orts.Viewer3D
             PopupWindowShader = new PopupWindowShader(viewer, viewer.RenderProcess.GraphicsDevice);
             PrecipitationShader = new PrecipitationShader(viewer.RenderProcess.GraphicsDevice);
             SceneryShader = new SceneryShader(viewer.RenderProcess.GraphicsDevice);
-            var microtexPath = viewer.Simulator.RoutePath + @"\TERRTEX\microtex.ace";
+            var microtexPath = viewer.Simulator.RoutePath + @"\OpenRails\microtex.ace";
             if (File.Exists(microtexPath))
             {
                 try
@@ -303,6 +303,26 @@ namespace Orts.Viewer3D
                     Trace.WriteLine(new FileLoadException(microtexPath, error));
                 }
             }
+            else
+            {
+                microtexPath = viewer.Simulator.RoutePath + @"\TERRTEX\microtex.ace";
+                if (File.Exists(microtexPath))
+                {
+                    try
+                    {
+                        SceneryShader.OverlayTexture = Orts.Formats.Msts.AceFile.Texture2DFromFile(viewer.GraphicsDevice, microtexPath);
+                    }
+                    catch (InvalidDataException error)
+                    {
+                        Trace.TraceWarning("Skipped texture with error: {1} in {0}", microtexPath, error.Message);
+                    }
+                    catch (Exception error)
+                    {
+                        Trace.WriteLine(new FileLoadException(microtexPath, error));
+                    }
+                }
+            }
+
             ShadowMapShader = new ShadowMapShader(viewer.RenderProcess.GraphicsDevice);
             SkyShader = new SkyShader(viewer.RenderProcess.GraphicsDevice);
             DebugShader = new DebugShader(viewer.RenderProcess.GraphicsDevice);

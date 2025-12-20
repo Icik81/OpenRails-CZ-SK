@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Forms;
 
 namespace Orts.Viewer3D.Common
 {
@@ -92,7 +93,10 @@ namespace Orts.Viewer3D.Common
 
         public static string GetTerrainTextureFile(Simulator simulator, string textureName)
         {
-            return GetTextureFile(simulator, Helpers.TextureFlags.Snow, simulator.RoutePath + @"\TerrTex", textureName);
+            if (File.Exists(simulator.RoutePath + @"\OpenRails\" + textureName))            
+                return GetTextureFile(simulator, Helpers.TextureFlags.Snow, simulator.RoutePath + @"\OpenRails", textureName);            
+            else
+                return GetTextureFile(simulator, Helpers.TextureFlags.Snow, simulator.RoutePath + @"\TerrTex", textureName);
         }
 
         public static string GetTextureFile(Simulator simulator, TextureFlags textureFlags, string texturePath, string textureName)
