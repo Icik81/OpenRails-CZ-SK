@@ -641,10 +641,10 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlWipers3ActivationSwitchDown] = new UserCommandKeyInput(0x2F, KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlSwitchEngineUp] = new UserCommandKeyInput(0x15, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlSwitchEngineDown] = new UserCommandKeyInput(0x15, KeyModifiers.Shift | KeyModifiers.Control | KeyModifiers.Alt);
-            Commands[(int)UserCommand.DebugHeightFalloffDecrease] = new UserCommandKeyInput(0x51, KeyModifiers.Shift);
-            Commands[(int)UserCommand.DebugHeightFalloffIncrease] = new UserCommandKeyInput(0x49, KeyModifiers.Shift);
-            Commands[(int)UserCommand.DebugGroundLevelDecrease] = new UserCommandKeyInput(0x51, KeyModifiers.Alt);
-            Commands[(int)UserCommand.DebugGroundLevelIncrease] = new UserCommandKeyInput(0x49, KeyModifiers.Alt);
+            Commands[(int)UserCommand.DebugHeightFalloffDecrease] = new UserCommandKeyInput(0x53, KeyModifiers.Shift);
+            Commands[(int)UserCommand.DebugHeightFalloffIncrease] = new UserCommandKeyInput(0x52, KeyModifiers.Shift);
+            Commands[(int)UserCommand.DebugGroundLevelDecrease] = new UserCommandKeyInput(0x53, KeyModifiers.Alt);
+            Commands[(int)UserCommand.DebugGroundLevelIncrease] = new UserCommandKeyInput(0x52, KeyModifiers.Alt);
         }
         #endregion
 
