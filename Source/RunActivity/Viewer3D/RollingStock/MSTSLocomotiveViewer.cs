@@ -4512,7 +4512,7 @@ namespace Orts.Viewer3D.RollingStock
                         if (!UserInput.IsDown(UserCommand.ControlDieselPlayer2))
                         Locomotive.StopButtonPressed2 = false;
                     break;
-                case CABViewControlTypes.ORTS_CABLIGHT:
+                case CABViewControlTypes.ORTS_CABLIGHT:                    
                     if ((Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_LEFTDOOR:
                     if ((Locomotive.GetCabFlipped() ? (Locomotive.DoorRightOpen ? 1 : 0) : Locomotive.DoorLeftOpen ? 1 : 0)

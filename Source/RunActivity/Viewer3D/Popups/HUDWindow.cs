@@ -1905,6 +1905,8 @@ namespace Orts.Viewer3D.Popups
             TableAddLabelValue(table, Viewer.Catalog.GetString("Cloud cover"), Viewer.Catalog.GetStringFmt("{0:F0} %", Viewer.Simulator.Weather.OvercastFactor * 100));
             TableAddLabelValue(table, Viewer.Catalog.GetString("Intensity"), Viewer.Catalog.GetStringFmt("{0:F4} p/s/m^2", Viewer.Simulator.Weather.PricipitationIntensityPPSPM2));
             TableAddLabelValue(table, Viewer.Catalog.GetString("Liquidity"), Viewer.Catalog.GetStringFmt("{0:F0} %", Viewer.Simulator.Weather.PrecipitationLiquidity * 100));
+            TableAddLabelValue(table, Viewer.Catalog.GetString("Fog ground level"), Viewer.Catalog.GetStringFmt("{0:N1} m", Viewer.Simulator.GroundLevel));
+            TableAddLabelValue(table, Viewer.Catalog.GetString("Fog density"), Viewer.Catalog.GetStringFmt("{0:F1} %", Viewer.Simulator.HeightFalloff * 100));
 
             // Icik
             if (MPManager.IsMultiPlayer() && !MPManager.IsServer())

@@ -1526,6 +1526,12 @@ namespace Orts.Formats.Msts
         public float ORTSPrecipitationLiquidity = -1;
         public int ORTSPrecipitationLiquidityTransitionTimeS = -1;
 
+        // Icik
+        public float ORTSFogDensity = -1;
+        public int ORTSFogDensityTransitionTimeS = -1;
+        public float ORTSFogGroundLevel = -1;
+        public int ORTSFogGroundLevelTransitionTimeS = -1;
+
         public ORTSWeatherChange(STFReader stf)
         {
             stf.MustMatch("(");
@@ -1551,11 +1557,25 @@ namespace Orts.Formats.Msts
                     ORTSPrecipitationIntensityTransitionTimeS = stf.ReadInt(-1);
                     stf.MustMatch(")");
                 }),
-                               new STFReader.TokenProcessor("ortsprecipitationliquidity", ()=>
+                new STFReader.TokenProcessor("ortsprecipitationliquidity", ()=>
                 {
                     stf.MustMatch("(");
                     ORTSPrecipitationLiquidity = stf.ReadFloat(0, -1);
                     ORTSPrecipitationLiquidityTransitionTimeS = stf.ReadInt(-1);
+                    stf.MustMatch(")");
+                }),
+                new STFReader.TokenProcessor("ortsfogdensity", ()=>
+                {
+                    stf.MustMatch("(");
+                    ORTSFogDensity = stf.ReadFloat(0, -1);
+                    ORTSFogDensityTransitionTimeS = stf.ReadInt(-1);
+                    stf.MustMatch(")");
+                }),
+                new STFReader.TokenProcessor("ortsfoggroundlevel", ()=>
+                {
+                    stf.MustMatch("(");
+                    ORTSFogGroundLevel = stf.ReadFloat(0, -1);
+                    ORTSFogGroundLevelTransitionTimeS = stf.ReadInt(-1);
                     stf.MustMatch(")");
                 })
             });

@@ -257,6 +257,7 @@ float4 PSMoon(VERTEX_OUTPUT In) : COLOR
 	moonColor.a *= MoonColor.x * 0;	
 	
 	// Fogging
+	FogColor.rgb = FogColor.rgb * 1.25;
 	moonColor.rgb = lerp(moonColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
 	
 	// Mask stars behind dark side (mask fades in)
@@ -280,22 +281,16 @@ float4 PSClouds(VERTEX_OUTPUT In) : COLOR
 	cloudColor.rgb *= 1.75; 
 			
     // Fogging
-    cloudColor.rgb = lerp(cloudColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
-	
+	FogColor.rgb = FogColor.rgb * 1.25;
+    cloudColor.rgb = lerp(cloudColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));		
+
     // Adjust amount of overcast by adjusting alpha
 	if (Overcast.w)
 	{
 		alpha += Overcast.x;
 		// Reduce contrast and brightness
-		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?
-		//float CloudDim = 0.2 + (Overcast.x * (1 + (Overcast.x - 0.8)));		
-
-		//if (Overcast.x > 0.8)
-		//{	
-			//cloudColor = float4(color * CloudDim, alpha);
-		//}
-		//else
-			cloudColor = float4(color, alpha);		
+		float3 color = ContrastSaturationBrightness(cloudColor.xyz, 1.0, Overcast.z, Overcast.y); // Brightness and saturation are really need to be exchanged?		
+		cloudColor = float4(color, alpha);		
 	}
 	else
 	{

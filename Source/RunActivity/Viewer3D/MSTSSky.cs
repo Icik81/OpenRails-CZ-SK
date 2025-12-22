@@ -195,6 +195,12 @@ namespace Orts.Viewer3D
                 // Fog ranges from 10m (can't see anything) to 100km (clear arctic conditions).
                 if (UserInput.IsDown(UserCommand.DebugFogIncrease)) mstsskyfogDistance = MathHelper.Clamp(mstsskyfogDistance - elapsedTime.RealSeconds * mstsskyfogDistance, 10, 100000);
                 if (UserInput.IsDown(UserCommand.DebugFogDecrease)) mstsskyfogDistance = MathHelper.Clamp(mstsskyfogDistance + elapsedTime.RealSeconds * mstsskyfogDistance, 10, 100000);
+                
+                // Icik
+                if (UserInput.IsDown(UserCommand.DebugHeightFalloffIncrease)) Program.Simulator.HeightFalloff = MathHelper.Clamp(Program.Simulator.HeightFalloff + elapsedTime.RealSeconds * Program.Simulator.HeightFalloff, 0.001f, 1.0f);
+                if (UserInput.IsDown(UserCommand.DebugHeightFalloffDecrease)) Program.Simulator.HeightFalloff = MathHelper.Clamp(Program.Simulator.HeightFalloff - elapsedTime.RealSeconds * Program.Simulator.HeightFalloff, 0.001f, 1.0f);
+                if (UserInput.IsDown(UserCommand.DebugGroundLevelIncrease)) Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel + elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
+                if (UserInput.IsDown(UserCommand.DebugGroundLevelDecrease)) Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel - elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
             }
             // Don't let clock shift if multiplayer.
             if (!MPManager.IsMultiPlayer())

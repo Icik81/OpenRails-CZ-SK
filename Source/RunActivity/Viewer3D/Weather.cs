@@ -288,7 +288,7 @@ namespace Orts.Viewer3D
                             Weather.OvercastFactor = 0.15f;
                             Weather.FogDistance = 8300f;
                             Weather.PrecipitationLiquidity = 1.0f;
-                            Weather.PricipitationIntensityPPSPM2 = 0.0f;
+                            Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
                         case 1:  // Léto
                             Viewer.Simulator.WeatherType = WeatherType.Clear;
@@ -1099,6 +1099,36 @@ namespace Orts.Viewer3D
                     Program.Simulator.FogDistanceFinal = Weather.FogDistance;
                 }
 
+                if (UserInput.IsDown(UserCommand.DebugHeightFalloffIncrease))
+                {
+                    Program.Simulator.HeightFalloff = MathHelper.Clamp(Program.Simulator.HeightFalloff + elapsedTime.RealSeconds * Program.Simulator.HeightFalloff, 0.001f, 1.0f);
+                    weatherChangeOn = false;
+                    if (dynamicWeather != null) dynamicWeather.ORTSFogDensity = -1;
+                    Program.Simulator.HeightFalloffFinal = Program.Simulator.HeightFalloff;
+                }
+                if (UserInput.IsDown(UserCommand.DebugHeightFalloffDecrease))
+                {
+                    Program.Simulator.HeightFalloff = MathHelper.Clamp(Program.Simulator.HeightFalloff - elapsedTime.RealSeconds * Program.Simulator.HeightFalloff, 0.001f, 1.0f);
+                    weatherChangeOn = false;
+                    if (dynamicWeather != null) dynamicWeather.ORTSFogDensity = -1;
+                    Program.Simulator.HeightFalloffFinal = Program.Simulator.HeightFalloff;
+                }
+
+                if (UserInput.IsDown(UserCommand.DebugGroundLevelIncrease))
+                {
+                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel + elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
+                    weatherChangeOn = false;
+                    if (dynamicWeather != null) dynamicWeather.ORTSFogGroundLevel = -1;
+                    Program.Simulator.GroundLevelFinal = Program.Simulator.GroundLevel;
+                }
+                if (UserInput.IsDown(UserCommand.DebugGroundLevelDecrease))
+                {
+                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel - elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
+                    weatherChangeOn = false;
+                    if (dynamicWeather != null) dynamicWeather.ORTSFogGroundLevel = -1;
+                    Program.Simulator.GroundLevelFinal = Program.Simulator.GroundLevel;
+                }
+
                 UpdateWind(elapsedTime);
             }
 
@@ -1172,6 +1202,12 @@ namespace Orts.Viewer3D
                 Program.Simulator.Weather.FogDistance += FogRatioCoef * elapsedTime.ClockSeconds;
             if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
                 Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
+
+            if (Program.Simulator.GroundLevel < Program.Simulator.GroundLevelFinal)
+                Program.Simulator.GroundLevel += FogRatioCoef * elapsedTime.ClockSeconds / 1000f;
+            if (Program.Simulator.GroundLevel > Program.Simulator.GroundLevelFinal)
+                Program.Simulator.GroundLevel -= FogRatioCoef * elapsedTime.ClockSeconds / 1000f;
+            Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel, 0.1f, 1000.0f);
 
             if (Program.Simulator.HeightFalloff < Program.Simulator.HeightFalloffFinal)
                 Program.Simulator.HeightFalloff += FogRatioCoef * elapsedTime.ClockSeconds / 100000f;
@@ -1313,12 +1349,36 @@ namespace Orts.Viewer3D
             public float ORTSPrecipitationLiquidity = -1;
             public int ORTSPrecipitationLiquidityTransitionTimeS = -1;
             public bool fogDistanceIncreasing = false;
+
+            // Icik
+            public float fogDensityChangeRate = 0;
+            public float fogDensityTimer = 0;
+            public float ORTSFogDensity = -1;
+            public int ORTSFogDensityTransitionTimeS = -1;
+            public bool fogDensityDistanceIncreasing = false;
+            public float fogGroundLevelChangeRate = 0;
+            public float fogGroundLevelTimer = 0;
+            public float ORTSFogGroundLevel = -1;
+            public int ORTSFogGroundLevelTransitionTimeS = -1;
+            public bool fogGroundLevelDistanceIncreasing = false;
+
             public DynamicWeather()
             {
             }
 
             public void Save(BinaryWriter outf)
             {
+                outf.Write(fogDensityTimer);
+                outf.Write(fogDensityChangeRate);
+                outf.Write(ORTSFogDensity);
+                outf.Write(ORTSFogDensityTransitionTimeS);
+                outf.Write(fogDensityDistanceIncreasing);
+                outf.Write(fogGroundLevelTimer);
+                outf.Write(fogGroundLevelChangeRate);
+                outf.Write(ORTSFogGroundLevel);
+                outf.Write(ORTSFogGroundLevelTransitionTimeS);
+                outf.Write(fogGroundLevelDistanceIncreasing);
+
                 outf.Write(overcastTimer);
                 outf.Write(overcastChangeRate);
                 outf.Write(fogTimer);
@@ -1339,6 +1399,17 @@ namespace Orts.Viewer3D
 
             public void Restore(BinaryReader inf)
             {
+                fogDensityTimer = inf.ReadSingle();
+                fogDensityChangeRate = inf.ReadSingle();
+                ORTSFogDensity = inf.ReadSingle();
+                ORTSFogDensityTransitionTimeS = inf.ReadInt32();
+                fogDensityDistanceIncreasing = inf.ReadBoolean();
+                fogGroundLevelTimer = inf.ReadSingle();
+                fogGroundLevelChangeRate = inf.ReadSingle();
+                ORTSFogGroundLevel = inf.ReadSingle();
+                ORTSFogGroundLevelTransitionTimeS = inf.ReadInt32();
+                fogGroundLevelDistanceIncreasing = inf.ReadBoolean();
+
                 overcastTimer = inf.ReadSingle();
                 overcastChangeRate = inf.ReadSingle();
                 fogTimer = inf.ReadSingle();
@@ -1363,6 +1434,8 @@ namespace Orts.Viewer3D
                 ORTSFog = -1;
                 ORTSPrecipitationIntensity = -1;
                 ORTSPrecipitationLiquidity = -1;
+                ORTSFogDensity = -1;
+                ORTSFogGroundLevel = -1;
             }
 
             // Check for correctness of parameters and initialize rates of change
@@ -1394,6 +1467,38 @@ namespace Orts.Viewer3D
                     }
                     wChangeOn = true;
                 }
+                if (eventWeatherChange.ORTSFogDensity >= 0 && eventWeatherChange.ORTSFogDensityTransitionTimeS >= 0)
+                {
+                    ORTSFogDensity = eventWeatherChange.ORTSFogDensity;
+                    ORTSFogDensityTransitionTimeS = eventWeatherChange.ORTSFogDensityTransitionTimeS;
+                    fogDensityTimer = (float)ORTSFogDensityTransitionTimeS;
+                    var fogDensityFinalValue = MathHelper.Clamp(ORTSFogDensity, 0.001f, 1.0f);
+                    fogDensityDistanceIncreasing = false;
+                    fogDensityChangeRate = fogDensityTimer > 0 ? (fogDensityFinalValue - Program.Simulator.HeightFalloff) / (ORTSFogDensityTransitionTimeS * ORTSFogDensityTransitionTimeS) : 0;
+                    if (fogDensityFinalValue > Program.Simulator.HeightFalloff)
+                    {
+                        fogDensityDistanceIncreasing = true;
+                        fogDensityChangeRate = -fogDensityChangeRate;
+                        ORTSFogDensity = Program.Simulator.HeightFalloff;
+                    }
+                    wChangeOn = true;
+                }
+                if (eventWeatherChange.ORTSFogGroundLevel >= 0 && eventWeatherChange.ORTSFogGroundLevelTransitionTimeS >= 0)
+                {
+                    ORTSFogGroundLevel = eventWeatherChange.ORTSFogGroundLevel;
+                    ORTSFogGroundLevelTransitionTimeS = eventWeatherChange.ORTSFogGroundLevelTransitionTimeS;
+                    fogGroundLevelTimer = (float)ORTSFogGroundLevelTransitionTimeS;
+                    var fogGroundLevelFinalValue = MathHelper.Clamp(ORTSFogGroundLevel, 0.1f, 1000.0f);
+                    fogGroundLevelDistanceIncreasing = false;
+                    fogGroundLevelChangeRate = fogGroundLevelTimer > 0 ? (fogGroundLevelFinalValue - Program.Simulator.GroundLevel) / (ORTSFogGroundLevelTransitionTimeS * ORTSFogGroundLevelTransitionTimeS) : 0;
+                    if (fogGroundLevelFinalValue > Program.Simulator.GroundLevel)
+                    {
+                        fogGroundLevelDistanceIncreasing = true;
+                        fogGroundLevelChangeRate = -fogGroundLevelChangeRate;
+                        ORTSFogGroundLevel = Program.Simulator.GroundLevel;
+                    }
+                    wChangeOn = true;
+                }
                 if (eventWeatherChange.ORTSPrecipitationIntensity >= 0 && eventWeatherChange.ORTSPrecipitationIntensityTransitionTimeS >= 0)
                 {
                     ORTSPrecipitationIntensity = eventWeatherChange.ORTSPrecipitationIntensity;
@@ -1417,7 +1522,7 @@ namespace Orts.Viewer3D
                     precipitationLiquidityChangeRate = precipitationLiquidityTimer > 0 ? (MathHelper.Clamp(ORTSPrecipitationLiquidity, 0, 1.0f)
                         - weatherControl.Weather.PrecipitationLiquidity) / ORTSPrecipitationLiquidityTransitionTimeS : 0;
                     wChangeOn = true;
-                }
+                }                
                 weatherControl.weatherChangeOn = wChangeOn;                
             }            
 
@@ -1448,7 +1553,35 @@ namespace Orts.Viewer3D
                         Program.Simulator.FogDistanceFinal = MathHelper.Clamp(ORTSFog - fogTimerDifference * fogTimerDifference * fogChangeRate, 50, 100000);
                     }                    
                     if (fogTimer == 0) ORTSFog = -1;                    
-                }                
+                }
+                if (ORTSFogDensity >= 0)
+                {
+                    fogDensityTimer -= elapsedTime.ClockSeconds;
+                    if (fogDensityTimer <= 0) fogDensityTimer = 0;
+                    else wChangeOn = true;
+                    if (!fogDensityDistanceIncreasing)
+                        Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(ORTSFogDensity - fogDensityTimer * fogDensityTimer * fogDensityChangeRate, 0.001f, 1.0f);
+                    else
+                    {
+                        var fogDensityTimerDifference = ORTSFogDensityTransitionTimeS - fogDensityTimer;
+                        Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(ORTSFogDensity - fogDensityTimerDifference * fogDensityTimerDifference * fogDensityChangeRate, 0.001f, 1.0f);
+                    }
+                    if (fogDensityTimer == 0) ORTSFogDensity = -1;
+                }
+                if (ORTSFogGroundLevel >= 0)
+                {
+                    fogGroundLevelTimer -= elapsedTime.ClockSeconds;
+                    if (fogGroundLevelTimer <= 0) fogGroundLevelTimer = 0;
+                    else wChangeOn = true;
+                    if (!fogGroundLevelDistanceIncreasing)
+                        Program.Simulator.GroundLevelFinal = MathHelper.Clamp(ORTSFogGroundLevel - fogGroundLevelTimer * fogGroundLevelTimer * fogGroundLevelChangeRate, 0.1f, 1000.0f);
+                    else
+                    {
+                        var fogGroundLevelTimerDifference = ORTSFogGroundLevelTransitionTimeS - fogGroundLevelTimer;
+                        Program.Simulator.GroundLevelFinal = MathHelper.Clamp(ORTSFogGroundLevel - fogGroundLevelTimerDifference * fogGroundLevelTimerDifference * fogGroundLevelChangeRate, 0.1f, 1000.0f);
+                    }
+                    if (fogGroundLevelTimer == 0) ORTSFogGroundLevel = -1;
+                }
 
                 int ORTSPrecipitationIntensityChanceToChange = -1;
                 if (!Program.Simulator.WeatherChangesPresent && weatherControl.Viewer.Simulator.WeatherAdv == 7)
@@ -1460,6 +1593,7 @@ namespace Orts.Viewer3D
                         {
                             weatherControl.dynamicWeather.WeatherChange_NextRandomization(elapsedTime, weatherControl);
                             preFogDistanceFinal = weatherControl.Weather.FogDistance;
+                            Program.Simulator.GroundLevelFinal = MathHelper.Clamp(Simulator.Random.Next(30) * 10, 0.1f, 1000.0f);
                             Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(Simulator.Random.Next(20) / 200f, 0.001f, 0.1f);
                         }
 
@@ -1839,7 +1973,7 @@ namespace Orts.Viewer3D
                     fogDistanceIncreasing = true;
                     fogChangeRate = -fogChangeRate;
                     ORTSFog = weatherControl.Weather.FogDistance;
-                }
+                }                
 
                 weatherControl.weatherChangeOn = true;
             }

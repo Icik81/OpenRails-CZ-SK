@@ -297,7 +297,8 @@ namespace Orts.Simulation
         public int CloudIndex = -1;
         public int SkyIndex = -1;
         public bool PowerSupplyInit;
-        public float GroundLevel;
+        public float GroundLevel = 200f;
+        public float GroundLevelFinal = 200f;
         public float HeightFalloff = 0.001f;
         public float HeightFalloffFinal = 0.001f;
         public float GlobalDensity = 1;
@@ -678,6 +679,9 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            GroundLevelFinal = inf.ReadSingle();
+            HeightFalloffFinal = inf.ReadSingle();
+            GroundLevel = inf.ReadSingle();
             HeightFalloff = inf.ReadSingle();
             SkyIndex = inf.ReadInt32();
             CloudIndex = inf.ReadInt32();
@@ -727,6 +731,9 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(GroundLevelFinal);
+            outf.Write(HeightFalloffFinal);
+            outf.Write(GroundLevel);
             outf.Write(HeightFalloff);
             outf.Write(SkyIndex);
             outf.Write(CloudIndex);
