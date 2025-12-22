@@ -43,6 +43,7 @@ texture  MoonMapTexture;
 texture  MoonMaskTexture;
 texture  CloudMapTexture;
 texture  ThunderMapTexture;
+float	 HeightFalloff;
 
 sampler SkyMapSampler = sampler_state
 {
@@ -194,9 +195,10 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	starColor *= starColorCoef;
 	skyColor = lerp(starColor, skyColor, SkyColor.y);	
 
-	// Fogging
-	FogColor.rgb = FogColor.rgb * 1.3;
-	skyColor.rgb = lerp(skyColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * Fog.x));
+	// Fogging			
+	float HeightFalloffCoef = Fog.x / (HeightFalloff * 1000);
+	FogColor.rgb = FogColor.rgb * 1.25;
+	skyColor.rgb = lerp(skyColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * HeightFalloffCoef));
 	
 	// Calculate angular difference between LightVector and vertex normal, radians
 	float dotproduct = dot(LightVector.xyz, In.Normal);

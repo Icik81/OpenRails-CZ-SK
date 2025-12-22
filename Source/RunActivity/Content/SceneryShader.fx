@@ -57,7 +57,9 @@ texture  ImageTexture;
 texture  OverlayTexture;
 float	 OverlayScale;
 float	 MaxShadowBrightness;
-
+float	 GroundLevel;
+float 	 HeightFalloff;
+float	 GlobalDensity;
 
 sampler Image = sampler_state
 {
@@ -441,20 +443,30 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
 // Applies distance fog to the pixel.
 void _PSApplyFog(inout float3 Color, in VERTEX_OUTPUT In)
 {
-    // základní barva mlhy
     float3 fogColor = Fog.rgb * 1.25;
+    float dist = length(In.RelPosition.xyz);
+    
+    // --- OPRAVA: POUŽITÍ ViewerPos.y ---
+    // In.RelPosition.y je relativní výška objektu vůči kameře.
+    // Přičtením ViewerPos.y získáme absolutní výšku objektu v mapě.
+    float worldY = In.RelPosition.y + ViewerPos.y;
 
-    // vzdálenost pixelu od kamery (ve world space)
-    float dist = length(In.RelPosition.xyz);    
+    // Nastavení parametrů
+    float groundLevel = GroundLevel;      // Výšková hladina, kde je mlha nejhustší
+    float heightFalloff = HeightFalloff;   // Jak rychle mlha mizí s výškou (ladit dle potřeby)
+    float globalDensity = Fog.a * GlobalDensity;
 
-	float Haze_scenery = 2.05;
-    float Haze_horizon = 2.35;
+    // Výpočet útlumu podle světové výšky
+    // max(..., 0) zajistí, že pod groundLevel zůstává mlha maximálně hustá
+    float diff = max(worldY - groundLevel, 0.0);
+    float heightFactor = exp(-diff * heightFalloff);
+    
+    // Výsledný faktor mlhy
+    // Mlha je nyní závislá na vzdálenosti, ale její síla je "tlumena" výškou objektu
+    float fogFactor = exp(-dist * globalDensity * heightFactor);
+    float fogT = 1.0 - saturate(fogFactor);
 
-	float fogT = (Haze_scenery / (1.0 + exp(dist * Haze_horizon * Fog.a * -2.0))) - 1.0;
-	fogT = min(max(fogT, 0.0), 1.025);
-
-    // interpolace barvy scény s mlhou    
-	Color = lerp(Color, fogColor, saturate(fogT));
+    Color = lerp(Color, fogColor, fogT);
 }
 
 

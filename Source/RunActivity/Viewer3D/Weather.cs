@@ -1173,6 +1173,12 @@ namespace Orts.Viewer3D
             if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
                 Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
 
+            if (Program.Simulator.HeightFalloff < Program.Simulator.HeightFalloffFinal)
+                Program.Simulator.HeightFalloff += FogRatioCoef * elapsedTime.ClockSeconds / 100000f;
+            if (Program.Simulator.HeightFalloff > Program.Simulator.HeightFalloffFinal)
+                Program.Simulator.HeightFalloff -= FogRatioCoef * elapsedTime.ClockSeconds / 100000f;
+            Program.Simulator.HeightFalloff = MathHelper.Clamp(Program.Simulator.HeightFalloff, 0.001f, 1.0f);
+
             if (Viewer.Simulator.GameTime < 0.5f)
             {
                 Viewer.SoundProcess.RemoveSoundSources(this);
@@ -1237,7 +1243,7 @@ namespace Orts.Viewer3D
             }
 
             if (!Program.Simulator.WeatherChangesPresent && Viewer.Simulator.WeatherAdv == 7)
-            {
+            {                
                 if (Viewer.PlayerLocomotive.CarOutsideTempC > 2f)
                 {
                     if (Weather.PrecipitationLiquidity < 1.0f)
@@ -1454,6 +1460,7 @@ namespace Orts.Viewer3D
                         {
                             weatherControl.dynamicWeather.WeatherChange_NextRandomization(elapsedTime, weatherControl);
                             preFogDistanceFinal = weatherControl.Weather.FogDistance;
+                            Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(Simulator.Random.Next(20) / 200f, 0.001f, 0.1f);
                         }
 
                         if (weatherControl.Weather.OvercastFactor < 0.6f)

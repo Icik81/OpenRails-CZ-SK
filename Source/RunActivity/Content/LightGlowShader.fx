@@ -27,6 +27,12 @@ float4x4 WorldViewProjection;  // model -> world -> view -> projection
 float2   Fade;          // overall fade (0 = off, 1 = on); transition fade (0 = original, 1 = transition)
 texture  LightGlowTexture;
 
+float4 Fog;         // Barva (rgb) a hustota (a) 
+float3 ViewerPos;   // Musí být předáno z aplikace (shodné se SceneryShader) 
+float GroundLevel;
+float HeightFalloff;
+float GlobalDensity;
+
 sampler LightGlowSampler = sampler_state
 {
 	Texture = (LightGlowTexture);
@@ -56,7 +62,8 @@ struct VERTEX_OUTPUT
 {
 	float4 Position  : POSITION0;
 	float4 Color     : COLOR0;
-	float2 TexCoords : TEXCOORD0;
+	float2 TexCoords : TEXCOORD0;		
+	float4 FogParams : TEXCOORD1;
 };
 
 ////////////////////    V E R T E X   S H A D E R S    /////////////////////////
@@ -64,21 +71,26 @@ struct VERTEX_OUTPUT
 VERTEX_OUTPUT VSLightGlow(in VERTEX_INPUT In)
 {
 	VERTEX_OUTPUT Out = (VERTEX_OUTPUT)0;
-	
 	float radius = lerp(In.TexCoords_Radius.z, In.TexCoords_Radius.w, Fade.y);
 	float3 position = lerp(In.PositionO, In.PositionT, Fade.y);
 	float3 normal = lerp(In.NormalO, In.NormalT, Fade.y);
+    
 	float3 upVector = float3(0, 1, 0);
 	float3 sideVector = normalize(cross(upVector, normal));
 	upVector = normalize(cross(sideVector, normal));
+    
 	position += (In.TexCoords_Radius.x - 0.5f) * sideVector * radius;
 	position += (In.TexCoords_Radius.y - 0.5f) * upVector * radius;
+    
 	Out.Position = mul(WorldViewProjection, float4(position, 1));
 	
 	Out.Color = lerp(In.ColorO, In.ColorT, Fade.y);
 	Out.Color.a *= Fade.x;
-	
 	Out.TexCoords = In.TexCoords_Radius.xy;
+
+	// Výpočet dat pro mlhu 
+	Out.FogParams.xyz = position - ViewerPos; // Relativní pozice ke kameře
+	Out.FogParams.w = position.y;             // Absolutní výška světla
 
 	return Out;
 }
@@ -87,7 +99,31 @@ VERTEX_OUTPUT VSLightGlow(in VERTEX_INPUT In)
 
 float4 PSLightGlow(in VERTEX_OUTPUT In) : COLOR0
 {
-	return In.Color * tex2D(LightGlowSampler, In.TexCoords.xy);
+	float4 texColor = tex2D(LightGlowSampler, In.TexCoords.xy);
+	float4 finalColor = In.Color * texColor;
+
+	// Parametry mlhy (laditelné) 
+	float groundLevel = GroundLevel;     
+	float heightFalloff = HeightFalloff;   
+	float globalDensity = Fog.a * GlobalDensity;
+
+	// Výpočet vzdálenosti a výškového útlumu 
+	float dist = length(In.FogParams.xyz);
+	float worldY = In.FogParams.w;
+	float diff = max(worldY - groundLevel, 0.0);
+	float heightFactor = exp(-diff * heightFalloff);
+    
+	// Faktor viditelnosti (1.0 = čisté, 0.0 = úplná mlha) 
+	float fogFactor = exp(-dist * globalDensity * heightFactor);
+	
+	// ZMĚKČENÍ: Umocněním faktoru docílíme toho, že světlo v mlze ztratí ostrost
+	float alphaSoftness = pow(saturate(fogFactor), 2);
+
+	// Aplikace na barvu i průhlednost 
+	//finalColor.rgb *= alphaSoftness;
+	//finalColor.a *= alphaSoftness;
+	
+	return finalColor;
 }
 
 ////////////////////    T E C H N I Q U E S    /////////////////////////////////

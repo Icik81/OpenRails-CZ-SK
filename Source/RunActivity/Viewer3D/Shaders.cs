@@ -22,6 +22,7 @@ using Microsoft.Xna.Framework.Content.Pipeline;
 using Microsoft.Xna.Framework.Content.Pipeline.Graphics;
 using Microsoft.Xna.Framework.Content.Pipeline.Processors;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json.Linq;
 using Orts.Formats.Msts;
 using Orts.Simulation;
 using Orts.Viewer3D.Processes;
@@ -122,6 +123,9 @@ namespace Orts.Viewer3D
         readonly EffectParameter overlayTexture;
         readonly EffectParameter referenceAlpha;
         readonly EffectParameter overlayScale;
+        readonly EffectParameter groundLevel;
+        readonly EffectParameter heightFalloff;
+        readonly EffectParameter globalDensity;
 
         Vector3 _eyeVector;
         Vector4 _zBias_Lighting;
@@ -152,7 +156,7 @@ namespace Orts.Viewer3D
         float WorldThunderTime;
         float LastStateBrightness;
         float WorldThunderStartTime;
-        float LastStateFogDistanceFinal = -1;
+        float LastStateFogDistanceFinal = -1;        
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -186,8 +190,8 @@ namespace Orts.Viewer3D
                         MorningFogHour = 7f;
                         EveningFogHour = 5f;
 
-                        if (GameTimeToHours > GameTimeToHoursHighBorder)
-                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);
+                        if (GameTimeToHours > GameTimeToHoursHighBorder)                        
+                            Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHoursHighBorder / GameTimeToHoursLowBorder - ((GameTimeToHours / GameTimeToHoursHighBorder - 1) * DayTimeAmbientLightChangeCoef);                                                    
                         else
                             Program.Simulator.DayTimeAmbientLightCoef = GameTimeToHours / GameTimeToHoursLowBorder;
 
@@ -272,8 +276,9 @@ namespace Orts.Viewer3D
                         Program.Simulator.Weather.FogDistance = MorningFogDistance;
                     
                         Program.Simulator.FogDistanceFinal = MorningFogDistance;
-                        Program.Simulator.MorningFogRun = true;
-                    }
+                        Program.Simulator.MorningFogRun = true;                        
+                    }                    
+                    Program.Simulator.HeightFalloffFinal = Program.Simulator.ChanceToMorningFog / 100f;
                 }
                 else
                 {
@@ -284,9 +289,16 @@ namespace Orts.Viewer3D
                     }
                     if (Program.Simulator.Weather.FogDistance < 1.01f * Program.Simulator.FogDistanceFinal && Program.Simulator.Weather.FogDistance > 0.99f * Program.Simulator.FogDistanceFinal)
                         Program.Simulator.MorningFogRun = false;
+                    
+                    if (Program.Simulator.WeatherAdv != 7)
+                        Program.Simulator.HeightFalloffFinal = Program.Simulator.ChanceToMorningFog / 200f;
                 }                
             }
-            
+            //Program.Simulator.HeightFalloffFinal = 0.5f;
+            Program.Simulator.GroundLevel = 250;            
+            Program.Simulator.GlobalDensity = MathHelper.Clamp(10 * Program.Simulator.HeightFalloff, 3, 10);
+            Program.Simulator.Confirmer.MSG4("HeightFalloff: " + Program.Simulator.HeightFalloff + "    GroundLevel: " + Program.Simulator.GroundLevel + "    GlobalDensity: " + Program.Simulator.GlobalDensity);
+
             // Mění intenzitu okolního světla v závislosti na zatažení oblohy
             Program.Simulator.OvercastAmbientLightCoef = 1.0f - (Program.Simulator.Weather.OvercastFactor / 3.0f);
 
@@ -396,7 +408,7 @@ namespace Orts.Viewer3D
                 nightColorModifier.SetValue(MathHelper.Lerp(NightBrightness, FullBrightness, nightEffect));
                 halfNightColorModifier.SetValue(MathHelper.Lerp(HalfNightBrightness, FullBrightness, nightEffect));
                 vegetationAmbientModifier.SetValue(MathHelper.Lerp(ShadowBrightness, FullBrightness, _zBias_Lighting.Y));
-            }
+            }                      
         }
 
         public void SetShadowMap(Matrix[] shadowProjections, Texture2D[] textures, float[] limits)
@@ -431,6 +443,9 @@ namespace Orts.Viewer3D
         public void SetFog(float depth, ref Color color)
         {
             fog.SetValue(new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f / depth));
+            groundLevel.SetValue(Program.Simulator.GroundLevel);
+            heightFalloff.SetValue(Program.Simulator.HeightFalloff);
+            globalDensity.SetValue(Program.Simulator.GlobalDensity);
         }
 
         public void SetLightVector_ZFar(Vector3 sunDirection, int zFar)
@@ -504,6 +519,9 @@ namespace Orts.Viewer3D
             overlayTexture = Parameters["OverlayTexture"];
             referenceAlpha = Parameters["ReferenceAlpha"];
             overlayScale = Parameters["OverlayScale"];
+            groundLevel = Parameters["GroundLevel"];
+            heightFalloff = Parameters["HeightFalloff"];
+            globalDensity = Parameters["GlobalDensity"];
         }
     }
 
@@ -573,6 +591,7 @@ namespace Orts.Viewer3D
         readonly EffectParameter moonMaskTexture;
         readonly EffectParameter cloudMapTexture;
         readonly EffectParameter thunderMapTexture;
+        readonly EffectParameter heightFalloff;
 
         public Vector3 LightVector
         {
@@ -604,7 +623,8 @@ namespace Orts.Viewer3D
         public void SetFog(float depth, ref Color color)
         {
             fogColor.SetValue(new Vector3(color.R / 255f, color.G / 255f, color.B / 255f));            
-            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));            
+            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));
+            heightFalloff.SetValue(Program.Simulator.HeightFalloff);
         }
 
         float _time;
@@ -701,6 +721,7 @@ namespace Orts.Viewer3D
             moonMaskTexture = Parameters["MoonMaskTexture"];
             cloudMapTexture = Parameters["CloudMapTexture"];
             thunderMapTexture = Parameters["ThunderMapTexture"];
+            heightFalloff = Parameters["HeightFalloff"];
         }
 
 
@@ -795,6 +816,11 @@ namespace Orts.Viewer3D
         readonly EffectParameter worldViewProjection;
         readonly EffectParameter fade;
         readonly EffectParameter lightGlowTexture;
+        readonly EffectParameter fog;
+        readonly EffectParameter viewerPos;
+        readonly EffectParameter groundLevel;
+        readonly EffectParameter heightFalloff;
+        readonly EffectParameter globalDensity;
 
         public Texture2D LightGlowTexture { set { lightGlowTexture.SetValue(value); } }
 
@@ -814,7 +840,22 @@ namespace Orts.Viewer3D
             worldViewProjection = Parameters["WorldViewProjection"];
             fade = Parameters["Fade"];
             lightGlowTexture = Parameters["LightGlowTexture"];
+            fog = Parameters["Fog"];
+            viewerPos = Parameters["ViewerPos"];
+            groundLevel = Parameters["GroundLevel"];
+            heightFalloff = Parameters["HeightFalloff"];
+            globalDensity = Parameters["GlobalDensity"];
         }
+
+        public Vector3 ViewerPos { set { viewerPos.SetValue(value); } }
+
+        public void SetFog(float depth, ref Color color)
+        {
+            fog.SetValue(new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, MathHelper.Clamp(300f / depth, 0, 1)));
+            groundLevel.SetValue(Program.Simulator.GroundLevel);
+            heightFalloff.SetValue(Program.Simulator.HeightFalloff);
+            globalDensity.SetValue(Program.Simulator.GlobalDensity);
+        }        
     }
 
     [CallOnThread("Render")]
