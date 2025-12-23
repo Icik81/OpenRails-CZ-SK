@@ -1116,14 +1116,14 @@ namespace Orts.Viewer3D
 
                 if (UserInput.IsDown(UserCommand.DebugGroundLevelIncrease))
                 {
-                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel + elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
+                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel + elapsedTime.RealSeconds * MathHelper.Clamp(Program.Simulator.GroundLevel, 0.1f, 10), 0.1f, 1000.0f);
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ORTSFogGroundLevel = -1;
                     Program.Simulator.GroundLevelFinal = Program.Simulator.GroundLevel;
                 }
                 if (UserInput.IsDown(UserCommand.DebugGroundLevelDecrease))
                 {
-                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel - elapsedTime.RealSeconds * Program.Simulator.GroundLevel, 0.1f, 1000.0f);
+                    Program.Simulator.GroundLevel = MathHelper.Clamp(Program.Simulator.GroundLevel - elapsedTime.RealSeconds * MathHelper.Clamp(Program.Simulator.GroundLevel, 0.1f, 10), 0.1f, 1000.0f);
                     weatherChangeOn = false;
                     if (dynamicWeather != null) dynamicWeather.ORTSFogGroundLevel = -1;
                     Program.Simulator.GroundLevelFinal = Program.Simulator.GroundLevel;

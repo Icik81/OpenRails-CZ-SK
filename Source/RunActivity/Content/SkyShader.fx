@@ -196,7 +196,7 @@ float4 PSSky(VERTEX_OUTPUT In) : COLOR
 	skyColor = lerp(starColor, skyColor, SkyColor.y);	
 
 	// Fogging			
-	float HeightFalloffCoef = Fog.x / (HeightFalloff * 1000);
+	float HeightFalloffCoef = clamp(Fog.x / (HeightFalloff * 1000), 1, Fog.x);
 	FogColor.rgb = FogColor.rgb * 1.25;
 	skyColor.rgb = lerp(skyColor.rgb, FogColor.rgb, saturate((1 - In.Normal.y) * HeightFalloffCoef));
 	
