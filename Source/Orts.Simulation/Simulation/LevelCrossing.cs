@@ -376,11 +376,11 @@ namespace Orts.Simulation
                 {
                     //  Add generic actions if needed
                     aiTrain.AuxActionsContain.CheckGenActions(this.GetType(), crossing.Location, rearDist, frontDist, crossing.TrackIndex, aiTrain.LevelCrossingHornPattern);
+                // Train speed is 0.  This was the initial issue that was found under one the MSTS activities.  Activity should start without gates being activated.
                 }
 
                 // The tests below is to allow the crossings operate like the crossings under MSTS
                 // Tests as follows
-                // Train speed is 0.  This was the initial issue that was found under one the MSTS activities.  Activity should start without gates being activated.
                 // There are 2 tests for train speed between 0 and 5.0MpS(11.1mph).  Covering forward movement and reverse movement.  
                 // The last 2 tests is for testing trains running at line speed, forward or reverse.
 
@@ -454,11 +454,11 @@ namespace Orts.Simulation
                     if (frontDist <= DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
                     {
                         crossing.AddTrain(train); // Přejezd se zavře, pokud je vlak ve vzdálenosti DistanceToOpenCrossing a méně od přejezdu
-                        if (train.TrainStopAtLevelCrossTimer == 0) train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
+                        if (frontDist > 30f && train.TrainStopAtLevelCrossTimer == 0) train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
                     }
 
                     float TrainStopAtLevelCrossWaitTime = 3f * 60f; // Vteřinový časový limit pro otevření přejezdu po zastavení vlaku před přejezdem
-                    if (train.TrainStopAtLevelCrossTimer > TrainStopAtLevelCrossWaitTime && Simulator.Trains.Contains(train))
+                    if (frontDist > 30f && train.TrainStopAtLevelCrossTimer > TrainStopAtLevelCrossWaitTime && Simulator.Trains.Contains(train))
                     {
                         crossing.RemoveTrain(train); // Otevření přejezdu po zastavení vlaku před minimální vzdáleností                       
                     }
