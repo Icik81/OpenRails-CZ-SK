@@ -41,7 +41,7 @@ namespace Orts.Viewer3D.Popups
             var spacing = (heightForLabels - Owner.TextFontDefault.Height) / 2;
 
             vbox.AddSpace(0, spacing + 2);
-            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, "    " + Viewer.Catalog.GetStringFmt("You didn't give a corresponding sound sign at an unprotected crossing!", LabelAlignment.Center)));
+            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("You didn't give a corresponding sound sign at an unprotected crossing!"), LabelAlignment.Center));
             //vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Nedali jste odpovídající zvukové znamení před nechráněným přejezdem!", LabelAlignment.Center)));
             
             vbox.AddSpace(0, spacing);

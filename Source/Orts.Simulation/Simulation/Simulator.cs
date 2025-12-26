@@ -302,6 +302,7 @@ namespace Orts.Simulation
         public float HeightFalloff = 0.02f;
         public float HeightFalloffFinal = 0.02f;
         public float GlobalDensity = 1;
+        public bool CarIncident;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -1146,7 +1147,7 @@ namespace Orts.Simulation
         public void CheckForCoupling(Train drivenTrain, float elapsedClockSeconds)
         {           
             //if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
-            if (CarDerailed) return;
+            if (CarDerailed) return;            
 
             // Icik
             int PreviousCarCount = (int)drivenTrain.Cars.Count;
@@ -1193,6 +1194,7 @@ namespace Orts.Simulation
 
                         if (TryToCoupleBehind && d1 <= MinimalDistanceToCouple)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             foreach (TrainCar car in train.Cars)
@@ -1225,6 +1227,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (TryToCoupleBehind && d2 <= MinimalDistanceToCouple)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             for (int i = train.Cars.Count - 1; i >= 0; --i)
@@ -1258,7 +1261,8 @@ namespace Orts.Simulation
                             drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (TryToCoupleFront && d1 <= MinimalDistanceToCouple)
-                        {                            
+                        {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             lead = drivenTrain.LeadLocomotive;
                             if (lead == null)
                             {
@@ -1326,6 +1330,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (TryToCoupleFront && d2 <= MinimalDistanceToCouple)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             drivenTrain.FirstCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
                             lead = drivenTrain.LeadLocomotive;
@@ -1376,6 +1381,7 @@ namespace Orts.Simulation
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             CouplingType_1 = 1;                            
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1452,6 +1458,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d2 < 0)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             CouplingType_2 = 1;                            
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1544,6 +1551,7 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d1 < 0)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             CouplingType_3 = 1;
                             lead = drivenTrain.LeadLocomotive;
 
@@ -1667,6 +1675,7 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d2 < 0)
                         {
+                            if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("auto")) { CarIncident = true; CarCoupleMaxSpeedOvercome = true; }
                             CouplingType_4 = 1;                            
                             if (!MPManager.IsMultiPlayer())
                             {

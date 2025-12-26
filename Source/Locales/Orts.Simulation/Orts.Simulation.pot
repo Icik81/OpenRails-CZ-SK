@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-22 18:25:38+0100\n"
-"PO-Revision-Date: 2025-12-22 18:25:39+0100\n"
+"POT-Creation-Date: 2025-12-26 21:25:22+0100\n"
+"PO-Revision-Date: 2025-12-26 21:25:22+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1420,11 +1420,11 @@ msgctxt "ARR speed minus"
 msgid "on"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2478
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2486
 msgid "Train can't be suspended with speed not equal 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2599
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2607
 msgid "To return to static train speed must be = 0"
 msgstr ""
 

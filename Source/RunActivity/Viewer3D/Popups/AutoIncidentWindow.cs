@@ -24,12 +24,12 @@ using System.Windows.Forms;
 
 namespace Orts.Viewer3D.Popups
 {
-    public class DerailWindow : Window
+    public class AutoIncidentWindow : Window
     {
         readonly Viewer Viewer;
 
-        public DerailWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency Event"))
+        public AutoIncidentWindow(WindowManager owner)
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 25, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency Event"))
         {
             Viewer = owner.Viewer;
         }
@@ -42,8 +42,8 @@ namespace Orts.Viewer3D.Popups
             heightForLabels = (vbox.RemainingHeight - 2 * ControlLayout.SeparatorSize) / 2;
             var spacing = (heightForLabels - Owner.TextFontDefault.Height) / 2;
 
-            vbox.AddSpace(0, spacing + 2);           
-            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Train derailed! You caused an emergency event!", Application.ProductName), LabelAlignment.Center));
+            vbox.AddSpace(0, spacing + 2);                        
+            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Train collision with a car! You caused an emergency event!", Application.ProductName), LabelAlignment.Center));                        
             vbox.AddSpace(0, spacing);
             vbox.AddSpace(0, spacing);
             vbox.AddHorizontalSeparator();
