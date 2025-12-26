@@ -103,13 +103,20 @@ namespace Orts.Viewer3D
             bool CameraInPlace;
             float CameraDistanceX = 0;
             float CameraDistanceY = 0;
-            float CameraDistanceZ = 0;
+            float CameraDistanceZ = 0;            
 
             NearPlane = PlayerCameraHeight / 30f;
             NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 1.0f);
 
             if (AttachedCar != null)
             {
+                // Určení počáteční ground level pro simulátor
+                if (Program.Simulator.GroundLevelFinal == -1)
+                {
+                    Program.Simulator.GroundLevelFinal = AttachedCar.WorldPosition.Location.Y;
+                    Program.Simulator.GroundLevel = Program.Simulator.GroundLevelFinal;
+                }
+
                 CameraDistanceX = Math.Abs(AttachedCar.WorldPosition.Location.X - cameraLocation.Location.X);
                 CameraDistanceY = Math.Abs(AttachedCar.WorldPosition.Location.Y - cameraLocation.Location.Y);
                 CameraDistanceZ = Math.Abs(AttachedCar.WorldPosition.Location.Z - cameraLocation.Location.Z);

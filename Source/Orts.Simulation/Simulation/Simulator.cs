@@ -297,10 +297,10 @@ namespace Orts.Simulation
         public int CloudIndex = -1;
         public int SkyIndex = -1;
         public bool PowerSupplyInit;
-        public float GroundLevel = 200f;
-        public float GroundLevelFinal = 200f;
-        public float HeightFalloff = 0.001f;
-        public float HeightFalloffFinal = 0.001f;
+        public float GroundLevel = -1;
+        public float GroundLevelFinal = -1;
+        public float HeightFalloff = 0.02f;
+        public float HeightFalloffFinal = 0.02f;
         public float GlobalDensity = 1;
 
         public List<PowerSupplyStation> powerSupplyStations;
@@ -865,10 +865,9 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)            
                 GameTimeCyklus10 = 0;                         
-            OneSecondLoop = elapsedClockSeconds;            
+            OneSecondLoop = elapsedClockSeconds;
 
             // Check if there is a request to switch to another played train
-
             if (TrainSwitcher.ClickedSelectedAsPlayer && !playerSwitchOngoing)
                 StartSwitchPlayerTrain();
             if (playerSwitchOngoing)
