@@ -73,6 +73,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
@@ -795,6 +796,7 @@ namespace Orts.Simulation.RollingStocks
         public bool SteamGeneratorOff;
         public float SteamGeneratorMinPressureLimitPSI;
         public float SteamGeneratorAirComsumptionLpS;
+        public bool Combined_control;
 
         // Jindrich
         public bool IsActive = false;
@@ -1317,7 +1319,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(emergencystopmonitor":
                 case "engine(awsmonitor":
                 case "engine(overspeedmonitor": VigilanceMonitor = true; TrainControlSystem.Parse(lowercasetoken, stf); break;
-                case "engine(enginecontrollers(combined_control": ParseCombData(lowercasetoken, stf); break;
+                case "engine(enginecontrollers(combined_control": ParseCombData(lowercasetoken, stf); Combined_control = true; break;
                 case "engine(airbrakesmainresvolume": MainResVolumeM3 = Me3.FromFt3(stf.ReadFloatBlock(STFReader.UNITS.VolumeDefaultFT3, null)); MainResVolumeM3 = MathHelper.Clamp(MainResVolumeM3, 0.0001f, 10f); break;
                 case "engine(airbrakesmainmaxairpressure": MainResPressurePSI = MaxMainResPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(airbrakescompressorrestartpressure": CompressorRestartPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
@@ -2529,6 +2531,13 @@ namespace Orts.Simulation.RollingStocks
                 DynamicBrakeController = new MSTSNotchController(0, 1, .05f);
             if (dynamic)
                 DynamicBrake = true;
+
+            // Icik - v případě, že není definován, tak vytvoříme
+            if (dynamic && LocoHasNoDynamicController)
+            {
+                DynamicBrakeController = new MSTSNotchController(0, 1, .05f);
+                LocoHasNoDynamicController = false;
+            }
         }
 
         /// <summary>
@@ -3769,7 +3778,7 @@ namespace Orts.Simulation.RollingStocks
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
         {
-            if (LocoType == LocoTypes.Vectron || Train.NoSpeedLimit)
+            if (LocoType == LocoTypes.Vectron || Train.NoSpeedLimit || JVSetup)
                 return;            
 
             if (MaxCurrentA > 0 && (this is MSTSElectricLocomotive || this is MSTSDieselLocomotive))  // Zohlední jen elektrické a dieselelektrické lokomotivy
@@ -8345,7 +8354,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
-            {
+            {                
                 if (!DynamicBrake)
                 {
                     if (DynamicBrakeCommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime /*|| (DynamicBrakeController != null && DynamicBrakeController.CommandStartTime + DynamicBrakeDelayS < Simulator.ClockTime)*/)
@@ -8423,6 +8432,9 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else if (DynamicBrakeController != null)
                     DynamicBrakeController.Update(elapsedClockSeconds);
+
+                // Kombinovaný režim - pokud je pákou na nule a EDB je zapnutá, tak EDB zanikne
+                if (Combined_control && DynamicBrakeIntervention == -1 && DynamicBrakeController.CurrentValue == 0 && EDBOn) DynamicBrakePercent = -1;
             }
             else if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && DynamicBrakeIntervention < 0 && DynamicBrakePercent < 0 && DynamicBrake)
             {
@@ -10373,7 +10385,7 @@ namespace Orts.Simulation.RollingStocks
         /// </summary>
         public void SetCombinedHandleValue(float value)
         {
-            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake != null && DynamicBrake)
+            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrakeController != null && DynamicBrake)
             {
                 if (DynamicBrakeController.CurrentValue == 0 && value < CombinedControlSplitPosition)
                     DynamicBrakeChangeActiveState(false);
@@ -10401,7 +10413,7 @@ namespace Orts.Simulation.RollingStocks
         /// <returns>Combined position into 0-1 range, where arrangement is [[1--throttle--0]split[0--dynamic|airbrake--1]]</returns>
         public float GetCombinedHandleValue(bool intermediateValue)
         {
-            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrake != null && DynamicBrake)
+            if (CombinedControlType == CombinedControl.ThrottleDynamic && DynamicBrakeController != null && DynamicBrake)
             {
                 if (CruiseControl != null)
                 {
