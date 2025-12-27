@@ -778,7 +778,7 @@ namespace Orts.Simulation.AIs
                 }
             }
             else
-                AITrainBrakePercent = 0;
+                AITrainBrakePercent = 0;            
 
             // update position, route clearance and objects
 
@@ -877,7 +877,7 @@ namespace Orts.Simulation.AIs
                 (this as AITrain).AIRollOn = false;
                 (this as AITrain).AIRollOnStartTimer = 0;
                 (this as AITrain).AIStayToRollOn = false;
-            }
+            }            
 
             switch (MovementState)
             {
@@ -885,6 +885,15 @@ namespace Orts.Simulation.AIs
                     UpdateAIStaticState(presentTime);
                     break;
                 case AI_MOVEMENT_STATE.STOPPED:
+
+                    // Icik
+                    // Odstraní fatální překážku po vypršení času stání
+                    if (Name.ToLower().Contains("servis") && Name.ToLower().Contains("fatal") && !Name.ToLower().Contains("notfatal"))
+                    {
+                        RemoveTrain();
+                        break;
+                    }
+
                     if (nextActionInfo != null && nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
                     {
                         MovementState = nextActionInfo.ProcessAction(this, presentTime, elapsedClockSeconds, MovementState);
