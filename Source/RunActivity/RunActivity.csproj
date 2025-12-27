@@ -144,7 +144,7 @@
     <Compile Include="Viewer3D\ParticleEmitter.cs" />
     <Compile Include="Viewer3D\Popups\ActivityWindow.cs" />
     <Compile Include="Viewer3D\Popups\BrakeModeOptionsWindow.cs" />
-    <Compile Include="Viewer3D\Popups\AutoIncidentWindow.cs" />
+    <Compile Include="Viewer3D\Popups\FatalIncidentWindow.cs" />
     <Compile Include="Viewer3D\Popups\HeatingOptionsWindow.cs" />
     <Compile Include="Viewer3D\Popups\UnprotectedLvlCrossWindow.cs" />
     <Compile Include="Viewer3D\Popups\HelperSpeedSelectWindow.cs" />

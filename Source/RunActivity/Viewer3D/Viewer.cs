@@ -102,7 +102,7 @@ namespace Orts.Viewer3D
         public TTDetachWindow TTDetachWindow { get; private set; } // for detaching player train in timetable mode
         public PaxWindow PaxWindow { get; private set; }
         public DerailWindow DerailWindow { get; private set; } // Derail window
-        public AutoIncidentWindow AutoIncidentWindow { get; private set; } // Auto incident window
+        public FatalIncidentWindow FatalIncidentWindow { get; private set; } // Auto incident window
         public UnprotectedLvlCrossWindow UnprotectedLvlCrossWindow { get; private set; } // UnprotectedLvlCross window
         public HelperOptionsWindow HelperOptionsWindow { get; private set; } // Helper Options window
         public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
@@ -635,7 +635,7 @@ namespace Orts.Viewer3D
             TTDetachWindow = new TTDetachWindow(WindowManager);
             PaxWindow = new PaxWindow(WindowManager);
             DerailWindow = new DerailWindow(WindowManager);
-            AutoIncidentWindow = new AutoIncidentWindow(WindowManager);
+            FatalIncidentWindow = new FatalIncidentWindow(WindowManager);
             UnprotectedLvlCrossWindow = new UnprotectedLvlCrossWindow(WindowManager);
             HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
             HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
@@ -2085,7 +2085,7 @@ namespace Orts.Viewer3D
 
             //Simulator.CarCoupleMaxSpeedOvercome = false;
             // Icik
-            if ((!Simulator.CarIncident && (Simulator.CarCoupleMaxSpeedOvercome || Simulator.CarDerailed)) && !Simulator.Paused && !MPManager.IsMultiPlayer())
+            if ((Simulator.CarCoupleMaxSpeedOvercome || Simulator.CarDerailed) && !Simulator.Paused && !MPManager.IsMultiPlayer())
             {
                 if (!DerailWindow.Visible)
                 {
@@ -2098,17 +2098,18 @@ namespace Orts.Viewer3D
                 (PlayerLocomotive as MSTSLocomotive).PowerOn = false;
             }
 
-            if (Simulator.CarIncident && !Simulator.Paused && !MPManager.IsMultiPlayer())
+            if (Simulator.FatalIncidentInfo && !Simulator.Paused && !MPManager.IsMultiPlayer())
             {
-                if (!AutoIncidentWindow.Visible)
+                if (!FatalIncidentWindow.Visible)
                 {
                     SelectedTrain = PlayerTrain;
                     FrontCamera.Activate();
                     new UseFreeRoamCameraCommand(Log);
                 }
                 FreeRoamCamera.Activate();
-                AutoIncidentWindow.Visible = true;
+                FatalIncidentWindow.Visible = true;
                 (PlayerLocomotive as MSTSLocomotive).PowerOn = false;
+                (PlayerLocomotive as MSTSLocomotive).ThrottleToZero();
             }
 
             MouseState currentMouseState = Mouse.GetState();

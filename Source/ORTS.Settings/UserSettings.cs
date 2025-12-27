@@ -489,7 +489,7 @@ namespace ORTS.Settings
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_Derail { get; set; }
         [Default(new[] { 50, 25 })]
-        public int[] WindowPosition_AutoIncident { get; set; }
+        public int[] WindowPosition_FatalIncident { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_UnprotectedLvlCross { get; set; }
         [Default(new[] { 50, 25 })]

@@ -24,12 +24,12 @@ using System.Windows.Forms;
 
 namespace Orts.Viewer3D.Popups
 {
-    public class AutoIncidentWindow : Window
+    public class FatalIncidentWindow : Window
     {
         readonly Viewer Viewer;
 
-        public AutoIncidentWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 25, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency Event"))
+        public FatalIncidentWindow(WindowManager owner)
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 30, Window.DecorationSize.Y + owner.TextFontDefault.Height * 5, Viewer.Catalog.GetString("Emergency Event"))
         {
             Viewer = owner.Viewer;
         }
@@ -43,7 +43,7 @@ namespace Orts.Viewer3D.Popups
             var spacing = (heightForLabels - Owner.TextFontDefault.Height) / 2;
 
             vbox.AddSpace(0, spacing + 2);                        
-            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Train collision with a car! You caused an emergency event!", Application.ProductName), LabelAlignment.Center));                        
+            vbox.Add(MSG = new Label(vbox.RemainingWidth, Owner.TextFontDefault.Height, Viewer.Catalog.GetStringFmt("Train collision with a fatal obstacle! You caused an emergency event!", Application.ProductName), LabelAlignment.Center));                        
             vbox.AddSpace(0, spacing);
             vbox.AddSpace(0, spacing);
             vbox.AddHorizontalSeparator();

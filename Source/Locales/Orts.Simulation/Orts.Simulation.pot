@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-26 21:25:22+0100\n"
-"PO-Revision-Date: 2025-12-26 21:25:22+0100\n"
+"POT-Creation-Date: 2025-12-27 13:53:00+0100\n"
+"PO-Revision-Date: 2025-12-27 13:53:01+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -334,40 +334,40 @@ msgstr[0] ""
 msgstr[1] ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1146
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7114
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7121
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10417
 msgid "People are waiting for the door to open…"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1197
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7162
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7169
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10466
 msgid "Waiting for passengers to unboard...."
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1200
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7165
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7172
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10469
 msgid "Waiting for passengers to board...."
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1229
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7194
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7201
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10499
 msgid "Clear to go!"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1244
 #: ../../Orts.Simulation/Simulation/Activity.cs:1257
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7209
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7222
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7216
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7229
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10514
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10528
 msgid "Waiting for the permission...."
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1254
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7219
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7226
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10525
 msgid "Passenger boarding completed. Waiting for signal ahead to clear."
 msgstr ""
@@ -385,7 +385,7 @@ msgid "We're here, we can stop!"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Activity.cs:1177
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7151
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:7158
 #: ../../Orts.Simulation/Simulation/Timetables/TTTrain.cs:10455
 #, csharp-format
 msgid "Time to departure: {0:D2}:{1:D2}"
@@ -1420,16 +1420,16 @@ msgctxt "ARR speed minus"
 msgid "on"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2486
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2522
 msgid "Train can't be suspended with speed not equal 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2607
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2643
 msgid "To return to static train speed must be = 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:1031
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:4982
+#: ../../Orts.Simulation/Simulation/Simulator.cs:1037
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:4989
 #, csharp-format
 msgid ""
 "Player train has been included into train {0} service {1}, that automatically "
@@ -1509,110 +1509,110 @@ msgstr ""
 msgid "Turntable backward connected"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:5564
+#: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:5571
 #, csharp-format
 msgid ""
 "Join success: Train {0} service {1} has been incorporated into train {2} "
 "service {3}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2178
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2212
 msgid "Coupler broken!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2181
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2215
 msgid "Coupler overloaded!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2879
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:2914
 msgid ""
 "The steam usage has exceeded the capacity of the steam boiler. Steam boiler "
 "locked out."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7564
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7569
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7599
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:7604
 msgid "Other train is blocking path"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8437
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:8472
 msgid "Stopped due to errors in route setting"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9155
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10354
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9190
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10389
 msgid "No signal in train's path"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9163
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9198
 msgid "Next signal already allocated to other train"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9224
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9259
 msgid "Request to clear signal cannot be processed"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9361
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10507
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:9396
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10542
 msgid "No switch found"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10868
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10903
 msgid "You cannot enter manual mode when autopiloted"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10873
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10908
 msgid "You cannot use this command for pathless trains"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10886
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10921
 msgid "Train is not back on original route"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10895
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10930
 msgid ""
 "Original route is reverse from present direction, stop train before switching"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10916
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:10951
 msgid "Cannot change to Manual Mode while in Explorer Mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11004
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11039
 msgid "Reversal required and rear of train not on required route"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11276
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11311
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17928
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17963
 msgid "Passenger got out of the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:17997
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18032
 msgid ""
 "Passenger cannot board the train!!! All the cars on the train are occupied!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18025
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18060
 msgid "Passenger cannot board the train!!!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18064
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18099
 msgid "Passenger got in the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18233
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18268
 msgid "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18307
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18312
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18342
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18347
 msgid "Locomotive "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11760
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:11795
 #, csharp-format
 msgid "Train stopped due to problems with other train: train {0} , reason: {1}"
 msgstr ""

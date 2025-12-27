@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2025-12-26 21:25:23+0100\n"
-"PO-Revision-Date: 2025-12-26 21:25:24+0100\n"
+"POT-Creation-Date: 2025-12-27 13:53:02+0100\n"
+"PO-Revision-Date: 2025-12-27 13:53:02+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -601,22 +601,6 @@ msgstr ""
 msgid "Train: {0}"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:32
-#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:32
-msgid "Emergency Event"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:46
-msgid "Train collision with a car! You caused an emergency event!"
-msgstr ""
-
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:53
-#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:53
-#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:46
-#, csharp-format
-msgid "Quit {1} ({0})"
-msgstr ""
-
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:35
 msgid "Car Brake Mode"
 msgstr ""
@@ -997,8 +981,24 @@ msgstr ""
 msgid "Compose Message (e.g.   receiver1, receiver2: message body)"
 msgstr ""
 
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:32
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:32
+msgid "Emergency Event"
+msgstr ""
+
 #: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:46
 msgid "Train derailed! You caused an emergency event!"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:53
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:53
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:46
+#, csharp-format
+msgid "Quit {1} ({0})"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:46
+msgid "Train collision with a fatal obstacle! You caused an emergency event!"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HeatingOptionsWindow.cs:50

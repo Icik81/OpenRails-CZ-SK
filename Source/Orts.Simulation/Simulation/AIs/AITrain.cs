@@ -751,27 +751,34 @@ namespace Orts.Simulation.AIs
             {
                 savedActionInfo = nextActionInfo;
             }
-#endif            
+#endif                        
 
             if (TrainType == TRAINTYPE.AI_INCORPORATED || TrainType == TRAINTYPE.STATIC || MovementState == AI_MOVEMENT_STATE.SUSPENDED || MovementState == AI_MOVEMENT_STATE.FROZEN)
                 return;
             // Check if at stop point and stopped.
             //          if ((NextStopDistanceM < actClearance) || (SpeedMpS <= 0 && MovementState == AI_MOVEMENT_STATE.STOPPED))
             // <CSComment> TODO: next if block is in effect only a workaround due to OR braking physics not working well with AI trains
-            if (MovementState == AI_MOVEMENT_STATE.STOPPED || MovementState == AI_MOVEMENT_STATE.STATION_STOP || MovementState == AI_MOVEMENT_STATE.AI_STATIC ||
-                MovementState == AI_MOVEMENT_STATE.INIT_ACTION || MovementState == AI_MOVEMENT_STATE.HANDLE_ACTION)
+            
+            // Icik 
+            if (!FatalIncident && !NotFatalIncident)
             {
-                SpeedMpS = 0;
-                foreach (TrainCar car in Cars)
+                if (MovementState == AI_MOVEMENT_STATE.STOPPED || MovementState == AI_MOVEMENT_STATE.STATION_STOP || MovementState == AI_MOVEMENT_STATE.AI_STATIC ||
+                MovementState == AI_MOVEMENT_STATE.INIT_ACTION || MovementState == AI_MOVEMENT_STATE.HANDLE_ACTION)
                 {
-                    car.MotiveForceN = 0;
-                    car.TotalForceN = 0;
-                    car.SpeedMpS = 0;
-                }
+                    SpeedMpS = 0;
+                    foreach (TrainCar car in Cars)
+                    {
+                        car.MotiveForceN = 0;
+                        car.TotalForceN = 0;
+                        car.SpeedMpS = 0;
+                    }
 
-                AITrainThrottlePercent = 0;
-                AITrainBrakePercent = 100;
+                    AITrainThrottlePercent = 0;
+                    AITrainBrakePercent = 100;
+                }
             }
+            else
+                AITrainBrakePercent = 0;
 
             // update position, route clearance and objects
 

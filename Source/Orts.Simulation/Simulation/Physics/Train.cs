@@ -174,6 +174,11 @@ namespace Orts.Simulation.Physics
         public bool SteamGeneratorEnable;
         public float SteamGeneratorTempC;
         public float TrainStopAtLevelCrossTimer;
+        public bool FatalIncident;
+        public float FatalIncidentTimer;
+        public bool FatalIncidentRun;
+        public float NotFatalIncidentDistanceTravelled;
+        public bool NotFatalIncident;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -772,6 +777,11 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            FatalIncident = inf.ReadBoolean();
+            FatalIncidentRun = inf.ReadBoolean();
+            FatalIncidentTimer = inf.ReadSingle();
+            NotFatalIncident = inf.ReadBoolean();
+            NotFatalIncidentDistanceTravelled = inf.ReadSingle();
             TrainStopAtLevelCrossTimer = inf.ReadSingle();
             TrainEndOfRoute = inf.ReadBoolean();
             TrainIsDerailed = inf.ReadBoolean();
@@ -1161,6 +1171,11 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(FatalIncident);
+            outf.Write(FatalIncidentRun);
+            outf.Write(FatalIncidentTimer);
+            outf.Write(NotFatalIncident);
+            outf.Write(NotFatalIncidentDistanceTravelled);
             outf.Write(TrainStopAtLevelCrossTimer);
             outf.Write(TrainEndOfRoute);
             outf.Write(TrainIsDerailed);
@@ -2080,6 +2095,25 @@ namespace Orts.Simulation.Physics
                 // Set TotalForce at the start of each calculation cycle. This value is adjusted further through loop based upon forces acting on the train.
                 car.TotalForceN = car.MotiveForceN + car.GravityForceN;
 
+                // Fatalní incident - náraz 
+                if (FatalIncident)
+                {                                            
+                    FatalIncidentRun = true;
+                    car.MassKG = car.InitialMassKG / Simulator.Random.Next(5, 10);
+                    FatalIncidentTimer += elapsedClockSeconds;
+                    if (FatalIncidentTimer > 3.0f) // po 3 s tlačení se zobrazí info okno
+                        Simulator.FatalIncidentInfo = true;
+                }
+
+                // Nefatální incident - tlačení vlaku
+                if (NotFatalIncident)
+                {
+                    NotFatalIncidentDistanceTravelled += car.AbsSpeedMpS * elapsedClockSeconds;
+                    car.MassKG = car.InitialMassKG / Simulator.Random.Next(5, 10) * (1 - (NotFatalIncidentDistanceTravelled / (car.InitialMassKG / 50f))); // postupné snižování hmoty vozu při tlačení cca 1t na 20 m                   
+                    if (car.MassKG < 0.0f) // po vyčerpání hmoty překážka zmizí
+                        this.RemoveTrain();
+                }
+
                 massKg += car.MassKG;
                 //TODO: next code line has been modified to flip trainset physics in order to get viewing direction coincident with loco direction when using rear cab.
                 // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
@@ -2088,7 +2122,7 @@ namespace Orts.Simulation.Physics
                     car.TotalForceN = -car.TotalForceN;
                     car.SpeedMpS = -car.SpeedMpS;
                 }                
-
+                
                 // Icik                
                 if (!(car is MSTSLocomotive))
                 {
@@ -2096,7 +2130,7 @@ namespace Orts.Simulation.Physics
                     (car as MSTSWagon).AbsWheelSpeedMpS = Math.Abs((car as MSTSWagon).WheelSpeedMpS);
                 }
                 // Provede odraz vozů při prudkém najetí
-                if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain)
+                if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain && !Simulator.FatalIncident && !Simulator.NotFatalIncident)
                 {
                     if (Simulator.CarCoupleSpeedOvercome && !HasCarCoupleSpeed)
                     {
@@ -2129,7 +2163,7 @@ namespace Orts.Simulation.Physics
                         car.SpeedMpS = 0;
                         return;
                     }
-                }
+                }                
 
                 // Vyhodnocení selhání TM
                 if (!MPManager.IsMultiPlayer() && car.Train.IsActualPlayerTrain && car.CarIsPlayerLoco && car is MSTSDieselLocomotive && !(car as MSTSDieselLocomotive).DieselEngines[0].HasGearBox && (car as MSTSDieselLocomotive).PowerOn)
@@ -2234,8 +2268,9 @@ namespace Orts.Simulation.Physics
                 // To achieve the same result with other means, without flipping trainset physics, the line should be changed as follows:
                 //                 if (car1.Flipped)
                 if (car1.Flipped ^ (car1.IsDriveable && car1.Train.IsActualPlayerTrain && ((MSTSLocomotive)car1).UsingRearCab))
-                    car1.SpeedMpS = -car1.SpeedMpS;
-            }
+                    car1.SpeedMpS = -car1.SpeedMpS;                
+            }                        
+            
 #if DEBUG_SPEED_FORCES
             Trace.TraceInformation(" ========================= Train Speed #1 (Train.cs) ======================================== ");
             Trace.TraceInformation("Total Raw Speed {0} Train Speed {1}", SpeedMpS, SpeedMpS / Cars.Count);
@@ -2264,7 +2299,7 @@ namespace Orts.Simulation.Physics
             LastSpeedMpS = SpeedMpS;
             ProjectedSpeedMpS = SpeedMpS + 60 * AccelerationMpSpS.SmoothedValue;
             ProjectedSpeedMpS = SpeedMpS > float.Epsilon ?
-                Math.Max(0, ProjectedSpeedMpS) : SpeedMpS < -float.Epsilon ? Math.Min(0, ProjectedSpeedMpS) : 0;
+                Math.Max(0, ProjectedSpeedMpS) : SpeedMpS < -float.Epsilon ? Math.Min(0, ProjectedSpeedMpS) : 0;             
         }
 
         //================================================================================================//
@@ -5926,7 +5961,7 @@ namespace Orts.Simulation.Physics
             for (int iCar = 0; iCar < Cars.Count; iCar++)
             {                
                 var car = Cars[iCar];
-                
+
                 // AI vozy zůstanou stát při rozjezdu
                 if ((this is AITrain) && (this as AITrain).AIStayToRollOn)
                     car.TotalForceN = 0;

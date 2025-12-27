@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2025-12-26 21:25:23+0100\n"
-"PO-Revision-Date: 2025-12-26 21:26+0100\n"
+"POT-Creation-Date: 2025-12-27 13:53:02+0100\n"
+"PO-Revision-Date: 2025-12-27 13:53+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -614,22 +614,6 @@ msgstr "Událost: {0}"
 msgid "Train: {0}"
 msgstr "Vlak: {0}"
 
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:32
-#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:32
-msgid "Emergency Event"
-msgstr "Mimořádná událost"
-
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:46
-msgid "Train collision with a car! You caused an emergency event!"
-msgstr "Kolize vlaku s autem! Způsobili jste mimořádnou událost!"
-
-#: ../../RunActivity/Viewer3D/Popups/AutoIncidentWindow.cs:53
-#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:53
-#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:46
-#, csharp-format
-msgid "Quit {1} ({0})"
-msgstr "Ukončit {1} ({0})"
-
 #: ../../RunActivity/Viewer3D/Popups/BrakeModeOptionsWindow.cs:35
 msgid "Car Brake Mode"
 msgstr "Brzdový režim vozu"
@@ -1010,9 +994,25 @@ msgstr "Délka:"
 msgid "Compose Message (e.g.   receiver1, receiver2: message body)"
 msgstr "Sestavit zprávu (tj. příjemce 1, příjemce 2: text zprávy)"
 
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:32
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:32
+msgid "Emergency Event"
+msgstr "Mimořádná událost"
+
 #: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:46
 msgid "Train derailed! You caused an emergency event!"
 msgstr "Vlak vykolejil! Způsobili jste mimořádnou událost!"
+
+#: ../../RunActivity/Viewer3D/Popups/DerailWindow.cs:53
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:53
+#: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:46
+#, csharp-format
+msgid "Quit {1} ({0})"
+msgstr "Ukončit {1} ({0})"
+
+#: ../../RunActivity/Viewer3D/Popups/FatalIncidentWindow.cs:46
+msgid "Train collision with a fatal obstacle! You caused an emergency event!"
+msgstr "Kolize vlaku s fatální překážkou! Způsobili jste mimořádnou událost!"
 
 #: ../../RunActivity/Viewer3D/Popups/HeatingOptionsWindow.cs:50
 msgid "Set Temperature: "

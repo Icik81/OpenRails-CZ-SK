@@ -662,7 +662,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 loco.PressureConverterControllerValue = 0;
                 loco.PressureConverterFake = 0;
                 PressureConverterBase = 0;
-            }
+            }            
         }
 
         /// <summary>
@@ -820,8 +820,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (Car.MPBrakeCarModePL != BrakeCarModePL)
                     BrakeCarModePL = Car.MPBrakeCarModePL;
-            }
-            
+            }            
+
             // Ochrana proti NaN
             if (float.IsNaN(BrakeLine1PressurePSI))
             {

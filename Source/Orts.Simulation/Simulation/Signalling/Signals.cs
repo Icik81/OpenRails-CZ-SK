@@ -6344,9 +6344,9 @@ namespace Orts.Simulation.Signalling
 #endif
 
             // Icik
-            // Netvoří blokaci úseku, pokud je na kolejích servis AUTO
-            if (thisTrain.Train.Name.ToLower().Contains("servis") && thisTrain.Train.Name.ToLower().Contains("auto")) return;
-            
+            // Netvoří blokaci úseku, pokud je na kolejích servis FATAL
+            if (thisTrain.Train.Name.ToLower().Contains("servis") && thisTrain.Train.Name.ToLower().Contains("fatal")) return;            
+
             if (thisTrain.Train.CheckTrain)
             {
                 File.AppendAllText(@"C:\temp\checktrain.txt",

@@ -1246,7 +1246,7 @@ namespace Orts.Simulation.RollingStocks
                         if (BrakeSystem.TwoStateBrake)
                             MaxBrakeForceN = BrakeSystem.DebugKoef * BrakeSystem.BrakeMassKG_TwoStateBrake * 9.964016384f * 0.31f;
                     }
-                }
+                }                
                 if (WagonType == WagonTypes.Engine || WagonType == WagonTypes.Unknown)    //  Lokomotivy a ostatní
                 {
                     switch (BrakeSystem.BrakeCarMode)
@@ -1303,8 +1303,8 @@ namespace Orts.Simulation.RollingStocks
                         MaxHandbrakeForceN = 0.04f * MassKG * 9.81f;
                     else
                         MaxHandbrakeForceN = 0.1f * MassKG * 9.81f;
-                }                
-
+                }
+                
                 // Initialise ambient temperatures on first initial loop, then ignore
                 if (!AmbientTemperatureInitialised)
                 {
