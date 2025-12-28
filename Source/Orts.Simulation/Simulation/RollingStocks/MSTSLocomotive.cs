@@ -8434,7 +8434,7 @@ namespace Orts.Simulation.RollingStocks
                     DynamicBrakeController.Update(elapsedClockSeconds);
 
                 // Kombinovaný režim - pokud je pákou na nule a EDB je zapnutá, tak EDB zanikne
-                if (Combined_control && DynamicBrakeIntervention == -1 && DynamicBrakeController.CurrentValue == 0 && EDBOn) DynamicBrakePercent = -1;
+                if (Combined_control && DynamicBrakeIntervention == -1 && DynamicBrakeController != null && DynamicBrakeController.CurrentValue == 0 && EDBOn) DynamicBrakePercent = -1;
             }
             else if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && DynamicBrakeIntervention < 0 && DynamicBrakePercent < 0 && DynamicBrake)
             {
