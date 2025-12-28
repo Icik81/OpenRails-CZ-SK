@@ -526,9 +526,10 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 
 	float AmbientLightCoef = 1.0;
 	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
+	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
 
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef;
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.75;
 	
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -597,9 +598,10 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 
 	float AmbientLightCoef = 1.0;
 	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
+	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
 
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef;
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.75;
 
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
