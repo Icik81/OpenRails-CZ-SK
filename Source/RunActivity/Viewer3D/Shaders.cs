@@ -1051,7 +1051,7 @@ namespace Orts.Viewer3D
             float CabnightColorModifierNightReference = 0.35f;
             
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierNightReference = 0.40f;
+                CabnightColorModifierNightReference = 0.60f;
 
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory || Program.Viewer.PlayerLocomotive.HasCabLightDirectory || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
             {
