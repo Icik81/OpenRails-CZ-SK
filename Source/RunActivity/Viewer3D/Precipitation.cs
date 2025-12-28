@@ -48,8 +48,7 @@ namespace Orts.Viewer3D
         readonly PrecipitationPrimitive Pricipitation;
         readonly PrecipitationPrimitive Pricipitation2;
         readonly PrecipitationPrimitive Pricipitation3;
-        readonly PrecipitationPrimitive Pricipitation4;
-        readonly PrecipitationPrimitive Pricipitation5;        
+        readonly PrecipitationPrimitive Pricipitation4;             
 
         Vector3 Wind;
 
@@ -63,8 +62,7 @@ namespace Orts.Viewer3D
             Pricipitation = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
             Pricipitation2 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
             Pricipitation3 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
-            Pricipitation4 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
-            Pricipitation5 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);
+            Pricipitation4 = new PrecipitationPrimitive(Viewer.GraphicsDevice, viewer);            
 
             Wind = new Vector3(0, 0, 0);
             Reset();
@@ -89,11 +87,9 @@ namespace Orts.Viewer3D
                 Pricipitation3.DynamicUpdate3(WeatherControl, Weather, Viewer, ref Wind);
                 Pricipitation3.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
                 Pricipitation4.DynamicUpdate4(WeatherControl, Weather, Viewer, ref Wind);
-                Pricipitation4.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
-                Pricipitation5.DynamicUpdate5(WeatherControl, Weather, Viewer, ref Wind);
-                Pricipitation5.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);
+                Pricipitation4.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 / 100f, Viewer);                
             }
-
+            
             // Note: This is quite a hack. We ideally should be able to pass this through RenderItem somehow.
             var XNAWorldLocation = Matrix.Identity;
             XNAWorldLocation.M11 = gameTime;
@@ -103,11 +99,10 @@ namespace Orts.Viewer3D
             frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
             frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
 
-            //if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
+            if (Viewer.Simulator.WeatherType == Formats.Msts.WeatherType.Snow)
             {
                 frame.AddPrimitive(Material, Pricipitation3, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
-                frame.AddPrimitive(Material, Pricipitation4, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
-                frame.AddPrimitive(Material, Pricipitation5, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+                frame.AddPrimitive(Material, Pricipitation4, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);                
             }
         }
 
@@ -122,8 +117,7 @@ namespace Orts.Viewer3D
             Pricipitation.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             Pricipitation2.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
             Pricipitation3.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
-            Pricipitation4.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
-            Pricipitation5.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);
+            Pricipitation4.Initialize(Viewer.Simulator.WeatherType, Wind, Weather);            
             // Camera is null during first initialisation.
             if (Viewer.Camera != null) Pricipitation.Update(gameTime, null, Weather.PricipitationIntensityPPSPM2, Viewer);
         }
@@ -206,7 +200,7 @@ namespace Orts.Viewer3D
 
         float ParticlesToEmit;
         float TimeParticlesLastEmitted;
-        int DrawCounter;
+        int DrawCounter;        
 
         public PrecipitationPrimitive(GraphicsDevice graphicsDevice, Viewer viewer)
         {
@@ -359,7 +353,7 @@ namespace Orts.Viewer3D
         {
             //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - SnowVelocityMpS) * weather.PrecipitationLiquidity + SnowVelocityMpS) / ParticleVelocityFactor;
-            wind.X = 18 * weather.PrecipitationLiquidity + 2;
+            wind.X = 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(1, 4);
             ParticleDirection = wind;
         }
 
@@ -368,7 +362,7 @@ namespace Orts.Viewer3D
             //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
             float snowVelocityMpS = SnowVelocityMpS * 0.75f;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;                        
-            wind.X = 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(-2, 3);
+            wind.X = 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(1, 4);
             ParticleDirection = wind;
         }
 
@@ -377,7 +371,7 @@ namespace Orts.Viewer3D
             //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
             float snowVelocityMpS = SnowVelocityMpS * 0.50f;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
-            wind.X *= -1f;
+            wind.X *= 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(1, 4); 
             ParticleDirection = wind;
         }
 
@@ -386,20 +380,10 @@ namespace Orts.Viewer3D
             //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
             float snowVelocityMpS = SnowVelocityMpS * 0.35f;
             ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
-            wind.X *= -1f;
-            ParticleDirection = wind;
-        }
-        public void DynamicUpdate5(WeatherControl weatherControl, Weather weather, Viewer viewer, ref Vector3 wind)
-        {
-            //if (weather.PrecipitationLiquidity == 0 || weather.PrecipitationLiquidity == 1) return;
-            float snowVelocityMpS = SnowVelocityMpS * 0.25f;
-            ParticleDuration = ParticleBoxHeightMDynamic / ((RainVelocityMpS - snowVelocityMpS) * weather.PrecipitationLiquidity + snowVelocityMpS) / ParticleVelocityFactor;
-            wind.X *= -1f;
+            wind.X *= 18 * weather.PrecipitationLiquidity + Simulator.Random.Next(1, 4);
             ParticleDirection = wind;
         }
 
-        float SnowFallChangeChaosTimer;
-        float StartTimeChaosX;
         public void Update(float currentTime, ElapsedTime elapsedTime, float particlesPerSecondPerM2, Viewer viewer)
         {
             var tiles = viewer.Tiles;
@@ -445,23 +429,11 @@ namespace Orts.Viewer3D
 
                     var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
                     var particle = (FirstFreeParticle + 1) % MaxParticles;
-                    var vertex = particle * VerticiesPerParticle;
-
-                    SnowFallChangeChaosTimer += viewer.Simulator.OneSecondLoop;
-                    if (SnowFallChangeChaosTimer < 0.5f)
-                        StartTimeChaosX = -10f;
-                    else
-                        StartTimeChaosX = 10f;
-                    if (SnowFallChangeChaosTimer > 1.0f)
-                        SnowFallChangeChaosTimer = 0f;
-
-                    if (viewer.Simulator.Weather.PrecipitationLiquidity > 0.5f)
-                        StartTimeChaosX = 0f;
-
+                    var vertex = particle * VerticiesPerParticle;                    
+                    
                     for (var j = 0; j < VerticiesPerParticle; j++)
                     {
-                        Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);
-                        Vertices[vertex + j].StartPosition_StartTime.X += StartTimeChaosX;
+                        Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);                        
                         Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;                        
                         Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
                         Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
