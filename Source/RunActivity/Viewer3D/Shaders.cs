@@ -320,7 +320,7 @@ namespace Orts.Viewer3D
                     case 9: NightBrightness = 0.90f; break;
                     case 10: NightBrightness = 1.00f; break;
                 }
-                NightBrightnessValue = NightBrightness;
+                NightBrightnessValue = NightBrightness * 1.5f;
                 NightBrightnessSet = true;
                 Program.Simulator._NightBrightnessValue = (float)NightBrightnessValue;
             }            
