@@ -1102,7 +1102,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
         public float LoadSMCoef
         {
             get
-            {                
+            {
+                if (EngineStatus != Status.Running) return 0;
                 float LoadSM;
                 float LoadEDB = 0;
                 float MaxLoadSM;

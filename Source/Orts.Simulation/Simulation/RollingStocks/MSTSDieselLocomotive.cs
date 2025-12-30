@@ -641,7 +641,7 @@ namespace Orts.Simulation.RollingStocks
                 
                 if (DieselEngines.Count > 1)                
                     AvailableSMPowerW += DieselEngines.DEList[1].CurrentDieselInputPowerW - (DieselEngines.DEList[1].LoadSMCoef * DieselEngines.DEList[1].MaximumDieselPowerW);
-
+               
                 if (AvailableSMPowerW < 0) AvailableSMPowerW = 0;
 
                 // Alternátor
@@ -718,10 +718,7 @@ namespace Orts.Simulation.RollingStocks
                 else
                 {                                                                                               
                     // Skutečný výkon počítaný zadanou křivkou síly a rychlosti
-                    maxPowerW = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * AbsTractionSpeedMpS;                    
-
-                    if (DieselEngines.Count > 1)
-                        maxPowerW += TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * AbsTractionSpeedMpS;
+                    maxPowerW = TractiveForceCurves.Get(LocomotiveApparentThrottleSetting, AbsTractionSpeedMpS) * AbsTractionSpeedMpS * DieselEngineFractionPower;                                        
 
                     if (AvailableSMPowerW < maxPowerW)
                     {
@@ -736,7 +733,7 @@ namespace Orts.Simulation.RollingStocks
 
                     // Ohraničení trakční síly dle vstupního výkonu motoru
                     if (TractiveForceN * AbsTractionSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
-                        TractiveForceN = (0.88f * maxPowerW) / AbsTractionSpeedMpS;
+                        TractiveForceN = maxPowerW / AbsTractionSpeedMpS;
                 }
 
                 // Redukce výkonu na různých faktorech
