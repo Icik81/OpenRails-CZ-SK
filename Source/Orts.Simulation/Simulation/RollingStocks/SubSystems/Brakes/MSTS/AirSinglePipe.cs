@@ -3878,7 +3878,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         train.EqualReservoirPressurePSIorInHg += lead.TrainBrakeController.QuickReleaseRatePSIpS * SumQRe * elapsedClockSeconds;
                     if (train.EqualReservoirPressurePSIorInHg > lead.MainResPressurePSI)
                         train.EqualReservoirPressurePSIorInHg = lead.MainResPressurePSI;
-                    if (lead.JVSetup) train.EqualReservoirPressurePSIorInHg = MathHelper.Clamp(train.EqualReservoirPressurePSIorInHg, 0, lead.BrakeSystem.maxPressurePSI0);
+                    //if (lead.JVSetup) train.EqualReservoirPressurePSIorInHg = MathHelper.Clamp(train.EqualReservoirPressurePSIorInHg, 0, lead.BrakeSystem.maxPressurePSI0);
                 }
                 if (lead.BrakeSystem.Emergency)
                 {
