@@ -1134,6 +1134,25 @@ namespace Orts.Simulation
             }
         }
 
+        public void SetStaticLocos(Train train)
+        {
+            if (train.TrainType == Train.TRAINTYPE.STATIC && train.Cars.Count < 3)
+            {
+                for (int i = 0; i < train.Cars.Count; i++)
+                {
+                    if (train.Cars[i].IsDriveable)
+                    {
+                        train.Cars[i].BrakeSystem.FrontBrakeHoseConnected = false;
+                        train.Cars[i].BrakeSystem.FrontBrakeHoseConnected = false;
+                        train.Cars[i].BrakeSystem.AngleCockBOpen = false;
+                        train.Cars[i].BrakeSystem.AngleCockAOpen = false;
+                        train.Cars[i].StaticSet = true;
+                    }
+                }
+            }
+        }
+
+
         // Icik       
         public bool CarByUserUncoupled;
         public float DifferenceSpeedMpS;
@@ -1222,7 +1241,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
-
+                            SetStaticLocos(train);
                             CouplingAction = true;
                             return;
                         }
@@ -1257,7 +1276,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
-
+                            SetStaticLocos(train);
                             CouplingAction = true;
                             return;
                         }
@@ -1296,7 +1315,7 @@ namespace Orts.Simulation
                                         train.Cars[i].StaticSet = true;
                                     }                                    
                                 }
-
+                                SetStaticLocos(train);
                                 CouplingAction = true;
                             }
                             else
@@ -1324,7 +1343,7 @@ namespace Orts.Simulation
                                         train.Cars[i].StaticSet = true;
                                     }                                    
                                 }
-
+                                SetStaticLocos(train);
                                 CouplingAction = true;
                             }
                             return;
@@ -1362,7 +1381,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
-
+                            SetStaticLocos(train);
                             CouplingAction = true;
                             return;
                         }                                            
@@ -1459,6 +1478,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
+                            SetStaticLocos(train);
                             return;
                         }                        
                         
@@ -1545,7 +1565,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
-
+                            SetStaticLocos(train);
                             return;
                         }                        
                         UpdateUncoupled(drivenTrain, train, d1, d2, false);
@@ -1663,6 +1683,7 @@ namespace Orts.Simulation
                                         train.Cars[i].StaticSet = true;
                                     }                                    
                                 }
+                                SetStaticLocos(train);
                             }
                             else
                             {                                                                
@@ -1692,6 +1713,7 @@ namespace Orts.Simulation
                                         train.Cars[i].StaticSet = true;
                                     }                                    
                                 }
+                                SetStaticLocos(train);
                             }
                             return;
                         }
@@ -1779,7 +1801,7 @@ namespace Orts.Simulation
                                     train.Cars[i].StaticSet = true;
                                 }                                
                             }
-
+                            SetStaticLocos(train);
                             return;
                         }                        
                         UpdateUncoupled(drivenTrain, train, d1, d2, true);

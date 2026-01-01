@@ -260,7 +260,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.Weather.FogDistance = Program.Simulator.FogDistanceFinal;                    
             }
             else
-            {                   
+            {                
                 // Ranní mlha
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
                 {                    
@@ -277,8 +277,7 @@ namespace Orts.Viewer3D
                     
                         Program.Simulator.FogDistanceFinal = MorningFogDistance;
                         Program.Simulator.MorningFogRun = true;                        
-                    }                    
-                    //Program.Simulator.HeightFalloffFinal = Program.Simulator.ChanceToMorningFog / 100f;
+                    }                                        
                 }
                 else
                 {
@@ -288,18 +287,12 @@ namespace Orts.Viewer3D
                         LastStateFogDistanceFinal = -1;
                     }
                     if (Program.Simulator.Weather.FogDistance < 1.01f * Program.Simulator.FogDistanceFinal && Program.Simulator.Weather.FogDistance > 0.99f * Program.Simulator.FogDistanceFinal)
-                        Program.Simulator.MorningFogRun = false;
-                    
-                    //if (Program.Simulator.WeatherAdv != 7)
-                    //    Program.Simulator.HeightFalloffFinal = Program.Simulator.ChanceToMorningFog / 200f;
+                        Program.Simulator.MorningFogRun = false;                                       
                 }                
             }
 
             // Nastaví parametry mlhy            
             Program.Simulator.GlobalDensity = MathHelper.Clamp(10 * Program.Simulator.HeightFalloff, 3, 10);
-            //Program.Simulator.HeightFalloffFinal = 1.0f;
-            //Program.Simulator.GroundLevel = 250;            
-            //Program.Simulator.Confirmer.MSG4("HeightFalloff: " + Program.Simulator.HeightFalloff + "    GroundLevel: " + Program.Simulator.GroundLevel + "    GlobalDensity: " + Program.Simulator.GlobalDensity);
 
             // Mění intenzitu okolního světla v závislosti na zatažení oblohy
             Program.Simulator.OvercastAmbientLightCoef = 1.0f - (Program.Simulator.Weather.OvercastFactor / 3.0f);

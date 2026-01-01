@@ -2598,15 +2598,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (EngineStatus != Status.Stopped)
             {
                 DemandedRPM = 0;
-                EngineStatus = Status.Stopping;
-                if (RealRPM <= 0)
-                    EngineStatus = Status.Stopped;                
-                
-                if (locomotive.DieselEngines.DieselEngine1 && !RPMOverkill)
-                    locomotive.SignalEvent(Event.EnginePowerOff);
-                
-                if (locomotive.DieselEngines.DieselEngine2 && !RPMOverkill)
-                    locomotive.SignalEvent(Event.EnginePowerOff2);
+                if (!locomotive.CarIsPlayerLoco && RealRPM > IdleRPM)
+                    EngineStatus = Status.Stopping;
+                else
+                {
+                    EngineStatus = Status.Stopping;
+                    if (RealRPM <= 0)
+                        EngineStatus = Status.Stopped;
+
+                    if (locomotive.DieselEngines.DieselEngine1 && !RPMOverkill)
+                        locomotive.SignalEvent(Event.EnginePowerOff);
+
+                    if (locomotive.DieselEngines.DieselEngine2 && !RPMOverkill)
+                        locomotive.SignalEvent(Event.EnginePowerOff2);
+                }
             }
             return EngineStatus;
         }

@@ -113,7 +113,10 @@ namespace Orts.Viewer3D
                 // Určení počáteční ground level pro simulátor
                 if (Program.Simulator.GroundLevelFinal == -1)
                 {
-                    Program.Simulator.GroundLevelFinal = AttachedCar.WorldPosition.Location.Y;
+                    if (Program.Simulator.WeatherChangesPresent)
+                        Program.Simulator.GroundLevelFinal = AttachedCar.WorldPosition.Location.Y + 100;
+                    else                    
+                        Program.Simulator.GroundLevelFinal = AttachedCar.WorldPosition.Location.Y;                    
                     Program.Simulator.GroundLevel = Program.Simulator.GroundLevelFinal;
                 }
 

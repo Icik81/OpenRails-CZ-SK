@@ -803,7 +803,7 @@ namespace Orts.Simulation.RollingStocks
                 MaxRPM = DieselEngines[0].MaxRPM;
 
             EngineRPM = Variable2 * (MaxRPM - IdleRPM) + IdleRPM;
-
+            
             Variable4 = (float)Math.Round(DieselEngines[0].RealRPM);
             Variable6 = (float)Math.Round(DieselEngines[0].LoadPercent);
             Variable7 = (float)Math.Round(DieselEngines[0].TurboLoad);

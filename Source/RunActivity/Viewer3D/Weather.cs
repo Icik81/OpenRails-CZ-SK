@@ -1560,11 +1560,15 @@ namespace Orts.Viewer3D
                     if (fogDensityTimer <= 0) fogDensityTimer = 0;
                     else wChangeOn = true;
                     if (!fogDensityDistanceIncreasing)
+                    {
                         Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(ORTSFogDensity - fogDensityTimer * fogDensityTimer * fogDensityChangeRate, 0.001f, 1.0f);
+                        Program.Simulator.HeightFalloff = Program.Simulator.HeightFalloffFinal;
+                    }
                     else
                     {
                         var fogDensityTimerDifference = ORTSFogDensityTransitionTimeS - fogDensityTimer;
                         Program.Simulator.HeightFalloffFinal = MathHelper.Clamp(ORTSFogDensity - fogDensityTimerDifference * fogDensityTimerDifference * fogDensityChangeRate, 0.001f, 1.0f);
+                        Program.Simulator.HeightFalloff = Program.Simulator.HeightFalloffFinal;
                     }
                     if (fogDensityTimer == 0) ORTSFogDensity = -1;
                 }
@@ -1574,11 +1578,15 @@ namespace Orts.Viewer3D
                     if (fogGroundLevelTimer <= 0) fogGroundLevelTimer = 0;
                     else wChangeOn = true;
                     if (!fogGroundLevelDistanceIncreasing)
+                    {
                         Program.Simulator.GroundLevelFinal = MathHelper.Clamp(ORTSFogGroundLevel - fogGroundLevelTimer * fogGroundLevelTimer * fogGroundLevelChangeRate, 0.1f, 1000.0f);
+                        Program.Simulator.GroundLevel = Program.Simulator.GroundLevelFinal;
+                    }
                     else
                     {
                         var fogGroundLevelTimerDifference = ORTSFogGroundLevelTransitionTimeS - fogGroundLevelTimer;
                         Program.Simulator.GroundLevelFinal = MathHelper.Clamp(ORTSFogGroundLevel - fogGroundLevelTimerDifference * fogGroundLevelTimerDifference * fogGroundLevelChangeRate, 0.1f, 1000.0f);
+                        Program.Simulator.GroundLevel = Program.Simulator.GroundLevelFinal;
                     }
                     if (fogGroundLevelTimer == 0) ORTSFogGroundLevel = -1;
                 }
