@@ -384,6 +384,7 @@ namespace Orts.Viewer3D
             ParticleDirection = wind;
         }
 
+        private Vector3 lastCameraPosition;
         public void Update(float currentTime, ElapsedTime elapsedTime, float particlesPerSecondPerM2, Viewer viewer)
         {
             var tiles = viewer.Tiles;
@@ -417,25 +418,40 @@ namespace Orts.Viewer3D
             var numParticlesAdded = 0;
             var numToBeEmitted = (int)ParticlesToEmit;
             var numCanBeEmitted = GetCountFreeParticles();
-            var numToEmit = Math.Min(numToBeEmitted, numCanBeEmitted);
+            var numToEmit = Math.Min(numToBeEmitted, numCanBeEmitted);            
 
             if (!viewer.Simulator.Paused)
             {
+                // Aktuální pozice kamery v absolutních souøadnicích 
+                Matrix invView = Matrix.Invert(viewer.Camera.XnaView);
+                Vector3 currentCameraPosition = invView.Translation;
+
+                float deltaTime = elapsedTime.ClockSeconds;
+                if (deltaTime <= 0) deltaTime = 0.016f;
+
+                // Výpoèet rychlosti kamery (smìr a velikost v m/s)
+                Vector3 cameraVelocity = (currentCameraPosition - lastCameraPosition) / deltaTime;                
+                lastCameraPosition = currentCameraPosition;
+
                 for (var i = 0; i < numToEmit; i++)
                 {
                     var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
                     temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
-                    var position = new WorldPosition(temp);
+                    var position = new WorldPosition(temp);                    
 
                     var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
                     var particle = (FirstFreeParticle + 1) % MaxParticles;
-                    var vertex = particle * VerticiesPerParticle;                    
-                    
+                    var vertex = particle * VerticiesPerParticle;
+
+                    // windEffect táhne vloèky opaèným smìrem, než kam letí kamera                   
+                    Vector3 windEffect = -cameraVelocity * ParticleDuration;
+
                     for (var j = 0; j < VerticiesPerParticle; j++)
                     {
-                        Vertices[vertex + j].StartPosition_StartTime = new Vector4(position.XNAMatrix.Translation - ParticleDirection * ParticleDuration, time);                        
+                        Vector3 startPos = position.XNAMatrix.Translation - (ParticleDirection * ParticleDuration);
+                        Vertices[vertex + j].StartPosition_StartTime = new Vector4(startPos, time);
                         Vertices[vertex + j].StartPosition_StartTime.Y += ParticleBoxHeightMDynamic;                        
-                        Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation, time + ParticleDuration);
+                        Vertices[vertex + j].EndPosition_EndTime = new Vector4(position.XNAMatrix.Translation + windEffect, time + ParticleDuration);
                         Vertices[vertex + j].TileXZ_Vertex = new Vector4(position.TileX, position.TileZ, j, 0);
                     }
 

@@ -80,7 +80,7 @@ VERTEX_OUTPUT VSPrecipitation(in VERTEX_INPUT In)
 	
 	In.StartPosition_StartTime.xyz = lerp(In.StartPosition_StartTime.xyz, In.EndPosition_EndTime.xyz, age);
 	In.StartPosition_StartTime.xz += (cameraTileXZ - In.TileXZ_Vertex.xy) * float2(-2048, 2048);
-	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.015;
+	In.StartPosition_StartTime.xyz += right * offsets[vertIdx].x * particleSize * 0.010;
 	In.StartPosition_StartTime.xyz += up * offsets[vertIdx].y * particleSize * 0.075;
 	
 	// posuò èástice dolù 
