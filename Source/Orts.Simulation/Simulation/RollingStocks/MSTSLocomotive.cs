@@ -3777,15 +3777,12 @@ namespace Orts.Simulation.RollingStocks
         // Icik
         // Definice ochran lokomotiv        
         public void Overcurrent_Protection()
-        {
-            if (LocoType == LocoTypes.Vectron || Train.NoSpeedLimit || JVSetup)
-                return;            
-
+        {                            
             if (MaxCurrentA > 0 && (this is MSTSElectricLocomotive || this is MSTSDieselLocomotive))  // Zohlední jen elektrické a dieselelektrické lokomotivy
             {
                 // Nadproudová ochrana                        
-                if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA / 1.2f;
-                if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA / 1.2f;
+                if (MaxCurrentPower == 0) MaxCurrentPower = MaxCurrentA;
+                if (MaxCurrentBrake == 0) MaxCurrentBrake = MaxCurrentA;
 
                 if (float.IsInfinity(PowerCurrent1) || float.IsNaN(BrakeCurrent1))
                     return;
