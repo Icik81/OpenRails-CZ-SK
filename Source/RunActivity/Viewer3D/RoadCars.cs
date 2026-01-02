@@ -225,7 +225,8 @@ namespace Orts.Viewer3D
 
         // Icik
         int TypeGenCount = 5;
-        int TypeGenNr = 0;
+        int TypeGenNr1 = 0;
+        int TypeGenNr2 = 0;
         int LastType;
         int TypeGenChanceToRelease;
 
@@ -247,18 +248,22 @@ namespace Orts.Viewer3D
                 if (TypeGenChanceToRelease == 0) goto SkipRepeatGen;
             }
             else
-                goto RepeatGen;
+            {
+                TypeGenNr1++;
+                if (Spawner.Cars.Count > 1 && TypeGenNr1 < TypeGenCount)
+                    goto RepeatGen;                 
+            }
+            TypeGenNr1 = 0;
 
             if (Length > 5)
             {
-                TypeGenNr++;
-                if (TypeGenNr < TypeGenCount)                
+                TypeGenNr2++;
+                if (Spawner.Cars.Count > 1 && TypeGenNr2 < TypeGenCount)                
                     goto RepeatGen;                
                 else
-                    TypeGenNr = 0;
+                    TypeGenNr2 = 0;
             }
-            else
-                TypeGenNr = 0;
+            TypeGenNr2 = 0;
 
          SkipRepeatGen:
 
