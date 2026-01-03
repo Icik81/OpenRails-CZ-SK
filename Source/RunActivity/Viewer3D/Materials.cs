@@ -612,38 +612,14 @@ namespace Orts.Viewer3D
                     SceneryShader.SetHeadlightOff();
                 else
                 {
-                    // Icik
-                    if (Viewer.Simulator.CabInDarkTunnel || Viewer.Simulator.CarInDarkTunnel)
-                    {
-                        if (clampValue < 2.5f)
-                            clampValue += 0.01f;
-                        else if (clampValue > 2.5f)
-                            clampValue -= 0.01f;
-                        distance = lightDrawer.LightConeDistance; // and max distance
-                    }
-                    else if (sunDirection.Y <= -0.05)
-                    {
-                        if (clampValue < 1.0f)
-                            clampValue += 0.01f;
-                        else if (clampValue > 1.0f)
-                            clampValue -= 0.01f;
-                        //clampValue = 1; // at nighttime max headlight
-                        distance = lightDrawer.LightConeDistance; // and max distance
-                    }
-                    else if (sunDirection.Y >= 0.15)
-                    {
-                        if (clampValue < 0.1f)
-                            clampValue += 0.03f;
-                        else if (clampValue > 0.1f)
-                            clampValue -= 0.03f;
-                        //clampValue = 0.5f; // at daytime min headlight                        
-                        distance = lightDrawer.LightConeDistance * 1.0f; // and min distance
-                    }
-                    else
-                    {
-                        clampValue = 1 - 2.5f * (sunDirection.Y + 0.05f); // in the meantime interpolate
-                        distance = lightDrawer.LightConeDistance * (1 - 4.5f * (sunDirection.Y + 0.05f)); //ditto
-                    }
+                    // Icik                    
+                    double AmbientLightCoef = Math.Pow((1 - Program.Simulator.FullBrightness) * 1.5f, 2.0f);
+                    AmbientLightCoef = MathHelper.Clamp((float)AmbientLightCoef, 0, 2.5f);
+                    if (clampValue * 1.01f < AmbientLightCoef)
+                        clampValue += 0.01f;
+                    else if (clampValue * 0.99f > AmbientLightCoef)
+                        clampValue -= 0.01f;                                       
+                    distance = lightDrawer.LightConeDistance; // and min distance                                                              
                     SceneryShader.SetHeadlight(ref lightDrawer.LightConePosition, ref lightDrawer.LightConeDirection, distance, lightDrawer.LightConeMinDotProduct, (float)(Viewer.Simulator.GameTime - fadeStartTimer), fadeDuration, clampValue, ref lightDrawer.LightConeColor);
                 }
             }

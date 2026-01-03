@@ -275,6 +275,7 @@ namespace Orts.Simulation
         public float SeasonAmbientLightCoef;
         public float DayTimeAmbientLightCoef;
         public float OvercastAmbientLightCoef;
+        public float FullBrightness;
         public float FogDistanceFinal;
         public float FogDistanceFinalBase;
         public float TimeSpeedCoef;
