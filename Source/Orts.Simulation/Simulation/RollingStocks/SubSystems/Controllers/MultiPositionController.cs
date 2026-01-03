@@ -417,7 +417,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
             if (!haveCruiseControl || !ccAutoMode)
             {
-                if (controllerPosition == ControllerPosition.ThrottleIncrease && Locomotive.Direction != ORTS.Common.Direction.N)
+                if (controllerPosition == ControllerPosition.ThrottleIncrease /*&& Locomotive.Direction != ORTS.Common.Direction.N*/)
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
@@ -456,7 +456,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     }
                 }
-                if (controllerPosition == ControllerPosition.ThrottleIncreaseFast && Locomotive.Direction != ORTS.Common.Direction.N)
+                if (controllerPosition == ControllerPosition.ThrottleIncreaseFast /*&& Locomotive.Direction != ORTS.Common.Direction.N*/)
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
