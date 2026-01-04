@@ -9653,7 +9653,7 @@ namespace Orts.Simulation.Physics
                 TrackCircuitSection reqSection = signalRef.TrackCircuitList[thisObject.TCReference];
                 float speedLimitDistance = reqSection.GetDistanceBetweenObjects(thisElement.TCSectionIndex, reverseOffset, thisElement.Direction,
                     thisObject.TCReference, thisObject.TCOffset);
-                if (speedLimitDistance > Length)
+                if (speedLimitDistance > Length || speedLimitDistance == -1)
                 {
                     limitAlongTrain = false;
                 }
