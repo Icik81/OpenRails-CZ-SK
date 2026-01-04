@@ -44,6 +44,7 @@ using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using static Orts.Simulation.RollingStocks.MSTSControlUnit;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using static Orts.Viewer3D.SkyViewer;
 using Event = Orts.Common.Event;
@@ -964,7 +965,7 @@ namespace Orts.Viewer3D.RollingStock
             }
 
             // Ovládání společného tlačítka startu motoru
-            if ((Locomotive as MSTSDieselLocomotive) != null && Locomotive.SwitchEngineEnable)
+            if (((Locomotive as MSTSDieselLocomotive) != null || (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)) && Locomotive.SwitchEngineEnable)
             {
                 if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
                 {
@@ -974,7 +975,96 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.StopButtonPressed2 = false;
                 }
 
-                if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                if (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)
+                {
+                    var PU = (Locomotive as MSTSControlUnit).PowerControlUnit;
+                    if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                            && !Locomotive.StopButtonPressed)
+                            Locomotive.StartButtonPressed = true;
+
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && !Locomotive.StartButtonPressed)
+                            Locomotive.StopButtonPressed = true;
+                    }
+                    if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && !Locomotive.StopButtonPressed2)
+                            Locomotive.StartButtonPressed2 = true;
+
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && !Locomotive.StartButtonPressed2)
+                            Locomotive.StopButtonPressed2 = true;
+                    }
+                }
+                else
+                {
+                    if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                            && !Locomotive.StopButtonPressed)
+                            Locomotive.StartButtonPressed = true;
+
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && !Locomotive.StartButtonPressed)
+                            Locomotive.StopButtonPressed = true;
+                    }
+                    if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
+                    {
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && !Locomotive.StopButtonPressed2)
+                            Locomotive.StartButtonPressed2 = true;
+
+                        if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && !Locomotive.StartButtonPressed2)
+                            Locomotive.StopButtonPressed2 = true;
+                    }
+                }
+            }
+
+            // Ovládání tlačítka startu motoru
+            if (((Locomotive as MSTSDieselLocomotive) != null || (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)) && !Locomotive.SwitchEngineEnable)
+            {
+                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
+                {
+                    Locomotive.StartButtonPressed = false;
+                    Locomotive.StopButtonPressed = false;
+                }
+
+                if (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)
+                {
+                    var PU = (Locomotive as MSTSControlUnit).PowerControlUnit;
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && !Locomotive.StopButtonPressed)
+                        Locomotive.StartButtonPressed = true;
+
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && !Locomotive.StartButtonPressed)
+                        Locomotive.StopButtonPressed = true;
+                }
+                else
                 {
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
                         && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
@@ -988,45 +1078,9 @@ namespace Orts.Viewer3D.RollingStock
                         && !Locomotive.StartButtonPressed)
                         Locomotive.StopButtonPressed = true;
                 }
-                if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
-                {
-                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
-                    && !Locomotive.StopButtonPressed2)
-                        Locomotive.StartButtonPressed2 = true;
-
-                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
-                        && !Locomotive.StartButtonPressed2)
-                        Locomotive.StopButtonPressed2 = true;
-                }
-            }
-
-            // Ovládání tlačítka startu motoru
-            if ((Locomotive as MSTSDieselLocomotive) != null && !Locomotive.SwitchEngineEnable)
-            {
-                if (!UserInput.IsDown(UserCommand.ControlDieselPlayer))
-                {
-                    Locomotive.StartButtonPressed = false;
-                    Locomotive.StopButtonPressed = false;
-                }
-
-                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
-                    && !Locomotive.StopButtonPressed)
-                    Locomotive.StartButtonPressed = true;
-
-                if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
-                    && !Locomotive.StartButtonPressed)
-                    Locomotive.StopButtonPressed = true;
             }
             // Ovládání tlačítka startu motoru 2
-            if ((Locomotive as MSTSDieselLocomotive) != null && !Locomotive.SwitchEngineEnable)
+            if (((Locomotive as MSTSDieselLocomotive) != null || (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)) && !Locomotive.SwitchEngineEnable)
             {
                 if (!UserInput.IsDown(UserCommand.ControlDieselPlayer2))
                 {
@@ -1034,17 +1088,35 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.StopButtonPressed2 = false;
                 }
 
-                if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
+                if (Locomotive as MSTSControlUnit != null && (Locomotive as MSTSControlUnit).ControlUnitType == ControlUnitTypes.Diesel)
+                {
+                    var PU = (Locomotive as MSTSControlUnit).PowerControlUnit;
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
+                    && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
+                    || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                    && !Locomotive.StopButtonPressed2)
+                        Locomotive.StartButtonPressed2 = true;
+
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && !Locomotive.StartButtonPressed2)
+                        Locomotive.StopButtonPressed2 = true;
+                }
+                else
+                {
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
                     && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
                     || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
                     && !Locomotive.StopButtonPressed2)
-                    Locomotive.StartButtonPressed2 = true;
+                        Locomotive.StartButtonPressed2 = true;
 
-                if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
-                    && !Locomotive.StartButtonPressed2)
-                    Locomotive.StopButtonPressed2 = true;
+                    if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && !Locomotive.StartButtonPressed2)
+                        Locomotive.StopButtonPressed2 = true;
+                }
             }
             // Ovládání tlačítek navolení směru
             if (Locomotive.DirectionButton)

@@ -1909,21 +1909,60 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             ExhaustColor = ExhaustTransientColor;
                             ExhaustParticles = (MaxExhaust - InitialExhaust) / (0.5f * StartingRPM - StartingRPM) * (RealRPM - 0.5f * StartingRPM) + InitialExhaust;
                         }
-                    }                                    
+                    }
                     if ((!locomotive.StartButtonPressed2 && !locomotive.StartLooseCon && !OnePushStartButton) || (!locomotive.DieselDirection_Start && !locomotive.StartLooseCon))
                     {
                         locomotive.DieselEngines[1].Stop();
                         locomotive.SignalEvent(Event.StartUpMotorBreak2);
                     }
                 }
-                                
-                if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
+
+
+                if (locomotive.StartLooseCon)
                 {
-                    EngineStatus = Status.Running;
-                    locomotive.StartLooseCon = false;
-                    OnePushStartButton = false;
-                    if (!locomotive.IsPlayerTrain)
-                        locomotive.Variable2 = 0.01f;
+                    if (locomotive.DieselEngines.Count > 1)
+                    {
+                        if (locomotive.DieselEngines.DieselEngine1 && RealRPM > 0.9f * StartingConfirmationRPM)
+                        {
+                            EngineStatus = Status.Running;                            
+                            locomotive.StartLooseCon1 = true;
+                        }
+                        if (locomotive.DieselEngines.DieselEngine2 && RealRPM > 0.9f * StartingConfirmationRPM)
+                        {
+                            EngineStatus = Status.Running;                            
+                            locomotive.StartLooseCon2 = true;
+                        }
+                        if (locomotive.StartLooseCon1 && locomotive.StartLooseCon2)
+                        {
+                            locomotive.StartLooseCon = false;
+                            locomotive.StartLooseCon1 = false;
+                            locomotive.StartLooseCon2 = false;
+                            OnePushStartButton = false;
+                            if (!locomotive.IsPlayerTrain)
+                                locomotive.Variable2 = 0.01f;
+                        }
+                    }
+                    else
+                    {
+                        if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
+                        {
+                            EngineStatus = Status.Running;
+                            locomotive.StartLooseCon = false;
+                            OnePushStartButton = false;
+                            if (!locomotive.IsPlayerTrain)
+                                locomotive.Variable2 = 0.01f;
+                        }
+                    }
+                }
+                else
+                {
+                    if ((RealRPM > 0.9f * StartingConfirmationRPM))// && (RealRPM < 0.9f * IdleRPM))
+                    {
+                        EngineStatus = Status.Running;                        
+                        OnePushStartButton = false;
+                        if (!locomotive.IsPlayerTrain)
+                            locomotive.Variable2 = 0.01f;
+                    }
                 }
             }
 

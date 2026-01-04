@@ -117,6 +117,7 @@ namespace Orts.Simulation.RollingStocks
             base.Initialize();
         }
 
+        public TrainCar PowerControlUnit;
         bool MUCableOk;
         public override void Update(float elapsedClockSeconds)
         {            
@@ -211,20 +212,21 @@ namespace Orts.Simulation.RollingStocks
                     {
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
+                        PowerControlUnit = PU;
 
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
                         CircuitBreakerOn = PU.CircuitBreakerOn;
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
                         MaxForceN = PU.MaxForceN;
-                        //DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
-                        //DynamicBrakeForceN = PU.DynamicBrakeForceN;
-                        //MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
-                        //DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
+                        DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
+                        DynamicBrakeForceN = PU.DynamicBrakeForceN;
+                        MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
+                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
                         FakePowerCurrent1 = PU.FakePowerCurrent1;
-                        //BrakeCurrent1 = PU.BrakeCurrent1;
+                        BrakeCurrent1 = PU.BrakeCurrent1;
                         FakePowerCurrent2 = PU.FakePowerCurrent2;
-                        //BrakeCurrent2 = PU.BrakeCurrent2;
+                        BrakeCurrent2 = PU.BrakeCurrent2;
                         PantographVoltageV = PU.PantographVoltageV;
                         PowerSupply.PantographVoltageV = PU.PowerSupply.PantographVoltageV;
                         VoltageAC = PU.VoltageAC;
@@ -273,18 +275,19 @@ namespace Orts.Simulation.RollingStocks
                     {
                         ControlUnitType = ControlUnitTypes.Diesel;
                         var PU = car as MSTSDieselLocomotive;
-                        
+                        PowerControlUnit = PU;
+
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
                         MaxForceN = PU.MaxForceN;
-                        //DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
-                        //DynamicBrakeForceN = PU.DynamicBrakeForceN;
-                        //MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
-                        //DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
+                        DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
+                        DynamicBrakeForceN = PU.DynamicBrakeForceN;
+                        MaxDynamicBrakeForceN = PU.MaxDynamicBrakeForceN;
+                        DynamicBrakeAvailable = PU.DynamicBrakeAvailable;
                         FakePowerCurrent1 = PU.FakePowerCurrent1;
-                        //BrakeCurrent1 = PU.BrakeCurrent1;
+                        BrakeCurrent1 = PU.BrakeCurrent1;
                         FakePowerCurrent2 = PU.FakePowerCurrent2;
-                        //BrakeCurrent2 = PU.BrakeCurrent2;                                                
+                        BrakeCurrent2 = PU.BrakeCurrent2;                                                
                         PowerOn = PU.PowerOn;
                         AuxPowerOn = PU.AuxPowerOn;                        
                         AuxResPressurePSI = PU.AuxResPressurePSI;
@@ -314,6 +317,14 @@ namespace Orts.Simulation.RollingStocks
                            
                             PU.BreakPowerButton = BreakPowerButton;
                             if (AuxCompressor) PU.AuxCompressor = true;
+
+                            PU.StartButtonPressed = StartButtonPressed;
+                            PU.StartButtonPressed2 = StartButtonPressed2;
+                            PU.StopButtonPressed = StopButtonPressed;
+                            PU.StopButtonPressed2 = StopButtonPressed2;
+                            PU.DieselDirection_Start = DieselDirection_Start;
+                            PU.SwitchEngineEnable = SwitchEngineEnable;
+                            PU.SwitchEnginePosition[PU.LocoStation] = SwitchEnginePosition[LocoStation];
 
                             PU.AuxCompressorMode_OffOn[PU.LocoStation] = AuxCompressorMode_OffOn[LocoStation];
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];

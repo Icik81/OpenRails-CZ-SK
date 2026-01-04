@@ -1449,7 +1449,7 @@ namespace Orts.Simulation.RollingStocks
             //if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && Direction != Direction.N)
             //    DieselDirection_Start = false;
             
-            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+            if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4 && !PowerUnitWithControl)
                 DieselDirection_Start = true;
 
             // JV Setup pro start zvuku motoru, kvůli nechtěnému startu zvuku start motoru při zapnutém motoru
@@ -1682,7 +1682,9 @@ namespace Orts.Simulation.RollingStocks
                     StopButtonReleased2 = true;
                     DieselEngines[1].Start();
                 }
-            }            
+            }
+
+            if (PowerUnitWithControl && (StopButtonPressed || StopButtonPressed2)) TogglePlayerEngine(); // Pro vlak s řídící jednotkou
         }
 
 

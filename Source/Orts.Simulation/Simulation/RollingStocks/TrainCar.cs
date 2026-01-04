@@ -369,6 +369,8 @@ namespace Orts.Simulation.RollingStocks
         public float RouteVoltageVInfo;
         public bool SelectedCar;
         public bool StartLooseCon;
+        public bool StartLooseCon1;
+        public bool StartLooseCon2;
         public bool AuxPowerOff;
         public bool LocoHelperOn;
         public bool UserPowerOff;
