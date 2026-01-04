@@ -73,6 +73,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using System.Xml;
+using static Orts.Simulation.RollingStocks.MSTSControlUnit;
 using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
@@ -17241,18 +17242,45 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public void ToggleSwitchEngineUp()
-        {            
-            if (!SwitchEngineEnable || !(this is MSTSDieselLocomotive)) return;
-            if (SwitchEnginePosition[LocoStation] < (this as MSTSDieselLocomotive).DieselEngines.Count - 1)
+        {
+            if (!SwitchEngineEnable)
+                return;
+            if (this is MSTSControlUnit && (this as MSTSControlUnit).ControlUnitType != ControlUnitTypes.Diesel)
+                return;
+            else
+                if (!(this is MSTSControlUnit) && !(this is MSTSDieselLocomotive))
+                return;
+
+            if (this is MSTSDieselLocomotive)
             {
-                SwitchEnginePosition[LocoStation]++;
-                SignalEvent(Event.LightSwitchToggle);
-                SwitchEngines();
+                if (SwitchEnginePosition[LocoStation] < (this as MSTSDieselLocomotive).DieselEngines.Count - 1)
+                {
+                    SwitchEnginePosition[LocoStation]++;
+                    SignalEvent(Event.LightSwitchToggle);
+                    SwitchEngines();
+                }
+            }
+            if (this is MSTSControlUnit)
+            {
+                var PU = (this as MSTSControlUnit).PowerControlUnit;
+                if (SwitchEnginePosition[LocoStation] < (PU as MSTSDieselLocomotive).DieselEngines.Count - 1)
+                {
+                    SwitchEnginePosition[LocoStation]++;
+                    SignalEvent(Event.LightSwitchToggle);
+                    SwitchEngines();
+                }
             }
         }
         public void ToggleSwitchEngineDown()
         {
-            if (!SwitchEngineEnable || !(this is MSTSDieselLocomotive)) return;
+            if (!SwitchEngineEnable)
+                return;
+            if (this is MSTSControlUnit && (this as MSTSControlUnit).ControlUnitType != ControlUnitTypes.Diesel)
+                return;
+            else
+                if (!(this is MSTSControlUnit) && !(this is MSTSDieselLocomotive))
+                return;
+
             if (SwitchEnginePosition[LocoStation] > 0)
             {
                 SwitchEnginePosition[LocoStation]--;
@@ -23314,16 +23342,15 @@ namespace Orts.Simulation.RollingStocks
                     {
                         SwitchEngineEnable = true;
                         data = 0;
-                        if (this is MSTSDieselLocomotive)                                                                               
+                        if (this is MSTSDieselLocomotive || this is MSTSControlUnit)                                                                               
                             data = SwitchEnginePosition[LocoStation];                        
                         break;
                     }
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive)
-                        {
-                            var dieselLoco = this as MSTSDieselLocomotive;                                                        
+                        if (this is MSTSDieselLocomotive || this is MSTSControlUnit)
+                        {                            
                             if (SwitchEngineEnable)
                             {
                                 switch (SwitchEnginePosition[LocoStation])
@@ -23333,10 +23360,6 @@ namespace Orts.Simulation.RollingStocks
                                         break;
                                     case 1:
                                         data = StartButtonPressed2 ? 1 : 0;
-                                        break;
-                                    case 2:                                       
-                                        break;
-                                    case 3:                                        
                                         break;
                                 }
                             }
@@ -23355,9 +23378,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive)
-                        {
-                            var dieselLoco = this as MSTSDieselLocomotive;
+                        if (this is MSTSDieselLocomotive || this is MSTSControlUnit)
+                        {                            
                             if (SwitchEngineEnable)
                             {
                                 switch (SwitchEnginePosition[LocoStation])
@@ -23367,10 +23389,6 @@ namespace Orts.Simulation.RollingStocks
                                         break;
                                     case 1:
                                         data = StopButtonPressed2 ? 1 : 0;
-                                        break;
-                                    case 2:
-                                        break;
-                                    case 3:
                                         break;
                                 }
                             }
@@ -23382,10 +23400,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STARTER2:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive && !SwitchEngineEnable)
-                        {
-                            var dieselLoco = this as MSTSDieselLocomotive;
-                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting ? 1 : 0;
+                        if ((this is MSTSDieselLocomotive || this is MSTSControlUnit) && !SwitchEngineEnable)
+                        {                                                       
                             data = StartButtonPressed2 ? 1 : 0;
                         }
                         break;
@@ -23393,10 +23409,8 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE_STOPPER2:
                     {
                         data = 0;
-                        if (this is MSTSDieselLocomotive && !SwitchEngineEnable)
-                        {
-                            var dieselLoco = this as MSTSDieselLocomotive;
-                            //data = dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping ? 1 : 0;
+                        if ((this is MSTSDieselLocomotive || this is MSTSControlUnit) && !SwitchEngineEnable)
+                        {                            
                             data = StopButtonPressed2 ? 1 : 0;
                         }
                         break;

@@ -1001,8 +1001,8 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.StartButtonPressed2 = true;
 
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
+                            || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
                             && !Locomotive.StartButtonPressed2)
                             Locomotive.StopButtonPressed2 = true;
                     }
