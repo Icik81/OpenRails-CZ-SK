@@ -245,6 +245,8 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;
                         //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);
 
+                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
+
                         // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
                         {                           
@@ -297,6 +299,8 @@ namespace Orts.Simulation.RollingStocks
                         FakeDieselWaterTemperatureDeg = PU.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         FakeDieselOilTemperatureDeg = PU.DieselEngines[0].FakeDieselOilTemperatureDeg;
                         RealRPM = PU.DieselEngines[0].RealRPM;
+
+                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
 
                         if (PU.DieselEngines.Count > 1)
                         {

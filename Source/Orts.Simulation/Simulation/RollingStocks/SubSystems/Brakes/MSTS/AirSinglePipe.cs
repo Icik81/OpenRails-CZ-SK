@@ -1868,7 +1868,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     BailOffOn = false;
                     EDBCutOffActivated = true;                    
                 }
-
+                
                 #region Automatické napuštění brzdového válce po uvadnutí EDB
                 // Nastavení výchozích hodnot pro odvětrání EDB                
                 if (loco.EDBCutOffSpeedMpS == 0 && loco.EDBCutOffPercentMaxEDBForce == 0 && loco.EDBCutOffEDBCurrent == 0)
