@@ -354,20 +354,17 @@ namespace Orts.Viewer3D
             var worldLocation = viewer.Camera.CameraWorldLocation;
             //var worldLocation = Program.Viewer.PlayerLocomotive.WorldPosition.WorldLocation;  // This is used to test overall precipitation position.
 
-            // Icik
-            ParticleBoxHeightMDynamic = ParticleBoxHeightM / particlesPerSecondPerM2 / 4;
-            ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM);
-
-            ParticleBoxLengthMDynamic = ParticleBoxLengthM / particlesPerSecondPerM2 / 2;
+            // Icik            
+            ParticleBoxLengthMDynamic = ParticleBoxLengthM;
             ParticleBoxLengthMDynamic = MathHelper.Clamp(ParticleBoxLengthMDynamic, ParticleBoxLengthMDynamicMinimum, ParticleBoxLengthM);
 
-            ParticleBoxWidthMDynamic = ParticleBoxWidthM / particlesPerSecondPerM2 / 2;
+            ParticleBoxWidthMDynamic = ParticleBoxWidthM;
             ParticleBoxWidthMDynamic = MathHelper.Clamp(ParticleBoxWidthMDynamic, ParticleBoxWidthMDynamicMinimum, ParticleBoxWidthM);
 
             if (TimeParticlesLastEmitted == 0)
             {
                 TimeParticlesLastEmitted = currentTime - ParticleDuration;
-                ParticlesToEmit += ParticleDuration * particlesPerSecondPerM2 * ParticleBoxLengthMDynamic * ParticleBoxWidthMDynamic;
+                ParticlesToEmit += ParticleDuration * particlesPerSecondPerM2 * ParticleBoxHeightMDynamic * ParticleBoxWidthMDynamic;
             }
             else
             {
@@ -395,10 +392,25 @@ namespace Orts.Viewer3D
                 Vector3 cameraVelocity = (currentCameraPosition - lastCameraPosition) / deltaTime;                
                 lastCameraPosition = currentCameraPosition;
 
+                // Získáme smìr, kam se kamera právì dívá 
+                Matrix cameraRotation = Matrix.Invert(viewer.Camera.XnaView);
+
+                // Koeficient pro úpravu výšky boxu podle rychlosti kamery
+                float CameraVelocityCoef = MathHelper.Clamp(cameraVelocity.Length() / 15, 1, 4);
+
+                float ParticleBoxHeightMDynamicFinal = ParticleBoxHeightM / CameraVelocityCoef;
+                ParticleBoxHeightMDynamicFinal = MathHelper.Clamp(ParticleBoxHeightMDynamicFinal, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM * particlesPerSecondPerM2 / 4);
+
+                if (ParticleBoxHeightMDynamic > ParticleBoxHeightMDynamicFinal) ParticleBoxHeightMDynamic -= 5 * elapsedTime.ClockSeconds;
+                if (ParticleBoxHeightMDynamic < ParticleBoxHeightMDynamicFinal) ParticleBoxHeightMDynamic += 1 * elapsedTime.ClockSeconds;                
+                ParticleBoxHeightMDynamic = MathHelper.Clamp(ParticleBoxHeightMDynamic, ParticleBoxHeightMDynamicMinimum, ParticleBoxHeightM * particlesPerSecondPerM2 / 4);
+
                 for (var i = 0; i < numToEmit; i++)
                 {
                     var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
-                    temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
+
+                    //temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
+                    temp.Location.Y = worldLocation.Location.Y - Math.Abs(Math.Abs(worldLocation.Location.Y) - Math.Abs(tiles.GetElevation(worldLocation) <= 0 ? worldLocation.Location.Y + 5 : tiles.GetElevation(worldLocation))); // Èástice budou vždy padat na pozici kamery v rámci boxu                    
                     var position = new WorldPosition(temp);                    
 
                     var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
@@ -406,7 +418,7 @@ namespace Orts.Viewer3D
                     var vertex = particle * VerticiesPerParticle;
 
                     // windEffect táhne vloèky opaèným smìrem, než kam letí kamera                   
-                    Vector3 windEffect = -cameraVelocity * ParticleDuration;
+                    Vector3 windEffect = -cameraVelocity * ParticleDuration / CameraVelocityCoef;                    
 
                     for (var j = 0; j < VerticiesPerParticle; j++)
                     {
