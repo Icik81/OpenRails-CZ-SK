@@ -419,20 +419,14 @@ namespace Orts.Viewer3D
                         break;
                     case "CabSpriteBatch":
                         //Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
-                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHTITEM"))
-                        {
-                            // Čitelná textura při zapnutí osvětlení pultu
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, true);
-                        }
-                        else
                         if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
-                            // Vždy plně čitelná textura, bez vlivu shaderu
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null, false);                            
-                        }
+                            // Textura s vlastností světla
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, true, TextureName);
+                        }                        
                         else
                         {
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, false);
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, false, TextureName);
                         }
                         break;
                     case "Terrain":
@@ -761,21 +755,23 @@ namespace Orts.Viewer3D
     {
         public readonly SpriteBatch SpriteBatch;
         private CabShader CabShader;
-        public bool LightItem;
+        bool LightItem;
+        string TextureName;
 
-        public CabSpriteBatchMaterial(Viewer viewer, CabShader cabShader, bool lightItem)
+        public CabSpriteBatchMaterial(Viewer viewer, CabShader cabShader, bool lightItem, string textureName)
             : base(viewer, null)
         {
             SpriteBatch = new SpriteBatch(Viewer.RenderProcess.GraphicsDevice);
             CabShader = cabShader;
             LightItem = lightItem;
+            TextureName = textureName;
         }
 
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
         {            
             if (CabShader != null)
             {                
-                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, 0, LightItem);
+                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, 0, LightItem, TextureName);
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, DepthStencilState.Default, null, CabShader);
             }
             else

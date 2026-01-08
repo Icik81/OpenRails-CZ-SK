@@ -306,8 +306,8 @@ namespace Orts.Simulation
         public float GlobalDensity = 1;
         public bool FatalIncident;
         public bool FatalIncidentInfo;
-        public bool NotFatalIncident;
-        public bool CabItemLight;
+        public bool NotFatalIncident;        
+        public bool CabItemBatterieOn;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

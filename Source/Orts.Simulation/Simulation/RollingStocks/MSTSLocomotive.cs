@@ -7516,6 +7516,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 CarIsPlayerLoco = true;
                 Simulator.CabLightItemActivate = CabLightOn[LocoStation] ? true : false;
+                Simulator.CabItemBatterieOn = Battery ? true : false;                
             }
             else
                 CarIsPlayerLoco = false;
@@ -23418,6 +23419,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 case CABViewControlTypes.ORTS_CABLIGHT:
                     data = CabLightOn[LocoStation] ? 1 : 0;
+                    if (!Simulator.CabItemBatterieOn) data = 0;
                     break;
                 case CABViewControlTypes.ORTS_LEFTDOOR:
                     data = GetCabFlipped() ? (DoorRightOpen ? 1 : 0) : DoorLeftOpen ? 1 : 0;

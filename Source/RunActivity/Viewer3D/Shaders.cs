@@ -955,7 +955,7 @@ namespace Orts.Viewer3D
         float WorldThunderStartTime;
         float WorldThunderTime;
         float LastStateCabnightColorModifierValue;
-        public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem)
+        public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem, string TextureName)
         {
             IsNightTexture = false;
             if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
@@ -1003,7 +1003,7 @@ namespace Orts.Viewer3D
             if (IsNightTexture && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = 0.9f;
 
-            if (Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate)
+            if ((Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate) && Program.Simulator.CabItemBatterieOn)
             {
                 if (Program.Simulator.CabFloodLightActivate)
                     CabnightColorModifierValue = (Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
@@ -1044,7 +1044,7 @@ namespace Orts.Viewer3D
             }
 
             Program.Simulator.DashLightCanActivate = false;
-            float CabnightColorModifierNightReference = 0.35f;
+            float CabnightColorModifierNightReference = 0.45f;
             
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierNightReference = 0.60f;
@@ -1057,10 +1057,18 @@ namespace Orts.Viewer3D
                 }
             }
 
-            if (LightItem)
+            // Kabinová světla na baterie
+            if (LightItem && Program.Simulator.CabItemBatterieOn)
             {
-                CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
-                //CabnightColorModifierValue = 1;
+                if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHTITEM"))
+                {
+                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                }
+                else
+                if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
+                {
+                    CabnightColorModifierValue = 1.0f;
+                }                
             }
 
             nightColorModifier.SetValue(CabnightColorModifierValue);
