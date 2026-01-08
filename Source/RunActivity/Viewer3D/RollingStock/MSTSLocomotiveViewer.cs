@@ -2530,6 +2530,7 @@ namespace Orts.Viewer3D.RollingStock
         private CabShader _Shader;
         private int ShaderKey = 1;  // Shader Key must refer to only o
         private Texture2D _LetterboxTexture;
+        private bool _Light;
 
         private Point _PrevScreenSize;
 
@@ -2580,7 +2581,7 @@ namespace Orts.Viewer3D.RollingStock
                             ExtendedCVF.TranslatedColor(_Locomotive.CabViewList[(int)CabViewType.Front].ExtendedCVF.Light1Color),
                             ExtendedCVF.TranslatedColor(_Locomotive.CabViewList[(int)CabViewType.Front].ExtendedCVF.Light2Color));
                         }
-                        _SpriteShader2DCabView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", _Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], 0, 0, ShaderKey, _Shader);
+                        _SpriteShader2DCabView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", _Locomotive.CabViewList[i].CVFFile.TwoDViews[_Location], 0, 0, ShaderKey, _Shader, _Light);
                         firstOne = false;
                     }
 
@@ -2914,7 +2915,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 // TODO: Readd ability to control night time lighting.
                 float overcast = _Viewer.Settings.UseMSTSEnv ? _Viewer.World.MSTSSky.mstsskyovercastFactor : _Viewer.Simulator.Weather.OvercastFactor;
-                _Shader.SetData(_Viewer.MaterialManager.sunDirection, _isNightTexture, false, overcast);
+                _Shader.SetData(_Viewer.MaterialManager.sunDirection, _isNightTexture, false, overcast, false);
 
                 _Shader.SetTextureData(cabRect.Left, cabRect.Top, cabRect.Width, cabRect.Height);
             }
@@ -2975,6 +2976,7 @@ namespace Orts.Viewer3D.RollingStock
         protected readonly CabShader Shader;
         protected readonly int ShaderKey = 1;
         protected readonly CabSpriteBatchMaterial CabShaderControlView;
+        protected readonly bool _Light;
 
         protected Vector2 Position;
         protected Texture2D Texture;
@@ -2991,7 +2993,7 @@ namespace Orts.Viewer3D.RollingStock
             Control = control;
             Shader = shader;
 
-            CabShaderControlView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", Control.ACEFile, 0, 0, ShaderKey, Shader);
+            CabShaderControlView = (CabSpriteBatchMaterial)viewer.MaterialManager.Load("CabSpriteBatch", Control.ACEFile, 0, 0, ShaderKey, Shader, _Light);
 
             HasCabLightDirectory = CABTextureManager.LoadTextures(Viewer, Control.ACEFile);
         }

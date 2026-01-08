@@ -933,6 +933,8 @@ namespace Orts.Viewer3D
         readonly EffectParameter texSize;
         readonly EffectParameter imageTexture;
 
+        readonly EffectParameter lightItem;
+
         public void SetTextureData(float x, float y, float width, float height)
         {
             texPos.SetValue(new Vector2(x, y));
@@ -953,7 +955,7 @@ namespace Orts.Viewer3D
         float WorldThunderStartTime;
         float WorldThunderTime;
         float LastStateCabnightColorModifierValue;
-        public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast)
+        public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem)
         {
             IsNightTexture = false;
             if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
@@ -968,7 +970,7 @@ namespace Orts.Viewer3D
             
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
-            lightOn.SetValue(isDashLight);                      
+            lightOn.SetValue(isDashLight);            
 
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
@@ -1055,8 +1057,14 @@ namespace Orts.Viewer3D
                 }
             }
 
+            if (LightItem)
+            {
+                CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                //CabnightColorModifierValue = 1;
+            }
+
             nightColorModifier.SetValue(CabnightColorModifierValue);
-            //Program.Simulator.Confirmer.MSG("nightColorModifier" + nightColorModifier.GetValueSingle());
+            //Program.Simulator.Confirmer.MSG("nightColorModifier" + nightColorModifier.GetValueSingle());            
         }
 
         public CabShader(GraphicsDevice graphicsDevice, Vector4 light1Position, Vector4 light2Position, Vector3 light1Color, Vector3 light2Color)
@@ -1071,6 +1079,7 @@ namespace Orts.Viewer3D
             texPos = Parameters["TexPos"];
             texSize = Parameters["TexSize"];
             imageTexture = Parameters["ImageTexture"];
+            lightItem = Parameters["LightItem"];
 
             light1Pos.SetValue(light1Position);
             light2Pos.SetValue(light2Position);

@@ -198,6 +198,7 @@ namespace Orts.Simulation
         public float TunnelLengthM;        
         public float TunnelActivateM;
         public bool CabLightActivate;
+        public bool CabLightItemActivate;
         public bool CabFloodLightActivate;        
         public bool CabInDarkTunnel;
         public bool CarInDarkTunnel;
@@ -305,7 +306,8 @@ namespace Orts.Simulation
         public float GlobalDensity = 1;
         public bool FatalIncident;
         public bool FatalIncidentInfo;
-        public bool NotFatalIncident;        
+        public bool NotFatalIncident;
+        public bool CabItemLight;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

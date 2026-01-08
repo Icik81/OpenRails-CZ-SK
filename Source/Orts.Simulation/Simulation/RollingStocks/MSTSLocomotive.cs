@@ -7515,6 +7515,7 @@ namespace Orts.Simulation.RollingStocks
             if (IsLeadLocomotive())
             {
                 CarIsPlayerLoco = true;
+                Simulator.CabLightItemActivate = CabLightOn[LocoStation] ? true : false;
             }
             else
                 CarIsPlayerLoco = false;
@@ -7645,7 +7646,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 // Odometer
                 if (IsLeadLocomotive())
-                {
+                {                    
                     Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;
                 }
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
@@ -11514,7 +11515,7 @@ namespace Orts.Simulation.RollingStocks
             wasCabLightSetOn[LocoStation] = CabLightOn[LocoStation];
             if (CabFloodLightOn[LocoStation])
                 CabLightOn[LocoStation] = false;
-            SignalEvent(Event.CabLightSwitchToggle);
+            SignalEvent(Event.CabLightSwitchToggle);            
             Simulator.Confirmer.Confirm(CabControl.CabLight, CabLightOn[LocoStation] ? CabSetting.On : CabSetting.Off);
         }
 

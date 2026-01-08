@@ -340,24 +340,24 @@ namespace Orts.Viewer3D
 
         public Material Load(string materialName)
         {
-            return Load(materialName, null, 0, 0, 0, null);
+            return Load(materialName, null, 0, 0, 0, null, false);
         }
 
         public Material Load(string materialName, string textureName)
         {
-            return Load(materialName, textureName, 0, 0, 0, null);
+            return Load(materialName, textureName, 0, 0, 0, null, false);
         }
 
         public Material Load(string materialName, string textureName, int options)
         {
-            return Load(materialName, textureName, options, 0, 0, null);
+            return Load(materialName, textureName, options, 0, 0, null, false);
         }
 
         public Material Load(string materialName, string textureName, int options, float mipMapBias)
         {
-            return Load(materialName, textureName, options, 0, 0, null);
+            return Load(materialName, textureName, options, 0, 0, null, false);
         }
-        public Material Load(string materialName, string textureName, int options, float mipMapBias, int cabShaderKey, CabShader cabShader)
+        public Material Load(string materialName, string textureName, int options, float mipMapBias, int cabShaderKey, CabShader cabShader, bool lightItem)
         {
             string TextureName = textureName;
             if (textureName != null)            
@@ -419,14 +419,20 @@ namespace Orts.Viewer3D
                         break;
                     case "CabSpriteBatch":
                         //Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
+                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHTITEM"))
+                        {
+                            // Čitelná textura při zapnutí osvětlení pultu
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, true);
+                        }
+                        else
                         if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
-                            // Kontrolka = vždy plně čitelná textura, bez vlivu shaderu
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null);                            
+                            // Vždy plně čitelná textura, bez vlivu shaderu
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, null, false);                            
                         }
                         else
                         {
-                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, false);
                         }
                         break;
                     case "Terrain":
@@ -755,18 +761,23 @@ namespace Orts.Viewer3D
     {
         public readonly SpriteBatch SpriteBatch;
         private CabShader CabShader;
+        public bool LightItem;
 
-        public CabSpriteBatchMaterial(Viewer viewer, CabShader cabShader)
+        public CabSpriteBatchMaterial(Viewer viewer, CabShader cabShader, bool lightItem)
             : base(viewer, null)
         {
             SpriteBatch = new SpriteBatch(Viewer.RenderProcess.GraphicsDevice);
             CabShader = cabShader;
+            LightItem = lightItem;
         }
 
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
-        {
+        {            
             if (CabShader != null)
+            {                
+                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, 0, LightItem);
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, DepthStencilState.Default, null, CabShader);
+            }
             else
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
         }

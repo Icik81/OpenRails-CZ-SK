@@ -33,6 +33,7 @@ float2   TexPos;        // Texture bounding rectangle
 float2   TexSize;       // Texture bounding rectangle
 texture  ImageTexture;
 float 	 MaxDim = 1.0;
+bool	 LightItem;
 
 sampler ImageSampler = sampler_state
 {
@@ -61,8 +62,8 @@ float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 	if (MaxDim < 0.125) MaxDim = 0.125;
 
 	float4 origColor = tex2D(ImageSampler, In.TexCoords) * In.Color;
-	float3 shadColor = origColor.rgb * MaxDim;
-	
+	float3 shadColor = origColor.rgb * MaxDim;		
+
  	if (LightOn)
 	{
 		float2 orig = In.TexCoords * TexSize + TexPos;
