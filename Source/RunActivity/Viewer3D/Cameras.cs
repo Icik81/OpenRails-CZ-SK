@@ -336,7 +336,7 @@ namespace Orts.Viewer3D
         {
             if (UserInput.IsMouseWheelChanged && !Viewer.HelpWindow.Visible && !Viewer.TrainOperationsWindow.Visible && !Viewer.PaxWindow.Visible)
             {
-                Viewer.PlayerLocomotive.InstrumentsBrightness = MathHelper.Clamp(Viewer.PlayerLocomotive.InstrumentsBrightness - speed * (UserInput.MouseWheelChange / 100), 0.5f, 1.0f);
+                Viewer.PlayerLocomotive.InstrumentsBrightness = MathHelper.Clamp(Viewer.PlayerLocomotive.InstrumentsBrightness - speed * (UserInput.MouseWheelChange / 100), 0.7f, 1.0f);
                 //Viewer.Simulator.Confirmer.MSG("InstrumentsBrightness: " + Viewer.PlayerLocomotive.InstrumentsBrightness);
             }
         }

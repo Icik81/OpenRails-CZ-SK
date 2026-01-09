@@ -1060,9 +1060,14 @@ namespace Orts.Viewer3D
             // Kabinová světla na baterie
             if (LightItem && Program.Simulator.CabItemBatterieOn)
             {
+                if (TextureName.Contains("LIGHTITEMREGUL"))
+                {
+                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness : CabnightColorModifierValue;
+                }
+                else
                 if (TextureName.Contains("LIGHTITEM"))
                 {
-                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness : CabnightColorModifierValue;                    
+                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;                    
                 }
                 else
                 if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
