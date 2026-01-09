@@ -307,7 +307,7 @@ namespace Orts.Simulation
         public bool FatalIncident;
         public bool FatalIncidentInfo;
         public bool NotFatalIncident;        
-        public bool CabItemBatterieOn;
+        public bool CabItemBatterieOn;        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

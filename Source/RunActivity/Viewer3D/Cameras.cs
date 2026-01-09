@@ -332,6 +332,15 @@ namespace Orts.Viewer3D
             }
         }
 
+        protected void ZoomByMouseWheelInstrumentsBrightness(float speed)
+        {
+            if (UserInput.IsMouseWheelChanged && !Viewer.HelpWindow.Visible && !Viewer.TrainOperationsWindow.Visible && !Viewer.PaxWindow.Visible)
+            {
+                Viewer.PlayerLocomotive.InstrumentsBrightness = MathHelper.Clamp(Viewer.PlayerLocomotive.InstrumentsBrightness - speed * (UserInput.MouseWheelChange / 100), 0.5f, 1.0f);
+                //Viewer.Simulator.Confirmer.MSG("InstrumentsBrightness: " + Viewer.PlayerLocomotive.InstrumentsBrightness);
+            }
+        }
+
         /// <summary>
         /// Returns a position in XNA space relative to the camera's tile
         /// </summary>
@@ -2517,6 +2526,8 @@ namespace Orts.Viewer3D
                 CabViewRestored = true;
                 PlayerTrainName = Viewer.PlayerTrain.Name;
             }
+
+            ZoomByMouseWheelInstrumentsBrightness(elapsedTime.RealSeconds);
 
             if (UserInput.IsPressed(UserCommand.CameraPanLeft))
                 ShiftView(+1);

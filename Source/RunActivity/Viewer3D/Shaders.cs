@@ -970,7 +970,7 @@ namespace Orts.Viewer3D
             
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
-            lightOn.SetValue(isDashLight);            
+            lightOn.SetValue(isDashLight);                        
 
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
@@ -998,7 +998,7 @@ namespace Orts.Viewer3D
                 }
             }
             
-            LastStateCabnightColorModifierValue = CabnightColorModifierValue;
+            LastStateCabnightColorModifierValue = CabnightColorModifierValue;            
 
             if (IsNightTexture && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = 0.9f;
@@ -1022,7 +1022,7 @@ namespace Orts.Viewer3D
                 else
                 if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
                     CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));                                
-            }            
+            }
 
             // Záblesk od blesku
             if (Program.Simulator.WorldThunder)
@@ -1056,21 +1056,21 @@ namespace Orts.Viewer3D
                     Program.Simulator.DashLightCanActivate = true;
                 }
             }
-
+            
             // Kabinová světla na baterie
             if (LightItem && Program.Simulator.CabItemBatterieOn)
             {
-                if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHTITEM"))
+                if (TextureName.Contains("LIGHTITEM"))
                 {
-                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness : CabnightColorModifierValue;                    
                 }
                 else
                 if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                 {
                     CabnightColorModifierValue = 1.0f;
-                }                
+                }
             }
-
+            
             nightColorModifier.SetValue(CabnightColorModifierValue);
             //Program.Simulator.Confirmer.MSG("nightColorModifier" + nightColorModifier.GetValueSingle());            
         }

@@ -797,7 +797,7 @@ namespace Orts.Simulation.RollingStocks
         public bool SteamGeneratorOff;
         public float SteamGeneratorMinPressureLimitPSI;
         public float SteamGeneratorAirComsumptionLpS;
-        public bool Combined_control;
+        public bool Combined_control;        
 
         // Jindrich
         public bool IsActive = false;

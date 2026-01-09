@@ -418,13 +418,12 @@ namespace Orts.Viewer3D
                         Materials[materialKey] = new SpriteBatchMaterial(Viewer);
                         break;
                     case "CabSpriteBatch":
-                        //Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader);
                         if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
-                            // Textura s vlastností světla
+                            // Textura s vlastností světla neovlivněná shaderem
                             Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, true, TextureName);
-                        }                        
-                        else
+                        }
+                        else                        
                         {
                             Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, false, TextureName);
                         }
@@ -770,8 +769,8 @@ namespace Orts.Viewer3D
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
         {            
             if (CabShader != null)
-            {                
-                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, 0, LightItem, TextureName);
+            {                                
+                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, Viewer.Simulator.Weather.OvercastFactor, LightItem, TextureName);
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, DepthStencilState.Default, null, CabShader);
             }
             else
