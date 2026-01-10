@@ -2037,6 +2037,8 @@ namespace Orts.Simulation.Physics
         float CyklusCouplerImpuls = 1;
         float CyklusCouplerUncouple = 6;
         public bool TMFailure;
+        int NotFatalServisBreakSpeed = -1;
+        bool NotFatalServisStart;
 
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
@@ -2108,10 +2110,30 @@ namespace Orts.Simulation.Physics
                 // Nefatální incident - tlačení vlaku
                 if (NotFatalIncident)
                 {
-                    NotFatalIncidentDistanceTravelled += car.AbsSpeedMpS * elapsedClockSeconds;
-                    car.MassKG = car.InitialMassKG / Simulator.Random.Next(5, 10) * (1 - (NotFatalIncidentDistanceTravelled / (car.InitialMassKG / 50f))); // postupné snižování hmoty vozu při tlačení cca 1t na 20 m                   
-                    if (car.MassKG < 0.0f) // po vyčerpání hmoty překážka zmizí
-                        this.RemoveTrain();
+                    if (Name.ToLower().Contains("speed"))
+                    {
+                        car.MassKG = car.InitialMassKG;
+                        if (NotFatalServisBreakSpeed == -1)
+                        {
+                            string StrSpeed = "";
+                            foreach (var Number in Name)
+                            {
+                                if (Number >= '0' && Number <= '9')
+                                    StrSpeed = string.Concat(StrSpeed, Number);
+                            }
+                            if (StrSpeed != "")
+                                NotFatalServisBreakSpeed = Int32.Parse(StrSpeed);
+                        }
+                        if (!NotFatalServisStart && car.AbsSpeedMpS > NotFatalServisBreakSpeed / 3.6f) NotFatalServisStart = true;
+                        if (NotFatalServisStart && car.AbsSpeedMpS < NotFatalServisBreakSpeed / 3.6f) this.RemoveTrain(); // Při poklesu rychlosti servis zmizí
+                    }
+                    else
+                    {
+                        NotFatalIncidentDistanceTravelled += car.AbsSpeedMpS * elapsedClockSeconds;
+                        car.MassKG = car.InitialMassKG / Simulator.Random.Next(5, 10) * (1 - (NotFatalIncidentDistanceTravelled / (car.InitialMassKG / 50f))); // postupné snižování hmoty vozu při tlačení cca 1t na 20 m                   
+                        if (car.MassKG < 0.0f) // po vyčerpání hmoty překážka zmizí
+                            this.RemoveTrain();
+                    }
                 }
 
                 massKg += car.MassKG;
