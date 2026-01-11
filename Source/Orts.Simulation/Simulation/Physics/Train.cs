@@ -2039,6 +2039,10 @@ namespace Orts.Simulation.Physics
         public bool TMFailure;
         int NotFatalServisBreakSpeed = -1;
         bool NotFatalServisStart;
+        public bool NotFatalServisGoBack;
+        bool NotFatalServisOrderBack;
+        float NotFatalServisDistance;
+        float InitiatedSpeedMpS;
 
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
@@ -2110,9 +2114,12 @@ namespace Orts.Simulation.Physics
                 // Nefatální incident - tlačení vlaku
                 if (NotFatalIncident)
                 {
+                    // ** Zarážka pro zpomalení vozu při servisu **
                     if (Name.ToLower().Contains("speed"))
                     {
                         car.MassKG = car.InitialMassKG;
+
+                        // Určení rychlosti pro zpomalení vozu
                         if (NotFatalServisBreakSpeed == -1)
                         {
                             string StrSpeed = "";
@@ -2124,8 +2131,44 @@ namespace Orts.Simulation.Physics
                             if (StrSpeed != "")
                                 NotFatalServisBreakSpeed = Int32.Parse(StrSpeed);
                         }
+
+                        // Příznak zahájení zpomalování vozu
                         if (!NotFatalServisStart && car.AbsSpeedMpS > NotFatalServisBreakSpeed / 3.6f) NotFatalServisStart = true;
-                        if (NotFatalServisStart && car.AbsSpeedMpS < NotFatalServisBreakSpeed / 3.6f) this.RemoveTrain(); // Při poklesu rychlosti servis zmizí
+
+                        // Příznak dosažení rychlosti zpomalení vozu a začátek návratu zarážky na původní pozici
+                        if (NotFatalServisStart && !NotFatalServisOrderBack && car.AbsSpeedMpS < NotFatalServisBreakSpeed / 3.6f)
+                        {
+                            NotFatalServisOrderBack = true;
+                            NotFatalServisStart = false;
+                        }
+
+                        // Parametr pro návrat zarážky
+                        if (NotFatalServisOrderBack)
+                        {
+                            NotFatalServisOrderBack = false;
+                            NotFatalServisGoBack = true;
+                            float SpeedMarker = car.SpeedMpS == 0 ? 1 : car.SpeedMpS / (car.AbsSpeedMpS);
+                            InitiatedSpeedMpS = -SpeedMarker * NotFatalServisBreakSpeed / 3.6f; // Návratová rychlost zarážky                           
+                        }
+
+                        // Výpočet vzdálenosti zarážky od původní pozice
+                        if (!NotFatalServisGoBack)
+                            NotFatalServisDistance += car.AbsSpeedMpS * elapsedClockSeconds;
+                        else
+                            NotFatalServisDistance -= car.AbsSpeedMpS * elapsedClockSeconds;
+
+                        // Návrat zarážky na původní pozici
+                        if (NotFatalServisGoBack)
+                        {
+                            car.SpeedMpS = InitiatedSpeedMpS;
+                            if (NotFatalServisDistance < 0)
+                            {
+                                NotFatalServisGoBack = false;                                
+                                NotFatalIncident = false;
+                                NotFatalServisDistance = 0;
+                                car.SpeedMpS = 0;
+                            }
+                        }
                     }
                     else
                     {
