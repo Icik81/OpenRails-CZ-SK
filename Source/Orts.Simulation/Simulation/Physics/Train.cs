@@ -777,6 +777,11 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            NotFatalServisStart = inf.ReadBoolean();
+            NotFatalServisOrderBack = inf.ReadBoolean();
+            NotFatalServisGoBack = inf.ReadBoolean();
+            NotFatalServisDistance = inf.ReadSingle();
+            InitiatedSpeedMpS = inf.ReadSingle();
             FatalIncident = inf.ReadBoolean();
             FatalIncidentRun = inf.ReadBoolean();
             FatalIncidentTimer = inf.ReadSingle();
@@ -1171,6 +1176,11 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(NotFatalServisStart);
+            outf.Write(NotFatalServisOrderBack);
+            outf.Write(NotFatalServisGoBack);
+            outf.Write(NotFatalServisDistance);
+            outf.Write(InitiatedSpeedMpS);
             outf.Write(FatalIncident);
             outf.Write(FatalIncidentRun);
             outf.Write(FatalIncidentTimer);
@@ -2043,6 +2053,7 @@ namespace Orts.Simulation.Physics
         bool NotFatalServisOrderBack;
         float NotFatalServisDistance;
         float InitiatedSpeedMpS;
+        public bool DrivenTrainIsPlayer;
 
         public virtual void physicsUpdate(float elapsedClockSeconds)
         {
@@ -2117,7 +2128,7 @@ namespace Orts.Simulation.Physics
                     // ** Zarážka pro zpomalení vozu při servisu **
                     if (Name.ToLower().Contains("speed"))
                     {
-                        car.MassKG = car.InitialMassKG;
+                        car.MassKG = car.InitialMassKG = 500;                        
 
                         // Určení rychlosti pro zpomalení vozu
                         if (NotFatalServisBreakSpeed == -1)
@@ -2133,10 +2144,10 @@ namespace Orts.Simulation.Physics
                         }
 
                         // Příznak zahájení zpomalování vozu
-                        if (!NotFatalServisStart && car.AbsSpeedMpS > NotFatalServisBreakSpeed / 3.6f) NotFatalServisStart = true;
+                        if (!NotFatalServisStart && Math.Abs(car.SpeedMpS) > NotFatalServisBreakSpeed / 3.6f) NotFatalServisStart = true;
 
                         // Příznak dosažení rychlosti zpomalení vozu a začátek návratu zarážky na původní pozici
-                        if (NotFatalServisStart && !NotFatalServisOrderBack && car.AbsSpeedMpS < NotFatalServisBreakSpeed / 3.6f)
+                        if (NotFatalServisStart && !NotFatalServisOrderBack && Math.Abs(car.SpeedMpS) < NotFatalServisBreakSpeed / 3.6f)
                         {
                             NotFatalServisOrderBack = true;
                             NotFatalServisStart = false;
@@ -2147,15 +2158,21 @@ namespace Orts.Simulation.Physics
                         {
                             NotFatalServisOrderBack = false;
                             NotFatalServisGoBack = true;
-                            float SpeedMarker = car.SpeedMpS == 0 ? 1 : car.SpeedMpS / (car.AbsSpeedMpS);
+                            float SpeedMarker = car.SpeedMpS == 0 ? 1 : car.SpeedMpS / Math.Abs(car.SpeedMpS);
                             InitiatedSpeedMpS = -SpeedMarker * NotFatalServisBreakSpeed / 3.6f; // Návratová rychlost zarážky                           
                         }
 
                         // Výpočet vzdálenosti zarážky od původní pozice
                         if (!NotFatalServisGoBack)
-                            NotFatalServisDistance += car.AbsSpeedMpS * elapsedClockSeconds;
+                        {
+                            NotFatalServisDistance += Math.Abs(car.SpeedMpS) * elapsedClockSeconds;
+                            car.BrakeForceN = DrivenTrainIsPlayer ? 50 : 10;
+                        }
                         else
-                            NotFatalServisDistance -= car.AbsSpeedMpS * elapsedClockSeconds;
+                        {
+                            NotFatalServisDistance -= Math.Abs(car.SpeedMpS) * elapsedClockSeconds;
+                            car.BrakeForceN = 0;
+                        }
 
                         // Návrat zarážky na původní pozici
                         if (NotFatalServisGoBack)
@@ -2172,7 +2189,7 @@ namespace Orts.Simulation.Physics
                     }
                     else
                     {
-                        NotFatalIncidentDistanceTravelled += car.AbsSpeedMpS * elapsedClockSeconds;
+                        NotFatalIncidentDistanceTravelled += Math.Abs(SpeedMpS) * elapsedClockSeconds;
                         car.MassKG = car.InitialMassKG / Simulator.Random.Next(5, 10) * (1 - (NotFatalIncidentDistanceTravelled / (car.InitialMassKG / 50f))); // postupné snižování hmoty vozu při tlačení cca 1t na 20 m                   
                         if (car.MassKG < 0.0f) // po vyčerpání hmoty překážka zmizí
                             this.RemoveTrain();

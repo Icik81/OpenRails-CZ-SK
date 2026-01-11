@@ -3880,7 +3880,7 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // Vibrace při nárazu      
-                if (IsPlayerTrain && Simulator.CarCoupleSpeedOvercome && !Simulator.CarCoupleMaxSpeedOvercome && !Simulator.CarByUserUncoupled)
+                if (IsPlayerTrain && Simulator.CarCoupleSpeedOvercome && !Simulator.CarCoupleMaxSpeedOvercome && !Simulator.CarByUserUncoupled && !Simulator.NotFatalIncident)
                 {
                     CyklusCouplerImpact++;
                     if (CyklusCouplerImpact < 3)
