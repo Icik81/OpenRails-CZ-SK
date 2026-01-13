@@ -212,6 +212,18 @@ namespace Orts.Viewer3D.WebServices
                 LastCol = $"{FormatStrings.FormatSpeedDisplay(locomotive.SpeedMpS, useMetric)}{ColorCode[speedColor]}",
             });
 
+            AddLabel(new ListLabel
+            {
+                FirstCol = Viewer.Catalog.GetString("Limit"),
+                LastCol = $"{FormatStrings.FormatSpeedDisplay(trainInfo.allowedSpeedMpS, useMetric)}{ColorCode[speedColor]}",
+            });
+
+            AddLabel(new ListLabel
+            {
+                FirstCol = Viewer.Catalog.GetString("Distance"),
+                LastCol = $"{train.RealDistanceTravelled:N0} m",
+            });
+
             // Gradient info
             if (normalTextMode)
             {
