@@ -4056,6 +4056,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPHS_CURRENT_AC:
                 case CABViewControlTypes.PANTOGRAPHS_CURRENT_DC:
                 case CABViewControlTypes.STEAMGENERATOR_TEMP:
+                case CABViewControlTypes.GENERATOR_VOLTAGE:
 
                 case CABViewControlTypes.MOTOR_DISABLED:
                 case CABViewControlTypes.INVERTER_TEST:

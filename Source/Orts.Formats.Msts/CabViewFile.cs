@@ -578,6 +578,7 @@ namespace Orts.Formats.Msts
         PANTOGRAPHS_CURRENT_AC,
         PANTOGRAPHS_CURRENT_DC,
         STEAMGENERATOR_TEMP,
+        GENERATOR_VOLTAGE,
 
         // ORTS
         ORTS_SCREEN_SELECT,

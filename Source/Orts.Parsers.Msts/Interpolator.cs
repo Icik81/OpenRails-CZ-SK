@@ -287,7 +287,7 @@ namespace Orts.Parsers.Msts
                 }
                 int numOfColumns = stf.ReadInt(0);
                 string header = stf.ReadString().ToLower();
-                if (header == "throttle" || header == "force" || header == "step" || header == "forcestep" || header == "typecoefstep" || header == "speedstep")
+                if (header == "throttle" || header == "force" || header == "step" || header == "forcestep" || header == "typecoefstep" || header == "speedstep" || header == "throttlecurrent")
                 {
                     // Icik
                     // header = "throttle"...x = Throttle, y = AbsWheelSpeed, Out = TractiveForce
@@ -301,7 +301,7 @@ namespace Orts.Parsers.Msts
                     int numOfThrottleValues = 0;
                     while (!stf.EndOfBlock())
                     {
-                        if (header == "throttle" || header == "step" || header == "forcestep" || header == "typecoefstep" || header == "speedstep")
+                        if (header == "throttle" || header == "step" || header == "forcestep" || header == "typecoefstep" || header == "speedstep" || header == "throttlecurrent")
                             xlist.Add(stf.ReadFloat(STFReader.UNITS.None, 0f));
                         
                         if (header == "force")
@@ -339,6 +339,9 @@ namespace Orts.Parsers.Msts
                             if (header == "typecoefstep")
                                 x = stf.ReadFloat(STFReader.UNITS.None, 0f);
 
+                            if (header == "throttlecurrent")
+                                x = stf.ReadFloat(STFReader.UNITS.Current, 0f);
+
                             numofData++;
                             for (int j = 0; j < numOfColumns - 1; j++)
                             {
@@ -355,6 +358,9 @@ namespace Orts.Parsers.Msts
                                                                                               
                                 if (header == "typecoefstep")
                                     ilist[j][x] = stf.ReadFloat(STFReader.UNITS.None, 0f); // Výstup hodnoty koeficientu
+
+                                if (header == "throttlecurrent")
+                                    ilist[j][x] = stf.ReadFloat(STFReader.UNITS.Voltage, 0f); // Výstup hodnoty napětí
 
                                 numofData++;
                             }

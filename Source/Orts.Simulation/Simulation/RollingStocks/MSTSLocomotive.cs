@@ -370,7 +370,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D ExtendedExcitationCurrent;
         public InterpolatorDiesel2D ExtendedArmCurrent;
         public InterpolatorDiesel2D ExtendedExcitationEDBCurrent; // buzení
-        public InterpolatorDiesel2D ExtendedArmEDBCurrent; // kotvy
+        public InterpolatorDiesel2D ExtendedArmEDBCurrent; // kotvy        
         public float DynamicBrakeSpeed1MpS = MpS.FromKpH(5);
         public float DynamicBrakeSpeed2MpS = MpS.FromKpH(30);
         public float DynamicBrakeSpeed3MpS = MpS.FromKpH(999);
@@ -512,6 +512,7 @@ namespace Orts.Simulation.RollingStocks
         public InterpolatorDiesel2D TractiveForceCurvesDC;
         public InterpolatorDiesel2D DynamicBrakeForceCurvesAC;
         public InterpolatorDiesel2D DynamicBrakeForceCurvesDC;
+        public InterpolatorDiesel2D GeneratorVoltageCurves; // napětí generátoru
         public float UiPowerLose = 1;
         public bool QuickReleaseButton = false;
         bool QuickReleaseButtonPressed = false;
@@ -797,7 +798,8 @@ namespace Orts.Simulation.RollingStocks
         public bool SteamGeneratorOff;
         public float SteamGeneratorMinPressureLimitPSI;
         public float SteamGeneratorAirComsumptionLpS;
-        public bool Combined_control;        
+        public bool Combined_control;          
+        public float GeneratorVoltageFinal;
 
         // Jindrich
         public bool IsActive = false;
@@ -1465,7 +1467,7 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(ortstractioncharacteristicsac": TractiveForceCurvesAC = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortstractioncharacteristicsdc": TractiveForceCurvesDC = new InterpolatorDiesel2D(stf, true); break;
                 case "engine(ortsdynamicbrakeforcecurvesac": DynamicBrakeForceCurvesAC = new InterpolatorDiesel2D(stf, false); break;
-                case "engine(ortsdynamicbrakeforcecurvesdc": DynamicBrakeForceCurvesDC = new InterpolatorDiesel2D(stf, false); break;
+                case "engine(ortsdynamicbrakeforcecurvesdc": DynamicBrakeForceCurvesDC = new InterpolatorDiesel2D(stf, false); break;                                             
                 case "engine(ortsmainreschargingrate2": MainResChargingRatePSIpS_2 = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(ortsauxreschargingrate": AuxResChargingRatePSIpS = stf.ReadFloatBlock(STFReader.UNITS.PressureRateDefaultPSIpS, null); break;
                 case "engine(maxauxrespressure": MaxAuxResPressurePSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
@@ -1541,7 +1543,8 @@ namespace Orts.Simulation.RollingStocks
                 case "engine(steamgeneratorpower": SteamGeneratorPowerW = stf.ReadFloatBlock(STFReader.UNITS.Power, null); break;
                 case "engine(steamgeneratorminpressurelimit": SteamGeneratorMinPressureLimitPSI = stf.ReadFloatBlock(STFReader.UNITS.PressureDefaultPSI, null); break;
                 case "engine(steamgeneratoraircomsumption": SteamGeneratorAirComsumptionLpS = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
-                    
+                case "engine(ortsgeneratorvoltagecharacteristics": GeneratorVoltageCurves = new InterpolatorDiesel2D(stf, true); break;
+
 
                 // Jindrich
                 case "engine(usingforcehandle": UsingForceHandle = stf.ReadBoolBlock(false); break;
@@ -1842,6 +1845,7 @@ namespace Orts.Simulation.RollingStocks
             SteamGeneratorPowerW = locoCopy.SteamGeneratorPowerW;
             SteamGeneratorMinPressureLimitPSI = locoCopy.SteamGeneratorMinPressureLimitPSI;
             SteamGeneratorAirComsumptionLpS = locoCopy.SteamGeneratorAirComsumptionLpS;
+            GeneratorVoltageCurves = locoCopy.GeneratorVoltageCurves;
 
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
@@ -8060,6 +8064,15 @@ namespace Orts.Simulation.RollingStocks
             else
                 if (LocoType != LocoTypes.Vectron && !ControlUnit)
                 DynamicBrakeForceN = 0; // Set dynamic brake force to zero if in Notch 0 position                                                
+
+            // Napětí generátoru             
+            if (GeneratorVoltageCurves != null)
+            {
+                float GeneratorVoltage = GeneratorVoltageCurves.Get(ThrottlePercent / 100f, PowerCurrent1);
+                if (GeneratorVoltageFinal < GeneratorVoltage) GeneratorVoltageFinal += Math.Abs(GeneratorVoltage - GeneratorVoltageFinal) * elapsedClockSeconds;
+                if (GeneratorVoltageFinal > GeneratorVoltage) GeneratorVoltageFinal -= Math.Abs(GeneratorVoltage - GeneratorVoltageFinal) * elapsedClockSeconds;
+                //Simulator.Confirmer.MSG("GeneratorVoltageFinal: " + GeneratorVoltageFinal);
+            }
 
             UpdateFrictionCoefficient(elapsedClockSeconds); // Find the current coefficient of friction depending upon the weather
 
@@ -25506,11 +25519,25 @@ namespace Orts.Simulation.RollingStocks
                         else
                             data = 0;
                         break;
-                    }
+                    }                
                 case CABViewControlTypes.STEAMGENERATOR_TEMP:
                     {
                         SteamGeneratorEnable = true;                        
                         data = (float)Math.Round(SteamGeneratorTempC, 2);                        
+                        break;
+                    }
+                case CABViewControlTypes.GENERATOR_VOLTAGE:
+                    {
+                        if (cvc.UpdateTime > cvc.ElapsedTime)
+                        {
+                            data = cvc.PreviousData;
+                            cvc.ElapsedTime += elapsedTime;
+                            break;
+                        }
+                        data = GeneratorVoltageFinal;
+                        if (cvc.UpdateTime > 0)
+                            cvc.PreviousData = data;
+                        cvc.ElapsedTime = 0;
                         break;
                     }
 
