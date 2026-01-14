@@ -425,6 +425,18 @@ namespace Orts.Common
         PlayerWheelSlipOff,
         SteamGeneratorOn,
         SteamGeneratorOff,
+        MPCThrottleIncrease,
+        MPCThrottleIncreaseFast,
+        MPCThrottleDecrease,
+        MPCThrottleDecreaseFast,
+        MPCDrive,
+        MPCThrottleHold,
+        MPCNeutral,
+        MPCDynamicBrakeHold,
+        MPCDynamicBrakeIncrease,
+        MPCDynamicBrakeIncreaseFast,
+        MPCDynamicBrakeDecrease,
+        MPCTrainBrakesControllerApplyStart,
     }
 
     public static class Events
@@ -864,6 +876,19 @@ namespace Orts.Common
                         case 20178: return Event.PlayerWheelSlipOff;
                         case 20179: return Event.SteamGeneratorOn;
                         case 20180: return Event.SteamGeneratorOff;
+                        case 20181: return Event.MPCThrottleIncrease;
+                        case 20182: return Event.MPCThrottleIncreaseFast;
+                        case 20183: return Event.MPCThrottleDecrease;
+                        case 20184: return Event.MPCThrottleDecreaseFast;
+                        case 20185: return Event.MPCDrive;
+                        case 20186: return Event.MPCThrottleHold;
+                        case 20187: return Event.MPCNeutral;
+                        case 20188: return Event.MPCDynamicBrakeHold;
+                        case 20189: return Event.MPCDynamicBrakeIncrease;
+                        case 20190: return Event.MPCDynamicBrakeIncreaseFast;
+                        case 20191: return Event.MPCDynamicBrakeDecrease;
+                        case 20192: return Event.MPCTrainBrakesControllerApplyStart;
+
 
                         default: return 0;
                     }

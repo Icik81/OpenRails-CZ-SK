@@ -1095,7 +1095,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
             }
             if (movement == Movement.Forward)
-            {
+            {                
                 noKeyPressed = false;
                 checkNeutral = false;
                 bool isFirst = true;
@@ -1114,7 +1114,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
             }
             if (movement == Movement.Aft)
-            {
+            {                
                 noKeyPressed = false;
                 checkNeutral = false;
                 bool selectNext = false;
@@ -1129,7 +1129,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                 }
             }
             if (movement == Movement.Neutral)
-            {
+            {                
                 noKeyPressed = true;
                 foreach (Position pair in PositionsList)
                 {
@@ -1154,6 +1154,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         }
 
+        string[] PrevcurrentPosition = new string[3];
+        bool ChangePosition;        
         public void ReloadPositions()
         {
             if (noKeyPressed)
@@ -1177,159 +1179,177 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     }
                 }
             }
+
+            if (Locomotive.Simulator.GameTime == 0 || Locomotive.Simulator.GameWasRestored) PrevcurrentPosition[Locomotive.LocoStation] = currentPosition[Locomotive.LocoStation];
+            ChangePosition = PrevcurrentPosition[Locomotive.LocoStation] != currentPosition[Locomotive.LocoStation] ? true : false;                                         
+            PrevcurrentPosition[Locomotive.LocoStation] = currentPosition[Locomotive.LocoStation];
+
             switch (currentPosition[Locomotive.LocoStation])
-            {
-                case "ThrottleIncrease":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleIncrease;
-                        break;
-                    }
-                case "ThrottleIncreaseFast":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleIncreaseFast;
-                        break;
-                    }
-                case "ThrottleIncreaseOrDynamicBrakeDecrease":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecrease;
-                        break;
-                    }
-                case "ThrottleIncreaseOrDynamicBrakeDecreaseFast":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecreaseFast;
-                        break;
-                    }
-                case "DynamicBrakeIncreaseOrThrottleDecrease":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeIncreaseOrThrottleDecrease;
-                        break;
-                    }
-                case "DynamicBrakeIncreaseOrThrottleDecreaseFast":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeIncreaseOrThrottleDecreaseFast;
-                        break;
-                    }
-                case "ThrottleDecrease":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleDecrease;
-                        break;
-                    }
-                case "ThrottleDecreaseFast":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleDecreaseFast;
-                        break;
-                    }
-                case "Drive":
-                    {
-                        controllerPosition = ControllerPosition.Drive;
-                        break;
-                    }
-                case "ThrottleHold":
-                    {
-                        controllerPosition = ControllerPosition.ThrottleHold;
-                        break;
-                    }
-                case "Neutral":
-                    {
-                        controllerPosition = ControllerPosition.Neutral;
-                        break;
-                    }
-                case "KeepCurrent":
-                    {
-                        controllerPosition = ControllerPosition.KeepCurrent;
-                        break;
-                    }
-                case "DynamicBrakeHold":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeHold;
-                        break;
-                    }
-                case "DynamicBrakeIncrease":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeIncrease;
-                        break;
-                    }
-                case "DynamicBrakeIncreaseFast":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeIncreaseFast;
-                        break;
-                    }
-                case "DynamicBrakeDecrease":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeDecrease;
-                        break;
-                    }
-                case "TrainBrakeIncrease":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakeIncrease;
-                        break;
-                    }
-                case "TrainBrakeDecrease":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakeDecrease;
-                        break;
-                    }
-                case "EmergencyBrake":
-                    {
-                        controllerPosition = ControllerPosition.EmergencyBrake;
-                        break;
-                    }
-                case "SelectedSpeedIncrease":
-                    {
-                        controllerPosition = ControllerPosition.SelectedSpeedIncrease;
-                        break;
-                    }
-                case "SelectedSpeedDecrease":
-                    {
-                        controllerPosition = ControllerPosition.SelectedSpeedDecrease;
-                        break;
-                    }
-                case "SelectSpeedZero":
-                    {
-                        controllerPosition = ControllerPosition.SelectSpeedZero;
-                        break;
-                    }
-                case "DynamicBrakeIncreaseWithPriority":
-                    {
-                        controllerPosition = ControllerPosition.DynamicBrakeIncreaseWithPriority;
-                        break;
-                    }
-                case "TrainBrakesControllerFullQuickReleaseStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerFullQuickReleaseStart;
-                        break;
-                    }
-                case "TrainBrakesControllerOverchargeStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerOverchargeStart;
-                        break;
-                    }
-                case "TrainBrakesControllerHoldLappedStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerHoldLappedStart;
-                        break;
-                    }
-                case "TrainBrakesControllerReleaseStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerReleaseStart;
-                        break;
-                    }
-                case "TrainBrakesControllerNeutralhandleOffStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerNeutralhandleOffStart;
-                        break;
-                    }
-                case "TrainBrakesControllerApplyStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;
-                        break;
-                    }
-                case "TrainBrakesControllerEmergencyStart":
-                    {
-                        controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;
-                        break;
-                    }
-            }
+                {
+                    case "ThrottleIncrease":
+                        {                                
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCThrottleIncrease);
+                            controllerPosition = ControllerPosition.ThrottleIncrease;
+                            break;
+                        }
+                    case "ThrottleIncreaseFast":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCThrottleIncreaseFast);
+                            controllerPosition = ControllerPosition.ThrottleIncreaseFast;
+                            break;
+                        }
+                    case "ThrottleIncreaseOrDynamicBrakeDecrease":
+                        {
+                            controllerPosition = ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecrease;
+                            break;
+                        }
+                    case "ThrottleIncreaseOrDynamicBrakeDecreaseFast":
+                        {
+                            controllerPosition = ControllerPosition.ThrottleIncreaseOrDynamicBrakeDecreaseFast;
+                            break;
+                        }
+                    case "DynamicBrakeIncreaseOrThrottleDecrease":
+                        {
+                            controllerPosition = ControllerPosition.DynamicBrakeIncreaseOrThrottleDecrease;
+                            break;
+                        }
+                    case "DynamicBrakeIncreaseOrThrottleDecreaseFast":
+                        {
+                            controllerPosition = ControllerPosition.DynamicBrakeIncreaseOrThrottleDecreaseFast;
+                            break;
+                        }
+                    case "ThrottleDecrease":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCThrottleDecrease);
+                            controllerPosition = ControllerPosition.ThrottleDecrease;
+                            break;
+                        }
+                    case "ThrottleDecreaseFast":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCThrottleDecreaseFast);
+                            controllerPosition = ControllerPosition.ThrottleDecreaseFast;
+                            break;
+                        }
+                    case "Drive":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDrive);
+                            controllerPosition = ControllerPosition.Drive;
+                            break;
+                        }
+                    case "ThrottleHold":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCThrottleHold);
+                            controllerPosition = ControllerPosition.ThrottleHold;
+                            break;
+                        }
+                    case "Neutral":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCNeutral);
+                            controllerPosition = ControllerPosition.Neutral;
+                            break;
+                        }
+                    case "KeepCurrent":
+                        {
+                            controllerPosition = ControllerPosition.KeepCurrent;
+                            break;
+                        }
+                    case "DynamicBrakeHold":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDynamicBrakeHold);
+                            controllerPosition = ControllerPosition.DynamicBrakeHold;
+                            break;
+                        }
+                    case "DynamicBrakeIncrease":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDynamicBrakeIncrease);
+                            controllerPosition = ControllerPosition.DynamicBrakeIncrease;
+                            break;
+                        }
+                    case "DynamicBrakeIncreaseFast":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDynamicBrakeIncreaseFast);
+                            controllerPosition = ControllerPosition.DynamicBrakeIncreaseFast;
+                            break;
+                        }
+                    case "DynamicBrakeDecrease":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDynamicBrakeDecrease);
+                            controllerPosition = ControllerPosition.DynamicBrakeDecrease;
+                            break;
+                        }
+                    case "TrainBrakeIncrease":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakeIncrease;
+                            break;
+                        }
+                    case "TrainBrakeDecrease":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakeDecrease;
+                            break;
+                        }
+                    case "EmergencyBrake":
+                        {
+                            controllerPosition = ControllerPosition.EmergencyBrake;
+                            break;
+                        }
+                    case "SelectedSpeedIncrease":
+                        {
+                            controllerPosition = ControllerPosition.SelectedSpeedIncrease;
+                            break;
+                        }
+                    case "SelectedSpeedDecrease":
+                        {
+                            controllerPosition = ControllerPosition.SelectedSpeedDecrease;
+                            break;
+                        }
+                    case "SelectSpeedZero":
+                        {
+                            controllerPosition = ControllerPosition.SelectSpeedZero;
+                            break;
+                        }
+                    case "DynamicBrakeIncreaseWithPriority":
+                        {
+                            controllerPosition = ControllerPosition.DynamicBrakeIncreaseWithPriority;
+                            break;
+                        }
+                    case "TrainBrakesControllerFullQuickReleaseStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerFullQuickReleaseStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerOverchargeStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerOverchargeStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerHoldLappedStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerHoldLappedStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerReleaseStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerReleaseStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerNeutralhandleOffStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerNeutralhandleOffStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerApplyStart":
+                        {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCTrainBrakesControllerApplyStart);
+                            controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;
+                            break;
+                        }
+                    case "TrainBrakesControllerEmergencyStart":
+                        {
+                            controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;
+                            break;
+                        }
+                }            
+
             if (!messageDisplayed)
             {
                 string msg = GetPositionName(currentPosition[Locomotive.LocoStation]);
