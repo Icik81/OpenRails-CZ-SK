@@ -1309,6 +1309,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     case "DynamicBrakeIncreaseWithPriority":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCDynamicBrakeIncrease);
                             controllerPosition = ControllerPosition.DynamicBrakeIncreaseWithPriority;
                             break;
                         }
