@@ -17875,6 +17875,8 @@ namespace Orts.Simulation.Physics
                     exitTimesCalculated = false;
                 }
             }
+            else
+                Simulator.DoorSwitchDoorLocked = true;
 
             if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)
             {

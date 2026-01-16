@@ -4249,6 +4249,10 @@ namespace Orts.Simulation.RollingStocks
         {
             if (IsLeadLocomotive())
             {
+                foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    car.PowerReductionResult13 = 0;
+                }
                 if (DoorSwitchEnable && Battery && StationIsActivated[LocoStation])
                 {
                     foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
