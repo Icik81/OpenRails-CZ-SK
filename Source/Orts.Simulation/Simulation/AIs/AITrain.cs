@@ -3425,8 +3425,8 @@ namespace Orts.Simulation.AIs
                             float brakingDistance = SpeedMpS * SpeedMpS * 0.5f * (0.5f * MaxDecelMpSS);
                             float reqspeed = (float)Math.Sqrt(distanceToTrain * MaxDecelMpSS);
 
-                            float maxspeed = Math.Max(reqspeed, creepSpeedMpS); // allow continue at creepspeed
-                            
+                            float maxspeed = Math.Max(reqspeed, creepSpeedMpS); // allow continue at creepspeed                            
+
                             // Icik                                 
                             if (distanceToTrain < keepDistanceStatTrainM_P * 2f && attachToTrain)
                                 maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 6f);
@@ -3440,29 +3440,34 @@ namespace Orts.Simulation.AIs
                             if (distanceToTrain < keepDistanceStatTrainM_P - 9.5f && attachToTrain)
                                 maxspeed = Math.Min(maxspeed, couplingSpeedMpS);
 
-                            maxspeed = Math.Min(maxspeed, AllowedMaxSpeedMpS); // but never beyond valid speed limit
+                            //maxspeed = Math.Min(maxspeed, AllowedMaxSpeedMpS); // but never beyond valid speed limit
+                            maxspeed = Math.Min(maxspeed, 30.0f / 3.6f); // při přiblížení k vlaku max 30 km/h
 
                             // set brake or acceleration as required                            
                             if (SpeedMpS > maxspeed)
-                            {
-                                AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
+                            {                                
+                                // Icik
+                                if (maxspeed > couplingSpeedMpS * 6f)
+                                    UpdateSmoothDecelerating(elapsedClockSeconds);
+                                else
+                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 5);
                             }
                             else if ((distanceToTrain - brakingDistance) > keepDistanceTrainM * 3.0f)
                             {
                                 if (brakingDistance > distanceToTrain)
                                 {
-                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
+                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 10);
                                 }
                                 else if (SpeedMpS < maxspeed)
                                 {
-                                    AdjustControlsAccelMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 20);
+                                    AdjustControlsAccelMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 5);
                                 }
                             }
                             else if ((distanceToTrain - brakingDistance) > keepDistanceTrainM)
                             {
                                 if (SpeedMpS > maxspeed)
                                 {
-                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 50);
+                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 50);
                                 }
                                 else if (SpeedMpS > 0.25f * maxspeed)
                                 {
@@ -3472,7 +3477,7 @@ namespace Orts.Simulation.AIs
                                 {
                                     AdjustControlsAccelMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                                 }
-                            }
+                            }                            
                             //                            if (distanceToTrain < keepDistanceStatTrainM_P - 4.0f || (distanceToTrain - brakingDistance) <= keepDistanceTrainM) // Other possibility
                             if ((distanceToTrain - brakingDistance) <= keepDistanceTrainM)
                             {
@@ -3648,7 +3653,7 @@ namespace Orts.Simulation.AIs
 
                 // train not found - keep moving, state will change next update
                 else AttachTo = -1;
-            }
+            }            
         }
 
         //================================================================================================//
@@ -4165,7 +4170,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 AIRollOnCutOffSpeed += Cars.Count * (0.025f / 3.6f);
-            }
+            }            
 
             if (AIRollOn)
             {
@@ -4181,7 +4186,7 @@ namespace Orts.Simulation.AIs
                             AIPrevSpeedMpS = SpeedMpS;
                             AICheckSpeedTimer = 0;
                         }
-                    }
+                    }                    
 
                     if (Math.Abs(SpeedMpS) > AIRollOnCutOffSpeed / 3f)
                         AITSethrottlePercent += timeS;
@@ -4227,6 +4232,11 @@ namespace Orts.Simulation.AIs
             {
                 AIStayToRollOn = false;
                 AIRollOnTimer = 0f;
+            }
+
+            if (AITrainWillAttach) // omezení rozjezdu při připojování
+            {
+                AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 10.0f);
             }
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
