@@ -3447,10 +3447,10 @@ namespace Orts.Simulation.AIs
                             if (SpeedMpS > maxspeed)
                             {                                
                                 // Icik
-                                if (maxspeed > couplingSpeedMpS * 6f)
+                                if (maxspeed > 10.0f / 3.6f && distanceToTrain > 100) // nad 10 km/h a vlak je dále než 100 m
                                     UpdateSmoothDecelerating(elapsedClockSeconds);
                                 else
-                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 5);
+                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 10);
                             }
                             else if ((distanceToTrain - brakingDistance) > keepDistanceTrainM * 3.0f)
                             {
