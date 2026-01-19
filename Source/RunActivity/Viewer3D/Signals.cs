@@ -698,6 +698,7 @@ namespace Orts.Viewer3D
 
                                 // 64x64 Velká 
                                 case "trat zsr 191-193":
+                                case "cr_270_mp":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
                                     CZRoutes = true;
