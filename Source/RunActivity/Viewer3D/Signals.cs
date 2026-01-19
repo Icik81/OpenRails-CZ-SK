@@ -668,6 +668,7 @@ namespace Orts.Viewer3D
                                 case "bohumín - olomouc hl.n.": // cz_bohumin-olomouc                                    
                                 case "trencin - nitra": // TN_NR                                                                        
                                 case "ztracena_old":
+                                case "cr_270_mp":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));                                    
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
                                     CZRoutes = true;
@@ -697,8 +698,7 @@ namespace Orts.Viewer3D
                                     break;
 
                                 // 64x64 Velká 
-                                case "trat zsr 191-193":
-                                case "cr_270_mp":
+                                case "trat zsr 191-193":                                
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
                                     CZRoutes = true;
