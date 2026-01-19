@@ -24,6 +24,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 
@@ -570,9 +571,9 @@ namespace Orts.Viewer3D
     }
 
     public class PrecipitationMaterial : Material
-    {
-        Texture2D RainTexture;
-        Texture2D SnowTexture;
+    {        
+        Texture2D[] RainTexture = new Texture2D[2];
+        Texture2D[] SnowTexture = new Texture2D[2];
         Texture2D[] DynamicPrecipitationTexture = new Texture2D[12];
         IEnumerator<EffectPass> ShaderPasses;
 
@@ -580,10 +581,22 @@ namespace Orts.Viewer3D
             : base(viewer, null)
         {
             // TODO: This should happen on the loader thread.
-            RainTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Raindrop.png"));
-            SnowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Snowflake.png"));
-            DynamicPrecipitationTexture[0] = SnowTexture;
-            DynamicPrecipitationTexture[11] = RainTexture;
+            RainTexture[0] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Raindrop.png"));
+            SnowTexture[0] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "Snowflake.png"));
+
+            for (int i = 1; i < 2; i++)
+            {
+                var path = "Snowflake" + i.ToString() + ".png";                
+                if (File.Exists(System.IO.Path.Combine(Viewer.ContentPath, path)))
+                    SnowTexture[i] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, path));
+
+                path = "Raindrop" + i.ToString() + ".png";
+                if (File.Exists(System.IO.Path.Combine(Viewer.ContentPath, path)))
+                    RainTexture[i] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, path));
+            }
+
+            DynamicPrecipitationTexture[0] = SnowTexture[0];
+            DynamicPrecipitationTexture[11] = RainTexture[0];
             for (int i = 1; i <= 10; i++)
             {
                 var path = "Raindrop" + i.ToString() + ".png";
@@ -601,9 +614,7 @@ namespace Orts.Viewer3D
             shader.particleSize.SetValue(1f);
             if (Viewer.Simulator.Weather.PrecipitationLiquidity == 0 || Viewer.Simulator.Weather.PrecipitationLiquidity == 1)
             {
-                shader.precipitation_Tex.SetValue(Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow ? SnowTexture :
-                    Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain ? RainTexture :
-                    Viewer.Simulator.Weather.PrecipitationLiquidity == 0 ? SnowTexture : RainTexture);
+                // nastavuje se v Renderu
             }
             else
             {
@@ -614,16 +625,29 @@ namespace Orts.Viewer3D
             graphicsDevice.BlendState = BlendState.NonPremultiplied;
             graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
         }
-
+        
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
         {
-            var shader = Viewer.MaterialManager.PrecipitationShader;
+            var shader = Viewer.MaterialManager.PrecipitationShader;            
 
-            ShaderPasses.Reset();
+            ShaderPasses.Reset();            
             while (ShaderPasses.MoveNext())
-            {
+            {                
+                int itemStream = 0;
                 foreach (var item in renderItems)
                 {
+                    // Zmìna textury podle typu poèasí pro 2 streamy  
+                    if (Viewer.Simulator.Weather.PrecipitationLiquidity == 0 || Viewer.Simulator.Weather.PrecipitationLiquidity == 1)
+                    {
+                        if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow || Viewer.Simulator.Weather.PrecipitationLiquidity == 0)
+                            shader.precipitation_Tex.SetValue(SnowTexture[itemStream]);
+
+                        if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain || Viewer.Simulator.Weather.PrecipitationLiquidity == 1)
+                            shader.precipitation_Tex.SetValue(RainTexture[itemStream]);
+                        
+                        itemStream++;
+                    }                    
+
                     // Note: This is quite a hack. We ideally should be able to pass this through RenderItem somehow.
                     shader.cameraTileXZ.SetValue(new Vector2(item.XNAMatrix.M21, item.XNAMatrix.M22));
                     shader.currentTime.SetValue(item.XNAMatrix.M11);
@@ -631,8 +655,8 @@ namespace Orts.Viewer3D
                     shader.SetMatrix(Matrix.Identity, ref XNAViewMatrix, ref XNAProjectionMatrix);
                     ShaderPasses.Current.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
-                }
-            }
+                }                
+            }            
         }
 
         public override void ResetState(GraphicsDevice graphicsDevice)
@@ -648,8 +672,8 @@ namespace Orts.Viewer3D
 
         public override void Mark()
         {
-            Viewer.TextureManager.Mark(RainTexture);
-            Viewer.TextureManager.Mark(SnowTexture);
+            Viewer.TextureManager.Mark(RainTexture[0]);
+            Viewer.TextureManager.Mark(SnowTexture[0]);
             for (int i = 1; i <= 10; i++)
                 Viewer.TextureManager.Mark(DynamicPrecipitationTexture[i]);
             base.Mark();

@@ -98,6 +98,9 @@ namespace Orts.Viewer3D.RollingStock
         List<ParticleEmitterViewer> WagonGenerator = new List<ParticleEmitterViewer>();
         List<ParticleEmitterViewer> DieselLocoGenerator = new List<ParticleEmitterViewer>();
 
+        // Icik
+        List<ParticleEmitterViewer> RainSnow = new List<ParticleEmitterViewer>();
+
         bool HasFirstPanto;
         int numBogie1, numBogie2, bogie1Axles, bogie2Axles = 0;
         int bogieMatrix1, bogieMatrix2 = 0;
@@ -236,6 +239,15 @@ namespace Orts.Viewer3D.RollingStock
                     SteamBrake.AddRange(emitter.Value);
 
                 foreach (var drawer in SteamBrake)
+                {
+                    drawer.Initialize(steamTexture);
+                }
+
+                // Icik
+                if (emitter.Key.ToLowerInvariant() == "rainsnowfx")
+                    RainSnow.AddRange(emitter.Value);
+
+                foreach (var drawer in RainSnow)
                 {
                     drawer.Initialize(steamTexture);
                 }
@@ -681,6 +693,12 @@ namespace Orts.Viewer3D.RollingStock
             foreach (var drawer in SteamBrake)
             {
                 drawer.SetOutput(car.SteamBrakeLeaksVelocityMpS, car.SteamBrakeLeaksVolumeM3pS, car.SteamBrakeLeaksDurationS);
+            }
+
+            // Icik
+            foreach (var drawer in RainSnow)
+            {
+                drawer.SetOutput(car.AbsSpeedMpS, car.Simulator.Weather.PricipitationIntensityPPSPM2, 1, Color.White);
             }
 
             foreach (List<ParticleEmitterViewer> drawers in ParticleDrawers.Values)

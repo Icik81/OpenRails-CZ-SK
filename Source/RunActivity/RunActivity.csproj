@@ -1024,6 +1024,7 @@
     <Content Include="Content\Snowflake.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\Snowflake1.png" />
     <Content Include="Content\StarDome1.bmp">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
