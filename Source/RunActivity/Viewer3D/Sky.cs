@@ -605,6 +605,8 @@ namespace Orts.Viewer3D
             SkyShader.MoonMaskTexture = MoonMask;            
         }
 
+        private float thunderYaw;   // Náhodný směr (0-360°)
+        private float thunderPitch; // Náhodná výška nad obzorem
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
         {
             // Adjust Fog color for day-night conditions and overcast
@@ -713,28 +715,42 @@ namespace Orts.Viewer3D
                         thunderTexture = ThunderTexture[3];
                         break;
                 }
+                thunderYaw = 0;
+                thunderPitch = 0;
             }
 
             if (Viewer.Simulator.WorldThunder)
-                SkyShader.ThunderMapTexture = thunderTexture;
-            else
-                SkyShader.ThunderMapTexture = ThunderTexture[0]; // Bez blesku
-                        
-            SkyShader.CurrentTechnique = SkyShader.Techniques["Thunder"];
-            Viewer.World.Sky.Primitive.drawIndex = 3;
-            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-
-            ShaderPassesThunder.Reset();
-            while (ShaderPassesThunder.MoveNext())
             {
-                foreach (var item in renderItems)
+                SkyShader.ThunderMapTexture = thunderTexture;
+                SkyShader.CurrentTechnique = SkyShader.Techniques["Thunder"];
+                Viewer.World.Sky.Primitive.drawIndex = 3;
+                graphicsDevice.RasterizerState = RasterizerState.CullNone;                         
+
+                thunderYaw = thunderYaw == 0 ? (float)(Viewer.Random.NextDouble() * Math.PI * 2) : thunderYaw;
+                thunderPitch = thunderPitch == 0 ? (float)(Viewer.Random.NextDouble() * Math.PI * 0.3) : thunderPitch; // Horní část oblohy
+                
+                float thunderDistance = skyRadius - 100; // Kousek před oblohou
+                Matrix XNAThunderMatrix = Matrix.CreateScale(1) * // Velikost blesku
+                                   Matrix.CreateRotationX(thunderPitch) * Matrix.CreateRotationY(thunderYaw) * Matrix.CreateTranslation(
+                                       (float)Math.Cos(thunderYaw) * thunderDistance,
+                                       (float)Math.Sin(thunderPitch) * thunderDistance,
+                                       (float)Math.Sin(thunderYaw) * thunderDistance
+                                   );
+
+                ShaderPassesThunder.Reset();
+                while (ShaderPassesThunder.MoveNext())
                 {
-                    Matrix wvp = item.XNAMatrix * viewXNASkyProj;
-                    SkyShader.SetMatrix(ref wvp);
-                    ShaderPassesThunder.Current.Apply();
-                    item.RenderPrimitive.Draw(graphicsDevice);
+                    foreach (var item in renderItems)
+                    {
+                        Matrix wvp = XNAThunderMatrix * XNAViewMatrix * Camera.XNASkyProjection;
+                        SkyShader.SetMatrix(ref wvp);
+                        ShaderPassesThunder.Current.Apply();
+                        item.RenderPrimitive.Draw(graphicsDevice);
+                    }
                 }
             }
+            else
+                SkyShader.ThunderMapTexture = ThunderTexture[0]; // Bez blesku
         }
 
         public override void ResetState(GraphicsDevice graphicsDevice)
