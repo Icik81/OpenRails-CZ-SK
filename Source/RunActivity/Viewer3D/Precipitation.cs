@@ -74,11 +74,21 @@ namespace Orts.Viewer3D
             }
 
             var gameTime = (float)Viewer.Simulator.GameTime;
-            Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
-            Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (2f / 3f), Viewer);
-            Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
-            Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (1f / 3f), Viewer);            
-            
+            if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain)
+            {
+                Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2, Viewer);
+                Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2, Viewer);
+            }
+            else
+            {
+                Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (2f / 3f), Viewer);
+                Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
+                Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (1f / 3f), Viewer);
+            }
+
             // Note: This is quite a hack. We ideally should be able to pass this through RenderItem somehow.
             var XNAWorldLocation = Matrix.Identity;
             XNAWorldLocation.M11 = gameTime;
@@ -411,7 +421,7 @@ namespace Orts.Viewer3D
                     var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
 
                     //temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
-                    temp.Location.Y = worldLocation.Location.Y - Math.Abs(Math.Abs(worldLocation.Location.Y) - Math.Abs(tiles.GetElevation(worldLocation) <= 0 ? worldLocation.Location.Y + 5 : tiles.GetElevation(worldLocation))); // Èástice budou vždy padat na pozici kamery v rámci boxu                    
+                    temp.Location.Y = worldLocation.Location.Y - Math.Abs(Math.Abs(worldLocation.Location.Y) - Math.Abs(tiles.GetElevation(worldLocation) <= 0 ? worldLocation.Location.Y + 5 : tiles.GetElevation(worldLocation) + 5)); // Èástice budou vždy padat na pozici kamery v rámci boxu                    
                     var position = new WorldPosition(temp);                    
 
                     var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
@@ -419,7 +429,7 @@ namespace Orts.Viewer3D
                     var vertex = particle * VerticiesPerParticle;
 
                     // windEffect táhne vloèky opaèným smìrem, než kam letí kamera                   
-                    Vector3 windEffect = -cameraVelocity * ParticleDuration / CameraVelocityCoef;                    
+                    Vector3 windEffect = Program.Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain ? - cameraVelocity * ParticleDuration : -cameraVelocity * ParticleDuration / CameraVelocityCoef;
 
                     for (var j = 0; j < VerticiesPerParticle; j++)
                     {

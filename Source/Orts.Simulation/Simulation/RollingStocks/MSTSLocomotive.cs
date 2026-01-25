@@ -12257,6 +12257,8 @@ namespace Orts.Simulation.RollingStocks
                     ThunderSoundTimerOn = 0;
                 }
             }
+            else
+                SignalEvent(Event.ThunderSoundOff);
         }
 
         public bool Wipers3ActivationEnable;

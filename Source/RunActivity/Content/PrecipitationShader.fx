@@ -122,6 +122,7 @@ void _PSApplyDay2Night(inout float4 Color)
 float4 PSPrecipitation(in VERTEX_OUTPUT In) : COLOR0
 {
     float4 color = tex2D(PrecipitationSamp, In.TexCoord);
+	color.a *= 1.2; // Snížení prùhlednosti kapek
 
     // Zahodit jen úplnì neviditelné fragmenty
     if (color.a < 0.05) discard;
