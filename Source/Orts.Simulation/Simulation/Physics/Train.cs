@@ -17874,9 +17874,7 @@ namespace Orts.Simulation.Physics
                     enterTimesCalculated = false;
                     exitTimesCalculated = false;
                 }
-            }
-            else
-                Simulator.DoorSwitchDoorLocked = true;
+            }            
 
             if (train.SpeedMpS > 0.05f || train.SpeedMpS < -0.05f)
             {
@@ -18231,13 +18229,13 @@ namespace Orts.Simulation.Physics
                     PeopleWantToEntry = false;
                 }
                 bool closeDoor = false;
-                bool haveCentralDoors = false;                
+                bool haveCentralDoors = false;
 
                 foreach (TrainCar tc in train.Cars)
                 {
                     MSTSWagon wagon = (MSTSWagon)tc;
                     haveCentralDoors = loco.CentralHandlingDoors;
-                    
+
                     // Některé vozy nemusí mít automatické dveře a dveře zavírají cestující
                     for (int i = 0; i < train.Cars.Count; i++)
                     {
@@ -18263,19 +18261,44 @@ namespace Orts.Simulation.Physics
                         }
                     }
 
-                    // Detekce příznaku pro automatické dveře motoráku
-                    if (wagon is MSTSLocomotive
-                        && ((wagon as MSTSLocomotive).LocomotiveTypeNumber == 810 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 809 // Motorák 809 - 810 zavírá dveře strojvedoucí 
-                        || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 151 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 152 // Motorák M151 - M152 zavírá dveře strojvedoucí
-                        || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 811 || (wagon as MSTSLocomotive).LocomotiveTypeNumber == 812) // Motorák 811 - 812 zavírá dveře strojvedoucí 
-                        && (wagon as MSTSLocomotive).IsLeadLocomotive() && haveCentralDoors)
-                    {
-                        train.BoardingComplete = true;
-                        enterTimesCalculated = false;
-                        exitTimesCalculated = false;
-                        DoorCanBeOpenned = true;
-                        StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
-                        return;
+                    // Detekce příznaku pro automatické dveře, které zůstanou otevřené i po skončení nástupu a výstupu
+                    if (wagon is MSTSLocomotive && (wagon as MSTSLocomotive).IsLeadLocomotive() && haveCentralDoors)
+                    {                        
+                        if (!(wagon is MSTSControlUnit))
+                        {
+                            switch ((wagon as MSTSLocomotive).LocomotiveTypeNumber)
+                            {
+                                case 809: case 810:
+                                case 151: case 152:
+                                case 811: case 812:
+                                case 671: case 471:
+                                case 460: case 560:
+                                case 842: case 843:
+                                    train.BoardingComplete = true;
+                                    enterTimesCalculated = false;
+                                    exitTimesCalculated = false;
+                                    DoorCanBeOpenned = true;
+                                    StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
+                                    return;
+                            }
+                        }
+
+                        if (wagon is MSTSControlUnit)
+                        {
+                            var PU = (wagon as MSTSControlUnit).PowerControlUnit;
+                            switch ((PU as MSTSLocomotive).LocomotiveTypeNumber)
+                            {
+                                case 671: case 471:
+                                case 460: case 560:
+                                case 842: case 843:
+                                    train.BoardingComplete = true;
+                                    enterTimesCalculated = false;
+                                    exitTimesCalculated = false;
+                                    DoorCanBeOpenned = true;
+                                    StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
+                                    return;
+                            }
+                        }
                     }
                 }
                        

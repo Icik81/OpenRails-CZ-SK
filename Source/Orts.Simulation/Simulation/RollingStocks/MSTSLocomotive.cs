@@ -24962,7 +24962,7 @@ namespace Orts.Simulation.RollingStocks
                         break;
                     }
                 case CABViewControlTypes.HS198_DISPLAY:
-                    {
+                    {                        
                         cvc.ElapsedTime += elapsedTime;
                         data = cvc.PreviousData;
                         if (cvc.ElapsedTime > cvc.UpdateTime)
@@ -25012,6 +25012,19 @@ namespace Orts.Simulation.RollingStocks
                                     cvc.PreviousData = HS198ControllerDisplayValue + 2;
                             }
                         }
+
+                        if (!DirectionControllerHS198PositionSh && !ShModeActivated && !ShModeActivated2)
+                        {
+                            switch (HS198ControllerDisplay2Value)
+                            {
+                                case 28:
+                                case 29:
+                                case 30:
+                                case 31:
+                                case 32:
+                                case 33: data = 59; break; // Prázdné políčko kvůli shuntům
+                            }                         
+                        }                        
                         break;
                     }
                 case CABViewControlTypes.HS198_DISPLAY2:
