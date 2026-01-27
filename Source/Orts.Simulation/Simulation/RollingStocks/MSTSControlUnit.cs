@@ -125,6 +125,7 @@ namespace Orts.Simulation.RollingStocks
             MUCableOk = true;
             Battery = false;
             Simulator.ControlUnitIsLead = false;
+            PowerControlUnit = null;
 
             // AI
             if (!IsPlayerTrain && !Battery)
@@ -205,7 +206,7 @@ namespace Orts.Simulation.RollingStocks
                     Battery = true;                    
                 }
                 #endregion LocoReadyToGo
-
+                                
                 if (MUCableOk)
                 {
                     if (car.PowerUnitWithControl && car is MSTSElectricLocomotive)

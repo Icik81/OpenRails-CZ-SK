@@ -18286,17 +18286,23 @@ namespace Orts.Simulation.Physics
                         if (wagon is MSTSControlUnit)
                         {
                             var PU = (wagon as MSTSControlUnit).PowerControlUnit;
-                            switch ((PU as MSTSLocomotive).LocomotiveTypeNumber)
+                            if (PU != null)
                             {
-                                case 671: case 471:
-                                case 460: case 560:
-                                case 842: case 843:
-                                    train.BoardingComplete = true;
-                                    enterTimesCalculated = false;
-                                    exitTimesCalculated = false;
-                                    DoorCanBeOpenned = true;
-                                    StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
-                                    return;
+                                switch ((PU as MSTSLocomotive).LocomotiveTypeNumber)
+                                {
+                                    case 671:
+                                    case 471:
+                                    case 460:
+                                    case 560:
+                                    case 842:
+                                    case 843:
+                                        train.BoardingComplete = true;
+                                        enterTimesCalculated = false;
+                                        exitTimesCalculated = false;
+                                        DoorCanBeOpenned = true;
+                                        StationsBoardingRestOfPaxes[ActualStationNumber] = -1;
+                                        return;
+                                }
                             }
                         }
                     }

@@ -77,15 +77,18 @@ namespace Orts.Viewer3D.RollingStock
 
         public override void InitializeUserInputCommands()
         {
-            UserInputCommands.Add(UserCommand.ControlCircuitBreakerClosingOrder, new Action[] {
+            if (ControlUnit != null && ControlUnit.PowerSupply.CircuitBreaker != null)
+            {
+                UserInputCommands.Add(UserCommand.ControlCircuitBreakerClosingOrder, new Action[] {
                 () => new CircuitBreakerClosingOrderButtonCommand(Viewer.Log, false),
                 () => {
                     new CircuitBreakerClosingOrderCommand(Viewer.Log, !ControlUnit.PowerSupply.CircuitBreaker.DriverClosingOrder);
                     new CircuitBreakerClosingOrderButtonCommand(Viewer.Log, true);
                 }
             });
-            UserInputCommands.Add(UserCommand.ControlCircuitBreakerOpeningOrder, new Action[] { () => new CircuitBreakerOpeningOrderButtonCommand(Viewer.Log, false), () => new CircuitBreakerOpeningOrderButtonCommand(Viewer.Log, true) });
-            UserInputCommands.Add(UserCommand.ControlCircuitBreakerClosingAuthorization, new Action[] { Noop, () => new CircuitBreakerClosingAuthorizationCommand(Viewer.Log, !ControlUnit.PowerSupply.CircuitBreaker.DriverClosingAuthorization) });
+                UserInputCommands.Add(UserCommand.ControlCircuitBreakerOpeningOrder, new Action[] { () => new CircuitBreakerOpeningOrderButtonCommand(Viewer.Log, false), () => new CircuitBreakerOpeningOrderButtonCommand(Viewer.Log, true) });
+                UserInputCommands.Add(UserCommand.ControlCircuitBreakerClosingAuthorization, new Action[] { Noop, () => new CircuitBreakerClosingAuthorizationCommand(Viewer.Log, !ControlUnit.PowerSupply.CircuitBreaker.DriverClosingAuthorization) });
+            }
             base.InitializeUserInputCommands();
         }
 
