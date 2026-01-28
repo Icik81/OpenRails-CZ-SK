@@ -1,24 +1,25 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
+using Orts.Simulation.Physics;
+using Orts.Simulation.RollingStocks;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using ORTS.Common;
 using ORTS.Scripting.Api;
+using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Event = Orts.Common.Event;
-using Orts.Simulation.RollingStocks;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using static Orts.Simulation.RollingStocks.MSTSControlUnit;
+using Event = Orts.Common.Event;
 
 
 // Řídící jednotka pro dálkové řízení lokomotivy
@@ -255,6 +256,10 @@ namespace Orts.Simulation.RollingStocks
                             if (StationIsActivated[LocoStation])
                                 Simulator.ControlUnitIsLead = true;
 
+                            DynamicBrakeIntervention = PU.DynamicBrakeIntervention;
+                            if (DynamicBrakeIntervention > 0 && DynamicBrakeController != null)
+                                DynamicBrakeIntervention = MathHelper.Max(PU.DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
+
                             PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
                             PU.PowerKey = PowerKey;                                                                              
 
@@ -316,6 +321,10 @@ namespace Orts.Simulation.RollingStocks
                             LocoReadyToGo = false;
                             if (StationIsActivated[LocoStation])
                                 Simulator.ControlUnitIsLead = true;
+
+                            DynamicBrakeIntervention = PU.DynamicBrakeIntervention;
+                            if (DynamicBrakeIntervention > 0 && DynamicBrakeController != null)                                                                                                                             
+                                DynamicBrakeIntervention = MathHelper.Max(PU.DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);                                                                                                
 
                             PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
                             PU.PowerKey = PowerKey;

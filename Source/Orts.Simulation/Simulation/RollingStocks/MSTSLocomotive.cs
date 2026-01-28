@@ -3316,7 +3316,7 @@ namespace Orts.Simulation.RollingStocks
         public virtual void MasterSlave()
         {
             if (!IsLeadLocomotive()) return;
-
+            
             if (SlaveLoco)
             {
                 LocalThrottlePercent = 0;
@@ -3339,7 +3339,7 @@ namespace Orts.Simulation.RollingStocks
             int MasterCarNumber = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
                 {
                     if (Train.MasterLoco == null && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2]))
                     {
@@ -3356,7 +3356,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber1 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
                 {
                     if (Train.SlaveLoco1 == null && (SlaveCarNumber1 == MasterCarNumber + 1 || SlaveCarNumber1 == MasterCarNumber - 1))
                     {
@@ -3373,7 +3373,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber2 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
                 {
                     if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 1 || SlaveCarNumber2 == SlaveCarNumber1 + 2 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
                     {
@@ -3390,7 +3390,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber3 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
                 {
                     if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber3 == SlaveCarNumber2 + 1 || SlaveCarNumber3 == SlaveCarNumber2 - 1 || SlaveCarNumber3 == SlaveCarNumber2 + 2 || SlaveCarNumber3 == SlaveCarNumber2 - 2))
                     {
@@ -8368,7 +8368,7 @@ namespace Orts.Simulation.RollingStocks
                 LastStateDynamicBrakePercent = -1;
                 DynamicBrakeInterventionNormalState = false;
                 DynamicBrakeController.CurrentValue = 0;
-            }
+            }            
 
             if ((DynamicBrakeController != null || DynamicBrakeBlendingEnabled || DynamicBrakeAvailable) && (DynamicBrakePercent >= 0 || DynamicBrakeIntervention >= 0))
             {                
@@ -8415,14 +8415,12 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeInterventionNormalState = true;
                             
                             if (DynamicBrakeInterventionNormalState)                            
-                                DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                            
-
-                            LocalDynamicBrakePercent = DynamicBrakePercent;
+                                DynamicBrakePercent = (DynamicBrakeIntervention < 0.1f ? DynamicBrakeController.CurrentValue : DynamicBrakeIntervention) * 100f;                                                        
                             
                             // Icik
                             if (DynamicBrakeController.CurrentValue > 0 || DynamicBrakePercent > 0)
-                                EDBOn = true;
-                            
+                                EDBOn = true;                            
+
                             if (DynamicBrakeIntervention == -1 && EDBOn && PressureConverterControllerValue == 0f && DynamicBrakeInterventionNormalState)
                             {
                                 DynamicBrakePercent = -1;
@@ -8469,7 +8467,6 @@ namespace Orts.Simulation.RollingStocks
                 //               Simulator.Confirmer.Confirm(CabControl.DynamicBrake, CabSetting.On); // Keeping status string on screen so user knows what's happening
             }
             
-
             //Currently the ThrottlePercent is global to the entire train
             //So only the lead locomotive updates it, the others only updates the controller (actually useless)           
             if (this.IsLeadLocomotive())
