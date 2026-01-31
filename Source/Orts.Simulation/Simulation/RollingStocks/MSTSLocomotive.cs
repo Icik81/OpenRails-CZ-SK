@@ -7322,7 +7322,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (ForceHandleValue > 0)
                                 {
                                     SelectedMaxAccelerationStep[LocoStation] = ForceHandleValue;
-                                }
+                                }                                
                                 if (ForceHandleValue < 0)
                                 {
                                     if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
@@ -7334,7 +7334,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 }
                             }
-                        }
+                        }                        
                         ControllerVolts = ForceHandleValue / 10;
                     }
 
@@ -22317,7 +22317,7 @@ namespace Orts.Simulation.RollingStocks
                     //                       if (direction == 1 && !(cvc is CVCGauge))
                     //                           data = -data;
                     break;
-                case CABViewControlTypes.TOTAL_FORCE:
+                case CABViewControlTypes.TOTAL_FORCE:                    
                     data = 0;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                     {
@@ -22327,21 +22327,19 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     if (data < 0)
+                    {
                         data = (data / MaxDynamicBrakeForceN) * 100;
+                        if (ControllerVolts == 0) ControllerVolts = preControllerVolts;
+                    }
                     else
                         data = (data / MaxForceN) * 100;
 
-                    float ControllerVoltsDetectTime = 0.5f;
-                    if (CruiseControl != null && CruiseControl.SpeedRegMode[LocoStation] == SpeedRegulatorMode.Auto)
-                    {
-                        ControllerVoltsDetectTime = 1.0f;
-                    }
-
+                    float ControllerVoltsDetectTime = 0.5f;                    
                     if (preControllerVolts != ControllerVolts)
                     {
                         ControllerVoltsDetectorTimer += Simulator.OneSecondLoop;
                         if (ControllerVoltsDetectorTimer > ControllerVoltsDetectTime)
-                        {
+                        {                            
                             preControllerVolts = ControllerVolts;                            
                         }
                         else
@@ -22372,7 +22370,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                             cvc.IsVisible = NegativeMask = true;
                     }
-                    
+
                     cvc.ElapsedTime += elapsedTime;
                     if (cvc.ElapsedTime < 0.30f)
                     {

@@ -477,7 +477,11 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (Locomotive.DynamicBrakePercent > 0)
                     {
-                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
+                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;                        
+                    }
+                    if (Locomotive.ForceHandleValue <= 0)
+                    {
+                        Locomotive.DynamicBrakeController.CurrentValue = -Locomotive.ForceHandleValue / 100f;                        
                     }
                     if (Locomotive.BrakeSystem.EmerBrakeTriggerActive)
                     {
