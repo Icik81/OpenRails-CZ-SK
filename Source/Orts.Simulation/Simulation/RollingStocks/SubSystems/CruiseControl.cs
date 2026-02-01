@@ -2263,6 +2263,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     controllerVolts = 0;
                     Locomotive.ControllerVolts = 0;
                 }
+
+                if (!TrainBrakePriority && IReallyWantToBrake)
+                {                    
+                    IReallyWantToBrake = false;
+                }
             }
 
             if (Locomotive.extendedPhysics == null)

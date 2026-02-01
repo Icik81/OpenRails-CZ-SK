@@ -7899,13 +7899,13 @@ namespace Orts.Simulation.RollingStocks
 
                     if (LocoType == LocoTypes.Vectron && CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
                     {
-                        if (ForceHandleValue <= 0)
+                        if (ForceHandleValue <= 0 || TractionBlocked)
                         {
                             if (AbsSpeedMpS < MpS.FromKpH(AutomaticParkingBrakeEngageSpeedKpH))
                             {
                                 AutomaticParkingBrakeEngaged = true;
                             }
-                        }
+                        }                        
                         else if (ForceHandleValue > 0 && !ManualParkingBrakeReleaseRequired)
                         {
                             AutomaticParkingBrakeEngaged = false;
