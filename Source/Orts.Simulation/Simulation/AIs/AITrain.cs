@@ -141,7 +141,7 @@ namespace Orts.Simulation.AIs
         public static float followDistanceStatTrainM = 30.0f;  // min dist for starting to follow
         public static float keepDistanceMovingTrainM = 300.0f; // stay 300m behind moving train
         public static float creepSpeedMpS = 2.5f;              // speed for creeping up behind train or upto signal
-        public static float couplingSpeedMpS = 1.0f / 3.6f;           // speed for coupling to other train
+        public static float couplingSpeedMpS = 0.5f / 3.6f;           // speed for coupling to other train
         public static float maxFollowSpeedMpS = 15.0f;         // max. speed when following
         public static float movingtableSpeedMpS = 2.5f;        // speed for moving tables (approx. max 8 kph)
         public static float hysterisMpS = 0.5f;                // speed hysteris value to avoid instability
@@ -3429,13 +3429,13 @@ namespace Orts.Simulation.AIs
 
                             // Icik                                 
                             if (distanceToTrain < keepDistanceStatTrainM_P * 2f && attachToTrain)
-                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 4f);
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 8f);
 
                             if (distanceToTrain < keepDistanceStatTrainM_P - 7.0f && attachToTrain)
-                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 2f);
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 5f);
 
                             if (distanceToTrain < keepDistanceStatTrainM_P - 8.0f && attachToTrain)
-                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 1.5f);
+                                maxspeed = Math.Min(maxspeed, couplingSpeedMpS * 2f);
 
                             if (distanceToTrain < keepDistanceStatTrainM_P - 9.5f && attachToTrain)
                                 maxspeed = Math.Min(maxspeed, couplingSpeedMpS);
@@ -3450,13 +3450,13 @@ namespace Orts.Simulation.AIs
                                 if (maxspeed > 10.0f / 3.6f && distanceToTrain > 100) // nad 10 km/h a vlak je dále než 100 m
                                     UpdateSmoothDecelerating(elapsedClockSeconds);
                                 else
-                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 20);
+                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                             }
                             else if ((distanceToTrain - brakingDistance) > keepDistanceTrainM * 3.0f)
                             {
                                 if (brakingDistance > distanceToTrain)
                                 {
-                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 10);
+                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                                 }
                                 else if (SpeedMpS < maxspeed)
                                 {
@@ -3467,7 +3467,7 @@ namespace Orts.Simulation.AIs
                             {
                                 if (SpeedMpS > maxspeed)
                                 {
-                                    AdjustControlsBrakeMore(0.5f * MaxDecelMpSS, elapsedClockSeconds, 50);
+                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 50);
                                 }
                                 else if (SpeedMpS > 0.25f * maxspeed)
                                 {
@@ -3486,7 +3486,7 @@ namespace Orts.Simulation.AIs
                                 bool otherTrainFront;
 
                                 // Icik
-                                if (SpeedMpS != 0)
+                                if (Math.Abs(SpeedMpS) > 0.01f)
                                     AICoupling = false;
 
                                 if (attachToTrain && CheckCouplePosition(OtherTrain, out thisTrainFront, out otherTrainFront) && !AICoupling)
