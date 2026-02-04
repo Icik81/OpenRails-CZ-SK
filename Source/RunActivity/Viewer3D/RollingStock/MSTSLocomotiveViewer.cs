@@ -812,7 +812,7 @@ namespace Orts.Viewer3D.RollingStock
                 if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown))
                     PressedCycleStart = true;
 
-                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown) && DoublePressedKeyTest())
+                if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 1 && UserInput.IsPressed(UserCommand.ControlPantograph3SwitchDown) && DoublePressedKeyTest() && !Locomotive.Pantograph3Enable_Simple)
                 {
                     Locomotive.Pantograph3Switch[Locomotive.LocoStation] = -1;
                     Locomotive.Pantograph3CanOn = true;
@@ -3894,6 +3894,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HV5:
                 case CABViewControlTypes.HV5_DISPLAY:
                 case CABViewControlTypes.PANTOGRAPH_3_SWITCH:
+                case CABViewControlTypes.PANTOGRAPH_3_SWITCH_SIMPLE:
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:                
                 case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
@@ -5040,7 +5041,43 @@ namespace Orts.Viewer3D.RollingStock
                             new TogglePantograph3SwitchDownCommand(Viewer.Log);
                         }
                         break;
-                    }                
+                    }
+
+                case CABViewControlTypes.PANTOGRAPH_3_SWITCH_SIMPLE:
+                    {
+                        // Ovládání HV nearetované pozice
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
+                            Locomotive.PantographOnPressedTest = false;
+                        }
+                        else
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 2)
+                        {
+                            Locomotive.PantographOnPressedTest = true;
+                        }
+
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0 && UserInput.IsMouseLeftButtonReleased)
+                        {
+                            Locomotive.Pantograph3Switch[Locomotive.LocoStation] = 1;
+                            Locomotive.PantographOffPressedTest = false;
+                        }
+                        else
+                        if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == 0)
+                        {
+                            Locomotive.PantographOffPressedTest = true;
+                        }
+
+                        if (ChangedValue(0) < 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new TogglePantograph3SwitchUpCommand(Viewer.Log);
+                        }
+                        if (ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
+                        {
+                            new TogglePantograph3SwitchDownCommand(Viewer.Log);
+                        }                        
+                        break;
+                    }
 
                 case CABViewControlTypes.PANTOGRAPHS_4C:
                 case CABViewControlTypes.PANTOGRAPHS_4:

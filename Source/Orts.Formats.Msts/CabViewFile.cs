@@ -421,6 +421,7 @@ namespace Orts.Formats.Msts
         HV5,
         HV5_DISPLAY,
         PANTOGRAPH_3_SWITCH,
+        PANTOGRAPH_3_SWITCH_SIMPLE,
         PANTOGRAPH_4_SWITCH,
         PANTOGRAPH_4NC_SWITCH,
         PANTOGRAPH_5_SWITCH,

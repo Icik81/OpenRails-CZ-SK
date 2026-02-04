@@ -601,6 +601,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Pantograph4Enable = false;
         public bool Pantograph4NCEnable = false;
         public bool Pantograph3Enable = false;
+        public bool Pantograph3Enable_Simple = false;
         public float LastStatePantograph3;
         public bool Pantograph3SwitchFullDown;
         public float Pantograph3SwitchFullDownCycle;
@@ -14158,8 +14159,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Pantograph3Switch[LocoStation] < 3)
                     Pantograph3Switch[LocoStation]++;
-                Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
-            }
+                
+                if (Pantograph3Enable_Simple)
+                    Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], 0, 2);
+                else
+                    Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
+            }            
         }
         public void TogglePantograph3SwitchDown()
         {
@@ -14167,8 +14172,12 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Pantograph3Switch[LocoStation] > 0)
                     Pantograph3Switch[LocoStation]--;
-                Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
-            }
+
+                if (Pantograph3Enable_Simple)
+                    Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], 0, 2);
+                else
+                    Pantograph3Switch[LocoStation] = MathHelper.Clamp(Pantograph3Switch[LocoStation], -1, 2);
+            }            
         }
         public void TogglePantograph3Switch()
         {
@@ -14204,7 +14213,7 @@ namespace Orts.Simulation.RollingStocks
                     PantoStatus = Pantograph3Switch[LocoStation];
                     int p1 = 1; int p2 = 2; int p3 = 3; int p4 = 4;
                     string ps1 = "PANTO1"; string ps2 = "PANTO2"; string ps3 = "PANTO3"; string ps4 = "PANTO4";
-                    if (UsingRearCab) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; p3 = 4; p4 = 3; ps3 = "PANTO4"; ps4 = "PANTO3"; }
+                    if (UsingRearCab && Pantographs.Count != 1) { p1 = 2; p2 = 1; ps1 = "PANTO2"; ps2 = "PANTO1"; p3 = 4; p4 = 3; ps3 = "PANTO4"; ps4 = "PANTO3"; }
                     if (PantoStatus != PrePantoStatus[LocoStation])
                     {
                         switch (Pantograph3Switch[LocoStation])

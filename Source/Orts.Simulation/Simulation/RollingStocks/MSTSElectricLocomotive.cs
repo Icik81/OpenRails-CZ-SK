@@ -1730,7 +1730,7 @@ namespace Orts.Simulation.RollingStocks
                             if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                             {
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            }
+                            }                            
 
                             Pantograph3Switch[LocoStation] = 2;
                             Pantograph3CanOn = true;
@@ -3534,6 +3534,24 @@ namespace Orts.Simulation.RollingStocks
                                 break;
                             case 2:
                                 data = 3;
+                                break;
+                        }
+                        break;
+                    }
+                case CABViewControlTypes.PANTOGRAPH_3_SWITCH_SIMPLE:
+                    {
+                        Pantograph3Enable = true;
+                        Pantograph3Enable_Simple = true;
+                        switch (Pantograph3Switch[LocoStation])
+                        {                            
+                            case 0:
+                                data = 0;
+                                break;
+                            case 1:
+                                data = 1;
+                                break;
+                            case 2:
+                                data = 2;
                                 break;
                         }
                         break;
