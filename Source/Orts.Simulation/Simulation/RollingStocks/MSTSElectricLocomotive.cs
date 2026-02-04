@@ -1599,13 +1599,6 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }                                    
 
-                // Vypnutí baterií způsobí odpadnutí pantografů
-                if (!Battery && Pantograph3Switch[LocoStation] != 1)
-                {
-                    SignalEvent(PowerSupplyEvent.LowerPantograph);                    
-                    Pantograph3Switch[LocoStation] = 1;
-                }
-
                 // Nastavení pro plně oživenou lokomotivu
                 if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
                 {                    
@@ -1738,7 +1731,10 @@ namespace Orts.Simulation.RollingStocks
                             Pantograph5Switch[LocoStation] = 1;
 
                             if (PowerOn)
-                                LocoReadyToGo = false;
+                            {
+                                LocoReadyToGo = false;                                
+                                Pantograph3Switch[LocoStation] = 1;
+                            }
                         }
                     }
                 }

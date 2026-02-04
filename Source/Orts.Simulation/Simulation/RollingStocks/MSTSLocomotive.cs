@@ -602,7 +602,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Pantograph4NCEnable = false;
         public bool Pantograph3Enable = false;
         public bool Pantograph3Enable_Simple = false;
-        public float LastStatePantograph3;
+        public float LastStatePantograph3 = 1;
         public bool Pantograph3SwitchFullDown;
         public float Pantograph3SwitchFullDownCycle;
         public bool PantographOnPressedTest;
@@ -6992,7 +6992,7 @@ namespace Orts.Simulation.RollingStocks
                 LastStateHV4[1] = LastStateHV4[2] = 1;
                 HV3Switch[1] = HV3Switch[2] = 1;
                 LastStateHV3[1] = LastStateHV3[2] = 1;
-                Pantograph3Switch[1] = Pantograph3Switch[2] = 0;
+                Pantograph3Switch[1] = Pantograph3Switch[2] = 1;
                 Pantograph4Switch[1] = Pantograph4Switch[2] = 0;
                 Pantograph5Switch[1] = Pantograph5Switch[2] = 0;
                 DoorSwitch[1] = DoorSwitch[2] = 1;
@@ -14199,6 +14199,8 @@ namespace Orts.Simulation.RollingStocks
                 if (LastStatePantograph3 != Pantograph3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
+                LastStatePantograph3 = Pantograph3Switch[LocoStation];
+
                 if (!MultiSystemEngine && !CircuitBreakerOn)
                     return;
 
@@ -14759,8 +14761,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                         PrePantoStatus[LocoStation] = Pantograph3Switch[LocoStation];
                     }
-                }
-                LastStatePantograph3 = Pantograph3Switch[LocoStation];
+                }                
             }
         }
 
