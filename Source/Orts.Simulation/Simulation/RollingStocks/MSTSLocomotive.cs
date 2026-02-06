@@ -13884,6 +13884,32 @@ namespace Orts.Simulation.RollingStocks
                             break;
                     }                    
                 }
+
+                // Vícesystémové lokomotivy s detekcí napětí sběrače
+                if (this is MSTSElectricLocomotive && MultiSystemEngine && LocoType != LocoTypes.Vectron && Battery && StationIsActivated[LocoStation])
+                {
+                    var ELoko = this as MSTSElectricLocomotive;
+                    if (ELoko.PantographVoltageV > 18000 && ELoko.PantographVoltageV < 28000)                        
+                    {
+                        SwitchingVoltageMode = 2;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = true;
+                    }
+                    else
+                    if (ELoko.PantographVoltageV > 1500 && ELoko.PantographVoltageV < 4000)
+                    {
+                        SwitchingVoltageMode = 0;
+                        SwitchingVoltageMode_OffDC = true;
+                        SwitchingVoltageMode_OffAC = false;
+                    }
+                    else
+                    {
+                        SwitchingVoltageMode = 1;
+                        SwitchingVoltageMode_OffDC = false;
+                        SwitchingVoltageMode_OffAC = false;
+                    }
+                }
+
                 if (LastStateHV3[LocoStation] != HV3Switch[LocoStation])
                     SignalEvent(Event.PantographToggle); // Zvuk přepínače                
 
