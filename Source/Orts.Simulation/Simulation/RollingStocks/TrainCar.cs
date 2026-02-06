@@ -3400,12 +3400,9 @@ namespace Orts.Simulation.RollingStocks
 
                     if (this is MSTSLocomotive)
                     {
-                        if (Flipped ^ (this as MSTSLocomotive).UsingRearCab)
+                        if ((this as MSTSLocomotive).UsingRearCab)
                             PushZFinalMarker = -PushZFinalMarker;
-                    }
-                    else
-                        if (Flipped)
-                            PushZFinalMarker = -PushZFinalMarker;
+                    }                    
                 }
 
                 if (Math.Abs(prevSpeedMpS) > 10.0f / 3.6f)

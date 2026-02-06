@@ -45,6 +45,7 @@ using System.IO;
 using System.Linq;
 using System.Windows.Forms;
 using static Orts.Simulation.RollingStocks.MSTSControlUnit;
+using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using static Orts.Viewer3D.SkyViewer;
 using Event = Orts.Common.Event;
@@ -708,7 +709,7 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                     Locomotive.HVOnPressedTest = false;
                 }
-                if (!Locomotive.HS198ControllerEnable)
+                if (Locomotive.LocoType == LocoTypes.Vectron)
                 {
                     if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
                     {
@@ -4902,7 +4903,7 @@ namespace Orts.Viewer3D.RollingStock
                             Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                             Locomotive.HVOnPressedTest = false;
                         }
-                        if (!Locomotive.HS198ControllerEnable)
+                        if (Locomotive.LocoType == LocoTypes.Vectron)
                         {
                             if (Locomotive.HV3Switch[Locomotive.LocoStation] == 0)
                             {
