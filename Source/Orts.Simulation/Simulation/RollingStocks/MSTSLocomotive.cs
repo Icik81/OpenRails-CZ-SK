@@ -13889,24 +13889,27 @@ namespace Orts.Simulation.RollingStocks
                 if (this is MSTSElectricLocomotive && MultiSystemEngine && LocoType != LocoTypes.Vectron && Battery && StationIsActivated[LocoStation])
                 {
                     var ELoko = this as MSTSElectricLocomotive;
-                    if (ELoko.PantographVoltageV > 18000 && ELoko.PantographVoltageV < 28000)                        
+                    if (ELoko.PantographUp)
                     {
-                        SwitchingVoltageMode = 2;
-                        SwitchingVoltageMode_OffDC = false;
-                        SwitchingVoltageMode_OffAC = true;
-                    }
-                    else
-                    if (ELoko.PantographVoltageV > 1500 && ELoko.PantographVoltageV < 4000)
-                    {
-                        SwitchingVoltageMode = 0;
-                        SwitchingVoltageMode_OffDC = true;
-                        SwitchingVoltageMode_OffAC = false;
-                    }
-                    else
-                    {
-                        SwitchingVoltageMode = 1;
-                        SwitchingVoltageMode_OffDC = false;
-                        SwitchingVoltageMode_OffAC = false;
+                        if (ELoko.MaxLineVoltage0 > 18000 && ELoko.MaxLineVoltage0 < 28000)
+                        {
+                            SwitchingVoltageMode = 2;
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                        }
+                        else
+                        if (ELoko.MaxLineVoltage0 > 1500 && ELoko.MaxLineVoltage0 < 4000)
+                        {
+                            SwitchingVoltageMode = 0;
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                        }
+                        else
+                        {
+                            SwitchingVoltageMode = 1;
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = false;
+                        }
                     }
                 }
 
