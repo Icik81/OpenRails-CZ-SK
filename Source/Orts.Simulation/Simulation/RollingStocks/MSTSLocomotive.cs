@@ -13816,7 +13816,7 @@ namespace Orts.Simulation.RollingStocks
                 return;
             if (HV3Enable)
             {
-                if (HS198ControllerEnable)
+                if (LocoType != LocoTypes.Vectron)
                 {
                     if (!LocoGroundBreaker)
                     {
