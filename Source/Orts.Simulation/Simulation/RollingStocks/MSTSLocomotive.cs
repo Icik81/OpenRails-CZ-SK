@@ -14147,7 +14147,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 HVCanOn = true;
             }
-            if ((HV3Enable && ((HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f)) || (LocoType != LocoTypes.Vectron && StationIsActivated[LocoStation] && HV3Switch[LocoStation] == 0))) // 0.5s na podržení polohy pro vypnutí HV
+            if (HV3Enable && ((HVOffPressedTime > 0.4f && HVOffPressedTime < 0.6f) || (LocoType != LocoTypes.Vectron && StationIsActivated[LocoStation] && HV3Switch[LocoStation] == 0))) // 0.5s na podržení polohy pro vypnutí HV
             {
                 HVOff = true;
                 HVCanOn = false;
