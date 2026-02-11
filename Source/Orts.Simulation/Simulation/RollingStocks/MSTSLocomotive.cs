@@ -522,6 +522,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LowPressureReleaseButtonEnable = false;
         public bool AuxCompressor = false;
         public bool AuxCompressorNoActiveStation = false;
+        public bool Compressor5 = false;
         public bool CompressorCombined = false;
         public bool CompressorCombined2 = false;
         public bool CompressorOffAutoOn = false;
@@ -753,10 +754,13 @@ namespace Orts.Simulation.RollingStocks
         public int LocomotiveTypeLongNumber = 0;
         public bool ManualHorn2 = false;
         public bool ManualHorn12 = false;
+        public bool ManualHornBell = false;
         public bool Horn2 = false;
         protected bool PreviousHorn2 = false;
         public bool Horn12 = false;
         protected bool PreviousHorn12 = false;
+        public bool HornBell = false;
+        protected bool PreviousHornBell = false;
         public bool LocoLastCabSelect;
         public float LocoSetUpTimer;
         public bool PantographDown = true;
@@ -7696,6 +7700,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleHV3Switch();
                 ToggleHV4Switch();
                 ToggleHV5Switch();
+                ToggleCompressor5();
                 ToggleCompressorCombined();
                 ToggleCompressorCombined2();
                 PantographPressedTesting(elapsedClockSeconds);
@@ -8927,6 +8932,7 @@ namespace Orts.Simulation.RollingStocks
                 Horn = ManualHorn || TCSHorn;
                 Horn2 = ManualHorn2;
                 Horn12 = ManualHorn12;
+                HornBell = ManualHornBell;
             }
             else
             {
@@ -8973,6 +8979,21 @@ namespace Orts.Simulation.RollingStocks
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN12", 0)).ToString());
             }
 
+            if (HornBell && !PreviousHornBell)
+            {
+                SignalEvent(Event.HornOn);
+                SignalEvent(Event.BellOn);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 1)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BELL", 1)).ToString());
+            }
+            else if (!HornBell && PreviousHornBell)
+            {
+                SignalEvent(Event.HornOff);
+                SignalEvent(Event.BellOff);
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
+                if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BELL", 0)).ToString());
+            }
+
             if (ManualBell)
             {
                 BellState = SoundState.Sound;
@@ -9001,6 +9022,7 @@ namespace Orts.Simulation.RollingStocks
             PreviousHorn = Horn;
             PreviousHorn2 = Horn2;
             PreviousHorn12 = Horn12;
+            PreviousHornBell = HornBell;
             PreviousBell = Bell;
         }
 
@@ -12491,6 +12513,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (FirstCabLoaded)
                 {
+                    if (Compressor5)
+                        CompressorSwitch[1] = CompressorSwitch[2] = 2;
                     if (CompressorCombined)
                         CompressorSwitch[1] = CompressorSwitch[2] = 1;
                     if (CompressorCombined2)
@@ -15703,6 +15727,124 @@ namespace Orts.Simulation.RollingStocks
                 SystemAnnunciator = 3;
         }
 
+        public void ToggleCompressor5SwitchUp()
+        {
+            if (!Compressor5) return;
+            if (CompressorSwitch[LocoStation] < 2)
+            {
+                CompressorSwitch[LocoStation]++;
+                SignalEvent(Event.CompressorMode_OffAutoOn);
+                ToggleCompressor5();
+            }
+            CompressorSwitch[LocoStation] = MathHelper.Clamp(CompressorSwitch[LocoStation], -2, 2);
+        }
+        public void ToggleCompressor5SwitchDown()
+        {
+            if (!Compressor5) return;
+            if (CompressorSwitch[LocoStation] > -2)
+            {
+                CompressorSwitch[LocoStation]--;
+                SignalEvent(Event.CompressorMode_OffAutoOn);
+                ToggleCompressor5();
+            }
+            CompressorSwitch[LocoStation] = MathHelper.Clamp(CompressorSwitch[LocoStation], -2, 2);
+        }
+        public int[] preCompressor5Switch = new int[3];
+        float Compressor5Timer;
+        float Compressor5Time = 3;
+        public void ToggleCompressor5()
+        {
+            if (Compressor5 && IsLeadLocomotive())
+            {
+                Compressor_I_HandMode[LocoStation] = false;
+                Compressor_II_HandMode[LocoStation] = false;
+                switch (CompressorSwitch[LocoStation])
+                {
+                    case -2:
+                        {
+                            if (Compressor5Timer < Compressor5Time) Compressor5Timer += Simulator.OneSecondLoop;
+                            else
+                            {
+                                CompressorMode_OffAuto[LocoStation] = true;
+                                CompressorMode2_OffAuto[LocoStation] = true;
+                                Compressor_II_HandMode[LocoStation] = false;
+                            }
+                        }
+                        break;
+                    case -1:
+                        {
+                            if (Compressor5Timer < Compressor5Time) Compressor5Timer += Simulator.OneSecondLoop;
+                            else
+                            {
+                                CompressorMode_OffAuto[LocoStation] = false;
+                                CompressorMode2_OffAuto[LocoStation] = false;
+                                Compressor_II_HandMode[LocoStation] = true;
+                            }
+                        }
+                        break;
+                    case 0:
+                        {
+                            if (Compressor5Timer < Compressor5Time) Compressor5Timer += Simulator.OneSecondLoop;
+                            else
+                            {
+                                CompressorMode_OffAuto[LocoStation] = false;
+                                CompressorMode2_OffAuto[LocoStation] = false;
+                            }
+                        }
+                        break;
+                    case 1:
+                        {
+                            if (Compressor5Timer < Compressor5Time) Compressor5Timer += Simulator.OneSecondLoop;
+                            else
+                            {
+                                CompressorMode_OffAuto[LocoStation] = false;
+                                CompressorMode2_OffAuto[LocoStation] = false;
+                                Compressor_I_HandMode[LocoStation] = true;
+                            }
+                        }
+                        break;
+                    case 2:
+                        {                            
+                            if (Compressor5Timer < Compressor5Time) Compressor5Timer += Simulator.OneSecondLoop;
+                            else
+                            {
+                                CompressorMode_OffAuto[LocoStation] = true;
+                                CompressorMode2_OffAuto[LocoStation] = true;
+                                Compressor_I_HandMode[LocoStation] = false;
+                            }
+                        }
+                        break;
+                }
+                if (preCompressor5Switch[LocoStation] != CompressorSwitch[LocoStation])
+                {
+                    Compressor5Timer = 0;
+                    switch (CompressorSwitch[LocoStation])
+                    {
+                        case -2:
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            break;
+                        case -1:
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            break;
+                        case 0:
+                            if (preCompressor5Switch[LocoStation] > CompressorSwitch[LocoStation])
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            if (preCompressor5Switch[LocoStation] < CompressorSwitch[LocoStation])
+                                if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            break;
+                        case 1:
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            break;
+                        case 2:                            
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            break;
+                    }
+                }
+                preCompressor5Switch[LocoStation] = CompressorSwitch[LocoStation];
+                //Simulator.Confirmer.Information("CompressorSwitch[LocoStation]: " + CompressorSwitch[LocoStation]);
+            }
+        }
+
         public void ToggleCompressorCombinedSwitchUp()
         {
             if (!CompressorCombined) return;            
@@ -16116,7 +16258,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleAuxCompressorMode_OffOn()
         {
-            if (AuxCompressor && !CompressorCombined)
+            if (AuxCompressor && !CompressorCombined && !Compressor5)
             {
                 AuxCompressorMode_OffOn[LocoStation] = !AuxCompressorMode_OffOn[LocoStation];
                 if (AuxCompressorMode_OffOn[LocoStation]) SignalEvent(Event.AuxCompressorMode_OffOnOn);
@@ -16126,7 +16268,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode_OffAuto()
         {
-            if (Compressor_I && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
+            if (Compressor_I && !Compressor5 && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
             {
                 CompressorMode_OffAuto[LocoStation] = !CompressorMode_OffAuto[LocoStation];
                 if (CompressorMode_OffAuto[LocoStation]) SignalEvent(Event.CompressorMode_OffAutoOn);
@@ -16136,7 +16278,7 @@ namespace Orts.Simulation.RollingStocks
         }
         public void ToggleCompressorMode2_OffAuto()
         {
-            if (Compressor_II && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
+            if (Compressor_II && !Compressor5 && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
             {
                 CompressorMode2_OffAuto[LocoStation] = !CompressorMode2_OffAuto[LocoStation];
                 if (CompressorMode2_OffAuto[LocoStation]) SignalEvent(Event.CompressorMode_OffAutoOn);
@@ -24169,6 +24311,11 @@ namespace Orts.Simulation.RollingStocks
                         data = Horn12 ? 1 : 0;
                         break;
                     }
+                case CABViewControlTypes.HORNBELL:
+                    {
+                        data = HornBell ? 1 : 0;
+                        break;
+                    }
                 case CABViewControlTypes.COMPRESSOR_START:
                     {
                         data = 1;
@@ -24198,6 +24345,14 @@ namespace Orts.Simulation.RollingStocks
                             cvc.ElapsedTime2 = 0;
                             Compressor2Beep = 0;
                         }
+                        break;
+                    }
+                case CABViewControlTypes.COMPRESSOR_5:
+                    {
+                        Compressor5 = true;
+                        Compressor_I = true;
+                        Compressor_II = true;
+                        data = CompressorSwitch[LocoStation] + 2;
                         break;
                     }
                 case CABViewControlTypes.COMPRESSOR_COMBINED:

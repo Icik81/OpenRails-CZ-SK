@@ -2322,7 +2322,7 @@ namespace Orts.Common
 
         public override void Redo()
         {
-
+            Receiver.ToggleCompressor5SwitchUp();
             Receiver.ToggleCompressorCombinedSwitchUp();
             Receiver.ToggleCompressorOffAutoOnSwitchUp();
         }
@@ -2340,6 +2340,7 @@ namespace Orts.Common
 
         public override void Redo()
         {
+            Receiver.ToggleCompressor5SwitchDown();
             Receiver.ToggleCompressorCombinedSwitchDown();
             Receiver.ToggleCompressorOffAutoOnSwitchDown();
         }

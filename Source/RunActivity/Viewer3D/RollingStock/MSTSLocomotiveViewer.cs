@@ -3899,6 +3899,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.PANTOGRAPH_4_SWITCH:                
                 case CABViewControlTypes.PANTOGRAPH_5_SWITCH:
                 case CABViewControlTypes.COMPRESSOR_START:
+                case CABViewControlTypes.COMPRESSOR_5:
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                 case CABViewControlTypes.COMPRESSOR_COMBINED2:
                 case CABViewControlTypes.COMPRESSOR_OFFAUTOON:
@@ -4016,6 +4017,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.AXLECOUNTER_RESTRICTEDSPEEDZONE_BUTTON:
                 case CABViewControlTypes.HORN2:
                 case CABViewControlTypes.HORN12:
+                case CABViewControlTypes.HORNBELL:
                 case CABViewControlTypes.PANTOGRAPH_4NC_SWITCH:
                 case CABViewControlTypes.PANTO_ACTIVATION_SWITCH:
                 case CABViewControlTypes.VOLTAGE_SELECTION_SWITCH:
@@ -4609,6 +4611,7 @@ namespace Orts.Viewer3D.RollingStock
                 // Icik
                 case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
                 case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORNBELL: new HornCommand(Viewer.Log, ChangedValue(Locomotive.HornBell ? 1 : 0) > 0); break;
 
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
                     {                        
@@ -5137,6 +5140,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
+                case CABViewControlTypes.COMPRESSOR_5:                    
                 case CABViewControlTypes.COMPRESSOR_COMBINED:
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {

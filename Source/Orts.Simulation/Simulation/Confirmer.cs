@@ -127,6 +127,7 @@ namespace Orts.Simulation
 
     // Icik
     , AuxCompressorMode_OffOn
+    , CompressorMode12_OffAuto
     , CompressorMode_OffAuto
     , CompressorMode2_OffAuto
     , Compressor_I_HandMode
@@ -315,6 +316,7 @@ namespace Orts.Simulation
 
                 // Icik
                 , new string [] { GetString("AuxCompressor"), GetString("off"), null, GetString("on")}
+                , new string [] { GetString("Compressor I + II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("on")}
