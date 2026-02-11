@@ -4610,9 +4610,9 @@ namespace Orts.Viewer3D.RollingStock
                     }
 
                 // Icik
-                case CABViewControlTypes.HORN2: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
-                case CABViewControlTypes.HORN12: new HornCommand(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
-                case CABViewControlTypes.HORNBELL: new HornCommand(Viewer.Log, ChangedValue(Locomotive.HornBell ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORN2: new Horn2Command(Viewer.Log, ChangedValue(Locomotive.Horn2 ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORN12: new Horn12Command(Viewer.Log, ChangedValue(Locomotive.Horn12 ? 1 : 0) > 0); break;
+                case CABViewControlTypes.HORNBELL: new HornBellCommand(Viewer.Log, ChangedValue(Locomotive.HornBell ? 1 : 0) > 0); break;
 
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
                     {                        
