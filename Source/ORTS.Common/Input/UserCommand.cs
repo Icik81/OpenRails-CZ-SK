@@ -321,6 +321,7 @@
         [GetString("Control_CZSK Axle Counter Restricted speed zone active button")] ControlAxleCounterRestrictedSpeedZoneActive,
         [GetString("Control_CZSK Horn 2")] ControlHorn2,
         [GetString("Control_CZSK Horn 1 + 2")] ControlHorn12,
+        [GetString("Control_CZSK Horn + Bell")] ControlHornBell,
         [GetString("Control_CZSK Panto Activation +")] ControlPantoActivationSwitchUp,
         [GetString("Control_CZSK Panto Activation -")] ControlPantoActivationSwitchDown,
         [GetString("Control_CZSK Voltage Selection +")] ControlVoltageSelectionSwitchUp,

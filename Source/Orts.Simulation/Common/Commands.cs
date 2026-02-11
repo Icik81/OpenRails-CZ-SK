@@ -3130,6 +3130,33 @@ namespace Orts.Common
         }
     }
     [Serializable()]
+    public sealed class HornBellCommand : BooleanCommand
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public HornBellCommand(CommandLog log, bool toState)
+            : base(log, toState)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ManualHornBell = ToState;
+            Receiver.Mirel.ResetVigilance();
+            if (ToState)
+            {
+                Receiver.AlerterReset(TCSEvent.HornActivated);
+                Receiver.Simulator.HazzardManager.Horn();
+            }
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " " + (ToState ? "sound" : "off");
+        }
+    }
+    [Serializable()]
     public sealed class PlayerLocomotiveHandbrakeCommand : BooleanCommand
     {
         public static MSTSLocomotive Receiver { get; set; }

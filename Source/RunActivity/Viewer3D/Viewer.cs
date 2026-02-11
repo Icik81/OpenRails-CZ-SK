@@ -839,6 +839,7 @@ namespace Orts.Viewer3D
             ToggleAxleCounterRestrictedSpeedZoneActiveCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             Horn2Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
             Horn12Command.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            HornBellCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantoActivationSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             TogglePantoActivationSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             ToggleVoltageSelectionSwitchUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;

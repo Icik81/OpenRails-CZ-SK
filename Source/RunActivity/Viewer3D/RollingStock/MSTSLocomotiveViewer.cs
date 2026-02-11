@@ -427,6 +427,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlAxleCounterRestrictedSpeedZoneActive, new Action[] { Noop, () => new ToggleAxleCounterRestrictedSpeedZoneActiveCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlHorn2, new Action[] { () => new Horn2Command(Viewer.Log, false), () => new Horn2Command(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlHorn12, new Action[] { () => new Horn12Command(Viewer.Log, false), () => new Horn12Command(Viewer.Log, true) });
+            UserInputCommands.Add(UserCommand.ControlHornBell, new Action[] { () => new HornBellCommand(Viewer.Log, false), () => new HornBellCommand(Viewer.Log, true) });
             UserInputCommands.Add(UserCommand.ControlPantoActivationSwitchUp, new Action[] { Noop, () => new TogglePantoActivationSwitchUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlPantoActivationSwitchDown, new Action[] { Noop, () => new TogglePantoActivationSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlVoltageSelectionSwitchUp, new Action[] { Noop, () => new ToggleVoltageSelectionSwitchUpCommand(Viewer.Log) });

@@ -619,6 +619,7 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlAxleCounterRestrictedSpeedZoneActive] = new UserCommandKeyInput(0x13, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlHorn2] = new UserCommandKeyInput(0x31);
             Commands[(int)UserCommand.ControlHorn12] = new UserCommandKeyInput(0x39, KeyModifiers.Control | KeyModifiers.Alt);
+            Commands[(int)UserCommand.ControlHornBell] = new UserCommandKeyInput(0x39, KeyModifiers.Control | KeyModifiers.Alt | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlPantoActivationSwitchUp] = new UserCommandKeyInput(0x19, KeyModifiers.Control);
             Commands[(int)UserCommand.ControlPantoActivationSwitchDown] = new UserCommandKeyInput(0x19, KeyModifiers.Control | KeyModifiers.Shift);
             Commands[(int)UserCommand.ControlVoltageSelectionSwitchUp] = new UserCommandKeyInput(0x18, KeyModifiers.Alt);
