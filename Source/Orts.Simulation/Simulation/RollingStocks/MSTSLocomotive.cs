@@ -15821,10 +15821,10 @@ namespace Orts.Simulation.RollingStocks
                     switch (CompressorSwitch[LocoStation])
                     {
                         case -2:
-                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CabSetting.On);
                             break;
                         case -1:
-                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, Compressor_II_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_II_HandMode, CabSetting.On);
                             break;
                         case 0:
                             if (preCompressor5Switch[LocoStation] > CompressorSwitch[LocoStation])
@@ -15833,10 +15833,10 @@ namespace Orts.Simulation.RollingStocks
                                 if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode2_OffAuto, CompressorMode2_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
                             break;
                         case 1:
-                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, Compressor_I_HandMode[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Compressor_I_HandMode, CabSetting.On);
                             break;
                         case 2:                            
-                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CompressorMode_OffAuto[LocoStation] ? CabSetting.On : CabSetting.Off);
+                            if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CompressorMode12_OffAuto, CabSetting.On);
                             break;
                     }
                 }

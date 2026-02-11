@@ -316,7 +316,7 @@ namespace Orts.Simulation
 
                 // Icik
                 , new string [] { GetString("AuxCompressor"), GetString("off"), null, GetString("on")}
-                , new string [] { GetString("Compressor I" + " + II"), GetString("off"), null, GetString("Auto")}
+                , new string [] { GetString("Compressor I") + GetString(" + II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor II"), GetString("off"), null, GetString("Auto")}
                 , new string [] { GetString("Compressor I"), GetString("off"), null, GetString("on")}
