@@ -24434,6 +24434,12 @@ namespace Orts.Simulation.RollingStocks
                         data = Heating_OffOn[LocoStation] ? 1 : 0;
                         break;
                     }
+                case CABViewControlTypes.CABHEATING_OFFON:
+                    {
+                        CabHeatingEnable = true;
+                        data = CabHeating_OffOn[LocoStation] ? 1 : 0;
+                        break;
+                    }
                 case CABViewControlTypes.HEATING_POWER:
                     {
                         if (HeatingIsOn)
