@@ -4610,25 +4610,38 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.ORTS_CABLIGHT:                                        
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.ONOFF)
                         {
-                            Locomotive.CabLightOn[Locomotive.LocoStation] = false;
-                            Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = false;
-                            if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
-                                Locomotive.CabLightOn[Locomotive.LocoStation] = false;
-                            Locomotive.SignalEvent(Event.CabLightSwitchToggle);
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, Locomotive.CabLightOn[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if ((Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.NONE)
                         {
-                            Locomotive.CabLightOn[Locomotive.LocoStation] = true;
-                            Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = true;
-                            if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
-                                Locomotive.CabLightOn[Locomotive.LocoStation] = false;
-                            Locomotive.SignalEvent(Event.CabLightSwitchToggle);
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, Locomotive.CabLightOn[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if (ChangedValue(0) < 0 && !IsChanged)
+                            {
+                                if (Locomotive.CabLightOn[Locomotive.LocoStation])
+                                {
+                                    Locomotive.SignalEvent(Event.CabLightSwitchToggle);
+                                    Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, CabSetting.Off);
+                                    Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                                    Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = false;
+                                    if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
+                                        Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                                    IsChanged = true;
+                                }
+                            }
+                            if (ChangedValue(0) > 0 && !IsChanged)
+                            {
+                                if (!Locomotive.CabLightOn[Locomotive.LocoStation])
+                                {
+                                    Locomotive.SignalEvent(Event.CabLightSwitchToggle);
+                                    Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, CabSetting.On);
+                                    Locomotive.CabLightOn[Locomotive.LocoStation] = true;
+                                    Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = true;
+                                    if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
+                                        Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                                    IsChanged = true;
+                                }
+                            }
                         }
                     }
                     break;
