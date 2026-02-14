@@ -474,9 +474,9 @@ namespace Orts.Viewer3D.RollingStock
             bool Status2KeyPressed = false;
 
             if (PressedCycleStart) PressedCycle += Locomotive.Simulator.OneSecondLoop;
-            if (PressedCycle > 0.1f && PressedCycle < 1.0f) Status2KeyPressed = true;
+            if (PressedCycle > 0.1f && PressedCycle < 0.75f) Status2KeyPressed = true;
 
-            if (PressedCycle > 1.0f)
+            if (PressedCycle > 0.75f)
             {
                 PressedCycle = 0;
                 PressedCycleStart = false;
@@ -4237,12 +4237,14 @@ namespace Orts.Viewer3D.RollingStock
         /// <summary>
         /// Converts absolute mouse movement to control value change, respecting the configured orientation and increase direction
         /// </summary>
+        float NormalizedMouseMovementCoef;
         float NormalizedMouseMovement()
-        {
+        {            
+            NormalizedMouseMovementCoef = IsChanged ? 0.025f : 0.075f;
             return (ControlDiscrete.Orientation > 0
-                ? (float)UserInput.MouseMoveY / (float)Control.Height
-                : (float)UserInput.MouseMoveX / (float)Control.Width)
-                * (ControlDiscrete.Direction > 0 ? -1 : 1);
+                ? MathHelper.Clamp((float)UserInput.MouseMoveY / (float)Control.Height, -NormalizedMouseMovementCoef, NormalizedMouseMovementCoef)
+                : MathHelper.Clamp((float)UserInput.MouseMoveX / (float)Control.Width, -NormalizedMouseMovementCoef, NormalizedMouseMovementCoef)
+                * (ControlDiscrete.Direction > 0 ? -1 : 1));
         }
 
         public bool IsMouseWithin()
@@ -4272,12 +4274,26 @@ namespace Orts.Viewer3D.RollingStock
         bool IsChanged = false;
         bool StartButtonPressed;
         bool StopButtonPressed;
+        float IsChangedTimer;
 
         public void HandleUserInput()
         {
-            // Icik
-            if (ChangedValue(0) == 0 && !UserInput.IsMouseLeftButtonDown)
+            // Icik            
+            if (IsChanged)
+            {
+                IsChangedTimer += Viewer.Simulator.OneSecondLoop;
+                if (IsChangedTimer > 0.25f)
+                {
+                    IsChanged = false;
+                    IsChangedTimer = 0;
+                }
+            }
+
+            if (!UserInput.IsMouseLeftButtonDown)
+            {
                 IsChanged = false;
+                IsChangedTimer = 0;
+            }
 
             switch (Control.ControlType)
             {
@@ -6036,21 +6052,24 @@ namespace Orts.Viewer3D.RollingStock
                         break;
                     if (ChangedValue(0) == 1 && !IsChanged)
                     {
-                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] += 1;
-                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
-                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps;
-                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < 0)
-                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
-                        Locomotive.SignalEvent(Event.CruiseControlMaxForce);
-                        IsChanged = true;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps)
+                        {
+                            Locomotive.SignalEvent(Event.CruiseControlMaxForce);
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]++;
+                            IsChanged = true;
+                        }                        
                     }
                     if (ChangedValue(0) == -1 && !IsChanged)
                     {
-                        Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] -= 1;
-                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
-                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 1;
-                        Locomotive.SignalEvent(Event.CruiseControlMaxForce);
-                        IsChanged = true;
+                        if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0)
+                        {
+                            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]--;                            
+                            if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0 && Locomotive.CruiseControl.DisableZeroForceStep)
+                                Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 1;
+                            else
+                                Locomotive.SignalEvent(Event.CruiseControlMaxForce);
+                            IsChanged = true;
+                        }                        
                     }
                     if (ChangedValue(0) != 0 && Locomotive.CruiseControl.SpeedRegulatorMaxForceSteps == 100)
                     {

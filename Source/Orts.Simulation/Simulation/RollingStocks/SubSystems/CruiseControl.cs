@@ -332,14 +332,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void SpeedRegulatorModeIncrease()
         {
-            if (!Locomotive.IsPlayerTrain) return;
-            Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
+            if (!Locomotive.IsPlayerTrain) return;            
             SpeedRegulatorMode previousMode = SpeedRegMode[Locomotive.LocoStation];
             if (!Equipped) return;
             if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Testing || SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.AVV) return;
             bool test = false;
             while (!test)
             {
+                if (SpeedRegMode[Locomotive.LocoStation] != SpeedRegulatorMode.Auto) Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
                 SpeedRegMode[Locomotive.LocoStation]++;
                 switch (SpeedRegMode[Locomotive.LocoStation])
                 {
@@ -369,13 +369,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator mode changed to") + " " + Simulator.Catalog.GetString(SpeedRegMode[Locomotive.LocoStation].ToString()));
         }
         public void SpeedRegulatorModeDecrease()
-        {            
-            Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
+        {                        
             if (!Equipped) return;
             if (SpeedRegMode[Locomotive.LocoStation] == SpeedRegulatorMode.Manual) return;
             bool test = false;
             while (!test)
             {
+                if (SpeedRegMode[Locomotive.LocoStation] != SpeedRegulatorMode.Manual) Locomotive.SignalEvent(Common.Event.CruiseControlSpeedRegulator);
                 SpeedRegMode[Locomotive.LocoStation]--;
                 switch (SpeedRegMode[Locomotive.LocoStation])
                 {
@@ -423,13 +423,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ForceHandleValue = 0;
                 }
                 return;
-            }
-            Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
+            }            
             if (!Equipped) return;
             if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Start) return;
             bool test = false;
             while (!test)
             {
+                if (SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Start) Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
                 SpeedSelMode[Locomotive.LocoStation]++;
                 //if (SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority) Locomotive.SetEngineBrakePercent(0);
                 switch (SpeedSelMode[Locomotive.LocoStation])
@@ -450,8 +450,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (Locomotive.LocoType == LocoTypes.Katr7507)
                 return;
             if (Locomotive.UsingForceHandle)
-                return;
-            Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
+                return;            
             if (Locomotive.Mirel != null)
                 Locomotive.Mirel.ResetVigilance();
             if (!Locomotive.Mirel.Equipped && SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Start)
@@ -462,6 +461,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 bool test = false;
                 while (!test)
                 {
+                    if (SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking) Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
                     SpeedSelMode[Locomotive.LocoStation]--;
                     switch (SpeedSelMode[Locomotive.LocoStation])
                     {
@@ -488,14 +488,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.ForceHandleValue = 0;
                 }
                 return;
-            }
-            Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
+            }            
             SpeedSelectorMode previousMode = SpeedSelMode[Locomotive.LocoStation];
             if (!Equipped) return;
             if (SpeedSelMode[Locomotive.LocoStation] == SpeedSelectorMode.Parking && !Locomotive.EngineBrakePriority) return;
             bool test = false;
             while (!test)
             {
+                if (SpeedSelMode[Locomotive.LocoStation] != SpeedSelectorMode.Parking) Locomotive.SignalEvent(Common.Event.CruiseControlSpeedSelector);
                 SpeedSelMode[Locomotive.LocoStation]--;
                 switch (SpeedSelMode[Locomotive.LocoStation])
                 {
@@ -537,13 +537,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             maxForceIncreasing = false;
         }
         public void SpeedRegulatorMaxForceIncrease()
-        {
-            Locomotive.SignalEvent(Common.Event.CruiseControlMaxForce);
+        {            
             if (MaxForceSetSingleStep) maxForceIncreasing = false;
             if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == 0.5f) Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = 0;
             if (!Equipped) return;
             if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] == SpeedRegulatorMaxForceSteps)
                 return;
+            Locomotive.SignalEvent(Common.Event.CruiseControlMaxForce);
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]++;
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0);
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));            
@@ -560,8 +560,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             maxForceDecreasing = false;
         }
         public void SpeedRegulatorMaxForceDecrease()
-        {
-            Locomotive.SignalEvent(Common.Event.CruiseControlMaxForce);
+        {            
             if (MaxForceSetSingleStep) maxForceDecreasing = false;
             if (!Equipped) return;
             if (DisableZeroForceStep)
@@ -572,7 +571,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] <= 0) return;
             }
-            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]--;
+            if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] > 0) Locomotive.SignalEvent(Common.Event.CruiseControlMaxForce);
+            Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation]--;            
             Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] = (float)Math.Round(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation], 0);
             Simulator.Confirmer.Message(ConfirmLevel.Information, Simulator.Catalog.GetString("Speed regulator max acceleration changed to") + " " + Simulator.Catalog.GetString(Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation].ToString()));            
         }
