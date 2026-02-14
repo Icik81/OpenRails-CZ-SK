@@ -4608,8 +4608,31 @@ namespace Orts.Viewer3D.RollingStock
                         if (!UserInput.IsDown(UserCommand.ControlDieselPlayer2))
                         Locomotive.StopButtonPressed2 = false;
                     break;
-                case CABViewControlTypes.ORTS_CABLIGHT:                    
-                    if ((Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.CabLightOn[Locomotive.LocoStation] ? 1 : 0)) new ToggleCabLightCommand(Viewer.Log); break;
+                case CABViewControlTypes.ORTS_CABLIGHT:                                        
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                            Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = false;
+                            if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
+                                Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                            Locomotive.SignalEvent(Event.CabLightSwitchToggle);
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, Locomotive.CabLightOn[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            Locomotive.CabLightOn[Locomotive.LocoStation] = true;
+                            Locomotive.wasCabLightSetOn[Locomotive.LocoStation] = true;
+                            if (Locomotive.CabFloodLightOn[Locomotive.LocoStation])
+                                Locomotive.CabLightOn[Locomotive.LocoStation] = false;
+                            Locomotive.SignalEvent(Event.CabLightSwitchToggle);
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.CabLight, Locomotive.CabLightOn[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                    }
+                    break;
+
                 case CABViewControlTypes.ORTS_LEFTDOOR:
                     if ((Locomotive.GetCabFlipped() ? (Locomotive.DoorRightOpen ? 1 : 0) : Locomotive.DoorLeftOpen ? 1 : 0)
                         != ChangedValue(Locomotive.GetCabFlipped() ? (Locomotive.DoorRightOpen ? 1 : 0) : Locomotive.DoorLeftOpen ? 1 : 0)) new ToggleDoorsLeftCommand(Viewer.Log); break;
