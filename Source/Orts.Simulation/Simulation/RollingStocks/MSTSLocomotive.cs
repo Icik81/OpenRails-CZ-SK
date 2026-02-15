@@ -21557,6 +21557,8 @@ namespace Orts.Simulation.RollingStocks
         public void ChangeTrainTypePaxCargo()
         {
             SelectedTrainType[LocoStation] = SelectedTrainType[LocoStation] == TrainType.Pax ? SelectedTrainType[LocoStation] = TrainType.Cargo : TrainType.Pax;
+            Simulator.Confirmer.Confirm(CabControl.SelectedTrainType, SelectedTrainType[LocoStation] == TrainType.Pax ? CabSetting.On : CabSetting.Off);
+            SignalEvent(Event.CruiseControlTrainType);
         }
 
         XmlDocument powerStationXml;

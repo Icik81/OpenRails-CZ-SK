@@ -52,7 +52,7 @@ namespace Orts.Simulation
       , CircuitBreakerClosingAuthorization
         // Diesel Power
       , PlayerDiesel
-      , HelperDiesel
+      , HelperDiesel      
       , DieselFuel
       , SteamHeatBoilerWater
       // Steam power
@@ -161,6 +161,7 @@ namespace Orts.Simulation
     , EngineStopperSlaveButton
     , ARRSpeedPlusButton
     , ARRSpeedMinusButton
+    , SelectedTrainType
 
     }
 
@@ -350,7 +351,8 @@ namespace Orts.Simulation
                 , new string [] { GetString("Engine stopper slave"), GetString("off"), null, GetParticularString("Engine stopper slave", "on") }
                 , new string [] { GetString("ARR speed plus"), GetString("off"), null, GetParticularString("ARR speed plus", "on") }
                 , new string [] { GetString("ARR speed minus"), GetString("off"), null, GetParticularString("ARR speed minus", "on") }
-
+                , new string [] { GetString("Train type"), GetString("Cargo"), null, GetParticularString("Train type", "Pax") }
+                
             };
             Debug.Assert(ConfirmText.Length == Enum.GetNames(typeof(CabControl)).Length, "Number of entries indexer ConfirmText must match values in CabControl enum.");
         }

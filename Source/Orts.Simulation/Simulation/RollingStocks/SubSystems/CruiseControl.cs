@@ -1949,6 +1949,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             if (t > PowerReductionValue / 100)
                                 t = PowerReductionValue / 100;
                         }
+                        
                         float demandedVolts = t * 100;
 
                         float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;

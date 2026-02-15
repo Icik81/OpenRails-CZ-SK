@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-11 17:44:15+0100\n"
-"PO-Revision-Date: 2026-02-11 17:44:15+0100\n"
+"POT-Creation-Date: 2026-02-15 12:12:40+0100\n"
+"PO-Revision-Date: 2026-02-15 12:12:40+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1390,122 +1390,126 @@ msgid "Control_CZSK Horn 1 + 2"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:324
-msgid "Control_CZSK Panto Activation +"
+msgid "Control_CZSK Horn + Bell"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:325
-msgid "Control_CZSK Panto Activation -"
+msgid "Control_CZSK Panto Activation +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:326
-msgid "Control_CZSK Voltage Selection +"
+msgid "Control_CZSK Panto Activation -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:327
-msgid "Control_CZSK Voltage Selection -"
+msgid "Control_CZSK Voltage Selection +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:328
-msgid "Control_CZSK HV3NA +"
+msgid "Control_CZSK Voltage Selection -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:329
-msgid "Control_CZSK HV3NA -"
+msgid "Control_CZSK HV3NA +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:330
-msgid "Control_CZSK Switch5Light +"
+msgid "Control_CZSK HV3NA -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:331
-msgid "Control_CZSK Switch5Light -"
+msgid "Control_CZSK Switch5Light +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:332
-msgid "Control_CZSK Switch6Light +"
+msgid "Control_CZSK Switch5Light -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:333
-msgid "Control_CZSK Switch6Light -"
+msgid "Control_CZSK Switch6Light +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:334
-msgid "Control_CZSK ARR Confirm Button"
+msgid "Control_CZSK Switch6Light -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:335
-msgid "Control_CZSK ARR DriveOut Button"
+msgid "Control_CZSK ARR Confirm Button"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:336
-msgid "Control_CZSK ARR Parking Button"
+msgid "Control_CZSK ARR DriveOut Button"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:337
-msgid "Control_CZSK PlayerLoco Handbrake +"
+msgid "Control_CZSK ARR Parking Button"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:338
-msgid "Control_CZSK PlayerLoco Handbrake -"
+msgid "Control_CZSK PlayerLoco Handbrake +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:339
-msgid "Control_CZSK Traction Switch +"
+msgid "Control_CZSK PlayerLoco Handbrake -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:340
-msgid "Control_CZSK Traction Switch -"
+msgid "Control_CZSK Traction Switch +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:341
-msgid "Control_CZSK Wipers Switch +"
+msgid "Control_CZSK Traction Switch -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:342
-msgid "Control_CZSK Wipers Switch -"
+msgid "Control_CZSK Wipers Switch +"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:343
-msgid "Control_CZSK Engine Switch +"
+msgid "Control_CZSK Wipers Switch -"
 msgstr ""
 
 #: ../../ORTS.Common/Input/UserCommand.cs:344
+msgid "Control_CZSK Engine Switch +"
+msgstr ""
+
+#: ../../ORTS.Common/Input/UserCommand.cs:345
 msgid "Control_CZSK Engine Switch -"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:346
+#: ../../ORTS.Common/Input/UserCommand.cs:347
 msgid "Set Power Supply Station Location"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:347
+#: ../../ORTS.Common/Input/UserCommand.cs:348
 msgid "Set Voltage 25k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:348
+#: ../../ORTS.Common/Input/UserCommand.cs:349
 msgid "Set Voltage 15k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:349
+#: ../../ORTS.Common/Input/UserCommand.cs:350
 msgid "Set Voltage 3k"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:350
+#: ../../ORTS.Common/Input/UserCommand.cs:351
 msgid "Set Voltage 0"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:351
+#: ../../ORTS.Common/Input/UserCommand.cs:352
 msgid "Set Delete Voltage Marker"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:353
+#: ../../ORTS.Common/Input/UserCommand.cs:354
 msgid "Control_CZSK Reload World Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:354
+#: ../../ORTS.Common/Input/UserCommand.cs:355
 msgid "Control_CZSK Reload Cab Object"
 msgstr ""
 
-#: ../../ORTS.Common/Input/UserCommand.cs:355
+#: ../../ORTS.Common/Input/UserCommand.cs:356
 msgid "Control_CZSK Reload Wire Object"
 msgstr ""
 

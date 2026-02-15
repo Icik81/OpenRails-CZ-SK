@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-11 17:44:19+0100\n"
-"PO-Revision-Date: 2026-02-11 17:44:20+0100\n"
+"POT-Creation-Date: 2026-02-15 12:12:44+0100\n"
+"PO-Revision-Date: 2026-02-15 12:12:45+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -126,7 +126,7 @@ msgid "Str. Brk. Emerg:"
 msgstr ""
 
 #: ../../Orts.Simulation/Common/Scripting/BrakeController.cs:308
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:279
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:280
 msgid "Overcharge"
 msgstr ""
 
@@ -414,111 +414,110 @@ msgstr ""
 msgid "MSG"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:226
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:227
 msgid "<none>"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:228
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:246
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgid "reverse"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:228
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:246
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgid "neutral"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:228
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:246
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgid "forward"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:228
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:246
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgid "locked. Close throttle, stop train then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 msgid "Throttle"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:238
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:248
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:249
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:254
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:258
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:259
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:295
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:296
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
 msgid "close"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:238
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:248
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:249
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:250
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:254
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:258
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:259
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:295
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:296
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
 msgid "open"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
 msgid "locked. Release dynamic brake then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:231
 msgid "Wheel-slip"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:231
 msgid "over"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:231
 msgid "occurring. Tractive power greatly reduced."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:230
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:231
 msgid "warning"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:232
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 msgid "Power"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:232
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:241
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:242
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:248
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:249
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:250
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:257
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:279
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:281
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:280
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:284
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:285
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:286
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:287
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:288
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:292
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:315
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:318
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:293
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:316
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:319
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:320
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:321
@@ -528,11 +527,11 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:325
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:326
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:327
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:330
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:331
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:332
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:337
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:333
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:338
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:339
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:340
@@ -548,36 +547,36 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:350
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:351
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:352
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:353
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3945
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3957
 msgid "off"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:232
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:241
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:242
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:248
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:249
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:250
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:257
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:279
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:281
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:287
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:280
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:288
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:292
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:315
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:318
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:322
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:293
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:316
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:319
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:323
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:324
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:325
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:326
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:330
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:331
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:332
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:337
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:333
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:338
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:339
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:340
@@ -588,6 +587,7 @@ msgstr ""
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:345
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:346
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:347
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:348
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:20551
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3941
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSWagon.cs:3961
@@ -595,282 +595,282 @@ msgstr ""
 msgid "on"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:234
 msgid "Pantograph 1"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:234
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:235
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:236
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
 msgid "lower"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:233
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:234
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:235
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:236
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
 msgid "raise"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:234
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:235
 msgid "Pantograph 2"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:235
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:236
 msgid "Pantograph 3"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:236
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
 msgid "Pantograph 4"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:237
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:238
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:964
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSElectricLocomotive.cs:4045
 msgid "Circuit breaker"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:240
 msgid "Circuit breaker closing authorization"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:240
 msgid "remove"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:239
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:240
 msgid "give"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:241
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:242
 msgid "Player Diesel Power"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:241
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:242
 msgid "locked. Close throttle then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:242
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
 msgid "Helper Diesel Power"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:244
 msgid "Diesel Tank"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:244
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:245
 msgid "re-fueled"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:243
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:244
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:245
 msgid "level"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:244
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:245
 msgid "Boiler Water Tank"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:248
 msgid "Regulator"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:248
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:249
 msgid "Injector 1"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:249
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:250
 msgid "Injector 2"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:250
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 msgid "Blowdown Valve"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:252
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6031
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6058
 msgid "Blower"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:252
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:261
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:306
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:307
 msgid "decrease"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:251
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:252
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:261
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:306
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:307
 msgid "increase"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:252
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
 msgid "SteamHeat"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:253
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:254
 msgid "Damper"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:254
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
 msgid "Firebox Door"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:255
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
 msgid "Firing Rate"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:256
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:257
 msgid "Manual Firing"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:257
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:258
 msgid "Fire"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:257
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:258
 msgid "add shovel-full"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:258
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:259
 msgid "Cylinder Cocks"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:259
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
 msgid "Cylinder Compound"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:260
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:261
 msgid "LargeEjector"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:261
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
 msgid "SmallEjector"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
 msgid "VacuumExhauster"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
 msgid "normal"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:262
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
 msgid "fast"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:264
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:265
 msgid "Tender"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:264
 msgid "Coal re-filled"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:263
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:264
 msgid "Coal level"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:264
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:265
 msgid "Water re-filled"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:264
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:265
 msgid "Water level"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:266
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:267
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6654
 msgid "Water Scoop"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:266
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:267
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
 msgid "up"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:266
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:267
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
 msgid "down"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:268
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:269
 msgid "Train Brake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:268
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:269
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:270
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
 msgid "release"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:268
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:269
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:270
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
 msgid "apply"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:269
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:270
 msgid "Engine Brake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:270
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
 msgid "Brakeman Brake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
 msgid "Dynamic Brake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:271
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
 msgid "setup"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:272
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
 msgid "Emergency Brake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
 msgid "Bail Off"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
 msgid "disengage"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:273
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
 msgid "engage"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
 msgid "Brakes"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
 msgid "initialize"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:274
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
 msgid "cannot initialize. Stop train then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:224
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:242
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/EPBrakeSystem.cs:68
@@ -881,130 +881,130 @@ msgstr ""
 msgid "Handbrake"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
 msgid "none"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:275
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
 msgid "full"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 msgid "Retainers"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:369
 msgid "Exhaust"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:370
 msgid "High Pressure"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:371
 msgid "Low Pressure"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:276
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:372
 msgid "Slow Direct"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
 msgid "Brake Hose"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:307
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:311
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:1063
 msgid "disconnect"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:277
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:1058
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:1405
 msgid "connect"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:278
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:279
 msgid "Quick Release"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:281
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
 msgid "Sander"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
 msgid "Alerter"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
 msgid "acknowledge"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:284
 msgid "Horn"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:284
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:285
 msgid "Whistle"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:284
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:285
 msgid "blow"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:285
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:286
 msgid "Bell"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:285
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:286
 msgid "ring"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:286
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:287
 msgid "Headlight"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:286
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:287
 msgid "dim"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:286
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:287
 msgid "bright"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:287
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:288
 msgid "Cab Light"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:288
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
 msgid "Wipers"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "Cab"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid "changing is not available"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgid ""
 "changing disabled. Close throttle, set reverser to neutral, stop train then "
 "re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
 msgid "Odometer"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:292
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:974
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:978
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:1011
@@ -1016,7 +1016,7 @@ msgstr ""
 msgid "Battery"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:292
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:293
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:987
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:992
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSControlUnit.cs:996
@@ -1032,398 +1032,413 @@ msgstr ""
 msgid "PowerKey"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:295
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:296
 msgid "Doors Left"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:296
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
 msgid "Doors Right"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:298
 msgid "Mirror"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:298
 msgid "retract"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:297
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:298
 msgid "extend"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:299
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:300
 msgid "Switch Ahead"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:299
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:300
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:301
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:302
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:303
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:304
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:305
 msgid "locked. Use Control+M to change signals to manual mode then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:300
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:301
 msgid "Switch Behind"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:301
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:302
 msgid "Facing Switch Ahead"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:302
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:303
 msgid "Facing Switch Behind"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:303
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:304
 msgid "Trailing Switch Ahead"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:304
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:305
 msgid "Trailing Switch Behind"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:306
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:307
 msgid "Simulation Speed"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:306
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:307
 msgid "reset"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:307
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:308
 msgid "Uncouple After"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:308
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:309
 msgid "Activity"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:308
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:309
 msgid "quit"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:308
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:309
 msgid "resume"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:309
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
 msgid "Replay"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:309
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
 msgid "Overriding camera replay. Press Escape to resume camera replay."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
 msgid "Gearbox"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:310
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
 msgid "locked. Use shaft before changing gear."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 msgid "Signal mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 msgid "manual"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 msgid "auto"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:311
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:312
 msgid "locked. Stop train, then re-try."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:313
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:314
 msgid "Wagon"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:313
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:314
 msgid "Wagon fully unloaded"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:313
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:314
 msgid "Wagon fully loaded"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:313
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:314
 msgid "Freight load"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:315
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:316
 msgid "Cab Radio"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:318
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:319
 msgid "AuxCompressor"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:319
-msgid "Compressor I + II"
-msgstr ""
-
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:319
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:320
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:321
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:323
+msgid "Compressor I"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:320
+msgid " + II"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:320
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:321
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:322
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:20866
 msgid "Auto"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:320
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:322
-msgid "Compressor I"
-msgstr ""
-
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:321
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:323
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:324
 msgid "Compressor II"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:324
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:325
 msgid "Heating"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:325
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:326
 msgid "Heating in Cab"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:326
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:327
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
 msgid "Change Voltage System"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:326
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:327
 msgid "AC"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:327
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
 msgid "DC"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
 msgid "Voltage Change to"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
 msgid "25kV"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:328
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
 msgid "3kV"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:329
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:330
 msgid "Highpressure Release"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:330
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:331
 msgid "Lowpressure Release"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:331
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:332
 msgid "Powerbreaker"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:332
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:333
 msgid "Full Cablight"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:337
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:338
 msgid "RDST"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:338
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:339
 msgid "Lap Button"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:339
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:340
 msgid "Frontlight white left"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:340
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:341
 msgid "Frontlight red left"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:341
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:342
 msgid "Frontlight white right"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:342
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:343
 msgid "Frontlight red right"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:343
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:344
 msgid "Rearlight white left"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:344
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:345
 msgid "Rearlight red left"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:345
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:346
 msgid "Rearlight white right"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:346
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:347
 msgid "Rearlight red right"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:347
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:348
 msgid "Automatic start-up button"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:348
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:349
 msgid "Horn 2"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:349
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:350
 msgid "Horn 1+2"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:350
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:351
 msgid "Engine stopper slave"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:351
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:352
 msgid "ARR speed plus"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:352
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:353
 msgid "ARR speed minus"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:362
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:372
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:410
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:354
+msgid "Train type"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:354
+msgid "Cargo"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:364
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:374
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:412
 #, csharp-format
 msgid "{0} {1}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:367
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:369
 #, csharp-format
 msgid "{0}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:377
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:379
 #, csharp-format
 msgid "{0} to {1:0}%"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:382
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:384
 #, csharp-format
 msgid "{0} {1:0}% {2}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:387
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:389
 #, csharp-format
 msgid "{0:0}% {1}"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:392
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:394
 #, csharp-format
 msgid "{0:0}%"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:400
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:405
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:402
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:407
 #, csharp-format
 msgid "{0} {1:0}%"
 msgstr ""
 
 #. Context: NonSteam
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:228
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:229
 msgctxt "NonSteam"
 msgid "Reverser"
 msgstr ""
 
 #. Context: Steam
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:246
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:247
 msgctxt "Steam"
 msgid "Reverser"
 msgstr ""
 
 #. Context: Alerter
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:282
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
 msgctxt "Alerter"
 msgid "sound"
 msgstr ""
 
 #. Context: Horn
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:283
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:284
 msgctxt "Horn"
 msgid "sound"
 msgstr ""
 
 #. Context: Cab
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:289
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
 msgctxt "Cab"
 msgid "change"
 msgstr ""
 
 #. Context: Odometer
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
 msgctxt "Odometer"
 msgid "reset"
 msgstr ""
 
 #. Context: Odometer
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
 msgctxt "Odometer"
 msgid "counting down"
 msgstr ""
 
 #. Context: Odometer
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:290
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:291
 msgctxt "Odometer"
 msgid "counting up"
 msgstr ""
 
 #. Context: Switch
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:299
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:300
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:301
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:302
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:303
 #: ../../Orts.Simulation/Simulation/Confirmer.cs:304
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:305
 msgctxt "Switch"
 msgid "change"
 msgstr ""
 
 #. Context: Horn 2
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:348
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:349
 msgctxt "Horn 2"
 msgid "sound"
 msgstr ""
 
 #. Context: Horn 1+2
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:349
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:350
 msgctxt "Horn 1+2"
 msgid "sound"
 msgstr ""
 
 #. Context: Engine stopper slave
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:350
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:351
 msgctxt "Engine stopper slave"
 msgid "on"
 msgstr ""
 
 #. Context: ARR speed plus
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:351
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:352
 msgctxt "ARR speed plus"
 msgid "on"
 msgstr ""
 
 #. Context: ARR speed minus
-#: ../../Orts.Simulation/Simulation/Confirmer.cs:352
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:353
 msgctxt "ARR speed minus"
 msgid "on"
+msgstr ""
+
+#. Context: Train type
+#: ../../Orts.Simulation/Simulation/Confirmer.cs:354
+msgctxt "Train type"
+msgid "Pax"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/Simulator.cs:2547
@@ -2263,19 +2278,19 @@ msgid ""
 "The marker has been deleted and marked for deletion in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21579
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21581
 msgid "The power station is stored in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21638
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21640
 msgid "Set "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21638
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:21640
 msgid "V and stored in an external database."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:25807
+#: ../../Orts.Simulation/Simulation/RollingStocks/MSTSLocomotive.cs:25815
 msgid "Selected speed confirmed."
 msgstr ""
 

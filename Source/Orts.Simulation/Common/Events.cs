@@ -218,6 +218,7 @@ namespace Orts.Common
         CruiseControlSpeedRegulator,
         CruiseControlSpeedSelector,
         CruiseControlMaxForce,
+        CruiseControlTrainType,
         Alert,
         Alert1,
         AFB,
@@ -669,9 +670,9 @@ namespace Orts.Common
                         case 302: return Event.CruiseControlMaxForce;
                         case 303: return Event.Alert;
                         case 304: return Event.Alert1;
-
                         case 305: return Event.KeyboardBeep;
                         case 306: return Event.KeyboardBeep1;
+                        case 307: return Event.CruiseControlTrainType;
 
                         case 10169: return Event.MirelOn;
                         case 10170: return Event.MirelOff;
