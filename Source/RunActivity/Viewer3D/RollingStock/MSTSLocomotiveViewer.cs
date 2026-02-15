@@ -5589,6 +5589,26 @@ namespace Orts.Viewer3D.RollingStock
                         }
                     }
                     break;
+                case CABViewControlTypes.ORTS_TRAIN_TYPE_PAX_OR_CARGO:
+                    {
+                        // Ovládání typu vlaku pro Cruise Control
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.SelectedTrainType[Locomotive.LocoStation] == TrainType.Cargo) Locomotive.SignalEvent(Event.CruiseControlTrainType);
+                            Locomotive.SelectedTrainType[Locomotive.LocoStation] = TrainType.Pax;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.SelectedTrainType, Locomotive.SelectedTrainType[Locomotive.LocoStation] == TrainType.Pax ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            if (Locomotive.SelectedTrainType[Locomotive.LocoStation] == TrainType.Pax) Locomotive.SignalEvent(Event.CruiseControlTrainType);
+                            Locomotive.SelectedTrainType[Locomotive.LocoStation] = TrainType.Cargo;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.SelectedTrainType, Locomotive.SelectedTrainType[Locomotive.LocoStation] == TrainType.Pax ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }                        
+                        break;
+                    }
+
                 case CABViewControlTypes.DOORSWITCH:
                     // Ovládání dveří
                     if (Locomotive.DoorSwitchEnable)

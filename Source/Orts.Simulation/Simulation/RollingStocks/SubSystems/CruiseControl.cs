@@ -1614,7 +1614,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         AccelerationDemandMpSS = -AccelerationDemandMpSS;
                         delta = -delta;
                     }
-                    float demand = AccelerationDemandMpSS;
+                    float demand = AccelerationDemandMpSS;                    
 
                     if (float.IsNaN(demand))
                     {
@@ -1917,11 +1917,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     float a = 0;
                     if (Locomotive.PowerOn && Locomotive.Direction != Direction.N)
                     {
-                        if (AccelerationTable.Count > 0)
+                        if (!reducingForce && AccelerationTable.Count > 0)
                         {
                             a = OverridenMaximalForce == 0 ? AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] - 1] : AccelerationTable[(int)OverridenMaximalForce - 1];
                             if (Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] < OverridenMaximalForce)
                                 a = AccelerationTable[(int)Locomotive.SelectedMaxAccelerationStep[Locomotive.LocoStation] - 1];
+
+                            if (Locomotive.SelectedTrainType[Locomotive.LocoStation] == TrainType.Cargo)
+                            {
+                                a /= 2;
+                            }
                         }
                         if (controllerVolts >= 0)
                         {
@@ -1941,15 +1946,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                                 if (t < newThrotte)
                                     t = newThrotte;
-                                t /= 100;
+                                t /= 100;                                
                             }
-                        }
+                        }                        
+
                         if (reducingForce)
                         {
                             if (t > PowerReductionValue / 100)
                                 t = PowerReductionValue / 100;
-                        }
-                        
+                        }                        
                         float demandedVolts = t * 100;
 
                         float current = maxForceN / Locomotive.MaxForceN * 1400;// Locomotive.MaxCurrentA;
