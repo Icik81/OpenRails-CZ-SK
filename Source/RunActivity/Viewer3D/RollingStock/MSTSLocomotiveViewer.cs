@@ -4667,7 +4667,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.HORNBELL: new HornBellCommand(Viewer.Log, ChangedValue(Locomotive.HornBell ? 1 : 0) > 0); break;
 
                 case CABViewControlTypes.WIPERS3_ACTIVATION_SWITCH:
-                    {                        
+                    {
+                        Locomotive.Wipers3ActivationEnable = true;
                         if (!IsChanged && ChangedValue(0) > 0 && UserInput.IsMouseLeftButtonDown)
                         {
                             new ToggleWipers3ActivationSwitchUpCommand(Viewer.Log);
@@ -4682,6 +4683,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
 
                 case CABViewControlTypes.SWITCH51_LIGHT:
+                    Locomotive.Switch51LightEnable = true;
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch5LightUpCommand(Viewer.Log);
@@ -4695,6 +4697,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.SWITCH52_LIGHT:
+                    Locomotive.Switch52LightEnable = true;
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch6LightUpCommand(Viewer.Log);
@@ -4708,13 +4711,15 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_UP:
+                    Locomotive.Switch51LightEnable = true;
                     if (UserInput.IsMouseLeftButtonDown && !IsChanged)
                     {
                         new Switch5LightDownCommand(Viewer.Log);
                         IsChanged = true;
                     }                    
                     break;
-                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_DOWN:                    
+                case CABViewControlTypes.SWITCH51_LIGHT_BUTTON_DOWN:
+                    Locomotive.Switch51LightEnable = true;
                     if (UserInput.IsMouseLeftButtonDown && !IsChanged)
                     {
                         new Switch5LightUpCommand(Viewer.Log);
@@ -4722,6 +4727,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_UP:
+                    Locomotive.Switch52LightEnable = true;
                     if (UserInput.IsMouseLeftButtonDown && !IsChanged)
                     {
                         new Switch6LightDownCommand(Viewer.Log);
@@ -4729,6 +4735,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.SWITCH52_LIGHT_BUTTON_DOWN:
+                    Locomotive.Switch52LightEnable = true;
                     if (UserInput.IsMouseLeftButtonDown && !IsChanged)
                     {
                         new Switch6LightUpCommand(Viewer.Log);
@@ -4737,6 +4744,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.SWITCH5_LIGHT:
+                    Locomotive.Switch5LightEnable = true;
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch5LightUpCommand(Viewer.Log);
@@ -4750,6 +4758,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.SWITCH6_LIGHT:
+                    Locomotive.Switch6LightEnable = true;
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new Switch6LightUpCommand(Viewer.Log);
@@ -5371,6 +5380,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.QUICK_RELEASE_BUTTON:
+                    Locomotive.QuickReleaseButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleQuickReleaseButton(true);
                     else
@@ -5378,6 +5388,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.LOWPRESSURE_RELEASE_BUTTON:
+                    Locomotive.LowPressureReleaseButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleLowPressureReleaseButton(true);
                     else
@@ -5385,6 +5396,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.BREAK_POWER_BUTTON:
+                    Locomotive.BreakPowerButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleBreakPowerButton(true);
                     else
@@ -5392,6 +5404,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.LAP_BUTTON:
+                    Locomotive.LapButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleLapButton(true);
                     else
@@ -5399,6 +5412,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.BREAK_EDB_BUTTON:
+                    Locomotive.BreakEDBButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleBreakEDBButton(true);
                     else
@@ -5406,6 +5420,8 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
+                    Locomotive.BreakEDBButtonEnable = true;
+                    Locomotive.BreakEDBSwitchEnable = true;
                     if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0 && !IsChanged)
                     {
                         Locomotive.ToggleBreakEDBButton(true);
@@ -5512,26 +5528,65 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.RDST_BREAKER_RDST:
                     // Ovládání jističe RDST
+                    Locomotive.RDSTBreakerRDSTEnable = true;
                     if (Locomotive.RDSTBreakerRDSTEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
-                            new ToggleRDSTBreakerCommand(Viewer.Log);
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }                        
                     }
                     break;
                 case CABViewControlTypes.RDST_BREAKER_VZ:
                     // Ovládání jističe RDST
+                    Locomotive.RDSTBreakerVZEnable = true;
                     if (Locomotive.RDSTBreakerVZEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
-                            new ToggleRDSTBreakerCommand(Viewer.Log);
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
                     }
                     break;
                 case CABViewControlTypes.RDST_BREAKER_POWER:
                     // Ovládání jističe RDST
+                    Locomotive.RDSTBreakerPowerEnable = true;
                     if (Locomotive.RDSTBreakerPowerEnable)
                     {
-                        if (ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) > 0)
-                            new ToggleRDSTBreakerCommand(Viewer.Log);
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                            IsChanged = true;
+                        }
                     }
                     break;
                 case CABViewControlTypes.DOORSWITCH:
@@ -5696,6 +5751,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.COMMAND_CYLINDER:
+                    Locomotive.CommandCylinderEnable = true;
                     // Ovladač COMMANDCYLINDER                    
                     if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.025f && UserInput.IsMouseLeftButtonDown) 
                     {
@@ -5712,6 +5768,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0.5f;
                     break;
                 case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_WHITE:
+                    Locomotive.CircularSwitchEnable = true;
                     // Ovládání bílých světel                    
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
@@ -5725,6 +5782,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.CIRCULAR_LIGHTSSWITCH_RED:
+                    Locomotive.CircularSwitchEnable = true;
                     // Ovládání červených světel                    
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
@@ -5738,6 +5796,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.VENTILATION_SWITCH:
+                    Locomotive.VentilationSwitchEnable = true;
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new ToggleVentilationDownCommand(Viewer.Log);
@@ -5836,6 +5895,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.ARR_SPEED_PLUS:
+                    Locomotive.ARRSpeedPlusButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleARRSpeedPlusButton(true);
                     else
@@ -5843,6 +5903,7 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.ARR_SPEED_MINUS:
+                    Locomotive.ARRSpeedMinusButtonEnable = true;
                     if (UserInput.IsMouseLeftButtonDown)
                         Locomotive.ToggleARRSpeedMinusButton(true);
                     else

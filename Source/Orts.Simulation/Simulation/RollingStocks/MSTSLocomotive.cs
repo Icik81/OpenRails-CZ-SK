@@ -16964,7 +16964,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Ovládání tlačítka pro zvýšení rychlosti ARR (ARR Speed Plus Button)
-        bool ARRSpeedPlusButtonEnable;
+        public bool ARRSpeedPlusButtonEnable;
         bool ARRSpeedPlusButton;
         bool ARRSpeedPlusButtonPressed;
         public void ToggleARRSpeedPlusButton(bool aRRSpeedPlusButton)
@@ -17000,7 +17000,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Ovládání tlačítka pro snížení rychlosti ARR (ARR Speed Minus Button)
-        bool ARRSpeedMinusButtonEnable;
+        public bool ARRSpeedMinusButtonEnable;
         bool ARRSpeedMinusButton;
         bool ARRSpeedMinusButtonPressed;
         public void ToggleARRSpeedMinusButton(bool aRRSpeedMinusButton)
