@@ -2749,7 +2749,7 @@ namespace Orts.Simulation.AIs
                         AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 100);
                         
                         // Icik
-                        UpdateSmoothDecelerating(elapsedClockSeconds);
+                        UpdateSmoothDecelerating(elapsedClockSeconds, -1000);
 
                         AITrainThrottlePercent = 0;
 
@@ -3213,20 +3213,22 @@ namespace Orts.Simulation.AIs
             }
 
             // Icik
-            UpdateSmoothDecelerating(elapsedClockSeconds);            
+            UpdateSmoothDecelerating(elapsedClockSeconds, -1000);            
         }
 
         //================================================================================================//
         /// <summary>
         /// Train is smooth decelerating
         /// </summary>        
-        public void UpdateSmoothDecelerating(float elapsedClockSeconds)
+        public void UpdateSmoothDecelerating(float elapsedClockSeconds, float distanceToTrain)
         {
             // Icik
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
-            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))                            
-                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, distanceToGoM + 3, this.Cars.Count > 3 ? 100 : 50);                            
+            float DistanceToGoM = distanceToGoM + 3;
+            if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                            
+            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 100 : 50);
             else
                 smoothDeceleration = false;
         }
@@ -3447,8 +3449,11 @@ namespace Orts.Simulation.AIs
                             if (SpeedMpS > maxspeed)
                             {                                
                                 // Icik
-                                if (maxspeed > 10.0f / 3.6f && distanceToTrain > 100) // nad 10 km/h a vlak je dále než 100 m
-                                    UpdateSmoothDecelerating(elapsedClockSeconds);
+                                if (SpeedMpS > 30f / 3.6f || SpeedMpS > AllowedMaxSpeedMpS) // Maximální rychlost při přiblížení k vlaku 30 km/h
+                                    AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
+                                else
+                                if (SpeedMpS > 5.0f / 3.6f) // nad 5 km/h plynule zpomaluje
+                                    UpdateSmoothDecelerating(elapsedClockSeconds, distanceToTrain);
                                 else
                                     AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                             }
@@ -3882,7 +3887,7 @@ namespace Orts.Simulation.AIs
         bool smoothDeceleration;        
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {            
-            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f && AITrainThrottlePercent == 0)
+            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f && AITrainThrottlePercent < 10)
             {
                 smoothDeceleration = true;                
                 if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < -1) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
