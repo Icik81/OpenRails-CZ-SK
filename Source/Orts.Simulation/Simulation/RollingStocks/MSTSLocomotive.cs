@@ -3344,7 +3344,7 @@ namespace Orts.Simulation.RollingStocks
             int MasterCarNumber = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
                     if (Train.MasterLoco == null && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2]))
                     {
@@ -3361,7 +3361,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber1 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
                     if (Train.SlaveLoco1 == null && (SlaveCarNumber1 == MasterCarNumber + 1 || SlaveCarNumber1 == MasterCarNumber - 1))
                     {
@@ -3378,7 +3378,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber2 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
                     if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 1 || SlaveCarNumber2 == SlaveCarNumber1 + 2 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
                     {
@@ -3395,7 +3395,7 @@ namespace Orts.Simulation.RollingStocks
             int SlaveCarNumber3 = 0;
             foreach (TrainCar car in Train.Cars)
             {
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !ControlUnit)
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
                     if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber3 == SlaveCarNumber2 + 1 || SlaveCarNumber3 == SlaveCarNumber2 - 1 || SlaveCarNumber3 == SlaveCarNumber2 + 2 || SlaveCarNumber3 == SlaveCarNumber2 - 2))
                     {
@@ -14307,7 +14307,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -14357,7 +14357,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             (car as MSTSLocomotive).PantoCommandDown = true;
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
@@ -14420,7 +14420,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -14471,7 +14471,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
@@ -14511,7 +14511,7 @@ namespace Orts.Simulation.RollingStocks
                                         if (AcceptMUSignals)
                                             foreach (TrainCar car in Train.Cars)
                                             {
-                                                if (car.AcceptMUSignals)
+                                                if (car.AcceptMUSignals && !car.ControlUnit)
                                                 {
                                                     if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -14562,7 +14562,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -14612,7 +14612,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p3].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p3);
@@ -14651,7 +14651,7 @@ namespace Orts.Simulation.RollingStocks
                                         if (AcceptMUSignals)
                                             foreach (TrainCar car in Train.Cars)
                                             {
-                                                if (car.AcceptMUSignals)
+                                                if (car.AcceptMUSignals && !car.ControlUnit)
                                                 {
                                                     if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -14702,7 +14702,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
@@ -14753,7 +14753,7 @@ namespace Orts.Simulation.RollingStocks
                                             if (AcceptMUSignals)
                                                 foreach (TrainCar car in Train.Cars)
                                                 {
-                                                    if (car.AcceptMUSignals)
+                                                    if (car.AcceptMUSignals && !car.ControlUnit)
                                                     {
                                                         if ((car as MSTSWagon).Pantographs[p4].State != PantographState.Up)
                                                             car.SignalEvent(PowerSupplyEvent.RaisePantograph, p4);
@@ -14793,7 +14793,7 @@ namespace Orts.Simulation.RollingStocks
                                         if (AcceptMUSignals)
                                             foreach (TrainCar car in Train.Cars)
                                             {
-                                                if (car.AcceptMUSignals)
+                                                if (car.AcceptMUSignals && !car.ControlUnit)
                                                 {
                                                     if ((car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                         car.SignalEvent(PowerSupplyEvent.RaisePantograph, p2);
@@ -14907,7 +14907,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -14939,7 +14939,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)                                            
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -14974,7 +14974,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                 car.SignalEvent(PowerSupplyEvent.RaisePantograph);
@@ -15006,7 +15006,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
@@ -15167,7 +15167,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -15207,7 +15207,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if (Pantograph4NCActivated)
                                             {
@@ -15251,7 +15251,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
@@ -15292,7 +15292,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (AcceptMUSignals)
                                     foreach (TrainCar car in Train.Cars)
                                     {
-                                        if (car.AcceptMUSignals)
+                                        if (car.AcceptMUSignals && !car.ControlUnit)
                                         {
                                             if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                 car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
@@ -15381,7 +15381,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
@@ -15413,7 +15413,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph, p1);
@@ -15448,7 +15448,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Down || (car as MSTSWagon).Pantographs[p2].State != PantographState.Down)
                                                     car.SignalEvent(PowerSupplyEvent.LowerPantograph);
@@ -15480,7 +15480,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph, p1);
@@ -15515,7 +15515,7 @@ namespace Orts.Simulation.RollingStocks
                                     if (AcceptMUSignals)
                                         foreach (TrainCar car in Train.Cars)
                                         {
-                                            if (car.AcceptMUSignals)
+                                            if (car.AcceptMUSignals && !car.ControlUnit)
                                             {
                                                 if ((car as MSTSWagon).Pantographs[p1].State != PantographState.Up || (car as MSTSWagon).Pantographs[p2].State != PantographState.Up)
                                                     car.SignalEvent(PowerSupplyEvent.RaisePantograph);
