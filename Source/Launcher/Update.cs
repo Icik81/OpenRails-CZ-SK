@@ -68,14 +68,14 @@ namespace ORTS
             {
                 state = "Zjišťuji aktuální verzi";
                 string versionPath = Application.StartupPath;
-                versionPath = versionPath + "\\version19.ini";
+                versionPath = versionPath + "\\version20.ini";
                 if (!File.Exists(versionPath))
                 {
                     File.WriteAllText(versionPath, "1");
                 }
                 string version = File.ReadAllText(versionPath);
 
-                string contentPath = Application.StartupPath + "\\content19.ini";
+                string contentPath = Application.StartupPath + "\\content20.ini";
                 if (!File.Exists(contentPath))
                 {
                     File.WriteAllText(contentPath, "0");
@@ -87,8 +87,8 @@ namespace ORTS
                 ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                 
                 WebClient webClient = new WebClient();
-                s = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/version19.txt");
-                conts = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/Content19.txt");
+                s = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/version20.txt");
+                conts = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/Content20.txt");
                 if (version != s || conts != content) // new version available
                 {
                     if (version != s)
@@ -97,10 +97,10 @@ namespace ORTS
                         if (dr == DialogResult.No)
                             return;
                         state = "Stahuji novou verzi";
-                        File.Delete(Application.StartupPath + "\\Update19.zip");
-                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/update19.zip", Application.StartupPath + "\\Update19.zip");
+                        File.Delete(Application.StartupPath + "\\Update20.zip");
+                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/update20.zip", Application.StartupPath + "\\Update20.zip");
                         state = "Rozbaluji archiv";
-                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Update19.zip");
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Update20.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                         File.WriteAllText(versionPath, s);
                         waiting = true;
@@ -110,10 +110,10 @@ namespace ORTS
                     if (conts != content)
                     {
                         state = "Stahuji novou verzi obsahu";
-                        File.Delete(Application.StartupPath + "\\Content19.zip");
-                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/content19.zip", Application.StartupPath + "\\Content19.zip");
+                        File.Delete(Application.StartupPath + "\\Content20.zip");
+                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/content20.zip", Application.StartupPath + "\\Content20.zip");
                         state = "Rozbaluji archiv";
-                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Content19.zip");
+                        ZipFile zip = new ZipFile(Application.StartupPath + "\\Content20.zip");
                         zip.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
                         File.WriteAllText(contentPath, conts);
                         waiting = true;
