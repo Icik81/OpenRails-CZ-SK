@@ -10634,8 +10634,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
-                        mpc.DoMovement(MultiPositionController.Movement.Aft);
-                        SignalEvent(Event.TrainBrakeChange);
+                        mpc.DoMovement(MultiPositionController.Movement.Aft);                        
                         return;
                     }
                 }
@@ -10662,8 +10661,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
-                        mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                        SignalEvent(Event.TrainBrakeChange);
+                        mpc.DoMovement(MultiPositionController.Movement.Neutral);                        
                         return;
                     }
                 }
@@ -10685,8 +10683,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                     {
-                        mpc.DoMovement(MultiPositionController.Movement.Forward);
-                        SignalEvent(Event.TrainBrakeChange);
+                        mpc.DoMovement(MultiPositionController.Movement.Forward);                        
                         return;
                     }
                 }
@@ -10710,8 +10707,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (mpc.controllerBinding == MultiPositionController.ControllerBinding.TrainBrake)
                         {
-                            mpc.DoMovement(MultiPositionController.Movement.Neutral);
-                            SignalEvent(Event.TrainBrakeChange);
+                            mpc.DoMovement(MultiPositionController.Movement.Neutral);                            
                             return;
                         }
                     }

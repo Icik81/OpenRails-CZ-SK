@@ -1279,16 +1279,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     case "TrainBrakeIncrease":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakeIncrease;
                             break;
                         }
                     case "TrainBrakeDecrease":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakeDecrease;
                             break;
                         }
                     case "EmergencyBrake":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.EmergencyBrake;
                             break;
                         }
@@ -1315,37 +1318,43 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         }
                     case "TrainBrakesControllerFullQuickReleaseStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerFullQuickReleaseStart;
                             break;
                         }
                     case "TrainBrakesControllerOverchargeStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerOverchargeStart;
                             break;
                         }
                     case "TrainBrakesControllerHoldLappedStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerHoldLappedStart;
                             break;
                         }
                     case "TrainBrakesControllerReleaseStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerReleaseStart;
                             break;
                         }
                     case "TrainBrakesControllerNeutralhandleOffStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerNeutralhandleOffStart;
                             break;
                         }
                     case "TrainBrakesControllerApplyStart":
                         {
-                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.MPCTrainBrakesControllerApplyStart);
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;
                             break;
                         }
                     case "TrainBrakesControllerEmergencyStart":
                         {
+                            if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
                             controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;
                             break;
                         }

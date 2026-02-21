@@ -4239,12 +4239,12 @@ namespace Orts.Viewer3D.RollingStock
         /// </summary>
         float NormalizedMouseMovementCoef;
         float NormalizedMouseMovement()
-        {            
-            NormalizedMouseMovementCoef = IsChanged ? 0.025f : 0.075f;
+        {                        
+            NormalizedMouseMovementCoef = 1;
             return (ControlDiscrete.Orientation > 0
                 ? MathHelper.Clamp((float)UserInput.MouseMoveY / (float)Control.Height, -NormalizedMouseMovementCoef, NormalizedMouseMovementCoef)
-                : MathHelper.Clamp((float)UserInput.MouseMoveX / (float)Control.Width, -NormalizedMouseMovementCoef, NormalizedMouseMovementCoef)
-                * (ControlDiscrete.Direction > 0 ? -1 : 1));
+                : MathHelper.Clamp((float)UserInput.MouseMoveX / (float)Control.Width, -NormalizedMouseMovementCoef, NormalizedMouseMovementCoef))
+                * (ControlDiscrete.Direction > 0 ? -1 : 1);
         }
 
         public bool IsMouseWithin()
@@ -6247,16 +6247,16 @@ namespace Orts.Viewer3D.RollingStock
                                 if (!mpc.StateChanged)
                                     mpc.StateChanged = true;                                                                                                                               
 
-                                if (p == -1)
+                                if (p == 1)
                                 {
                                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.SelectedSpeed && Locomotive.CruiseControl.ForceRegulatorAutoWhenNonZeroSpeedSelected)
                                     {
                                         Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                                         Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.On;
                                     }
-                                    mpc.DoMovement(MultiPositionController.Movement.Forward);                                    
+                                    mpc.DoMovement(MultiPositionController.Movement.Forward);                                                                          
                                 }
-                                if (p == 1) mpc.DoMovement(MultiPositionController.Movement.Aft);                                    
+                                if (p == -1) mpc.DoMovement(MultiPositionController.Movement.Aft);                                    
                                 
                                 if (p == 0 && !UserInput.IsMouseLeftButtonDown)
                                 {
