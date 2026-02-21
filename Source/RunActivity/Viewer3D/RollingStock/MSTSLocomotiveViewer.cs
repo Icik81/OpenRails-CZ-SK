@@ -4316,12 +4316,29 @@ namespace Orts.Viewer3D.RollingStock
                         return;
                     if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
                         break;
-                    if (ChangedValue(0) != 0)
+
+                    if (Locomotive.ThrottleController.NotchCount() > 1 && !Locomotive.ThrottleController.Notches[Locomotive.ThrottleController.CurrentNotch].Smooth)
                     {
-                        Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
-                        Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
-                        Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
-                        Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            Locomotive.StartThrottleIncrease();
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            Locomotive.StartThrottleDecrease();
+                            IsChanged = true;
+                        }
+                    }
+                    else
+                    {
+                        if (ChangedValue(0) != 0)
+                        {
+                            Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
+                            Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
+                            Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
+                            Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                        }
                     }
                     //Locomotive.SetThrottleValue(ChangedValue(Locomotive.ThrottleController.IntermediateValue)); break;
                     break;
@@ -4340,12 +4357,28 @@ namespace Orts.Viewer3D.RollingStock
                         if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
                             break;
                     }
-                    if (ChangedValue(0) != 0)
+                    if (Locomotive.TrainBrakeController.Notches.Count > 1 && !Locomotive.TrainBrakeController.Notches[Locomotive.TrainBrakeController.CurrentNotch].Smooth)
                     {
-                        Locomotive.TrainBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.025f, 0.025f);
-                        Locomotive.TrainBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.TrainBrakeController.CurrentValue, 0, 1);
-                        Locomotive.SetTrainBrakeValue(Locomotive.TrainBrakeController.CurrentValue, 0);
-                        Locomotive.SetTrainBrakePercent(Locomotive.TrainBrakeController.CurrentValue * 100);
+                        if (ChangedValue(0) > 0 && !IsChanged)
+                        {
+                            Locomotive.StartTrainBrakeIncrease(Locomotive.TrainBrakeController.CurrentValue, 0);
+                            IsChanged = true;
+                        }
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            Locomotive.StartTrainBrakeDecrease(Locomotive.TrainBrakeController.CurrentValue - 0.01f);
+                            IsChanged = true;
+                        }
+                    }
+                    else
+                    {
+                        if (ChangedValue(0) != 0)
+                        {
+                            Locomotive.TrainBrakeController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.025f, 0.025f);
+                            Locomotive.TrainBrakeController.CurrentValue = MathHelper.Clamp(Locomotive.TrainBrakeController.CurrentValue, 0, 1);
+                            Locomotive.SetTrainBrakeValue(Locomotive.TrainBrakeController.CurrentValue, 0);
+                            Locomotive.SetTrainBrakePercent(Locomotive.TrainBrakeController.CurrentValue * 100);
+                        }
                     }
                     //Locomotive.SetTrainBrakeValue(ChangedValue(Locomotive.TrainBrakeController.IntermediateValue), 0); break;
                     break;
@@ -6210,19 +6243,21 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (mpc.ControllerId == Control.ControlId)
                             {
-                                p = ChangedValue(0);
+                                p = ChangedValue(0); if (p > 0 && !IsChanged) { p = 1; IsChanged = true; } if (p < 0 && !IsChanged) { p = -1; IsChanged = true; }
                                 if (!mpc.StateChanged)
-                                    mpc.StateChanged = true;
-                                if (p == 1)
+                                    mpc.StateChanged = true;                                                                                                                               
+
+                                if (p == -1)
                                 {
                                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.SelectedSpeed && Locomotive.CruiseControl.ForceRegulatorAutoWhenNonZeroSpeedSelected)
                                     {
                                         Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
                                         Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.On;
                                     }
-                                    mpc.DoMovement(MultiPositionController.Movement.Forward);
+                                    mpc.DoMovement(MultiPositionController.Movement.Forward);                                    
                                 }
-                                if (p == -1) mpc.DoMovement(MultiPositionController.Movement.Aft);
+                                if (p == 1) mpc.DoMovement(MultiPositionController.Movement.Aft);                                    
+                                
                                 if (p == 0 && !UserInput.IsMouseLeftButtonDown)
                                 {
                                     mpc.DoMovement(MultiPositionController.Movement.Neutral);
