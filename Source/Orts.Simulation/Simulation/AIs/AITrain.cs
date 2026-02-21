@@ -3225,7 +3225,7 @@ namespace Orts.Simulation.AIs
             // Icik
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
-            float DistanceToGoM = distanceToGoM + 3;
+            float DistanceToGoM = distanceToGoM + 0.5f;
             if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                            
             if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
                 SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 100 : 50);
@@ -3887,7 +3887,7 @@ namespace Orts.Simulation.AIs
         bool smoothDeceleration;        
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {            
-            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f && AITrainThrottlePercent < 10)
+            if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f)
             {
                 smoothDeceleration = true;                
                 if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < -1) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
