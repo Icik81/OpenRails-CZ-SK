@@ -4317,14 +4317,14 @@ namespace Orts.Viewer3D.RollingStock
                     if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
                         break;
 
-                    if (Locomotive.ThrottleController.NotchCount() > 1 && !Locomotive.ThrottleController.Notches[Locomotive.ThrottleController.CurrentNotch].Smooth)
+                    if (Locomotive.ThrottleController.NotchCount() > 0 && !Locomotive.ThrottleController.Notches[Locomotive.ThrottleController.CurrentNotch].Smooth)
                     {
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (ChangedValue(0) > 0.035f && !IsChanged)
                         {
                             Locomotive.StartThrottleIncrease();
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (ChangedValue(0) < -0.035f && !IsChanged)
                         {
                             Locomotive.StartThrottleDecrease();
                             IsChanged = true;
@@ -4357,16 +4357,16 @@ namespace Orts.Viewer3D.RollingStock
                         if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
                             break;
                     }
-                    if (Locomotive.TrainBrakeController.Notches.Count > 1 && !Locomotive.TrainBrakeController.Notches[Locomotive.TrainBrakeController.CurrentNotch].Smooth)
+                    if (Locomotive.TrainBrakeController.Notches.Count > 0 && !Locomotive.TrainBrakeController.Notches[Locomotive.TrainBrakeController.CurrentNotch].Smooth)
                     {
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (ChangedValue(0) > 0.035f && !IsChanged)
                         {
                             Locomotive.StartTrainBrakeIncrease(Locomotive.TrainBrakeController.CurrentValue, 0);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (ChangedValue(0) < -0.035f && !IsChanged)
                         {
-                            Locomotive.StartTrainBrakeDecrease(Locomotive.TrainBrakeController.CurrentValue - 0.01f);
+                            Locomotive.StartTrainBrakeDecrease(Locomotive.TrainBrakeController.CurrentValue - 0.001f);
                             IsChanged = true;
                         }
                     }
@@ -5470,12 +5470,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
@@ -5500,12 +5500,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER2:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged && Locomotive.DieselDirectionController_In)
+                        if (ChangedValue(0) < 0 && !IsChanged && Locomotive.DieselDirectionController_In)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
@@ -5532,12 +5532,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER3:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (ChangedValue(0) > 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (ChangedValue(0) < 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
@@ -5547,12 +5547,12 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.DIESEL_DIRECTION_CONTROLLER4:
                     if (Locomotive.LocalThrottlePercent == 0)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (ChangedValue(0) > 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerUpCommand(Viewer.Log);
                             IsChanged = true;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (ChangedValue(0) < 0 && !IsChanged)
                         {
                             new ToggleDieselDirectionControllerDownCommand(Viewer.Log);
                             IsChanged = true;
@@ -5678,13 +5678,30 @@ namespace Orts.Viewer3D.RollingStock
 
                         if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
                             break;
-
-                        if (ChangedValue(0) != 0)
+                        
+                        if (Locomotive.ThrottleController.NotchCount() > 0 && !Locomotive.ThrottleController.Notches[Locomotive.ThrottleController.CurrentNotch].Smooth)
+                        {                            
+                            if (ChangedValue(0) > 0.035f && !IsChanged)
+                            {
+                                Locomotive.StartThrottleIncrease();                                
+                                IsChanged = true;
+                            }
+                            if (ChangedValue(0) < -0.035f && !IsChanged)
+                            {
+                                Locomotive.StartThrottleDecrease();                                
+                                IsChanged = true;
+                            }
+                        }
+                        else
                         {
-                            Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
-                            Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
-                            Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
-                            Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);                            
+                            Locomotive.StopThrottleDecrease();
+                            if (ChangedValue(0) != 0)
+                            {
+                                Locomotive.ThrottleController.CurrentValue += MathHelper.Clamp(NormalizedMouseMovement(), -0.25f, 0.25f);
+                                Locomotive.ThrottleController.CurrentValue = MathHelper.Clamp(Locomotive.ThrottleController.CurrentValue, 0, 1);
+                                Locomotive.SetThrottleValue(Locomotive.ThrottleController.CurrentValue);
+                                Locomotive.SetThrottlePercent(Locomotive.ThrottleController.CurrentValue * 100);
+                            }
                         }
                     }
                     if (Locomotive.AripotControllerAuto)
@@ -5806,16 +5823,18 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.COMMAND_CYLINDER:
                     Locomotive.CommandCylinderEnable = true;
                     // Ovladač COMMANDCYLINDER                    
-                    if (ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.025f && UserInput.IsMouseLeftButtonDown) 
+                    if (!IsChanged && ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.015f && UserInput.IsMouseLeftButtonDown) 
                     {
                         Locomotive.CommandCylinderUp = true;
-                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;                        
+                        if (NormalizedMouseMovement() < 0.035f) IsChanged = true;
                     }
                     else
-                    if (ChangedValue(0) < 0 && NormalizedMouseMovement() < -0.025f && UserInput.IsMouseLeftButtonDown)
+                    if (!IsChanged && ChangedValue(0) < 0 && NormalizedMouseMovement() < -0.015f && UserInput.IsMouseLeftButtonDown)
                     {
                         Locomotive.CommandCylinderDown = true;
-                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;
+                        Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0;                        
+                        if (NormalizedMouseMovement() > -0.035f) IsChanged = true;
                     }
                     else
                         Locomotive.CommandCylinderTimerIsDownKeyPeriod = 0.5f;
@@ -6243,7 +6262,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (mpc.ControllerId == Control.ControlId)
                             {
-                                p = ChangedValue(0); if (p > 0 && !IsChanged) { p = 1; IsChanged = true; } if (p < 0 && !IsChanged) { p = -1; IsChanged = true; }
+                                p = ChangedValue(0); if (p > 0 && NormalizedMouseMovement() > 0.035f && !IsChanged) { p = 1; IsChanged = true; } if (p < 0 && NormalizedMouseMovement() < -0.035f && !IsChanged) { p = -1; IsChanged = true; }
                                 if (!mpc.StateChanged)
                                     mpc.StateChanged = true;                                                                                                                               
 
@@ -6916,7 +6935,7 @@ namespace Orts.Viewer3D.RollingStock
             var index = 0;
 
             if (percent > 1)
-                percent /= 100f;
+                percent /= 100f;            
 
             if (ControlDiscrete.MinValue != ControlDiscrete.MaxValue && !(ControlDiscrete.MinValue == 0 && ControlDiscrete.MaxValue == 0))
                 percent = MathHelper.Clamp(percent, (float)ControlDiscrete.MinValue, (float)ControlDiscrete.MaxValue);
@@ -6939,7 +6958,7 @@ namespace Orts.Viewer3D.RollingStock
             {
                 index = (int)(percent / (ControlDiscrete.MaxValue - ControlDiscrete.MinValue) * ControlDiscrete.FramesCount);
             }
-
+         
             return index;
         }
     }
@@ -7043,8 +7062,8 @@ namespace Orts.Viewer3D.RollingStock
                                 WipersFrameTimer = 0;
                             }
 
-                        SkipToIndex:
-                            index = PercentToIndex(MathHelper.Clamp(WipersFrameIndex / WipersFrameCount, 0, 1f));
+                            SkipToIndex:                            
+                            index = WipersFrameIndex > 1 ? PercentToIndex(WipersFrameIndex / WipersFrameCount * 100) : 0;
                         }
                         else
                         {
