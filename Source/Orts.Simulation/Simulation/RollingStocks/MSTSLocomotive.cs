@@ -7052,7 +7052,8 @@ namespace Orts.Simulation.RollingStocks
                         {
                             PowerKeyPosition[LocoStation] = 2;
                             PowerKey = true;
-                            StationIsActivated[LocoStation] = true;
+                            HeatingPosition[LocoStation] = 1;
+                            StationIsActivated[LocoStation] = true;                            
 
                             if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap
                                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
@@ -7549,6 +7550,7 @@ namespace Orts.Simulation.RollingStocks
                     Battery = true;
                     PowerKey = true;
                     PowerKeyPosition[LocoStation] = 2;
+                    HeatingPosition[LocoStation] = 1;
                     StationIsActivated[LocoStation] = true;
 
                     foreach (TrainCar car in Train.Cars)
@@ -7605,6 +7607,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
+                    HeatingPosition[LocoStation] = 1;
                     PowerKey = true;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
 
