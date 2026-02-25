@@ -438,6 +438,8 @@ namespace Orts.Common
         MPCDynamicBrakeIncreaseFast,
         MPCDynamicBrakeDecrease,
         MPCTrainBrakesControllerApplyStart,
+        HeatingIn,
+        HeatingOut
     }
 
     public static class Events
@@ -889,7 +891,8 @@ namespace Orts.Common
                         case 20190: return Event.MPCDynamicBrakeIncreaseFast;
                         case 20191: return Event.MPCDynamicBrakeDecrease;
                         case 20192: return Event.MPCTrainBrakesControllerApplyStart;
-
+                        case 20193: return Event.HeatingIn;
+                        case 20194: return Event.HeatingOut;
 
                         default: return 0;
                     }

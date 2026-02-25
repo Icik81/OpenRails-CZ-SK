@@ -4792,7 +4792,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if ((!Heating_OverTimeRequest && Heating_OffOn[LocoStation] && !HeatingOverCurrent && AuxPowerOn && StationIsActivated[LocoStation]) || (Train.CarSteamHeatOn && (this is MSTSSteamLocomotive)))
                     HeatingIsOn = true;
-                if (((!Heating_OffOn[LocoStation] && StationIsActivated[LocoStation]) || HeatingOverCurrent || !AuxPowerOn) && !Train.CarSteamHeatOn)
+                if ((!Heating_OffOn[LocoStation] || HeatingOverCurrent || !AuxPowerOn || !StationIsActivated[LocoStation]) && !Train.CarSteamHeatOn)
                 {
                     if (HeatingIsOn)
                         SignalEvent(Event.Heating_OffOnOff);
@@ -7669,6 +7669,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsLeadLocomotive() && !MirerControllerEnable && !MirelRSControllerEnable && !HS198ControllerEnable)
                     Simulator.StepControllerValue = LocalThrottlePercent / 100;
 
+                ToggleHeating();
                 TogglePowerKey();
                 PowerKeyLogic();
                 MUCableLogic();
@@ -11905,9 +11906,9 @@ namespace Orts.Simulation.RollingStocks
             {
                 if ((DieselDirectionController || DieselDirectionController2) && TogglePowerKeyCycle == 0)
                 {
-                    foreach (TrainCar car in Train.Cars)
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                     {
-                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        if (car.AcceptMUSignals)
                         {
                             car.PowerKeyPosition[1] = 0;
                             car.PowerKeyPosition[2] = 0;
@@ -11916,9 +11917,9 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 Simulator.PowerKeyInPocket = true;
-                foreach (TrainCar car in Train.Cars)
+                foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                 {
-                    if (car is MSTSLocomotive && car.AcceptMUSignals)
+                    if (car.AcceptMUSignals)
                     {
                         if (car.PowerKeyPosition[1] > 0 || car.PowerKeyPosition[2] > 0)
                             Simulator.PowerKeyInPocket = false;
@@ -11926,9 +11927,9 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 if (CarHavePocketPowerKey)
-                    foreach (TrainCar car in Train.Cars)
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive))
                     {
-                        if (car is MSTSLocomotive && car.AcceptMUSignals)
+                        if (car.AcceptMUSignals)
                         {
                             car.CarHavePocketPowerKey = true;
                         }
@@ -12012,6 +12013,153 @@ namespace Orts.Simulation.RollingStocks
             if (TogglePowerKeyCycle > 10)
                 TogglePowerKeyCycle = 10;            
         }
+
+        // Klička topení vlaku 
+        public void ToggleHeatingUp()
+        {
+            if (!HeatingEnable)
+                return;
+
+            if (Simulator.HeatingInPocket && HeatingPosition[LocoStation] == 0)
+            {
+                HeatingPosition[LocoStation] = 1;
+                if (HeatingPosition[LocoStation] == 1)
+                {
+                    Heating_OffOn[LocoStation] = false;
+                    SignalEvent(Event.HeatingIn);
+                    Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Heating key in station!"));
+                }                
+                return;
+            }
+
+            if (!CarHavePocketHeating)
+            {
+                if (HeatingPosition[LocoStation] == 0)
+                {
+                    HeatingPosition[LocoStation]++;
+                    return;
+                }
+            }
+
+            if (HeatingPosition[LocoStation] > 0 && HeatingPosition[LocoStation] < 2)
+            {
+                HeatingPosition[LocoStation]++;                
+
+                if (OneCabOneConsole)
+                {
+                    if (HeatingPosition[LocoStation] == 2)
+                    {
+                        HeatingPosition[1] = HeatingPosition[2] = 2;
+                    }
+                }
+
+                if (HeatingPosition[LocoStation] == 2)
+                {
+                    Heating_OffOn[LocoStation] = true;                    
+                    SignalEvent(Event.Heating_OffOnOn);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);
+                }
+                return;
+            }
+
+            if (!Simulator.HeatingInPocket && HeatingPosition[LocoStation] == 0)
+                Simulator.Confirmer.MSG(Simulator.Catalog.GetString("You have no Heating key in pocket!"));
+        }
+        public void ToggleHeatingDown()
+        {
+            if (!HeatingEnable)
+                return;
+
+            if (HeatingPosition[LocoStation] > 0)
+            {
+                HeatingPosition[LocoStation]--;
+
+                if (!CarHavePocketHeating)
+                {
+                    if (HeatingPosition[LocoStation] == 0)
+                    {
+                        HeatingPosition[LocoStation]++;
+                        return;
+                    }
+                }
+
+                if (OneCabOneConsole)
+                {
+                    if (HeatingPosition[LocoStation] == 1)
+                    {
+                        HeatingPosition[1] = HeatingPosition[2] = 1;
+                    }
+                }
+
+                if (HeatingPosition[LocoStation] == 1)
+                {
+                    Heating_OffOn[LocoStation] = false;
+                    SignalEvent(Event.Heating_OffOnOff);
+                    if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.Heating_OffOn, Heating_OffOn[LocoStation] ? CabSetting.On : CabSetting.Off);
+                }
+            }
+        }
+    
+        public void ToggleHeating()
+        {
+            if (!HeatingEnable)
+                return;
+
+            if (!CarHavePocketHeating)
+            {
+                if (HeatingPosition[LocoStation] == 0)
+                {
+                    HeatingPosition[LocoStation]++;
+                    return;
+                }
+            }
+
+            if (CarHavePocketHeating)
+            {
+                Simulator.HeatingInPocket = true;
+                if (HeatingPosition[1] > 0 || HeatingPosition[2] > 0)
+                    Simulator.HeatingInPocket = false;
+                
+                foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive && (car as MSTSLocomotive).LocomotiveTypeNumber == 131))
+                {
+                    Simulator.TrainHavePocketHeating = true;
+                    if (!car.CarHavePocketHeating)
+                    {
+                        Simulator.TrainHavePocketHeating = false;
+                        break;
+                    }
+                }
+                
+                if (Simulator.TrainHavePocketHeating)
+                {
+                    Simulator.HeatingInPocket = true;
+                    foreach (TrainCar car in Train.Cars.Where(car => car is MSTSLocomotive && (car as MSTSLocomotive).LocomotiveTypeNumber == 131))
+                    {
+                        if (car.HeatingPosition[1] > 0 || car.HeatingPosition[2] > 0)
+                        {
+                            Simulator.HeatingInPocket = false;
+                            break;
+                        }
+                    }
+                }
+            }
+
+            if (HeatingPosition[LocoStation] != prevHeatingPosition[LocoStation])
+            {
+                prevHeatingPosition[LocoStation] = HeatingPosition[LocoStation];
+                switch (HeatingPosition[LocoStation])
+                {
+                    case 0:
+                        SignalEvent(Event.HeatingOut);
+                        Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Heating key in pocket!"));                        
+                        break;
+                    case 1:
+                        break;
+                    case 2:                        
+                        break;
+                }                
+            }            
+        }        
 
         // Icik
         bool MotorIdleHandlingOn;
@@ -24426,10 +24574,48 @@ namespace Orts.Simulation.RollingStocks
                         data = CompressorMode2_OffAuto[LocoStation] ? 1 : 0;
                         break;
                     }
-                case CABViewControlTypes.HEATING_OFFON:
+                case CABViewControlTypes.HEATING_OFFON:                    
                     {
-                        HeatingEnable = true;                        
-                        data = Heating_OffOn[LocoStation] ? 1 : 0;
+                        HeatingEnable = true;
+                        //data = Heating_OffOn[LocoStation] ? 1 : 0;
+                        CVCWithFrames cVCWithFrames = (CVCWithFrames)cvc;
+                        switch (cVCWithFrames.FramesCount)
+                        {
+                            case 2:
+                                {
+                                    CarHavePocketHeating = false;
+                                    switch (HeatingPosition[LocoStation])
+                                    {
+                                        case 0:
+                                            data = 0;
+                                            break;
+                                        case 1:
+                                            data = 0;
+                                            break;
+                                        case 2:
+                                            data = 1;
+                                            break;
+                                    }
+                                }
+                                break;
+                            case 3:
+                                {
+                                    CarHavePocketHeating = true;
+                                    switch (HeatingPosition[LocoStation])
+                                    {
+                                        case 0:
+                                            data = 0;
+                                            break;
+                                        case 1:
+                                            data = 1;
+                                            break;
+                                        case 2:
+                                            data = 2;
+                                            break;
+                                    }
+                                }
+                                break;
+                        }
                         break;
                     }
                 case CABViewControlTypes.CABHEATING_OFFON:

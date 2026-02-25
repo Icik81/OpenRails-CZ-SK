@@ -392,7 +392,7 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlAuxCompressorMode_OffOn, new Action[] { Noop, () => new ToggleAuxCompressorMode_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode_OffAutoCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCompressorMode2_OffAuto, new Action[] { Noop, () => new ToggleCompressorMode2_OffAutoCommand(Viewer.Log) });
-            UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
+            //UserInputCommands.Add(UserCommand.ControlHeating_OffOn, new Action[] { Noop, () => new ToggleHeating_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlCabHeating_OffOn, new Action[] { Noop, () => new ToggleCabHeating_OffOnCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlRouteVoltage, new Action[] { Noop, () => new ToggleControlRouteVoltageCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlQuickReleaseButton, new Action[] { Noop, () => new ToggleQuickReleaseButtonCommand(Viewer.Log) });
@@ -450,6 +450,8 @@ namespace Orts.Viewer3D.RollingStock
             UserInputCommands.Add(UserCommand.ControlWipers3ActivationSwitchDown, new Action[] { Noop, () => new ToggleWipers3ActivationSwitchDownCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchEngineUp, new Action[] { Noop, () => new SwitchEngineUpCommand(Viewer.Log) });
             UserInputCommands.Add(UserCommand.ControlSwitchEngineDown, new Action[] { Noop, () => new SwitchEngineDownCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHeatingUp, new Action[] { Noop, () => new ToggleHeatingUpCommand(Viewer.Log) });
+            UserInputCommands.Add(UserCommand.ControlHeatingDown, new Action[] { Noop, () => new ToggleHeatingDownCommand(Viewer.Log) });
 
             // Jindřich
             UserInputCommands.Add(UserCommand.ControlPowerStationLocation, new Action[] { Noop, () => Locomotive.SetPowerSupplyStationLocation() });
@@ -5363,17 +5365,17 @@ namespace Orts.Viewer3D.RollingStock
                     break;
 
                 case CABViewControlTypes.HEATING_OFFON:
-                    if (ChangedValue(0) > 0 && Locomotive.Heating_OffOn[Locomotive.LocoStation])
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
-                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = false;
-                        Locomotive.SignalEvent(Event.Heating_OffOnOff);                        
+                        new ToggleHeatingDownCommand(Viewer.Log);
+                        IsChanged = true;
                     }
                     else
-                    if (ChangedValue(0) < 0 && !Locomotive.Heating_OffOn[Locomotive.LocoStation])
+                    if (ChangedValue(0) < 0 && !IsChanged)
                     {
-                        Locomotive.Heating_OffOn[Locomotive.LocoStation] = true;
-                        Locomotive.SignalEvent(Event.Heating_OffOnOn);                        
-                    }
+                        new ToggleHeatingUpCommand(Viewer.Log);
+                        IsChanged = true;
+                    }                                        
                     break;
 
                 case CABViewControlTypes.CABHEATING_OFFON:

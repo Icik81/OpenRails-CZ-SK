@@ -861,6 +861,8 @@ namespace Orts.Viewer3D
             ToggleWipers3ActivationSwitchDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             SwitchEngineUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
             SwitchEngineDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHeatingUpCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
+            ToggleHeatingDownCommand.Receiver = (MSTSLocomotive)PlayerLocomotive;
         }
 
         public void ChangeToPreviousFreeRoamCamera()

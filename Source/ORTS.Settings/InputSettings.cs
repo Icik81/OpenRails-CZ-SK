@@ -581,7 +581,9 @@ namespace ORTS.Settings
             Commands[(int)UserCommand.ControlAuxCompressorMode_OffOn] = new UserCommandKeyInput(0x2E, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlCompressorMode_OffAuto] = new UserCommandKeyInput(0x2E);
             Commands[(int)UserCommand.ControlCompressorMode2_OffAuto] = new UserCommandKeyInput(0x2E, KeyModifiers.Shift);
-            Commands[(int)UserCommand.ControlHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
+            //Commands[(int)UserCommand.ControlHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlHeatingUp] = new UserCommandKeyInput(0x23, KeyModifiers.Control);
+            Commands[(int)UserCommand.ControlHeatingDown] = new UserCommandKeyInput(0x23, KeyModifiers.Control | KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlCabHeating_OffOn] = new UserCommandKeyInput(0x23, KeyModifiers.Shift | KeyModifiers.Control);
             Commands[(int)UserCommand.ControlRouteVoltage] = new UserCommandKeyInput(0x1F, KeyModifiers.Alt);
             Commands[(int)UserCommand.ControlQuickReleaseButton] = new UserCommandKeyInput(0x52);

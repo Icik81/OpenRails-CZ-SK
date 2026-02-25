@@ -406,9 +406,12 @@ namespace Orts.Simulation.RollingStocks
         public bool CarPowerKey;
         public int CarFrameUpdateState = 1;
         public bool DirectionControllerBlocked;
+        public int[] HeatingPosition = new int[3];
+        public int[] prevHeatingPosition = new int[3];
         public int[] PowerKeyPosition = new int[3];
         public int[] prevPowerKeyPosition = new int[3];
         public bool CarHavePocketPowerKey;
+        public bool CarHavePocketHeating;
         public int LightFrontLPosition;
         public int LightFrontRPosition;
         public int LightRearLPosition;
@@ -2334,6 +2337,10 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(StaticSet);
             outf.Write(SetTempCThreshold);
             outf.Write(InstrumentsBrightness);
+            outf.Write(HeatingPosition[1]);
+            outf.Write(HeatingPosition[2]);
+            outf.Write(prevHeatingPosition[1]);
+            outf.Write(prevHeatingPosition[2]);
 
             BrakeSystem.Save(outf);
         }
@@ -2403,6 +2410,10 @@ namespace Orts.Simulation.RollingStocks
             StaticSet = inf.ReadBoolean();
             SetTempCThreshold = inf.ReadSingle();
             InstrumentsBrightness = inf.ReadSingle();
+            HeatingPosition[1] = inf.ReadInt32();
+            HeatingPosition[2] = inf.ReadInt32();
+            prevHeatingPosition[1] = inf.ReadInt32();
+            prevHeatingPosition[2] = inf.ReadInt32();
 
             BrakeSystem.Restore(inf);
         }

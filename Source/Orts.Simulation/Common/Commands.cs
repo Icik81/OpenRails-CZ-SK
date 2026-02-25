@@ -2444,7 +2444,7 @@ namespace Orts.Common
 
         public override void Redo()
         {
-            Receiver.ToggleHeating_OffOn();
+            //Receiver.ToggleHeating_OffOn();
             // Report();
         }
     }
@@ -2918,6 +2918,41 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.TogglePowerKeyDown();
+            // Report();
+        }
+    }
+
+    [Serializable()]
+    public sealed class ToggleHeatingUpCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHeatingUpCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHeatingUp();
+            // Report();
+        }
+    }
+    [Serializable()]
+    public sealed class ToggleHeatingDownCommand : Command
+    {
+        public static MSTSLocomotive Receiver { get; set; }
+
+        public ToggleHeatingDownCommand(CommandLog log)
+            : base(log)
+        {
+            Redo();
+        }
+
+        public override void Redo()
+        {
+            Receiver.ToggleHeatingDown();
             // Report();
         }
     }
