@@ -388,7 +388,7 @@ namespace Orts.Viewer3D
            
             if (_imageTextureIsNight)
             {
-                FullBrightness = 1.0f;
+                FullBrightness = NightBrightnessValue;
                 nightColorModifier.SetValue(FullBrightness);
                 halfNightColorModifier.SetValue(FullBrightness);
                 vegetationAmbientModifier.SetValue(FullBrightness);
