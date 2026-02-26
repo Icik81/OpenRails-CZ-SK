@@ -4289,12 +4289,17 @@ namespace Orts.Viewer3D.RollingStock
                     IsChanged = false;
                     IsChangedTimer = 0;
                 }
-            }
+            }            
 
-            if (!UserInput.IsMouseLeftButtonDown)
+            if (UserInput.IsMouseLeftButtonReleased)
             {
                 IsChanged = false;
                 IsChangedTimer = 0;
+                if (Locomotive.MultiPositionController != null)
+                {
+                    Locomotive.MultiPositionController.checkNeutral = true;
+                    Locomotive.MultiPositionController.elapsedSecondsFromLastChange = 0;                    
+                }
             }
 
             switch (Control.ControlType)

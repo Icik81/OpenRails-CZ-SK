@@ -45,8 +45,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
 
         public ControllerPosition controllerPosition = new ControllerPosition();
         public ControllerBinding controllerBinding = new ControllerBinding();
-        protected float elapsedSecondsFromLastChange = 0;
-        protected bool checkNeutral = false;
+        public float elapsedSecondsFromLastChange = 0;
+        public bool checkNeutral = false;
         protected bool noKeyPressed = true;
         protected string[] currentPosition = new string[3];
         protected bool emergencyBrake = false;
