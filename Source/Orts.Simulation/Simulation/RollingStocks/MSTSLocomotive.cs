@@ -18687,13 +18687,21 @@ namespace Orts.Simulation.RollingStocks
         public float WipersWindowTimeCleanBase;
         public float WipersWindowTimeClean;
         public float WipersWindowTimeClean2;
+        bool WipersWindowInTunnel;
         public void WipersWindow(float elapsedSeconds)
         {
             WipersWindowPower = WipersWindowMaxPosition * Simulator.Weather.PricipitationIntensityPPSPM2;
-            WipersWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;            
+            WipersWindowTimeDirt = 1 / Simulator.Weather.PricipitationIntensityPPSPM2;
+
+            // Nebudou kapky na skle v tunelu
+            WipersWindowInTunnel = false;
+            if (Simulator.PlayerCarIsInTunnelBeginM > 0f && Simulator.PlayerCarIsInTunnelEndM > 0f && Simulator.PlayerCarIsInTunnel)
+            {
+                WipersWindowInTunnel = true;
+            }
 
             // Kapky vysychají za sucha
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.02f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 < 0.02f || WipersWindowInTunnel) 
             {
                 WipersWindowTimerNoRain += elapsedSeconds;
                 if (WipersWindowTimerNoRain > WipersWindowTimeBeginNoRain)
@@ -18707,7 +18715,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Prší
-            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f)
+            if (Simulator.Weather.PricipitationIntensityPPSPM2 > 0.02f && Simulator.Weather.PrecipitationLiquidity > -0.50f && !WipersWindowInTunnel)
             {
                 WipersWindowTimerDirt += elapsedSeconds;
                 // Kapky narůstají
