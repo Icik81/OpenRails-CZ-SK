@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: ORTS.Common\n"
-"POT-Creation-Date: 2026-02-15 12:12:40+0100\n"
-"PO-Revision-Date: 2026-02-15 12:15+0100\n"
+"POT-Creation-Date: 2026-02-28 14:29:05+0100\n"
+"PO-Revision-Date: 2026-02-28 14:30+0100\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1255,271 +1255,275 @@ msgstr "Ovládání_CZSK Kompresor I Vyp/Auto"
 msgid "Control_CZSK Compressor II Mode Off/Auto"
 msgstr "Ovládání_CZSK Kompresor II Vyp/Auto"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:288
-msgid "Control_CZSK Heating Off/On"
-msgstr "Ovládání_CZSK Elektrické topení vlaku zap/vyp"
-
 #: ../../ORTS.Common/Input/UserCommand.cs:289
+msgid "Control_CZSK Heatingkey +"
+msgstr "Ovládání_CZSK Klička topení vlaku +"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:290
+msgid "Control_CZSK Heatingkey -"
+msgstr "Ovládání_CZSK Klička topení vlaku -"
+
+#: ../../ORTS.Common/Input/UserCommand.cs:291
 msgid "Control_CZSK Heating in Cab Off/On"
 msgstr "Ovládání_CZSK Topení stanoviště zap/vyp"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:290
+#: ../../ORTS.Common/Input/UserCommand.cs:292
 msgid "Control_CZSK Locomotive PowerVoltage 25kV/both/3kV"
 msgstr "Ovládání_CZSK Přepnout systém lokomotivy 25kV/oba/3kV"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:291
+#: ../../ORTS.Common/Input/UserCommand.cs:293
 msgid "Control_CZSK Quickrelease button"
 msgstr "Ovládání_CZSK Tlačítko vysokotlakého švihu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:292
+#: ../../ORTS.Common/Input/UserCommand.cs:294
 msgid "Control_CZSK Lowpressurerelease button"
 msgstr "Ovládání_CZSK Tlačítko nízkotlakého přebití"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:293
+#: ../../ORTS.Common/Input/UserCommand.cs:295
 msgid "Control_CZSK Breakpower button"
 msgstr "Ovládání_CZSK Tlačítko vypnutí HV"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:294
+#: ../../ORTS.Common/Input/UserCommand.cs:296
 msgid "Control_CZSK Diesel Controller +"
 msgstr "Ovládání_CZSK Diesel ovladač směru +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:295
+#: ../../ORTS.Common/Input/UserCommand.cs:297
 msgid "Control_CZSK Diesel Controller -"
 msgstr "Ovládání_CZSK Diesel ovladač směru -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:296
+#: ../../ORTS.Common/Input/UserCommand.cs:298
 msgid "Control_CZSK Diesel Controller In/Out"
 msgstr "Ovládání_CZSK Diesel Směrová páka vložit/vyjmout"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:297
+#: ../../ORTS.Common/Input/UserCommand.cs:299
 msgid "Control_CZSK RDST Breaker"
 msgstr "Ovládání_CZSK Jistič radiostanice"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:298
+#: ../../ORTS.Common/Input/UserCommand.cs:300
 msgid "Control_CZSK Lap button"
 msgstr "Ovládání_CZSK Tlačítko závěru"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:299
+#: ../../ORTS.Common/Input/UserCommand.cs:301
 msgid "Control_CZSK Disabling EDB button"
 msgstr "Ovládání_CZSK Tlačítko deaktivace EDB"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:300
+#: ../../ORTS.Common/Input/UserCommand.cs:302
 msgid "Control_CZSK Frontlight left white"
 msgstr "Ovládání_CZSK Přední levé bílé světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:301
+#: ../../ORTS.Common/Input/UserCommand.cs:303
 msgid "Control_CZSK Frontlight left red"
 msgstr "Ovládání_CZSK Přední levé červené světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:302
+#: ../../ORTS.Common/Input/UserCommand.cs:304
 msgid "Control_CZSK Frontlight right white"
 msgstr "Ovládání_CZSK Přední pravé bílé světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:303
+#: ../../ORTS.Common/Input/UserCommand.cs:305
 msgid "Control_CZSK Frontlight right red"
 msgstr "Ovládání_CZSK Přední pravé červené světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:304
+#: ../../ORTS.Common/Input/UserCommand.cs:306
 msgid "Control_CZSK Rearlight left white"
 msgstr "Ovládání_CZSK Zadní levé bílé světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:305
+#: ../../ORTS.Common/Input/UserCommand.cs:307
 msgid "Control_CZSK Rearlight left red"
 msgstr "Ovládání_CZSK Zadní levé červené světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:306
+#: ../../ORTS.Common/Input/UserCommand.cs:308
 msgid "Control_CZSK Rearlight right white"
 msgstr "Ovládání_CZSK Zadní pravé bílé světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:307
+#: ../../ORTS.Common/Input/UserCommand.cs:309
 msgid "Control_CZSK Rearlight right red"
 msgstr "Ovládání_CZSK Zadní pravé červené světlo"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:308
+#: ../../ORTS.Common/Input/UserCommand.cs:310
 msgid "Control_CZSK Season heating switch"
 msgstr "Ovládání_CZSK Přepínač sezóny topení"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:309
+#: ../../ORTS.Common/Input/UserCommand.cs:311
 msgid "Control_CZSK Mirer +"
 msgstr "Ovládání_CZSK Ovladač Mirer +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:310
+#: ../../ORTS.Common/Input/UserCommand.cs:312
 msgid "Control_CZSK Mirer -"
 msgstr "Ovládání_CZSK Ovladač Mirer -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:311
+#: ../../ORTS.Common/Input/UserCommand.cs:313
 msgid "Control_CZSK Powerkey +"
 msgstr "Ovládání_CZSK Spínač pultu +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:312
+#: ../../ORTS.Common/Input/UserCommand.cs:314
 msgid "Control_CZSK Powerkey -"
 msgstr "Ovládání_CZSK Spínač pultu -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:313
+#: ../../ORTS.Common/Input/UserCommand.cs:315
 msgid "Control_CZSK Ventilator +"
 msgstr "Ovládání_CZSK Ventilátor +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:314
+#: ../../ORTS.Common/Input/UserCommand.cs:316
 msgid "Control_CZSK Ventilator -"
 msgstr "Ovládání_CZSK Ventilátor -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:315
+#: ../../ORTS.Common/Input/UserCommand.cs:317
 msgid "Control_CZSK Automatic start-up button"
 msgstr "Ovládání_CZSK Tlačítko automatického rozjezdu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:316
+#: ../../ORTS.Common/Input/UserCommand.cs:318
 msgid "Control_CZSK Automatic start-up SpeedSelector +"
 msgstr "Ovládání_CZSK Přepínač cílové rychlosti automatického rozjezdu +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:317
+#: ../../ORTS.Common/Input/UserCommand.cs:319
 msgid "Control_CZSK Automatic start-up SpeedSelector -"
 msgstr "Ovládání_CZSK Přepínač cílové rychlosti automatického rozjezdu -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:318
+#: ../../ORTS.Common/Input/UserCommand.cs:320
 msgid "Control_CZSK Axle Counter +"
 msgstr "Ovládání_CZSK Počítadlo náprav +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:319
+#: ../../ORTS.Common/Input/UserCommand.cs:321
 msgid "Control_CZSK Axle Counter -"
 msgstr "Ovládání_CZSK Počítadlo náprav -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:320
+#: ../../ORTS.Common/Input/UserCommand.cs:322
 msgid "Control_CZSK Axle Counter Confirmer"
 msgstr "Ovládání_CZSK Počítadlo náprav potvrzení"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:321
+#: ../../ORTS.Common/Input/UserCommand.cs:323
 msgid "Control_CZSK Axle Counter Restricted speed zone active button"
 msgstr "Ovládání_CZSK Tlačítko odpočtu pomalé jízdy"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:322
+#: ../../ORTS.Common/Input/UserCommand.cs:324
 msgid "Control_CZSK Horn 2"
 msgstr "Ovládání_CZSK Houkačka 2"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:323
+#: ../../ORTS.Common/Input/UserCommand.cs:325
 msgid "Control_CZSK Horn 1 + 2"
 msgstr "Ovládání_CZSK Houkačka 1 + 2"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:324
+#: ../../ORTS.Common/Input/UserCommand.cs:326
 msgid "Control_CZSK Horn + Bell"
 msgstr "Ovládání_CZSK Houkačka + Píšťala"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:325
+#: ../../ORTS.Common/Input/UserCommand.cs:327
 msgid "Control_CZSK Panto Activation +"
 msgstr "Ovládání_CZSK Aktivace pantografu +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:326
+#: ../../ORTS.Common/Input/UserCommand.cs:328
 msgid "Control_CZSK Panto Activation -"
 msgstr "Ovládání_CZSK Aktivace pantografu -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:327
+#: ../../ORTS.Common/Input/UserCommand.cs:329
 msgid "Control_CZSK Voltage Selection +"
 msgstr "Ovládání_CZSK Volba napětí +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:328
+#: ../../ORTS.Common/Input/UserCommand.cs:330
 msgid "Control_CZSK Voltage Selection -"
 msgstr "Ovládání_CZSK Volba napětí -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:329
+#: ../../ORTS.Common/Input/UserCommand.cs:331
 msgid "Control_CZSK HV3NA +"
 msgstr "Ovládání_CZSK HV3NA +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:330
+#: ../../ORTS.Common/Input/UserCommand.cs:332
 msgid "Control_CZSK HV3NA -"
 msgstr "Ovládání_CZSK HV3NA -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:331
+#: ../../ORTS.Common/Input/UserCommand.cs:333
 msgid "Control_CZSK Switch5Light +"
 msgstr "Ovládání_CZSK Volba zadních světel +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:332
+#: ../../ORTS.Common/Input/UserCommand.cs:334
 msgid "Control_CZSK Switch5Light -"
 msgstr "Ovládání_CZSK Volba zadních světel -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:333
+#: ../../ORTS.Common/Input/UserCommand.cs:335
 msgid "Control_CZSK Switch6Light +"
 msgstr "Ovládání_CZSK Volba předních světel +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:334
+#: ../../ORTS.Common/Input/UserCommand.cs:336
 msgid "Control_CZSK Switch6Light -"
 msgstr "Ovládání_CZSK Volba předních světel -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:335
+#: ../../ORTS.Common/Input/UserCommand.cs:337
 msgid "Control_CZSK ARR Confirm Button"
 msgstr "Ovládání_CZSK ARR Tlačítko potvrzení"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:336
+#: ../../ORTS.Common/Input/UserCommand.cs:338
 msgid "Control_CZSK ARR DriveOut Button"
 msgstr "Ovládání_CZSK ARR Tlačítko výběhu"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:337
+#: ../../ORTS.Common/Input/UserCommand.cs:339
 msgid "Control_CZSK ARR Parking Button"
 msgstr "Ovládání_CZSK ARR Tlačítko parkovací brzdy"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:338
+#: ../../ORTS.Common/Input/UserCommand.cs:340
 msgid "Control_CZSK PlayerLoco Handbrake +"
 msgstr "Ovládání_CZSK Utahovat ruční brzdu lokomotivy"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:339
+#: ../../ORTS.Common/Input/UserCommand.cs:341
 msgid "Control_CZSK PlayerLoco Handbrake -"
 msgstr "Ovládání_CZSK Povolovat ruční brzdu lokomotivy"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:340
+#: ../../ORTS.Common/Input/UserCommand.cs:342
 msgid "Control_CZSK Traction Switch +"
 msgstr "Ovládání_CZSK Přepínač trakce +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:341
+#: ../../ORTS.Common/Input/UserCommand.cs:343
 msgid "Control_CZSK Traction Switch -"
 msgstr "Ovládání_CZSK Přepínač trakce -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:342
+#: ../../ORTS.Common/Input/UserCommand.cs:344
 msgid "Control_CZSK Wipers Switch +"
 msgstr "Ovládání_CZSK Přepínač stěrače +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:343
+#: ../../ORTS.Common/Input/UserCommand.cs:345
 msgid "Control_CZSK Wipers Switch -"
 msgstr "Ovládání_CZSK Přepínač stěrače -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:344
+#: ../../ORTS.Common/Input/UserCommand.cs:346
 msgid "Control_CZSK Engine Switch +"
 msgstr "Ovládání_CZSK Přepínač pohonu diesel +"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:345
+#: ../../ORTS.Common/Input/UserCommand.cs:347
 msgid "Control_CZSK Engine Switch -"
 msgstr "Ovládání_CZSK Přepínač pohonu diesel -"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:347
+#: ../../ORTS.Common/Input/UserCommand.cs:349
 msgid "Set Power Supply Station Location"
 msgstr "Nastavit lokaci napájecí stanice (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:348
+#: ../../ORTS.Common/Input/UserCommand.cs:350
 msgid "Set Voltage 25k"
 msgstr "Nastavit napětí 25kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:349
+#: ../../ORTS.Common/Input/UserCommand.cs:351
 msgid "Set Voltage 15k"
 msgstr "Nastavit napětí 15kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:350
+#: ../../ORTS.Common/Input/UserCommand.cs:352
 msgid "Set Voltage 3k"
 msgstr "Nastavit napětí 3kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:351
+#: ../../ORTS.Common/Input/UserCommand.cs:353
 msgid "Set Voltage 0"
 msgstr "Nastavit napětí 0kV (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:352
+#: ../../ORTS.Common/Input/UserCommand.cs:354
 msgid "Set Delete Voltage Marker"
 msgstr "Smazat napěťový marker (pouze vývojáři)"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:354
+#: ../../ORTS.Common/Input/UserCommand.cs:356
 msgid "Control_CZSK Reload World Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů světa"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:355
+#: ../../ORTS.Common/Input/UserCommand.cs:357
 msgid "Control_CZSK Reload Cab Object"
 msgstr "Ovládání_CZSK Znovunačtení objektů kabiny"
 
-#: ../../ORTS.Common/Input/UserCommand.cs:356
+#: ../../ORTS.Common/Input/UserCommand.cs:358
 msgid "Control_CZSK Reload Wire Object"
 msgstr "Ovládání_CZSK Znovunačtení trolejového vedení"
 
