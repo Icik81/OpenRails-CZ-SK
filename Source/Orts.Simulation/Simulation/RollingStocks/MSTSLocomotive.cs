@@ -3429,6 +3429,16 @@ namespace Orts.Simulation.RollingStocks
             {
                 Train.MasterSlaveCarsFound = true;
             }
+
+            if (!Train.MasterSlaveCarsFound)
+            {
+                foreach (TrainCar car in Train.Cars)
+                {
+                    car.MasterLoco = false;
+                    car.SlaveLoco = false;                    
+                }
+            }
+
             Train.AcceptPowerSignalsChange = false;
             MasterSlaveInitiate = false;
         }
@@ -18023,6 +18033,23 @@ namespace Orts.Simulation.RollingStocks
                 // Světla řízená přes kabel MU
                 if (MasterLoco && (LocomotiveTypeNumber == 131 || LocomotiveTypeNumber == 471 || LocomotiveTypeNumber == 671 || LocomotiveTypeNumber == 971))
                 {
+                    TrainCar FirstCar = null;
+                    TrainCar LastCar = null;
+                    int j = -1;
+                    for (int i = 0; i < Train.Cars.Count; i++)
+                    {
+                        j++;
+                        FirstCar = Train.Cars[0];
+                        if (!Train.Cars[i].AcceptCableSignals) break;
+                        if (i > 0 && Train.Cars[i].AcceptCableSignals) LastCar = Train.Cars[i];                        
+                    }
+
+                    if (Train.MasterLoco == LastCar)
+                    {
+                        FirstCar = Train.Cars[j];
+                        LastCar = Train.Cars[0];
+                    }
+
                     // Lights setup
                     if (LightsFrameUpdate == 2 && LocoReadyToGo)
                     {
@@ -18037,21 +18064,20 @@ namespace Orts.Simulation.RollingStocks
                         {
                             LightFrontLPosition = -1;
                             LightFrontRPosition = -1;
+
+                            // Pokud jsou vozy nepropojené kabelem za lokomotivou, vypni zadní světla
+                            if (j < Train.Cars.Count - 1)
+                            {
+                                LightRearLPosition = 0;
+                                LightRearRPosition = 0;
+                            }
                         }
                     }
+                    
                     foreach (TrainCar car in Train.Cars)
                     {                        
                         // Master lokomotivu vynechej
-                        if (car.MasterLoco) continue;                        
-
-                        var FirstCar = Train.FirstCar;
-                        var LastCar = Train.LastCar;                        
-
-                        if (Train.MasterLoco == LastCar)
-                        {
-                            FirstCar = Train.LastCar;
-                            LastCar = Train.FirstCar;
-                        }
+                        if (car.MasterLoco) continue;                                                                                           
 
                         if (Train.PlayerCar == Train.MasterLoco)
                         {
