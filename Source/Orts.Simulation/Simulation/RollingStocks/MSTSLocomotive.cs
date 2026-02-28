@@ -3316,8 +3316,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Master & Slave
-        #region Master & Slave     
-        float MasterSlaveTimer;
+        #region Master & Slave             
         public virtual void MasterSlave()
         {
             if (!IsLeadLocomotive()) return;
@@ -3328,16 +3327,21 @@ namespace Orts.Simulation.RollingStocks
                 LocalDynamicBrakePercent = -1;
             }
 
-            MasterSlaveTimer += Simulator.OneSecondLoop;
-            if (MasterSlaveTimer < 1.0f) return;
-            MasterSlaveTimer = 0f;
+            Train.MasterSlaveTimer += Simulator.OneSecondLoop;
+            if (Train.MasterSlaveTimer < 1.0f) return;
+            Train.MasterSlaveTimer = 0f;
 
+            Train.MasterSlaveCanBeSet = false;
             foreach (TrainCar car in Train.Cars)
             {
                 car.MasterLoco = false;
                 car.SlaveLoco = false;
+                if (car.CarIsPlayerLoco) Train.PlayerCar = car;
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).PowerKey) Train.MasterSlaveCanBeSet = true;
             }
-            Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null;
+            if (!Train.MasterSlaveCanBeSet) return;
+
+            Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null; Train.SlaveLoco3 = null;
             Train.MasterSlaveCarsFound = false;
 
             // Master
@@ -17653,7 +17657,7 @@ namespace Orts.Simulation.RollingStocks
             }
         }
 
-        public int LightsFrameUpdate = 0;
+        public int LightsFrameUpdate = 0;        
         public void LightPositionHandle()
         {
             if (LightsFrameUpdate < 3)
@@ -18036,66 +18040,83 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                     foreach (TrainCar car in Train.Cars)
-                    {
-                        if (car.SlaveLoco && car.Flipped)
+                    {                        
+                        // Master lokomotivu vynechej
+                        if (car.MasterLoco) continue;                        
+
+                        var FirstCar = Train.FirstCar;
+                        var LastCar = Train.LastCar;                        
+
+                        if (Train.MasterLoco == LastCar)
+                        {
+                            FirstCar = Train.LastCar;
+                            LastCar = Train.FirstCar;
+                        }
+
+                        if (Train.PlayerCar == Train.MasterLoco)
                         {
                             car.LightFrontLR = false; car.LightFrontRR = false; car.LightFrontLW = false; car.LightFrontRW = false;
                             car.LightRearLR = false; car.LightRearRR = false; car.LightRearLW = false; car.LightRearRW = false;
-
-                            switch (LightFrontLPosition)
+                        }
+                        if (car.Flipped)
+                        {
+                            if (car == FirstCar || car == LastCar)
                             {
-                                case -1: car.LightRearRW = true; car.LightRearRR = false; break;
-                                case 0: car.LightRearRW = false; car.LightRearRR = false; break;
-                                case 1: car.LightRearRW = false; car.LightRearRR = true; break;
-                            }
-                            switch (LightFrontRPosition)
-                            {
-                                case -1: car.LightRearLW = true; car.LightRearLR = false; break;
-                                case 0: car.LightRearLW = false; car.LightRearLR = false; break;
-                                case 1: car.LightRearLW = false; car.LightRearLR = true; break;
-                            }
-                            switch (LightRearLPosition)
-                            {
-                                case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
-                                case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
-                                case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
-                            }
-                            switch (LightRearRPosition)
-                            {
-                                case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
-                                case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
-                                case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
+                                switch (LightFrontLPosition)
+                                {
+                                    case -1: car.LightRearRW = true; car.LightRearRR = false; break;
+                                    case 0: car.LightRearRW = false; car.LightRearRR = false; break;
+                                    case 1: car.LightRearRW = false; car.LightRearRR = true; break;
+                                }
+                                switch (LightFrontRPosition)
+                                {
+                                    case -1: car.LightRearLW = true; car.LightRearLR = false; break;
+                                    case 0: car.LightRearLW = false; car.LightRearLR = false; break;
+                                    case 1: car.LightRearLW = false; car.LightRearLR = true; break;
+                                }
+                                switch (LightRearLPosition)
+                                {
+                                    case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
+                                    case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
+                                    case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
+                                }
+                                switch (LightRearRPosition)
+                                {
+                                    case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
+                                    case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
+                                    case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
+                                }
                             }
                         }
                         else
-                        if (car.SlaveLoco && !car.Flipped)
+                        if (!car.Flipped)
                         {
-                            car.LightFrontLR = false; car.LightFrontRR = false; car.LightFrontLW = false; car.LightFrontRW = false;
-                            car.LightRearLR = false; car.LightRearRR = false; car.LightRearLW = false; car.LightRearRW = false;
-
-                            switch (LightFrontLPosition)
+                            if (car == FirstCar || car == LastCar)
                             {
-                                case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
-                                case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
-                                case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
-                            }
-                            switch (LightFrontRPosition)
-                            {
-                                case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
-                                case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
-                                case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
-                            }
-                            switch (LightRearLPosition)
-                            {
-                                case -1: car.LightRearLW = true; car.LightRearLR = false; break;
-                                case 0: car.LightRearLW = false; car.LightRearLR = false; break;
-                                case 1: car.LightRearLW = false; car.LightRearLR = true; break;
-                            }
-                            switch (LightRearRPosition)
-                            {
-                                case -1: car.LightRearRW = true; car.LightRearRR = false; break;
-                                case 0: car.LightRearRW = false; car.LightRearRR = false; break;
-                                case 1: car.LightRearRW = false; car.LightRearRR = true; break;
+                                switch (LightRearLPosition)
+                                {
+                                    case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
+                                    case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
+                                    case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
+                                }
+                                switch (LightRearRPosition)
+                                {
+                                    case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
+                                    case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;
+                                    case 1: car.LightFrontRW = false; car.LightFrontRR = true; break;
+                                }
+                                switch (LightFrontLPosition)
+                                {
+                                    case -1: car.LightRearLW = true; car.LightRearLR = false; break;
+                                    case 0: car.LightRearLW = false; car.LightRearLR = false; break;
+                                    case 1: car.LightRearLW = false; car.LightRearLR = true; break;
+                                }
+                                switch (LightFrontRPosition)
+                                {
+                                    case -1: car.LightRearRW = true; car.LightRearRR = false; break;
+                                    case 0: car.LightRearRW = false; car.LightRearRR = false; break;
+                                    case 1: car.LightRearRW = false; car.LightRearRR = true; break;
+                                }
                             }
                         }
                     }
