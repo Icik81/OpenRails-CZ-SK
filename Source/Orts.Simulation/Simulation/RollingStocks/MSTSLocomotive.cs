@@ -18090,7 +18090,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     // Lights setup
-                    if (LightsFrameUpdate == 2 && LocoReadyToGo)
+                    if (LocoReadyToGo)
                     {
                         if (Train.Cars.Count == 2)
                         {
