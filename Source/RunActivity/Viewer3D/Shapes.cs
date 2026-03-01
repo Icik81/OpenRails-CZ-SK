@@ -792,7 +792,7 @@ namespace Orts.Viewer3D
                     {
                         if (Viewer.Simulator.GameTimeHours > 8 && Viewer.Simulator.GameTimeHours < 20 && Viewer.Simulator.Season != SeasonType.Winter)
                         {
-                            TCoef = 0.015f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount *  SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                            TCoef = 0.010f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount *  SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
                             AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
                             while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
@@ -801,7 +801,7 @@ namespace Orts.Viewer3D
                         {
                             if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
                             {
-                                TCoef = 0.015f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.002f : TimeAction[8]);
+                                TCoef = 0.010f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.002f : TimeAction[8]);
                                 AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             }                            
                         }

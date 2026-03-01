@@ -16602,26 +16602,33 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.BreakEDBButton);
                         BreakEDBButtonPressed = true;
                         BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                        if (Simulator.PlayerLocomotive == this)
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
                     }
                     if (!BreakEDBButton && BreakEDBButtonPressed)
                     {
                         SignalEvent(Event.BreakEDBButtonRelease);
                         BreakEDBButtonPressed = false;
+                        if (Simulator.PlayerLocomotive == this)
+                            Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
                     }
                 }
                 // Stav a zvuk pro přepínač
                 if (BreakEDBSwitchEnable)
                 {
-                    BreakEDBButton_Activated = breakEDBButton;
-                    SignalEvent(Event.BreakEDBButton);
-                }
-                if (Simulator.PlayerLocomotive == this)
-                {
-                    if (BreakEDBButton_Activated)
-                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
-                    else
-                        Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
-                }
+                    if (BreakEDBButton_Activated != breakEDBButton)
+                    {
+                        SignalEvent(Event.BreakEDBButton);                        
+                        BreakEDBButton_Activated = breakEDBButton;
+                        if (Simulator.PlayerLocomotive == this)
+                        {
+                            if (BreakEDBButton_Activated)
+                                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("On"));
+                            else
+                                Simulator.Confirmer.Information(Simulator.Catalog.GetString("Disabling EDB: ") + Simulator.Catalog.GetString("Off"));
+                        }
+                    }                    
+                }                
             }
             else
                 BreakEDBButton_Activated = false;
