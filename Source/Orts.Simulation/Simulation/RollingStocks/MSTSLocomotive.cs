@@ -3316,7 +3316,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // Master & Slave
-        #region Master & Slave             
+        #region Master & Slave           
         public virtual void MasterSlave()
         {
             if (!IsLeadLocomotive()) return;
@@ -3325,24 +3325,63 @@ namespace Orts.Simulation.RollingStocks
             {
                 LocalThrottlePercent = 0;
                 LocalDynamicBrakePercent = -1;
-            }
+            }            
 
-            Train.MasterSlaveTimer += Simulator.OneSecondLoop;
-            if (Train.MasterSlaveTimer < 1.0f) return;
-            Train.MasterSlaveTimer = 0f;
+            Train.MasterSlaveUpdateTimer += Simulator.OneSecondLoop;
+            if (Train.MasterSlaveUpdateTimer < 0.2f) return;
+            Train.MasterSlaveUpdateTimer = 0f;
 
+            Train.MasterCarNumber = -1;
+            Train.SlaveCarNumber1 = -1;
+            Train.SlaveCarNumber2 = -1;
+            Train.SlaveCarNumber3 = -1;
+            Train.MasterSlaveCarsFound = false;
             Train.MasterSlaveCanBeSet = false;
             foreach (TrainCar car in Train.Cars)
             {
                 car.MasterLoco = false;
                 car.SlaveLoco = false;
+                
                 if (car.CarIsPlayerLoco) Train.PlayerCar = car;
-                if (car is MSTSLocomotive && (car as MSTSLocomotive).PowerKey) Train.MasterSlaveCanBeSet = true;
+                
+                if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2])) 
+                    Train.MasterSlaveCanBeSet = true;
             }
-            if (!Train.MasterSlaveCanBeSet) return;
+            if (!Train.MasterSlaveCanBeSet)
+            {
+                Train.MasterTestTimer = 0f;
+                Train.MasterSlaveTestTimer = 0f;
+                return;
+            }
 
-            Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null; Train.SlaveLoco3 = null;
-            Train.MasterSlaveCarsFound = false;
+            // Testování stability komunikace Master - Slave
+            Train.MasterTestTimer += Simulator.OneSecondLoop;
+            if (Train.MasterTestTimer > 0.2f)
+            {
+                Train.MasterTestTimer = 0f;
+                Train.MasterLocoTest = Train.MasterLoco;
+            }
+
+            if (Train.MasterLocoTest == Train.MasterLoco)
+            {
+                Train.MasterSlaveTestTimer += Simulator.OneSecondLoop;
+                if (Train.MasterSlaveTestTimer > 0.2f)
+                {
+                    if (Train.MasterSlaveTestTimer > 0.2f) Train.MasterSlaveTestTimer = 0.2f;
+                    Train.MasterSlaveTestOK = true;
+                }
+                else
+                {
+                    Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null; Train.SlaveLoco3 = null;
+                    Train.MasterSlaveTestOK = false;
+                }
+            }
+            else
+            {
+                Train.MasterSlaveTestTimer = 0f;
+                Train.MasterLoco = null; Train.SlaveLoco1 = null; Train.SlaveLoco2 = null; Train.SlaveLoco3 = null;
+                Train.MasterSlaveTestOK = false;
+            }                        
 
             // Master
             int MasterCarNumber = 0;
@@ -3350,11 +3389,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
-                    if (Train.MasterLoco == null && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2]))
+                    if (!car.MasterLoco && !car.SlaveLoco && ((car as MSTSLocomotive).StationIsActivated[1] || (car as MSTSLocomotive).StationIsActivated[2]))
                     {
                         Train.MasterLoco = car;
                         Train.MasterCarNumber = MasterCarNumber;
-                        car.MasterLoco = true;
+                        if (Train.MasterSlaveTestOK) car.MasterLoco = true;
                         break;
                     }
                 }
@@ -3367,11 +3406,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
-                    if (Train.SlaveLoco1 == null && (SlaveCarNumber1 == MasterCarNumber + 1 || SlaveCarNumber1 == MasterCarNumber - 1))
+                    if (!car.MasterLoco && !car.SlaveLoco && Train.MasterCarNumber > -1 && (SlaveCarNumber1 == Train.MasterCarNumber + 1 || SlaveCarNumber1 == Train.MasterCarNumber - 1))
                     {
                         Train.SlaveLoco1 = car;
                         Train.SlaveCarNumber1 = SlaveCarNumber1;
-                        car.SlaveLoco = true;
+                        if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
                 }
@@ -3384,11 +3423,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
-                    if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber2 == SlaveCarNumber1 + 1 || SlaveCarNumber2 == SlaveCarNumber1 - 1 || SlaveCarNumber2 == SlaveCarNumber1 + 2 || SlaveCarNumber2 == SlaveCarNumber1 - 2))
+                    if (!car.MasterLoco && !car.SlaveLoco && Train.SlaveCarNumber1 > -1 && (SlaveCarNumber2 == Train.SlaveCarNumber1 + 1 || SlaveCarNumber2 == Train.SlaveCarNumber1 - 1 || SlaveCarNumber2 == Train.MasterCarNumber + 1 || SlaveCarNumber2 == Train.MasterCarNumber - 1))
                     {
                         Train.SlaveLoco2 = car;
                         Train.SlaveCarNumber2 = SlaveCarNumber2;
-                        car.SlaveLoco = true;
+                        if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
                 }
@@ -3401,11 +3440,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (car is MSTSLocomotive && (car as MSTSLocomotive).MUCableCanBeUsed && car.AcceptCableSignals && (car as MSTSLocomotive).Battery && !car.ControlUnit)
                 {
-                    if (!car.MasterLoco && !car.SlaveLoco && (SlaveCarNumber3 == SlaveCarNumber2 + 1 || SlaveCarNumber3 == SlaveCarNumber2 - 1 || SlaveCarNumber3 == SlaveCarNumber2 + 2 || SlaveCarNumber3 == SlaveCarNumber2 - 2))
+                    if (!car.MasterLoco && !car.SlaveLoco && Train.SlaveCarNumber2 > -1 && (SlaveCarNumber3 == Train.SlaveCarNumber2 + 1 || SlaveCarNumber3 == Train.SlaveCarNumber2 - 1 || SlaveCarNumber3 == Train.MasterCarNumber + 1 || SlaveCarNumber3 == Train.MasterCarNumber - 1 || SlaveCarNumber3 == Train.SlaveCarNumber1 + 1 || SlaveCarNumber3 == Train.SlaveCarNumber1 - 1))
                     {
                         Train.SlaveLoco3 = car;
                         Train.SlaveCarNumber3 = SlaveCarNumber3;
-                        car.SlaveLoco = true;
+                        if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
                 }
@@ -3425,7 +3464,7 @@ namespace Orts.Simulation.RollingStocks
                 Train.SlaveCarNumber3 = -1;
             }
 
-            if (Train.MasterLoco != null && Train.SlaveLoco1 != null)
+            if (Train.MasterSlaveTestOK && Train.MasterLoco != null && Train.SlaveLoco1 != null)
             {
                 Train.MasterSlaveCarsFound = true;
             }
@@ -18119,13 +18158,13 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car == FirstCar || car == LastCar)
                             {
-                                switch (LightRearLPosition)
+                                switch (LightRearRPosition)
                                 {
                                     case -1: car.LightFrontLW = true; car.LightFrontLR = false; break;
                                     case 0: car.LightFrontLW = false; car.LightFrontLR = false; break;
                                     case 1: car.LightFrontLW = false; car.LightFrontLR = true; break;
                                 }
-                                switch (LightRearRPosition)
+                                switch (LightRearLPosition)
                                 {
                                     case -1: car.LightFrontRW = true; car.LightFrontRR = false; break;
                                     case 0: car.LightFrontRW = false; car.LightFrontRR = false; break;

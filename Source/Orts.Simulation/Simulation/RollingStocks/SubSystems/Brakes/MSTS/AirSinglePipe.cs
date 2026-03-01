@@ -3190,13 +3190,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         }
 
                         // Lokomotivy připojené přes kabel mají kompresory řízené přes kabel
-                        if (train.MasterCarNumber > train.Cars.Count - 1 || train.SlaveCarNumber1 > train.Cars.Count - 1)
+                        if (train.MasterCarNumber == -1 || train.MasterCarNumber > train.Cars.Count - 1 || train.SlaveCarNumber1 > train.Cars.Count - 1)
                         {
                             train.MasterSlaveCarsFound = false;
                         }
                         if (train.MasterSlaveCarsFound)
                         {
-                            var MasterCar = (train.Cars[train.MasterCarNumber] as MSTSLocomotive);
+                            var MasterCar = train.MasterCarNumber > -1 ? (train.Cars[train.MasterCarNumber] as MSTSLocomotive) : null;
                             var SlaveCar1 = train.SlaveCarNumber1 > -1 ? (train.Cars[train.SlaveCarNumber1] as MSTSLocomotive) : null;
                             var SlaveCar2 = train.SlaveCarNumber2 > -1 ? (train.Cars[train.SlaveCarNumber2] as MSTSLocomotive) : null;
                             var SlaveCar3 = train.SlaveCarNumber3 > -1 ? (train.Cars[train.SlaveCarNumber3] as MSTSLocomotive) : null;

@@ -99,7 +99,10 @@ namespace Orts.Simulation.Physics
         }
 
         // Icik
-        public float MasterSlaveTimer = 1.0f;
+        public bool MasterSlaveTestOK;
+        public float MasterSlaveTestTimer;
+        public float MasterTestTimer;
+        public float MasterSlaveUpdateTimer = 1.0f;
         public bool MasterSlaveCanBeSet;
         public bool HasAITrainCompressorMaster;
         public bool LocoIsAirEmpty;
@@ -134,6 +137,7 @@ namespace Orts.Simulation.Physics
         public int SlaveCarNumber3;
         public TrainCar PlayerCar;
         public TrainCar MasterLoco;
+        public TrainCar MasterLocoTest;
         public TrainCar SlaveLoco1;
         public TrainCar SlaveLoco2;
         public TrainCar SlaveLoco3;
