@@ -5462,14 +5462,14 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.BREAK_EDB_SWITCH:
                     Locomotive.BreakEDBButtonEnable = true;
                     Locomotive.BreakEDBSwitchEnable = true;
-                    if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) > 0 && !IsChanged)
-                    {
-                        Locomotive.ToggleBreakEDBButton(true);
-                        IsChanged = true;
-                    }
-                    if (ChangedValue(Locomotive.BreakEDBButton ? 1 : 0) < 0 && !IsChanged)
+                    if (ChangedValue(0) > 0 && !IsChanged)
                     {
                         Locomotive.ToggleBreakEDBButton(false);
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        Locomotive.ToggleBreakEDBButton(true);
                         IsChanged = true;
                     }
                     break;

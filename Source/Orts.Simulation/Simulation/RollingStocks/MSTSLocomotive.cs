@@ -16612,7 +16612,7 @@ namespace Orts.Simulation.RollingStocks
                 // Stav a zvuk pro přepínač
                 if (BreakEDBSwitchEnable)
                 {
-                    BreakEDBButton_Activated = !BreakEDBButton_Activated;
+                    BreakEDBButton_Activated = breakEDBButton;
                     SignalEvent(Event.BreakEDBButton);
                 }
                 if (Simulator.PlayerLocomotive == this)
@@ -18945,6 +18945,8 @@ namespace Orts.Simulation.RollingStocks
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
         {
+            if (Mirel != null)
+                Mirel.ResetVigilance();
             if (MirerControllerPosition > 0) 
                 return;
             if (MirerControllerPosition > -1)
@@ -18980,6 +18982,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleMirerControllerDown()
         {
+            if (Mirel != null)
+                Mirel.ResetVigilance();
             if (MirerControllerPosition < 0)
                 return;
             if (MirerControllerPosition < 1)
@@ -19049,7 +19053,7 @@ namespace Orts.Simulation.RollingStocks
                 Simulator.StepControllerValue = MirerControllerValue;
 
                 if (MirerControllerPosition != prevMirerControllerPosition)
-                {
+                {                    
                     if ((MirerControllerPosition < 0 && MirerControllerPosition < prevMirerControllerPosition)
                         || (MirerControllerPosition > 0 && MirerControllerPosition > prevMirerControllerPosition))                    
                         SignalEvent(Event.ControllerPush);
