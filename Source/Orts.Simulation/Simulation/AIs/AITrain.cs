@@ -3228,7 +3228,7 @@ namespace Orts.Simulation.AIs
             float DistanceToGoM = distanceToGoM + 0.5f;
             if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                            
             if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
-                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 100 : 50);
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 150 : 50);
             else
                 smoothDeceleration = false;
         }
@@ -3445,11 +3445,14 @@ namespace Orts.Simulation.AIs
                             //maxspeed = Math.Min(maxspeed, AllowedMaxSpeedMpS); // but never beyond valid speed limit
                             maxspeed = Math.Min(maxspeed, 30.0f / 3.6f); // při přiblížení k vlaku max 30 km/h
 
+                            if (distanceToTrain < 100)
+                                maxspeed = Math.Min(maxspeed, 15.0f / 3.6f); // při přiblížení k vlaku pod 100m max 15 km/h
+
                             // set brake or acceleration as required                            
                             if (SpeedMpS > maxspeed)
                             {                                
                                 // Icik
-                                if (SpeedMpS > 30f / 3.6f || SpeedMpS > AllowedMaxSpeedMpS) // Maximální rychlost při přiblížení k vlaku 30 km/h
+                                if ((SpeedMpS > maxspeed && SpeedMpS > 15.0f / 3.6f) || SpeedMpS > AllowedMaxSpeedMpS) 
                                     AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                                 else
                                 if (SpeedMpS > 5.0f / 3.6f) // nad 5 km/h plynule zpomaluje
@@ -4179,6 +4182,7 @@ namespace Orts.Simulation.AIs
 
             if (AIRollOn)
             {
+                stepSize = 5;
                 if (Math.Abs(SpeedMpS) < AIRollOnCutOffSpeed && Math.Abs(SpeedMpS) < AbsAllowedMaxSpeed)
                 {
                     if (!AIStayToRollOn)
@@ -4239,9 +4243,19 @@ namespace Orts.Simulation.AIs
                 AIRollOnTimer = 0f;
             }
 
-            if (AITrainWillAttach) // omezení rozjezdu při připojování
+            if (!AIRollOn)
             {
-                AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 10.0f);
+                if (AbsAllowedMaxSpeed < 40f / 3.6f || (distanceToGoM > 0 && distanceToGoM < 150)) // omezení výkonu při nízkých rychlostech, aby se AI nerozjela příliš rychle
+                {
+                    AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 30.0f);
+                    stepSize = 1;
+                }
+
+                if (AITrainWillAttach) // omezení výkonu při připojování
+                {
+                    AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 10.0f);
+                    stepSize = 1;
+                }
             }
 
             if (AITrainThrottlePercent > AITSethrottlePercent)
