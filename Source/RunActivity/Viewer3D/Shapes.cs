@@ -137,6 +137,7 @@ namespace Orts.Viewer3D
         // Shape is an interior and must be rendered in a separate group.
         Interior = 4,
         // NOTE: Use powers of 2 for values!
+        UserSelectShadow = 5, 
     }
 
     public class StaticShape
@@ -792,7 +793,7 @@ namespace Orts.Viewer3D
                     {
                         if (Viewer.Simulator.GameTimeHours > 8 && Viewer.Simulator.GameTimeHours < 20 && Viewer.Simulator.Season != SeasonType.Winter)
                         {
-                            TCoef = 0.010f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount *  SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                            TCoef = 0.0075f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount *  SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
                             AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
                             while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
                             while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
@@ -820,7 +821,7 @@ namespace Orts.Viewer3D
                     if (SharedShape.MatrixNames[i].ToLower().Contains("lamela_tw") || SharedShape.MatrixNames[i].ToLower().Contains("lamela_to")) goto AnimationSkip;
                     if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
                     if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
-                    if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkip;
+                    if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkipUserSelectShadow;
                 }
 
                 AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
@@ -832,8 +833,13 @@ namespace Orts.Viewer3D
                     AnimateMatrix(matrix, AnimationKey[20]);
             }
 
-        AnimationSkip: 
+         AnimationSkip:
             SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
+            return;
+
+            // Vyloučené animace, které nemají stín
+         AnimationSkipUserSelectShadow:
+            SharedShape.PrepareFrame(frame, Location, XNAMatrices, ShapeFlags.UserSelectShadow);
         }
     }
     //Class AnalogClockShape to animate analog OR-Clocks as child of AnimatedShape <- PoseableShape <- StaticShape
@@ -2503,6 +2509,9 @@ namespace Orts.Viewer3D
         {
             var lodBias = ((float)Viewer.Settings.LODBias / 100 + 1);
 
+            // Icik
+            var UserSelectShadow = flags;
+
             // Locate relative to the camera
             var dTileX = location.TileX - Viewer.Camera.TileX;
             var dTileZ = location.TileZ - Viewer.Camera.TileZ;
@@ -2576,6 +2585,17 @@ namespace Orts.Viewer3D
                         // TODO make shadows depend on shape overrides
 
                         var interior = (flags & ShapeFlags.Interior) != 0;
+
+                        // Icik
+                        // Pokud je UserSelectShadow, pak se rozhodujeme podle počtu primitiv, jestli se jedná o objekt bez stínu (méně než 3 primitiva) nebo o normální objekt (3 a více primitiv).
+                        if (UserSelectShadow == ShapeFlags.UserSelectShadow)
+                        {
+                            if (shapePrimitive.PrimitiveCount < 9)
+                                flags = 0;
+                            else
+                                flags = ShapeFlags.ShadowCaster;
+                        }
+                        
                         frame.AddAutoPrimitive(mstsLocation, distanceDetail.ViewSphereRadius, distanceDetail.ViewingDistance * lodBias, shapePrimitive.Material, shapePrimitive, interior ? RenderPrimitiveGroup.Interior : RenderPrimitiveGroup.World, ref xnaMatrix, flags);
                     }
                 }
