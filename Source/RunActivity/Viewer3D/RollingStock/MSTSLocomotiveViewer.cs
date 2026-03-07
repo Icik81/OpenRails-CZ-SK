@@ -4401,7 +4401,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     //Locomotive.SetDynamicBrakeValue(ChangedValue(Locomotive.DynamicBrakeController.IntermediateValue)); break;
                     break;
-                case CABViewControlTypes.GEARS: Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
+                case CABViewControlTypes.GEARS: if (Locomotive.GearBoxController != null) Locomotive.SetGearBoxValue(ChangedValue(Locomotive.GearBoxController.IntermediateValue)); break;
                 case CABViewControlTypes.DIRECTION:
                     if (!Locomotive.DirectionButton && !Locomotive.DieselDirectionController && !Locomotive.DieselDirectionController2 && !Locomotive.DieselDirectionController3 && !Locomotive.DieselDirectionController4 && !Locomotive.MirelRSControllerEnable && !Locomotive.HS198ControllerEnable)
                     {

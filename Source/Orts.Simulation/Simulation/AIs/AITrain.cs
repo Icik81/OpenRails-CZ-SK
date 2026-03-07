@@ -3226,11 +3226,21 @@ namespace Orts.Simulation.AIs
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
             float DistanceToGoM = distanceToGoM + 0.5f;
-            if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                            
-            if ((FirstCar is MSTSLocomotive && !(FirstCar as MSTSLocomotive).WagonIsServis) || (LastCar is MSTSLocomotive && !(LastCar as MSTSLocomotive).WagonIsServis))
-                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 150 : 50);
-            else
+            if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;          
+            
+            bool LocoIsFound = false;
+            foreach (TrainCar car in Cars)
+            {
+                if (car is MSTSLocomotive) { LocoIsFound = true; break; }                                                    
+            }
+
+            if ((Cars.Count == 1 && LocoIsFound && (FirstCar as MSTSLocomotive).WagonIsServis) || !LocoIsFound)
+            {
                 smoothDeceleration = false;
+                AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 50);
+            }
+            else
+                SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 150 : 50);
         }
 
         /// <summary>
