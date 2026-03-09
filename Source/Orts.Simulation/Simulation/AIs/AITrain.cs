@@ -3905,7 +3905,7 @@ namespace Orts.Simulation.AIs
                 smoothDeceleration = true;                
                 if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < -1) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
 
-                float RequiredDecceleration = (SpeedMpS * SpeedMpS) / (1 * distanceToGoM);
+                float RequiredDecceleration = (SpeedMpS * SpeedMpS) / (1.5f * distanceToGoM);
                                 
                 if (Math.Abs(SpeedMpS * 3.6f) > 0.0f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpHSlowingDown)
                 {
