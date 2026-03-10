@@ -3654,7 +3654,9 @@ namespace Orts.Viewer3D.RollingStock
                     break;
                 case CABViewControlTypes.THROTTLE:
                 case CABViewControlTypes.THROTTLE_DISPLAY:
-                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation])
+                    if (!Locomotive.StationIsActivated[Locomotive.LocoStation] && !Locomotive.CommandCylinderEnable)
+                        break;
+                    if (Locomotive.CommandCylinderEnable && !Locomotive.AirForHV)
                         break;
                     index = PercentToIndex(data);
                     break;
@@ -5828,7 +5830,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
                 case CABViewControlTypes.COMMAND_CYLINDER:
-                    Locomotive.CommandCylinderEnable = true;
+                    Locomotive.CommandCylinderEnable = true;                    
                     // Ovladač COMMANDCYLINDER                    
                     if (!IsChanged && ChangedValue(0) > 0 && NormalizedMouseMovement() > 0.015f && UserInput.IsMouseLeftButtonDown) 
                     {

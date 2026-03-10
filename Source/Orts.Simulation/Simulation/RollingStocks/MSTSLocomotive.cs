@@ -18050,6 +18050,16 @@ namespace Orts.Simulation.RollingStocks
                             LightRearLPosition = 1;
                             LightRearRPosition = 1;
                         }
+                        if (this == Train.FirstCar && !AcceptMUSignals)
+                        {
+                            LightFrontLPosition = -1;
+                            LightFrontRPosition = -1;                            
+                        }
+                        if (this == Train.LastCar && !AcceptMUSignals)
+                        {                            
+                            LightRearLPosition = 1;
+                            LightRearRPosition = 1;
+                        }
                     }
                     switch (LightFrontLPosition)
                     {
@@ -21334,13 +21344,19 @@ namespace Orts.Simulation.RollingStocks
         public bool CommandCylinderThrottleChangeUp;
         public bool CommandCylinderThrottleChangeDown;
         public int[] CommandCylinderThrottlePosition = new int[3];
+        bool CommandCylinderThrottleStop;
         public void CommandCylinder(float elapsedClockSeconds)
         {
             if (!IsLeadLocomotive())
-                return;
+                return;            
 
             if (!CommandCylinderEnable)
                 return;
+
+            if (!AirForHV || !StationIsActivated[LocoStation] || !Battery)
+                CommandCylinderThrottleStop = true;
+            else
+                CommandCylinderThrottleStop = false;
 
             CommandCylinderThrottleDelay = 0.25f;
             CommandCylinderToZeroPeriod = 0.05f;
@@ -21356,11 +21372,8 @@ namespace Orts.Simulation.RollingStocks
                         CommandCylinderPosition[LocoStation]--;
                     CommandCylinderTimer2 = 0.0f;
                     CommandCylinderDown = true;
-                    if (StationIsActivated[LocoStation])
-                    {
-                        CommandCylinderThrottleChangeUp = false;
-                        CommandCylinderThrottleChangeDown = true;
-                    }
+                    CommandCylinderThrottleChangeUp = false;
+                    CommandCylinderThrottleChangeDown = true;
                 }
             }
             if (CommandCylinderPosition[LocoStation] == 0 && CommandCylinderToZero)
@@ -21404,7 +21417,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 preCommandCylinderPosition[LocoStation] = CommandCylinderPosition[LocoStation];
 
-                if (StationIsActivated[LocoStation])
+                //if (StationIsActivated[LocoStation])
                 {
                     if (CommandCylinderUp && CommandCylinderPosition[LocoStation] > CommandCylinderThrottlePosition[LocoStation])
                     {
@@ -21437,7 +21450,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Pozice throttle na válci
-            if (CommandCylinderThrottleChangeUp)
+            if (CommandCylinderThrottleChangeUp && !CommandCylinderThrottleStop)
             {
                 CommandCylinderThrottleTimer += elapsedClockSeconds;
                 if (CommandCylinderThrottleTimer > CommandCylinderThrottleDelay)
@@ -21455,7 +21468,7 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
 
-            if (CommandCylinderThrottleChangeDown)
+            if (CommandCylinderThrottleChangeDown && !CommandCylinderThrottleStop)
             {
                 CommandCylinderThrottleTimer += elapsedClockSeconds;
                 if (CommandCylinderThrottleTimer > CommandCylinderThrottleDelay)
