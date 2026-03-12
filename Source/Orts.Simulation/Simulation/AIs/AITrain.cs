@@ -3236,8 +3236,7 @@ namespace Orts.Simulation.AIs
 
             if ((Cars.Count == 1 && LocoIsFound && (FirstCar as MSTSLocomotive).WagonIsServis) || !LocoIsFound)
             {
-                smoothDeceleration = false;
-                AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 50);
+                smoothDeceleration = false;                
             }
             else
                 SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 150 : 50);
