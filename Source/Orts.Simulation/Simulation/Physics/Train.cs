@@ -1834,8 +1834,7 @@ namespace Orts.Simulation.Physics
         public bool AITrainWillAttach;
         int AIPreferenceModeStep;        
         public virtual void Update(float elapsedClockSeconds, bool auxiliaryUpdate = true)
-        {                        
-            AITrainWillAttach = false;
+        {                                    
             GeneratePaxDynamically();            
 
             if (TrainStopAtLevelCrossTimer > 0) TrainStopAtLevelCrossTimer += elapsedClockSeconds;
@@ -2388,7 +2387,9 @@ namespace Orts.Simulation.Physics
             LastSpeedMpS = SpeedMpS;
             ProjectedSpeedMpS = SpeedMpS + 60 * AccelerationMpSpS.SmoothedValue;
             ProjectedSpeedMpS = SpeedMpS > float.Epsilon ?
-                Math.Max(0, ProjectedSpeedMpS) : SpeedMpS < -float.Epsilon ? Math.Min(0, ProjectedSpeedMpS) : 0;             
+                Math.Max(0, ProjectedSpeedMpS) : SpeedMpS < -float.Epsilon ? Math.Min(0, ProjectedSpeedMpS) : 0;
+
+            AITrainWillAttach = false;
         }
 
         //================================================================================================//

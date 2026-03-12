@@ -703,7 +703,7 @@ namespace Orts.Simulation.AIs
         /// </summary>
 
         public void AIUpdate(float elapsedClockSeconds, double clockTime, bool preUpdate)
-        {
+        {            
             // Icik           
             if (Name.Contains("KpR")) AIKeepRun = true;
             // Udržuje rychlost servisu na jeho maximální rychlosti

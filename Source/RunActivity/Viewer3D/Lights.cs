@@ -267,7 +267,7 @@ namespace Orts.Viewer3D
 
             // Headlight
             //var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
-            var newTrainHeadlight = locomotive != null ? locomotive.Headlight[mstsLocomotive.LocoStation] : 0;
+            var newTrainHeadlight = locomotive != null ? locomotive.Headlight[mstsLocomotive.LocoStation] : 0;            
 
             // Unit
             var locomotiveFlipped = locomotive != null && locomotive.Flipped;
@@ -297,7 +297,23 @@ namespace Orts.Viewer3D
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
 
-            // Icik                        
+            // Icik
+            // Ovládání obou reflektorů v jedné kabině 
+            if (locomotive != null && mstsLocomotive.HeadLight2Enable)
+            {
+                if (Car.FrontHeadLight)
+                {
+                    newTrainHeadlight = locomotive.Headlight[1];
+                    newCarIsReversed = false;
+                }
+                else
+                    if (Car.RearHeadLight)
+                    {
+                        newTrainHeadlight = locomotive.Headlight[2];
+                        newCarIsReversed = true;
+                    }
+            }
+
             var newCarLightFrontLW = Car.LightFrontLW;
             var newCarLightFrontRW = Car.LightFrontRW;
             var newCarLightRearLW = Car.LightRearLW;

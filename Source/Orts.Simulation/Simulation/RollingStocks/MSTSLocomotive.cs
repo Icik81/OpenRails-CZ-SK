@@ -726,6 +726,7 @@ namespace Orts.Simulation.RollingStocks
         public int[] LastStateHV3 = new int[3];
         public bool[] Heating_OffOn = new bool[3];
         public int[] HeadLightPosition = new int[3];
+        public int[] HeadLightPosition2 = new int[3];
         public int[] DirectionPosition = new int[3];
         public bool[] SeasonSwitchPosition = new bool[3];
         public int[] DoorSwitch = new int[3];
@@ -805,6 +806,7 @@ namespace Orts.Simulation.RollingStocks
         public float SteamGeneratorAirComsumptionLpS;
         public bool Combined_control;          
         public float GeneratorVoltageFinal;
+        public bool HeadLight2Enable;
 
         // Jindrich
         public bool IsActive = false;
@@ -2111,6 +2113,8 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(DirectionPosition[2]);
             outf.Write(HeadLightPosition[1]);
             outf.Write(HeadLightPosition[2]);
+            outf.Write(HeadLightPosition2[1]);
+            outf.Write(HeadLightPosition2[2]);
             outf.Write(LocoWiper[1]);
             outf.Write(LocoWiper[2]);
             outf.Write(LastStateHV3[1]);
@@ -2376,6 +2380,8 @@ namespace Orts.Simulation.RollingStocks
             DirectionPosition[2] = inf.ReadInt32();
             HeadLightPosition[1] = inf.ReadInt32();
             HeadLightPosition[2] = inf.ReadInt32();
+            HeadLightPosition2[1] = inf.ReadInt32();
+            HeadLightPosition2[2] = inf.ReadInt32();
             LocoWiper[1] = inf.ReadBoolean();
             LocoWiper[2] = inf.ReadBoolean();
             LastStateHV3[1] = inf.ReadInt32();
@@ -5674,6 +5680,7 @@ namespace Orts.Simulation.RollingStocks
                     // LS90
                     Mirel.ls90tested = false;
                     Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.Off;
+                    Mirel.Ls90power2[LocoStation] = SubSystems.Mirel.LS90power.Off;
                 }
                 else
                     TrainBrakeController.EmergencyBrakingPushButton = false;
@@ -5921,6 +5928,9 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // AI posunuje                     
+                if ((Train as AITrain) != null && (Train as AITrain).AITrainWillAttach)
+                    CarIsShunting = true;
+
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
@@ -5928,7 +5938,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AbsSpeedMpS < 0.01f && (AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (Train as AITrain).AITrainWillAttach)
+                            if (AbsSpeedMpS < 0.01f && AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010)
                             {
                                 CarIsShunting = true;
                                 AIStartOn = true;
@@ -6141,6 +6151,7 @@ namespace Orts.Simulation.RollingStocks
                     Sander = false;
 
                 Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.Off;
+                Mirel.Ls90power2[LocoStation] = SubSystems.Mirel.LS90power.Off;
 
                 if (!HelperLocoDontPush && !HelperLocoPush && !HelperLocoFollow)
                 {
@@ -7033,7 +7044,7 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.BlueLight = true;
                     // LS90
                     Mirel.ls90tested = true;
-                    Mirel.Ls90power[LocoStation] = LS90power.On;
+                    Mirel.Ls90power[LocoStation] = LS90power.On;                    
                 }
                 PlayerLocoSetUp = false;
                 LocoSetUpTimer = 0;
@@ -12224,7 +12235,7 @@ namespace Orts.Simulation.RollingStocks
         float MotorIdleHandlingRPM;
         bool MotorIdleHandlingOverrideNoTraction;
         public void MotorIdleHandling() // Pro motoráky 809-810-M151-M152-811-812
-        {
+        {            
             if (LocoHelperOn)
             {
                 PowerReductionResult14 = 0.0f;
@@ -12233,6 +12244,8 @@ namespace Orts.Simulation.RollingStocks
                 MotorIdleHandlingOn = false;
                 return;
             }
+
+            if (!TractionSwitchEnable) return;
 
             var mstsDieselLocomotive = this as MSTSDieselLocomotive;
             if (mstsDieselLocomotive == null) return;
@@ -12605,7 +12618,29 @@ namespace Orts.Simulation.RollingStocks
                     break;
             }
         }
-        
+        public void HeadLights2()
+        {
+            switch (HeadLightPosition2[LocoStation])
+            {
+                case 0:
+                    Headlight[2] = 0;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("Off"));
+                    break;
+                case 1:
+                    Headlight[2] = 7;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Position Light: ") + Simulator.Catalog.GetString("On"));
+                    break;
+                case 2:
+                    Headlight[2] = 1;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Dim Headlight: ") + Simulator.Catalog.GetString("On"));
+                    break;
+                case 3:
+                    Headlight[2] = 2;
+                    Simulator.Confirmer.Information(Simulator.Catalog.GetString("Bright Headlight: ") + Simulator.Catalog.GetString("On"));
+                    break;
+            }
+        }
+
 
         public bool AllCabItemReaded;
         bool MasterSlaveInitiate;
@@ -17717,10 +17752,18 @@ namespace Orts.Simulation.RollingStocks
         public void LightPositionHandle()
         {
             if (LightsFrameUpdate < 3)
-                LightsFrameUpdate++;
+                LightsFrameUpdate++;            
 
-            FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
-            RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
+            if (HeadLight2Enable)
+            {
+                FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
+                RearHeadLight = HeadLightPosition2[1] > 0 ? true : false;
+            }
+            else
+            {
+                FrontHeadLight = HeadLightPosition[1] > 0 ? true : false;
+                RearHeadLight = HeadLightPosition[2] > 0 ? true : false;
+            }
 
             if (Switch51LightEnable && Switch52LightEnable) // Vectron
             {
@@ -23661,6 +23704,15 @@ namespace Orts.Simulation.RollingStocks
                             data = HeadLightPosition[LocoStation] - 1;
                         break;
                     }
+                case CABViewControlTypes.FRONT_HLIGHT2:
+                    {
+                        HeadLight2Enable = true;
+                        if (HeadLightPosition2[LocoStation] == 0)
+                            data = 0;
+                        else
+                            data = HeadLightPosition2[LocoStation] - 1;
+                        break;
+                    }
                 case CABViewControlTypes.WHEELSLIP:
                     {
                         if (AdvancedAdhesionModel && Train.TrainType != Train.TRAINTYPE.AI_PLAYERHOSTING)
@@ -24470,6 +24522,20 @@ namespace Orts.Simulation.RollingStocks
 
                         break;
                     }
+                case CABViewControlTypes.ORTS_REPEATER_LIGHTS_MASK2:
+                    {
+                        data = 1;
+                        if ((Mirel.selectedDriveMode == Mirel.DriveMode.Normal || Mirel.selectedDriveMode == Mirel.DriveMode.Trailing) && !Mirel.flashFullDisplayInProggress && Mirel.RecievingRepeaterSignal)
+                            data = 1;
+                        else
+                            data = 0;
+                        if (Mirel.MirelType != Mirel.Type.Full && (Mirel.Ls90power2[LocoStation] == Mirel.LS90power.Off || Mirel.Ls90power2[LocoStation] == Mirel.LS90power.Start))
+                            data = 0;
+                        if (!Mirel.RecievingRepeaterSignal)
+                            data = 0;
+
+                        break;
+                    }
                 case CABViewControlTypes.ORTS_STATION:
                     {
                         data = 0;
@@ -24485,6 +24551,11 @@ namespace Orts.Simulation.RollingStocks
                 case CABViewControlTypes.ORTS_LS90_POWER:
                     {
                         data = (float)Mirel.Ls90power[LocoStation];
+                        break;
+                    }
+                case CABViewControlTypes.ORTS_LS90_POWER2:
+                    {
+                        data = (float)Mirel.Ls90power2[LocoStation];
                         break;
                     }
                 case CABViewControlTypes.ORTS_LS90_LED:

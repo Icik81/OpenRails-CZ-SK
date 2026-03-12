@@ -258,7 +258,7 @@ namespace Orts.Simulation.RollingStocks
 
         public LightCollection Lights;
         public FreightAnimations FreightAnimations;
-        public int[] Headlight = new int[3];
+        public int[] Headlight = new int[3];        
 
         // instance variables set by train physics when it creates the traincar
         public Train Train;  // the car is connected to this train

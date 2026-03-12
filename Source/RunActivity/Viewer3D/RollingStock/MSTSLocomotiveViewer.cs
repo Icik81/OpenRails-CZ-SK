@@ -3847,6 +3847,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SANDING:
                 case CABViewControlTypes.WHEELSLIP:
                 case CABViewControlTypes.FRONT_HLIGHT:
+                case CABViewControlTypes.FRONT_HLIGHT2:
                 case CABViewControlTypes.PANTOGRAPH:
                 case CABViewControlTypes.PANTOGRAPH2:
                 case CABViewControlTypes.ORTS_PANTOGRAPH3:
@@ -4201,8 +4202,10 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.ORTS_MIREL_M:
                 case CABViewControlTypes.ORTS_MIREL_START_REDUCE_SPEED:
                 case CABViewControlTypes.ORTS_REPEATER_LIGHTS_MASK:
+                case CABViewControlTypes.ORTS_REPEATER_LIGHTS_MASK2:
                 case CABViewControlTypes.ORTS_STATION:
                 case CABViewControlTypes.ORTS_LS90_POWER:
+                case CABViewControlTypes.ORTS_LS90_POWER2:
                 case CABViewControlTypes.ORTS_LS90_LED:
                 case CABViewControlTypes.ORTS_AVV_SIGNAL:
                 case CABViewControlTypes.ORTS_AVV_SET_CLEAR:
@@ -4424,6 +4427,29 @@ namespace Orts.Viewer3D.RollingStock
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
                         new HeadlightDownCommand(Viewer.Log);
+                        IsChanged = true;
+                    }
+                    break;
+                case CABViewControlTypes.FRONT_HLIGHT2:
+                    Locomotive.HeadLight2Enable = true;
+                    if (ChangedValue(0) > 0 && !IsChanged)
+                    {
+                        if (Locomotive.HeadLightPosition2[Locomotive.LocoStation] < 3)
+                        {
+                            Locomotive.HeadLightPosition2[Locomotive.LocoStation]++;
+                            Locomotive.SignalEvent(Event.LightSwitchToggle);
+                            Locomotive.HeadLights2();
+                        }
+                        IsChanged = true;
+                    }
+                    if (ChangedValue(0) < 0 && !IsChanged)
+                    {
+                        if (Locomotive.HeadLightPosition2[Locomotive.LocoStation] > 0)
+                        {
+                            Locomotive.HeadLightPosition2[Locomotive.LocoStation]--;
+                            Locomotive.SignalEvent(Event.LightSwitchToggle);
+                            Locomotive.HeadLights2();
+                        }
                         IsChanged = true;
                     }
                     break;
@@ -5965,6 +5991,30 @@ namespace Orts.Viewer3D.RollingStock
                             }
                             IsChanged = true;
                         }
+                    }
+                    break;
+                case CABViewControlTypes.ORTS_LS90_POWER2:
+                    if (Locomotive.Mirel.MirelType == Mirel.Type.LS90)
+                    {
+                        if (ChangedValue(0) < 0 && !IsChanged)
+                        {
+                            if (Locomotive.Mirel.Ls90power2[Locomotive.LocoStation] < LS90power.On)
+                            {
+                                Locomotive.Mirel.Ls90power2[Locomotive.LocoStation]++;
+                                Locomotive.SignalEvent(Event.LightSwitchToggle);
+                            }
+                            IsChanged = true;
+                        }
+                        else
+                            if (ChangedValue(0) > 0 && !IsChanged)
+                            {
+                                if (Locomotive.Mirel.Ls90power2[Locomotive.LocoStation] > LS90power.Off)
+                                {
+                                    Locomotive.Mirel.Ls90power2[Locomotive.LocoStation]--;
+                                    Locomotive.SignalEvent(Event.LightSwitchToggle);
+                                }
+                                IsChanged = true;
+                            }
                     }
                     break;
 

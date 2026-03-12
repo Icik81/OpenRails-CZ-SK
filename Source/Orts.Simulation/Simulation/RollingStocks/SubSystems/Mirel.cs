@@ -107,6 +107,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool DatabaseVersionUpdated = false;
         public enum LS90power { Off, Start, On };
         public LS90power[] Ls90power = new LS90power[3];
+        public LS90power[] Ls90power2 = new LS90power[3];
         public enum LS90led { Off, Red, Green };
         public LS90led Ls90led = LS90led.Off;
         public bool NoAlertOnRestrictedSignal = false;
@@ -277,7 +278,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (MirelType == Type.LS90)
             {
-                if (Ls90power[Locomotive.LocoStation] == LS90power.Off)
+                if (Ls90power[Locomotive.LocoStation] == LS90power.Off && Ls90power2[Locomotive.LocoStation] == LS90power.Off)
                 {
                     Ls90led = LS90led.Off;
                     ls90tested = false;
@@ -285,7 +286,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = false;
                     return;
                 }
-                if (Ls90power[Locomotive.LocoStation] == LS90power.Start && !ls90tested)
+                if ((Ls90power[Locomotive.LocoStation] == LS90power.Start || Ls90power2[Locomotive.LocoStation] == LS90power.Start) && !ls90tested)
                 {
                     if (ls90testTime > 1.5 && Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > 1.5f && AbsSpeedMpS == 0)
                     {
@@ -299,7 +300,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ls90testTime += elapsedClockSeconds;
                     return;
                 }
-                if (Ls90power[Locomotive.LocoStation] == LS90power.On && ls90tested)
+                if ((Ls90power[Locomotive.LocoStation] == LS90power.On || Ls90power2[Locomotive.LocoStation] == LS90power.On) && ls90tested)
                 {
                     BlueLight = true;
                     Ls90led = LS90led.Off;
@@ -309,7 +310,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = false;
                     Ls90led = LS90led.Red;
                 }
-                if (Ls90power[Locomotive.LocoStation] != LS90power.On)
+                if (Ls90power[Locomotive.LocoStation] != LS90power.On && Ls90power2[Locomotive.LocoStation] != LS90power.On)
                 {
                     return;
                 }
@@ -962,6 +963,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             outf.Write((int)Ls90led);
             outf.Write((int)Ls90power[1]);
             outf.Write((int)Ls90power[2]);
+            outf.Write((int)Ls90power2[1]);
+            outf.Write((int)Ls90power2[2]);
             outf.Write(ls90tested);
         }
 
@@ -1081,6 +1084,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             Ls90power[1] = (LS90power)fLs90power1;
             int fLs90power2 = inf.ReadInt32();
             Ls90power[2] = (LS90power)fLs90power2;
+            int fLs90power21 = inf.ReadInt32();
+            Ls90power2[1] = (LS90power)fLs90power21;
+            int fLs90power22 = inf.ReadInt32();
+            Ls90power2[2] = (LS90power)fLs90power22;
             ls90tested = inf.ReadBoolean();
             ls90testTime = 5;
         }
