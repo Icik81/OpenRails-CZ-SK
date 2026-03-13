@@ -1312,11 +1312,7 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.PowerKeyOn);
                     PowerKey = true;
                 }
-                if (!RDSTBreaker[LocoStation])
-                {
-                    SignalEvent(Event.RDSTOn);
-                    RDSTBreaker[LocoStation] = true;
-                }
+                
                 if (DieselEngines[0].EngineStatus == DieselEngine.Status.Running && this.AIStart)
                 {
                     // Spustí inicializační trigger zvuku volnoběhu
@@ -1416,12 +1412,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Startovní setup lokomotivy hráče
             if (LocoReadyToGo && !LocoIsStatic)
-            {                
-                if (!RDSTBreaker[LocoStation])
-                {
-                    SignalEvent(Event.RDSTOn);
-                    RDSTBreaker[LocoStation] = true;
-                }
+            {                                
                 if (LightsFrameUpdate > 2)
                     LocoReadyToGo = false;
             }

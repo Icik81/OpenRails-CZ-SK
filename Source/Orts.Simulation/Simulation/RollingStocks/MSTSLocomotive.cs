@@ -5678,9 +5678,7 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.driveMode = SubSystems.Mirel.DriveMode.Off;
                     Mirel.MaxSelectedSpeed = Mirel.MirelMaximumSpeed = MpS.ToKpH(MaxSpeedMpS);
                     // LS90
-                    Mirel.ls90tested = false;
-                    Mirel.Ls90power[LocoStation] = SubSystems.Mirel.LS90power.Off;
-                    Mirel.Ls90power2[LocoStation] = SubSystems.Mirel.LS90power.Off;
+                    Mirel.ls90tested = false;                    
                 }
                 else
                     TrainBrakeController.EmergencyBrakingPushButton = false;
@@ -7046,6 +7044,12 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.ls90tested = true;
                     Mirel.Ls90power[LocoStation] = LS90power.On;                    
                 }
+
+                if (!RDSTBreaker[LocoStation])
+                {                    
+                    RDSTBreaker[LocoStation] = true;
+                }
+
                 PlayerLocoSetUp = false;
                 LocoSetUpTimer = 0;
             }
@@ -7108,6 +7112,12 @@ namespace Orts.Simulation.RollingStocks
                         LocoStation = 1;
                         if (UsingRearCab)
                             LocoStation = 2;
+
+                        if (!RDSTBreaker[LocoStation])
+                        {
+                            SignalEvent(Event.RDSTOn);
+                            RDSTBreaker[LocoStation] = true;
+                        }
 
                         // ARR
                         if (CruiseControl != null)
@@ -7616,7 +7626,10 @@ namespace Orts.Simulation.RollingStocks
                     PowerKeyPosition[LocoStation] = 2;
                     HeatingPosition[LocoStation] = 1;
                     StationIsActivated[LocoStation] = true;
-
+                    if (!RDSTBreaker[LocoStation])
+                    {                        
+                        RDSTBreaker[LocoStation] = true;
+                    }
                     foreach (TrainCar car in Train.Cars)
                     {
                         car.BrakeSystem.HeatingIsOn = true;
@@ -7650,6 +7663,10 @@ namespace Orts.Simulation.RollingStocks
                     PowerKey = false;
                     PowerKeyPosition[1] = 0;
                     PowerKeyPosition[2] = 0;
+                    if (RDSTBreaker[LocoStation])
+                    {
+                        RDSTBreaker[LocoStation] = false;
+                    }
                     foreach (TrainCar car in Train.Cars)
                     {
                         if (car is MSTSControlUnit)
@@ -7674,6 +7691,10 @@ namespace Orts.Simulation.RollingStocks
                     HeatingPosition[LocoStation] = 1;
                     PowerKey = true;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
+                    if (!RDSTBreaker[LocoStation])
+                    {
+                        RDSTBreaker[LocoStation] = true;
+                    }
 
                     TrainCar AIFirstLocomotive = null;
                     foreach (TrainCar car in Train.Cars)
@@ -7701,6 +7722,10 @@ namespace Orts.Simulation.RollingStocks
                     BrakeSystem.IsAirFull = false;
                     PowerKeyPosition[LocoStation] = 0;
                     PowerKey = false;
+                    if (RDSTBreaker[LocoStation])
+                    {
+                        RDSTBreaker[LocoStation] = false;
+                    }
                     foreach (TrainCar car in Train.Cars)
                     {
                         if (car is MSTSControlUnit)

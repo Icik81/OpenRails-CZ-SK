@@ -5599,20 +5599,27 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.RDSTBreakerRDSTEnable = true;
                     if (Locomotive.RDSTBreakerRDSTEnable)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.ONOFF)
                         {
-                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if ((Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0)) new ToggleRDSTBreakerCommand(Viewer.Log); break;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.NONE)
                         {
-                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
-                        }                        
+                            if (ChangedValue(0) < 0 && !IsChanged)
+                            {
+                                if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
+                            if (ChangedValue(0) > 0 && !IsChanged)
+                            {
+                                if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
+                        }
                     }
                     break;
                 case CABViewControlTypes.RDST_BREAKER_VZ:
@@ -5620,19 +5627,26 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.RDSTBreakerVZEnable = true;
                     if (Locomotive.RDSTBreakerVZEnable)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.ONOFF)
                         {
-                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if ((Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0)) new ToggleRDSTBreakerCommand(Viewer.Log); break;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.NONE)
                         {
-                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if (ChangedValue(0) < 0 && !IsChanged)
+                            {
+                                if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
+                            if (ChangedValue(0) > 0 && !IsChanged)
+                            {
+                                if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
                         }
                     }
                     break;
@@ -5641,19 +5655,26 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.RDSTBreakerPowerEnable = true;
                     if (Locomotive.RDSTBreakerPowerEnable)
                     {
-                        if (ChangedValue(0) < 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.ONOFF)
                         {
-                            if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if ((Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0) != ChangedValue(Locomotive.RDSTBreaker[Locomotive.LocoStation] ? 1 : 0)) new ToggleRDSTBreakerCommand(Viewer.Log); break;
                         }
-                        if (ChangedValue(0) > 0 && !IsChanged)
+                        if (Control.ControlStyle == CABViewControlStyles.NONE)
                         {
-                            if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
-                            Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
-                            Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
-                            IsChanged = true;
+                            if (ChangedValue(0) < 0 && !IsChanged)
+                            {
+                                if (Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOff);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = false;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
+                            if (ChangedValue(0) > 0 && !IsChanged)
+                            {
+                                if (!Locomotive.RDSTBreaker[Locomotive.LocoStation]) Locomotive.SignalEvent(Event.RDSTOn);
+                                Locomotive.RDSTBreaker[Locomotive.LocoStation] = true;
+                                Locomotive.Simulator.Confirmer.Confirm(CabControl.RDSTBreaker, Locomotive.RDSTBreaker[Locomotive.LocoStation] ? CabSetting.On : CabSetting.Off);
+                                IsChanged = true;
+                            }
                         }
                     }
                     break;
