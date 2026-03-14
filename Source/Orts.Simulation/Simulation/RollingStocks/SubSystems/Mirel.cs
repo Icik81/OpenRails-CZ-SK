@@ -1941,6 +1941,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             // Mirel Mini si hlídá max rychlost dle navolení režimů a volby ZAP
             float MirelMiniMaxSpeed = Math.Min(maxReducedSpeed, MirelMaximumSpeed);
+            if (MirelMiniMaxSpeed == 0) MirelMiniMaxSpeed = MirelMaximumSpeed;
             if (MirelMini && MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMiniMaxSpeed)
             {
                 flashing = false;
