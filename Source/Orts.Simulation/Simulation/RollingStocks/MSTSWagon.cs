@@ -156,7 +156,7 @@ namespace Orts.Simulation.RollingStocks
         public float Variable10;
         public float Variable11;
         public float Variable12;
-        public float Variable13;
+        public float Variable13;        
         public bool OpenedLeftDoor = false;
         public bool OpenedRightDoor = false;
         public float AirlossByHandlingDoorsPSIpS;
@@ -201,7 +201,9 @@ namespace Orts.Simulation.RollingStocks
         public int MPWagonLoadPercent;
         public int MPFreightWeight;
         public bool JVSetup;
-        public bool CarHasElectricHeatingPlug;
+        public bool CarHasElectricHeatingPlug;                
+        public float LoadSound_VolumeCoef = 1.0f;
+        public float LoadSound_FrequencyCoef = 1.0f;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;

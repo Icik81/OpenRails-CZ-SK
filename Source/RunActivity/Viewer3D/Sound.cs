@@ -1447,6 +1447,8 @@ namespace Orts.Viewer3D
             if (ALSoundSource == null)
                 return;
 
+            var car = SoundSource.Car;
+
             if (MSTSStream != null && MSTSStream.FrequencyCurve != null)
             {
                 if (SoundSource.Car != null || SoundSource.Viewer.Camera.AttachedCar != null)
@@ -1460,10 +1462,30 @@ namespace Orts.Viewer3D
                     if (SoundSource.MstsMonoTreatment && ALSoundSource.MstsMonoTreatment)
                         y *= 2;
 
+                    // Úprava hlasitosti zvuku motorů dle zatížení
+                    if (car != null && MSTSStream != null)
+                    {
+                        foreach (var trigger in Triggers)
+                        {
+                            if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                                foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                                    if (name != null)
+                                    {
+                                        if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
+                                        {
+                                            goto founIt_f;                                            
+                                        }
+                                    }
+                        }
+                        goto NotfounIt_f;
+                        founIt_f:
+                        y /= car.LoadSound_FrequencyCoef;                        
+                    }
+                    NotfounIt_f:
                     ALSoundSource.PlaybackSpeed = y / ALSoundSource.SampleRate;
                     NeedsFrequentUpdate = x != 0;
                 }
-            }
+            }            
 
             float volume = SoundSource.Volume * Volume;
 
@@ -1480,11 +1502,32 @@ namespace Orts.Viewer3D
 
                     // Externí zvuky mimo vůz
                     if (SoundSource.Car == null && (MSTSStream.VolumeCurves[i].Control != VolumeCurve.Controls.DistanceControlled))
-                        x = ReadValue(MSTSStream.VolumeCurves[i].Control, null);
+                        x = ReadValue(MSTSStream.VolumeCurves[i].Control, null);                    
 
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
 
+            // Úprava hlasitosti zvuku motorů dle zatížení
+            if (car != null && MSTSStream != null)
+            {
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
+                                {
+                                    goto founIt_v;                                    
+                                }
+                            }
+                }
+                goto NotfoundIt_v;
+                founIt_v:
+                volume *= car.LoadSound_VolumeCoef;
+            }
+            
+            NotfoundIt_v:
             if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
             {
                 if (SoundSource.Viewer.Camera.AttachedCar == null || ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent == -1)
@@ -1498,8 +1541,7 @@ namespace Orts.Viewer3D
                 if (((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent > -1)
                     volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;                
             }
-
-            var car = SoundSource.Car;
+            
             // Shodí příznak MSTSStreamSoundOffInit pro aktivní vozidla
             if (car != null && car.BrakeSystem.PowerForWagon && MSTSStreamSoundOffInit)
                 MSTSStreamSoundOffInit = false;
@@ -1528,7 +1570,7 @@ namespace Orts.Viewer3D
                     }                    
                 }
                 MSTSStreamSoundInit = false;
-            }
+            }            
 
             MSTSStreamSoundOff = false;
             // Vyhledá zvuky motoru a nastaví příznak MSTSStreamSoundOff
