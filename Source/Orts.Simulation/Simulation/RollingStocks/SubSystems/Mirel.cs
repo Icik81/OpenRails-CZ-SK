@@ -1932,6 +1932,34 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     BlueLight = true;
                 }
             }
+
+            // Mirel Mini si hlídá max rychlost dle navolení režimů a volby ZAP
+            float MirelMiniMaxSpeed = Math.Min(maxReducedSpeed, MirelMaximumSpeed);
+            if (MirelMini && MpS.ToKpH(Locomotive.AbsSpeedMpS) > MirelMiniMaxSpeed)
+            {
+                flashing = false;
+                float diff = MpS.ToKpH(Locomotive.AbsSpeedMpS) - MirelMiniMaxSpeed;
+                if (diff > 3)
+                {
+                    if (!NZ2)
+                        flashing = true;
+                }
+                if (diff > 5 && !mirelBeeping && !emergency)
+                {
+                    Locomotive.SignalEvent(Common.Event.MirelOverspeedOn);
+                    mirelBeeping = true;
+                }
+                if (diff <= 5 && mirelBeeping)
+                {
+                    Locomotive.SignalEvent(Common.Event.MirelOverspeedOff);
+                    mirelBeeping = false;
+                }
+                if (diff > 7 && Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) > PressureForTestPassBar)
+                {
+                    ApplyNZ2();
+                }
+            }
+
             if ((selectedDriveMode == DriveMode.Normal || recieverState == RecieverState.Off) && selectedDriveMode != DriveMode.Trailing && selectedDriveMode != DriveMode.Shunting && !MirelMini)
             {
                 /* if ((recieverState == RecieverState.Off || !RecievingRepeaterSignal) && MpS.ToKpH(Locomotive.AbsSpeedMpS) > 119.9f)
