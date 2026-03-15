@@ -7775,20 +7775,30 @@ namespace Orts.Simulation.RollingStocks
             float Coef_Power_I = Math.Abs(PowerCurrent1 / MaxCurrentPower * CouplerForceU / 100000);
             float Coef_Brake_I = Math.Abs(BrakeCurrent1 / MaxCurrentBrake * CouplerForceU / 100000);
                                    
-            if (LoadSound_VolumeCoef < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 1f), 1.0f, 2.0f))
-                LoadSound_VolumeCoef += 0.5f * elapsedClockSeconds;
+            if (LoadSound_VolumeCoef_SM < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
+                LoadSound_VolumeCoef_SM += 0.5f * elapsedClockSeconds;
             else
-            if (LoadSound_VolumeCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 1f), 1.0f, 2.0f))
-                LoadSound_VolumeCoef -= 0.1f * elapsedClockSeconds;
+            if (LoadSound_VolumeCoef_SM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
+                LoadSound_VolumeCoef_SM -= 0.1f * elapsedClockSeconds;
 
-            if (LoadSound_FrequencyCoef < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 1f), 1.0f, 2.0f))
+            if (LoadSound_VolumeCoef_TM < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 2f), 1.0f, 1.5f))
+                LoadSound_VolumeCoef_TM += 0.5f * elapsedClockSeconds;
+            else
+            if (LoadSound_VolumeCoef_TM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 2f), 1.0f, 1.5f))
+                LoadSound_VolumeCoef_TM -= 0.1f * elapsedClockSeconds;
+
+            if (LoadSound_FrequencyCoef < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
                 LoadSound_FrequencyCoef += 0.5f * elapsedClockSeconds;
             else
-            if (LoadSound_FrequencyCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 1f), 1.0f, 2.0f))
-                LoadSound_FrequencyCoef -= 0.1f * elapsedClockSeconds;         
+            if (LoadSound_FrequencyCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
+                LoadSound_FrequencyCoef -= 0.1f * elapsedClockSeconds;
 
-            //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef " + LoadSound_VolumeCoef);
-            //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);
+            if (IsLeadLocomotive())
+            {
+                //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef_SM " + LoadSound_VolumeCoef);
+                //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef_TM " + LoadSound_VolumeCoef);
+                //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);
+            }
 
             if (IsPlayerTrain && !Simulator.Paused)
             {

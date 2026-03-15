@@ -202,7 +202,8 @@ namespace Orts.Simulation.RollingStocks
         public int MPFreightWeight;
         public bool JVSetup;
         public bool CarHasElectricHeatingPlug;                
-        public float LoadSound_VolumeCoef = 1.0f;
+        public float LoadSound_VolumeCoef_SM = 1.0f;
+        public float LoadSound_VolumeCoef_TM = 1.0f;
         public float LoadSound_FrequencyCoef = 1.0f;
 
         bool TenderWeightInitialize = true;

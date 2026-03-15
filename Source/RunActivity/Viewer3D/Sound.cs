@@ -1473,15 +1473,13 @@ namespace Orts.Viewer3D
                                     {
                                         if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
                                         {
-                                            goto founIt_f;                                            
+                                            y /= car.LoadSound_FrequencyCoef;
+                                            goto founIt_f;
                                         }
                                     }
-                        }
-                        goto NotfounIt_f;
-                        founIt_f:
-                        y /= car.LoadSound_FrequencyCoef;                        
+                        }                                                                                                
                     }
-                    NotfounIt_f:
+                    founIt_f:
                     ALSoundSource.PlaybackSpeed = y / ALSoundSource.SampleRate;
                     NeedsFrequentUpdate = x != 0;
                 }
@@ -1507,7 +1505,7 @@ namespace Orts.Viewer3D
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
 
-            // Úprava hlasitosti zvuku motorů dle zatížení
+            // Úprava hlasitosti zvuku motorů dle zatížení            
             if (car != null && MSTSStream != null)
             {
                 foreach (var trigger in Triggers)
@@ -1516,18 +1514,21 @@ namespace Orts.Viewer3D
                         foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                             if (name != null)
                             {
-                                if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
+                                if (name.ToLower().Contains("motor"))
                                 {
+                                    volume *= car.LoadSound_VolumeCoef_SM;
                                     goto founIt_v;                                    
                                 }
+                                if (name.Contains("TE") || name.Contains("TM"))
+                                {
+                                    volume *= car.LoadSound_VolumeCoef_TM;
+                                    goto founIt_v;
+                                }
                             }
-                }
-                goto NotfoundIt_v;
-                founIt_v:
-                volume *= car.LoadSound_VolumeCoef;
+                }                                
             }
-            
-            NotfoundIt_v:
+            founIt_v:
+
             if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
             {
                 if (SoundSource.Viewer.Camera.AttachedCar == null || ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent == -1)
