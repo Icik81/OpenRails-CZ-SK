@@ -6170,6 +6170,35 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                #region Postrk vzduchařina
+                // Při úbytku vzduchu v potrubí si postrk sám doplní vzduch, pokud je v hlavní jímce vzduchu dostatek
+                if (!CarHasBrakePipeConnected)
+                {
+                    TrainPipeLeakRatePSIpS = 0.001f * 14.50377f; 
+                    MainResPressurePSI -= TrainPipeLeakRatePSIpS * elapsedClockSeconds * BrakeSystem.BrakePipeVolumeM3 / MainResVolumeM3 / 14.50377f;
+                    if (TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                    {
+                        TrainBrakeController.StartDecrease();
+                        TrainBrakeController.StopDecrease();
+                    }
+                    if (TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
+                    {
+                        TrainBrakeController.StartIncrease();
+                        TrainBrakeController.StopIncrease();
+                    }
+                    if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Release)
+                    {                        
+                        TrainBrakeController.ReleaseRatePSIpS = MathHelper.Clamp(TrainBrakeController.ReleaseRatePSIpS, 0.25f * 14.50377f, 0.5f * 14.50377f);
+                        if (MainResPressurePSI > 0 && BrakeSystem.BrakeLine1PressurePSI < BrakeSystem.maxPressurePSI0)
+                        {
+                            BrakeSystem.BrakeLine1PressurePSI += TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds;
+                            MainResPressurePSI -= TrainBrakeController.ReleaseRatePSIpS * elapsedClockSeconds * BrakeSystem.BrakePipeVolumeM3 / MainResVolumeM3 / 14.50377f; 
+                        }
+                        if (BrakeSystem.BrakeLine1PressurePSI > BrakeSystem.maxPressurePSI0) BrakeSystem.BrakeLine1PressurePSI = BrakeSystem.maxPressurePSI0;
+                    }
+                }
+                #endregion Postrk vzduchařina
+
                 #region Helper DieselEngine Overheating
                 if (this is MSTSDieselLocomotive)
                 {
@@ -6662,14 +6691,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 LocalThrottlePercent = 0;
                 LocalDynamicBrakePercent = -1;
-                ControllerVolts = 0;
-                //if (CruiseControl != null && CruiseControl.Equipped)
-                //{
-                //    CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
-                //    CruiseControl.SelectedSpeedMpS = MpS.FromKpH(0);
-                //    CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Neutral;
-                //    AripotControllerValue[LocoStation] = 0;
-                //}
+                ControllerVolts = 0;                
             }
         }
 
