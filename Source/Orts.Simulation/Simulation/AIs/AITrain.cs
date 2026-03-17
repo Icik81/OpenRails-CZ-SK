@@ -3225,7 +3225,7 @@ namespace Orts.Simulation.AIs
             // Icik
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
-            float DistanceToGoM = distanceToGoM + 0.5f;
+            float DistanceToGoM = distanceToGoM + 0.0f;
             if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;          
             
             bool LocoIsFound = false;
@@ -3457,11 +3457,12 @@ namespace Orts.Simulation.AIs
                             if (distanceToTrain < 100)
                                 maxspeed = Math.Min(maxspeed, 15.0f / 3.6f); // při přiblížení k vlaku pod 100m max 15 km/h
 
+                            smoothDeceleration = false;
                             // set brake or acceleration as required                            
                             if (SpeedMpS > maxspeed)
-                            {                                
+                            {
                                 // Icik
-                                if ((SpeedMpS > maxspeed && SpeedMpS > 15.0f / 3.6f) || SpeedMpS > AllowedMaxSpeedMpS) 
+                                if ((SpeedMpS > maxspeed && SpeedMpS > 15.0f / 3.6f) || SpeedMpS > AllowedMaxSpeedMpS)
                                     AdjustControlsBrakeMore(0.5f * MaxAccelMpSS, elapsedClockSeconds, 10);
                                 else
                                 if (SpeedMpS > 5.0f / 3.6f) // nad 5 km/h plynule zpomaluje
@@ -3896,20 +3897,21 @@ namespace Orts.Simulation.AIs
         /// Train control routines
         /// </summary>
 
-        bool smoothDeceleration;        
+        bool smoothDeceleration;   
+        float TrainLastSpeedMpS;
         public void SmoothDeceleration(float reqDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {            
             if (distanceToGoM < distanceToStartMSlowingDown && Math.Abs(SpeedMpS * 3.6f) > 0.0f)
             {
                 smoothDeceleration = true;                
-                if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < -1) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
+                if ((Math.Abs(SpeedMpS * 3.6f) > speedLimitKpHSlowingDown || distanceToGoM < 0) && AITrainBrakePercent < 100f) AITrainBrakePercent = 100f;
 
-                float RequiredDecceleration = (SpeedMpS * SpeedMpS) / (1.5f * distanceToGoM);
-                                
+                float RequiredDecceleration = (SpeedMpS * SpeedMpS) / (2f * distanceToGoM);                               
+
                 if (Math.Abs(SpeedMpS * 3.6f) > 0.0f && Math.Abs(SpeedMpS * 3.6f) < speedLimitKpHSlowingDown)
                 {
                     // AI plynule začne brzdit
-                    float Deceleration = Math.Abs(AccelerationMpSpS.SmoothedValue);
+                    float Deceleration = Math.Abs((TrainLastSpeedMpS - SpeedMpS) / timeS);
                     if (Deceleration > RequiredDecceleration)
                         AITrainBrakePercent -= 1;
                     if (Deceleration < RequiredDecceleration)
@@ -3917,6 +3919,8 @@ namespace Orts.Simulation.AIs
                 }                
                 else
                     smoothDeceleration = false;
+                
+                TrainLastSpeedMpS = SpeedMpS;
 
                 reqDecelMpSS = reqDecelMpSS * (AITrainBrakePercent / 100f);                
                 float ds = timeS * (reqDecelMpSS);
