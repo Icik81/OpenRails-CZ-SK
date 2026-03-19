@@ -6344,7 +6344,12 @@ namespace Orts.Viewer3D.RollingStock
                             {
                                 p = ChangedValue(0); if (p > 0 && NormalizedMouseMovement() > 0.035f && !IsChanged) { p = 1; IsChanged = true; } if (p < 0 && NormalizedMouseMovement() < -0.035f && !IsChanged) { p = -1; IsChanged = true; }
                                 if (!mpc.StateChanged)
-                                    mpc.StateChanged = true;                                                                                                                               
+                                    mpc.StateChanged = true;
+
+                                if (IsChanged && mpc.controllerBinding != MultiPositionController.ControllerBinding.DynamicBrake)
+                                {
+                                    if (Locomotive.Mirel.Equipped && !Locomotive.Mirel.RecievingRepeaterSignal) Locomotive.Mirel.ResetVigilance();
+                                }
 
                                 if (p == 1)
                                 {

@@ -1349,15 +1349,13 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     case "TrainBrakesControllerApplyStart":
                         {
                             if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
-                            controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;
-                            if (Locomotive.Mirel != null) Locomotive.Mirel.ResetVigilance();
+                            controllerPosition = ControllerPosition.TrainBrakesControllerApplyStart;                            
                         break;
                         }
                     case "TrainBrakesControllerEmergencyStart":
                         {
                             if (ChangePosition) Locomotive.SignalEvent(Common.Event.TrainBrakeChange);
-                            controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;
-                            if (Locomotive.Mirel != null) Locomotive.Mirel.ResetVigilance();
+                            controllerPosition = ControllerPosition.TrainBrakesControllerEmergencyStart;                            
                         break;
                         }
                 }            
