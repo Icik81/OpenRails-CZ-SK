@@ -7793,6 +7793,8 @@ namespace Orts.Simulation.RollingStocks
             if (LoadSound_FrequencyCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
                 LoadSound_FrequencyCoef -= 0.1f * elapsedClockSeconds;
 
+            if (this is MSTSElectricLocomotive) LoadSound_FrequencyCoef = 1;
+
             if (IsLeadLocomotive())
             {
                 //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef_SM " + LoadSound_VolumeCoef);
