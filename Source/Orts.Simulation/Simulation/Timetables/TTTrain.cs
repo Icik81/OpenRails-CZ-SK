@@ -10587,8 +10587,9 @@ namespace Orts.Simulation.Timetables
                 int eightHundredHours = 8 * 3600;
                 int sixteenHundredHours = 16 * 3600;
 
+                StationTasks[ActualStationNumber].ActualDepart = -1;                
+                
                 // if moving, set departed
-                StationTasks[ActualStationNumber].ActualDepart = -1;
                 if (Math.Abs(SpeedMpS) > 1.5f)
                 {                    
                     StationTasks[ActualStationNumber].ActualDepart = presentTime;
@@ -10850,8 +10851,8 @@ namespace Orts.Simulation.Timetables
                         remaining = 999;
                     }
                     else
-                    {
-                        int actualDepart = StationStops[0].ActualDepart;
+                    {                        
+                        int actualDepart = StationStops[0].DepartTime;
                         if (helddepart >= 0)
                         {
                             actualDepart = CompareTimes.LatestTime(helddepart, actualDepart);
