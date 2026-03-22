@@ -304,18 +304,18 @@ namespace Orts.Viewer3D
                 //if (_curTType != _prevTType && _curTType != int.MaxValue)
                 if (_curTType != _prevTType)
                 {
-                    if (_activeInSource != null)
+                    if (_activeInSource != null && _curTType < _inSources.Count)
                     {
                         _activeInSource.Uninitialize();
-                        //_activeInSource.Car = null;
+                        //_activeInSource.Car = null;                        
                         _activeInSource = _inSources[_curTType];
                         //_activeInSource.Car = Car;
                     }
 
-                    if (_activeOutSource != null)
+                    if (_activeOutSource != null && _curTType < _outSources.Count)
                     {
                         _activeOutSource.Uninitialize();
-                        //_activeOutSource.Car = null;
+                        //_activeOutSource.Car = null;                        
                         _activeOutSource = _outSources[_curTType];
                         //_activeOutSource.Car = Car;
                     }
@@ -1462,7 +1462,7 @@ namespace Orts.Viewer3D
                     if (SoundSource.MstsMonoTreatment && ALSoundSource.MstsMonoTreatment)
                         y *= 2;
 
-                    // Úprava hlasitosti zvuku motorů dle zatížení
+                    // Úprava frekvence zvuku motorů dle zatížení
                     if (car != null && MSTSStream != null)
                     {
                         foreach (var trigger in Triggers)
@@ -1504,7 +1504,7 @@ namespace Orts.Viewer3D
 
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
-
+            
             // Úprava hlasitosti zvuku motorů dle zatížení            
             if (car != null && MSTSStream != null)
             {

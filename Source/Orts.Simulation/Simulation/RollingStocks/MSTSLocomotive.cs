@@ -3336,11 +3336,7 @@ namespace Orts.Simulation.RollingStocks
             Train.MasterSlaveUpdateTimer += Simulator.OneSecondLoop;
             if (Train.MasterSlaveUpdateTimer < 0.2f) return;
             Train.MasterSlaveUpdateTimer = 0f;
-
-            Train.MasterCarNumber = -1;
-            Train.SlaveCarNumber1 = -1;
-            Train.SlaveCarNumber2 = -1;
-            Train.SlaveCarNumber3 = -1;
+                
             Train.MasterSlaveCarsFound = false;
             Train.MasterSlaveCanBeSet = false;
             foreach (TrainCar car in Train.Cars)
@@ -3402,6 +3398,8 @@ namespace Orts.Simulation.RollingStocks
                         if (Train.MasterSlaveTestOK) car.MasterLoco = true;
                         break;
                     }
+                    else
+                        Train.MasterLoco = null;
                 }
                 MasterCarNumber++;
             }
@@ -3419,6 +3417,8 @@ namespace Orts.Simulation.RollingStocks
                         if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
+                    else
+                        Train.SlaveLoco1 = null;
                 }
                 SlaveCarNumber1++;
             }
@@ -3436,6 +3436,8 @@ namespace Orts.Simulation.RollingStocks
                         if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
+                    else
+                        Train.SlaveLoco2 = null;
                 }
                 SlaveCarNumber2++;
             }
@@ -3453,10 +3455,16 @@ namespace Orts.Simulation.RollingStocks
                         if (Train.MasterSlaveTestOK) car.SlaveLoco = true;
                         break;
                     }
+                    else
+                        Train.SlaveLoco3 = null;
                 }
                 SlaveCarNumber3++;
             }
 
+            if (Train.MasterLoco == null)
+            {
+                Train.MasterCarNumber = -1;
+            }
             if (Train.SlaveLoco1 == null)
             {
                 Train.SlaveCarNumber1 = -1;
@@ -6882,8 +6890,7 @@ namespace Orts.Simulation.RollingStocks
                                 (car as MSTSWagon).Pantographs.List[3].State = p3.State;
                                 (car as MSTSWagon).Pantographs.List[2].State = p4.State;
                             }
-                        }
-                        break;
+                        }                        
                     }
                 }
 
@@ -7176,7 +7183,7 @@ namespace Orts.Simulation.RollingStocks
                 WheelSpeedMpS = 0;
             if (IsPlayerTrain)
             {
-                if (LocoType == LocoTypes.Vectron && !PantoCommandDown && !SlaveLoco)
+                if (LocoType == LocoTypes.Vectron && !PantoCommandDown)
                     CheckPantos();
                 if (IsPlayerTrain && !Simulator.Paused)
                 {
