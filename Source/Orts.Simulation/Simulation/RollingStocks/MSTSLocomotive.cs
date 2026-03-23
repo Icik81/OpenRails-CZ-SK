@@ -26249,7 +26249,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Precision
-            if (cvc.Precision > 0)
+            if (cvc.Precision > 0 && cvc.Vibration == 0)
             {
                 data = data / cvc.Precision;
                 data = (float)Math.Round(data, 0);
