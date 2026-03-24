@@ -1591,7 +1591,7 @@ namespace Orts.Simulation.RollingStocks
                             case "nocodingls90":
                                 {
                                     Mirel.MirelType = Mirel.Type.LS90;
-                                    Mirel.MirelMini = true;
+                                    Mirel.LS90NoCoding = true;
                                     break;
                                 }
                             default:

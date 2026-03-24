@@ -114,6 +114,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public List<MirelSignal> MirelSignals = new List<MirelSignal>();
         public float PressureForTestPassBar = 4.9f;
         public bool MirelMini;
+        public bool LS90NoCoding;
         public bool[] Ls90StartOk = new bool[3];
         public void Initialize()
         {
@@ -1843,6 +1844,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 RecievingRepeaterSignal = false;
             }
 
+            // LS90NoCoding
+            if (LS90NoCoding)
+            {
+                RecievingRepeaterSignal = false;
+            }
+
             if (selectedDriveMode == DriveMode.Shunting)
             {
                 if (Locomotive.AbsSpeedMpS > 0.01f)
@@ -2084,7 +2091,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (RecievingRepeaterSignal)
                         vigilanceActive = false;
                 }
-                if (MirelType == Type.LS90 && (operationalState == OperationalState.Restricting || recieverState == RecieverState.Off) && Locomotive.AbsSpeedMpS > 0.01f)
+                if (MirelType == Type.LS90 && (operationalState == OperationalState.Restricting || recieverState == RecieverState.Off || LS90NoCoding) && Locomotive.AbsSpeedMpS > 0.01f)
                     vigilanceActive = true;
                 if (vigilanceActive)
                 {
