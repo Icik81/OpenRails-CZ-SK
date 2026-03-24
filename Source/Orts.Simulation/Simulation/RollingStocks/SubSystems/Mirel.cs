@@ -2223,8 +2223,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
+                if (LS90NoCoding) return;
+
                 if (!RecievingRepeaterSignal && selectedDriveMode == DriveMode.Normal)
-                {
+                {                    
                     if (recieverState == RecieverState.Off)
                     {
                         CheckSpeed(elapsedTimeSeconds);
