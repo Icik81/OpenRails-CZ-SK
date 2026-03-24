@@ -1631,9 +1631,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                     if (CheckRPMOverkill || locomotive.TractionSwitchEnable)
                     {
-                        int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;
+                        int CurrentThrottlePercent = (int)locomotive.LocalThrottlePercent;                        
 
                         bool TractionSwitchOverKill = false;
+                        bool TractionOverKill = false;
                         if (locomotive.TractionSwitchEnable)
                         {                            
                             if (locomotive.TractionSwitchPosition[locomotive.LocoStation] == 0 && preThrottlePercent != 0)
@@ -1655,6 +1656,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                                 preThrottlePercent = 0;
                             }
                         }
+
+                        // Při náhlém vypnutí trakce
+                        if (locomotive.PowerReduction > 0) TractionOverKill = true;
 
                         if (!locomotive.TractionSwitchEnable)
                         {
@@ -1718,43 +1722,52 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                             }
                         }
                         // Výpočet nárůstu otáček 
-                        if ((locomotive.PowerCurrent1 > 0 || TractionSwitchOverKill) && CurrentThrottlePercent < preThrottlePercent)
+                        if (locomotive.PowerCurrent1 > 10 && (CurrentThrottlePercent < preThrottlePercent || TractionSwitchOverKill || TractionOverKill))
                         {
-                            preThrottlePercent = CurrentThrottlePercent;
-                            CurrentRPM = RealRPM;
+                            if (!TractionSwitchOverKill && !TractionOverKill)
+                            {
+                                preThrottlePercent = CurrentThrottlePercent;
+                                CurrentRPM = RealRPM;
+                            }
+                            else
+                            if (RegulatorDeltaRPM == 0)
+                                {
+                                    preThrottlePercent = CurrentThrottlePercent;
+                                    CurrentRPM = RealRPM;
+                                }
 
                             if (ElevatedConsumptionMode)
                             {
                                 float ElevatedConsumptionModeDelta = ElevatedConsumptionIdleRPMBase - ThrottleRPMTab[0];
                                 if (RealRPM > 1.309f * (ThrottleRPMTab[locomotive.ThrottlePercent] + ElevatedConsumptionModeDelta) || TractionSwitchOverKill)
                                 {
-                                    if (TractionSwitchOverKill)
+                                    if (TractionSwitchOverKill || TractionOverKill)
                                     {
-                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[0];
+                                        RegulatorDeltaRPM = 50.0f * RealRPM / ThrottleRPMTab[0];
                                     }
                                     else
                                     {
-                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                        RegulatorDeltaRPM = 50.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
                                         //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
                                     }
                                 }
                             }
                             else
                             {
-                                if (RealRPM > 1.309f * ThrottleRPMTab[locomotive.ThrottlePercent] || TractionSwitchOverKill)
+                                if (RealRPM > 1.309f * ThrottleRPMTab[locomotive.ThrottlePercent] || TractionSwitchOverKill || TractionOverKill)
                                 {
-                                    if (TractionSwitchOverKill)
+                                    if (TractionSwitchOverKill || TractionOverKill)
                                     {
-                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[0];
+                                        RegulatorDeltaRPM = 50.0f * RealRPM / ThrottleRPMTab[0];
                                     }
                                     else
                                     {
-                                        RegulatorDeltaRPM = 30.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
+                                        RegulatorDeltaRPM = 50.0f * RealRPM / ThrottleRPMTab[locomotive.ThrottlePercent];
                                         //locomotive.Simulator.Confirmer.MSG("RegulatorDeltaRPM = " + RegulatorDeltaRPM);
                                     }
                                 }
                             }
-                        }
+                        }                        
 
                         // Strmost nárůstu otáček
                         if (locomotive.TractionSwitchEnable)
@@ -1777,7 +1790,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
                         if (!locomotive.TractionSwitchEnable)
                         {
-                            if (((locomotive.PowerCurrent1 == 0) && RegulatorDeltaRPM > 0) || RPMgrowth)
+                            if (((locomotive.PowerCurrent1 == 0 || TractionOverKill) && RegulatorDeltaRPM > 0) || RPMgrowth)
                             {
                                 if (RealRPM < CurrentRPM + RegulatorDeltaRPM)
                                 {
