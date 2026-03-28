@@ -10890,6 +10890,16 @@ namespace Orts.Simulation.Timetables
                             }
                         }
 
+                        // zajistí stop signál na výjezdu ze stanice, pokud vlak zůstává ve stanici déle než 2 minuty a výjezdový signál je nastaven jako hold signál
+                        if (remaining >= 120 && StationStops[0].ExitSignal >= 0 && HoldingSignals.Contains(StationStops[0].ExitSignal)) 
+                        {                            
+                            if (ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
+                            {
+                                SignalObject nextSignal = signalRef.SignalObjects[StationStops[0].ExitSignal];
+                                nextSignal.clearHoldSignalDispatcher();
+                            }
+                        }
+
                         // check departure time
                         if (remaining <= 0)
                         {

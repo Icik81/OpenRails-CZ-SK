@@ -1471,16 +1471,16 @@ namespace Orts.Simulation.RollingStocks
             }           
 
             // Kontrolní žárovka pro dobíjení baterií
-            if (Battery && DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
+            if (Battery && DieselEngines[0].RealRPM > DieselEngines[0].IdleRPM / 2.0f)
                 DieselCheckPowerMotorLamp = false;
             else
-            if (Battery && DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
+            if (Battery && DieselEngines[0].RealRPM < DieselEngines[0].IdleRPM / 2.0f)
                 DieselCheckPowerMotorLamp = true;
             else
-            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].EngineStatus == DieselEngine.Status.Running)
+            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].RealRPM > DieselEngines[1].IdleRPM / 2.0f)
                 DieselCheckPowerMotorLamp2 = false;
             else
-            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].EngineStatus != DieselEngine.Status.Running)
+            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].RealRPM < DieselEngines[1].IdleRPM / 2.0f)
                 DieselCheckPowerMotorLamp2 = true;
             else
             if (!Battery)

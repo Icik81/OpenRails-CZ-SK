@@ -22281,7 +22281,7 @@ namespace Orts.Simulation.RollingStocks
         public float FakeRPM;
         public float FakeRPMSlave;
         public float FakeRPM2;
-        public float FakeRPM2Slave;
+        public float FakeRPM2Slave;        
         public float RPMVibrationTimer;
         float preControllerVolts;
         float ControllerVoltsDetectorTimer;
@@ -23146,11 +23146,8 @@ namespace Orts.Simulation.RollingStocks
 
                                         if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting
                                         || (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPMSlave < 0.99f * FakeRPMBase))
-                                        {
-                                            if (FakeRPMBase < 0.5f * mstsDieselLocomotive.DieselEngines[0].IdleRPM)
-                                                FakeRPMSlave = 0;
-                                            else
-                                            if (FakeRPMSlave < 0.99f * FakeRPMBase)
+                                        {                                            
+                                            if (FakeRPMSlave < 0.99f * FakeRPMBase && FakeRPMBase > 0.5f * mstsDieselLocomotive.DieselEngines[0].IdleRPM)
                                                 FakeRPMSlave += mstsDieselLocomotive.DieselEngines[0].StartingRateOfChangeUpRPMpSS * Simulator.OneSecondLoop;
                                         }
                                         else
@@ -23194,11 +23191,8 @@ namespace Orts.Simulation.RollingStocks
 
                                 if (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Starting
                                 || (mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPM < 0.99f * FakeRPMBase))
-                                {
-                                    if (FakeRPMBase < 0.5f * mstsDieselLocomotive.DieselEngines[0].IdleRPM)
-                                        FakeRPM = 0;
-                                    else
-                                    if (FakeRPM < 0.99f * FakeRPMBase)
+                                {                                                                                                            
+                                    if (FakeRPM < 0.99f * FakeRPMBase && FakeRPMBase > 0.5f * mstsDieselLocomotive.DieselEngines[0].IdleRPM)
                                         FakeRPM += mstsDieselLocomotive.DieselEngines[0].StartingRateOfChangeUpRPMpSS * Simulator.OneSecondLoop;
                                 }
                                 else
@@ -23268,11 +23262,8 @@ namespace Orts.Simulation.RollingStocks
 
                                         if (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Starting
                                         || (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM2Slave < 0.99f * FakeRPMBase))
-                                        {
-                                            if (FakeRPMBase < 0.5f * mstsDieselLocomotive.DieselEngines[1].IdleRPM)
-                                                FakeRPM2Slave = 0;
-                                            else
-                                            if (FakeRPM2Slave < 0.99f * FakeRPMBase)
+                                        {                                            
+                                            if (FakeRPM2Slave < 0.99f * FakeRPMBase && FakeRPMBase > 0.5f * mstsDieselLocomotive.DieselEngines[1].IdleRPM)
                                                 FakeRPM2Slave += mstsDieselLocomotive.DieselEngines[1].StartingRateOfChangeUpRPMpSS * Simulator.OneSecondLoop;
                                         }
                                         else
@@ -23316,11 +23307,8 @@ namespace Orts.Simulation.RollingStocks
 
                                 if (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Starting
                                 || (mstsDieselLocomotive.DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM2 < 0.99f * FakeRPMBase))
-                                {
-                                    if (FakeRPMBase < 0.5f * mstsDieselLocomotive.DieselEngines[1].IdleRPM)
-                                        FakeRPM2 = 0;
-                                    else
-                                    if (FakeRPM2 < 0.99f * FakeRPMBase)
+                                {                                    
+                                    if (FakeRPM2 < 0.99f * FakeRPMBase && FakeRPMBase > 0.5f * mstsDieselLocomotive.DieselEngines[1].IdleRPM)
                                         FakeRPM2 += mstsDieselLocomotive.DieselEngines[1].StartingRateOfChangeUpRPMpSS * Simulator.OneSecondLoop;
                                 }
                                 else
