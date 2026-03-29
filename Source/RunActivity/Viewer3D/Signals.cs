@@ -221,6 +221,7 @@ namespace Orts.Viewer3D
                     if (mstsSignalSubObj.MatrixName.ToLower() == "zavazi"
                         || mstsSignalSubObj.MatrixName.ToLower() == "navest"
                         || mstsSignalSubObj.MatrixName.ToLower() == "head"
+                        || mstsSignalSubObj.MatrixName.ToLower() == "vykol"
                         || mstsSignalSubObj.MatrixName.ToLower() == "main")
                     {
                         IsJunctionPart = true;
