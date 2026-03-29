@@ -1468,19 +1468,47 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 if (CarInitStartSoundOff && Simulator.GameTime > 10.0f) CarInitStartSoundOff = false;
-            }           
+            }
 
             // Kontrolní žárovka pro dobíjení baterií
-            if (Battery && DieselEngines[0].RealRPM > DieselEngines[0].IdleRPM / 2.0f)
+            float CheckMotorLampConstant_0 = 1.01f;                        
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
+                CheckMotorLampConstant_0 = 1.01f;
+            else
+            if (DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
+                CheckMotorLampConstant_0 = 1.45f;
+            else
+            if (DieselCheckPowerMotorLamp && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPM < DieselEngines[0].IdleRPM)
+                CheckMotorLampConstant_0 = 1.01f;
+            else
+            if (!DieselCheckPowerMotorLamp && DieselEngines[0].EngineStatus == DieselEngine.Status.Running && FakeRPM < DieselEngines[0].IdleRPM)
+                CheckMotorLampConstant_0 = 1.45f;
+
+            // Druhý motor, pokud je přítomen
+            float CheckMotorLampConstant_1 = 1.01f;
+            if (DieselEngines.Count > 1 && DieselEngines[1].EngineStatus == DieselEngine.Status.Starting)
+                CheckMotorLampConstant_1 = 1.01f;
+            else
+            if (DieselEngines.Count > 1 && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping)
+                CheckMotorLampConstant_1 = 1.45f;
+            else
+            if (DieselCheckPowerMotorLamp2 && DieselEngines.Count > 1 && DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM2 < DieselEngines[1].IdleRPM)
+                CheckMotorLampConstant_1 = 1.01f;
+            else
+            if (!DieselCheckPowerMotorLamp2 && DieselEngines.Count > 1 && DieselEngines[1].EngineStatus == DieselEngine.Status.Running && FakeRPM2 < DieselEngines[1].IdleRPM)
+                CheckMotorLampConstant_1 = 1.45f;
+
+            // Kontrolní žárovka pro dobíjení baterií
+            if (Battery && FakeRPM > DieselEngines[0].IdleRPM / CheckMotorLampConstant_0)
                 DieselCheckPowerMotorLamp = false;
             else
-            if (Battery && DieselEngines[0].RealRPM < DieselEngines[0].IdleRPM / 2.0f)
+            if (Battery && FakeRPM < DieselEngines[0].IdleRPM / CheckMotorLampConstant_0)
                 DieselCheckPowerMotorLamp = true;
             else
-            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].RealRPM > DieselEngines[1].IdleRPM / 2.0f)
+            if (DieselEngines.Count > 1 && Battery && FakeRPM2 > DieselEngines[1].IdleRPM / CheckMotorLampConstant_1)
                 DieselCheckPowerMotorLamp2 = false;
             else
-            if (DieselEngines.Count > 1 && Battery && DieselEngines[1].RealRPM < DieselEngines[1].IdleRPM / 2.0f)
+            if (DieselEngines.Count > 1 && Battery && FakeRPM2 < DieselEngines[1].IdleRPM / CheckMotorLampConstant_1)
                 DieselCheckPowerMotorLamp2 = true;
             else
             if (!Battery)
@@ -1603,7 +1631,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Předčasně uvolněné stop tlačítko
-            if (Battery && DERunningStatus && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
+            if (Battery && DERunningStatus && DieselEngines[0].RealRPM > 100 && DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed && !DieselEngines[0].OnePushStop)
             {
                 DieselEngines.DieselEngine1 = true;
                 DieselEngines.DieselEngine2 = false;
@@ -1666,7 +1694,7 @@ namespace Orts.Simulation.RollingStocks
                     DERunningStatus2 = false;
 
                 // Předčasně uvolněné stop tlačítko
-                if (Battery && DERunningStatus2 && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed2 && !DieselEngines[1].OnePushStop)
+                if (Battery && DERunningStatus2 && DieselEngines[1].RealRPM > 100 && DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping && !StopButtonPressed2 && !DieselEngines[1].OnePushStop)
                 {
                     DieselEngines.DieselEngine1 = false;
                     DieselEngines.DieselEngine2 = true;
