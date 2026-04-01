@@ -439,7 +439,26 @@ namespace Orts.Common
         MPCDynamicBrakeDecrease,
         MPCTrainBrakesControllerApplyStart,
         HeatingIn,
-        HeatingOut
+        HeatingOut,
+        ShunterSound_Start,
+        ShunterSound_250,
+        ShunterSound_200,
+        ShunterSound_150,
+        ShunterSound_100,
+        ShunterSound_80,
+        ShunterSound_50,
+        ShunterSound_30,
+        ShunterSound_20,
+        ShunterSound_15,
+        ShunterSound_10,
+        ShunterSound_Slow,
+        ShunterSound_5,
+        ShunterSound_4,
+        ShunterSound_3,
+        ShunterSound_2,
+        ShunterSound_1,
+        ShunterSound_Slowly,
+        ShunterSound_Done,
     }
 
     public static class Events
@@ -893,6 +912,28 @@ namespace Orts.Common
                         case 20192: return Event.MPCTrainBrakesControllerApplyStart;
                         case 20193: return Event.HeatingIn;
                         case 20194: return Event.HeatingOut;
+                        // Shunter
+                        case 20200: return Event.ShunterSound_Start;
+                        case 20205: return Event.ShunterSound_250;
+                        case 20210: return Event.ShunterSound_200;
+                        case 20215: return Event.ShunterSound_150;
+                        case 20220: return Event.ShunterSound_100;
+                        case 20225: return Event.ShunterSound_80;
+                        case 20230: return Event.ShunterSound_50;
+                        case 20235: return Event.ShunterSound_30;
+                        case 20240: return Event.ShunterSound_20;
+                        case 20245: return Event.ShunterSound_15;
+                        case 20250: return Event.ShunterSound_10;
+                        case 20255: return Event.ShunterSound_Slow;
+                        case 20260: return Event.ShunterSound_5;
+                        case 20265: return Event.ShunterSound_4;
+                        case 20270: return Event.ShunterSound_3;
+                        case 20275: return Event.ShunterSound_2;
+                        case 20280: return Event.ShunterSound_1;
+                        case 20285: return Event.ShunterSound_Slowly;
+                        case 20290: return Event.ShunterSound_Done;
+                         
+
 
                         default: return 0;
                     }

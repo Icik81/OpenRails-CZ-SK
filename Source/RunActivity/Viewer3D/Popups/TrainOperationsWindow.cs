@@ -26,6 +26,7 @@ using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using System;
 using System.Linq;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -101,8 +102,15 @@ namespace Orts.Viewer3D.Popups
                 scrollbox.Add(new TrainOperationsInfo(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
                 scrollbox.AddHorizontalSeparator();
                 scrollbox.Add(new TrainOperationsBrakePercent(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center));
+                scrollbox.AddHorizontalSeparator();                                
+                
+                var ShunterLabel = new TrainOperationsShunter(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
+                scrollbox.Add(ShunterLabel);                
+                ShunterLabel.Click += new Action<Control, Point>(ShunterLabel_Click);                
                 scrollbox.AddHorizontalSeparator();
 
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
                 scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
@@ -162,6 +170,12 @@ namespace Orts.Viewer3D.Popups
 
         }
 
+        void ShunterLabel_Click(Control arg1, Point arg2)
+        {
+            Owner.Viewer.Simulator.ShunterEnable = !Owner.Viewer.Simulator.ShunterEnable;
+            Owner.Viewer.Simulator.ShunterEnableChanged = true;
+        }
+
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
         {
             base.PrepareFrame(elapsedTime, updateFull);
@@ -177,11 +191,13 @@ namespace Orts.Viewer3D.Popups
                     || Owner.Viewer.Simulator.ScreenSizeY != Owner.ScreenSize.Y
                     || Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange
                     || Owner.Viewer.Simulator.CarPositionChanged
+                    || Owner.Viewer.Simulator.ShunterEnableChanged
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
                     Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange = false;
                     Owner.Viewer.Simulator.CarPositionChanged = false;
+                    Owner.Viewer.Simulator.ShunterEnableChanged = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
@@ -353,6 +369,36 @@ namespace Orts.Viewer3D.Popups
             
             Text = Viewer.Catalog.GetString("Real braking percentages") + " " + (int)PlayerTrain.PlayerTrainBrakePercent + " %";                
             Color = Color.Yellow;
+        }
+    }
+
+    class TrainOperationsShunter : Label
+    {
+        readonly Viewer Viewer;
+
+        public TrainOperationsShunter(int x, int y, Viewer viewer, LabelAlignment alignment)
+            : base(x, y, "", alignment)
+        {
+            Viewer = viewer;
+            Train PlayerTrain = Viewer.PlayerTrain;
+            if (Viewer.Simulator.ShunterEnable)
+            {
+                if (Viewer.Simulator.CabRadioOn)
+                {
+                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is ON)");
+                    Color = Color.GreenYellow;
+                }
+                else
+                {
+                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is OFF)");
+                    Color = Color.YellowGreen;
+                }
+            }
+            else
+            {
+                Text = Viewer.Catalog.GetString("Shunter deactivated");
+                Color = Color.White;
+            }
         }
     }
 

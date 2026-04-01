@@ -309,7 +309,10 @@ namespace Orts.Simulation
         public bool FatalIncident;
         public bool FatalIncidentInfo;
         public bool NotFatalIncident;        
-        public bool CabItemBatterieOn;        
+        public bool CabItemBatterieOn;
+        public bool ShunterEnable;
+        public bool ShunterEnableChanged;
+        public bool CabRadioOn;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -687,6 +690,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            ShunterEnable = inf.ReadBoolean();
             FatalIncident = inf.ReadBoolean();
             NotFatalIncident = inf.ReadBoolean();
             GroundLevelFinal = inf.ReadSingle();
@@ -741,6 +745,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(ShunterEnable);
             outf.Write(FatalIncident);
             outf.Write(NotFatalIncident);
             outf.Write(GroundLevelFinal);

@@ -7889,6 +7889,7 @@ namespace Orts.Simulation.RollingStocks
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
                 ThunderSound();
+                ShunterSound(elapsedClockSeconds);
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -7907,6 +7908,11 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = false;
                 Simulator.GameWasRestored = false;
                 Simulator.ChangeCabActivated = false;
+
+                if (IsLeadLocomotive())
+                {
+                    Simulator.CabRadioOn = CabRadio[LocoStation];
+                }
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -12410,6 +12416,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 //if (CabRadioTriggerOn)
                 SignalEvent(Event.CabRadioOff);
+                if (CabRadioTriggerOn) Simulator.ShunterEnableChanged = true;
                 CabRadioTriggerOn = false;
                 CabRadio[LocoStation] = false;
             }
@@ -12417,6 +12424,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (!CabRadioTriggerOn)
                     SignalEvent(Event.CabRadioOn);
+                if (!CabRadioTriggerOn) Simulator.ShunterEnableChanged = true;
                 CabRadioTriggerOn = true;
             }
         }
@@ -12534,6 +12542,190 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+
+        float ShunterTimeWithOutRadio;
+        bool ShunterSoundStartPlayed;
+        bool ShunterSound250Played;
+        bool ShunterSound200Played;
+        bool ShunterSound150Played;
+        bool ShunterSound100Played;
+        bool ShunterSound80Played;
+        bool ShunterSound50Played;
+        bool ShunterSound30Played;
+        bool ShunterSound20Played;
+        bool ShunterSound15Played;
+        bool ShunterSound10Played;
+        bool ShunterSoundSlowPlayed;
+        bool ShunterSound5Played;
+        bool ShunterSound4Played;
+        bool ShunterSound3Played;
+        bool ShunterSound2Played;
+        bool ShunterSound1Played;
+        bool ShunterSoundSlowlyPlayed;
+        bool ShunterSoundDonePlayed;
+
+        public void ShunterSoundReset()
+        {            
+            ShunterSound250Played = false;
+            ShunterSound200Played = false;
+            ShunterSound150Played = false;
+            ShunterSound100Played = false;
+            ShunterSound80Played = false;
+            ShunterSound50Played = false;
+            ShunterSound30Played = false;
+            ShunterSound20Played = false;
+            ShunterSound15Played = false;
+            ShunterSound10Played = false;
+            ShunterSoundSlowPlayed = false;
+            ShunterSound5Played = false;
+            ShunterSound4Played = false;
+            ShunterSound3Played = false;
+            ShunterSound2Played = false;
+            ShunterSound1Played = false;
+            ShunterSoundSlowlyPlayed = false;
+            ShunterSoundDonePlayed = false;
+        }
+
+        public void ShunterSound(float elapsedSeconds)
+        {
+            if (!IsLeadLocomotive()) return;
+
+            bool TRAINAHEAD_Mode;
+            float DistanceToOtherTrain = -1000;
+            if (Simulator.ShunterEnable)
+            {
+                TRAINAHEAD_Mode = Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;
+                DistanceToOtherTrain = Train.DistanceToEndNodeAuthorityM[0];
+
+                if (!Simulator.CabRadioOn && TRAINAHEAD_Mode)
+                {
+                    ShunterTimeWithOutRadio += elapsedSeconds;
+                    if (ShunterTimeWithOutRadio > 30f) // Po 30 sekundách bez rádia se zobrazí hláška upozornění posunovačem, že by rádio mělo být zapnuté
+                    {
+                        ShunterTimeWithOutRadio = 0;
+                        Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Cab radio should be on!"));
+                    }
+                }
+                else
+                    ShunterTimeWithOutRadio = 0;                
+
+                #region ShunterSound
+                if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
+                {
+                    if (AbsSpeedMpS < 0.01f)
+                    {
+                        if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
+                        ShunterSoundStartPlayed = true;
+                    }
+                    else
+                        ShunterSoundStartPlayed = true;
+
+                    switch (DistanceToOtherTrain)
+                    {
+                        case float n when (n > 250):
+                            ShunterSoundReset();
+                            break;
+                        case float n when (n < 250 && n > 200):
+                            if (!ShunterSound250Played) SignalEvent(Event.ShunterSound_250);
+                            ShunterSound250Played = true;
+                            ShunterSound200Played = false;
+                            break;
+                        case float n when (n < 200 && n > 150):
+                            if (!ShunterSound200Played) SignalEvent(Event.ShunterSound_200);
+                            ShunterSound200Played = true;
+                            ShunterSound150Played = false;
+                            break;
+                        case float n when (n < 150 && n > 100):
+                            if (!ShunterSound150Played) SignalEvent(Event.ShunterSound_150);
+                            ShunterSound150Played = true;
+                            ShunterSound100Played = false;
+                            break;
+                        case float n when (n < 100 && n > 80):
+                            if (!ShunterSound100Played) SignalEvent(Event.ShunterSound_100);
+                            ShunterSound100Played = true;
+                            ShunterSound80Played = false;
+                            break;
+                        case float n when (n < 80 && n > 50):
+                            if (!ShunterSound80Played) SignalEvent(Event.ShunterSound_80);
+                            ShunterSound80Played = true;
+                            ShunterSound50Played = false;
+                            break;
+                        case float n when (n < 50 && n > 30):
+                            if (!ShunterSound50Played) SignalEvent(Event.ShunterSound_50);
+                            ShunterSound50Played = true;
+                            ShunterSound30Played = false;
+                            break;
+                        case float n when (n < 30 && n > 20):
+                            if (!ShunterSound30Played) SignalEvent(Event.ShunterSound_30);
+                            ShunterSound30Played = true;
+                            ShunterSound20Played = false;
+                            break;
+                        case float n when (n < 20 && n > 15):
+                            if (!ShunterSound20Played) SignalEvent(Event.ShunterSound_20);
+                            ShunterSound20Played = true;
+                            ShunterSound15Played = false;
+                            break;
+                        case float n when (n < 15 && n > 10):
+                            if (!ShunterSound15Played) SignalEvent(Event.ShunterSound_15);
+                            ShunterSound15Played = true;
+                            ShunterSound10Played = false;
+                            break;
+                        case float n when (n < 10 && n > 8):
+                            if (!ShunterSound10Played) SignalEvent(Event.ShunterSound_10);
+                            ShunterSound10Played = true;
+                            ShunterSoundSlowPlayed = false;
+                            break;
+                        case float n when (n < 8 && n > 5):
+                            if (!ShunterSoundSlowPlayed) SignalEvent(Event.ShunterSound_Slow);
+                            ShunterSoundSlowPlayed = true;
+                            ShunterSound5Played = false;
+                            break;
+                        case float n when (n < 5 && n > 4):
+                            if (!ShunterSound5Played) SignalEvent(Event.ShunterSound_5);
+                            ShunterSound5Played = true;
+                            ShunterSound4Played = false;
+                            break;
+                        case float n when (n < 4 && n > 3):
+                            if (!ShunterSound4Played) SignalEvent(Event.ShunterSound_4);
+                            ShunterSound4Played = true;
+                            ShunterSound3Played = false;
+                            break;
+                        case float n when (n < 3 && n > 2):
+                            if (!ShunterSound3Played) SignalEvent(Event.ShunterSound_3);
+                            ShunterSound3Played = true;
+                            ShunterSound2Played = false;
+                            break;
+                        case float n when (n < 2 && n > 1):
+                            if (!ShunterSound2Played) SignalEvent(Event.ShunterSound_2);
+                            ShunterSound2Played = true;
+                            ShunterSound1Played = false;
+                            break;
+                        case float n when (n < 1 && n > 0.5f):
+                            if (!ShunterSound1Played) SignalEvent(Event.ShunterSound_1);
+                            ShunterSound1Played = true;
+                            ShunterSoundSlowlyPlayed = false;
+                            break;
+                        case float n when (n < 0.5f && n > 0):
+                            if (!ShunterSoundSlowlyPlayed) SignalEvent(Event.ShunterSound_Slowly);
+                            ShunterSoundSlowlyPlayed = true;
+                            ShunterSoundDonePlayed = false;
+                            break;
+                        case float n when (n < 0):
+                            if (!ShunterSoundDonePlayed) SignalEvent(Event.ShunterSound_Done);
+                            ShunterSoundDonePlayed = true;
+                            break;
+                    }
+                }
+                #endregion ShunterSound
+            }
+            else
+            {
+                ShunterSoundReset();
+                ShunterSoundStartPlayed = false;
+            }
+        }
+
+
         float ThunderSoundTimerOn;
         float ThunderSoundTimerOff;
         float ThunderSoundTime;
