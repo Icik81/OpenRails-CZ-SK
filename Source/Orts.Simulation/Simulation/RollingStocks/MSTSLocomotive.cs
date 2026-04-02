@@ -12563,6 +12563,8 @@ namespace Orts.Simulation.RollingStocks
         bool ShunterSound1Played;
         bool ShunterSoundSlowlyPlayed;
         bool ShunterSoundDonePlayed;
+        float ShunterTimer;
+        bool ShunterSoundOff;
 
         public void ShunterSoundReset()
         {            
@@ -12584,6 +12586,7 @@ namespace Orts.Simulation.RollingStocks
             ShunterSound1Played = false;
             ShunterSoundSlowlyPlayed = false;
             ShunterSoundDonePlayed = false;
+            ShunterTimer = 0;
         }
 
         public void ShunterSound(float elapsedSeconds)
@@ -12612,7 +12615,8 @@ namespace Orts.Simulation.RollingStocks
                 #region ShunterSound
                 if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
                 {
-                    if (AbsSpeedMpS < 0.01f)
+                    // První hláška posunovače
+                    if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 1)
                     {
                         if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
                         ShunterSoundStartPlayed = true;
@@ -12620,100 +12624,129 @@ namespace Orts.Simulation.RollingStocks
                     else
                         ShunterSoundStartPlayed = true;
 
-                    switch (DistanceToOtherTrain)
+                    // Hláška "Posunuj" obecná
+                    if (AbsSpeedMpS > 10f / 3.6f)
                     {
-                        case float n when (n > 250):
-                            ShunterSoundReset();
-                            break;
-                        case float n when (n < 250 && n > 200):
-                            if (!ShunterSound250Played) SignalEvent(Event.ShunterSound_250);
-                            ShunterSound250Played = true;
-                            ShunterSound200Played = false;
-                            break;
-                        case float n when (n < 200 && n > 150):
-                            if (!ShunterSound200Played) SignalEvent(Event.ShunterSound_200);
-                            ShunterSound200Played = true;
-                            ShunterSound150Played = false;
-                            break;
-                        case float n when (n < 150 && n > 100):
-                            if (!ShunterSound150Played) SignalEvent(Event.ShunterSound_150);
-                            ShunterSound150Played = true;
-                            ShunterSound100Played = false;
-                            break;
-                        case float n when (n < 100 && n > 80):
-                            if (!ShunterSound100Played) SignalEvent(Event.ShunterSound_100);
-                            ShunterSound100Played = true;
-                            ShunterSound80Played = false;
-                            break;
-                        case float n when (n < 80 && n > 50):
-                            if (!ShunterSound80Played) SignalEvent(Event.ShunterSound_80);
-                            ShunterSound80Played = true;
-                            ShunterSound50Played = false;
-                            break;
-                        case float n when (n < 50 && n > 30):
-                            if (!ShunterSound50Played) SignalEvent(Event.ShunterSound_50);
-                            ShunterSound50Played = true;
-                            ShunterSound30Played = false;
-                            break;
-                        case float n when (n < 30 && n > 20):
-                            if (!ShunterSound30Played) SignalEvent(Event.ShunterSound_30);
-                            ShunterSound30Played = true;
-                            ShunterSound20Played = false;
-                            break;
-                        case float n when (n < 20 && n > 15):
-                            if (!ShunterSound20Played) SignalEvent(Event.ShunterSound_20);
-                            ShunterSound20Played = true;
-                            ShunterSound15Played = false;
-                            break;
-                        case float n when (n < 15 && n > 10):
-                            if (!ShunterSound15Played) SignalEvent(Event.ShunterSound_15);
-                            ShunterSound15Played = true;
-                            ShunterSound10Played = false;
-                            break;
-                        case float n when (n < 10 && n > 8):
-                            if (!ShunterSound10Played) SignalEvent(Event.ShunterSound_10);
-                            ShunterSound10Played = true;
-                            ShunterSoundSlowPlayed = false;
-                            break;
-                        case float n when (n < 8 && n > 5):
-                            if (!ShunterSoundSlowPlayed) SignalEvent(Event.ShunterSound_Slow);
-                            ShunterSoundSlowPlayed = true;
-                            ShunterSound5Played = false;
-                            break;
-                        case float n when (n < 5 && n > 4):
-                            if (!ShunterSound5Played) SignalEvent(Event.ShunterSound_5);
-                            ShunterSound5Played = true;
-                            ShunterSound4Played = false;
-                            break;
-                        case float n when (n < 4 && n > 3):
-                            if (!ShunterSound4Played) SignalEvent(Event.ShunterSound_4);
-                            ShunterSound4Played = true;
-                            ShunterSound3Played = false;
-                            break;
-                        case float n when (n < 3 && n > 2):
-                            if (!ShunterSound3Played) SignalEvent(Event.ShunterSound_3);
-                            ShunterSound3Played = true;
-                            ShunterSound2Played = false;
-                            break;
-                        case float n when (n < 2 && n > 1):
-                            if (!ShunterSound2Played) SignalEvent(Event.ShunterSound_2);
-                            ShunterSound2Played = true;
-                            ShunterSound1Played = false;
-                            break;
-                        case float n when (n < 1 && n > 0.5f):
-                            if (!ShunterSound1Played) SignalEvent(Event.ShunterSound_1);
-                            ShunterSound1Played = true;
-                            ShunterSoundSlowlyPlayed = false;
-                            break;
-                        case float n when (n < 0.5f && n > 0):
-                            if (!ShunterSoundSlowlyPlayed) SignalEvent(Event.ShunterSound_Slowly);
-                            ShunterSoundSlowlyPlayed = true;
-                            ShunterSoundDonePlayed = false;
-                            break;
-                        case float n when (n < 0):
-                            if (!ShunterSoundDonePlayed) SignalEvent(Event.ShunterSound_Done);
-                            ShunterSoundDonePlayed = true;
-                            break;
+                        bool DistanceToOtherTrainIsValid = false;
+                        DistanceToOtherTrainIsValid = 
+                            (DistanceToOtherTrain > 220 && DistanceToOtherTrain > 230)
+                            || (DistanceToOtherTrain > 170 && DistanceToOtherTrain < 180)
+                            || (DistanceToOtherTrain > 120 && DistanceToOtherTrain < 130)
+                            || (DistanceToOtherTrain > 60 && DistanceToOtherTrain < 70)
+                            || (DistanceToOtherTrain > 40 && DistanceToOtherTrain < 45)
+                            || (DistanceToOtherTrain > 25 && DistanceToOtherTrain < 28);
+
+                        ShunterTimer += elapsedSeconds;
+                        if (!ShunterSoundOff && ShunterTimer > 10 && DistanceToOtherTrainIsValid)
+                        {
+                            ShunterSoundOff = true;
+                            ShunterTimer = 0;
+                            SignalEvent(Event.ShunterSound_Shunt);
+                        }  
+                        else
+                            ShunterSoundOff = false;
+                    }
+                    else
+                        ShunterSoundOff = false;
+                    
+                    // Odměřovací hlášky posunovače podle vzdálenosti od jiného vlaku
+                    if (!ShunterSoundOff)
+                    {
+                        switch (DistanceToOtherTrain)
+                        {
+                            case float n when (n > 253):
+                                ShunterSoundReset();
+                                break;
+                            case float n when (n < 253 && n > 200):
+                                if (!ShunterSound250Played) SignalEvent(Event.ShunterSound_250);
+                                ShunterSound250Played = true;
+                                ShunterSound200Played = false;
+                                break;
+                            case float n when (n < 203 && n > 150):
+                                if (!ShunterSound200Played) SignalEvent(Event.ShunterSound_200);
+                                ShunterSound200Played = true;
+                                ShunterSound150Played = false;
+                                break;
+                            case float n when (n < 153 && n > 100):
+                                if (!ShunterSound150Played) SignalEvent(Event.ShunterSound_150);
+                                ShunterSound150Played = true;
+                                ShunterSound100Played = false;
+                                break;
+                            case float n when (n < 103 && n > 80):
+                                if (!ShunterSound100Played) SignalEvent(Event.ShunterSound_100);
+                                ShunterSound100Played = true;
+                                ShunterSound80Played = false;
+                                break;
+                            case float n when (n < 83 && n > 50):
+                                if (!ShunterSound80Played) SignalEvent(Event.ShunterSound_80);
+                                ShunterSound80Played = true;
+                                ShunterSound50Played = false;
+                                break;
+                            case float n when (n < 53 && n > 30):
+                                if (!ShunterSound50Played) SignalEvent(Event.ShunterSound_50);
+                                ShunterSound50Played = true;
+                                ShunterSound30Played = false;
+                                break;
+                            case float n when (n < 33 && n > 20):
+                                if (!ShunterSound30Played) SignalEvent(Event.ShunterSound_30);
+                                ShunterSound30Played = true;
+                                ShunterSound20Played = false;
+                                break;
+                            case float n when (n < 23 && n > 15):
+                                if (!ShunterSound20Played) SignalEvent(Event.ShunterSound_20);
+                                ShunterSound20Played = true;
+                                ShunterSound15Played = false;
+                                break;
+                            case float n when (n < 17 && n > 10):
+                                if (!ShunterSound15Played) SignalEvent(Event.ShunterSound_15);
+                                ShunterSound15Played = true;
+                                ShunterSound10Played = false;
+                                break;
+                            case float n when (n < 12 && n > 8):
+                                if (!ShunterSound10Played) SignalEvent(Event.ShunterSound_10);
+                                ShunterSound10Played = true;
+                                ShunterSoundSlowPlayed = false;
+                                break;
+                            case float n when (n < 8 && n > 5):
+                                if (!ShunterSoundSlowPlayed) SignalEvent(Event.ShunterSound_Slow);
+                                ShunterSoundSlowPlayed = true;
+                                ShunterSound5Played = false;
+                                break;
+                            case float n when (n < 6 && n > 4):
+                                if (!ShunterSound5Played) SignalEvent(Event.ShunterSound_5);
+                                ShunterSound5Played = true;
+                                ShunterSound4Played = false;
+                                break;
+                            case float n when (n < 5 && n > 3):
+                                if (!ShunterSound4Played) SignalEvent(Event.ShunterSound_4);
+                                ShunterSound4Played = true;
+                                ShunterSound3Played = false;
+                                break;
+                            case float n when (n < 4 && n > 2):
+                                if (!ShunterSound3Played) SignalEvent(Event.ShunterSound_3);
+                                ShunterSound3Played = true;
+                                ShunterSound2Played = false;
+                                break;
+                            case float n when (n < 3 && n > 1):
+                                if (!ShunterSound2Played) SignalEvent(Event.ShunterSound_2);
+                                ShunterSound2Played = true;
+                                ShunterSound1Played = false;
+                                break;
+                            case float n when (n < 2 && n > 0.5f):
+                                if (!ShunterSound1Played) SignalEvent(Event.ShunterSound_1);
+                                ShunterSound1Played = true;
+                                ShunterSoundSlowlyPlayed = false;
+                                break;
+                            case float n when (n < 1 && n > 0):
+                                if (!ShunterSoundSlowlyPlayed) SignalEvent(Event.ShunterSound_Slowly);
+                                ShunterSoundSlowlyPlayed = true;
+                                ShunterSoundDonePlayed = false;
+                                break;
+                            case float n when (n <= 0):
+                                if (!ShunterSoundDonePlayed) SignalEvent(Event.ShunterSound_Done);
+                                ShunterSoundDonePlayed = true;
+                                break;
+                        }
                     }
                 }
                 #endregion ShunterSound

@@ -1318,7 +1318,7 @@ namespace Orts.Viewer3D.RollingStock
                     {
                         smsGenericFilePath = "..\\Content\\ActivitySound\\AmbientSound.sms";
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
-                        smsGenericFilePath = "..\\Content\\ActivitySound\\ShunterSound.sms";
+                        smsGenericFilePath = "..\\Content\\ShunterSound\\ShunterSound.sms";
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                     }                    
 

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-02-28 14:29:11+0100\n"
-"PO-Revision-Date: 2026-02-28 14:29:11+0100\n"
+"POT-Creation-Date: 2026-04-02 20:44:26+0200\n"
+"PO-Revision-Date: 2026-04-02 20:44:26+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -610,12 +610,12 @@ msgstr ""
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:61
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:64
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:282
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:285
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:287
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:292
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:295
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:297
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:298
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:301
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:303
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:308
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:311
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:313
 msgid "Car ID"
 msgstr ""
 
@@ -1572,7 +1572,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:569
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:613
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:336
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:352
 msgid "Length"
 msgstr ""
 
@@ -2143,7 +2143,7 @@ msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1530
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1560
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:337
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:353
 msgid "Mass"
 msgstr ""
 
@@ -3303,20 +3303,32 @@ msgstr ""
 msgid "Player train can't be switched when in turntable not aligned to a track"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:53
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:54
 msgid "Train Operations"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:228
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:244
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:338
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:354
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:354
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:370
 msgid "Real braking percentages"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:388
+msgid "Shunter activated (Radio is ON)"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:393
+msgid "Shunter activated (Radio is OFF)"
+msgstr ""
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:399
+msgid "Shunter deactivated"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:42

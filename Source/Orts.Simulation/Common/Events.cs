@@ -459,6 +459,7 @@ namespace Orts.Common
         ShunterSound_1,
         ShunterSound_Slowly,
         ShunterSound_Done,
+        ShunterSound_Shunt,
     }
 
     public static class Events
@@ -932,7 +933,8 @@ namespace Orts.Common
                         case 20280: return Event.ShunterSound_1;
                         case 20285: return Event.ShunterSound_Slowly;
                         case 20290: return Event.ShunterSound_Done;
-                         
+                        case 20295: return Event.ShunterSound_Shunt;
+
 
 
                         default: return 0;
