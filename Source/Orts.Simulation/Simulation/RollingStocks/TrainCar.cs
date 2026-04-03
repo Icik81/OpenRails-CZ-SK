@@ -3850,7 +3850,10 @@ namespace Orts.Simulation.RollingStocks
         float RandomVibrationDirectionX;
         float RandomVibrationDirectionY;
         float VibrationXYTimer;
-        float VibrationXYTime;        
+        float VibrationXYTime;
+        bool VibrationCurveToStraight;
+        float VibrationCurveToStraightY;
+        float VibrationCurveToStraightZ;
         private void AddVibrations(float factor, float elapsedTimeS)
         {            
             if (Train.NoSpeedLimit) return;
@@ -3960,8 +3963,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                     if (VibrationXYTimer > VibrationXYTime)
                         VibrationXYTimer = 0;
-                }
-
+                }                
+            
                 //Vibrace náhodné nerovnosti
                 if ((VibrationType_1 || CarIsOnLvlCrossover) && AbsSpeedMpS > 0.1f)   //Vibrace na spojích, dle vzdálenosti
                 {
@@ -4055,21 +4058,37 @@ namespace Orts.Simulation.RollingStocks
 
                 if (VibrationType_2 && AbsSpeedMpS > 0.1f)   //Vibrace v oblouku
                 {
-                    float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 0, 3);
+                    float forceF = MathHelper.Clamp(Math.Abs(CurrentCurveAngle) / MathHelper.Clamp(Math.Abs(CurrentCurveRadius) / 200f, 1, 10), 1, 3);
                     force = (int)forceF;
 
                     VibratioDampingCoefficient = 0.05f;
                     if (CurrentCurveAngle > 0)
                     {
-                        VibrationRotationVelocityRadpS.Y -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
-                        VibrationRotationVelocityRadpS.Z -= (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
+                        if (!VibrationCurveToStraight)
+                        {
+                            VibrationCurveToStraightY = (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 2f * VibrationMassKG) / x;
+                            VibrationCurveToStraightZ = (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1f * VibrationMassKG) / x;
+                            VibrationCurveToStraight = true;
+                        }
                     }
                     else
+                    if (CurrentCurveAngle < 0)
                     {
-                        VibrationRotationVelocityRadpS.Y += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
-                        VibrationRotationVelocityRadpS.Z += (TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 0.65f * VibrationMassKG) / x;
+                        if (!VibrationCurveToStraight)
+                        {
+                            VibrationCurveToStraightY = -((TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 2f * VibrationMassKG) / x);
+                            VibrationCurveToStraightZ = -((TrackFactorY * factor * Simulator.Settings.CarVibratingLevel * VibrationIntroductionStrength * force * 1f * VibrationMassKG) / x);
+                            VibrationCurveToStraight = true;
+                        }
                     }
-                    //Simulator.Confirmer.Information("VibrationRotationVelocityRadpS.Y " + VibrationRotationVelocityRadpS.Y);
+                    else
+                    if (VibrationCurveToStraight)
+                    {
+                        VibrationRotationVelocityRadpS.Y += VibrationCurveToStraightY;
+                        VibrationRotationVelocityRadpS.Z += VibrationCurveToStraightZ;
+                        VibrationCurveToStraight = false;
+                    }
+                    //Simulator.Confirmer.Information("VibrationCurveToStraightY " + VibrationCurveToStraightY + "   force: " + force);
                 }
 
                 float ActivateVibrationTime3 = AbsSpeedMpS == 0 ? 0 : ((1.0f / (AbsSpeedMpS * 3.6f)) * 30f);

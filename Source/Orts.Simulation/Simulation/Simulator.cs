@@ -313,6 +313,8 @@ namespace Orts.Simulation
         public bool ShunterEnable;
         public bool ShunterEnableChanged;
         public bool CabRadioOn;
+        public float DistanceToOtherTrain;
+        public float DistanceToReverse;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

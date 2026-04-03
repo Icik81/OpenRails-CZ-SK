@@ -12570,8 +12570,7 @@ namespace Orts.Simulation.RollingStocks
         float ShunterTimer;
         bool ShunterSoundOff;
         float LastDistanceToOtherTrain;
-        float LastDistanceToReverseTrain;
-
+        float LastDistanceToReverseTrain;        
         public void ShunterSoundToTrainReset()
         {            
             ShunterSound250Played = false;
@@ -12614,10 +12613,10 @@ namespace Orts.Simulation.RollingStocks
             {
                 TRAINAHEAD_Mode = Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;
                 DistanceToOtherTrain = Train.DistanceToEndNodeAuthorityM[0];
-                DistanceToReverse = Train.ComputeDistanceToReversalPoint();
+                DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Simulator.DistanceToReverse;                
 
-                // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním
-                if (DistanceToOtherTrain - DistanceToReverse > 50) TRAINAHEAD_Mode = false;
+                // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním                
+                if (DistanceToReverse != -1 && DistanceToOtherTrain - DistanceToReverse > 50) TRAINAHEAD_Mode = false;
 
                 if (!Simulator.CabRadioOn && TRAINAHEAD_Mode)
                 {
@@ -12632,9 +12631,9 @@ namespace Orts.Simulation.RollingStocks
                     ShunterTimeWithOutRadio = 0;
                 
                 #region ShunterSound                
-                if (DistanceToReverse > 500 || DistanceToReverse < -100) ShunterSoundReverseReset();                
+                if (DistanceToReverse > 500 || DistanceToReverse < 0) ShunterSoundReverseReset();                
                 // Hlášky posunovače podle vzdálenosti od reverzu                
-                if (Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -100 && DistanceToReverse < 500)
+                if (Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -1 && DistanceToReverse < 500)
                 {
                     if (LastDistanceToReverseTrain < DistanceToReverse) // Pokud se vzdálenost od reverzu zvětšuje, hlášky se resetují 
                     {
@@ -12654,7 +12653,7 @@ namespace Orts.Simulation.RollingStocks
                         if (!ShunterSoundSlowNearToReversePlayed) SignalEvent(Event.ShunterSound_SlowNearReverse);
                         ShunterSoundSlowNearToReversePlayed = true;
                     }
-                    if (DistanceToReverse < 0)
+                    if (DistanceToReverse < 2)
                     {
                         if (!ShunterSoundStopReversePlayed) SignalEvent(Event.ShunterSound_StopReverse);
                         ShunterSoundStopReversePlayed = true;                        
@@ -12669,23 +12668,21 @@ namespace Orts.Simulation.RollingStocks
                 if (!TRAINAHEAD_Mode) ShunterSoundToTrainReset();
                 // Hlášky posunovače podle vzdálenosti od jiného vlaku
                 if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
-                {
+                {                    
                     if (LastDistanceToOtherTrain < DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
-                    {
+                    {                     
                         LastDistanceToOtherTrain = DistanceToOtherTrain;
                         ShunterSoundToTrainReset();
                         return;
-                    }
+                    }                    
                     LastDistanceToOtherTrain = DistanceToOtherTrain;
 
                     // První hláška posunovače
-                    if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 1)
+                    if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 0)
                     {
                         if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
                         ShunterSoundStartPlayed = true;
-                    }
-                    else
-                        ShunterSoundStartPlayed = true;
+                    }                    
 
                     // Hláška "Posunuj" obecná
                     if (AbsSpeedMpS > 10f / 3.6f)

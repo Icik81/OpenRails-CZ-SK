@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
@@ -2397,6 +2398,9 @@ namespace Orts.Viewer3D.Popups
                 displayRequired = true;
             }
 
+            // Icik
+            Viewer.Simulator.DistanceToOtherTrain = thisItem.DistanceToTrainM;
+
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor) && displayRequired)
             {
                 var itemOffset = Convert.ToInt32(thisItem.DistanceToTrainM * distanceFactor);
@@ -2575,6 +2579,9 @@ namespace Orts.Viewer3D.Popups
         {
             var displayItem = thisItem.Valid ? reversalSprite : invalidReversalSprite;
             var newLabelPosition = lastLabelPosition;
+
+            // Icik
+            Viewer.Simulator.DistanceToReverse = thisItem.DistanceToTrainM;
 
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor))
             {
