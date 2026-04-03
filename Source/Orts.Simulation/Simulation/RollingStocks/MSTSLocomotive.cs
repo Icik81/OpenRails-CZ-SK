@@ -12565,6 +12565,7 @@ namespace Orts.Simulation.RollingStocks
         bool ShunterSoundDonePlayed;
         float ShunterTimer;
         bool ShunterSoundOff;
+        float LastDistanceToOtherTrain;
 
         public void ShunterSoundReset()
         {            
@@ -12615,6 +12616,14 @@ namespace Orts.Simulation.RollingStocks
                 #region ShunterSound
                 if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
                 {
+                    if (LastDistanceToOtherTrain < DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
+                    {
+                        LastDistanceToOtherTrain = DistanceToOtherTrain;
+                        ShunterSoundReset();
+                        return;
+                    }
+                    LastDistanceToOtherTrain = DistanceToOtherTrain;
+
                     // První hláška posunovače
                     if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 1)
                     {
