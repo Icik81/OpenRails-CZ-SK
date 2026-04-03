@@ -1025,10 +1025,13 @@
     <Content Include="Content\ShunterSound\ShunterSound_50.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_80.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Done.wav" />
+    <Content Include="Content\ShunterSound\ShunterSound_NearReverse.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Shunt.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Slow.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Slowly.wav" />
+    <Content Include="Content\ShunterSound\ShunterSound_SlowNearReverse.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Start.wav" />
+    <Content Include="Content\ShunterSound\ShunterSound_StopReverse.wav" />
     <Content Include="Content\SignalAspects.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
