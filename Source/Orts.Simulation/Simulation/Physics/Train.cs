@@ -71,6 +71,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Windows.Forms;
 using static System.Collections.Specialized.BitVector32;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
@@ -15759,6 +15760,9 @@ namespace Orts.Simulation.Physics
                 TrainObjectItem nextItem = new TrainObjectItem(reversalEnabled, reversalDistanceM, thisReversal.Valid);
                 thisInfo.ObjectInfoForward.Add(nextItem);
             }
+
+            // Icik
+            Simulator.DistanceToReverse = reversalDistanceM;
         }
 
         //================================================================================================//

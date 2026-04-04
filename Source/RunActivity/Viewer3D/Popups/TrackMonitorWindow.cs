@@ -2578,10 +2578,7 @@ namespace Orts.Viewer3D.Popups
         int drawReversal(SpriteBatch spriteBatch, Point offset, int startObjectArea, int endObjectArea, int zeroPoint, float maxDistance, float distanceFactor, float firstLabelDistance, bool forward, int lastLabelPosition, Train.TrainObjectItem thisItem, ref bool firstLabelShown)
         {
             var displayItem = thisItem.Valid ? reversalSprite : invalidReversalSprite;
-            var newLabelPosition = lastLabelPosition;
-
-            // Icik
-            Viewer.Simulator.DistanceToReverse = thisItem.DistanceToTrainM;
+            var newLabelPosition = lastLabelPosition;            
 
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor))
             {

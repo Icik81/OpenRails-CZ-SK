@@ -12570,7 +12570,14 @@ namespace Orts.Simulation.RollingStocks
         float ShunterTimer;
         bool ShunterSoundOff;
         float LastDistanceToOtherTrain;
-        float LastDistanceToReverseTrain;        
+        float LastDistanceToReverseTrain;
+        float ShunterProcessTimer;
+        bool ShunterProcessTrainActive_Start;
+        bool ShunterProcessTrainActive_End;
+        bool ShunterProcessReverseActive_Start;
+        bool ShunterProcessReverseActive_End;
+        bool ShunterProcessIsActivated;
+
         public void ShunterSoundToTrainReset()
         {            
             ShunterSound250Played = false;
@@ -12613,10 +12620,13 @@ namespace Orts.Simulation.RollingStocks
             {
                 TRAINAHEAD_Mode = Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;
                 DistanceToOtherTrain = Train.DistanceToEndNodeAuthorityM[0];
-                DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Simulator.DistanceToReverse;                
-
+                DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Simulator.DistanceToReverse;
+                float DistanceSpeedCorrectionM = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 2f, 0, 10.0f); // Korekce vzdálenosti závislé na rychlosti pro aktivaci hlášek
+                
                 // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním                
                 if (DistanceToReverse != -1 && DistanceToOtherTrain - DistanceToReverse > 50) TRAINAHEAD_Mode = false;
+
+                if (Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;
 
                 if (!Simulator.CabRadioOn && TRAINAHEAD_Mode)
                 {
@@ -12629,182 +12639,228 @@ namespace Orts.Simulation.RollingStocks
                 }
                 else
                     ShunterTimeWithOutRadio = 0;
-                
-                #region ShunterSound                
-                if (DistanceToReverse > 500 || DistanceToReverse < 0) ShunterSoundReverseReset();                
-                // Hlášky posunovače podle vzdálenosti od reverzu                
-                if (Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -1 && DistanceToReverse < 500)
+
+
+                // Dokončení procesu najetí k bodu obratu
+                if (ShunterProcessReverseActive_Start)
                 {
-                    if (LastDistanceToReverseTrain < DistanceToReverse) // Pokud se vzdálenost od reverzu zvětšuje, hlášky se resetují 
-                    {
-                        LastDistanceToReverseTrain = DistanceToReverse;
-                        ShunterSoundReverseReset();
-                        return;
-                    }
-                    LastDistanceToReverseTrain = DistanceToReverse;
-
-                    if (DistanceToReverse < 50)
-                    {
-                        if (!ShunterSoundNearToReversePlayed) SignalEvent(Event.ShunterSound_NearReverse);
-                        ShunterSoundNearToReversePlayed = true;                        
-                    }
-                    if (DistanceToReverse < 20)
-                    {
-                        if (!ShunterSoundSlowNearToReversePlayed) SignalEvent(Event.ShunterSound_SlowNearReverse);
-                        ShunterSoundSlowNearToReversePlayed = true;
-                    }
-                    if (DistanceToReverse < 2)
-                    {
-                        if (!ShunterSoundStopReversePlayed) SignalEvent(Event.ShunterSound_StopReverse);
-                        ShunterSoundStopReversePlayed = true;                        
-                    }
-
                     if (ShunterSoundStopReversePlayed && AbsSpeedMpS < 0.01f)
                     {
                         ShunterSoundReverseReset();
+                        ShunterProcessReverseActive_End = true;
+                    }
+                }
+                if (ShunterProcessReverseActive_End)
+                {
+                    ShunterProcessTimer += elapsedSeconds;
+                    if (ShunterProcessTimer > 5f)
+                    {
+                        ShunterProcessReverseActive_Start = false;
+                        ShunterProcessReverseActive_End = false;                        
+                        ShunterProcessTimer = 0;
                     }
                 }
 
-                if (!TRAINAHEAD_Mode) ShunterSoundToTrainReset();
-                // Hlášky posunovače podle vzdálenosti od jiného vlaku
-                if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
-                {                    
-                    if (LastDistanceToOtherTrain < DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
-                    {                     
-                        LastDistanceToOtherTrain = DistanceToOtherTrain;
+                // Dokončení procesu najetí na vlak
+                if (ShunterProcessTrainActive_Start)
+                {
+                    if (ShunterSoundDonePlayed && AbsSpeedMpS < 0.01f)
+                    {
                         ShunterSoundToTrainReset();
-                        return;
-                    }                    
-                    LastDistanceToOtherTrain = DistanceToOtherTrain;
-
-                    // První hláška posunovače
-                    if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 0)
+                        ShunterProcessTrainActive_End = true;
+                    }
+                }
+                if (ShunterProcessTrainActive_End)
+                {
+                    ShunterProcessTimer += elapsedSeconds;
+                    if (ShunterProcessTimer > 5f)
                     {
-                        if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
-                        ShunterSoundStartPlayed = true;
-                    }                    
+                        ShunterProcessTrainActive_Start = false;
+                        ShunterProcessTrainActive_End = false;
+                        ShunterProcessTimer = 0;
+                    }
+                }
 
-                    // Hláška "Posunuj" obecná
-                    if (AbsSpeedMpS > 10f / 3.6f)
+                #region ShunterSound                
+
+                if (!ShunterProcessTrainActive_Start)
+                {
+                    if (DistanceToReverse > 100) ShunterSoundReverseReset();
+                    // Hlášky posunovače podle vzdálenosti od reverzu                
+                    if (Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -1 && DistanceToReverse < 100)
                     {
-                        bool DistanceToOtherTrainIsValid = false;
-                        DistanceToOtherTrainIsValid = 
-                            (DistanceToOtherTrain > 220 && DistanceToOtherTrain > 230)
-                            || (DistanceToOtherTrain > 170 && DistanceToOtherTrain < 180)
-                            || (DistanceToOtherTrain > 120 && DistanceToOtherTrain < 130)
-                            || (DistanceToOtherTrain > 60 && DistanceToOtherTrain < 70)
-                            || (DistanceToOtherTrain > 40 && DistanceToOtherTrain < 45);
+                        ShunterProcessReverseActive_Start = true;
 
-                        ShunterTimer += elapsedSeconds;
-                        if (!ShunterSoundOff && ShunterTimer > 10 && DistanceToOtherTrainIsValid)
+                        if (LastDistanceToReverseTrain < DistanceToReverse) // Pokud se vzdálenost od reverzu zvětšuje, hlášky se resetují 
                         {
-                            ShunterSoundOff = true;
-                            ShunterTimer = 0;
-                            SignalEvent(Event.ShunterSound_Shunt);
-                        }  
+                            LastDistanceToReverseTrain = DistanceToReverse;
+                            ShunterSoundReverseReset();
+                            return;
+                        }
+                        LastDistanceToReverseTrain = DistanceToReverse;
+
+                        if (DistanceToReverse < 50 + DistanceSpeedCorrectionM)
+                        {
+                            if (!ShunterSoundNearToReversePlayed) SignalEvent(Event.ShunterSound_NearReverse);
+                            ShunterSoundNearToReversePlayed = true;
+                        }
+                        if (DistanceToReverse < 20 + DistanceSpeedCorrectionM)
+                        {
+                            if (!ShunterSoundSlowNearToReversePlayed) SignalEvent(Event.ShunterSound_SlowNearReverse);
+                            ShunterSoundSlowNearToReversePlayed = true;
+                        }
+                        if (DistanceToReverse < 2 + DistanceSpeedCorrectionM)
+                        {
+                            if (!ShunterSoundStopReversePlayed) SignalEvent(Event.ShunterSound_StopReverse);
+                            ShunterSoundStopReversePlayed = true;
+                        }                        
+                    }
+                }
+
+                if (!ShunterProcessReverseActive_Start)
+                {                    
+                    // Hlášky posunovače podle vzdálenosti od jiného vlaku
+                    if (Simulator.CabRadioOn && TRAINAHEAD_Mode)
+                    {
+                        ShunterProcessTrainActive_Start = true;
+
+                        if (LastDistanceToOtherTrain < DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
+                        {
+                            LastDistanceToOtherTrain = DistanceToOtherTrain;
+                            ShunterSoundToTrainReset();
+                            return;
+                        }
+                        LastDistanceToOtherTrain = DistanceToOtherTrain;
+
+                        // První hláška posunovače
+                        if (AbsSpeedMpS < 0.01f && DistanceToOtherTrain > 0)
+                        {
+                            if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
+                            ShunterSoundStartPlayed = true;
+                        }
+
+                        // Hláška "Posunuj" obecná
+                        if (AbsSpeedMpS > 10f / 3.6f)
+                        {
+                            bool DistanceToOtherTrainIsValid = false;
+                            DistanceToOtherTrainIsValid =
+                                (DistanceToOtherTrain > 220 && DistanceToOtherTrain > 230)
+                                || (DistanceToOtherTrain > 170 && DistanceToOtherTrain < 180)
+                                || (DistanceToOtherTrain > 120 && DistanceToOtherTrain < 130)
+                                || (DistanceToOtherTrain > 60 && DistanceToOtherTrain < 70)
+                                || (DistanceToOtherTrain > 40 && DistanceToOtherTrain < 45);
+
+                            ShunterTimer += elapsedSeconds;
+                            if (!ShunterSoundOff && ShunterTimer > 10 && DistanceToOtherTrainIsValid)
+                            {
+                                ShunterSoundOff = true;
+                                ShunterTimer = 0;
+                                SignalEvent(Event.ShunterSound_Shunt);
+                            }
+                            else
+                                ShunterSoundOff = false;
+                        }
                         else
                             ShunterSoundOff = false;
-                    }
-                    else
-                        ShunterSoundOff = false;
-                    
-                    // Odměřovací hlášky posunovače podle vzdálenosti od jiného vlaku
-                    if (!ShunterSoundOff)
-                    {
-                        switch (DistanceToOtherTrain)
+
+                        // Odměřovací hlášky posunovače podle vzdálenosti od jiného vlaku
+                        if (!ShunterSoundOff)
                         {
-                            case float n when (n > 253):
-                                ShunterSoundToTrainReset();
-                                break;
-                            case float n when (n < 253 && n > 200):
-                                if (!ShunterSound250Played) SignalEvent(Event.ShunterSound_250);
-                                ShunterSound250Played = true;
-                                ShunterSound200Played = false;
-                                break;
-                            case float n when (n < 203 && n > 150):
-                                if (!ShunterSound200Played) SignalEvent(Event.ShunterSound_200);
-                                ShunterSound200Played = true;
-                                ShunterSound150Played = false;
-                                break;
-                            case float n when (n < 153 && n > 100):
-                                if (!ShunterSound150Played) SignalEvent(Event.ShunterSound_150);
-                                ShunterSound150Played = true;
-                                ShunterSound100Played = false;
-                                break;
-                            case float n when (n < 103 && n > 80):
-                                if (!ShunterSound100Played) SignalEvent(Event.ShunterSound_100);
-                                ShunterSound100Played = true;
-                                ShunterSound80Played = false;
-                                break;
-                            case float n when (n < 83 && n > 50):
-                                if (!ShunterSound80Played) SignalEvent(Event.ShunterSound_80);
-                                ShunterSound80Played = true;
-                                ShunterSound50Played = false;
-                                break;
-                            case float n when (n < 53 && n > 30):
-                                if (!ShunterSound50Played) SignalEvent(Event.ShunterSound_50);
-                                ShunterSound50Played = true;
-                                ShunterSound30Played = false;
-                                break;
-                            case float n when (n < 33 && n > 20):
-                                if (!ShunterSound30Played) SignalEvent(Event.ShunterSound_30);
-                                ShunterSound30Played = true;
-                                ShunterSound20Played = false;
-                                break;
-                            case float n when (n < 23 && n > 15):
-                                if (!ShunterSound20Played) SignalEvent(Event.ShunterSound_20);
-                                ShunterSound20Played = true;
-                                ShunterSound15Played = false;
-                                break;
-                            case float n when (n < 17 && n > 10):
-                                if (!ShunterSound15Played) SignalEvent(Event.ShunterSound_15);
-                                ShunterSound15Played = true;
-                                ShunterSound10Played = false;
-                                break;
-                            case float n when (n < 12 && n > 8):
-                                if (!ShunterSound10Played) SignalEvent(Event.ShunterSound_10);
-                                ShunterSound10Played = true;
-                                ShunterSoundSlowPlayed = false;
-                                break;
-                            case float n when (n < 8 && n > 5):
-                                if (!ShunterSoundSlowPlayed) SignalEvent(Event.ShunterSound_Slow);
-                                ShunterSoundSlowPlayed = true;
-                                ShunterSound5Played = false;
-                                break;
-                            case float n when (n < 6 && n > 4):
-                                if (!ShunterSound5Played) SignalEvent(Event.ShunterSound_5);
-                                ShunterSound5Played = true;
-                                ShunterSound4Played = false;
-                                break;
-                            case float n when (n < 5 && n > 3):
-                                if (!ShunterSound4Played) SignalEvent(Event.ShunterSound_4);
-                                ShunterSound4Played = true;
-                                ShunterSound3Played = false;
-                                break;
-                            case float n when (n < 4 && n > 2):
-                                if (!ShunterSound3Played) SignalEvent(Event.ShunterSound_3);
-                                ShunterSound3Played = true;
-                                ShunterSound2Played = false;
-                                break;
-                            case float n when (n < 3 && n > 1):
-                                if (!ShunterSound2Played) SignalEvent(Event.ShunterSound_2);
-                                ShunterSound2Played = true;
-                                ShunterSound1Played = false;
-                                break;
-                            case float n when (n < 2 && n > 0.5f):
-                                if (!ShunterSound1Played) SignalEvent(Event.ShunterSound_1);
-                                ShunterSound1Played = true;
-                                ShunterSoundSlowlyPlayed = false;
-                                break;
-                            case float n when (n < 1 && n > 0):
-                                if (!ShunterSoundSlowlyPlayed) SignalEvent(Event.ShunterSound_Slowly);
-                                ShunterSoundSlowlyPlayed = true;
-                                ShunterSoundDonePlayed = false;
-                                break;
-                            case float n when (n <= 0):
-                                if (!ShunterSoundDonePlayed) SignalEvent(Event.ShunterSound_Done);
-                                ShunterSoundDonePlayed = true;
-                                break;
+                            switch (DistanceToOtherTrain)
+                            {
+                                case float n when (n > 253):
+                                    ShunterSoundToTrainReset();
+                                    break;
+                                case float n when (n < 250 + DistanceSpeedCorrectionM && n > 200 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound250Played) SignalEvent(Event.ShunterSound_250);
+                                    ShunterSound250Played = true;
+                                    ShunterSound200Played = false;
+                                    break;
+                                case float n when (n < 200 + DistanceSpeedCorrectionM && n > 150 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound200Played) SignalEvent(Event.ShunterSound_200);
+                                    ShunterSound200Played = true;
+                                    ShunterSound150Played = false;
+                                    break;
+                                case float n when (n < 150 + DistanceSpeedCorrectionM && n > 100 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound150Played) SignalEvent(Event.ShunterSound_150);
+                                    ShunterSound150Played = true;
+                                    ShunterSound100Played = false;
+                                    break;
+                                case float n when (n < 100 + DistanceSpeedCorrectionM && n > 80 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound100Played) SignalEvent(Event.ShunterSound_100);
+                                    ShunterSound100Played = true;
+                                    ShunterSound80Played = false;
+                                    break;
+                                case float n when (n < 80 + DistanceSpeedCorrectionM && n > 50 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound80Played) SignalEvent(Event.ShunterSound_80);
+                                    ShunterSound80Played = true;
+                                    ShunterSound50Played = false;
+                                    break;
+                                case float n when (n < 50 + DistanceSpeedCorrectionM && n > 30 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound50Played) SignalEvent(Event.ShunterSound_50);
+                                    ShunterSound50Played = true;
+                                    ShunterSound30Played = false;
+                                    break;
+                                case float n when (n < 30 + DistanceSpeedCorrectionM && n > 20 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound30Played) SignalEvent(Event.ShunterSound_30);
+                                    ShunterSound30Played = true;
+                                    ShunterSound20Played = false;
+                                    break;
+                                case float n when (n < 20 + DistanceSpeedCorrectionM && n > 15 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound20Played) SignalEvent(Event.ShunterSound_20);
+                                    ShunterSound20Played = true;
+                                    ShunterSound15Played = false;
+                                    break;
+                                case float n when (n < 15 + DistanceSpeedCorrectionM && n > 10 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound15Played) SignalEvent(Event.ShunterSound_15);
+                                    ShunterSound15Played = true;
+                                    ShunterSound10Played = false;
+                                    break;
+                                case float n when (n < 10 + DistanceSpeedCorrectionM && n > 8 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound10Played) SignalEvent(Event.ShunterSound_10);
+                                    ShunterSound10Played = true;
+                                    ShunterSoundSlowPlayed = false;
+                                    break;
+                                case float n when (n < 8 + DistanceSpeedCorrectionM && n > 5 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSoundSlowPlayed) SignalEvent(Event.ShunterSound_Slow);
+                                    ShunterSoundSlowPlayed = true;
+                                    ShunterSound5Played = false;
+                                    break;
+                                case float n when (n < 5 + DistanceSpeedCorrectionM && n > 4 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound5Played) SignalEvent(Event.ShunterSound_5);
+                                    ShunterSound5Played = true;
+                                    ShunterSound4Played = false;
+                                    break;
+                                case float n when (n < 4 + DistanceSpeedCorrectionM && n > 3 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound4Played) SignalEvent(Event.ShunterSound_4);
+                                    ShunterSound4Played = true;
+                                    ShunterSound3Played = false;
+                                    break;
+                                case float n when (n < 3 + DistanceSpeedCorrectionM && n > 2 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound3Played) SignalEvent(Event.ShunterSound_3);
+                                    ShunterSound3Played = true;
+                                    ShunterSound2Played = false;
+                                    break;
+                                case float n when (n < 2 + DistanceSpeedCorrectionM && n > 1 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound2Played) SignalEvent(Event.ShunterSound_2);
+                                    ShunterSound2Played = true;
+                                    ShunterSound1Played = false;
+                                    break;
+                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0.5f + DistanceSpeedCorrectionM):
+                                    if (!ShunterSound1Played) SignalEvent(Event.ShunterSound_1);
+                                    ShunterSound1Played = true;
+                                    ShunterSoundSlowlyPlayed = false;
+                                    break;
+                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSoundSlowlyPlayed) SignalEvent(Event.ShunterSound_Slowly);
+                                    ShunterSoundSlowlyPlayed = true;
+                                    ShunterSoundDonePlayed = false;
+                                    break;
+                                case float n when (n <= 0 + DistanceSpeedCorrectionM):
+                                    if (!ShunterSoundDonePlayed) SignalEvent(Event.ShunterSound_Done);
+                                    ShunterSoundDonePlayed = true;                                    
+                                    break;
+                            }
                         }
                     }
                 }
@@ -12815,6 +12871,11 @@ namespace Orts.Simulation.RollingStocks
                 ShunterSoundToTrainReset();
                 ShunterSoundReverseReset();
                 ShunterSoundStartPlayed = false;
+                ShunterProcessReverseActive_Start = false;
+                ShunterProcessReverseActive_End = false;
+                ShunterProcessTrainActive_Start = false;
+                ShunterProcessTrainActive_End = false;
+                ShunterProcessTimer = 0;
             }
         }
 
