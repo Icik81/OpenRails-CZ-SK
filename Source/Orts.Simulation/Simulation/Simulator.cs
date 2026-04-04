@@ -315,6 +315,10 @@ namespace Orts.Simulation
         public bool CabRadioOn;
         public float DistanceToOtherTrain;
         public float DistanceToReverse;
+        public bool ShunterProcessTrainActive_Start;
+        public bool ShunterProcessTrainActive_End;
+        public bool ShunterProcessReverseActive_Start;
+        public bool ShunterProcessReverseActive_End;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -692,6 +696,11 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            ShunterProcessTrainActive_Start = inf.ReadBoolean();
+            ShunterProcessTrainActive_End = inf.ReadBoolean();
+            ShunterProcessReverseActive_Start = inf.ReadBoolean();
+            ShunterProcessReverseActive_End = inf.ReadBoolean();
+            DistanceToOtherTrain = inf.ReadSingle();
             ShunterEnable = inf.ReadBoolean();
             FatalIncident = inf.ReadBoolean();
             NotFatalIncident = inf.ReadBoolean();
@@ -747,6 +756,11 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(ShunterProcessTrainActive_Start);
+            outf.Write(ShunterProcessTrainActive_End);
+            outf.Write(ShunterProcessReverseActive_Start);
+            outf.Write(ShunterProcessReverseActive_End);
+            outf.Write(DistanceToOtherTrain);
             outf.Write(ShunterEnable);
             outf.Write(FatalIncident);
             outf.Write(NotFatalIncident);

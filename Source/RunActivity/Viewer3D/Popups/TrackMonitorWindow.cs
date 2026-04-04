@@ -2396,10 +2396,7 @@ namespace Orts.Viewer3D.Popups
                 displayItem = forward ? oppositeTrainForwardSprite : oppositeTrainBackwardSprite;
                 offsetArray = otherTrainPosition;
                 displayRequired = true;
-            }
-
-            // Icik
-            Viewer.Simulator.DistanceToOtherTrain = thisItem.DistanceToTrainM;
+            }            
 
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor) && displayRequired)
             {
