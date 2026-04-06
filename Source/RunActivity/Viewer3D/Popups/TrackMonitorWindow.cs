@@ -2410,8 +2410,9 @@ namespace Orts.Viewer3D.Popups
                     var distanceString = FormatStrings.FormatDistanceDisplay(thisItem.DistanceToTrainM, metric);
                     Font.Draw(spriteBatch, labelPoint, distanceString, Color.White);
                     firstLabelShown = true;
-                }
+                }                
             }
+            Viewer.Simulator.DistanceToTrainMFreeRide = thisItem.DistanceToTrainM;
         }
 
         // check signal information for reverse display

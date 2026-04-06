@@ -12621,6 +12621,13 @@ namespace Orts.Simulation.RollingStocks
 
                 if (Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;
 
+                // Volná jízda
+                if (Train.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
+                {
+                    Simulator.DistanceToOtherTrain = Simulator.DistanceToTrainMFreeRide;
+                    TRAINAHEAD_Mode = true;
+                }
+
                 if (!Simulator.CabRadioOn)
                 {
                     ShunterTimeWithOutRadio += elapsedSeconds;
@@ -12679,61 +12686,64 @@ namespace Orts.Simulation.RollingStocks
                 // Dokončení procesu najetí na vlak                                                    
                 if (Simulator.ShunterProcessTrainActive_Start)
                 {
-                    // Určení, jestli je napojovaný vlak před námi nebo za námi, pro správné odpočítávání vzdálenosti od jiného vlaku pro dokončení procesu najetí na vlak.                    
-                    if (!Simulator.OtherTrainPositionTest && TRAINAHEAD_Mode && SpeedMpS != 0 && DistanceToOtherTrain_0 != Train.DistanceToEndNodeAuthorityM[0])
-                    {                        
-                        int CurrentDistanceToOtherTrain = (int)Train.DistanceToEndNodeAuthorityM[0];
-                        int BaseDistanceToOtherTrain = (int)DistanceToOtherTrain_0;
-                        if (SpeedMpS > 0)
-                        {
-                            if (BaseDistanceToOtherTrain > CurrentDistanceToOtherTrain)
-                            {
-                                Simulator.OtherTrainIsFront = true;
-                                Simulator.OtherTrainPositionTest = true;
-                            }
-
-                            if (BaseDistanceToOtherTrain < CurrentDistanceToOtherTrain)
-                            {
-                                Simulator.OtherTrainIsFront = false;
-                                Simulator.OtherTrainPositionTest = true;
-                            }
-                        }
-                        if (SpeedMpS < 0)
-                        {
-                            if (BaseDistanceToOtherTrain > CurrentDistanceToOtherTrain)
-                            {
-                                Simulator.OtherTrainIsFront = false;
-                                Simulator.OtherTrainPositionTest = true;
-                            }
-                            if (BaseDistanceToOtherTrain < CurrentDistanceToOtherTrain)
-                            {
-                                Simulator.OtherTrainIsFront = true;
-                                Simulator.OtherTrainPositionTest = true;
-                            }
-                        }
-                        if (!Simulator.OtherTrainPositionTest) return;
-                    }
-
-                    // Kalibrace vzdálenosti
-                    if (TRAINAHEAD_Mode && Train.DistanceToEndNodeAuthorityM[0] > 1 && Train.DistanceToEndNodeAuthorityM[0] < 300)
-                        Simulator.DistanceToOtherTrain = Train.DistanceToEndNodeAuthorityM[0];
-
-                    // Odpočítávání vzdálenosti od napojovaného vlaku pro dokončení procesu najetí na vlak                                                                                
-                    if (Simulator.OtherTrainIsFront) // Napojovaný vlak před námi
+                    if (Train.ControlMode != Train.TRAIN_CONTROL.EXPLORER)
                     {
-                        if (SpeedMpS > 0)
-                            Simulator.DistanceToOtherTrain -= AbsSpeedMpS * elapsedSeconds;
-                        if (SpeedMpS < 0)
-                            Simulator.DistanceToOtherTrain += AbsSpeedMpS * elapsedSeconds;
+                        // Určení, jestli je napojovaný vlak před námi nebo za námi, pro správné odpočítávání vzdálenosti od jiného vlaku pro dokončení procesu najetí na vlak.                    
+                        if (!Simulator.OtherTrainPositionTest && TRAINAHEAD_Mode && SpeedMpS != 0 && DistanceToOtherTrain_0 != Train.DistanceToEndNodeAuthorityM[0])
+                        {
+                            int CurrentDistanceToOtherTrain = (int)Train.DistanceToEndNodeAuthorityM[0];
+                            int BaseDistanceToOtherTrain = (int)DistanceToOtherTrain_0;
+                            if (SpeedMpS > 0)
+                            {
+                                if (BaseDistanceToOtherTrain > CurrentDistanceToOtherTrain)
+                                {
+                                    Simulator.OtherTrainIsFront = true;
+                                    Simulator.OtherTrainPositionTest = true;
+                                }
+
+                                if (BaseDistanceToOtherTrain < CurrentDistanceToOtherTrain)
+                                {
+                                    Simulator.OtherTrainIsFront = false;
+                                    Simulator.OtherTrainPositionTest = true;
+                                }
+                            }
+                            if (SpeedMpS < 0)
+                            {
+                                if (BaseDistanceToOtherTrain > CurrentDistanceToOtherTrain)
+                                {
+                                    Simulator.OtherTrainIsFront = false;
+                                    Simulator.OtherTrainPositionTest = true;
+                                }
+                                if (BaseDistanceToOtherTrain < CurrentDistanceToOtherTrain)
+                                {
+                                    Simulator.OtherTrainIsFront = true;
+                                    Simulator.OtherTrainPositionTest = true;
+                                }
+                            }
+                            if (!Simulator.OtherTrainPositionTest) return;
+                        }
+
+                        // Kalibrace vzdálenosti
+                        if (TRAINAHEAD_Mode && Train.DistanceToEndNodeAuthorityM[0] > 1 && Train.DistanceToEndNodeAuthorityM[0] < 300)
+                            Simulator.DistanceToOtherTrain = Train.DistanceToEndNodeAuthorityM[0];
+
+                        // Odpočítávání vzdálenosti od napojovaného vlaku pro dokončení procesu najetí na vlak                                                                                
+                        if (Simulator.OtherTrainIsFront) // Napojovaný vlak před námi
+                        {
+                            if (SpeedMpS > 0)
+                                Simulator.DistanceToOtherTrain -= AbsSpeedMpS * elapsedSeconds;
+                            if (SpeedMpS < 0)
+                                Simulator.DistanceToOtherTrain += AbsSpeedMpS * elapsedSeconds;
+                        }
+                        else // Napojovaný vlak za námi
+                        {
+                            if (SpeedMpS > 0)
+                                Simulator.DistanceToOtherTrain += AbsSpeedMpS * elapsedSeconds;
+                            if (SpeedMpS < 0)
+                                Simulator.DistanceToOtherTrain -= AbsSpeedMpS * elapsedSeconds;
+                        }
+                        //Simulator.Confirmer.Information("Simulator.DistanceToOtherTrain: " + Simulator.DistanceToOtherTrain + "   Simulator.OtherTrainIsFront: " + Simulator.OtherTrainIsFront);
                     }
-                    else // Napojovaný vlak za námi
-                    {
-                        if (SpeedMpS > 0)
-                            Simulator.DistanceToOtherTrain += AbsSpeedMpS * elapsedSeconds;
-                        if (SpeedMpS < 0)
-                            Simulator.DistanceToOtherTrain -= AbsSpeedMpS * elapsedSeconds;
-                    }
-                    //Simulator.Confirmer.Information("Simulator.DistanceToOtherTrain: " + Simulator.DistanceToOtherTrain + "   Simulator.OtherTrainIsFront: " + Simulator.OtherTrainIsFront);
 
                     if (ShunterSoundDonePlayed && AbsSpeedMpS < 0.01f)
                     {
@@ -12797,7 +12807,7 @@ namespace Orts.Simulation.RollingStocks
                     // Hlášky posunovače podle vzdálenosti od jiného vlaku
                     if ((Simulator.CabRadioOn && TRAINAHEAD_Mode) || Simulator.ShunterProcessTrainActive_Start)
                     {
-                        Simulator.ShunterProcessTrainActive_Start = true;
+                        Simulator.ShunterProcessTrainActive_Start = true;                        
 
                         if (LastDistanceToOtherTrain < Simulator.DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
                         {
@@ -12805,15 +12815,18 @@ namespace Orts.Simulation.RollingStocks
                             ShunterSoundToTrainReset();
                             return;
                         }
-                        
-                        LastDistanceToOtherTrain = Simulator.DistanceToOtherTrain;
-
+                                                
                         // První hláška posunovače
-                        if (AbsSpeedMpS < 0.01f && Simulator.DistanceToOtherTrain > 0 && DistanceToOtherTrain_0 == Simulator.DistanceToOtherTrain)
+                        if (AbsSpeedMpS < 0.01f && Simulator.DistanceToOtherTrain > 0)
                         {
                             if (!ShunterSoundStartPlayed) SignalEvent(Event.ShunterSound_Start);
                             ShunterSoundStartPlayed = true;
                         }
+
+                        if (LastDistanceToOtherTrain == Simulator.DistanceToOtherTrain)
+                            return;
+
+                        LastDistanceToOtherTrain = Simulator.DistanceToOtherTrain;
 
                         // Hláška "Posunuj" obecná
                         if (AbsSpeedMpS > 10f / 3.6f)

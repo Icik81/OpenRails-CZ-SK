@@ -321,6 +321,7 @@ namespace Orts.Simulation
         public bool ShunterProcessReverseActive_End;
         public bool OtherTrainPositionTest;
         public bool OtherTrainIsFront;
+        public float DistanceToTrainMFreeRide;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
