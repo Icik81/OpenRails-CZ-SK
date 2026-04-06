@@ -12613,11 +12613,11 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.ShunterEnable)
             {
                 TRAINAHEAD_Mode = Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;                
-                DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Train.ComputeDistanceToReversalPoint() > 50 ? -1 : Simulator.DistanceToReverse;                
+                DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Train.ComputeDistanceToReversalPoint() > 1000 ? -1 : Simulator.DistanceToReverse;                
                 float DistanceSpeedCorrectionM = MathHelper.Clamp(AbsSpeedMpS * 3.6f / 2f, 0, 10.0f); // Korekce vzdálenosti závislé na rychlosti pro aktivaci hlášek
                 
                 // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním                
-                if (DistanceToReverse != -1 && Simulator.DistanceToOtherTrain - DistanceToReverse > 50) TRAINAHEAD_Mode = false;
+                if (DistanceToReverse != -1 && Train.DistanceToEndNodeAuthorityM[0] - Simulator.DistanceToReverse > 10) TRAINAHEAD_Mode = false;
 
                 if (Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;
 
