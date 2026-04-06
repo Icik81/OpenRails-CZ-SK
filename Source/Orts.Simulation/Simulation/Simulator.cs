@@ -319,6 +319,8 @@ namespace Orts.Simulation
         public bool ShunterProcessTrainActive_End;
         public bool ShunterProcessReverseActive_Start;
         public bool ShunterProcessReverseActive_End;
+        public bool OtherTrainPositionTest;
+        public bool OtherTrainIsFront;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -696,6 +698,8 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            OtherTrainPositionTest = inf.ReadBoolean();
+            OtherTrainIsFront = inf.ReadBoolean();
             ShunterProcessTrainActive_Start = inf.ReadBoolean();
             ShunterProcessTrainActive_End = inf.ReadBoolean();
             ShunterProcessReverseActive_Start = inf.ReadBoolean();
@@ -756,6 +760,8 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(OtherTrainPositionTest);
+            outf.Write(OtherTrainIsFront);
             outf.Write(ShunterProcessTrainActive_Start);
             outf.Write(ShunterProcessTrainActive_End);
             outf.Write(ShunterProcessReverseActive_Start);
