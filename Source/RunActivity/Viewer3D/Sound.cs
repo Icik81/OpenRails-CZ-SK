@@ -1552,23 +1552,26 @@ namespace Orts.Viewer3D
             {
                 foreach (var stream in SoundSource.SoundStreams)
                 {
-                    // Vyhledá zvuk start/stop motoru
-                    foreach (var trigger in Triggers)
+                    if (!SoundSource.SMSFileName.ToLower().Contains("shuntersound.sms")) // Vyjímka pro shuntersound.sms (zvuky posunovače)
                     {
-                        if (trigger.SoundCommand is ORTSSoundPlayCommand)
-                            foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
-                                if (name != null)
-                                {                                                                                                              
-                                    if (name.ToLower().Contains("start") || name.ToLower().Contains("mazani"))
+                        // Vyhledá zvuk start/stop motoru
+                        foreach (var trigger in Triggers)
+                        {
+                            if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                                foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                                    if (name != null)
                                     {
-                                        car.CarHasStartTrigger = true;                                        
+                                        if (name.ToLower().Contains("start") || name.ToLower().Contains("mazani"))
+                                        {
+                                            car.CarHasStartTrigger = true;
+                                        }
+                                        if (trigger is ORTSInitialTrigger && (name.ToLower().Contains("motor") || name.ToLower().Contains("volnobeh")))
+                                        {
+                                            car.CarHasInitStartTrigger = true;
+                                        }
                                     }
-                                    if (trigger is ORTSInitialTrigger && (name.ToLower().Contains("motor") || name.ToLower().Contains("volnobeh")))
-                                    {
-                                        car.CarHasInitStartTrigger = true;
-                                    }
-                                }                        
-                    }                    
+                        }
+                    }
                 }
                 MSTSStreamSoundInit = false;
             }            
