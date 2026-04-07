@@ -7912,6 +7912,7 @@ namespace Orts.Simulation.RollingStocks
                 if (IsLeadLocomotive())
                 {
                     Simulator.CabRadioOn = CabRadio[LocoStation];
+                    Simulator.PlayerLocomotiveChange = false;
                 }
             }
 
@@ -12610,7 +12611,7 @@ namespace Orts.Simulation.RollingStocks
 
             bool TRAINAHEAD_Mode;            
             float DistanceToReverse = -1000;            
-            if (Simulator.ShunterEnable)
+            if (Simulator.ShunterEnable && !Simulator.PlayerLocomotiveChange)
             {
                 TRAINAHEAD_Mode = Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;                
                 DistanceToReverse = Simulator.DistanceToReverse < 1 ? -1 : Train.ComputeDistanceToReversalPoint() > 1000 ? -1 : Simulator.DistanceToReverse;                
@@ -12648,6 +12649,7 @@ namespace Orts.Simulation.RollingStocks
                     DistanceToOtherTrain_0 = -1000;
                     Simulator.OtherTrainPositionTest = false;
                     ShunterSoundDonePlayed = false;
+                    Simulator.DistanceToReverse = -1;
                     return;
                 }
                 else
@@ -12681,6 +12683,7 @@ namespace Orts.Simulation.RollingStocks
                     DistanceToOtherTrain_0 = Simulator.DistanceToOtherTrain;
                     LastDistanceToOtherTrain = Simulator.DistanceToOtherTrain;
                     Simulator.OtherTrainPositionTest = false;
+                    Simulator.DistanceToReverse = -1;                    
                 }
 
                 // Dokončení procesu najetí na vlak                                                    
@@ -12969,7 +12972,8 @@ namespace Orts.Simulation.RollingStocks
                 DistanceToOtherTrain_0 = -1000;
                 Simulator.OtherTrainPositionTest = false;
                 ShunterSoundDonePlayed = false;
-            }
+                Simulator.DistanceToReverse = -1;
+            }            
         }
 
 

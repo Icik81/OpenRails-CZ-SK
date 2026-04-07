@@ -2113,7 +2113,7 @@ namespace Orts.Simulation.Physics
                 car.Update(elapsedClockSeconds);                
 
                 // Zařídí, aby se AI lokomotivě netočily kolečka při stání na místě
-                if (this is AITrain && (this as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED)                                    
+                if (this is AITrain && !IsActualPlayerTrain && (this as AITrain).MovementState == AITrain.AI_MOVEMENT_STATE.STOPPED)                                    
                     if (car is MSTSLocomotive && car.SpeedMpS == 0) (car as MSTSLocomotive).WheelSpeedMpS = 0;                    
                 
                 // Set TotalForce at the start of each calculation cycle. This value is adjusted further through loop based upon forces acting on the train.
@@ -6054,7 +6054,7 @@ namespace Orts.Simulation.Physics
                 var car = Cars[iCar];
 
                 // AI vozy zůstanou stát při rozjezdu
-                if ((this is AITrain) && (this as AITrain).AIStayToRollOn)
+                if ((this is AITrain) && !IsActualPlayerTrain && (this as AITrain).AIStayToRollOn)
                     car.TotalForceN = 0;
 
                 if (iCar < Cars.Count - 1) NextCarSpeedMps = Cars[iCar + 1].SpeedMpS;

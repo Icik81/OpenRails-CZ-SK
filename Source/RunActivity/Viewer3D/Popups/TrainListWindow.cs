@@ -169,7 +169,7 @@ namespace Orts.Viewer3D.Popups
             {
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Player train can't be switched when in turntable not aligned to a track"));
                 return;
-            }
+            }            
             Viewer.Simulator.TrainSwitcher.SuspendOldPlayer = false;
             if (PickedTrainFromList != null && PickedTrainFromList != Viewer.SelectedTrain)
             {

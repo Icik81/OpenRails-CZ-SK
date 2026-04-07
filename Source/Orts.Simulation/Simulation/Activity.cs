@@ -1578,6 +1578,17 @@ namespace Orts.Simulation
         override public Boolean Triggered(Activity activity)
         {
             Train OriginalPlayerTrain = Simulator.OriginalPlayerTrain;
+            Train PlayerTrain = null;
+
+            foreach (var train in Simulator.Trains)
+            {
+                if (train.IsActualPlayerTrain)
+                {
+                    PlayerTrain = train;
+                    break;
+                }
+            }
+
             var e = this.ParsedObject as EventCategoryAction;
             if (e.WagonList != null)
             {                     // only if event involves wagons
@@ -1610,7 +1621,7 @@ namespace Orts.Simulation
                     }
                     break;
                 case EventType.AssembleTrainAtLocation:
-                    if (atSiding(OriginalPlayerTrain.FrontTDBTraveller, OriginalPlayerTrain.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
+                    if (atSiding(PlayerTrain.FrontTDBTraveller, PlayerTrain.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
                     {
                         consistTrain = matchesConsist(ChangeWagonIdList);
                         triggered = consistTrain != null;
@@ -1626,7 +1637,7 @@ namespace Orts.Simulation
                     // Dropping off of wagons should only count once disconnected from player train.
                     // A better name than DropOffWagonsAtLocation would be ArriveAtSidingWithWagons.
                     // To recognize the dropping off of the cars before the event is activated, this method is used.
-                    if (atSiding(OriginalPlayerTrain.FrontTDBTraveller, OriginalPlayerTrain.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
+                    if (atSiding(PlayerTrain.FrontTDBTraveller, PlayerTrain.RearTDBTraveller, this.SidingEnd1, this.SidingEnd2))
                     {
                         consistTrain = matchesConsistNoOrder(ChangeWagonIdList);
                         triggered = consistTrain != null;
@@ -1635,7 +1646,7 @@ namespace Orts.Simulation
                 case EventType.PickUpPassengers:
                     break;
                 case EventType.PickUpWagons: // PickUpWagons is independent of location or siding
-                    triggered = includesWagons(OriginalPlayerTrain, ChangeWagonIdList);                    
+                    triggered = includesWagons(PlayerTrain, ChangeWagonIdList);                    
                     break;
                 case EventType.ReachSpeed:
                     triggered = (Math.Abs(Simulator.PlayerLocomotive.SpeedMpS) >= e.SpeedMpS);

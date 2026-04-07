@@ -2202,6 +2202,7 @@ namespace Orts.Viewer3D
             ThreeDimCabCamera.ChangeCab(Simulator.PlayerLocomotive);
             HeadOutForwardCamera.ChangeCab(Simulator.PlayerLocomotive);
             HeadOutBackCamera.ChangeCab(Simulator.PlayerLocomotive);
+            Simulator.PlayerLocomotiveChange = true;
         }
 
         // change reference to player train when switching train in Timetable mode
