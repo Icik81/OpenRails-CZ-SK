@@ -2322,7 +2322,7 @@ namespace Orts.Viewer3D.Popups
                         break;
 
                     case Train.TrainObjectItem.TRAINOBJECTTYPE.WAITING_POINT:
-                        drawWaitingPoint(spriteBatch, offset, startObjectArea, endObjectArea, zeroPoint, maxDistance, distanceFactor, firstLabelPosition, forward, lastLabelPosition, thisItem, ref firstLabelShown);
+                        //drawWaitingPoint(spriteBatch, offset, startObjectArea, endObjectArea, zeroPoint, maxDistance, distanceFactor, firstLabelPosition, forward, lastLabelPosition, thisItem, ref firstLabelShown);
                         break;
 
                     case Train.TrainObjectItem.TRAINOBJECTTYPE.MILEPOST:
