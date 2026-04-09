@@ -385,7 +385,7 @@ namespace Orts.Viewer3D.Popups
             {
                 if (Viewer.Simulator.CabRadioOn)
                 {
-                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is ON)");
+                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is ON)") + " " + Viewer.Simulator.ShunterDecideMarker;
                     Color = Color.GreenYellow;
                 }
                 else
