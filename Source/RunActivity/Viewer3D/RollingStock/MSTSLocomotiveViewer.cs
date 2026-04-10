@@ -6348,7 +6348,8 @@ namespace Orts.Viewer3D.RollingStock
 
                                 if (IsChanged && mpc.controllerBinding != MultiPositionController.ControllerBinding.DynamicBrake)
                                 {
-                                    if (Locomotive.Mirel.Equipped && !Locomotive.Mirel.RecievingRepeaterSignal) Locomotive.Mirel.ResetVigilance();
+                                    if (Locomotive.LocoType != LocoTypes.Vectron && Locomotive.Mirel.Equipped && !Locomotive.Mirel.RecievingRepeaterSignal)
+                                        Locomotive.Mirel.ResetVigilance();
                                 }
 
                                 if (p == 1)
