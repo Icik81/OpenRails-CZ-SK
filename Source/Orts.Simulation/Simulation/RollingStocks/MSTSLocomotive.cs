@@ -19595,6 +19595,7 @@ namespace Orts.Simulation.RollingStocks
         // Mirer ovladač        
         public void ToggleMirerControllerUp()
         {
+            if (!MirerControllerEnable) return;
             if (Mirel != null)
                 Mirel.ResetVigilance();
             if (MirerControllerPosition > 0) 
@@ -19632,6 +19633,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleMirerControllerDown()
         {
+            if (!MirerControllerEnable) return;
             if (Mirel != null)
                 Mirel.ResetVigilance();
             if (MirerControllerPosition < 0)
