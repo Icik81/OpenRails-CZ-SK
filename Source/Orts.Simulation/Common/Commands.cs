@@ -998,7 +998,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualHorn = ToState;
-            Receiver.Mirel.ResetVigilance();
+            //Receiver.Mirel.ResetVigilance();
             if (ToState)
             {
                 Receiver.AlerterReset(TCSEvent.HornActivated);
@@ -1026,7 +1026,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualBell = ToState;
-            Receiver.Mirel.ResetVigilance();
+            //Receiver.Mirel.ResetVigilance();
             Receiver.Simulator.HazzardManager.Bell();
         }
 
@@ -3124,7 +3124,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualHorn2 = ToState;
-            Receiver.Mirel.ResetVigilance();
+            //Receiver.Mirel.ResetVigilance();
             if (ToState)
             {
                 Receiver.AlerterReset(TCSEvent.HornActivated);
@@ -3151,7 +3151,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualHorn12 = ToState;
-            Receiver.Mirel.ResetVigilance();
+            //Receiver.Mirel.ResetVigilance();
             if (ToState)
             {
                 Receiver.AlerterReset(TCSEvent.HornActivated);
@@ -3178,7 +3178,7 @@ namespace Orts.Common
         public override void Redo()
         {
             Receiver.ManualHornBell = ToState;
-            Receiver.Mirel.ResetVigilance();
+            //Receiver.Mirel.ResetVigilance();
             if (ToState)
             {
                 Receiver.AlerterReset(TCSEvent.HornActivated);
