@@ -9104,8 +9104,11 @@ namespace Orts.Simulation.RollingStocks
                 if (this.TriggerHornNumber == 2)
                     Horn2 = ManualHorn;
                 if (this.TriggerHornNumber == 3)
+                {
                     Horn = ManualHorn;
-            }
+                    Horn2 = ManualBell;
+                }                
+            }            
 
             if (Horn && !PreviousHorn)
             {
@@ -9155,8 +9158,8 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.BellOff);
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "HORN", 0)).ToString());
                 if (MPManager.IsMultiPlayer()) MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "BELL", 0)).ToString());
-            }
-
+            }            
+            
             if (ManualBell)
             {
                 BellState = SoundState.Sound;
