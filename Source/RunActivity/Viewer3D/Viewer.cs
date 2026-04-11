@@ -1127,15 +1127,15 @@ namespace Orts.Viewer3D
 
                 if ((Simulator.PlayerLocomotive.HasFront3DCab || Simulator.PlayerLocomotive.HasRear3DCab && ViewingPlayer) && !(Camera is CabCamera))
                 {
-                    ThreeDimCabCamera.Activate();
+                    //ThreeDimCabCamera.Activate();
                 }
                 else if ((Simulator.PlayerLocomotive.HasFrontCab || Simulator.PlayerLocomotive.HasRearCab) && ViewingPlayer)
                 {
-                    CabCamera.Activate();
+                    //CabCamera.Activate();
                 }
                 else
                 {
-                    Simulator.Confirmer.Warning(Viewer.Catalog.GetString("Cab view not available"));
+                    //Simulator.Confirmer.Warning(Viewer.Catalog.GetString("Cab view not available"));
                 }
             }
             else if (AbovegroundCamera != null
@@ -1193,18 +1193,15 @@ namespace Orts.Viewer3D
         {
             var train = Program.Viewer.PlayerLocomotive.Train;//DebriefEval
 
-            // Icik
+            // Icik            
             Simulator.PlayerCarIsInTunnel = false;
             if (Camera.IsUnderground 
                 && (Simulator.PlayerIsInCab
                 || Camera == PassengerCamera
                 || Camera == HeadOutForwardCamera
                 || Camera == HeadOutBackCamera
-                || Camera == FrontCamera
-                || Camera == BackCamera
                 || Camera == BrakemanCamera))
-                Simulator.PlayerCarIsInTunnel = true;
-
+                Simulator.PlayerCarIsInTunnel = true;            
 
             if (UserInput.IsMouseLeftButtonDown || (Camera is ThreeDimCabCamera && RenderProcess.IsMouseVisible))
             {

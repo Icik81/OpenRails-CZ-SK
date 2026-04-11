@@ -322,7 +322,8 @@ namespace Orts.Simulation
         public bool OtherTrainPositionTest;
         public bool OtherTrainIsFront;
         public float DistanceToTrainMFreeRide;
-        public string ShunterDecideMarker = "-";
+        public string ShunterDecideMarker = "-";        
+        public TrainCar TunnelCarCameraCanActivated;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -1125,6 +1125,8 @@ namespace Orts.Simulation
                 MyPlayerTrain.CheckPaxToLeaveCount(MyPlayerTrain);
                 MyPlayerTrain.CheckPaxToEntry(MyPlayerTrain);
 
+                if (MyPlayerTrain.LeadLocomotive == null) MyPlayerTrain.LeadLocomotive = Simulator.PlayerLocomotive;
+
                 var loco = MyPlayerTrain.LeadLocomotive as MSTSLocomotive;
                 if (loco != null)
                 {

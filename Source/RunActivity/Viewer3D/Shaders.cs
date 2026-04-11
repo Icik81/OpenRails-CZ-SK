@@ -322,7 +322,7 @@ namespace Orts.Viewer3D
             // Zařídí tmu v tunelu
             Program.Simulator.TunnelActivateM = 0;
             Program.Simulator.CarInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
                 {
@@ -347,8 +347,7 @@ namespace Orts.Viewer3D
                     if (NightBrightness < 0.05f) NightBrightness = 0.05f;
                     Program.Simulator.CarInDarkTunnel = false;
                 }
-                else
-                if (Program.Simulator.PlayerCarIsInTunnel)
+                else                
                 {                    
                     NightBrightness = 0.05f;
                     vIn = NightBrightnessValue;
@@ -356,7 +355,7 @@ namespace Orts.Viewer3D
                 }
             }
 
-            if (Program.Simulator.TunnelLengthM < Program.Simulator.PlayerCarIsInTunnelBeginM)
+            if (!Program.Simulator.PlayerCarIsInTunnel || Program.Simulator.TunnelLengthM < Program.Simulator.PlayerCarIsInTunnelBeginM)
             {
                 vIn = Program.Simulator.Settings.DayAmbientLight;
                 Program.Simulator.CarInDarkTunnel = false;                
@@ -975,7 +974,7 @@ namespace Orts.Viewer3D
 
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)

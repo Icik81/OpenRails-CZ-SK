@@ -106,7 +106,7 @@ namespace Orts.Viewer3D
             float CameraDistanceZ = 0;            
 
             NearPlane = PlayerCameraHeight / 30f;
-            NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 1.0f);
+            NearPlane = MathHelper.Clamp(NearPlane, 0.25f, 1.0f);            
 
             if (AttachedCar != null)
             {
@@ -129,8 +129,8 @@ namespace Orts.Viewer3D
                     NearPlane = 0.25f;
                 else
                     NearPlane = 1.0f;
-            }
-                      
+            }            
+
             if (Viewer.Simulator.PlayerIsInCab && (!Viewer.PlayerLocomotive.HasFront3DCab && !Viewer.PlayerLocomotive.HasRear3DCab))
                 NearPlane = 1.0f;
 
@@ -928,6 +928,7 @@ namespace Orts.Viewer3D
         protected virtual void SetCameraCar(TrainCar car)
         {
             attachedCar = car;
+            Program.Simulator.TunnelCarCameraCanActivated = car;
         }
 
         protected virtual bool IsCameraFlipped()
@@ -1697,6 +1698,7 @@ namespace Orts.Viewer3D
             base.SetCameraCar(car);
             attachedLocation = new Vector3(1.8f, 2.0f, attachedCar.CarLengthM / 2 - 0.3f);
             attachedToRear = car.Train.Cars[0] != car;
+            Program.Simulator.TunnelCarCameraCanActivated = car;
         }
 
         float Timer;
@@ -2002,6 +2004,7 @@ namespace Orts.Viewer3D
             {
                 ResetViewPoint(car);
             }
+            Program.Simulator.TunnelCarCameraCanActivated = car;
         }
 
         protected void ResetViewPoint(TrainCar car)
@@ -2023,7 +2026,7 @@ namespace Orts.Viewer3D
         {
             base.HandleUserInput(elapsedTime);
             if (UserInput.IsPressed(UserCommand.CameraChangePassengerViewPoint))
-                new CameraChangePassengerViewPointCommand(Viewer.Log);
+                new CameraChangePassengerViewPointCommand(Viewer.Log);            
         }
 
         public void SwitchSideCameraCar(TrainCar car)
@@ -2094,6 +2097,7 @@ namespace Orts.Viewer3D
                     StartViewPointRotationYRadians = viewPointRotationYRadians;
                 }
             }
+            Program.Simulator.TunnelCarCameraCanActivated = car;
         }
 
         public void ChangeCab(TrainCar newCar)
@@ -2174,6 +2178,7 @@ namespace Orts.Viewer3D
         public HeadOutCamera(Viewer viewer, HeadDirection headDirection)
             : base(viewer)
         {
+            if (attachedCar == null) return;
             FOVOffset();
             FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             Forwards = headDirection == HeadDirection.Forward;
@@ -2188,9 +2193,13 @@ namespace Orts.Viewer3D
 
         float[] HeadOutZ = new float[3];
         protected override void SetCameraCar(TrainCar car)
-        {
-            car = Viewer.PlayerTrain.LeadLocomotive;
+        {            
+            car = Viewer.PlayerTrain.LeadLocomotive;            
             base.SetCameraCar(car);
+            
+            // Icik
+            if (attachedCar == null) attachedCar = Program.Simulator.PlayerLocomotive;
+
             if (attachedCar.HeadOutViewpoints.Count > 0)
             {
                 attachedLocation = attachedCar.HeadOutViewpoints[CurrentViewpointIndex].Location;
@@ -2393,6 +2402,7 @@ namespace Orts.Viewer3D
                 }
             }
             InitialiseRotation(attachedCar);
+            Program.Simulator.TunnelCarCameraCanActivated = car;
         }
 
         /// <summary>

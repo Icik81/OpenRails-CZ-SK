@@ -2743,14 +2743,13 @@ namespace Orts.Simulation.AIs
                     if (AITrainOffsetStop)
                         distanceToGoM += AITrainOffsetStopDistance;
 
-                    NextStopDistanceM = distanceToGoM;                                                           
+                    NextStopDistanceM = distanceToGoM;
+                    
+                    // Icik
+                    UpdateSmoothDecelerating(elapsedClockSeconds, -1000);
+
                     if (distanceToGoM <= 0.1f)
                     {                        
-                        AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 100);
-                        
-                        // Icik
-                        UpdateSmoothDecelerating(elapsedClockSeconds, -1000);
-
                         AITrainThrottlePercent = 0;
 
                         // train is stopped - set departure time
