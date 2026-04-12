@@ -4068,6 +4068,9 @@ namespace Orts.Simulation.AIs
         float AIReqAccelMpSS;
         float AICheckSpeedTimer;
         float AIPrevSpeedMpS;
+        float TrainLocoPowerW;
+        float TrainLocoWeightKg;
+        float TrainLocoCount;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
         {            
             // Icik
@@ -4128,7 +4131,38 @@ namespace Orts.Simulation.AIs
                 
                 if (Math.Abs(SpeedMpS) < 0.80f * AbsAllowedMaxSpeed)
                     AIThrottleDownMode = false;
-            }            
+            }
+
+            // Dostupný výkon vlaku
+            TrainLocoPowerW = 0;
+            TrainLocoWeightKg = 0;
+            TrainLocoCount = 0;
+            foreach (TrainCar car in Cars)
+            {
+                if (car is MSTSLocomotive)
+                {
+                    if (car is MSTSDieselLocomotive)
+                    {
+                        TrainLocoPowerW += ((MSTSDieselLocomotive)car).MaxPowerW;
+                        TrainLocoWeightKg += ((MSTSDieselLocomotive)car).MassKG;
+                        TrainLocoCount++;
+                    }
+                    else
+                        if (car is MSTSElectricLocomotive)
+                        {
+                            TrainLocoPowerW += ((MSTSElectricLocomotive)car).MaxPowerW;
+                            TrainLocoWeightKg += ((MSTSElectricLocomotive)car).MassKG;
+                            TrainLocoCount++;
+                        }
+                        else
+                            if (car is MSTSSteamLocomotive)
+                            {
+                                TrainLocoPowerW += ((MSTSSteamLocomotive)car).MaxPowerW;
+                                TrainLocoWeightKg += ((MSTSSteamLocomotive)car).MassKG;
+                                TrainLocoCount++;
+                            }
+                }
+            }
 
             // Rozjezd AI
             if (Math.Abs(SpeedMpS) < 0.1f && !AIRollOn)
@@ -4252,11 +4286,17 @@ namespace Orts.Simulation.AIs
                     AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 30.0f);
                     stepSize = 1;
                 }
-
+                else
                 if (AITrainWillAttach) // omezení výkonu při připojování
                 {
                     AITSethrottlePercent = MathHelper.Clamp(AITSethrottlePercent, 0, 10.0f);
                     stepSize = 1;
+                }
+                else                
+                {                                
+                    float TrainMassCoefficient = MathHelper.Clamp(1 - ((MassKg - TrainLocoWeightKg) / TrainLocoWeightKg * 0.05f / (0.5f / reqAccelMpSS)), 0.1f, 1);                    
+                    reqAccelMpSS = MathHelper.Clamp(reqAccelMpSS * TrainMassCoefficient, -reqAccelMpSS, reqAccelMpSS);
+                    //Simulator.Confirmer.Information("reqAccelMpSS: " + reqAccelMpSS);
                 }
             }
 
