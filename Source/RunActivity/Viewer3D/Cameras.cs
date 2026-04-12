@@ -2177,8 +2177,7 @@ namespace Orts.Viewer3D
 
         public HeadOutCamera(Viewer viewer, HeadDirection headDirection)
             : base(viewer)
-        {
-            if (attachedCar == null) return;
+        {            
             FOVOffset();
             FieldOfView = Viewer.Settings.ViewingFOV + FieldOffViewOffset;
             Forwards = headDirection == HeadDirection.Forward;
