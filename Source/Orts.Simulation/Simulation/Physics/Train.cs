@@ -1860,7 +1860,17 @@ namespace Orts.Simulation.Physics
 
                 if (Simulator.ManualCouplingOverride)
                     Simulator.Settings.ManualCoupling = true; // Vynucené ruční svěšování
-            }            
+            }
+
+            // Pohled pro cestující se aktivuje pouze pro vlak s názvem obsahujícím "NoService" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "NoService"            
+            if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("noservice") && !Name.ToLower().Contains("noservice") && Name == "PLAYER" && IsActualPlayerTrain)
+            {
+                Name += " NoService"; // přidá název NoService do jména vlaku hráče
+            }
+            if (Name.ToLower().Contains("noservice") && IsActualPlayerTrain)
+            {
+                Simulator.PassengerViewTrain = true; // pokud název vlaku obsahuje NoService, aktivuje se pohled pro cestující a autopilot
+            }
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

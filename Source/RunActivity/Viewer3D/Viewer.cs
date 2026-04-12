@@ -1155,6 +1155,18 @@ namespace Orts.Viewer3D
                 }
             }
 
+            // Pohled pasažéra a aktivace autopilota pro vlak NoService
+            if (Simulator.PassengerViewTrain)
+            {
+                if (Camera != PassengerCamera)                
+                    PassengerCamera.Activate();
+                
+                if (((AITrain)PlayerLocomotive.Train).IsPlayerDriven)
+                    ((AITrain)PlayerLocomotive.Train).SwitchToAutopilotControl();
+
+                Simulator.PassengerViewTrain = false;
+            }
+
             Simulator.ActiveMovingTable = FindActiveMovingTable();
 
             frame.PrepareFrame(this);
