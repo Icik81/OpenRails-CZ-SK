@@ -1190,6 +1190,7 @@ namespace Orts.Viewer3D
                 if (((AITrain)PlayerLocomotive.Train).IsPlayerDriven)
                 {                    
                     (Simulator.PlayerLocomotive as MSTSWagon).DirectionControllerBlocked = true;
+                    ((AITrain)PlayerLocomotive.Train).IsPlayable = true;
                 }
                                 
                 Simulator.FreeViewTrain = false;
