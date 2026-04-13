@@ -778,7 +778,15 @@ namespace Orts.Simulation.AIs
                 }
             }
             else
-                AITrainBrakePercent = 0;            
+                AITrainBrakePercent = 0;
+
+            // Tento kamerový vlak se nesmí pohybovat
+            if (FreeViewTrain)
+            {
+                AITrainBrakePercent = 100;
+                AITrainThrottlePercent = 0;
+                return;
+            }
 
             // update position, route clearance and objects
 
@@ -1190,7 +1198,7 @@ namespace Orts.Simulation.AIs
             }
 #endif
             //            Trace.TraceWarning ("Time {0} Train no. {1} Speed {2} AllowedMaxSpeed {3} Throttle percent {4} Distance travelled {5} Movement State {6} BrakePerCent {7}",
-            //               clockTime, Number, SpeedMpS, AllowedMaxSpeedMpS, AITrainThrottlePercent, DistanceTravelledM, MovementState, AITrainBrakePercent);            
+            //               clockTime, Number, SpeedMpS, AllowedMaxSpeedMpS, AITrainThrottlePercent, DistanceTravelledM, MovementState, AITrainBrakePercent);                        
         }
 
         //================================================================================================//

@@ -1881,8 +1881,8 @@ namespace Orts.Simulation.Physics
             if (Name.ToLower().Contains("freeview") && IsActualPlayerTrain)
             {
                 Simulator.FreeViewTrain = true; // pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
-                FreeViewTrain = true;
-            }
+                FreeViewTrain = true;                
+            }            
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

@@ -1192,7 +1192,7 @@ namespace Orts.Viewer3D
                     (Simulator.PlayerLocomotive as MSTSWagon).DirectionControllerBlocked = true;
                     ((AITrain)PlayerLocomotive.Train).IsPlayable = true;
                 }
-                                
+                
                 Simulator.FreeViewTrain = false;
             }
 
