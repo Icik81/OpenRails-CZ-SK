@@ -325,6 +325,7 @@ namespace Orts.Simulation
         public string ShunterDecideMarker = "-";        
         public TrainCar TunnelCarCameraCanActivated;
         public bool PassengerViewTrain;
+        public bool FreeViewTrain;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -1241,12 +1242,12 @@ namespace Orts.Simulation
 
             #region Manuální spojování vozů vlaku hráče            
             // Manuální spojování vozů vlaku hráče            
-            if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && TryToCouple)
+            if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && drivenTrain.IsActualPlayerTrain && TryToCouple)
             {
                 if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
                 TryToCouple = false;
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f && !train.TrainOutOfRoute)
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && Math.Abs(train.SpeedMpS) < 0.01f && !train.TrainOutOfRoute && !train.FreeViewTrain)
                     {                        
                         float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
                         // Give another try if multiplayer
@@ -1428,7 +1429,7 @@ namespace Orts.Simulation
             if (drivenTrain.SpeedMpS < 0)
             {
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute)
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute && !train.FreeViewTrain)
                     {
                         //avoid coupling of player train with other players train
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
@@ -1610,7 +1611,7 @@ namespace Orts.Simulation
             else if (drivenTrain.SpeedMpS > 0)
             {
                 foreach (Train train in Trains)
-                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute)
+                    if (train != drivenTrain && train.TrainType != Train.TRAINTYPE.AI_INCORPORATED && !train.TrainOutOfRoute && !train.FreeViewTrain)
                     {
                         //avoid coupling of player train with other players train if it is too short alived (e.g, when a train is just spawned, it may overlap with another train)
                         if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;

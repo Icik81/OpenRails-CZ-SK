@@ -619,25 +619,25 @@ namespace Orts.Viewer3D
             }
         }
 
-        protected virtual void RotateDown(float speed)
+        public virtual void RotateDown(float speed)
         {
             RotationXRadians += speed;
             RotationXRadians = VerticalClamper.Clamp(RotationXRadians);
             MoveCamera();
         }
 
-        protected virtual void RotateRight(float speed)
+        public virtual void RotateRight(float speed)
         {
             RotationYRadians += speed;
             MoveCamera();
         }
 
-        protected void MoveCamera()
+        public void MoveCamera()
         {
             MoveCamera(new Vector3(0, 0, 0));
         }
 
-        protected void MoveCamera(Vector3 movement)
+        public void MoveCamera(Vector3 movement)
         {
             movement = Vector3.Transform(movement, Matrix.CreateRotationX(RotationXRadians));
             movement = Vector3.Transform(movement, Matrix.CreateRotationY(RotationYRadians));
@@ -1884,7 +1884,7 @@ namespace Orts.Viewer3D
         /// Remembers angle of camera to apply when user returns to this type of car.
         /// </summary>
         /// <param name="speed"></param>
-        protected override void RotateRight(float speed)
+        public override void RotateRight(float speed)
         {
             base.RotateRight(speed);
             viewPointRotationYRadians = RotationYRadians;
@@ -1894,7 +1894,7 @@ namespace Orts.Viewer3D
         /// Remembers angle of camera to apply when user returns to this type of car.
         /// </summary>
         /// <param name="speed"></param>
-        protected override void RotateDown(float speed)
+        public override void RotateDown(float speed)
         {
             base.RotateDown(speed);
             viewPointRotationXRadians = RotationXRadians;

@@ -1167,6 +1167,34 @@ namespace Orts.Viewer3D
                 Simulator.PassengerViewTrain = false;
             }
 
+            // Volný pohled a neblokuje kolej pro vlak FreeView
+            if (Simulator.FreeViewTrain)
+            {
+                if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
+                {                    
+                    FreeRoamCamera.Activate();
+                }
+                else
+                    if (FreeRoamCameraList.Count == 0)
+                    {
+                        new UseFreeRoamCameraCommand(Log);
+                        var movement = new Vector3(0, 0, 0);
+                        movement.X += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraX;
+                        movement.Y += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraY;
+                        movement.Z += 0;
+                        (Camera as RotatingCamera).MoveCamera(movement);
+                        (Camera as RotatingCamera).RotateDown(-0.35f);
+                        (Camera as RotatingCamera).RotateRight((Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraRotate);
+                    }
+
+                if (((AITrain)PlayerLocomotive.Train).IsPlayerDriven)
+                {                    
+                    (Simulator.PlayerLocomotive as MSTSWagon).DirectionControllerBlocked = true;
+                }
+                                
+                Simulator.FreeViewTrain = false;
+            }
+
             Simulator.ActiveMovingTable = FindActiveMovingTable();
 
             frame.PrepareFrame(this);

@@ -205,6 +205,9 @@ namespace Orts.Simulation.RollingStocks
         public float LoadSound_VolumeCoef_SM = 1.0f;
         public float LoadSound_VolumeCoef_TM = 1.0f;
         public float LoadSound_FrequencyCoef = 1.0f;
+        public float FreeViewCameraX = 0;
+        public float FreeViewCameraY = -7;
+        public float FreeViewCameraRotate = -0.35f;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1816,7 +1819,14 @@ namespace Orts.Simulation.RollingStocks
                 case "wagon(dieselheatertankcapacity": DieselHeaterTankCapacity = stf.ReadFloatBlock(STFReader.UNITS.Volume, null); break;
                 case "wagon(gensoundoff": GenSoundOff = stf.ReadBoolBlock(false); break;
                 case "wagon(name": stf.MustMatch("("); WagonName = stf.ReadString(); break;
-                case "wagon(electricheatingplug": CarHasElectricHeatingPlug = stf.ReadBoolBlock(false); break;                    
+                case "wagon(electricheatingplug": CarHasElectricHeatingPlug = stf.ReadBoolBlock(false); break;
+                case "wagon(freeviewcamera_xyrotate":
+                    stf.MustMatch("(");
+                    FreeViewCameraX = stf.ReadFloat(STFReader.UNITS.None, null);
+                    FreeViewCameraY = stf.ReadFloat(STFReader.UNITS.None, null);
+                    FreeViewCameraRotate = stf.ReadFloat(STFReader.UNITS.None, null);                    
+                    stf.SkipRestOfBlock();
+                    ; break;
             }
         }
 
@@ -2011,6 +2021,9 @@ namespace Orts.Simulation.RollingStocks
             WagonName = copy.WagonName;            
             WagFilePathOrigin = copy.WagFilePathOrigin;
             CarHasElectricHeatingPlug = copy.CarHasElectricHeatingPlug;
+            FreeViewCameraX = copy.FreeViewCameraX;
+            FreeViewCameraY = copy.FreeViewCameraY;
+            FreeViewCameraRotate = copy.FreeViewCameraRotate;
 
             if (copy.IntakePointList != null)
             {

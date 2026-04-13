@@ -6345,7 +6345,7 @@ namespace Orts.Simulation.Signalling
 
             // Icik
             // Netvoří blokaci úseku, pokud je na kolejích servis FATAL
-            if (thisTrain.Train.Name.ToLower().Contains("servis") && thisTrain.Train.Name.ToLower().Contains("fatal")) return;            
+            if ((thisTrain.Train.Name.ToLower().Contains("servis") && thisTrain.Train.Name.ToLower().Contains("fatal")) || thisTrain.Train.FreeViewTrain) return;            
 
             if (thisTrain.Train.CheckTrain)
             {

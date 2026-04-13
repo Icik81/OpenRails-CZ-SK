@@ -703,8 +703,8 @@ namespace Orts.Simulation.AIs
         /// </summary>
 
         public void AIUpdate(float elapsedClockSeconds, double clockTime, bool preUpdate)
-        {            
-            // Icik           
+        {
+            // Icik            
             if (Name.Contains("KpR")) AIKeepRun = true;
             // Udržuje rychlost servisu na jeho maximální rychlosti
             if (Simulator.Settings.MSTSCompatibilityMode && Cars.Count == 1 && (Cars[0] as MSTSWagon).WagonIsServis)

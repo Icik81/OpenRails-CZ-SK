@@ -187,6 +187,7 @@ namespace Orts.Simulation.Physics
         public bool FatalIncidentRun;
         public float NotFatalIncidentDistanceTravelled;
         public bool NotFatalIncident;
+        public bool FreeViewTrain;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1870,6 +1871,17 @@ namespace Orts.Simulation.Physics
             if (Name.ToLower().Contains("noservice") && IsActualPlayerTrain)
             {
                 Simulator.PassengerViewTrain = true; // pokud název vlaku obsahuje NoService, aktivuje se pohled pro cestující a autopilot
+            }
+
+            // Volný pohled se aktivuje pouze pro vlak s názvem obsahujícím "FreeView" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "FreeView"            
+            if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("freeview") && !Name.ToLower().Contains("freeview") && Name == "PLAYER" && IsActualPlayerTrain)
+            {
+                Name += " FreeView"; // přidá název FreeView do jména vlaku hráče
+            }
+            if (Name.ToLower().Contains("freeview") && IsActualPlayerTrain)
+            {
+                Simulator.FreeViewTrain = true; // pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
+                FreeViewTrain = true;
             }
 
             // Manuální režim výhybek a signálů pro MP
