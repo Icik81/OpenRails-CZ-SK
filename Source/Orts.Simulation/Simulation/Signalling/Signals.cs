@@ -7834,7 +7834,7 @@ namespace Orts.Simulation.Signalling
         /// </summary>
 
         public bool ContainsTrain(Train.TrainRouted thisTrain)
-        {
+        {            
             if (thisTrain == null) return (false);
             return (ContainsKey(thisTrain.Train.routedForward) || ContainsKey(thisTrain.Train.routedBackward));
         }
@@ -7846,7 +7846,7 @@ namespace Orts.Simulation.Signalling
         /// </summary>
 
         public bool ContainsTrain(Train thisTrain)
-        {
+        {            
             if (thisTrain == null) return (false);
             return (ContainsKey(thisTrain.routedForward) || ContainsKey(thisTrain.routedBackward));
         }
@@ -8286,7 +8286,7 @@ namespace Orts.Simulation.Signalling
             if (TrainOccupy.Count == 1 && TrainOccupy.ContainsTrain(thisTrain))  // only one train and that one is us
             {
                 return (false);
-            }
+            }            
 
             return (true);
         }
@@ -8301,7 +8301,8 @@ namespace Orts.Simulation.Signalling
         {
             foreach (KeyValuePair<Train.TrainRouted, int> thisTCT in TrainOccupy)
             {
-                Train.TrainRouted otherTrain = thisTCT.Key;
+                Train.TrainRouted otherTrain = thisTCT.Key;                
+                
                 if (otherTrain != thisTrain)
                 {
                     if (thisTCT.Value == reqDirection)

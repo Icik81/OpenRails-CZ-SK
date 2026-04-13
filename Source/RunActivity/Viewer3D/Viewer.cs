@@ -1168,7 +1168,7 @@ namespace Orts.Viewer3D
             }
 
             // Volný pohled a neblokuje kolej pro vlak FreeView
-            if (Simulator.FreeViewTrain)
+            if (((AITrain)PlayerLocomotive.Train).FreeViewTrain)
             {
                 if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
                 {                    
@@ -1190,10 +1190,7 @@ namespace Orts.Viewer3D
                 if (((AITrain)PlayerLocomotive.Train).IsPlayerDriven)
                 {                    
                     (Simulator.PlayerLocomotive as MSTSWagon).DirectionControllerBlocked = true;
-                    ((AITrain)PlayerLocomotive.Train).IsPlayable = true;
-                }
-                
-                Simulator.FreeViewTrain = false;
+                }                
             }
 
             Simulator.ActiveMovingTable = FindActiveMovingTable();

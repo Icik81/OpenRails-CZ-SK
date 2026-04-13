@@ -885,7 +885,7 @@ namespace Orts.Simulation.AIs
                 (this as AITrain).AIRollOn = false;
                 (this as AITrain).AIRollOnStartTimer = 0;
                 (this as AITrain).AIStayToRollOn = false;
-            }            
+            }                        
 
             switch (MovementState)
             {
@@ -1850,7 +1850,8 @@ namespace Orts.Simulation.AIs
                 {
                     foreach (KeyValuePair<Train, float> trainAhead in trainInfo) // always just one
                     {
-                        Train OtherTrain = trainAhead.Key;
+                        Train OtherTrain = trainAhead.Key;                        
+
                         if (Math.Abs(OtherTrain.SpeedMpS) < 0.001f &&
                                     (DistanceToEndNodeAuthorityM[0] > followDistanceStatTrainM || UncondAttach || OtherTrain.TrainType == TRAINTYPE.STATIC ||
                                     OtherTrain.PresentPosition[0].TCSectionIndex ==
@@ -3340,7 +3341,8 @@ namespace Orts.Simulation.AIs
                 {
                     foreach (KeyValuePair<Train, float> trainAhead in trainInfo) // always just one
                     {
-                        Train OtherTrain = trainAhead.Key;
+                        Train OtherTrain = trainAhead.Key;                        
+
                         // Icik
                         AITrainWillAttach = true;
 
@@ -3390,7 +3392,7 @@ namespace Orts.Simulation.AIs
                             {
                                 attachToTrain = false;
                                 return;
-                            }
+                            }                            
                         }
                         if (Math.Abs(OtherTrain.SpeedMpS) >= 0.025f)
                         {
@@ -3667,7 +3669,7 @@ namespace Orts.Simulation.AIs
                 }
 
                 // train not found - keep moving, state will change next update
-                else AttachTo = -1;
+                else AttachTo = -1;                
             }            
         }
 
