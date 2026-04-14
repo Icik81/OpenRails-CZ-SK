@@ -187,7 +187,9 @@ namespace Orts.Simulation.Physics
         public bool FatalIncidentRun;
         public float NotFatalIncidentDistanceTravelled;
         public bool NotFatalIncident;
-        public bool FreeViewTrain;
+        public bool PassengerViewTrain;
+        public bool FreeViewTrain;        
+        public bool FirstCameraInitFreeView;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -786,6 +788,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            FirstCameraInitFreeView = inf.ReadBoolean();
             NotFatalServisStart = inf.ReadBoolean();
             NotFatalServisOrderBack = inf.ReadBoolean();
             NotFatalServisGoBack = inf.ReadBoolean();
@@ -1185,6 +1188,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(FirstCameraInitFreeView);
             outf.Write(NotFatalServisStart);
             outf.Write(NotFatalServisOrderBack);
             outf.Write(NotFatalServisGoBack);
@@ -1866,25 +1870,28 @@ namespace Orts.Simulation.Physics
             // Pohled pro cestující se aktivuje pouze pro vlak s názvem obsahujícím "NoService" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "NoService"            
             if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("noservice") && !Name.ToLower().Contains("noservice") && Name == "PLAYER" && IsActualPlayerTrain)
             {
-                Name += " NoService"; // přidá název NoService do jména vlaku hráče
+                Name += " NoService"; // Přidá název NoService do jména vlaku hráče
             }
-            if (Name.ToLower().Contains("noservice") && IsActualPlayerTrain)
+            if (Name.ToLower().Contains("noservice"))
             {
-                Simulator.PassengerViewTrain = true; // pokud název vlaku obsahuje NoService, aktivuje se pohled pro cestující a autopilot
+                PassengerViewTrain = true; // Pokud název vlaku obsahuje NoService, aktivuje se pohled pro cestující a autopilot
+                IsPlayable = true;
             }
 
             // Volný pohled se aktivuje pouze pro vlak s názvem obsahujícím "FreeView" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "FreeView"            
             if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("freeview") && !Name.ToLower().Contains("freeview") && Name == "PLAYER" && IsActualPlayerTrain)
             {
-                Name += " FreeView"; // přidá název FreeView do jména vlaku hráče
+                Name += " FreeView"; // Přidá název FreeView do jména vlaku hráče
             }
             if (Name.ToLower().Contains("freeview"))
             {
-                // pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
+                // Pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
                 FreeViewTrain = true;
-                IsPlayable = true;
-                RemoveFromTrack();                
-            }            
+                IsPlayable = true;                                
+                RemoveFromTrack();
+                SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);
+                return;                                                
+            }                       
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

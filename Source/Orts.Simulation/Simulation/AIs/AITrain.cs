@@ -784,7 +784,7 @@ namespace Orts.Simulation.AIs
             if (FreeViewTrain)
             {
                 AITrainBrakePercent = 100;
-                AITrainThrottlePercent = 0;
+                AITrainThrottlePercent = 0;                
                 return;
             }
 
@@ -949,7 +949,7 @@ namespace Orts.Simulation.AIs
                                 if (TrainCanGoOn)
                                     MovementState = AI_MOVEMENT_STATE.ACCELERATING;                                
                             }                            
-                        }
+                        }                        
                     }
                     break;
                 case AI_MOVEMENT_STATE.INIT:
