@@ -450,6 +450,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HasCabNightDirectory;
         public bool HasORTSCabLightDirectory;
         public float InstrumentsBrightness = 0.85f;
+        public bool AILocoRun;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

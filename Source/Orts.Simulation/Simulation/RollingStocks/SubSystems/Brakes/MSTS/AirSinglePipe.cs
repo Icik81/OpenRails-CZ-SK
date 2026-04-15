@@ -706,7 +706,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
         {            
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
-            {
+            {                
                 loco.LocoStation = 1;
                 if (loco.UsingRearCab)
                     loco.LocoStation = 2;
@@ -801,7 +801,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     loco.LapActive[1] = true;
                     loco.LapActive[2] = true;
-                }
+                }                
             }            
         }
         
@@ -2281,7 +2281,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         car.BrakeSystem.BrakeCylApplyMainResPressureOK = false;
 
                 // Aktivace příznaku rychlobrzdy pro vozy 
-                if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency
+                if ((lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency && !lead.PlayerLocoSetUp)
                     || lead.TrainBrakeController.TCSEmergencyBraking
                     || lead.TrainBrakeController.EmergencyBrakingPushButton)
                     foreach (TrainCar car in train.Cars)

@@ -1167,7 +1167,7 @@ namespace Orts.Viewer3D
 
             // Volný pohled a neblokuje kolej pro vlak FreeView
             if (PlayerLocomotive.Train.FreeViewTrain)
-            {
+            {                                
                 if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
                 {
                     FreeRoamCamera.Activate();
@@ -1175,9 +1175,15 @@ namespace Orts.Viewer3D
                 else
                     if (FreeRoamCameraList.Count == 0)
                     {
-                        new UseFreeRoamCameraCommand(Log);                        
+                        if (Simulator.GameTime > 0)
+                        {
+                            CheckReplaying();
+                            new UseFreeRoamCameraCommand(Log);
+                        }
                         if (!PlayerLocomotive.Train.FirstCameraInitFreeView)
-                        {                            
+                        {
+                            FrontCamera.Activate();
+                            new UseFreeRoamCameraCommand(Log);
                             var movement = new Vector3(0, 0, 0);
                             movement.X += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraX;
                             movement.Y += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraY;

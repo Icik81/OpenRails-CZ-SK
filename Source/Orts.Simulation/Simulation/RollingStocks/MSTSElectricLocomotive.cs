@@ -1473,13 +1473,13 @@ namespace Orts.Simulation.RollingStocks
             // Icik                      
             if (HVOff)
             {
-                HVOff = false;                
+                HVOff = false;
                 LocalThrottlePercent = 0;
                 if (!EDBIndependent)
                 {
                     LocalDynamicBrakePercent = 0;
-                }                
-                if (CruiseControl != null) 
+                }
+                if (CruiseControl != null)
                 {
                     CruiseControl.ForceThrottleAndDynamicBrake = 0;
                 }
@@ -1521,8 +1521,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 PowerOnTriggered = false;
                 SignalEvent(Event.EnginePowerOff);
-            }                           
-            
+            }
+
             PowerSupply.Update(elapsedClockSeconds);
 
             if (PowerSupply.CircuitBreaker != null && IsPlayerTrain && LocoType != LocoTypes.Vectron)
@@ -1536,7 +1536,7 @@ namespace Orts.Simulation.RollingStocks
                         DynamicBrakeChangeActiveState(false);
                     }
                 }
-            }            
+            }
 
             // AI si vybere napěťový systém dle napětí tratě (nutné pro správné zvukové triggery)
             if (!IsPlayerTrain)
@@ -1562,21 +1562,21 @@ namespace Orts.Simulation.RollingStocks
                     SwitchingVoltageMode = 1;
                 }
             }
-            
-        // Icik            
-        EndAIVoltageChoice:
+
+            // Icik            
+            EndAIVoltageChoice:
             SetAIPantoDown(elapsedClockSeconds);
             JVHack(elapsedClockSeconds);
-            VoltageIndicate(elapsedClockSeconds);                                                
+            VoltageIndicate(elapsedClockSeconds);
             UnderVoltageProtection(elapsedClockSeconds);
 
             if (IsPlayerTrain)
-            {                
+            {
                 if (LocoType != LocoTypes.Vectron && MultiSystemEngine && LocomotivePowerVoltage == 15000)
                 {
-                    Loco15kV = SwitchingVoltageMode_OffAC ? true : false;                    
+                    Loco15kV = SwitchingVoltageMode_OffAC ? true : false;
                 }
-                RouteVoltageVInfo = RouteVoltageV;                
+                RouteVoltageVInfo = RouteVoltageV;
                 AuxAirConsumption(elapsedClockSeconds);
                 FaultByPlayer(elapsedClockSeconds);
                 MUCableCommunication();
@@ -1589,154 +1589,154 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (Pantographs[1].State == PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);                            
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 1);
                         }
                         if (Pantographs[2].State == PantographState.Up)
                         {
-                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);                            
+                            SignalEvent(PowerSupplyEvent.LowerPantograph, 2);
                         }
                         HVOff = true;
                     }
-                }                                    
+                }
+            }
 
-                // Nastavení pro plně oživenou lokomotivu
-                if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
+            // Nastavení pro plně oživenou lokomotivu
+            if (LocoReadyToGo && BrakeSystem.IsAirFull && !LocoIsStatic)
+            {
+                if (Compressor5)
+                    CompressorSwitch[LocoStation] = 2;
+                if (CompressorCombined)
+                    CompressorSwitch[LocoStation] = 2;
+                if (CompressorCombined2)
+                    CompressorSwitch2[LocoStation] = 1;
+
+                if (CompressorOffAutoOn)
                 {
-                    if (Compressor5)
-                        CompressorSwitch[LocoStation] = 2;
-                    if (CompressorCombined)
-                        CompressorSwitch[LocoStation] = 2;
-                    if (CompressorCombined2)
+                    if (CompressorAutoOffOn)
+                        CompressorSwitch[LocoStation] = -1;
+                    else
+                        CompressorSwitch[LocoStation] = 1;
+                }
+                if (CompressorOffAutoOn2)
+                {
+                    if (CompressorAutoOffOn2)
+                        CompressorSwitch2[LocoStation] = -1;
+                    else
                         CompressorSwitch2[LocoStation] = 1;
+                }
 
-                    if (CompressorOffAutoOn)
-                    {
-                        if (CompressorAutoOffOn)
-                            CompressorSwitch[LocoStation] = -1;
-                        else
-                            CompressorSwitch[LocoStation] = 1;
-                    }
-                    if (CompressorOffAutoOn2)
-                    {
-                        if (CompressorAutoOffOn2)
-                            CompressorSwitch2[LocoStation] = -1;
-                        else
-                            CompressorSwitch2[LocoStation] = 1;
-                    }
-
+                CompressorMode_OffAuto[LocoStation] = true;
+                CompressorMode2_OffAuto[LocoStation] = true;
+                if (!Compressor5 && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
+                {
                     CompressorMode_OffAuto[LocoStation] = true;
                     CompressorMode2_OffAuto[LocoStation] = true;
-                    if (!Compressor5 && !CompressorCombined && !CompressorCombined2 && !CompressorOffAutoOn && !CompressorOffAutoOn2)
+                }
+                else
+                {
+                    if (!Compressor5 && !CompressorCombined && !CompressorOffAutoOn)
+                        CompressorMode_OffAuto[LocoStation] = false;
+                    if (!Compressor5 && !CompressorCombined2 && !CompressorOffAutoOn2)
+                        CompressorMode2_OffAuto[LocoStation] = false;
+                }
+                HV4Switch[LocoStation] = 1;
+
+                SplashScreen = false;
+
+                if (LocoType == LocoTypes.Vectron)
+                {
+                    double lat = 0, lon = 0;
+                    new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref lat, ref lon);
+
+                    if (RouteVoltageV == 25000)
+                        SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ25kV;
+                    if (RouteVoltageV == 15000)
                     {
-                        CompressorMode_OffAuto[LocoStation] = true;
-                        CompressorMode2_OffAuto[LocoStation] = true;
+                        if (lon > 0.26)
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
+                        else
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.DE15kV;
+                        Loco15kV = true;
                     }
-                    else
+                    if (RouteVoltageV == 3000)
                     {
-                        if (!Compressor5 && !CompressorCombined && !CompressorOffAutoOn)
-                            CompressorMode_OffAuto[LocoStation] = false;
-                        if (!Compressor5 && !CompressorCombined2 && !CompressorOffAutoOn2)
-                            CompressorMode2_OffAuto[LocoStation] = false;
+                        if (lon < 0.316)
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
+                        else
+                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK3kV;
+
                     }
-                    HV4Switch[LocoStation] = 1;
+                    HV3Switch[1] = HV3Switch[2] = 1;
+                    LastStateHV3[1] = LastStateHV3[2] = 1;
+                }
 
-                    SplashScreen = false;
-
-                    if (LocoType == LocoTypes.Vectron)
+                if (MultiSystemEngine && RouteVoltageV != 1)
+                {
+                    if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                     {
-                        double lat = 0, lon = 0;
-                        new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.WorldLocation.Location, ref lat, ref lon);
-
-                        if (RouteVoltageV == 25000)
-                            SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ25kV;
-                        if (RouteVoltageV == 15000)
+                        if (Pantographs.Count == 4)
                         {
-                            if (lon > 0.26)
-                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.AT15kV;
-                            else
-                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.DE15kV;
-                            Loco15kV = true;
+                            if (RouteVoltageV == 3000)
+                            {
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 3);
+                            }
+                            if (RouteVoltageV > 3000)
+                            {
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                            }
                         }
-                        if (RouteVoltageV == 3000)
+                        else
                         {
-                            if (lon < 0.316)
-                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.CZ3kV;
-                            else
-                                SelectedPowerSystem = SelectingPowerSystem = PowerSystem.SK3kV;
-
+                            if (RouteVoltageV > 1)
+                            {
+                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
+                            }
                         }
-                        HV3Switch[1] = HV3Switch[2] = 1;
-                        LastStateHV3[1] = LastStateHV3[2] = 1;
                     }
 
-                    if (MultiSystemEngine && RouteVoltageV != 1)
+                    Pantograph3Switch[LocoStation] = 2;
+                    Pantograph4Switch[LocoStation] = 1;
+                    Pantograph5Switch[LocoStation] = 1;
+
+                    if (RouteVoltageV == 3000)
+                    {
+                        HV5Switch[LocoStation] = 1;
+                        VoltageSelectionSwitch[LocoStation] = 0;
+                    }
+                    if (RouteVoltageV > 3000)
+                    {
+                        HV5Switch[LocoStation] = 3;
+                        VoltageSelectionSwitch[LocoStation] = 2;
+                    }
+
+                    if (PantographVoltageV > PantographCriticalVoltage)
+                        HVOn = true;
+
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                    {
+                        LocoReadyToGo = false;
+                        Pantograph3Switch[LocoStation] = 1;
+                    }
+                }
+                if (!MultiSystemEngine)
+                {
+                    HVOn = true;
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
                     {
                         if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                         {
-                            if (Pantographs.Count == 4)
-                            {
-                                if (RouteVoltageV == 3000)
-                                {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 3);                                    
-                                }
-                                if (RouteVoltageV > 3000)
-                                {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
-                                }
-                            }
-                            else
-                            {
-                                if (RouteVoltageV > 1)
-                                {
-                                    SignalEvent(PowerSupplyEvent.RaisePantograph, 1);                                    
-                                }
-                            }
+                            SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                         }
 
                         Pantograph3Switch[LocoStation] = 2;
-                        Pantograph4Switch[LocoStation] = 1;                        
+                        Pantograph3CanOn = true;
+                        Pantograph4Switch[LocoStation] = 1;
                         Pantograph5Switch[LocoStation] = 1;
 
-                        if (RouteVoltageV == 3000)
-                        {
-                            HV5Switch[LocoStation] = 1;
-                            VoltageSelectionSwitch[LocoStation] = 0;
-                        }
-                        if (RouteVoltageV > 3000)
-                        {
-                            HV5Switch[LocoStation] = 3;
-                            VoltageSelectionSwitch[LocoStation] = 2;
-                        }
-
-                        if (PantographVoltageV > PantographCriticalVoltage)
-                            HVOn = true;
-
-                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                        if (PowerOn)
                         {
                             LocoReadyToGo = false;
                             Pantograph3Switch[LocoStation] = 1;
-                        }
-                    }
-                    if (!MultiSystemEngine)
-                    {
-                        HVOn = true;
-                        if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
-                        {
-                            if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
-                            {
-                                SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
-                            }                            
-
-                            Pantograph3Switch[LocoStation] = 2;
-                            Pantograph3CanOn = true;
-                            Pantograph4Switch[LocoStation] = 1;
-                            Pantograph5Switch[LocoStation] = 1;
-
-                            if (PowerOn)
-                            {
-                                LocoReadyToGo = false;                                
-                                Pantograph3Switch[LocoStation] = 1;
-                            }
                         }
                     }
                 }

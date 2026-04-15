@@ -7071,16 +7071,103 @@ namespace Orts.Simulation.RollingStocks
                     Mirel.BlueLight = true;
                     // LS90
                     Mirel.ls90tested = true;
-                    Mirel.Ls90power[LocoStation] = LS90power.On;                    
-                }
+                    Mirel.Ls90power[LocoStation] = LS90power.On;
+                }                
+
+                LocoSetUpTimer = 0;
+                if (PowerOn) LocoReadyToGo = true;
 
                 if (!RDSTBreaker[LocoStation])
-                {                    
+                {
                     RDSTBreaker[LocoStation] = true;
                 }
 
-                PlayerLocoSetUp = false;
-                LocoSetUpTimer = 0;
+                #region Lead
+                // Vedoucí lokomotiva
+                if (IsLeadLocomotive())
+                {
+                    if (AllCabItemReaded)
+                        PlayerLocoSetUp = false;
+
+                    if (PowerOn)
+                    {
+                        if (LocoStation == 1)
+                        {
+                            TrainBrakeValue[1] = TrainBrakeValueR;
+                            TrainBrakeValue[2] = TrainBrakeValueL;
+                        }
+                        else
+                        {
+                            TrainBrakeValue[2] = TrainBrakeValueR;
+                            TrainBrakeValue[1] = TrainBrakeValueL;
+                        }
+                    }
+                    else
+                    {
+                        TrainBrakeValue[1] = TrainBrakeController.DefaultBrakeValue;
+                        TrainBrakeValue[2] = TrainBrakeController.DefaultBrakeValue;
+                    }
+                    SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+
+                    if (AILocoRun)
+                    {
+                        AILocoRun = false;
+                        EngineBrakeValue[1] = 0;
+                        EngineBrakeValue[2] = 0;
+                        SetEngineBrakePercent(0);
+                    }
+                    else
+                    {
+                        if (LocoStation == 1)
+                            EngineBrakeValue[1] = 1;
+                        else
+                            EngineBrakeValue[2] = 1;
+                        SetEngineBrakePercent(100);
+                        BrakeSystem.AutoCylPressurePSI0 = BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
+                    }
+
+                    if (LapButtonEnable && PowerOn)
+                    {
+                        if (LocoStation == 1)
+                        {
+                            LapActive[1] = false;
+                            LapActive[2] = true;
+                        }
+                        else
+                        {
+                            LapActive[1] = true;
+                            LapActive[2] = false;
+                        }
+                    }
+                }
+                else
+                    PlayerLocoSetUp = false;
+                #endregion Lead
+
+                // Ostatní lookomotivy ve vlaku
+                foreach (var car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())
+                    {
+                        if ((car as MSTSLocomotive).TrainBrakeController.DefaultLapBrakeValue > 0)
+                        {
+                            (car as MSTSLocomotive).TrainBrakeValue[1] = (car as MSTSLocomotive).TrainBrakeController.DefaultLapBrakeValue;
+                            (car as MSTSLocomotive).TrainBrakeValue[2] = (car as MSTSLocomotive).TrainBrakeController.DefaultLapBrakeValue;
+                        }
+                        else
+                        {
+                            (car as MSTSLocomotive).TrainBrakeValue[1] = (car as MSTSLocomotive).TrainBrakeController.DefaultBrakeValue;
+                            (car as MSTSLocomotive).TrainBrakeValue[2] = (car as MSTSLocomotive).TrainBrakeController.DefaultBrakeValue;
+                        }
+                        (car as MSTSLocomotive).SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                        (car as MSTSLocomotive).EngineBrakeValue[1] = 0;
+                        (car as MSTSLocomotive).EngineBrakeValue[2] = 0;
+                        (car as MSTSLocomotive).SetEngineBrakePercent(0);
+                        (car as MSTSLocomotive).LapActive[1] = false;
+                        (car as MSTSLocomotive).LapActive[2] = false;
+                    }
+                }
+
             }
             else
                 AILocoSetUp = false;
@@ -7712,12 +7799,20 @@ namespace Orts.Simulation.RollingStocks
 
                 if (this.PowerOn)
                 {
+                    if (AbsSpeedMpS > 0.1f)
+                    {
+                        AILocoRun = true;                        
+                    }
+                    else
+                    {
+                        AILocoRun = false;                        
+                    }
                     AILocoSetUp = true;
-                    PlayerLocoSetUp = true;
-                    LocoReadyToGo = true;
+                    PlayerLocoSetUp = true;                    
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     HeatingPosition[LocoStation] = 1;
+                    StationIsActivated[LocoStation] = true;
                     PowerKey = true;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
                     if (!RDSTBreaker[LocoStation])
@@ -7750,6 +7845,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = false;
                     BrakeSystem.IsAirFull = false;
                     PowerKeyPosition[LocoStation] = 0;
+                    StationIsActivated[LocoStation] = false;
                     PowerKey = false;
                     if (RDSTBreaker[LocoStation])
                     {
