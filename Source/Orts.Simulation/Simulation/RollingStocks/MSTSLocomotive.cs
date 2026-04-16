@@ -18446,8 +18446,16 @@ namespace Orts.Simulation.RollingStocks
         public int LightsFrameUpdate = 0;        
         public void LightPositionHandle()
         {
-            if (AllCabItemReaded && LightsFrameUpdate < 3)
-                LightsFrameUpdate++;            
+            if (IsLeadLocomotive())
+            {
+                if (AllCabItemReaded && LightsFrameUpdate < 3)
+                    LightsFrameUpdate++;
+            }
+            else
+            {
+                if (LightsFrameUpdate < 3)
+                    LightsFrameUpdate++;
+            }
 
             if (HeadLight2Enable)
             {
