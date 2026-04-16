@@ -189,7 +189,7 @@ namespace Orts.Simulation.Physics
         public bool NotFatalIncident;
         public bool PassengerViewTrain;
         public bool FreeViewTrain;        
-        public bool FirstCameraInitFreeView;
+        public bool FirstCameraInitFreeView;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1844,27 +1844,35 @@ namespace Orts.Simulation.Physics
             GeneratePaxDynamically();            
 
             if (TrainStopAtLevelCrossTimer > 0) TrainStopAtLevelCrossTimer += elapsedClockSeconds;
-
-            if (IsPlayerDriven)
+            
+            // Vynucené ruční svěšování
+            if (Simulator.conFileName != null && Simulator.conFileName.Contains("MC") && !Name.Contains("MC") && Name == "PLAYER" && IsActualPlayerTrain)
             {
-                if (Simulator.conFileName != null)
-                {
-                    if (Simulator.conFileName.Contains("MC")) 
-                    {                        
-                        Simulator.ManualCouplingOverride = true;
-                    }
-                    if (Simulator.conFileName.ToLower().Contains("nosig")) // bez signálů na TM
-                    {
-                        NoSignals = true;
-                    }
-                    if (Simulator.conFileName.ToLower().Contains("nospeedlimit")) // bez omezení rychlosti a vykolejení
-                    {
-                        NoSpeedLimit = true;
-                    }
-                }
+                Name += " MC"; // Přidá název MC do jména vlaku hráče
+            }
+            if (Name.Contains("MC") && IsActualPlayerTrain)
+            {
+                Simulator.Settings.ManualCoupling = true;
+            }            
 
-                if (Simulator.ManualCouplingOverride)
-                    Simulator.Settings.ManualCoupling = true; // Vynucené ruční svěšování
+            // Bez signálů na TM
+            if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("nosig") && !Name.ToLower().Contains("nosig") && Name == "PLAYER" && IsActualPlayerTrain)
+            {
+                Name += " NoSig"; // Přidá název NoSig do jména vlaku hráče
+            }
+            if (Name.ToLower().Contains("nosig"))
+            {
+                NoSignals = true;
+            }
+
+            // Bez omezení rychlosti a vykolejení
+            if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("nospeedlimit") && !Name.ToLower().Contains("nospeedlimit") && Name == "PLAYER" && IsActualPlayerTrain)
+            {
+                Name += " NoSpeedLimit"; // Přidá název NoSpeedLimit do jména vlaku hráče
+            }
+            if (Name.ToLower().Contains("nospeedlimit"))
+            {
+                NoSpeedLimit = true;
             }
 
             // Pohled pro cestující se aktivuje pouze pro vlak s názvem obsahujícím "NoService" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "NoService"            

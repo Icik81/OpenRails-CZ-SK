@@ -261,8 +261,7 @@ namespace Orts.Simulation
         public bool DoorSwitchDoorUnLockedSignal;
         public bool DoorSwitchDoorOpened;
         public bool DoorSwitchDoorWasOpened;
-        public double OldClockTime;
-        public bool ManualCouplingOverride;
+        public double OldClockTime;        
         public bool GameWasRestored;
         public bool DashLightCanActivate;
         public bool ESCKeyActivated;
@@ -724,8 +723,7 @@ namespace Orts.Simulation
             CarCoupleMaxSpeedOvercome = inf.ReadBoolean();
             ControllerVoltsLocoHelper = inf.ReadSingle();
             TrainPowerKey = inf.ReadBoolean();            
-            OldClockTime = inf.ReadDouble();
-            ManualCouplingOverride = inf.ReadBoolean();            
+            OldClockTime = inf.ReadDouble();                     
 
             ClockTime = inf.ReadDouble();
             Season = (SeasonType)inf.ReadInt32();
@@ -785,8 +783,7 @@ namespace Orts.Simulation
             outf.Write(CarCoupleMaxSpeedOvercome);
             outf.Write(ControllerVoltsLocoHelper);
             outf.Write(TrainPowerKey);
-            outf.Write(OldClockTime);
-            outf.Write(ManualCouplingOverride);            
+            outf.Write(OldClockTime);                   
 
             outf.Write(ClockTime);
             outf.Write((int)Season);
@@ -1019,7 +1016,7 @@ namespace Orts.Simulation
                 ActivityRun.Update();
             }
 
-            if (HazzardManager != null) HazzardManager.Update(elapsedClockSeconds);
+            if (HazzardManager != null) HazzardManager.Update(elapsedClockSeconds);            
         }
 
         internal void SetWeather(WeatherType weather, SeasonType season)

@@ -7075,7 +7075,10 @@ namespace Orts.Simulation.RollingStocks
                 }                
 
                 LocoSetUpTimer = 0;
-                if (PowerOn) LocoReadyToGo = true;
+                if (PowerOn)
+                {
+                    LocoReadyToGo = true;                    
+                }
 
                 if (!RDSTBreaker[LocoStation])
                 {
@@ -7086,7 +7089,7 @@ namespace Orts.Simulation.RollingStocks
                 // Vedoucí lokomotiva
                 if (IsLeadLocomotive())
                 {
-                    if (AllCabItemReaded)
+                    if (AllCabItemReaded && LightsFrameUpdate == 3)
                         PlayerLocoSetUp = false;
 
                     if (PowerOn)
@@ -7141,7 +7144,8 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
                 else
-                    PlayerLocoSetUp = false;
+                    if (LightsFrameUpdate == 3)
+                        PlayerLocoSetUp = false;
                 #endregion Lead
 
                 // Ostatní lookomotivy ve vlaku
@@ -7814,6 +7818,7 @@ namespace Orts.Simulation.RollingStocks
                     HeatingPosition[LocoStation] = 1;
                     StationIsActivated[LocoStation] = true;
                     PowerKey = true;
+                    LightsFrameUpdate = 0;
                     AuxResPressurePSI = MaxAuxResPressurePSI;
                     if (!RDSTBreaker[LocoStation])
                     {
@@ -7845,6 +7850,7 @@ namespace Orts.Simulation.RollingStocks
                     LocoReadyToGo = false;
                     BrakeSystem.IsAirFull = false;
                     PowerKeyPosition[LocoStation] = 0;
+                    HeatingPosition[LocoStation] = 0;
                     StationIsActivated[LocoStation] = false;
                     PowerKey = false;
                     if (RDSTBreaker[LocoStation])
@@ -18440,7 +18446,7 @@ namespace Orts.Simulation.RollingStocks
         public int LightsFrameUpdate = 0;        
         public void LightPositionHandle()
         {
-            if (LightsFrameUpdate < 3)
+            if (AllCabItemReaded && LightsFrameUpdate < 3)
                 LightsFrameUpdate++;            
 
             if (HeadLight2Enable)
