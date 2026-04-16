@@ -7125,8 +7125,7 @@ namespace Orts.Simulation.RollingStocks
                             EngineBrakeValue[1] = 1;
                         else
                             EngineBrakeValue[2] = 1;
-                        SetEngineBrakePercent(100);
-                        BrakeSystem.AutoCylPressurePSI0 = BrakeSystem.BrakeCylinderMaxSystemPressurePSI;
+                        SetEngineBrakePercent(100);                        
                     }
 
                     if (LapButtonEnable && PowerOn)
