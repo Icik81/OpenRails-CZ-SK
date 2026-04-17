@@ -1695,6 +1695,21 @@ namespace Orts.Formats.Msts
         }
     }
 
+    public class FreeViewCamera_XYRotate
+    {
+        public float FreeViewCameraX = 0;
+        public float FreeViewCameraY = -7;
+        public float FreeViewCameraRotate = -0.35f;
+
+        public FreeViewCamera_XYRotate(STFReader stf)
+        {
+            stf.MustMatch("(");
+            FreeViewCameraX = stf.ReadFloat(STFReader.UNITS.None, null);
+            FreeViewCameraY = stf.ReadFloat(STFReader.UNITS.None, null);
+            FreeViewCameraRotate = stf.ReadFloat(STFReader.UNITS.None, null);
+            stf.MustMatch(")");
+        }
+    }
 
     public class MaxVelocity
     {
@@ -1714,9 +1729,12 @@ namespace Orts.Formats.Msts
     {
         public string Name = "Loose consist.";
         int Serial = 1;
-        public MaxVelocity MaxVelocity;
+        public MaxVelocity MaxVelocity;        
         int NextWagonUID;
         public float Durability = 1.0f;   // Value assumed if attribute not found.
+
+        // Icik
+        public FreeViewCamera_XYRotate FreeViewCamera_XYRotate;
 
         public List<Wagon> WagonList = new List<Wagon>();
 
@@ -1727,11 +1745,12 @@ namespace Orts.Formats.Msts
             stf.ParseBlock(new STFReader.TokenProcessor[] {
                 new STFReader.TokenProcessor("name", ()=>{ Name = stf.ReadStringBlock(null); }),
                 new STFReader.TokenProcessor("serial", ()=>{ Serial = stf.ReadIntBlock(null); }),
-                new STFReader.TokenProcessor("maxvelocity", ()=>{ MaxVelocity = new MaxVelocity(stf); }),
+                new STFReader.TokenProcessor("maxvelocity", ()=>{ MaxVelocity = new MaxVelocity(stf); }),                
                 new STFReader.TokenProcessor("nextwagonuid", ()=>{ NextWagonUID = stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("durability", ()=>{ Durability = stf.ReadFloatBlock(STFReader.UNITS.None, null); }),
                 new STFReader.TokenProcessor("wagon", ()=>{ WagonList.Add(new Wagon(stf)); }),
                 new STFReader.TokenProcessor("engine", ()=>{ WagonList.Add(new Wagon(stf)); }),
+                new STFReader.TokenProcessor("freeviewcamera_xyrotate", ()=>{ FreeViewCamera_XYRotate = new FreeViewCamera_XYRotate(stf); }),
             });
         }
     }

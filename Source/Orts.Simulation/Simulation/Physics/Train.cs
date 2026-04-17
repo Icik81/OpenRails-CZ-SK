@@ -188,8 +188,12 @@ namespace Orts.Simulation.Physics
         public float NotFatalIncidentDistanceTravelled;
         public bool NotFatalIncident;
         public bool PassengerViewTrain;
-        public bool FreeViewTrain;        
-        public bool FirstCameraInitFreeView;        
+        public bool FreeViewTrain;
+        public bool FreeViewTrainInitiate;
+        public bool FirstCameraInitFreeView;
+        public float FreeViewCameraX = 0;
+        public float FreeViewCameraY = -7;
+        public float FreeViewCameraRotate = -0.35f;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -788,6 +792,9 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            FreeViewCameraX = inf.ReadSingle();
+            FreeViewCameraY = inf.ReadSingle();
+            FreeViewCameraRotate = inf.ReadSingle();
             FirstCameraInitFreeView = inf.ReadBoolean();
             NotFatalServisStart = inf.ReadBoolean();
             NotFatalServisOrderBack = inf.ReadBoolean();
@@ -863,7 +870,8 @@ namespace Orts.Simulation.Physics
             RunningTime = inf.ReadDouble();
             IncorporatedTrainNo = inf.ReadInt32();
             IncorporatingTrainNo = inf.ReadInt32();
-            IsAuxTenderCoupled = inf.ReadBoolean();
+            IsAuxTenderCoupled = inf.ReadBoolean();            
+
             if (IncorporatedTrainNo > -1)
             {
                 Train train = GetOtherTrainByNumber(IncorporatedTrainNo);
@@ -1188,6 +1196,9 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(FreeViewCameraX);
+            outf.Write(FreeViewCameraY);
+            outf.Write(FreeViewCameraRotate);
             outf.Write(FirstCameraInitFreeView);
             outf.Write(NotFatalServisStart);
             outf.Write(NotFatalServisOrderBack);
@@ -1263,7 +1274,7 @@ namespace Orts.Simulation.Physics
             outf.Write(RunningTime);
             outf.Write(IncorporatedTrainNo);
             outf.Write(IncorporatingTrainNo);
-            outf.Write(IsAuxTenderCoupled);
+            outf.Write(IsAuxTenderCoupled);            
 
             outf.Write((int)TrainType);
             outf.Write(IsTilting);
@@ -1896,9 +1907,12 @@ namespace Orts.Simulation.Physics
                 // Pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
                 FreeViewTrain = true;
                 IsPlayable = true;                                
-                RemoveFromTrack();
-                SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);
-                return;                                                
+                RemoveFromTrack();                
+                if (IsActualPlayerTrain)                
+                    SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);                
+                if (FreeViewTrainInitiate) 
+                    return;
+                FreeViewTrainInitiate = true;
             }                       
 
             // Manuální režim výhybek a signálů pro MP

@@ -1167,33 +1167,50 @@ namespace Orts.Viewer3D
 
             // Volný pohled a neblokuje kolej pro vlak FreeView
             if (PlayerLocomotive.Train.FreeViewTrain)
-            {                                
-                if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
+            {
+                if (PlayerLocomotive.Train.Name != Simulator.LastNameFreeViewTrain)
                 {
-                    FreeRoamCamera.Activate();
+                    FreeRoamCameraList.Clear();
+                    Simulator.LastNameFreeViewTrain = PlayerLocomotive.Train.Name;
+                    PlayerLocomotive.Train.FirstCameraInitFreeView = false;
                 }
                 else
-                    if (FreeRoamCameraList.Count == 0)
+                    if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
                     {
-                        if (Simulator.GameTime > 0)
-                        {
-                            CheckReplaying();
-                            new UseFreeRoamCameraCommand(Log);
-                        }
-                        if (!PlayerLocomotive.Train.FirstCameraInitFreeView)
-                        {
-                            FrontCamera.Activate();
-                            new UseFreeRoamCameraCommand(Log);
-                            var movement = new Vector3(0, 0, 0);
-                            movement.X += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraX;
-                            movement.Y += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraY;
-                            movement.Z += 0;
-                            (Camera as RotatingCamera).MoveCamera(movement);
-                            (Camera as RotatingCamera).RotateDown(-0.35f);
-                            (Camera as RotatingCamera).RotateRight((Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraRotate);
-                            PlayerLocomotive.Train.FirstCameraInitFreeView = true;
-                        }                        
+                        FreeRoamCamera.Activate();
                     }
+                    else
+                        if (FreeRoamCameraList.Count == 0)
+                        {
+                            if (Simulator.GameTime > 0)
+                            {
+                                CheckReplaying();
+                                new UseFreeRoamCameraCommand(Log);
+                            }
+                            if (!PlayerLocomotive.Train.FirstCameraInitFreeView)
+                            {
+                                FrontCamera.Activate();
+                                new UseFreeRoamCameraCommand(Log);
+                                var movement = new Vector3(0, 0, 0);
+                                if (PlayerLocomotive.Train.FreeViewCameraX != 0)
+                                    movement.X += PlayerLocomotive.Train.FreeViewCameraX;
+                                else
+                                    movement.X += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraX;
+
+                                if (PlayerLocomotive.Train.FreeViewCameraY != -7)
+                                    movement.Y += PlayerLocomotive.Train.FreeViewCameraY;
+                                else
+                                    movement.Y += (Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraY;
+                                movement.Z += 0;
+                                (Camera as RotatingCamera).MoveCamera(movement);
+                                (Camera as RotatingCamera).RotateDown(-0.35f);
+                                if (PlayerLocomotive.Train.FreeViewCameraRotate != -0.35f)
+                                    (Camera as RotatingCamera).RotateRight(PlayerLocomotive.Train.FreeViewCameraRotate);
+                                else
+                                    (Camera as RotatingCamera).RotateRight((Simulator.PlayerLocomotive as MSTSWagon).FreeViewCameraRotate);
+                                PlayerLocomotive.Train.FirstCameraInitFreeView = true;
+                            }
+                        }
                 if (PlayerLocomotive.Train.IsPlayerDriven)
                 {                    
                     (Simulator.PlayerLocomotive as MSTSWagon).DirectionControllerBlocked = true;

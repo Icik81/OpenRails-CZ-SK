@@ -322,7 +322,8 @@ namespace Orts.Simulation
         public bool OtherTrainIsFront;
         public float DistanceToTrainMFreeRide;
         public string ShunterDecideMarker = "-";        
-        public TrainCar TunnelCarCameraCanActivated;        
+        public TrainCar TunnelCarCameraCanActivated;
+        public string LastNameFreeViewTrain;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -700,6 +701,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            LastNameFreeViewTrain = inf.ReadString();
             OtherTrainPositionTest = inf.ReadBoolean();
             OtherTrainIsFront = inf.ReadBoolean();
             ShunterProcessTrainActive_Start = inf.ReadBoolean();
@@ -761,6 +763,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(LastNameFreeViewTrain);
             outf.Write(OtherTrainPositionTest);
             outf.Write(OtherTrainIsFront);
             outf.Write(ShunterProcessTrainActive_Start);
@@ -1234,6 +1237,8 @@ namespace Orts.Simulation
             {
                 SoundNotify = Event.Derail2;
             }
+
+            if (!drivenTrain.IsPlayerDriven) Settings.ManualCoupling = false;
 
             #region Manuální spojování vozů vlaku hráče            
             // Manuální spojování vozů vlaku hráče            

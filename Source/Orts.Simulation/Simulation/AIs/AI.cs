@@ -891,6 +891,14 @@ namespace Orts.Simulation.AIs
 
             // Icik                                    
             train.AIMaxTrainSpeedCalculatedFromConFile = maxVelocityA * train.Efficiency;
+            
+            // Načte souřadnice pro volnou kameru z CON souboru, pokud jsou tam uvedeny. Pokud ne, použijí se defaultní hodnoty.
+            if (conFile.Train.TrainCfg.FreeViewCamera_XYRotate != null)
+            {
+                train.FreeViewCameraX = conFile.Train.TrainCfg.FreeViewCamera_XYRotate.FreeViewCameraX;
+                train.FreeViewCameraY = conFile.Train.TrainCfg.FreeViewCamera_XYRotate.FreeViewCameraY;
+                train.FreeViewCameraRotate = conFile.Train.TrainCfg.FreeViewCamera_XYRotate.FreeViewCameraRotate;
+            }
 
             // also set Route max speed for speedpost-processing in train.cs
             train.TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
