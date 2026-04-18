@@ -146,9 +146,7 @@ namespace Orts.Viewer3D.Popups
                             }
                             else
                                 line.Add(arrive = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
-                            
-
-                            
+                                                        
                             line.Add(new Label(colWidth, line.RemainingHeight, depTimeCT.ToString("HH:mm:ss"), LabelAlignment.Center));
                             if (stopAt.ActualDepart > 0)
                             {
@@ -208,20 +206,75 @@ namespace Orts.Viewer3D.Popups
                     var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);
                     if (owner.Viewer.Simulator.ActivityRun != null)
                     {
-                        foreach (var task in owner.Viewer.Simulator.ActivityRun.Tasks)
+                        // Původní hráčův vlak
+                        if (owner.Viewer.Simulator.ActivityRun.Tasks.Count > 0)
                         {
-                            var stopAt = task as ActivityTaskPassengerStopAt;
-                            if (stopAt != null)
+                            foreach (var task in owner.Viewer.Simulator.ActivityRun.Tasks)
                             {
-                                Label arrive, depart;
-                                var line = scrollbox.AddLayoutHorizontalLineOfText();
-                                line.Add(new Label(colWidth * 3, line.RemainingHeight, stopAt.PlatformEnd1.Station));
-                                line.Add(new Label(colWidth, line.RemainingHeight, stopAt.SchArrive.ToString("HH:mm:ss"), LabelAlignment.Center));
-                                line.Add(arrive = new Label(colWidth, line.RemainingHeight, stopAt.ActArrive.HasValue ? stopAt.ActArrive.Value.ToString("HH:mm:ss") : stopAt.IsCompleted.HasValue && task.NextTask != null ? Viewer.Catalog.GetString("(missed)") : "", LabelAlignment.Center));
-                                line.Add(new Label(colWidth, line.RemainingHeight, stopAt.SchDepart.ToString("HH:mm:ss"), LabelAlignment.Center));
-                                line.Add(depart = new Label(colWidth, line.RemainingHeight, stopAt.ActDepart.HasValue ? stopAt.ActDepart.Value.ToString("HH:mm:ss") : stopAt.IsCompleted.HasValue && task.NextTask != null ? Viewer.Catalog.GetString("(missed)") : "", LabelAlignment.Center));
-                                arrive.Color = NextStationWindow.GetArrivalColor(stopAt.SchArrive, stopAt.ActArrive);
-                                depart.Color = NextStationWindow.GetDepartColor(stopAt.SchDepart, stopAt.ActDepart);
+                                var stopAt = task as ActivityTaskPassengerStopAt;
+                                if (stopAt != null)
+                                {
+                                    Label arrive, depart;
+                                    var line = scrollbox.AddLayoutHorizontalLineOfText();
+                                    line.Add(new Label(colWidth * 3, line.RemainingHeight, stopAt.PlatformEnd1.Station));
+                                    line.Add(new Label(colWidth, line.RemainingHeight, stopAt.SchArrive.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                    line.Add(arrive = new Label(colWidth, line.RemainingHeight, stopAt.ActArrive.HasValue ? stopAt.ActArrive.Value.ToString("HH:mm:ss") : stopAt.IsCompleted.HasValue && task.NextTask != null ? Viewer.Catalog.GetString("(missed)") : "", LabelAlignment.Center));
+                                    line.Add(new Label(colWidth, line.RemainingHeight, stopAt.SchDepart.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                    line.Add(depart = new Label(colWidth, line.RemainingHeight, stopAt.ActDepart.HasValue ? stopAt.ActDepart.Value.ToString("HH:mm:ss") : stopAt.IsCompleted.HasValue && task.NextTask != null ? Viewer.Catalog.GetString("(missed)") : "", LabelAlignment.Center));
+                                    arrive.Color = NextStationWindow.GetArrivalColor(stopAt.SchArrive, stopAt.ActArrive);
+                                    depart.Color = NextStationWindow.GetDepartColor(stopAt.SchDepart, stopAt.ActDepart);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            // AI vlak
+                            foreach (var task in owner.Viewer.PlayerTrain.StationTasks)
+                            {
+                                var stopAt = task;
+                                if (stopAt != null)
+                                {
+                                    DateTime baseDTCT = new DateTime();
+                                    DateTime arrTimeCT = baseDTCT.AddSeconds(stopAt.ArrivalTime);
+                                    DateTime depTimeCT = baseDTCT.AddSeconds(stopAt.DepartTime);
+                                    Label arrive, depart;
+                                    var line = scrollbox.AddLayoutHorizontalLineOfText();
+                                    line.Add(new Label(colWidth * 3, line.RemainingHeight, stopAt.PlatformItem.Name));
+
+                                    line.Add(new Label(colWidth, line.RemainingHeight, arrTimeCT.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                    if (stopAt.ActualArrival > 0)
+                                    {
+                                        DateTime arrTimeCT0 = baseDTCT.AddSeconds(stopAt.ArrivalTime);
+                                        DateTime arrTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualArrival);
+                                        line.Add(arrive = new Label(colWidth, line.RemainingHeight, arrTimeCT1.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                        arrive.Color = NextStationWindow.GetArrivalColor(arrTimeCT0, arrTimeCT1);
+                                    }
+                                    else
+                                        if (stopAt.ActualArrival == -2)
+                                        {
+                                            line.Add(arrive = new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                                            arrive.Color = Color.Orange;
+                                        }
+                                        else
+                                            line.Add(arrive = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
+
+                                    line.Add(new Label(colWidth, line.RemainingHeight, depTimeCT.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                    if (stopAt.ActualDepart > 0)
+                                    {
+                                        DateTime depTimeCT0 = baseDTCT.AddSeconds(stopAt.DepartTime);
+                                        DateTime depTimeCT1 = baseDTCT.AddSeconds(stopAt.ActualDepart);
+                                        line.Add(depart = new Label(colWidth, line.RemainingHeight, depTimeCT1.ToString("HH:mm:ss"), LabelAlignment.Center));
+                                        depart.Color = NextStationWindow.GetDepartColor(depTimeCT0, depTimeCT1);
+                                    }
+                                    else
+                                        if (stopAt.ActualDepart == -2)
+                                        {
+                                            line.Add(depart = new Label(colWidth, line.RemainingHeight, Viewer.Catalog.GetString("(missed)"), LabelAlignment.Center));
+                                            depart.Color = Color.Orange;
+                                        }
+                                        else
+                                            line.Add(depart = new Label(colWidth, line.RemainingHeight, "", LabelAlignment.Center));
+                                }
                             }
                         }
                     }

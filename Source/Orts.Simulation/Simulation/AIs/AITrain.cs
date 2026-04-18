@@ -7184,11 +7184,14 @@ namespace Orts.Simulation.AIs
                     int eightHundredHours = 8 * 3600;
                     int sixteenHundredHours = 16 * 3600;
 
+                    StationTasks[ActualStationNumber].ActualDepart = -1;
+
                     // if moving, set departed
                     if (Math.Abs(SpeedMpS) > 1.5f)
                     {                        
                         if (TrainType != TRAINTYPE.AI_PLAYERHOSTING)
                         {
+                            StationTasks[ActualStationNumber].ActualDepart = presentTime;
                             StationStops[0].ActualDepart = presentTime;
                             StationStops[0].Passed = true;
                             Delay = TimeSpan.FromSeconds((presentTime - StationStops[0].DepartTime) % (24 * 3600));
@@ -7351,7 +7354,10 @@ namespace Orts.Simulation.AIs
                                 int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
                                 StationStops[0].ActualArrival = presentTime;
                                 StationStops[0].CalculateDepartTime(presentTime, this);                                
+                                StationTasks[ActualStationNumber].ActualArrival = presentTime;
                             }
+                            else
+                                StationTasks[ActualStationNumber].ActualArrival = -1;
                         }
                         else if (ControlMode == TRAIN_CONTROL.AUTO_NODE || ControlMode == TRAIN_CONTROL.AUTO_SIGNAL)
                         {
@@ -7360,6 +7366,8 @@ namespace Orts.Simulation.AIs
                             
                             if (missedStation)
                             {
+                                StationTasks[ActualStationNumber].ActualArrival = -2;
+                                StationTasks[ActualStationNumber].ActualDepart = -2;                                
                                 ActualStationNumber++;
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);                                

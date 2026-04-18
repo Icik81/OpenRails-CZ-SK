@@ -29,7 +29,7 @@ namespace Orts.Viewer3D.Popups
     public class TrainListWindow : Window
     {
         public TrainListWindow(WindowManager owner)
-            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 20, Window.DecorationSize.Y + owner.TextFontDefault.Height * 30, Viewer.Catalog.GetString("Train List"))
+            : base(owner, Window.DecorationSize.X + owner.TextFontDefault.Height * 25, Window.DecorationSize.Y + owner.TextFontDefault.Height * 30, Viewer.Catalog.GetString("Train List"))
         {
         }
 
@@ -74,6 +74,18 @@ namespace Orts.Viewer3D.Popups
                         number.Color = Color.Red;
                         name.Color = Color.Red;
                     }
+                    if (train0.FreeViewTrain)
+                    {
+                        number.Color = Color.LightBlue;
+                        name.Color = Color.LightBlue;
+                        name.Text = Viewer.Catalog.GetString("Camera") + " - " + train0.Name;
+                    }
+                    if (train0.PassengerViewTrain)
+                    {
+                        number.Color = train0.IsPlayable ? Color.Orange : Color.Gray;
+                        name.Color = train0.IsPlayable ? Color.Orange : Color.Gray;
+                        name.Text = Viewer.Catalog.GetString("Passenger") + " - " + train0.Name;
+                    }
 
                 }
                 foreach (var thisTrain in Owner.Viewer.Simulator.AI.AITrains)
@@ -104,6 +116,18 @@ namespace Orts.Viewer3D.Popups
                         {
                             number.Color = Color.Red;
                             name.Color = Color.Red;
+                        }
+                        if (thisTrain.FreeViewTrain)
+                        {
+                            number.Color = Color.LightBlue;
+                            name.Color = Color.LightBlue;
+                            name.Text = Viewer.Catalog.GetString("Camera") + " - " + thisTrain.Name;
+                        }
+                        if (thisTrain.PassengerViewTrain)
+                        {
+                            number.Color = thisTrain.IsPlayable ? Color.Orange : Color.Gray;
+                            name.Color = thisTrain.IsPlayable ? Color.Orange : Color.Gray;
+                            name.Text = Viewer.Catalog.GetString("Passenger") + " - " + thisTrain.Name;
                         }
                     }
                 }
@@ -137,9 +161,10 @@ namespace Orts.Viewer3D.Popups
         {
             base.PrepareFrame(elapsedTime, updateFull);
 
-            if (updateFull && (Owner.Viewer.Simulator.Activity != null || Owner.Viewer.Simulator.TimetableMode) && Owner.Viewer.Simulator.AI.aiListChanged)
+            if (updateFull && (Owner.Viewer.Simulator.Activity != null || Owner.Viewer.Simulator.TimetableMode) && (Owner.Viewer.Simulator.AI.aiListChanged || Owner.Viewer.Simulator.PlayableStatusChanged))
             {
                 Owner.Viewer.Simulator.AI.aiListChanged = false;
+                Owner.Viewer.Simulator.PlayableStatusChanged = false;
                 Layout();
             }
         }

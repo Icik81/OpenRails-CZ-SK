@@ -194,6 +194,7 @@ namespace Orts.Simulation.Physics
         public float FreeViewCameraX = 0;
         public float FreeViewCameraY = -7;
         public float FreeViewCameraRotate = -0.35f;
+        public bool PlayableStatus;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -1894,7 +1895,15 @@ namespace Orts.Simulation.Physics
             if (Name.ToLower().Contains("noservice"))
             {
                 PassengerViewTrain = true; // Pokud název vlaku obsahuje NoService, aktivuje se pohled pro cestující a autopilot
-                IsPlayable = true;
+                if (Math.Abs(SpeedMpS) > 0.01f)
+                    IsPlayable = false;
+                else
+                    IsPlayable = true;
+
+                if (PlayableStatus != IsPlayable)
+                    Simulator.PlayableStatusChanged = true;
+
+                PlayableStatus = IsPlayable;
             }
 
             // Volný pohled se aktivuje pouze pro vlak s názvem obsahujícím "FreeView" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "FreeView"            

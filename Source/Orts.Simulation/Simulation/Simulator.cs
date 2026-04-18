@@ -325,6 +325,7 @@ namespace Orts.Simulation
         public TrainCar TunnelCarCameraCanActivated;
         public string LastNameFreeViewTrain = "NONE";
         public bool ForceSuppressConfirmations;
+        public bool PlayableStatusChanged;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
