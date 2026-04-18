@@ -7433,14 +7433,14 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (ForceHandleIncreasing)
                         {
-                            ForceHandleValue += 0.5f;
+                            ForceHandleValue += 1.0f;
                             if (ForceHandleValue > 100)
                                 ForceHandleValue = 100;
                             Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
                         }
                         if (ForceHandleDecreasing)
                         {
-                            ForceHandleValue -= 0.5f;
+                            ForceHandleValue -= 1.0f;
                             if (ForceHandleValue < -100)
                                 ForceHandleValue = -100;
                             Simulator.Confirmer.Information("Force dereased to " + ((int)ForceHandleValue).ToString());
