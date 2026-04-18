@@ -1032,10 +1032,10 @@ namespace Orts.Simulation.AIs
                 for (int i = 0; i < thisTrain.Cars.Count; i++)
                     thisTrain.Cars[i].WorldPosition.XNAMatrix.M42 -= 1000;
                 thisTrain.ResetInitialTrainRoute(tempRoute);
-                validPosition = thisTrain.PostInit();
-            }
+                validPosition = thisTrain.PostInit();                                
+            }            
 
-            if (validPosition)
+            if (validPosition || thisTrain.Name.ToLower().Contains("freeview"))
             {
                 thisTrain.actualWaitTimeS = 0; // reset wait counter //
                 thisTrain.TrainType = Train.TRAINTYPE.AI;

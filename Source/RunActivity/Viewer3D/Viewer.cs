@@ -1156,13 +1156,24 @@ namespace Orts.Viewer3D
             }
 
             // Pohled pasažéra a aktivace autopilota pro vlak NoService
+            Simulator.ForceSuppressConfirmations = false;
             if (PlayerLocomotive.Train.PassengerViewTrain)
             {
-                if (Camera != PassengerCamera)                
+                if (Camera != PassengerCamera && PassengerCamera.IsAvailable)
                     PassengerCamera.Activate();
-                
+                else
+                    if (!PassengerCamera.IsAvailable)
+                    {
+                        if (Camera != HeadOutForwardCamera)
+                        {
+                            HeadOutForwardCamera.Activate();                                                   
+                        }
+                    }
+
                 if (PlayerLocomotive.Train.IsPlayerDriven)
-                    ((AITrain)PlayerLocomotive.Train).SwitchToAutopilotControl();                
+                    ((AITrain)PlayerLocomotive.Train).SwitchToAutopilotControl();
+                
+                Simulator.ForceSuppressConfirmations = true;
             }
 
             // Volný pohled a neblokuje kolej pro vlak FreeView

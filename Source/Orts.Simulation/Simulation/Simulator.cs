@@ -324,6 +324,7 @@ namespace Orts.Simulation
         public string ShunterDecideMarker = "-";        
         public TrainCar TunnelCarCameraCanActivated;
         public string LastNameFreeViewTrain;
+        public bool ForceSuppressConfirmations;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

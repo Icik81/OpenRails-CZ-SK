@@ -478,7 +478,7 @@ namespace Orts.Simulation
             //    return;
 
             // Icik
-            if (Simulator.Settings.SuppressConfirmations)
+            if (Simulator.Settings.SuppressConfirmations || Simulator.ForceSuppressConfirmations)
                 return;
 
             var format = "{2}";
