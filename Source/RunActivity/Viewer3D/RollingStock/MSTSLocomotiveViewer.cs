@@ -491,6 +491,27 @@ namespace Orts.Viewer3D.RollingStock
             // Icik
             DoublePressedKeyTest();
 
+            // Aretace v nulovém bodě ovladače výkonu Vectronu
+            if (Locomotive.UsingForceHandle)
+            {                
+                if (Locomotive.ForceHandleIncreasing && UserInput.IsDown(UserCommand.ControlThrottleIncrease))
+                {
+                    if (Locomotive.ForceHandleValue == 0) Locomotive.ForceHandleValueZero = true;
+                }
+                if (Locomotive.ForceHandleDecreasing && UserInput.IsDown(UserCommand.ControlThrottleDecrease))
+                {
+                    if (Locomotive.ForceHandleValue == 0) Locomotive.ForceHandleValueZero = true;
+                }
+                if (Locomotive.ForceHandleValueZero && (UserInput.IsDown(UserCommand.ControlThrottleIncrease) || UserInput.IsDown(UserCommand.ControlThrottleDecrease))) 
+                {
+                    Locomotive.ForceHandleValue = 0;
+                }                
+                if (Locomotive.ForceHandleValueZero && (UserInput.IsReleased(UserCommand.ControlThrottleIncrease) || UserInput.IsReleased(UserCommand.ControlThrottleDecrease)))
+                {
+                    Locomotive.ForceHandleValueZero = false;
+                }
+            }
+
             // Převodník brzdy
             if (Locomotive.DynamicBrakeController != null)
             {

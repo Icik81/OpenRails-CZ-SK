@@ -7431,14 +7431,14 @@ namespace Orts.Simulation.RollingStocks
 
                     if (UsingForceHandle)
                     {
-                        if (ForceHandleIncreasing)
+                        if (ForceHandleIncreasing && !ForceHandleValueZero)
                         {
                             ForceHandleValue += 1.0f;
                             if (ForceHandleValue > 100)
                                 ForceHandleValue = 100;
                             Simulator.Confirmer.Information("Force inreased to " + ((int)ForceHandleValue).ToString());
                         }
-                        if (ForceHandleDecreasing)
+                        if (ForceHandleDecreasing && !ForceHandleValueZero)
                         {
                             ForceHandleValue -= 1.0f;
                             if (ForceHandleValue < -100)
@@ -10213,6 +10213,7 @@ namespace Orts.Simulation.RollingStocks
 
         public bool ForceHandleIncreasing = false;
         public bool ForceHandleDecreasing = false;
+        public bool ForceHandleValueZero;
         public void StartThrottleIncrease()
         {
             if (DynamicBrakePercent > 0 && SpeedMpS == 0)
