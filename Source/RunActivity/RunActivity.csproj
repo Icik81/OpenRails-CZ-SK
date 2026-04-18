@@ -1070,6 +1070,7 @@
     <Content Include="Content\TrainOperations2PassengerCar.png" />
     <Content Include="Content\TrainOperations4FreightCar.png" />
     <Content Include="Content\TrainOperations4PassengerCar.png" />
+    <Content Include="Content\TrainOperationsCamera.png" />
     <Content Include="Content\TrainOperationsCoupler.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
