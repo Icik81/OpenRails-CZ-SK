@@ -784,8 +784,12 @@ namespace Orts.Simulation.AIs
             if (FreeViewTrain)
             {
                 AITrainBrakePercent = 100;
-                AITrainThrottlePercent = 0;                
-                return;
+                AITrainThrottlePercent = 0;
+                if (FreeViewTrainInitiate)
+                    ControlMode = TRAIN_CONTROL.OUT_OF_CONTROL;                
+                if (ControlMode == TRAIN_CONTROL.OUT_OF_CONTROL)
+                    return;
+                FreeViewTrainInitiate = true;
             }
 
             // update position, route clearance and objects

@@ -1915,15 +1915,16 @@ namespace Orts.Simulation.Physics
             {
                 // Pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
                 FreeViewTrain = true;
-                IsPlayable = true;                                
-                RemoveFromTrack();                
+                IsPlayable = true;
+                RemoveFromTrack();
                 if (IsActualPlayerTrain)                
                     SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);                
                 if (FreeViewTrainInitiate) 
-                    return;
-                FreeViewTrainInitiate = true;
-            }                       
-
+                    return;                                                
+                if (IsActualPlayerTrain)
+                    FreeViewTrainInitiate = true;
+            }
+            
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())
             {
