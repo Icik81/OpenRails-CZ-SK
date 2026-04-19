@@ -781,9 +781,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (loco.IsLeadLocomotive())
                     {
                         if (loco.LocoStation == 1)
+                        {
+                            loco.LapActive[1] = false;
                             loco.LapActive[2] = true;
+                        }
                         else
+                        {
                             loco.LapActive[1] = true;
+                            loco.LapActive[2] = false;
+                        }
                     }
                     else
                     {
@@ -794,6 +800,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 
                 if (loco.ControlUnit)
                 {
+                    loco.LapActive[1] = false;
                     loco.LapActive[2] = true;
                 }
 
