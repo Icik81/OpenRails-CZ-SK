@@ -7159,7 +7159,7 @@ namespace Orts.Simulation.AIs
         {
             // Icik
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
-            if (StationStops.Count == 0) return;
+            if (StationStops.Count == 0 || PassengerViewTrain) return;
 
             GeneratePaxDynamically();
             FillNames(this);            
