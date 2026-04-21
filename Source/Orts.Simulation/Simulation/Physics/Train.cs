@@ -195,6 +195,8 @@ namespace Orts.Simulation.Physics
         public float FreeViewCameraY = -7;
         public float FreeViewCameraRotate = -0.35f;
         public bool PlayableStatus;
+        public bool AITrainOutOfPower;
+        public bool AITrainOutOfPowerOnPosition;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -793,6 +795,7 @@ namespace Orts.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            AITrainOutOfPower = inf.ReadBoolean();
             FreeViewCameraX = inf.ReadSingle();
             FreeViewCameraY = inf.ReadSingle();
             FreeViewCameraRotate = inf.ReadSingle();
@@ -1197,6 +1200,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(AITrainOutOfPower);
             outf.Write(FreeViewCameraX);
             outf.Write(FreeViewCameraY);
             outf.Write(FreeViewCameraRotate);

@@ -120,6 +120,8 @@ namespace Orts.Simulation.AIs
         }
 
         public AI_MOVEMENT_STATE MovementState = AI_MOVEMENT_STATE.INIT;  // actual movement state
+        // Icik
+        public AI_MOVEMENT_STATE LastMovementState = AI_MOVEMENT_STATE.INIT;
 
         public enum AI_START_MOVEMENT
         {
@@ -293,6 +295,7 @@ namespace Orts.Simulation.AIs
             RestOfPax = inf.ReadInt32();            
             AITrainOffsetStop = inf.ReadBoolean();
             AITrainOffsetStopDistance = inf.ReadSingle();
+            LastMovementState = (AI_MOVEMENT_STATE)inf.ReadInt32();
 
             if (!Simulator.TimetableMode && doorOpenDelay <= 0 && doorCloseAdvance > 0 && Simulator.OpenDoorsInAITrains &&
                 MovementState == AI_MOVEMENT_STATE.STATION_STOP && StationStops.Count > 0)
@@ -394,6 +397,7 @@ namespace Orts.Simulation.AIs
             outf.Write(RestOfPax);
             outf.Write(AITrainOffsetStop);
             outf.Write(AITrainOffsetStopDistance);
+            outf.Write((int)LastMovementState);
 
             if (LevelCrossingHornPattern != null)
             {
@@ -791,6 +795,32 @@ namespace Orts.Simulation.AIs
                     return;
                 FreeViewTrainInitiate = true;
             }
+
+            // Napěťová výluka
+            // AI vlak bez napájení se nesmí pohybovat, ale může být postrčen jiným vlakem            
+            if (AITrainOutOfPowerOnPosition)
+            {                
+                AITrainOutOfPower = !AITrainOutOfPower;
+                AITrainOutOfPowerOnPosition = false;                
+            }
+            if (AITrainOutOfPower)
+            {
+                AITrainBrakePercent = 0;
+                AITrainThrottlePercent = 0;
+                if (LastMovementState == AI_MOVEMENT_STATE.INIT)
+                    LastMovementState = MovementState;
+                MovementState = AI_MOVEMENT_STATE.UNKNOWN;
+            }
+            else
+            {
+                if (LastMovementState != AI_MOVEMENT_STATE.INIT)
+                {                                                           
+                    MovementState = AI_MOVEMENT_STATE.BRAKING;
+                    LastMovementState = AI_MOVEMENT_STATE.INIT;
+                }
+            }
+            //Simulator.Confirmer.Information("AITrainOutOfPower: " + AITrainOutOfPower);
+
 
             // update position, route clearance and objects
 
@@ -4606,7 +4636,7 @@ namespace Orts.Simulation.AIs
                         AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
-                    else
+                    else                    
                     if (waitingPoint[2] >= 49900 && waitingPoint[2] <= 49999) // Odebrání nebo zanechání vozů
                     {                        
                         AILevelCrossingHornPattern hornPattern;

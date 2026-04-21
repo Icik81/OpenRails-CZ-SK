@@ -5901,6 +5901,24 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
 
+                // AI stáhne sběrač napětí kvůli napěťové výluce a nechá se tlačit hráčem
+                (Train as AITrain).AITrainOutOfPowerOnPosition = false;
+                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
+                {
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                    {
+                        var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
+                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        {
+                            var AITrainOutOfPowerdistanceToGoM = AIActionPoint0.keepIt.ActivateDistanceM - (Train as AITrain).PresentPosition[0].DistanceTravelledM;
+                            if (AIActionPoint0.Delay == 40001 && AITrainOutOfPowerdistanceToGoM < 1)
+                            {
+                                (Train as AITrain).AITrainOutOfPowerOnPosition = true;                                     
+                            }                            
+                        }
+                    }
+                }
+
                 // AI nezastaví na ABS WP, pokud uběhl čas
                 (Train as AITrain).DontStopABSWP = false;
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)

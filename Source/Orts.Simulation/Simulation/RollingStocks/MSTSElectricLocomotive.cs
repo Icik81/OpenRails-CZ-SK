@@ -113,7 +113,7 @@ namespace Orts.Simulation.RollingStocks
         float I_PantographCurrentToleranceTime;
         float AIPantoUPTime;
         float AIPantoDownGenerate;
-        bool AIPantoDown;
+        public bool AIPantoDown;
         public bool AIPantoDownStop;
         bool PowerOnTriggered;        
 
@@ -2429,10 +2429,26 @@ namespace Orts.Simulation.RollingStocks
                     SignalEvent(Event.EnginePowerOn);
                     PowerOn = true;
                 }
-            }
+            }            
 
             if (AIPantoChangeTime == -1)
-                return;                        
+                return;
+
+            // Stažení pantografů při výluce napětí trati
+            if ((Train as AITrain).AITrainOutOfPower)
+            {
+                SignalEvent(PowerSupplyEvent.LowerPantograph);
+                if (PowerOn)
+                {
+                    SignalEvent(Event.EnginePowerOff);
+                    PowerOn = false;
+                    SignalEvent(Event.CircuitBreakerOpen);
+                    if (RouteVoltageV == 3000)
+                        SignalEvent(Event.CircuitBreakerOpenDC);
+                    else
+                        SignalEvent(Event.CircuitBreakerOpenAC);
+                }
+            }
 
             if (RouteVoltageV == 1 || AIPantoDownStop)
             {

@@ -1907,7 +1907,7 @@ namespace Orts.Simulation.AIs
                 currentMvmtState = movementState;
 
             // Icik
-            if ((thisTrain as AITrain).DontStopABSWP)
+            if ((thisTrain as AITrain).DontStopABSWP || (thisTrain as AITrain).AITrainOutOfPowerOnPosition)
             {
                 thisTrain.AuxActionsContain.Remove(this);
                 movementState = AITrain.AI_MOVEMENT_STATE.ACCELERATING;

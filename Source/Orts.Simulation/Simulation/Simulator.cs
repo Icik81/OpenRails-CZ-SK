@@ -1448,7 +1448,7 @@ namespace Orts.Simulation
                         {
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("notfatal")) { NotFatalIncident = true; train.NotFatalIncident = true; CarCoupleSpeedOvercome = true; train.DrivenTrainIsPlayer = drivenTrain.IsPlayerDriven ? true : false; if (train.NotFatalServisGoBack) return; }
                             else
-                                if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; }
+                                if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; } 
                             CouplingType_1 = 1;                            
                             if (!MPManager.IsMultiPlayer())
                             {
@@ -1475,7 +1475,7 @@ namespace Orts.Simulation
                                 if (FatalIncident || NotFatalIncident) CarCoupleMaxSpeedOvercome = false;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || train.AITrainOutOfPower)
                                 {
                                     if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
@@ -1484,7 +1484,7 @@ namespace Orts.Simulation
                                     return;
                                 }
                             }
-                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed
+                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling || train.AITrainOutOfPower)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed
                             {
                                 if (drivenTrain.SpeedMpS < train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
@@ -1560,7 +1560,7 @@ namespace Orts.Simulation
                                 if (FatalIncident || NotFatalIncident) CarCoupleMaxSpeedOvercome = false;
 
                                 //if (train == drivenTrain.UncoupledFrom || CarCoupleSpeedOvercome)
-                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || train.AITrainOutOfPower)
                                 {
                                     if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
@@ -1569,7 +1569,7 @@ namespace Orts.Simulation
                                     return;
                                 }
                             }
-                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
+                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling || train.AITrainOutOfPower)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS < -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
@@ -1674,7 +1674,7 @@ namespace Orts.Simulation
                                 // Pokud se jedná o FATAL nebo NOTFATAL, neplatí podmínky pro překročení rychlosti při spojování
                                 if (FatalIncident || NotFatalIncident) CarCoupleMaxSpeedOvercome = false;
 
-                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || train.AITrainOutOfPower)
                                 {
                                     if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, 1);
@@ -1683,7 +1683,7 @@ namespace Orts.Simulation
                                     return;
                                 }
                             }
-                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
+                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling || train.AITrainOutOfPower)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS > train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, 1);
@@ -1794,7 +1794,7 @@ namespace Orts.Simulation
                                 // Pokud se jedná o FATAL nebo NOTFATAL, neplatí podmínky pro překročení rychlosti při spojování
                                 if (FatalIncident || NotFatalIncident) CarCoupleMaxSpeedOvercome = false;
 
-                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || Settings.ManualCoupling)
+                                if (CarCoupleMaxSpeedOvercome || CarCoupleSpeedOvercome || drivenTrain.HasSpeedInCoupler || Settings.ManualCoupling || DifferenceSpeedMpS < 0.1f || train.AITrainOutOfPower)
                                 {
                                     if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                         drivenTrain.SetCoupleSpeed(train, -1);
@@ -1803,7 +1803,7 @@ namespace Orts.Simulation
                                     return;
                                 }
                             }
-                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
+                            if (MPManager.IsMultiPlayer() && (train == drivenTrain.UncoupledFrom || Settings.ManualCoupling || train.AITrainOutOfPower)) // if manual coupling is set, the train will not couple to the player's train, but can be pushed)
                             {
                                 if (drivenTrain.SpeedMpS > -train.SpeedMpS)
                                     drivenTrain.SetCoupleSpeed(train, -1);
