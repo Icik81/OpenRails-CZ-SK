@@ -2285,7 +2285,7 @@ namespace Orts.Simulation.RollingStocks
             }            
 
             // AI zvedne druhý pantograf při rozjezdu
-            if (AIPanto2Raise)
+            if (AIPanto2Raise && !(Train as AITrain).AITrainOutOfPowerOnPosition && !(Train as AITrain).AITrainOutOfPower)
             {
                 (Train as AITrain).MassKg = 0;
                 foreach (TrainCar car in (Train as AITrain).Cars)
@@ -2441,6 +2441,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (AITrainOutOfPowerTime == 0)
                     AITrainOutOfPowerTime = Simulator.Random.Next(2, 10);
+
+                if (AbsSpeedMpS > 0) AITrainOutOfPowerTime = 0;
 
                 AITrainOutOfPowerTimer += elapsedClockSeconds;
                 if (AITrainOutOfPowerTimer > AITrainOutOfPowerTime)

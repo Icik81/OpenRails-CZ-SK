@@ -5903,6 +5903,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // AI stáhne sběrač napětí kvůli napěťové výluce a nechá se tlačit hráčem
                 (Train as AITrain).AITrainOutOfPowerOnPosition = false;
+                (Train as AITrain).AITrainOutOfPowerZeroSpeed = AbsSpeedMpS == 0.0f;
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
                 {
                     if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
@@ -5911,7 +5912,7 @@ namespace Orts.Simulation.RollingStocks
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
                             var AITrainOutOfPowerdistanceToGoM = AIActionPoint0.keepIt.ActivateDistanceM - (Train as AITrain).PresentPosition[0].DistanceTravelledM;
-                            if (AIActionPoint0.Delay == 40001 && AITrainOutOfPowerdistanceToGoM < 1)
+                            if (AIActionPoint0.Delay == 40001 && AITrainOutOfPowerdistanceToGoM < 0.05f)
                             {
                                 (Train as AITrain).AITrainOutOfPowerOnPosition = true;                                     
                             }                            

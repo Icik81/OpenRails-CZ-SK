@@ -814,7 +814,7 @@ namespace Orts.Simulation.AIs
             else
             {
                 if (LastMovementState != AI_MOVEMENT_STATE.INIT)
-                {                                                           
+                {
                     MovementState = AI_MOVEMENT_STATE.BRAKING;
                     LastMovementState = AI_MOVEMENT_STATE.INIT;
                 }
