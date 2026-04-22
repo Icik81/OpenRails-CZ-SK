@@ -2079,6 +2079,8 @@ namespace Orts.Simulation.RollingStocks
         bool AIPantoChangeDummyStart;
         Direction AIDirection;
         Direction AIPreDirection;
+        float AITrainOutOfPowerTimer;
+        float AITrainOutOfPowerTime;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
             if (IsPlayerTrain || Train as AITrain == null)
@@ -2437,17 +2439,29 @@ namespace Orts.Simulation.RollingStocks
             // Stažení pantografů při výluce napětí trati
             if ((Train as AITrain).AITrainOutOfPower)
             {
-                SignalEvent(PowerSupplyEvent.LowerPantograph);
-                if (PowerOn)
+                if (AITrainOutOfPowerTime == 0)
+                    AITrainOutOfPowerTime = Simulator.Random.Next(2, 10);
+
+                AITrainOutOfPowerTimer += elapsedClockSeconds;
+                if (AITrainOutOfPowerTimer > AITrainOutOfPowerTime)
                 {
-                    SignalEvent(Event.EnginePowerOff);
-                    PowerOn = false;
-                    SignalEvent(Event.CircuitBreakerOpen);
-                    if (RouteVoltageV == 3000)
-                        SignalEvent(Event.CircuitBreakerOpenDC);
-                    else
-                        SignalEvent(Event.CircuitBreakerOpenAC);
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);
+                    if (PowerOn)
+                    {
+                        SignalEvent(Event.EnginePowerOff);
+                        PowerOn = false;
+                        SignalEvent(Event.CircuitBreakerOpen);
+                        if (RouteVoltageV == 3000)
+                            SignalEvent(Event.CircuitBreakerOpenDC);
+                        else
+                            SignalEvent(Event.CircuitBreakerOpenAC);
+                    }
                 }
+            }
+            else
+            {
+                AITrainOutOfPowerTimer = 0;
+                AITrainOutOfPowerTime = 0;
             }
 
             if (RouteVoltageV == 1 || AIPantoDownStop)
