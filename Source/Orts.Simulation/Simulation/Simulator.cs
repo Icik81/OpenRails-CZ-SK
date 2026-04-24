@@ -1259,6 +1259,11 @@ namespace Orts.Simulation
 
                         if (TryToCoupleBehind && d1 <= MinimalDistanceToCouple)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) return;                            
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
@@ -1292,6 +1297,11 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (TryToCoupleBehind && d2 <= MinimalDistanceToCouple)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) return;                            
                             drivenTrain.LastCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
@@ -1327,6 +1337,11 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (TryToCoupleFront && d1 <= MinimalDistanceToCouple)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) return;                            
                             lead = drivenTrain.LeadLocomotive;
                             if (lead == null)
@@ -1395,6 +1410,11 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (TryToCoupleFront && d2 <= MinimalDistanceToCouple)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) return;                            
                             drivenTrain.FirstCar.SignalEvent(Event.Coupling);
                             MPManager.Notify((new MSGEvent(MPManager.GetUserName(), "TRAINCOUPLE", 2)).ToString());
@@ -1446,6 +1466,11 @@ namespace Orts.Simulation
                             d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d1 < 0)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("notfatal")) { NotFatalIncident = true; train.NotFatalIncident = true; CarCoupleSpeedOvercome = true; train.DrivenTrainIsPlayer = drivenTrain.IsPlayerDriven ? true : false; if (train.NotFatalServisGoBack) return; }
                             else
                                 if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; } 
@@ -1531,6 +1556,11 @@ namespace Orts.Simulation
                             d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
                         if (d2 < 0)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("notfatal")) { NotFatalIncident = true; train.NotFatalIncident = true; CarCoupleSpeedOvercome = true; train.DrivenTrainIsPlayer = drivenTrain.IsPlayerDriven ? true : false; if (train.NotFatalServisGoBack) return; }
                             else
                                 if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; }
@@ -1631,6 +1661,11 @@ namespace Orts.Simulation
                             d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d1 < 0)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("notfatal")) { NotFatalIncident = true; train.NotFatalIncident = true; CarCoupleSpeedOvercome = true; train.DrivenTrainIsPlayer = drivenTrain.IsPlayerDriven ? true : false; if (train.NotFatalServisGoBack) return; }
                             else
                                 if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; }                            
@@ -1766,6 +1801,11 @@ namespace Orts.Simulation
                             d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
                         if (d2 < 0)
                         {
+                            if (train.TriggerTrain)
+                            {
+                                train.TriggerTrainIsActivated = true;
+                                return;
+                            }
                             if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("notfatal")) { NotFatalIncident = true; train.NotFatalIncident = true; CarCoupleSpeedOvercome = true; train.DrivenTrainIsPlayer = drivenTrain.IsPlayerDriven ? true : false; if (train.NotFatalServisGoBack) return; }
                             else
                                 if (train.Name.ToLower().Contains("servis") && train.Name.ToLower().Contains("fatal")) { FatalIncident = true; train.FatalIncident = true; CarCoupleSpeedOvercome = true; }

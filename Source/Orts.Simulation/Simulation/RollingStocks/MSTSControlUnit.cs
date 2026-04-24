@@ -274,7 +274,12 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                              
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];  
+                            
+                            if (LocomotiveFaultyActivated)                            
+                            {
+                                PU.HVOff = true;
+                            }
                         }                        
 
                         break;
@@ -347,6 +352,11 @@ namespace Orts.Simulation.RollingStocks
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
                             PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
+
+                            if (LocomotiveFaultyActivated)
+                            {
+                                Battery = false;
+                            }
                         }
 
                         break;

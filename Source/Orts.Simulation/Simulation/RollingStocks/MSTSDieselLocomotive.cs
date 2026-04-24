@@ -1704,6 +1704,11 @@ namespace Orts.Simulation.RollingStocks
             }
 
             if (PowerUnitWithControl && (StopButtonPressed || StopButtonPressed2)) TogglePlayerEngine(); // Pro vlak s řídící jednotkou
+
+            if (LocomotiveFaultyActivated)
+            {
+                Battery = false;
+            }
         }
 
 

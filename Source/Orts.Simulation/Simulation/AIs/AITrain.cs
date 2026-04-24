@@ -785,15 +785,16 @@ namespace Orts.Simulation.AIs
                 AITrainBrakePercent = 0;
 
             // Tento kamerový vlak se nesmí pohybovat
-            if (FreeViewTrain)
+            if (FreeViewTrain || TriggerTrain)
             {
+                if (!TriggerTrainIsSolid && TriggerTrainWasActivated) RemoveTrain();                                                    
                 AITrainBrakePercent = 100;
                 AITrainThrottlePercent = 0;
-                if (FreeViewTrainInitiate)
+                if (TrainInitiate)
                     ControlMode = TRAIN_CONTROL.OUT_OF_CONTROL;                
                 if (ControlMode == TRAIN_CONTROL.OUT_OF_CONTROL)
                     return;
-                FreeViewTrainInitiate = true;
+                TrainInitiate = true;
             }
 
             // Napěťová výluka

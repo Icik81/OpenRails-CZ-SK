@@ -1598,6 +1598,11 @@ namespace Orts.Simulation.RollingStocks
                         HVOff = true;
                     }
                 }
+
+                if (LocomotiveFaultyActivated)
+                {
+                    HVOff = true;
+                }
             }
 
             // Nastavení pro plně oživenou lokomotivu

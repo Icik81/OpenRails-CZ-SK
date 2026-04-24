@@ -807,6 +807,7 @@ namespace Orts.Simulation.RollingStocks
         public bool Combined_control;          
         public float GeneratorVoltageFinal;
         public bool HeadLight2Enable;
+        public bool LocomotiveFaulty;
 
         // Jindrich
         public bool IsActive = false;
@@ -1852,7 +1853,7 @@ namespace Orts.Simulation.RollingStocks
             SteamGeneratorPowerW = locoCopy.SteamGeneratorPowerW;
             SteamGeneratorMinPressureLimitPSI = locoCopy.SteamGeneratorMinPressureLimitPSI;
             SteamGeneratorAirComsumptionLpS = locoCopy.SteamGeneratorAirComsumptionLpS;
-            GeneratorVoltageCurves = locoCopy.GeneratorVoltageCurves;
+            GeneratorVoltageCurves = locoCopy.GeneratorVoltageCurves;            
 
             for (int i = 0; i < 6; i++)
                 RelayDelay[i] = locoCopy.RelayDelay[i];
@@ -2212,6 +2213,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(SwitchEnginePosition[1]);
             outf.Write(SwitchEnginePosition[2]);
             outf.Write(SteamGeneratorTempC);
+            outf.Write(LocomotiveFaulty);
             #endregion
 
             base.Save(outf);
@@ -2479,6 +2481,7 @@ namespace Orts.Simulation.RollingStocks
             SwitchEnginePosition[1] = inf.ReadInt32();
             SwitchEnginePosition[2] = inf.ReadInt32();
             SteamGeneratorTempC = inf.ReadSingle();
+            LocomotiveFaulty = inf.ReadBoolean();
             #endregion
 
             base.Restore(inf);
@@ -7876,7 +7879,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Simulator.CabRadioOn = CabRadio[LocoStation];
                     // Odometer
-                    Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;
+                    Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;                    
                 }
                 //Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("WeatherAdv: " + Simulator.WeatherAdv));                                                                
                 StepControllerValue = Simulator.StepControllerValue;
@@ -7952,6 +7955,7 @@ namespace Orts.Simulation.RollingStocks
                 ToggleWipers3ActivationSwitch();
                 ThunderSound();
                 ShunterSound(elapsedClockSeconds);
+                TriggerTrainLogic(elapsedClockSeconds);
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -12616,6 +12620,56 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         #region Icik`s code
+
+        float LocomotiveFaultyTimer;
+        float LocomotiveFaultyRandomTime;
+        public bool LocomotiveFaultyActivated;
+        public void TriggerTrainLogic(float elapsedSeconds)
+        {
+            if (!IsLeadLocomotive()) return;
+
+            foreach (var train in Simulator.Trains.Where(train => train != Train && train.TriggerTrainIsActivated))
+            {
+                train.TriggerTrainWasActivated = true;
+                
+                // Aktivuje poruchu lokomotivy, pokud je Trigger - porucha aktivován
+                if (train.TriggerTrainLocomotiveFault)
+                {
+                    bool faultLocoFound = false;
+                    foreach (TrainCar car in Train.Cars)
+                    {
+                        if (car is MSTSLocomotive && (car as MSTSLocomotive).LocomotiveFaulty)
+                        {
+                            faultLocoFound = true;
+                            break;
+                        }
+                    }
+                    if (!faultLocoFound)
+                    {
+                        LocomotiveFaulty = true;
+                    }
+                    break;
+                }
+                
+            }
+
+
+            if (LocomotiveFaulty)
+            {
+                if (LocomotiveFaultyTimer == 0)
+                    LocomotiveFaultyRandomTime = Simulator.Random.Next(1, 30);
+
+                LocomotiveFaultyActivated = false;
+                LocomotiveFaultyTimer += elapsedSeconds;                                               
+                if (LocomotiveFaultyTimer > LocomotiveFaultyRandomTime)
+                {                    
+                    LocomotiveFaultyTimer = 0;
+                    LocomotiveFaultyActivated = true;                    
+                }
+            }
+
+        }
+
 
         float ShunterTimeWithOutRadio;
         bool ShunterSoundStartPlayed;

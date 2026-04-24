@@ -80,6 +80,12 @@ namespace Orts.Viewer3D.Popups
                         name.Color = Color.LightBlue;
                         name.Text = Viewer.Catalog.GetString("Camera") + " - " + train0.Name;
                     }
+                    if (train0.TriggerTrain)
+                    {
+                        number.Color = Color.LimeGreen;
+                        name.Color = Color.LimeGreen;
+                        name.Text = Viewer.Catalog.GetString("Trigger") + " - " + train0.Name;
+                    }
                     if (train0.PassengerViewTrain)
                     {
                         number.Color = train0.IsPlayable ? Color.Orange : Color.Gray;
@@ -122,6 +128,12 @@ namespace Orts.Viewer3D.Popups
                             number.Color = Color.LightBlue;
                             name.Color = Color.LightBlue;
                             name.Text = Viewer.Catalog.GetString("Camera") + " - " + thisTrain.Name;
+                        }
+                        if (thisTrain.TriggerTrain)
+                        {
+                            number.Color = Color.LimeGreen;
+                            name.Color = Color.LimeGreen;
+                            name.Text = Viewer.Catalog.GetString("Trigger") + " - " + thisTrain.Name;
                         }
                         if (thisTrain.PassengerViewTrain)
                         {

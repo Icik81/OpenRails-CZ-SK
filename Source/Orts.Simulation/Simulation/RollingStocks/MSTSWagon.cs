@@ -207,7 +207,7 @@ namespace Orts.Simulation.RollingStocks
         public float LoadSound_FrequencyCoef = 1.0f;
         public float FreeViewCameraX = 0;
         public float FreeViewCameraY = -7;
-        public float FreeViewCameraRotate = -0.35f;
+        public float FreeViewCameraRotate = -0.35f;        
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1826,7 +1826,7 @@ namespace Orts.Simulation.RollingStocks
                     FreeViewCameraY = stf.ReadFloat(STFReader.UNITS.None, null);
                     FreeViewCameraRotate = stf.ReadFloat(STFReader.UNITS.None, null);                    
                     stf.SkipRestOfBlock();
-                    ; break;
+                    ; break;                
             }
         }
 
@@ -2023,7 +2023,7 @@ namespace Orts.Simulation.RollingStocks
             CarHasElectricHeatingPlug = copy.CarHasElectricHeatingPlug;
             FreeViewCameraX = copy.FreeViewCameraX;
             FreeViewCameraY = copy.FreeViewCameraY;
-            FreeViewCameraRotate = copy.FreeViewCameraRotate;
+            FreeViewCameraRotate = copy.FreeViewCameraRotate;            
 
             if (copy.IntakePointList != null)
             {

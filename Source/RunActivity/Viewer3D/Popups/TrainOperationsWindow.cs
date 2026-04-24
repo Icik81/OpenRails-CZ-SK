@@ -417,13 +417,13 @@ namespace Orts.Viewer3D.Popups
             CarPosition = carPosition;
             if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSLocomotive)
             {
-                if (Viewer.PlayerTrain.FreeViewTrain)
+                if (Viewer.PlayerTrain.FreeViewTrain || Viewer.PlayerTrain.TriggerTrain)
                 {
                     Texture = TrainOperationsWindow.LocoCameraTexture;
                     Source = new Rectangle(0, 0, 209, 74);
                 }
                 else
-                    if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSDieselLocomotive)
+                if (Viewer.PlayerTrain.Cars[CarPosition] is MSTSDieselLocomotive)
                 {
                     Texture = TrainOperationsWindow.LocoDTexture;
                     Source = new Rectangle(0, 0, 209, 74);

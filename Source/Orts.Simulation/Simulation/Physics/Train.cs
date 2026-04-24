@@ -188,9 +188,13 @@ namespace Orts.Simulation.Physics
         public float NotFatalIncidentDistanceTravelled;
         public bool NotFatalIncident;
         public bool PassengerViewTrain;
+        public bool TriggerTrain;
+        public bool TriggerTrainIsSolid;
         public bool FreeViewTrain;
-        public bool FreeViewTrainInitiate;
-        public bool FirstCameraInitFreeView;
+        public bool TriggerTrainIsActivated;
+        public bool TriggerTrainWasActivated;
+        public bool TrainInitiate;
+        public bool FirstCameraInitFreeView;        
         public float FreeViewCameraX = 0;
         public float FreeViewCameraY = -7;
         public float FreeViewCameraRotate = -0.35f;
@@ -198,6 +202,7 @@ namespace Orts.Simulation.Physics
         public bool AITrainOutOfPower;
         public bool AITrainOutOfPowerOnPosition;
         public bool AITrainOutOfPowerZeroSpeed;
+        public bool TriggerTrainLocomotiveFault;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -795,7 +800,7 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik
+            // Icik            
             AITrainOutOfPower = inf.ReadBoolean();
             FreeViewCameraX = inf.ReadSingle();
             FreeViewCameraY = inf.ReadSingle();
@@ -1915,7 +1920,7 @@ namespace Orts.Simulation.Physics
             if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("freeview") && !Name.ToLower().Contains("freeview") && Name == "PLAYER" && IsActualPlayerTrain)
             {
                 Name += " FreeView"; // Přidá název FreeView do jména vlaku hráče
-            }
+            }            
             if (Name.ToLower().Contains("freeview"))
             {
                 // Pokud název vlaku obsahuje FreeView, aktivuje se volný pohled a vozidlo neblokuje kolej
@@ -1924,12 +1929,35 @@ namespace Orts.Simulation.Physics
                 RemoveFromTrack();
                 if (IsActualPlayerTrain)                
                     SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);                
-                if (FreeViewTrainInitiate) 
+                if (TrainInitiate) 
                     return;                                                
                 if (IsActualPlayerTrain)
-                    FreeViewTrainInitiate = true;
+                    TrainInitiate = true;
+            }
+
+            // Spouštěč se aktivuje pouze pro vlak s názvem obsahujícím "Trigger" a pouze pro aktuální hráčův vlak, pokud je v konfiguračním souboru obsaženo "Trigger"            
+            if (Simulator.conFileName != null && Simulator.conFileName.ToLower().Contains("trigger") && !Name.ToLower().Contains("trigger") && Name == "PLAYER" && IsActualPlayerTrain)
+            {
+                Name += " Trigger"; // Přidá název Trigger do jména vlaku hráče
+            }
+            if (Name.ToLower().Contains("trigger"))
+            {
+                if (Name.ToLower().Contains("solid")) TriggerTrainIsSolid = true;
+                if (Name.ToLower().Contains("locofault")) TriggerTrainLocomotiveFault = true;
+
+                // Pokud název vlaku obsahuje Trigger, aktivuje se objekt, který spustí nějakou akci 
+                TriggerTrain = true;                
+                IsPlayable = false;
+                RemoveFromTrack();
+                if (IsActualPlayerTrain)
+                    SetTrainOutOfControl(OUTOFCONTROL.OUT_OF_PATH);
+                if (TrainInitiate)
+                    return;
+                if (IsActualPlayerTrain)
+                    TrainInitiate = true;
             }
             
+
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())
             {
