@@ -1658,7 +1658,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                         }
 
                         // Při náhlém vypnutí trakce
-                        if (locomotive.PowerReduction > 0) TractionOverKill = true;
+                        if (locomotive.PowerReduction > 0.99) TractionOverKill = true;
 
                         if (!locomotive.TractionSwitchEnable)
                         {
