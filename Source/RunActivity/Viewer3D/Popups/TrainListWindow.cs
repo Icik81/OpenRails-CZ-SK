@@ -82,8 +82,8 @@ namespace Orts.Viewer3D.Popups
                     }
                     if (train0.TriggerTrain)
                     {
-                        number.Color = Color.LimeGreen;
-                        name.Color = Color.LimeGreen;
+                        number.Color = Color.AntiqueWhite;
+                        name.Color = Color.AntiqueWhite;
                         name.Text = Viewer.Catalog.GetString("Trigger") + " - " + train0.Name;
                     }
                     if (train0.PassengerViewTrain)
@@ -131,8 +131,8 @@ namespace Orts.Viewer3D.Popups
                         }
                         if (thisTrain.TriggerTrain)
                         {
-                            number.Color = Color.LimeGreen;
-                            name.Color = Color.LimeGreen;
+                            number.Color = Color.AntiqueWhite;
+                            name.Color = Color.AntiqueWhite;
                             name.Text = Viewer.Catalog.GetString("Trigger") + " - " + thisTrain.Name;
                         }
                         if (thisTrain.PassengerViewTrain)

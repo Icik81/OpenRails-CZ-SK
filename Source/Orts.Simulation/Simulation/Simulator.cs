@@ -37,6 +37,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using static Orts.Simulation.Physics.Train;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
@@ -945,6 +946,26 @@ namespace Orts.Simulation
 
             foreach (Train train in Trains)
             {
+                // Spouštěč se aktivuje pouze pro vlak EventTrigger            
+                if (train.TrainType == Train.TRAINTYPE.STATIC && (train.Cars[0] as MSTSWagon).EventTrigger)
+                {
+                    train.RemoveFromTrack();
+                    train.TriggerTrain = true;
+
+                    train.TriggerTrainIsSolid = (train.Cars[0] as MSTSWagon).EventTriggerTypeSolid ? true : false;
+                    train.TriggerTrainLocomotiveFault = (train.Cars[0] as MSTSWagon).EventTrigger_LocomotiveFault ? true : false;
+                    
+                    train.Name = "Trigger"; // Přejmenovat static                                           
+                    train.Name += train.TriggerTrainLocomotiveFault ? " - Locomotive Fault" : "";
+
+                    // Odstraní vlak ze seznamu vlaků, pokud není solid
+                    if (train.TriggerTrainWasActivated && !train.TriggerTrainIsSolid)
+                    {
+                        Trains.Remove(train);
+                        break;
+                    }
+                }
+                                               
                 // Icik                                
                 if (train.PlayerTrainStartTime == -1)
                     train.PlayerTrainStartTime = (int)ClockTime;                

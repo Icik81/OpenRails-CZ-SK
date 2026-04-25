@@ -207,7 +207,11 @@ namespace Orts.Simulation.RollingStocks
         public float LoadSound_FrequencyCoef = 1.0f;
         public float FreeViewCameraX = 0;
         public float FreeViewCameraY = -7;
-        public float FreeViewCameraRotate = -0.35f;        
+        public float FreeViewCameraRotate = -0.35f;
+        public bool EventTrigger;
+        public string EventTriggerTypeStr = string.Empty;
+        public bool EventTriggerTypeSolid;
+        public bool EventTrigger_LocomotiveFault;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1826,7 +1830,22 @@ namespace Orts.Simulation.RollingStocks
                     FreeViewCameraY = stf.ReadFloat(STFReader.UNITS.None, null);
                     FreeViewCameraRotate = stf.ReadFloat(STFReader.UNITS.None, null);                    
                     stf.SkipRestOfBlock();
-                    ; break;                
+                    ; break;
+                case "wagon(eventtrigger(": EventTrigger = true; break;
+                case "wagon(eventtrigger(type(":
+                    EventTriggerTypeStr = stf.ReadString();                    
+                    switch (EventTriggerTypeStr.ToLower())
+                    {
+                        case "solid": EventTriggerTypeSolid = true; break;                     
+                    }
+                    break;
+                case "wagon(eventtrigger(eventtype(":
+                    EventTriggerTypeStr = stf.ReadString();
+                    switch (EventTriggerTypeStr.ToLower())
+                    {                        
+                        case "locomotivefault": EventTrigger_LocomotiveFault = true; break;
+                    }
+                    break;
             }
         }
 
@@ -2023,7 +2042,10 @@ namespace Orts.Simulation.RollingStocks
             CarHasElectricHeatingPlug = copy.CarHasElectricHeatingPlug;
             FreeViewCameraX = copy.FreeViewCameraX;
             FreeViewCameraY = copy.FreeViewCameraY;
-            FreeViewCameraRotate = copy.FreeViewCameraRotate;            
+            FreeViewCameraRotate = copy.FreeViewCameraRotate;
+            EventTrigger = copy.EventTrigger;
+            EventTriggerTypeSolid = copy.EventTriggerTypeSolid;
+            EventTrigger_LocomotiveFault = copy.EventTrigger_LocomotiveFault;
 
             if (copy.IntakePointList != null)
             {
