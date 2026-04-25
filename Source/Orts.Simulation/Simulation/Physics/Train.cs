@@ -203,6 +203,8 @@ namespace Orts.Simulation.Physics
         public bool AITrainOutOfPowerOnPosition;
         public bool AITrainOutOfPowerZeroSpeed;
         public bool TriggerTrainLocomotiveFault;
+        public Train EventTriggerTrain;
+        public bool TriggerTrainNoPowerZone;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars

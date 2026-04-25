@@ -212,6 +212,7 @@ namespace Orts.Simulation.RollingStocks
         public string EventTriggerTypeStr = string.Empty;
         public bool EventTriggerTypeSolid;
         public bool EventTrigger_LocomotiveFault;
+        public bool EventTrigger_NoPowerZone;
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1844,6 +1845,7 @@ namespace Orts.Simulation.RollingStocks
                     switch (EventTriggerTypeStr.ToLower())
                     {                        
                         case "locomotivefault": EventTrigger_LocomotiveFault = true; break;
+                        case "nopowerzone": EventTrigger_NoPowerZone = true; break;
                     }
                     break;
             }
@@ -2046,6 +2048,7 @@ namespace Orts.Simulation.RollingStocks
             EventTrigger = copy.EventTrigger;
             EventTriggerTypeSolid = copy.EventTriggerTypeSolid;
             EventTrigger_LocomotiveFault = copy.EventTrigger_LocomotiveFault;
+            EventTrigger_NoPowerZone = copy.EventTrigger_NoPowerZone;
 
             if (copy.IntakePointList != null)
             {

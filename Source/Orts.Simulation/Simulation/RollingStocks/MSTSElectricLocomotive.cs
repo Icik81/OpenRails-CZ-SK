@@ -681,6 +681,12 @@ namespace Orts.Simulation.RollingStocks
                 volts += 1000; // max 16kV poblíž napaječky
 
 
+            // Bez napětí pro triggery výluky napětí
+            if (Train.AITrainOutOfPower)
+            {                
+                RouteVoltageV = 1;
+            }
+
             // Výpočet napětí v drátech
             if (IsPlayerTrain)
             {
@@ -1602,7 +1608,7 @@ namespace Orts.Simulation.RollingStocks
                 if (LocomotiveFaultyActivated)
                 {
                     HVOff = true;
-                }
+                }                
             }
 
             // Nastavení pro plně oživenou lokomotivu
@@ -1745,7 +1751,7 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-            }
+            }            
         }
 
         // Icik

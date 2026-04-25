@@ -7677,6 +7677,7 @@ namespace Orts.Simulation.RollingStocks
             VentilationDR(elapsedClockSeconds);
             JVHack(elapsedClockSeconds);
             TrainCarHeatInitialize();
+            TriggerTrainLogic(elapsedClockSeconds);
 
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             if (!Simulator.Paused && Simulator.GameSpeed == 1)
@@ -7954,8 +7955,7 @@ namespace Orts.Simulation.RollingStocks
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
                 ThunderSound();
-                ShunterSound(elapsedClockSeconds);
-                TriggerTrainLogic(elapsedClockSeconds);
+                ShunterSound(elapsedClockSeconds);                
 
                 // Loco 361
                 TogglePantograph4NCSwitch();
@@ -12624,47 +12624,86 @@ namespace Orts.Simulation.RollingStocks
         float LocomotiveFaultyTimer;
         float LocomotiveFaultyRandomTime;
         public bool LocomotiveFaultyActivated;
+        bool NoPowerZoneRun;
         public void TriggerTrainLogic(float elapsedSeconds)
-        {
-            if (!IsLeadLocomotive()) return;
+        {                        
+            foreach (var train in Simulator.Trains.Where(train => train != Train && train.TriggerTrainIsActivated && !train.TriggerTrainWasActivated))
+            {                
+                train.TriggerTrainIsActivated = false;
 
-            foreach (var train in Simulator.Trains.Where(train => train != Train && train.TriggerTrainIsActivated))
-            {
-                train.TriggerTrainWasActivated = true;
-                
-                // Aktivuje poruchu lokomotivy, pokud je Trigger - porucha aktivován
-                if (train.TriggerTrainLocomotiveFault)
+                foreach (var EventTrain in Simulator.Trains.Where(Eventtrain => Eventtrain != train))
                 {
-                    bool faultLocoFound = false;
-                    foreach (TrainCar car in Train.Cars)
+                    if (EventTrain.EventTriggerTrain != null && EventTrain == EventTrain.EventTriggerTrain)
                     {
-                        if (car is MSTSLocomotive && (car as MSTSLocomotive).LocomotiveFaulty)
-                        {
-                            faultLocoFound = true;
-                            break;
+                        EventTrain.EventTriggerTrain = null;
+                        
+                        // Událost jen pro vlak hráče
+                        if (EventTrain.IsActualPlayerTrain)
+                        {                            
+                            // Aktivuje poruchu lokomotivy, pokud je Trigger - LocomotiveFault aktivován
+                            if (train.TriggerTrainLocomotiveFault)
+                            {
+                                bool faultLocoFound = false;
+                                foreach (TrainCar car in EventTrain.Cars.Where(car => car is MSTSLocomotive))
+                                {
+                                    if ((car as MSTSLocomotive).LocomotiveFaulty)
+                                    {
+                                        faultLocoFound = true;
+                                        break;
+                                    }
+                                }
+                                if (!faultLocoFound)
+                                {
+                                    foreach (TrainCar car in EventTrain.Cars.Where(car => car is MSTSLocomotive))
+                                    {
+                                        if (car.CarIsPlayerLoco)
+                                        {
+                                            (car as MSTSLocomotive).LocomotiveFaulty = true;
+                                            break;
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                            
+                            // Aktivuje bez napěťovou zónu lokomotivy, pokud je Trigger - NoPowerZone aktivován
+                            if (train.TriggerTrainNoPowerZone)
+                            {
+                                EventTrain.AITrainOutOfPower = !EventTrain.AITrainOutOfPower;                                                                
+                            }
                         }
+                        else
+                        {
+                            // Událost jen pro vlak AI    
+
+                            // Aktivuje bez napěťovou zónu lokomotivy, pokud je Trigger - NoPowerZone aktivován
+                            if (train.TriggerTrainNoPowerZone)
+                            {
+                                EventTrain.AITrainOutOfPower = !EventTrain.AITrainOutOfPower;
+                            }
+                        }                        
+                        
                     }
-                    if (!faultLocoFound)
-                    {
-                        LocomotiveFaulty = true;
-                    }
-                    break;
                 }
-                
+                train.TriggerTrainWasActivated = true;
             }
 
 
-            if (LocomotiveFaulty)
-            {
-                if (LocomotiveFaultyTimer == 0)
-                    LocomotiveFaultyRandomTime = Simulator.Random.Next(1, 30);
 
-                LocomotiveFaultyActivated = false;
-                LocomotiveFaultyTimer += elapsedSeconds;                                               
-                if (LocomotiveFaultyTimer > LocomotiveFaultyRandomTime)
-                {                    
-                    LocomotiveFaultyTimer = 0;
-                    LocomotiveFaultyActivated = true;                    
+            if (IsLeadLocomotive())
+            {
+                if (LocomotiveFaulty)
+                {
+                    if (LocomotiveFaultyTimer == 0)
+                        LocomotiveFaultyRandomTime = Simulator.Random.Next(1, 30);
+
+                    LocomotiveFaultyActivated = false;
+                    LocomotiveFaultyTimer += elapsedSeconds;
+                    if (LocomotiveFaultyTimer > LocomotiveFaultyRandomTime)
+                    {
+                        LocomotiveFaultyTimer = 0;
+                        LocomotiveFaultyActivated = true;
+                    }
                 }
             }
 
