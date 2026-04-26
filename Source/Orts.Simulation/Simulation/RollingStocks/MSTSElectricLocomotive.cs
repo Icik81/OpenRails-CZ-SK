@@ -685,6 +685,12 @@ namespace Orts.Simulation.RollingStocks
             if (Train.AITrainOutOfPower)
             {                
                 RouteVoltageV = 1;
+
+                if (PantographUp)
+                {
+                    HVOff = true;   
+                    LocomotiveFaulty = true;
+                }
             }
 
             // Výpočet napětí v drátech
@@ -1720,10 +1726,10 @@ namespace Orts.Simulation.RollingStocks
                         VoltageSelectionSwitch[LocoStation] = 2;
                     }
 
-                    if (PantographVoltageV > PantographCriticalVoltage)
+                    if (PantographVoltageV > PantographCriticalVoltage && IsPlayerTrain)
                         HVOn = true;
 
-                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || !IsPlayerTrain)
                     {
                         LocoReadyToGo = false;
                         Pantograph3Switch[LocoStation] = 1;
@@ -1731,8 +1737,10 @@ namespace Orts.Simulation.RollingStocks
                 }
                 if (!MultiSystemEngine)
                 {
-                    HVOn = true;
-                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed)
+                    if (IsPlayerTrain)
+                        HVOn = true;
+
+                    if (PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closed || !IsPlayerTrain)
                     {
                         if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                         {
