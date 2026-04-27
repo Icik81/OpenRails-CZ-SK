@@ -822,6 +822,31 @@ namespace Orts.Simulation.AIs
             }
             //Simulator.Confirmer.Information("AITrainOutOfPower: " + AITrainOutOfPower);
 
+            // Zóna s omezením rychlosti pro AI vlak
+            //Simulator.Confirmer.Information("EventTriggerTrainDistanceM: " + EventTriggerTrainDistanceM);
+            if (AITrainSpeedZone || TriggerTrainSpeedZoneIsPreActivated)
+            {
+                if (Math.Abs(SpeedMpS) > TriggerTrainSpeedZoneSpeedMpS)
+                {
+                    MovementState = AI_MOVEMENT_STATE.BRAKING;
+                    AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 50);
+                }
+                else
+                {
+                    MovementState = AI_MOVEMENT_STATE.ACCELERATING;
+                    AllowedMaxSpeedMpS = TriggerTrainSpeedZoneSpeedMpS;
+                }
+            }
+            else
+            if (!AITrainSpeedZone)
+            {
+                if (AllowedMaxSpeedMpS == TriggerTrainSpeedZoneSpeedMpS)
+                    RecalculateAllowedMaxSpeed();
+            }
+            //Simulator.Confirmer.Information("AITrainSpeedZone: " + AITrainSpeedZone);
+            if (AllowedMaxSpeedMpS == 0) RecalculateAllowedMaxSpeed();
+
+
 
             // update position, route clearance and objects
 

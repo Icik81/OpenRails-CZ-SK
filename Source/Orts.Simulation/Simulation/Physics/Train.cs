@@ -193,6 +193,8 @@ namespace Orts.Simulation.Physics
         public bool FreeViewTrain;
         public bool TriggerTrainIsActivated;
         public bool TriggerTrainWasActivated;
+        public float EventTriggerTrainDistanceM;
+        public bool TriggerTrainSpeedZoneIsPreActivated;
         public bool TrainInitiate;
         public bool FirstCameraInitFreeView;        
         public float FreeViewCameraX = 0;
@@ -205,6 +207,9 @@ namespace Orts.Simulation.Physics
         public bool TriggerTrainLocomotiveFault;
         public Train EventTriggerTrain;
         public bool TriggerTrainNoPowerZone;        
+        public bool TriggerTrainSpeedZone;
+        public float TriggerTrainSpeedZoneSpeedMpS;
+        public bool AITrainSpeedZone;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -804,6 +809,7 @@ namespace Orts.Simulation.Physics
         {
             // Icik            
             AITrainOutOfPower = inf.ReadBoolean();
+            AITrainSpeedZone = inf.ReadBoolean();
             FreeViewCameraX = inf.ReadSingle();
             FreeViewCameraY = inf.ReadSingle();
             FreeViewCameraRotate = inf.ReadSingle();
@@ -1209,6 +1215,7 @@ namespace Orts.Simulation.Physics
         {
             // Icik
             outf.Write(AITrainOutOfPower);
+            outf.Write(AITrainSpeedZone);
             outf.Write(FreeViewCameraX);
             outf.Write(FreeViewCameraY);
             outf.Write(FreeViewCameraRotate);

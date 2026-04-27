@@ -12671,6 +12671,13 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 EventTrain.AITrainOutOfPower = !EventTrain.AITrainOutOfPower;                                                                
                             }
+
+                            // Aktivuje rychlostní zónu lokomotivy, pokud je Trigger - SpeedZone aktivován
+                            if (train.TriggerTrainSpeedZone)
+                            {
+                                EventTrain.AITrainSpeedZone = !EventTrain.AITrainSpeedZone;
+                                EventTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
+                            }
                         }
                         else
                         {
@@ -12680,6 +12687,13 @@ namespace Orts.Simulation.RollingStocks
                             if (train.TriggerTrainNoPowerZone)
                             {
                                 EventTrain.AITrainOutOfPower = !EventTrain.AITrainOutOfPower;
+                            }
+
+                            // Aktivuje rychlostní zónu lokomotivy, pokud je Trigger - SpeedZone aktivován
+                            if (train.TriggerTrainSpeedZone)
+                            {
+                                EventTrain.AITrainSpeedZone = !EventTrain.AITrainSpeedZone;
+                                EventTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
                             }
                         }                        
                         

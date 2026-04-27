@@ -1234,6 +1234,19 @@ namespace Orts.Simulation
             var dot = dx * (float)Math.Sin(directionVector.Y) + dz * (float)Math.Cos(directionVector.Y);
             return rear ? dot : -dot;
         }
+        // Icik
+        public float TriggerTrainOverlapDistanceM(Traveller other, bool rear)
+        {
+            var dx = X - other.X + 2048 * (TileX - other.TileX);
+            var dz = Z - other.Z + 2048 * (TileZ - other.TileZ);
+            var dy = Y - other.Y;
+            if (dx * dx + dz * dz > 5000)
+                return 500;
+            if (Math.Abs(dy) > 5000)
+                return 500;
+            var dot = dx * (float)Math.Sin(directionVector.Y) + dz * (float)Math.Cos(directionVector.Y);
+            return rear ? dot : -dot;
+        }
 
         // Checks if trains are overlapping. Used in multiplayer, where the standard method may lead to train overlapping
         public float RoughOverlapDistanceM(Traveller other, Traveller farMe, Traveller farOther, float lengthMe, float lengthOther, bool rear)

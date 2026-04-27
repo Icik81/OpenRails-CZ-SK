@@ -213,6 +213,9 @@ namespace Orts.Simulation.RollingStocks
         public bool EventTriggerTypeSolid;
         public bool EventTrigger_LocomotiveFault;
         public bool EventTrigger_NoPowerZone;
+        public bool EventTrigger_SpeedZone;
+        public float EventTriggerSpeedZoneSpeedMpS;
+
 
         bool TenderWeightInitialize = true;
         float TenderWagonMaxCoalMassKG = 0;
@@ -1846,7 +1849,8 @@ namespace Orts.Simulation.RollingStocks
                     {                        
                         case "locomotivefault": EventTrigger_LocomotiveFault = true; break;
                         case "nopowerzone": EventTrigger_NoPowerZone = true; break;
-                    }
+                        case "speedzone": EventTrigger_SpeedZone = true; EventTriggerSpeedZoneSpeedMpS = stf.ReadFloat(STFReader.UNITS.Speed, null); break;
+                    }                                            
                     break;
             }
         }
@@ -2049,6 +2053,8 @@ namespace Orts.Simulation.RollingStocks
             EventTriggerTypeSolid = copy.EventTriggerTypeSolid;
             EventTrigger_LocomotiveFault = copy.EventTrigger_LocomotiveFault;
             EventTrigger_NoPowerZone = copy.EventTrigger_NoPowerZone;
+            EventTrigger_SpeedZone = copy.EventTrigger_SpeedZone;
+            EventTriggerSpeedZoneSpeedMpS = copy.EventTriggerSpeedZoneSpeedMpS;
 
             if (copy.IntakePointList != null)
             {
