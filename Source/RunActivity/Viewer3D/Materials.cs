@@ -201,6 +201,9 @@ namespace Orts.Viewer3D
             if (ext == ".ace")
                 return Orts.Formats.Msts.AceFile.Texture2DFromFile(graphicsDevice, path);
 
+            if (!File.Exists(path))
+                return SharedMaterialManager.MissingTexture;
+
             using (var stream = File.OpenRead(path))
             {
                 if (ext == ".gif" || ext == ".jpg" || ext == ".png")
