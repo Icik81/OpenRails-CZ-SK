@@ -17761,7 +17761,7 @@ namespace Orts.Simulation.Physics
                             remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count);
                         float byPlatform = ss.PlatformItem.Length / 50.0f;
                         if (index > 0 && MaxPaxCapacity != 0)
-                            remainingPax += (int)Math.Round(byPlatform, 0);
+                            remainingPax += (int)Math.Round(byPlatform * 10, 0);
 
                         if (Simulator.ClockTime / 3600f > 22.0f)
                             remainingPax *= 0.25f;
@@ -17787,20 +17787,18 @@ namespace Orts.Simulation.Physics
                         if (Simulator.ClockTime / 3600f > 0.0f)
                             remainingPax *= 0.25f;
 
-                        remainingPax = (int)Math.Round((double)remainingPax, 0) * (1 - (index / (float)MaxStationCountFromStart));
-                        
                         if (index == StationStops.Count - 1 || (StationStops[0].PlatformItem.Name == StationStops[1].PlatformItem.Name && StationStops.Count == 2))
                         {
                             remainingPax = 0;
                         }
 
                         if (!wasRestoredPax)
-                            ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
+                            ss.PlatformItem.NumPassengersWaiting = (int)remainingPax / 2;
                         else
                         {
                             wasRestoredPax = false;
                             if (!AtStation)
-                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
+                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax / 2;
                         }
 
                         if (StationsBoardingRestOfPaxes[index] == 0) 

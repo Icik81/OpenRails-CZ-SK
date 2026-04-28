@@ -204,6 +204,8 @@ namespace Orts.Viewer3D
             if (!File.Exists(path))
                 return SharedMaterialManager.MissingTexture;
 
+            if (!File.Exists(path))
+                return SharedMaterialManager.MissingTexture;
             using (var stream = File.OpenRead(path))
             {
                 if (ext == ".gif" || ext == ".jpg" || ext == ".png")
