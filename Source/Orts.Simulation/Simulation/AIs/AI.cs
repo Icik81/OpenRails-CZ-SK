@@ -900,6 +900,12 @@ namespace Orts.Simulation.AIs
                 train.FreeViewCameraRotate = conFile.Train.TrainCfg.FreeViewCamera_XYRotate.FreeViewCameraRotate;
             }
 
+            // Načte rychlost z CON souboru, pokud je tam uvedena. 
+            if (conFile.Train.TrainCfg.SpeedZone_SpeedMpS != null)
+            {
+                train.TriggerTrainSpeedZoneSpeedMpS = conFile.Train.TrainCfg.SpeedZone_SpeedMpS.SpeedMpS;                
+            }
+
             // also set Route max speed for speedpost-processing in train.cs
             train.TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
 

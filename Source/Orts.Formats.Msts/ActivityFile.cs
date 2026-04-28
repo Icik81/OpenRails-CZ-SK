@@ -1711,6 +1711,18 @@ namespace Orts.Formats.Msts
         }
     }
 
+    public class SpeedZone
+    {
+        public float SpeedMpS = 0;        
+
+        public SpeedZone(STFReader stf)
+        {
+            stf.MustMatch("(");
+            SpeedMpS = stf.ReadFloat(STFReader.UNITS.Speed, null);            
+            stf.MustMatch(")");
+        }
+    }
+
     public class MaxVelocity
     {
         public float A;
@@ -1735,6 +1747,7 @@ namespace Orts.Formats.Msts
 
         // Icik
         public FreeViewCamera_XYRotate FreeViewCamera_XYRotate;
+        public SpeedZone SpeedZone_SpeedMpS;
 
         public List<Wagon> WagonList = new List<Wagon>();
 
@@ -1751,6 +1764,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("wagon", ()=>{ WagonList.Add(new Wagon(stf)); }),
                 new STFReader.TokenProcessor("engine", ()=>{ WagonList.Add(new Wagon(stf)); }),
                 new STFReader.TokenProcessor("freeviewcamera_xyrotate", ()=>{ FreeViewCamera_XYRotate = new FreeViewCamera_XYRotate(stf); }),
+                new STFReader.TokenProcessor("speedzone", ()=>{ SpeedZone_SpeedMpS = new SpeedZone(stf); }),
             });
         }
     }

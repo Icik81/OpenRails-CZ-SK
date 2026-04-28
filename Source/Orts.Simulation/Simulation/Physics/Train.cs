@@ -1966,6 +1966,24 @@ namespace Orts.Simulation.Physics
                     TrainInitiate = true;
             }
             
+            // Omezení rychlosti pro vlak hráče událostí SpeedZone
+            if (IsActualPlayerTrain)
+            {
+                if (AITrainSpeedZone)                
+                    AllowedMaxSpeedMpS = TriggerTrainSpeedZoneSpeedMpS;
+                else
+                if (AllowedMaxSpeedMpS == TriggerTrainSpeedZoneSpeedMpS)
+                {
+                    var allowedMaxSpeedPathMpS = Math.Min(allowedAbsoluteMaxSpeedSignalMpS, allowedAbsoluteMaxSpeedLimitMpS);
+                    allowedMaxSpeedPathMpS = Math.Min(allowedMaxSpeedPathMpS, allowedAbsoluteMaxTempSpeedLimitMpS);
+                    AllowedMaxSpeedMpS = Math.Min(allowedMaxSpeedPathMpS, TrainMaxSpeedMpS);
+                    allowedMaxSpeedSignalMpS = (Math.Min(allowedAbsoluteMaxSpeedSignalMpS, TrainMaxSpeedMpS));
+                    allowedMaxSpeedLimitMpS = (Math.Min(allowedAbsoluteMaxSpeedLimitMpS, TrainMaxSpeedMpS));
+                    allowedMaxTempSpeedLimitMpS = (Math.Min(allowedAbsoluteMaxTempSpeedLimitMpS, TrainMaxSpeedMpS));
+                }
+                //Simulator.Confirmer.Information("EventTriggerTrainDistanceM: " + EventTriggerTrainDistanceM);
+                //Simulator.Confirmer.Information("AITrainSpeedZone: " + AITrainSpeedZone);
+            }
 
             // Manuální režim výhybek a signálů pro MP
             if (MPManager.IsMultiPlayer())

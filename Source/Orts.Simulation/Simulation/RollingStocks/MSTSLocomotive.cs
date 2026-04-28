@@ -12623,8 +12623,7 @@ namespace Orts.Simulation.RollingStocks
 
         float LocomotiveFaultyTimer;
         float LocomotiveFaultyRandomTime;
-        public bool LocomotiveFaultyActivated;
-        bool NoPowerZoneRun;
+        public bool LocomotiveFaultyActivated;        
         public void TriggerTrainLogic(float elapsedSeconds)
         {                        
             foreach (var train in Simulator.Trains.Where(train => train != Train && train.TriggerTrainIsActivated && !train.TriggerTrainWasActivated))

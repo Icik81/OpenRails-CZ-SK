@@ -1897,14 +1897,15 @@ namespace Orts.Simulation
             {
                 foreach (Train train in Trains.Where(train => train != drivenTrain && train.TriggerTrain))
                 {                    
-                    float d1 = drivenTrain.RearTDBTraveller.TriggerTrainOverlapDistanceM(train.FrontTDBTraveller, true);
+                    float d1 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, true);
+                    float d11 = drivenTrain.RearTDBTraveller.TriggerTrainOverlapDistanceM(train.FrontTDBTraveller, true);
                     // Give another try if multiplayer
                     if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                         drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[0].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
                         d1 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.FrontTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, true);
-                    if (d1 > 0 && d1 < EventTriggerTrainDistanceMCoef)
+                    if (d11 > 0 && d11 < EventTriggerTrainDistanceMCoef)
                     {
-                        drivenTrain.EventTriggerTrainDistanceM = d1;
+                        drivenTrain.EventTriggerTrainDistanceM = d11;
                         drivenTrain.EventTriggerTrain = drivenTrain;
 
                         if (train.TriggerTrainSpeedZone)
@@ -1913,21 +1914,22 @@ namespace Orts.Simulation
                             drivenTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
                         }
                     }
-                    if (d1 > -1 && d1 < 1)
+                    if (d1 < 0)
                     {
                         train.TriggerTrainIsActivated = true;
                         drivenTrain.EventTriggerTrain = drivenTrain;
                         return;
                     }
 
-                    float d2 = drivenTrain.RearTDBTraveller.TriggerTrainOverlapDistanceM(train.RearTDBTraveller, true);
+                    float d2 = drivenTrain.RearTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, true);
+                    float d22 = drivenTrain.RearTDBTraveller.TriggerTrainOverlapDistanceM(train.RearTDBTraveller, true);
                     // Give another try if multiplayer                        
                     if (d2 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                         drivenTrain.PresentPosition[1].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[1].TCSectionIndex != -1)
                         d2 = drivenTrain.RearTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.FrontTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, true);
-                    if (d2 > 0 && d2 < EventTriggerTrainDistanceMCoef)
+                    if (d22 > 0 && d22 < EventTriggerTrainDistanceMCoef)
                     {
-                        drivenTrain.EventTriggerTrainDistanceM = d2;
+                        drivenTrain.EventTriggerTrainDistanceM = d22;
                         drivenTrain.EventTriggerTrain = drivenTrain;
 
                         if (train.TriggerTrainSpeedZone)
@@ -1936,13 +1938,15 @@ namespace Orts.Simulation
                             drivenTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
                         }
                     }
-                    if (d2 > -1 && d2 < 1)
+                    if (d2 < 0)
                     {
                         train.TriggerTrainIsActivated = true;
                         drivenTrain.EventTriggerTrain = drivenTrain;
                         return;
                     }
-                    train.TriggerTrainWasActivated = false;
+
+                    if (drivenTrain.EventTriggerTrain == drivenTrain)
+                        train.TriggerTrainWasActivated = false;
                 }
             }
             else if (drivenTrain.SpeedMpS > 0)
@@ -1952,14 +1956,15 @@ namespace Orts.Simulation
                     //avoid coupling of player train with other players train if it is too short alived (e.g, when a train is just spawned, it may overlap with another train)
                     if (MPManager.IsMultiPlayer() && !MPManager.TrainOK2Couple(this, drivenTrain, train)) continue;
 
-                    float d1 = drivenTrain.FrontTDBTraveller.TriggerTrainOverlapDistanceM(train.RearTDBTraveller, false);
+                    float d1 = drivenTrain.FrontTDBTraveller.OverlapDistanceM(train.RearTDBTraveller, false);
+                    float d11 = drivenTrain.FrontTDBTraveller.TriggerTrainOverlapDistanceM(train.RearTDBTraveller, false);
                     // Give another try if multiplayer
                     if (d1 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                         drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[1].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
                         d1 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.RearTDBTraveller, drivenTrain.RearTDBTraveller, train.FrontTDBTraveller, drivenTrain.Length, train.Length, false);
-                    if (d1 > 0 && d1 < EventTriggerTrainDistanceMCoef)
+                    if (d11 > 0 && d11 < EventTriggerTrainDistanceMCoef)
                     {
-                        drivenTrain.EventTriggerTrainDistanceM = d1;                        
+                        drivenTrain.EventTriggerTrainDistanceM = d11;                        
                         drivenTrain.EventTriggerTrain = drivenTrain;
 
                         if (train.TriggerTrainSpeedZone)
@@ -1968,20 +1973,21 @@ namespace Orts.Simulation
                             drivenTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
                         }
                     }
-                    if (d1 > -1 && d1 < 1)
+                    if (d1 < 0)
                     {
                         train.TriggerTrainIsActivated = true;
                         drivenTrain.EventTriggerTrain = drivenTrain;
                         return;
                     }
-                    float d2 = drivenTrain.FrontTDBTraveller.TriggerTrainOverlapDistanceM(train.FrontTDBTraveller, false);
+                    float d2 = drivenTrain.FrontTDBTraveller.OverlapDistanceM(train.FrontTDBTraveller, false);
+                    float d22 = drivenTrain.FrontTDBTraveller.TriggerTrainOverlapDistanceM(train.FrontTDBTraveller, false);
                     // Give another try if multiplayer
                     if (d2 >= 0 && drivenTrain.TrainType == Train.TRAINTYPE.REMOTE &&
                         drivenTrain.PresentPosition[0].TCSectionIndex == train.PresentPosition[0].TCSectionIndex && drivenTrain.PresentPosition[0].TCSectionIndex != -1)
                         d2 = drivenTrain.FrontTDBTraveller.RoughOverlapDistanceM(train.FrontTDBTraveller, drivenTrain.RearTDBTraveller, train.RearTDBTraveller, drivenTrain.Length, train.Length, false);
-                    if (d2 > 0 && d2 < EventTriggerTrainDistanceMCoef)
+                    if (d22 > 0 && d22 < EventTriggerTrainDistanceMCoef)
                     {
-                        drivenTrain.EventTriggerTrainDistanceM = d2;                        
+                        drivenTrain.EventTriggerTrainDistanceM = d22;                        
                         drivenTrain.EventTriggerTrain = drivenTrain;
 
                         if (train.TriggerTrainSpeedZone)
@@ -1990,13 +1996,15 @@ namespace Orts.Simulation
                             drivenTrain.TriggerTrainSpeedZoneSpeedMpS = train.TriggerTrainSpeedZoneSpeedMpS;
                         }
                     }
-                    if (d2 > -1 && d2 < 1)
+                    if (d2 < 0)
                     {
                         train.TriggerTrainIsActivated = true;
                         drivenTrain.EventTriggerTrain = drivenTrain;
                         return;
                     }
-                    train.TriggerTrainWasActivated = false;
+                    
+                    if (drivenTrain.EventTriggerTrain == drivenTrain)
+                        train.TriggerTrainWasActivated = false;
                 }
             }            
         }
