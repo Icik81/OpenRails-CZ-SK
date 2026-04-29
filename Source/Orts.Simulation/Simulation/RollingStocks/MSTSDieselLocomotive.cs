@@ -734,7 +734,7 @@ namespace Orts.Simulation.RollingStocks
                     // Ohraničení trakční síly dle vstupního výkonu motoru
                     if (TractiveForceN * AbsTractionSpeedMpS > maxPowerW && AbsTractionSpeedMpS != 0)
                         TractiveForceN = maxPowerW / AbsTractionSpeedMpS;
-                }
+                }                              
 
                 // Redukce výkonu na různých faktorech
                 TractiveForceN *= 1 - PowerReduction; 

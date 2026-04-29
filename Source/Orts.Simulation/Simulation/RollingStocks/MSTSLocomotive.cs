@@ -3722,7 +3722,7 @@ namespace Orts.Simulation.RollingStocks
         public void PowerCurrentCalculation(float elapsedClockSeconds)
         {
             if (CurrentForceStep2Curves != null)
-                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
+                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(TractiveForceN));
 
             if (CurrentSpeedStepACCurves != null && SwitchingVoltageMode_OffAC)
                 PowerCurrent1 = CurrentSpeedStepACCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
@@ -3731,13 +3731,25 @@ namespace Orts.Simulation.RollingStocks
                 PowerCurrent1 = CurrentSpeedStepDCCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
             else
             if (CurrentForceStep1Curves != null)
-                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
+                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(TractiveForceN));
             else
             if (CurrentForceCurves != null)
-                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(DriveForceN), AbsWheelSpeedMpS);
+                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(TractiveForceN), AbsWheelSpeedMpS);
             else
                 // Default
-                PowerCurrent1 = Math.Abs(DriveForceN) / MaxForceN * MaxCurrentA;
+                PowerCurrent1 = Math.Abs(TractiveForceN) / MaxForceN * MaxCurrentA;
+            
+
+            // Regulátor proudu buzení trakčních motorů u dieselelektrických lokomotiv, který snižuje proud při překročení MaxCurrentPower,
+            // aby nedošlo k přetížení motorů a případnému poškození. U elektrických lokomotiv se tento regulátor neuplatní, protože tam je nadproudová ochrana řešena jinak (odpojením od sítě).                                
+            if (this is MSTSDieselLocomotive)
+            {                
+                TractiveForceN /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
+                PowerCurrent1 /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
+                
+                if (CurrentForceStep2Curves != null)
+                    PowerCurrent2 /= (PowerCurrent2 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent2 / MaxCurrentPower);
+            }            
 
 
             if (MirerControllerEnable || MirelRSControllerEnable || HS198ControllerEnable)
