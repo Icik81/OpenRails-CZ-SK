@@ -3722,7 +3722,7 @@ namespace Orts.Simulation.RollingStocks
         public void PowerCurrentCalculation(float elapsedClockSeconds)
         {
             if (CurrentForceStep2Curves != null)
-                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(TractiveForceN));
+                PowerCurrent2 = CurrentForceStep2Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
 
             if (CurrentSpeedStepACCurves != null && SwitchingVoltageMode_OffAC)
                 PowerCurrent1 = CurrentSpeedStepACCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
@@ -3731,20 +3731,20 @@ namespace Orts.Simulation.RollingStocks
                 PowerCurrent1 = CurrentSpeedStepDCCurves.Get(StepControllerValue, AbsWheelSpeedMpS);
             else
             if (CurrentForceStep1Curves != null)
-                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(TractiveForceN));
+                PowerCurrent1 = CurrentForceStep1Curves.Get(StepControllerValue, Math.Abs(DriveForceN));
             else
             if (CurrentForceCurves != null)
-                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(TractiveForceN), AbsWheelSpeedMpS);
+                PowerCurrent1 = CurrentForceCurves.Get(Math.Abs(DriveForceN), AbsWheelSpeedMpS);
             else
                 // Default
-                PowerCurrent1 = Math.Abs(TractiveForceN) / MaxForceN * MaxCurrentA;
+                PowerCurrent1 = Math.Abs(DriveForceN) / MaxForceN * MaxCurrentA;
             
 
             // Regulátor proudu buzení trakčních motorů u dieselelektrických lokomotiv, který snižuje proud při překročení MaxCurrentPower,
             // aby nedošlo k přetížení motorů a případnému poškození. U elektrických lokomotiv se tento regulátor neuplatní, protože tam je nadproudová ochrana řešena jinak (odpojením od sítě).                                
             if (this is MSTSDieselLocomotive)
-            {                
-                TractiveForceN /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
+            {
+                DriveForceN /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
                 PowerCurrent1 /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
                 
                 if (CurrentForceStep2Curves != null)
@@ -22322,8 +22322,8 @@ namespace Orts.Simulation.RollingStocks
             if (Simulator.GameTimeCyklus10 == 0)
             {
                 int ElectricHeatCarPosition = -1;
-                int CarPosition = 0;                
-                
+                int CarPosition = 0;
+
                 // Testuje připojené potrubí pro vozy s elektrickým vytápěním
                 foreach (TrainCar car in Train.Cars)
                 {
@@ -22333,7 +22333,7 @@ namespace Orts.Simulation.RollingStocks
                         ElectricHeatCarPosition = CarPosition;
                         (car as MSTSLocomotive).CarHasElectricHeatingPlug = true;
                         break;
-                    }                    
+                    }
                     CarPosition++;
                 }
                 if (ElectricHeatCarPosition > -1)
@@ -22348,8 +22348,8 @@ namespace Orts.Simulation.RollingStocks
                         if (!(wagon as MSTSWagon).CarHasElectricHeatingPlug && (wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove || wagon.DieselHeaterPower > 0 || wagon is MSTSLocomotive))
                             break;
                         else
-                        if ((wagon as MSTSWagon).CarHasElectricHeatingPlug || wagon.WagonType == WagonTypes.Passenger)
-                            wagon.WagonCanEnableElectricHeating = true;
+                            if ((wagon as MSTSWagon).CarHasElectricHeatingPlug || wagon.WagonType == WagonTypes.Passenger)
+                                wagon.WagonCanEnableElectricHeating = true;
                     }
                     for (int i = ElectricHeatCarPosition; i >= 0; i--)
                     {
@@ -22361,21 +22361,39 @@ namespace Orts.Simulation.RollingStocks
                         if (!(wagon as MSTSWagon).CarHasElectricHeatingPlug && (wagon.HasWagonSteamHeatingElements || wagon.WagonHasStove || wagon.DieselHeaterPower > 0 || wagon is MSTSLocomotive))
                             break;
                         else
-                        if ((wagon as MSTSWagon).CarHasElectricHeatingPlug || wagon.WagonType == WagonTypes.Passenger)
-                            wagon.WagonCanEnableElectricHeating = true;
+                            if ((wagon as MSTSWagon).CarHasElectricHeatingPlug || wagon.WagonType == WagonTypes.Passenger)
+                                wagon.WagonCanEnableElectricHeating = true;
                     }
                 }
 
                 // Testuje připojené potrubí pro vozy s parním vytápěním             
-                if (MaxSteamHeatPressurePSI == 0)                     
-                    IsSteamHeatFitted = false;                
-                else                
-                    IsSteamHeatFitted = true;                
+                if (MaxSteamHeatPressurePSI == 0)
+                    IsSteamHeatFitted = false;
+                else
+                    IsSteamHeatFitted = true;
                 int SteamHeatCarPosition = -1;
-                CarPosition = 0;                
+                CarPosition = 0;
                 foreach (TrainCar car in Train.Cars)
                 {
                     car.WagonCanEnableSteamHeating = false;
+
+                    if (Train.CarSteamHeatOn)
+                    {
+                        foreach (TrainCar car0 in Train.Cars)
+                        {
+                            if (car0 is MSTSLocomotive && (car0 as MSTSLocomotive).IsSteamHeatFitted)
+                            {
+                                SteamHeatCarPosition = CarPosition;
+                                break;
+                            }
+                            if (car0.WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler || car0.WagonSpecialType == MSTSWagon.WagonSpecialTypes.Heated)
+                            {
+                                SteamHeatCarPosition = CarPosition;
+                                break;
+                            }
+                        }
+                        break;
+                    }
                     if (car is MSTSLocomotive && ((car as MSTSLocomotive).IsLeadLocomotive() || !IsPlayerTrain) && (car as MSTSLocomotive).IsSteamHeatFitted)
                     {
                         SteamHeatCarPosition = CarPosition;
@@ -22406,7 +22424,7 @@ namespace Orts.Simulation.RollingStocks
                         else
                             wagon.WagonCanEnableSteamHeating = true;
                     }
-                }                                
+                }                
             }            
         }
         #endregion Vytápění vlaků

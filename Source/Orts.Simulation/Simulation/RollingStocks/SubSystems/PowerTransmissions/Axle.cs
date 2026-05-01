@@ -387,6 +387,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             get
             {
+                if (DriveForceN == 0) 
+                    return false;
+
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
@@ -431,6 +434,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             get
             {
+                if (DriveForceN == 0)
+                    return false;
+
                 if (SlipSpeedMpS > 0.0f)
                 {
                     if (SlipSpeedPercent > (SlipWarningTresholdPercent))

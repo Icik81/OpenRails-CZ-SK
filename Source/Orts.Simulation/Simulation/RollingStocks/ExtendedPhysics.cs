@@ -311,6 +311,9 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
+                if (Locomotive.DriveForceN == 0)
+                    return false;
+
                 if (SlipSpeedMpS > 0.0f)
                 {
                     if ((SlipSpeedPercent > (Locomotive.LocomotiveAxle.SlipWarningTresholdPercent)))
@@ -365,6 +368,9 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
+                if (Locomotive.DriveForceN == 0)
+                    return false;
+
                 if (Math.Abs(SlipSpeedMpS) > WheelSlipThresholdMpS)
                     return true;
                 else
