@@ -653,6 +653,8 @@ namespace Orts.Simulation.Timetables
             outf.Write(RestOfPax);
             outf.Write(AITrainOffsetStop);
             outf.Write(AITrainOffsetStopDistance);
+            outf.Write((int)LastMovementState);
+
 
             // dummy for level crossing horn pattern
             outf.Write(-1);
