@@ -13079,9 +13079,7 @@ namespace Orts.Simulation.RollingStocks
                             DistanceToOtherTrainIsValid =
                                 (Simulator.DistanceToOtherTrain > 220 && Simulator.DistanceToOtherTrain > 230)
                                 || (Simulator.DistanceToOtherTrain > 170 && Simulator.DistanceToOtherTrain < 180)
-                                || (Simulator.DistanceToOtherTrain > 120 && Simulator.DistanceToOtherTrain < 130)
-                                || (Simulator.DistanceToOtherTrain > 60 && Simulator.DistanceToOtherTrain < 70)
-                                || (Simulator.DistanceToOtherTrain > 40 && Simulator.DistanceToOtherTrain < 45);
+                                || (Simulator.DistanceToOtherTrain > 120 && Simulator.DistanceToOtherTrain < 130);
 
                             ShunterTimer += elapsedSeconds;
                             if (!ShunterSoundOff && ShunterTimer > 10 && DistanceToOtherTrainIsValid)
@@ -13101,7 +13099,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             switch (Simulator.DistanceToOtherTrain)
                             {
-                                case float n when (n > 253):
+                                case float n when (n > 1000):
                                     ShunterSoundToTrainReset();
                                     break;
                                 case float n when (n < 250 + DistanceSpeedCorrectionM && n > 225 + DistanceSpeedCorrectionM):

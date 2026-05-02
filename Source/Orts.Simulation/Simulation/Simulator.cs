@@ -328,6 +328,7 @@ namespace Orts.Simulation
         public string LastNameFreeViewTrain = "NONE";
         public bool ForceSuppressConfirmations;
         public bool PlayableStatusChanged;
+        public bool PlayerTrainInAutopilotMode;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -1277,13 +1278,11 @@ namespace Orts.Simulation
             if (CarCoupleMaxSpeedOvercome)
             {
                 SoundNotify = Event.Derail2;
-            }
-
-            if (!drivenTrain.IsPlayerDriven) Settings.ManualCoupling = false;
+            }            
 
             #region Manuální spojování vozů vlaku hráče            
             // Manuální spojování vozů vlaku hráče            
-            if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && drivenTrain.IsActualPlayerTrain && TryToCouple)
+            if (Math.Abs(drivenTrain.SpeedMpS) < 0.01f && Settings.ManualCoupling && drivenTrain.IsActualPlayerTrain && TryToCouple && !PlayerTrainInAutopilotMode)
             {
                 if (MPManager.IsMultiPlayer() && !MPManager.IsServer()) return; //in MultiPlayer mode, server will check coupling, client will get message and do things
                 TryToCouple = false;

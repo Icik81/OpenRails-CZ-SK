@@ -7029,6 +7029,7 @@ namespace Orts.Simulation.AIs
             }
             TrainType = TRAINTYPE.AI_PLAYERDRIVEN;
             success = true;
+            Simulator.PlayerTrainInAutopilotMode = false;
             return success;
         }
 
@@ -7088,6 +7089,7 @@ namespace Orts.Simulation.AIs
             }
             else MovementState = AI_MOVEMENT_STATE.STOPPED;
             success = true;
+            Simulator.PlayerTrainInAutopilotMode = true;
             return success;
         }
 

@@ -1750,7 +1750,7 @@ namespace Orts.Viewer3D
                     if (success)
                     {
                         Simulator.Confirmer.Message(ConfirmLevel.Information, Viewer.Catalog.GetString("Switched to player control"));
-                        DbfEvalAutoPilot = false;//Debrief eval
+                        DbfEvalAutoPilot = false;//Debrief eval                        
                     }
                 }
                 else if (PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN)
@@ -1764,7 +1764,7 @@ namespace Orts.Viewer3D
                         {
                             Simulator.Confirmer.Message(ConfirmLevel.Information, Viewer.Catalog.GetString("Switched to autopilot"));
                             DbfEvalIniAutoPilotTimeS = Simulator.ClockTime;//Debrief eval
-                            DbfEvalAutoPilot = true;//Debrief eval
+                            DbfEvalAutoPilot = true;//Debrief eval                            
                         }
                     }
                 }
