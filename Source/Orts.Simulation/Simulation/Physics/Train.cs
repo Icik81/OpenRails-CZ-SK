@@ -17495,7 +17495,7 @@ namespace Orts.Simulation.Physics
 
         public List<int> fullUnboardStations = new List<int>();
         public List<string> UnboardStationsName = new List<string>();
-        public int[] StationsBoardingRestOfPaxes = new int[100];
+        public int[] StationsBoardingRestOfPaxes = new int[1000];
         protected bool initPax = true;
         protected int statCount = 0;
         float actualRandom = 1;
@@ -17521,7 +17521,7 @@ namespace Orts.Simulation.Physics
                 UnboardStationsName.Clear();
                 foreach (StationStop stop in StationStops)                
                     stop.PlatformItem.NumPassengersWaitingBase = 0;                
-                for (int i = 0; i < 100; i++)                
+                for (int i = 0; i < 1000; i++)                
                     StationsBoardingRestOfPaxes[i] = 0;
 
 
