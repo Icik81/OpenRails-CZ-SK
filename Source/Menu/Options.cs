@@ -123,6 +123,16 @@ namespace ORTS
             comboPressureUnit.ValueMember = "Code";
             comboPressureUnit.SelectedValue = Settings.PressureUnit;
 
+
+            comboBoxShunterLanquage.DataSource = new[] {
+                new ComboBoxMember { Code = "Czech", Name = catalog.GetString("Czech") },
+                new ComboBoxMember { Code = "Slovak", Name = catalog.GetString("Slovak") },                
+            }.ToList();
+            comboBoxShunterLanquage.DisplayMember = "Name";
+            comboBoxShunterLanquage.ValueMember = "Code";
+            comboBoxShunterLanquage.SelectedValue = Settings.ShunterLanguage;
+
+
             // Windows 2000 and XP should use 8.25pt Tahoma, while Windows
             // Vista and later should use 9pt "Segoe UI". We'll use the
             // Message Box font to allow for user-customizations, though.
@@ -163,6 +173,7 @@ namespace ORTS
             // Icik
             checkBoxMSTSCompatibilityMode.Checked = Settings.MSTSCompatibilityMode;
             checkAirEmpty.Checked = Settings.AirEmpty;
+            comboBoxShunterLanquage.Text = Settings.ShunterLanguage;
 
             // Jindrich
             chkManualCoupling.Checked = settings.ManualCoupling;
@@ -471,6 +482,7 @@ namespace ORTS
 
             // Icik
             Settings.AirEmpty = checkAirEmpty.Checked;
+            Settings.ShunterLanguage = comboBoxShunterLanquage.SelectedValue.ToString();
 
             // Jindrich
             Settings.ManualCoupling = chkManualCoupling.Checked;

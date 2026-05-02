@@ -29,8 +29,8 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             this.buttonOK = new System.Windows.Forms.Button();
             this.numericBrakePipeChargingRate = new System.Windows.Forms.NumericUpDown();
             this.lBrakePipeChargingRate = new System.Windows.Forms.Label();
@@ -65,6 +65,8 @@
             this.comboLanguage = new System.Windows.Forms.ComboBox();
             this.checkAlerterExternal = new System.Windows.Forms.CheckBox();
             this.tabPageAudio = new System.Windows.Forms.TabPage();
+            this.label30 = new System.Windows.Forms.Label();
+            this.comboBoxShunterLanquage = new System.Windows.Forms.ComboBox();
             this.labelSoundTrainDepart2 = new System.Windows.Forms.Label();
             this.labelSoundTrainDepart1 = new System.Windows.Forms.Label();
             this.trackBarSoundTrainDepart = new System.Windows.Forms.TrackBar();
@@ -77,6 +79,7 @@
             this.numericSoundDetailLevel = new System.Windows.Forms.NumericUpDown();
             this.checkMSTSBINSound = new System.Windows.Forms.CheckBox();
             this.tabPageVideo = new System.Windows.Forms.TabPage();
+            this.checkBoxDieselSmoke = new System.Windows.Forms.CheckBox();
             this.labelLODBias = new System.Windows.Forms.Label();
             this.label21 = new System.Windows.Forms.Label();
             this.trackLODBias = new System.Windows.Forms.TrackBar();
@@ -214,8 +217,6 @@
             this.buttonContentAdd = new System.Windows.Forms.Button();
             this.panelContent = new System.Windows.Forms.Panel();
             this.dataGridViewContent = new System.Windows.Forms.DataGridView();
-            this.nameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.pathDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.bindingSourceContent = new System.Windows.Forms.BindingSource(this.components);
             this.tabPageExperimental = new System.Windows.Forms.TabPage();
             this.label29 = new System.Windows.Forms.Label();
@@ -245,7 +246,6 @@
             this.ElevationText = new System.Windows.Forms.Label();
             this.pbLAA = new System.Windows.Forms.PictureBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.checkBoxDieselSmoke = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.numericBrakePipeChargingRate)).BeginInit();
             this.tabOptions.SuspendLayout();
             this.tabPageGeneral.SuspendLayout();
@@ -778,6 +778,8 @@
             // 
             // tabPageAudio
             // 
+            this.tabPageAudio.Controls.Add(this.label30);
+            this.tabPageAudio.Controls.Add(this.comboBoxShunterLanquage);
             this.tabPageAudio.Controls.Add(this.labelSoundTrainDepart2);
             this.tabPageAudio.Controls.Add(this.labelSoundTrainDepart1);
             this.tabPageAudio.Controls.Add(this.trackBarSoundTrainDepart);
@@ -797,6 +799,26 @@
             this.tabPageAudio.TabIndex = 5;
             this.tabPageAudio.Text = "Audio";
             this.tabPageAudio.UseVisualStyleBackColor = true;
+            // 
+            // label30
+            // 
+            this.label30.AutoSize = true;
+            this.label30.Location = new System.Drawing.Point(130, 249);
+            this.label30.Margin = new System.Windows.Forms.Padding(4);
+            this.label30.Name = "label30";
+            this.label30.Size = new System.Drawing.Size(153, 16);
+            this.label30.TabIndex = 32;
+            this.label30.Text = "Shunter speak language";
+            // 
+            // comboBoxShunterLanquage
+            // 
+            this.comboBoxShunterLanquage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxShunterLanquage.FormattingEnabled = true;
+            this.comboBoxShunterLanquage.Location = new System.Drawing.Point(8, 246);
+            this.comboBoxShunterLanquage.Margin = new System.Windows.Forms.Padding(4);
+            this.comboBoxShunterLanquage.Name = "comboBoxShunterLanquage";
+            this.comboBoxShunterLanquage.Size = new System.Drawing.Size(114, 24);
+            this.comboBoxShunterLanquage.TabIndex = 31;
             // 
             // labelSoundTrainDepart2
             // 
@@ -990,6 +1012,17 @@
             this.tabPageVideo.TabIndex = 4;
             this.tabPageVideo.Text = "Video";
             this.tabPageVideo.UseVisualStyleBackColor = true;
+            // 
+            // checkBoxDieselSmoke
+            // 
+            this.checkBoxDieselSmoke.AutoSize = true;
+            this.checkBoxDieselSmoke.Location = new System.Drawing.Point(8, 94);
+            this.checkBoxDieselSmoke.Margin = new System.Windows.Forms.Padding(4);
+            this.checkBoxDieselSmoke.Name = "checkBoxDieselSmoke";
+            this.checkBoxDieselSmoke.Size = new System.Drawing.Size(133, 20);
+            this.checkBoxDieselSmoke.TabIndex = 60;
+            this.checkBoxDieselSmoke.Text = "Diesel Smoke FX";
+            this.checkBoxDieselSmoke.UseVisualStyleBackColor = true;
             // 
             // labelLODBias
             // 
@@ -2733,28 +2766,25 @@
             this.dataGridViewContent.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dataGridViewContent.CellBorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.None;
             this.dataGridViewContent.ColumnHeadersBorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
-            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle1;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle3.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewContent.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle3;
             this.dataGridViewContent.ColumnHeadersHeight = 29;
             this.dataGridViewContent.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.DisableResizing;
-            this.dataGridViewContent.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.nameDataGridViewTextBoxColumn,
-            this.pathDataGridViewTextBoxColumn});
             this.dataGridViewContent.DataSource = this.bindingSourceContent;
-            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle2.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
-            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle2;
+            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle4.BackColor = System.Drawing.SystemColors.Window;
+            dataGridViewCellStyle4.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle4.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
+            this.dataGridViewContent.DefaultCellStyle = dataGridViewCellStyle4;
             this.dataGridViewContent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dataGridViewContent.Location = new System.Drawing.Point(0, 0);
             this.dataGridViewContent.Margin = new System.Windows.Forms.Padding(4);
@@ -2768,28 +2798,6 @@
             this.dataGridViewContent.Size = new System.Drawing.Size(784, 334);
             this.dataGridViewContent.TabIndex = 0;
             this.dataGridViewContent.SelectionChanged += new System.EventHandler(this.dataGridViewContent_SelectionChanged);
-            // 
-            // nameDataGridViewTextBoxColumn
-            // 
-            this.nameDataGridViewTextBoxColumn.DataPropertyName = "Name";
-            this.nameDataGridViewTextBoxColumn.HeaderText = "Name";
-            this.nameDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.nameDataGridViewTextBoxColumn.Name = "nameDataGridViewTextBoxColumn";
-            this.nameDataGridViewTextBoxColumn.ReadOnly = true;
-            this.nameDataGridViewTextBoxColumn.Width = 74;
-            // 
-            // pathDataGridViewTextBoxColumn
-            // 
-            this.pathDataGridViewTextBoxColumn.DataPropertyName = "Path";
-            this.pathDataGridViewTextBoxColumn.HeaderText = "Path";
-            this.pathDataGridViewTextBoxColumn.MinimumWidth = 6;
-            this.pathDataGridViewTextBoxColumn.Name = "pathDataGridViewTextBoxColumn";
-            this.pathDataGridViewTextBoxColumn.ReadOnly = true;
-            this.pathDataGridViewTextBoxColumn.Width = 66;
-            // 
-            // bindingSourceContent
-            // 
-            this.bindingSourceContent.DataSource = typeof(ORTS.OptionsForm.ContentFolder);
             // 
             // tabPageExperimental
             // 
@@ -3214,17 +3222,6 @@
             this.pbLAA.TabIndex = 0;
             this.pbLAA.TabStop = false;
             // 
-            // checkBoxDieselSmoke
-            // 
-            this.checkBoxDieselSmoke.AutoSize = true;
-            this.checkBoxDieselSmoke.Location = new System.Drawing.Point(8, 94);
-            this.checkBoxDieselSmoke.Margin = new System.Windows.Forms.Padding(4);
-            this.checkBoxDieselSmoke.Name = "checkBoxDieselSmoke";
-            this.checkBoxDieselSmoke.Size = new System.Drawing.Size(133, 20);
-            this.checkBoxDieselSmoke.TabIndex = 60;
-            this.checkBoxDieselSmoke.Text = "Diesel Smoke FX";
-            this.checkBoxDieselSmoke.UseVisualStyleBackColor = true;
-            // 
             // OptionsForm
             // 
             this.AcceptButton = this.buttonOK;
@@ -3539,5 +3536,7 @@
         private System.Windows.Forms.CheckBox checkCorrectQuestionableBrakingParams;
         private System.Windows.Forms.CheckBox checkBoxHornLvlCrossing;
         private System.Windows.Forms.CheckBox checkBoxDieselSmoke;
+        private System.Windows.Forms.Label label30;
+        private System.Windows.Forms.ComboBox comboBoxShunterLanquage;
     }
 }

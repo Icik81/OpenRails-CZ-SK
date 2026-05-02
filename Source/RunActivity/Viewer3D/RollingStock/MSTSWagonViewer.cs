@@ -1314,9 +1314,22 @@ namespace Orts.Viewer3D.RollingStock
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                         smsGenericFilePath = "..\\Content\\ActivitySound\\AmbientSound.sms";
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
-                        smsGenericFilePath = "..\\Content\\ShunterSound\\ShunterSound.sms";
+
+                        switch (Program.Simulator.Settings.ShunterLanguage)
+                        {
+                            case "Czech":
+                                smsGenericFilePath = "..\\Content\\ShunterSound\\Czech\\ShunterSound.sms";
+                                break;
+                            case "Slovak":
+                                smsGenericFilePath = "..\\Content\\ShunterSound\\Slovak\\ShunterSound.sms";
+                                break;
+                            default:
+                                smsGenericFilePath = "..\\Content\\ShunterSound\\ShunterSound.sms";
+                                break;
+                        }
                         Viewer.SoundProcess.AddSoundSource(this, new SoundSource(Viewer, MSTSWagon, System.IO.Path.Combine(Viewer.ContentPath, smsGenericFilePath)));
                     }                                       
+
 
                     MSTSWagon.CarSoundLoaded = true;
                 }

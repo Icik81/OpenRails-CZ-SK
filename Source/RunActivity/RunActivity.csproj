@@ -1009,6 +1009,30 @@
     <Content Include="Content\ShadowMap.fx">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\ShunterSound\Czech\Readme.txt" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_1.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_10.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_100.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_15.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_150.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_2.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_20.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_200.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_250.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_3.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_30.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_4.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_5.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_50.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_80.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_Done.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_NearReverse.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_Shunt.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_Slow.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_Slowly.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_SlowNearReverse.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_Start.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSound_StopReverse.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_1.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_10.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_100.wav" />
@@ -1032,6 +1056,30 @@
     <Content Include="Content\ShunterSound\ShunterSound_SlowNearReverse.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_Start.wav" />
     <Content Include="Content\ShunterSound\ShunterSound_StopReverse.wav" />
+    <Content Include="Content\ShunterSound\Slovak\Readme.txt" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_1.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_10.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_100.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_15.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_150.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_2.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_20.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_200.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_250.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_3.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_30.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_4.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_5.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_50.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_80.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_Done.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_NearReverse.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_Shunt.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_Slow.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_Slowly.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_SlowNearReverse.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_Start.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_StopReverse.wav" />
     <Content Include="Content\SignalAspects.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1222,7 +1270,9 @@
     <None Include="Content\RestrictedSpeedPost\predzvestnik_PJ.ace" />
     <None Include="Content\RestrictedSpeedPost\predzvestnik_PJ2.ace" />
     <None Include="Content\RestrictedSpeedPost\RestrictedSpeedPost.dat" />
+    <None Include="Content\ShunterSound\Czech\ShunterSound.sms" />
     <None Include="Content\ShunterSound\ShunterSound.sms" />
+    <None Include="Content\ShunterSound\Slovak\ShunterSound.sms" />
     <None Include="Content\SignalLight\SignalLight128.ace" />
     <None Include="Content\SignalLight\SignalLight256.ace" />
     <None Include="Content\SignalLight\SignalLight64M.ace" />

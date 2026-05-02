@@ -203,6 +203,8 @@ namespace ORTS.Settings
         // Icik
         [Default(false)]
         public bool MSTSCompatibilityMode { get; set; }
+        [Default("Czech")]
+        public String ShunterLanguage { get; set; }
 
         [Default(false)]
         public bool AirEmpty { get; set; }
