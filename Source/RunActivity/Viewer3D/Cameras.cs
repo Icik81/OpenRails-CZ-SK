@@ -266,10 +266,12 @@ namespace Orts.Viewer3D
             mstsObjectCenter.Y -= cameraLocation.Location.Y;
             mstsObjectCenter.Z -= cameraLocation.Location.Z;
             // TODO: This *2 is a complete fiddle because some objects don't currently pass in a correct radius and e.g. track sections vanish.
-            objectRadius *= 2;
+            
             // Optimalizace objektového rádiusu
             if (objectRadius < 100)            
                 objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem                           
+            else
+                objectRadius *= 2;
             if (objectRadius > 1000) objectRadius = 1000;
 
             if (frustumLeft.X * mstsObjectCenter.X + frustumLeft.Y * mstsObjectCenter.Y - frustumLeft.Z * mstsObjectCenter.Z > objectRadius)
