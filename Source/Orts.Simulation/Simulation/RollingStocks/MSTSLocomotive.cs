@@ -3744,11 +3744,11 @@ namespace Orts.Simulation.RollingStocks
             // aby nedošlo k přetížení motorů a případnému poškození. U elektrických lokomotiv se tento regulátor neuplatní, protože tam je nadproudová ochrana řešena jinak (odpojením od sítě).                                
             if (this is MSTSDieselLocomotive)
             {
-                DriveForceN /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
-                PowerCurrent1 /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
+                //DriveForceN /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
+                //PowerCurrent1 /= (PowerCurrent1 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent1 / MaxCurrentPower);
                 
-                if (CurrentForceStep2Curves != null)
-                    PowerCurrent2 /= (PowerCurrent2 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent2 / MaxCurrentPower);
+                //if (CurrentForceStep2Curves != null)
+                //    PowerCurrent2 /= (PowerCurrent2 / MaxCurrentPower) < 1 ? 1 : (1.05f * PowerCurrent2 / MaxCurrentPower);
             }            
 
 
