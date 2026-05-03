@@ -271,8 +271,7 @@ namespace Orts.Viewer3D
             if (objectRadius < 100)            
                 objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem                           
             else
-                objectRadius *= 2;
-            if (objectRadius > 1000) objectRadius = 1000;
+                objectRadius *= 2;            
 
             if (frustumLeft.X * mstsObjectCenter.X + frustumLeft.Y * mstsObjectCenter.Y - frustumLeft.Z * mstsObjectCenter.Z > objectRadius)
                 return false;
@@ -283,9 +282,7 @@ namespace Orts.Viewer3D
 
         // Cull for distance
         public bool InRange(Vector3 mstsObjectCenter, float objectRadius, float objectViewingDistance)
-        {
-            if (objectRadius > 1000) objectRadius = 1000;
-
+        {            
             mstsObjectCenter.X -= cameraLocation.Location.X;
             mstsObjectCenter.Z -= cameraLocation.Location.Z;
 
@@ -305,9 +302,7 @@ namespace Orts.Viewer3D
         /// to specify a cutoff beyond which the object can't be seen.
         /// </summary>
         public bool CanSee(Vector3 mstsObjectCenter, float objectRadius, float objectViewingDistance)
-        {
-            if (objectRadius > 1000) objectRadius = 1000;
-
+        {            
             if (!InRange(mstsObjectCenter, objectRadius, objectViewingDistance))
                 return false;
 
