@@ -266,7 +266,12 @@ namespace Orts.Viewer3D
             mstsObjectCenter.Y -= cameraLocation.Location.Y;
             mstsObjectCenter.Z -= cameraLocation.Location.Z;
             // TODO: This *2 is a complete fiddle because some objects don't currently pass in a correct radius and e.g. track sections vanish.
-            objectRadius *= 15;
+            
+            // Optimalizace objektového rádiusu
+            if (objectRadius < 100)            
+                objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem                           
+            if (objectRadius > 1000) objectRadius = 1000;
+
             if (frustumLeft.X * mstsObjectCenter.X + frustumLeft.Y * mstsObjectCenter.Y - frustumLeft.Z * mstsObjectCenter.Z > objectRadius)
                 return false;
             if (frustumRight.X * mstsObjectCenter.X + frustumRight.Y * mstsObjectCenter.Y - frustumRight.Z * mstsObjectCenter.Z > objectRadius)
@@ -277,13 +282,15 @@ namespace Orts.Viewer3D
         // Cull for distance
         public bool InRange(Vector3 mstsObjectCenter, float objectRadius, float objectViewingDistance)
         {
+            if (objectRadius > 1000) objectRadius = 1000;
+
             mstsObjectCenter.X -= cameraLocation.Location.X;
             mstsObjectCenter.Z -= cameraLocation.Location.Z;
 
             // An object cannot be visible further away than the viewing distance.
             if (objectViewingDistance > Viewer.Settings.ViewingDistance)
                 objectViewingDistance = Viewer.Settings.ViewingDistance;
-
+            
             var distanceSquared = mstsObjectCenter.X * mstsObjectCenter.X + mstsObjectCenter.Z * mstsObjectCenter.Z;
 
             return distanceSquared < (objectRadius + objectViewingDistance) * (objectRadius + objectViewingDistance);
@@ -297,6 +304,8 @@ namespace Orts.Viewer3D
         /// </summary>
         public bool CanSee(Vector3 mstsObjectCenter, float objectRadius, float objectViewingDistance)
         {
+            if (objectRadius > 1000) objectRadius = 1000;
+
             if (!InRange(mstsObjectCenter, objectRadius, objectViewingDistance))
                 return false;
 
