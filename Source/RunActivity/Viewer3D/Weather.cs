@@ -517,7 +517,9 @@ namespace Orts.Viewer3D
                 case 7: // Náhodné
                     Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 1;                    
                     break;
-            }            
+            }
+            
+            Weather.FogDistance = MathHelper.Clamp(Weather.FogDistance, 0f, Viewer.Settings.ViewingDistance * 10f);
             Program.Simulator.FogDistanceFinal = Weather.FogDistance;
             Program.Simulator.FogDistanceFinalBase = Weather.FogDistance;
         }
@@ -1202,6 +1204,7 @@ namespace Orts.Viewer3D
                 Program.Simulator.Weather.FogDistance += FogRatioCoef * elapsedTime.ClockSeconds;
             if (Program.Simulator.Weather.FogDistance > Program.Simulator.FogDistanceFinal)
                 Program.Simulator.Weather.FogDistance -= FogRatioCoef * elapsedTime.ClockSeconds;
+            Program.Simulator.Weather.FogDistance = MathHelper.Clamp(Program.Simulator.Weather.FogDistance, 0f, Viewer.Settings.ViewingDistance * 10f);
 
             if (Program.Simulator.GroundLevel < Program.Simulator.GroundLevelFinal)
                 Program.Simulator.GroundLevel += FogRatioCoef * elapsedTime.ClockSeconds / 1000f;
