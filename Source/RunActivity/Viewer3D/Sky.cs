@@ -25,6 +25,7 @@ using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Orts.Viewer3D
 {
@@ -543,16 +544,24 @@ namespace Orts.Viewer3D
             }
             string skyIndex = SkyIndex.ToString();
 
-            try
+            if (System.IO.File.Exists(System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png")))
             {
-                SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
+                try
+                {
+                    SkyTexture[SkyIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\SkyDome" + skyIndex + ".png"));
+                }
+                catch
+                {
+                    SkyIndex = -1;
+                    goto NewReadSkyTexture;
+                }
             }
-            catch
+            else
             {
                 SkyIndex = -1;
                 goto NewReadSkyTexture;
             }
-        
+
             // Náhodně vybereme texturu pro mraky 
             CloudIndex = Viewer.Simulator.CloudIndex;
         NewReadCloudTexture:
@@ -563,11 +572,19 @@ namespace Orts.Viewer3D
             }
             string cloudIndex = CloudIndex.ToString();
 
-            try
+            if (System.IO.File.Exists(System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png")))
             {
-                CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+                try
+                {
+                    CloudTexture[CloudIndex] = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\Season\\Clouds" + cloudIndex + ".png"));
+                }
+                catch
+                {
+                    CloudIndex = -1;
+                    goto NewReadCloudTexture;
+                }
             }
-            catch
+            else
             {
                 CloudIndex = -1;
                 goto NewReadCloudTexture;
