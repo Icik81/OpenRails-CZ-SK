@@ -642,8 +642,9 @@ namespace Orts.Viewer3D
         {
             if (ShadowMapRenderTarget == null)
                 return false;
-            
+
             // Optimalizace objektového rádiusu
+            objectRadius *= 2;
             if (objectRadius < 100)
                 objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem                           
             if (objectRadius > 1000) objectRadius = 1000;
