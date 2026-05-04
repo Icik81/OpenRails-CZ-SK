@@ -808,6 +808,7 @@ namespace Orts.Simulation.RollingStocks
         public float GeneratorVoltageFinal;
         public bool HeadLight2Enable;
         public bool LocomotiveFaulty;
+        public bool ControllerAtNeutralDrivePosition;
 
         // Jindrich
         public bool IsActive = false;
@@ -10871,7 +10872,7 @@ namespace Orts.Simulation.RollingStocks
 
             TractionBlocked = true;
             
-            if (LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
+            if (!ControllerAtNeutralDrivePosition && LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
                 Mirel.AlerterPressed(true);
 
             if (MultiPositionControllers != null)
@@ -10902,7 +10903,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopTrainBrakeIncrease(int from)
         {
-            if (LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
+            if (!ControllerAtNeutralDrivePosition && LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
                 Mirel.AlerterPressed(true);
 
             if (MultiPositionControllers != null)
@@ -10926,7 +10927,7 @@ namespace Orts.Simulation.RollingStocks
             if (TrainBrakeController.BS2ControllerOnStation && !StationIsActivated[LocoStation])
                 return;
 
-            if (LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
+            if (!ControllerAtNeutralDrivePosition && LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
                 Mirel.AlerterPressed(true);
 
             if (MultiPositionControllers != null)
@@ -10949,7 +10950,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void StopTrainBrakeDecrease(int from)
         {
-            if (LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
+            if (!ControllerAtNeutralDrivePosition && LocoType != LocoTypes.Vectron && !TrainBrakeController.BS2ControllerOnStation && Mirel.Equipped && !Mirel.BlueLight && Mirel.initTest == Mirel.InitTest.Passed)
                 Mirel.AlerterPressed(true);
 
             if (MultiPositionControllers != null)

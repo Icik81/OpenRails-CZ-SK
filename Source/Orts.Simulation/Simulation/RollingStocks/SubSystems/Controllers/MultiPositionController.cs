@@ -389,9 +389,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                     return;
 
                 // Icik
-                // Po zastavení plynule odpadá EDB
+                // Po zastavení plynule odpadá EDB                
                 if (controllerPosition == ControllerPosition.Neutral || controllerPosition == ControllerPosition.Drive)
                 {
+                    Locomotive.ControllerAtNeutralDrivePosition = true;
                     if (controllerPosition == ControllerPosition.Drive)
                     {                        
                         Locomotive.BrakeSystem.BrakeCylReleaseEDBOn = false;
@@ -413,6 +414,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
                         Locomotive.LastStateDynamicBrakePercent = -1;                        
                     }
                 }
+                else
+                    Locomotive.ControllerAtNeutralDrivePosition = false;
             }
 
             if (!haveCruiseControl || !ccAutoMode)
