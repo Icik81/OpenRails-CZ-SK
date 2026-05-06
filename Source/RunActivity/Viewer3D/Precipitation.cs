@@ -81,7 +81,7 @@ namespace Orts.Viewer3D
                 Pricipitation2.DynamicUpdate2(WeatherControl, Weather, Viewer, ref Wind);
                 Pricipitation2.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2, Viewer);
             }
-            else
+            if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow)
             {
                 Pricipitation.DynamicUpdate(WeatherControl, Weather, Viewer, ref Wind);
                 Pricipitation.Update(gameTime, elapsedTime, Weather.PricipitationIntensityPPSPM2 * (2f / 3f), Viewer);
@@ -95,8 +95,11 @@ namespace Orts.Viewer3D
             XNAWorldLocation.M21 = Viewer.Camera.TileX;
             XNAWorldLocation.M22 = Viewer.Camera.TileZ;
 
-            frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
-            frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);            
+            if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain || Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow)
+            {
+                frame.AddPrimitive(Material, Pricipitation, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+                frame.AddPrimitive(Material, Pricipitation2, RenderPrimitiveGroup.Precipitation, ref XNAWorldLocation);
+            }
         }
 
         public void Reset()

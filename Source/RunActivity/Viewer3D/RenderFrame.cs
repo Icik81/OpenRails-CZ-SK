@@ -19,6 +19,7 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Simulation;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using ORTS.Common.Input;
@@ -643,11 +644,14 @@ namespace Orts.Viewer3D
             if (ShadowMapRenderTarget == null)
                 return false;
 
-            // Optimalizace objektového rádiusu            
-            if (objectRadius < 100)
-                objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem
-            else
-                objectRadius *= 2;            
+            if (Program.Simulator.Settings.ShadowSettings == 4)
+            {
+                // Optimalizace objektového rádiusu            
+                if (objectRadius < 100)
+                    objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem
+                else
+                    objectRadius *= 2;
+            }
 
             mstsLocation.Z *= -1;
             mstsLocation.X -= ShadowMapCenter[shadowMapIndex].X;
