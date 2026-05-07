@@ -112,6 +112,20 @@ namespace Orts.Viewer3D.Popups
                 ShunterLabel.Click += new Action<Control, Point>(ShunterLabel_Click);                
                 scrollbox.AddHorizontalSeparator();
 
+                var ShunterFullTestBrakeLabel = new TrainOperationsShunterFullTestBrake(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
+                scrollbox.Add(ShunterFullTestBrakeLabel);
+                ShunterFullTestBrakeLabel.Click += new Action<Control, Point>(ShunterFullTestBrakeLabel_Click);
+                scrollbox.AddHorizontalSeparator();
+
+                var ShunterSimpleTestBrakeLabel = new TrainOperationsShunterSimpleTestBrake(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
+                scrollbox.Add(ShunterSimpleTestBrakeLabel);
+                ShunterSimpleTestBrakeLabel.Click += new Action<Control, Point>(ShunterSimpleTestBrakeLabel_Click);
+                scrollbox.AddHorizontalSeparator();
+
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
                 scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
@@ -177,6 +191,24 @@ namespace Orts.Viewer3D.Popups
         {
             Owner.Viewer.Simulator.ShunterEnable = !Owner.Viewer.Simulator.ShunterEnable;
             Owner.Viewer.Simulator.ShunterEnableChanged = true;
+            Owner.Viewer.Simulator.ShunterFullTestBrakeEnable = false;
+            Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnable = false;
+        }
+
+        void ShunterFullTestBrakeLabel_Click(Control arg1, Point arg2)
+        {
+            Owner.Viewer.Simulator.ShunterFullTestBrakeEnable = !Owner.Viewer.Simulator.ShunterFullTestBrakeEnable;
+            Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged = true;
+            Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnable = false;
+            Owner.Viewer.Simulator.ShunterEnable = false;
+        }
+
+        void ShunterSimpleTestBrakeLabel_Click(Control arg1, Point arg2)
+        {
+            Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnable = !Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnable;
+            Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged = true;
+            Owner.Viewer.Simulator.ShunterFullTestBrakeEnable = false;
+            Owner.Viewer.Simulator.ShunterEnable = false;
         }
 
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
@@ -195,12 +227,16 @@ namespace Orts.Viewer3D.Popups
                     || Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange
                     || Owner.Viewer.Simulator.CarPositionChanged
                     || Owner.Viewer.Simulator.ShunterEnableChanged
+                    || Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged
+                    || Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
                     Owner.Viewer.PlayerTrain.Simulator.HandBrakeStatusChange = false;
                     Owner.Viewer.Simulator.CarPositionChanged = false;
                     Owner.Viewer.Simulator.ShunterEnableChanged = false;
+                    Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged = false;
+                    Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
@@ -400,6 +436,66 @@ namespace Orts.Viewer3D.Popups
             else
             {
                 Text = Viewer.Catalog.GetString("Shunter deactivated");
+                Color = Color.White;
+            }
+        }
+    }
+
+    class TrainOperationsShunterFullTestBrake : Label
+    {
+        readonly Viewer Viewer;
+
+        public TrainOperationsShunterFullTestBrake(int x, int y, Viewer viewer, LabelAlignment alignment)
+            : base(x, y, "", alignment)
+        {
+            Viewer = viewer;
+            Train PlayerTrain = Viewer.PlayerTrain;
+            if (Viewer.Simulator.ShunterFullTestBrakeEnable)
+            {
+                if (Viewer.Simulator.CabRadioOn)
+                {
+                    Text = Viewer.Catalog.GetString("Full Test Brake activated (Radio is ON)");
+                    Color = Color.GreenYellow;
+                }
+                else
+                {
+                    Text = Viewer.Catalog.GetString("Full Test Brake activated (Radio is OFF)");
+                    Color = Color.YellowGreen;
+                }
+            }
+            else
+            {
+                Text = Viewer.Catalog.GetString("Full Test Brake deactivated");
+                Color = Color.White;
+            }
+        }
+    }
+
+    class TrainOperationsShunterSimpleTestBrake : Label
+    {
+        readonly Viewer Viewer;
+
+        public TrainOperationsShunterSimpleTestBrake(int x, int y, Viewer viewer, LabelAlignment alignment)
+            : base(x, y, "", alignment)
+        {
+            Viewer = viewer;
+            Train PlayerTrain = Viewer.PlayerTrain;
+            if (Viewer.Simulator.ShunterSimpleTestBrakeEnable)
+            {
+                if (Viewer.Simulator.CabRadioOn)
+                {
+                    Text = Viewer.Catalog.GetString("Simple Test Brake activated (Radio is ON)");
+                    Color = Color.GreenYellow;
+                }
+                else
+                {
+                    Text = Viewer.Catalog.GetString("Simple Test Brake activated (Radio is OFF)");
+                    Color = Color.YellowGreen;
+                }
+            }
+            else
+            {
+                Text = Viewer.Catalog.GetString("Simple Test Brake deactivated");
                 Color = Color.White;
             }
         }

@@ -329,6 +329,10 @@ namespace Orts.Simulation
         public bool ForceSuppressConfirmations;
         public bool PlayableStatusChanged;
         public bool PlayerTrainInAutopilotMode;
+        public bool ShunterFullTestBrakeEnable;
+        public bool ShunterFullTestBrakeEnableChanged;
+        public bool ShunterSimpleTestBrakeEnable;
+        public bool ShunterSimpleTestBrakeEnableChanged;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
