@@ -502,6 +502,8 @@ namespace ORTS.Settings
         public int[] WindowPosition_BrakeModeOptions { get; set; }
         [Default(new[] { 50, 25 })]
         public int[] WindowPosition_HeatingOptions { get; set; }
+        [Default(new[] { 50, 25 })]
+        public int[] WindowPosition_TestBrake { get; set; }
 
         // Menu-game communication settings:
         [Default(false)]

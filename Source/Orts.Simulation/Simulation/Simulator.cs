@@ -333,6 +333,8 @@ namespace Orts.Simulation
         public bool ShunterFullTestBrakeEnableChanged;
         public bool ShunterSimpleTestBrakeEnable;
         public bool ShunterSimpleTestBrakeEnableChanged;
+        public bool TestBrakeWindow;
+        public string TestBrakeWindowMessage = "";        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -451,6 +451,7 @@ namespace Orts.Simulation.RollingStocks
         public bool HasORTSCabLightDirectory;
         public float InstrumentsBrightness = 0.85f;
         public bool AILocoRun;
+        public bool ShunterTestBrakeDone;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
@@ -2343,6 +2344,7 @@ namespace Orts.Simulation.RollingStocks
             outf.Write(HeatingPosition[2]);
             outf.Write(prevHeatingPosition[1]);
             outf.Write(prevHeatingPosition[2]);
+            outf.Write(ShunterTestBrakeDone);
 
             BrakeSystem.Save(outf);
         }
@@ -2416,6 +2418,7 @@ namespace Orts.Simulation.RollingStocks
             HeatingPosition[2] = inf.ReadInt32();
             prevHeatingPosition[1] = inf.ReadInt32();
             prevHeatingPosition[2] = inf.ReadInt32();
+            ShunterTestBrakeDone = inf.ReadBoolean();
 
             BrakeSystem.Restore(inf);
         }

@@ -147,7 +147,7 @@ namespace Orts.Viewer3D.Popups
                         carLabel.Color = Color.Gray;
 
                     car.BrakeCarStatus();
-                    if (car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake)
+                    if (car.ShunterTestBrakeDone && (car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake))
                         carLabel.Color = Color.Red;
                     
                     if (car.BrakeSystem.BrakeCarDeactivate)

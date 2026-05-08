@@ -108,6 +108,7 @@ namespace Orts.Viewer3D
         public HelperSpeedSelectWindow HelperSpeedSelectWindow { get; private set; } // Helper Options window
         public BrakeModeOptionsWindow BrakeModeOptionsWindow { get; private set; } // Brake Mode Options window
         public HeatingOptionsWindow HeatingOptionsWindow { get; private set; } // Heating Options window
+        public TestBrakeWindow TestBrakeWindow { get; private set; } // Test Brake window
 
         // Route Information
         public TileManager Tiles { get; private set; }
@@ -637,10 +638,11 @@ namespace Orts.Viewer3D
             DerailWindow = new DerailWindow(WindowManager);
             FatalIncidentWindow = new FatalIncidentWindow(WindowManager);
             UnprotectedLvlCrossWindow = new UnprotectedLvlCrossWindow(WindowManager);
-            HelperOptionsWindow = new HelperOptionsWindow(WindowManager);
+            HelperOptionsWindow = new HelperOptionsWindow(WindowManager);            
             HelperSpeedSelectWindow = new HelperSpeedSelectWindow(WindowManager);
             BrakeModeOptionsWindow = new BrakeModeOptionsWindow(WindowManager);
             HeatingOptionsWindow = new HeatingOptionsWindow(WindowManager);
+            TestBrakeWindow = new TestBrakeWindow(WindowManager);
             WindowManager.Initialize();
 
             InfoDisplay = new InfoDisplay(this);
@@ -2184,6 +2186,18 @@ namespace Orts.Viewer3D
                 FatalIncidentWindow.Visible = true;
                 (PlayerLocomotive as MSTSLocomotive).PowerOn = false;
                 (PlayerLocomotive as MSTSLocomotive).ThrottleToZero();
+            }
+            
+            if (Simulator.TestBrakeWindow)
+            {                
+                TestBrakeWindow.Visible = true;
+                //string TestBrakeWindowMessage1 = Simulator.Catalog.GetString("Full test brake completed successfully!");
+                //string TestBrakeWindowMessage2 = Simulator.Catalog.GetString("No problem with brake found in the train!");
+                //string TestBrakeWindowMessageProblemCars = "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01"
+                //    + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01"
+                //    + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01";
+
+                //Simulator.TestBrakeWindowMessage =  TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars;
             }
 
             MouseState currentMouseState = Mouse.GetState();
