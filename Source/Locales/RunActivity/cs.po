@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: RunActivity\n"
-"POT-Creation-Date: 2026-04-24 20:26:39+0200\n"
-"PO-Revision-Date: 2026-04-24 20:29+0200\n"
+"POT-Creation-Date: 2026-05-08 20:36:11+0200\n"
+"PO-Revision-Date: 2026-05-08 20:40+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -28,45 +28,45 @@ msgstr[0] "{0:F0} AL zvukový zdroj"
 msgstr[1] "{0:F0} AL zvukové zdroje"
 msgstr[2] "{0:F0} AL zvukových zdrojů"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:676
+#: ../../RunActivity/Viewer3D/Cameras.cs:682
 msgid "Free"
 msgstr "Volný"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1131
+#: ../../RunActivity/Viewer3D/Cameras.cs:1137
 msgid "Outside Front"
 msgstr "Začátek vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1131
+#: ../../RunActivity/Viewer3D/Cameras.cs:1137
 msgid "Outside Rear"
 msgstr "Konec vlaku"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1665
+#: ../../RunActivity/Viewer3D/Cameras.cs:1671
 msgid "Brakeman"
 msgstr "Brzdař"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:1963
+#: ../../RunActivity/Viewer3D/Cameras.cs:1969
 #: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:93
 #: ../../RunActivity/Viewer3D/Popups/TrainListWindow.cs:142
 msgid "Passenger"
 msgstr "Pasažér"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2058
+#: ../../RunActivity/Viewer3D/Cameras.cs:2064
 msgid "3D Cab"
 msgstr "3D kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2160
+#: ../../RunActivity/Viewer3D/Cameras.cs:2166
 msgid "Head out"
 msgstr "Boční pohled"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2288
+#: ../../RunActivity/Viewer3D/Cameras.cs:2294
 msgid "Cab"
 msgstr "Kabina"
 
-#: ../../RunActivity/Viewer3D/Cameras.cs:2574
+#: ../../RunActivity/Viewer3D/Cameras.cs:2580
 msgid "Trackside"
 msgstr "Trať"
 
-#: ../../RunActivity/Viewer3D/Materials.cs:254
+#: ../../RunActivity/Viewer3D/Materials.cs:259
 #, csharp-format
 msgid "{0:F0} texture"
 msgid_plural "{0:F0} textures"
@@ -74,7 +74,7 @@ msgstr[0] "{0:F0} textura"
 msgstr[1] "{0:F0} textury"
 msgstr[2] "{0:F0} textur"
 
-#: ../../RunActivity/Viewer3D/Materials.cs:544
+#: ../../RunActivity/Viewer3D/Materials.cs:549
 #, csharp-format
 msgid "{0:F0} material"
 msgid_plural "{0:F0} materials"
@@ -110,94 +110,94 @@ msgstr[0] "{0:F0} dlaždice"
 msgstr[1] "{0:F0} dlaždic"
 msgstr[2] "{0:F0} dlaždic"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1318
+#: ../../RunActivity/Viewer3D/Viewer.cs:1320
 msgid "In MP, use Alt-F4 to quit directly"
 msgstr "Síťovou hru lze okamžitě ukončit pomocí Alt-F4"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1356
+#: ../../RunActivity/Viewer3D/Viewer.cs:1358
 msgid "Automatic platform and siding labels visible."
 msgstr "Automatické názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1359
+#: ../../RunActivity/Viewer3D/Viewer.cs:1361
 msgid "Platform and siding labels visible."
 msgstr "Názvy stanic a nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1362
+#: ../../RunActivity/Viewer3D/Viewer.cs:1364
 msgid "Platform labels visible."
 msgstr "Názvy stanic zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1365
+#: ../../RunActivity/Viewer3D/Viewer.cs:1367
 msgid "Siding labels visible."
 msgstr "Názvy nástupišť zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1371
+#: ../../RunActivity/Viewer3D/Viewer.cs:1373
 msgid "Platform and siding labels hidden."
 msgstr "Názvy stanic a nástupišť vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1382
+#: ../../RunActivity/Viewer3D/Viewer.cs:1384
 msgid "Train labels visible."
 msgstr "Názvy vlaků zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1385
+#: ../../RunActivity/Viewer3D/Viewer.cs:1387
 msgid "Car labels visible."
 msgstr "Názvy vozů zapnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1391
+#: ../../RunActivity/Viewer3D/Viewer.cs:1393
 msgid "Train and car labels hidden."
 msgstr "Názvy vlaků a vozů vypnuty."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1458
+#: ../../RunActivity/Viewer3D/Viewer.cs:1460
 msgid "To change stations, secure the engine room without voltage."
 msgstr "Pro přechod mezi stanovišti, zajistěte strojovnu bez napětí."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1516
+#: ../../RunActivity/Viewer3D/Viewer.cs:1518
 msgid "Cab view not available"
 msgstr "Kabina není dostupná"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1559
+#: ../../RunActivity/Viewer3D/Viewer.cs:1561
 msgid "Confirmations suppressed"
 msgstr "Informační řádek zakázán"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1561
+#: ../../RunActivity/Viewer3D/Viewer.cs:1563
 msgid "Confirmations visible"
 msgstr "Informační řádek povolen"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1739
+#: ../../RunActivity/Viewer3D/Viewer.cs:1741
 msgid "Switched to player control"
 msgstr "Přepnuto na ovládání hráčem"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1746
+#: ../../RunActivity/Viewer3D/Viewer.cs:1748
 msgid "You can't switch from manual to autopilot mode"
 msgstr "Nelze přepnout z manuálního módu na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1752
+#: ../../RunActivity/Viewer3D/Viewer.cs:1754
 msgid "Switched to autopilot"
 msgstr "Přepnuto na autopilota"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2244
+#: ../../RunActivity/Viewer3D/Viewer.cs:2251
 msgid "You are in the locomotive station "
 msgstr "Nacházíš se na stanovišti lokomotivy "
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:2531
+#: ../../RunActivity/Viewer3D/Viewer.cs:2538
 msgid "Game saved"
 msgstr "Hra uložena"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:481
+#: ../../RunActivity/Viewer3D/Viewer.cs:482
 #, csharp-format
 msgid "Allowed speed raised to {0}"
 msgstr "Povolená rychlost se zvýšila na {0}"
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1770
+#: ../../RunActivity/Viewer3D/Viewer.cs:1772
 #, csharp-format
 msgid "Keyboard map list saved to '{0}'."
 msgstr "Seznam mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1774
+#: ../../RunActivity/Viewer3D/Viewer.cs:1776
 #, csharp-format
 msgid "Keyboard map image saved to '{0}'."
 msgstr "Obrázek mapy kláves byl uložen do '{0}'."
 
-#: ../../RunActivity/Viewer3D/Viewer.cs:1597
+#: ../../RunActivity/Viewer3D/Viewer.cs:1599
 #, csharp-format
 msgid "{0} viewpoint stored. Use Shift+8 to restore viewpoints."
 msgid_plural "{0} viewpoints stored. Use Shift+8 to restore viewpoints."
@@ -211,7 +211,7 @@ msgid ""
 "contains user controlled weather"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Weather.cs:2777
+#: ../../RunActivity/Viewer3D/Weather.cs:2780
 msgid ""
 "Restoring wrong weather type : trying to restore user controlled weather but "
 "save contains dynamic weather"
@@ -621,12 +621,12 @@ msgstr "Brzdový režim vozu"
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:61
 #: ../../RunActivity/Viewer3D/Popups/CarOperationsWindow.cs:64
 #: ../../RunActivity/Viewer3D/Popups/HelperOptionsWindow.cs:86
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:301
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:304
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:306
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:311
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:314
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:316
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:337
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:340
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:342
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:347
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:350
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:352
 msgid "Car ID"
 msgstr "ID vozu"
 
@@ -1590,7 +1590,7 @@ msgstr "Typ"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:569
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:613
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:355
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:391
 msgid "Length"
 msgstr "Délka"
 
@@ -2161,7 +2161,7 @@ msgstr "Natažení"
 
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1530
 #: ../../RunActivity/Viewer3D/Popups/HUDWindow.cs:1560
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:356
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:392
 msgid "Mass"
 msgstr "Hmotnost"
 
@@ -2664,6 +2664,7 @@ msgid "Save your game ({0})"
 msgstr "Uložit hru ({0})"
 
 #: ../../RunActivity/Viewer3D/Popups/QuitWindow.cs:59
+#: ../../RunActivity/Viewer3D/Popups/TestBrakeWindow.cs:59
 #: ../../RunActivity/Viewer3D/Popups/UnprotectedLvlCrossWindow.cs:52
 #, csharp-format
 msgid "Continue playing ({0})"
@@ -2672,6 +2673,10 @@ msgstr "Pokračovat ({0})"
 #: ../../RunActivity/Viewer3D/Popups/SwitchWindow.cs:50
 msgid "Switch"
 msgstr "Výhybka"
+
+#: ../../RunActivity/Viewer3D/Popups/TestBrakeWindow.cs:41
+msgid "BrakeTest Informartion"
+msgstr "Informace o zkoušce brzdy"
 
 #: ../../RunActivity/Viewer3D/Popups/TrackMonitorWindow.cs:237
 msgid "Track Monitor"
@@ -3336,29 +3341,53 @@ msgstr ""
 msgid "Train Operations"
 msgstr "Manipulace s vlakem"
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:247
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:283
 msgid "In Timetable Mode uncoupling using this window is not allowed"
 msgstr "V režimu \"JŘ\" není povoleno rozvěšení příkazem z tohoto okna."
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:357
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:393
 msgid "Cars count"
 msgstr "Počet vozů"
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:373
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:409
 msgid "Real braking percentages"
 msgstr "Reálná brzdící procenta"
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:391
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:427
 msgid "Shunter activated (Radio is ON)"
 msgstr "Posunovač aktivován (Vysílačka zapnutá)"
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:396
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:432
 msgid "Shunter activated (Radio is OFF)"
 msgstr "Posunovač aktivován (Vysílačka vypnutá)"
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:402
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:438
 msgid "Shunter deactivated"
 msgstr "Posunovač deaktivován"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:457
+msgid "Full Test Brake activated (Radio is ON)"
+msgstr "Úplná zkouška brzdy aktivována (Vysílačka zapnutá)"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:462
+msgid "Full Test Brake activated (Radio is OFF)"
+msgstr "Úplná zkouška brzdy aktivována (Vysílačka vypnutá)"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:468
+msgid "Full Test Brake deactivated"
+msgstr "Úplná zkouška brzdy deaktivována"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:487
+msgid "Simple Test Brake activated (Radio is ON)"
+msgstr "Jednoduchá zkouška brzdy aktivována (Vysílačka zapnutá)"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:492
+msgid "Simple Test Brake activated (Radio is OFF)"
+msgstr "Jednoduchá zkouška brzdy aktivována (Vysílačka vypnutá)"
+
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:498
+msgid "Simple Test Brake deactivated"
+msgstr "Jednoduchá zkouška brzdy deaktivována"
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:42
 msgid "Timetable Detach Menu"
@@ -4409,9 +4438,6 @@ msgstr "Posunout dolů"
 
 #~ msgid "None"
 #~ msgstr "Není"
-
-#~ msgid "Information"
-#~ msgstr "Informace"
 
 #~ msgid "Error"
 #~ msgstr "Chyba"

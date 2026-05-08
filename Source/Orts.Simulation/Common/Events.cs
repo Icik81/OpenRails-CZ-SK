@@ -471,6 +471,14 @@ namespace Orts.Common
         ShunterFullTestBrakeSound_SecondSide,
         ShunterFullTestBrakeSound_SecondSideDone,
         ShunterFullTestBrakeSound_Completed,
+        ShunterSimpleTestBrakeSound_Start,
+        ShunterSimpleTestBrakeSound_ApplyBrake,
+        ShunterSimpleTestBrakeSound_FirstSide,
+        ShunterSimpleTestBrakeSound_FirstSideDone,
+        ShunterSimpleTestBrakeSound_ReleaseBrake,
+        ShunterSimpleTestBrakeSound_SecondSide,
+        ShunterSimpleTestBrakeSound_SecondSideDone,
+        ShunterSimpleTestBrakeSound_Completed,
     }
 
     public static class Events
@@ -956,8 +964,14 @@ namespace Orts.Common
                         case 20340: return Event.ShunterFullTestBrakeSound_SecondSide;
                         case 20345: return Event.ShunterFullTestBrakeSound_SecondSideDone;
                         case 20350: return Event.ShunterFullTestBrakeSound_Completed;
-                        
-
+                        case 20355: return Event.ShunterSimpleTestBrakeSound_Start;
+                        case 20360: return Event.ShunterSimpleTestBrakeSound_ApplyBrake;
+                        case 20365: return Event.ShunterSimpleTestBrakeSound_FirstSide;
+                        case 20370: return Event.ShunterSimpleTestBrakeSound_FirstSideDone;
+                        case 20375: return Event.ShunterSimpleTestBrakeSound_ReleaseBrake;
+                        case 20380: return Event.ShunterSimpleTestBrakeSound_SecondSide;
+                        case 20385: return Event.ShunterSimpleTestBrakeSound_SecondSideDone;
+                        case 20390: return Event.ShunterSimpleTestBrakeSound_Completed;
 
 
                         default: return 0;

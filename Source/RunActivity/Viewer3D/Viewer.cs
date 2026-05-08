@@ -2188,16 +2188,9 @@ namespace Orts.Viewer3D
                 (PlayerLocomotive as MSTSLocomotive).ThrottleToZero();
             }
             
-            if (Simulator.TestBrakeWindow)
+            if (Simulator.FullTestBrakeWindow || Simulator.SimpleTestBrakeWindow)
             {                
-                TestBrakeWindow.Visible = true;
-                //string TestBrakeWindowMessage1 = Simulator.Catalog.GetString("Full test brake completed successfully!");
-                //string TestBrakeWindowMessage2 = Simulator.Catalog.GetString("No problem with brake found in the train!");
-                //string TestBrakeWindowMessageProblemCars = "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01"
-                //    + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01"
-                //    + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01" + "\n" + "Rees -" + " ID01";
-
-                //Simulator.TestBrakeWindowMessage =  TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars;
+                TestBrakeWindow.Visible = true;                
             }
 
             MouseState currentMouseState = Mouse.GetState();

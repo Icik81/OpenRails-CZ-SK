@@ -67,9 +67,10 @@ namespace Orts.Viewer3D.Popups
 
             if (updateFull)
             {
-                if (Owner.Viewer.Simulator.TestBrakeWindow)                                        
+                if (Owner.Viewer.Simulator.FullTestBrakeWindow || Owner.Viewer.Simulator.SimpleTestBrakeWindow)                                        
                 {
-                    Owner.Viewer.Simulator.TestBrakeWindow = false;
+                    Owner.Viewer.Simulator.FullTestBrakeWindow = false;
+                    Owner.Viewer.Simulator.SimpleTestBrakeWindow = false;
                     Layout();                    
                 }
             }
@@ -79,7 +80,8 @@ namespace Orts.Viewer3D.Popups
         void buttonContinue_Click(Control arg1, Point arg2)
         {
             Visible = false;
-            Owner.Viewer.Simulator.TestBrakeWindow = false;
+            Owner.Viewer.Simulator.FullTestBrakeWindow = false;
+            Owner.Viewer.Simulator.SimpleTestBrakeWindow = false;
         }
     }
 }
