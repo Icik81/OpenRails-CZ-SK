@@ -1011,6 +1011,22 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\ShunterSound\Czech\Readme.txt" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_ApplyBrake.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_Completed.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_FirstSide.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_FirstSideDone.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_ReleaseBrake.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_SecondSide.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_SecondSideDone.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_Start.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_ApplyBrake.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_Completed.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_FirstSide.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_FirstSideDone.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_ReleaseBrake.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_SecondSide.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_SecondSideDone.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_Start.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSound_1.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSound_10.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSound_100.wav" />

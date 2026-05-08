@@ -242,7 +242,7 @@ namespace Orts.Viewer3D.Popups
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
 
                     Owner.Viewer.Simulator.ScreenSizeY = Owner.ScreenSize.Y;
-                    int Y_Height = Window.DecorationSize.Y + (Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count * 3 + 2)) + (ControlLayout.SeparatorSize * 3);
+                    int Y_Height = Window.DecorationSize.Y + (Owner.TextFontDefault.Height * (PlayerTrain.Cars.Count * 3 + 5)) + (ControlLayout.SeparatorSize * 5);
                     if (Y_Height > Owner.ScreenSize.Y - 20) Y_Height = Owner.ScreenSize.Y - 20;
 
                     var carLabel1 = new TrainOperationsInfo(1, 1, Owner.Viewer, LabelAlignment.Center);
