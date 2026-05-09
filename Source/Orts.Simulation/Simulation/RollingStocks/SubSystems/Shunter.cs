@@ -270,9 +270,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (ShunterFullTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                if (ShunterFullTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.7f * 14.50377f)
                 {
                     ShunterFullTestBrakePhase4 = false;
+                    ShunterFullTestBrakePhase3 = true;
                 }
 
                 // Požadavek pro fázi 4: Kontrola uvolnění brzd od posledního vozu k prvnímu
@@ -517,9 +518,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (ShunterSimpleTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                if (ShunterSimpleTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.7f * 14.50377f)
                 {
                     ShunterSimpleTestBrakePhase4 = false;
+                    ShunterSimpleTestBrakePhase3 = true;
                 }
 
                 // Požadavek pro fázi 4: Kontrola uvolnění brzd od posledního vozu k prvnímu
