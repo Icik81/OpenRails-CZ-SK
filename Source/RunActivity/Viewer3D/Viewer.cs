@@ -1308,7 +1308,7 @@ namespace Orts.Viewer3D
             if (MPManager.IsMultiPlayer()) MultiPlayerWindow.Visible = TrainDrivingWindow.Visible ? true : false;
             if (UserInput.IsPressed(UserCommand.GamePauseMenu))
             {                
-                if (ActivityWindow.Visible || UnprotectedLvlCrossWindow.Visible)
+                if (ActivityWindow.Visible || UnprotectedLvlCrossWindow.Visible || TestBrakeWindow.Visible)
                 {
                     Simulator.ESCKeyActivated = true;                   
                 }
@@ -1316,6 +1316,7 @@ namespace Orts.Viewer3D
                     QuitWindow.Visible = Simulator.Paused = !QuitWindow.Visible;                    
 
                 if (UnprotectedLvlCrossWindow.Visible) UnprotectedLvlCrossWindow.Visible = false;
+                if (TestBrakeWindow.Visible) TestBrakeWindow.Visible = false;
             }
             if (MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu)) { if (Simulator.Confirmer != null) Simulator.Confirmer.Information(Viewer.Catalog.GetString("In MP, use Alt-F4 to quit directly")); }
 
