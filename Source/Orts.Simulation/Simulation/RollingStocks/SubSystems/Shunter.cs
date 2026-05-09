@@ -203,7 +203,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.5f * 14.50377f)
+                if (ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.6f * 14.50377f)
                 {
                     ShunterFullTestBrakePhase2 = false;
                 }
@@ -450,7 +450,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
-                if (ShunterSimpleTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.5f * 14.50377f)
+                if (ShunterSimpleTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.6f * 14.50377f)
                 {
                     ShunterSimpleTestBrakePhase2 = false;
                 }
