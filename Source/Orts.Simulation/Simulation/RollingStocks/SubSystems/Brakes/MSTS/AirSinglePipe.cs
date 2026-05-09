@@ -25,6 +25,7 @@ using Orts.Parsers.Msts;
 using Orts.Simulation.AIs;
 using Orts.Simulation.Physics;
 using Orts.Simulation.Properties;
+using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using ORTS.Common;
 using ORTS.Scripting.Api;
 using System;
@@ -711,8 +712,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.UsingRearCab)
                     loco.LocoStation = 2;
 
-                if (loco.TrainBrakeValueL_2 != -1)
-                    loco.TrainBrakeController.DefaultLapBrakeValue = loco.TrainBrakeValueL_2;
+                float TrainBrakeValueL = -1;
+                float TrainBrakeValueL_2 = -1;
+                foreach (MSTSNotch notch in loco.TrainBrakeController.Notches)
+                {
+                    switch (notch.Type)
+                    {                        
+                        case ControllerState.Lap:
+                            if (TrainBrakeValueL != -1)
+                                TrainBrakeValueL_2 = notch.Value;
+                            else
+                                TrainBrakeValueL = notch.Value;
+                            break;                        
+                    }
+                }
+
+                if (TrainBrakeValueL_2 != -1)
+                    loco.TrainBrakeController.DefaultLapBrakeValue = TrainBrakeValueL_2;
 
                 if (!loco.IsLeadLocomotive())
                 {
