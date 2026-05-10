@@ -116,6 +116,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         public bool MirelMini;
         public bool LS90NoCoding;
         public bool[] Ls90StartOk = new bool[3];
+        bool MirelMini_BlueLightStop;
+
         public void Initialize()
         {
             Simulator = Locomotive.Simulator;
@@ -243,8 +245,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         protected bool was15kV = false;
         public void Update(float elapsedClockSeconds, float AbsSpeedMpS, float AbsWheelSpeedMpS)
         {
-            if (Locomotive.RouteVoltageV == 15000 && initTest == InitTest.Passed)
+            if ((Locomotive.SelectedPowerSystem == MSTSLocomotive.PowerSystem.DE15kV || Locomotive.SelectedPowerSystem == MSTSLocomotive.PowerSystem.AT15kV || Locomotive.RouteVoltageV == 15000) && initTest == InitTest.Passed)
             {
+                RecievingRepeaterSignal = false;
                 driveMode = DriveMode.Trailing;
                 selectedDriveMode = DriveMode.Trailing;
                 BlueLight = false;
@@ -1842,6 +1845,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (selectedDriveMode == DriveMode.Normal && MirelMini)
             {
                 RecievingRepeaterSignal = false;
+
+                if (Locomotive.AbsSpeedMpS > 0.01f && MirelMini_BlueLightStop)
+                {
+                    MirelMini_BlueLightStop = false;
+                }
+                if (Locomotive.AbsSpeedMpS < 0.01f && !MirelMini_BlueLightStop)
+                {
+                    AlerterPressed(true);
+                    MirelMini_BlueLightStop = true;
+                }                                    
             }
 
             // LS90NoCoding
