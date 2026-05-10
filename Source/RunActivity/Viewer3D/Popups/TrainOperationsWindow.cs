@@ -160,6 +160,9 @@ namespace Orts.Viewer3D.Popups
                     //if (car.BrakeSystem.HandBrakeActive)
                     //    carLabel.Color = Color.Orange;
 
+                    if (car.ShunterTestingBrake)
+                        carLabel.Color = Color.Orange;
+
                     if (car.SelectedCar && NrSelectedCar == 0)
                     {
                         carLabel.Color = Color.Yellow;
@@ -229,6 +232,7 @@ namespace Orts.Viewer3D.Popups
                     || Owner.Viewer.Simulator.ShunterEnableChanged
                     || Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged
                     || Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged
+                    || Owner.Viewer.Simulator.ShunterTestingBrakeChanged
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
@@ -237,6 +241,7 @@ namespace Orts.Viewer3D.Popups
                     Owner.Viewer.Simulator.ShunterEnableChanged = false;
                     Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged = false;
                     Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged = false;
+                    Owner.Viewer.Simulator.ShunterTestingBrakeChanged = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;

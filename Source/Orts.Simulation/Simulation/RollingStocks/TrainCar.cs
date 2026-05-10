@@ -452,6 +452,7 @@ namespace Orts.Simulation.RollingStocks
         public float InstrumentsBrightness = 0.85f;
         public bool AILocoRun;
         public bool ShunterTestBrakeDone;
+        public bool ShunterTestingBrake;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí
