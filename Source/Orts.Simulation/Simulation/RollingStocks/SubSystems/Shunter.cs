@@ -131,8 +131,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float[] ShunterTestBrakeCarCheckTime = new float[100];        
         int CarNumber = 1;
         int LastCarConnectedNumber;
-        TrainCar LastCarConnected;
-        TrainCar[] CheckCar = new TrainCar[100];
+        TrainCar LastCarConnected;        
+        TrainCar[] CheckWagonList = new TrainCar[100];
 
         public void Update(float elapsedClockSeconds)
         {
@@ -161,21 +161,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 for (int i = 0; i < 100; i++)
                 {
-                    ShunterTestBrakeCarCheckTime[i] = 0;
-                    CheckCar[i] = null;
+                    ShunterTestBrakeCarCheckTime[i] = 0;                    
+                    CheckWagonList[i] = null;
                 }
 
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
+                int CheckWagonListIndex = 0;
                 foreach (TrainCar car in Locomotive.Train.Cars.Where(car => car.CarHasBrakePipeConnected))
                 {
                     if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive()) { }
                     else
                     {
                         LastCarConnectedNumber++;
-                        LastCarConnected = car;
-                        CheckCar[LastCarConnectedNumber] = car;
+                        LastCarConnected = car;                        
                         car.ShunterTestingBrake = false;
+                    }
+
+                    if (!(car is MSTSLocomotive))
+                    {
+                        CheckWagonListIndex++;
+                        CheckWagonList[CheckWagonListIndex] = car;
                     }
                 }
 
@@ -258,7 +264,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
                     {
                         CarTimeNumber++;
-                        float CarBrakeCheckTime = car.BrakeSystem.HandBrakeActive ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
+                        float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
                         ShunterFullTestBrakePhase2Time += CarBrakeCheckTime;
                         ShunterTestBrakeCarCheckTime[CarTimeNumber] = CarBrakeCheckTime;
                     }
@@ -270,7 +276,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterFullTestBrakePhase2CarCheckTimer += elapsedClockSeconds;
                     }
 
-                    TrainCar testCar = CheckCar[CarNumber];
+                    TrainCar testCar = CheckWagonList[CarNumber];
                     if (ShunterFullTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] && CarNumber <= CarTimeNumber)
                     {
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
@@ -356,7 +362,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
                     {
                         CarTimeNumber++;
-                        float CarBrakeCheckTime = car.BrakeSystem.HandBrakeActive ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
+                        float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
                         ShunterFullTestBrakePhase4Time += CarBrakeCheckTime;
                         ShunterTestBrakeCarCheckTime[CarTimeNumber] = CarBrakeCheckTime;
                     }
@@ -367,7 +373,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterFullTestBrakePhase4CarCheckTimer += elapsedClockSeconds;
                     }
 
-                    TrainCar testCar = CheckCar[CarNumber];
+                    TrainCar testCar = CheckWagonList[CarNumber];
                     if (ShunterFullTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] && CarNumber > 0)
                     {                        
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
@@ -501,21 +507,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 for (int i = 0; i < 100; i++)
                 {
-                    ShunterTestBrakeCarCheckTime[i] = 0;
-                    CheckCar[i] = null;
+                    ShunterTestBrakeCarCheckTime[i] = 0;                    
+                    CheckWagonList[i] = null;
                 }
 
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
+                int CheckWagonListIndex = 0;
                 foreach (TrainCar car in Locomotive.Train.Cars.Where(car => car.CarHasBrakePipeConnected))
                 {
                     if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive()) { }
                     else
                     {
                         LastCarConnectedNumber++;
-                        LastCarConnected = car;
-                        CheckCar[LastCarConnectedNumber] = car;
+                        LastCarConnected = car;                        
                         car.ShunterTestingBrake = false;
+                    }
+
+                    if (!(car is MSTSLocomotive))
+                    {
+                        CheckWagonListIndex++;
+                        CheckWagonList[CheckWagonListIndex] = car;
                     }
                 }
 
@@ -599,7 +611,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (CarTimeNumber == 1) break;
                         CarTimeNumber++;
-                        float CarBrakeCheckTime = car.BrakeSystem.HandBrakeActive ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
+                        float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
                         ShunterSimpleTestBrakePhase2Time += CarBrakeCheckTime;
                         ShunterTestBrakeCarCheckTime[CarTimeNumber] = CarBrakeCheckTime;                        
                     }
@@ -611,7 +623,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterSimpleTestBrakePhase2CarCheckTimer += elapsedClockSeconds;
                     }
 
-                    TrainCar testCar = CheckCar[CarNumber];
+                    TrainCar testCar = CheckWagonList[CarNumber];
                     if (ShunterSimpleTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] && CarNumber <= CarTimeNumber)
                     {                        
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
@@ -698,7 +710,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         if (CarTimeNumber == 1) break;
                         CarTimeNumber++;
-                        float CarBrakeCheckTime = car.BrakeSystem.HandBrakeActive ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
+                        float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
                         ShunterSimpleTestBrakePhase4Time += CarBrakeCheckTime;
                         ShunterTestBrakeCarCheckTime[CarTimeNumber] = CarBrakeCheckTime;                        
                     }
@@ -708,8 +720,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         ShunterSimpleTestBrakePhase4CarCheckTimer += elapsedClockSeconds;
                     }
-                    
-                    TrainCar testCar = CheckCar[CarNumber];
+
+                    TrainCar testCar = CheckWagonList[CarNumber];
                     if (ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] && CarNumber > 0)
                     {                    
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
