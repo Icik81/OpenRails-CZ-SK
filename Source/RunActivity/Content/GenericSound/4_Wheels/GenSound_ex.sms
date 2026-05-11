@@ -15,7 +15,7 @@ Tr_SMS (
 			Distance    	( 500 )
 		)
 		Volume ( 1.0 )
-		Streams ( 13
+		Streams ( 14
 		
 		Stream (
                 Skip (** Únik vzduchu z brzdového potrubí **)
@@ -373,7 +373,28 @@ Tr_SMS (
 					)
 					Granularity ( 0.05 )
 				)
-			)						
+			)
+
+			Stream (
+				Skip( **** Zkouška brzdy **** )
+				Priority ( 6 )
+				Volume (1.0)
+				Triggers ( 4										
+					Discrete_Trigger ( 20391 PlayOneShot ( 1 File ( "ShunterTestBrakeSound_CheckBrakeApply.wav" -1 )	SelectionMethod (SequentialSelection) ) ) 		
+					Discrete_Trigger ( 20392 PlayOneShot ( 1 File ( "ShunterTestBrakeSound_CheckBrakeRelease.wav" -1 )	SelectionMethod (SequentialSelection) ) ) 		
+					Discrete_Trigger ( 20393 PlayOneShot ( 1 File ( "ShunterTestBrakeSound_BrakeDeactivate.wav" -1 )	SelectionMethod (SequentialSelection) ) ) 		
+					Discrete_Trigger ( 20394 PlayOneShot ( 1 File ( "ShunterTestBrakeSound_HandBrakeRelease.wav" -1 )	SelectionMethod (SequentialSelection) ) ) 							
+				)
+				FrequencyCurve(
+					SpeedControlled
+					CurvePoints ( 1
+						-200.0	44000						
+						0.0		44000						
+						200.0	44000
+					)
+					Granularity ( 100 )
+				)							
+			)			
 		)
 	)
 )			
