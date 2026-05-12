@@ -966,7 +966,7 @@ namespace Orts.Viewer3D
             }            
 
             if (!IsNightTexture || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.5f - overcast, 0, 1)) * (Program.Simulator.SeasonAmbientLightCoef * 1.1f) * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
+                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.9f - overcast, 0, 1)) * (Program.Simulator.SeasonAmbientLightCoef * 1.1f) * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
             
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
