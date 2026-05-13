@@ -295,7 +295,7 @@ namespace Orts.Viewer3D.Popups
                         PassengersWaiting.Text = "";
                         if (playerTimetableTrain.StationStops.Count > 1)
                             if (playerTimetableTrain.StationStops[1].PlatformItem != null && playerTimetableTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                PassengersWaiting.Text = playerTimetableTrain.ActualPassengerCountAtStation1.ToString();
+                                PassengersWaiting.Text = playerTimetableTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
 
                         if (playerTimetableTrain.StationStops == null || playerTimetableTrain.StationStops.Count == 0)
                         {
@@ -555,7 +555,7 @@ namespace Orts.Viewer3D.Popups
                             PassengersWaiting.Text = "";
                             if (playerTrain.StationStops.Count > 1)
                                 if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                    PassengersWaiting.Text = playerTrain.ActualPassengerCountAtStation1.ToString();
+                                    PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengerList.Count.ToString();
 
                             StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;                            
                             StationCurrentArriveScheduled.Text = playerTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");
@@ -641,8 +641,8 @@ namespace Orts.Viewer3D.Popups
                         PassengersCurrentWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 0)
                             if (playerTrain.StationStops[0].PlatformItem != null)
-                                PassengersCurrentWaiting.Text = playerTrain.ActualPassengerCountAtStation.ToString();
-                        if (playerTrain.ActualPassengerCountAtStation == 0)
+                                PassengersCurrentWaiting.Text = playerTrain.StationStops[0].PlatformItem.PassengersOnPlatform.Count.ToString();
+                        if (playerTrain.StationStops[0].PlatformItem.PassengersOnPlatform.Count == 0)
                             PassengersCurrentWaiting.Text = "";
                         StationCurrentArriveScheduled.Text = at.SchArrive.ToString("HH:mm:ss");
                         StationCurrentArriveActual.Text = at.ActArrive.HasValue ? at.ActArrive.Value.ToString("HH:mm:ss") : "";
@@ -679,8 +679,8 @@ namespace Orts.Viewer3D.Popups
                         StationNextDepartScheduled.Text = at.SchDepart.ToString("HH:mm:ss");
                         PassengersWaiting.Text = "";
                         if (playerTrain.StationStops.Count > 1)                        
-                            if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
-                                PassengersWaiting.Text = playerTrain.ActualPassengerCountAtStation1.ToString();
+                            if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengersOnPlatform.Count != 0)
+                                PassengersWaiting.Text = playerTrain.StationStops[1].PlatformItem.PassengersOnPlatform.Count.ToString();
                         
                         StationNextDistance.Text = "";
                         if (playerTrain.StationStops.Count > 0 && playerTrain.StationStops[0].PlatformItem != null &&

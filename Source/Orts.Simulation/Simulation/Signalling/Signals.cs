@@ -4431,7 +4431,6 @@ namespace Orts.Simulation.Signalling
                 {
                     thisDetails.Name = String.Copy(thisPlatform.Station);
                     thisDetails.MinWaitingTime = thisPlatform.PlatformMinWaitingTime;
-                    thisDetails.NumPassengersWaiting = (int)thisPlatform.PlatformNumPassengersWaiting;
                 }
                 else if (!splitPlatform)
                 {
@@ -13717,11 +13716,13 @@ namespace Orts.Simulation.Signalling
         public float[] DistanceToSignals = new float[2];
         public string Name;
         public uint MinWaitingTime;
-        public int NumPassengersWaiting;
+        private int m_Pax = 0;
+        public int NumPassengersWaiting { get; set; }
         public bool[] PlatformSide = new bool[2] { false, false };
         public int PlatformFrontUiD = -1;
         public List<object> PassengerList = new List<object>();
         public List<object> PassengerListBuffer = new List<object>();
+        public List<object> PassengersOnPlatform = new List<object>();
         public List<int> SecondToAdd = new List<int>();
 
         // Icik
