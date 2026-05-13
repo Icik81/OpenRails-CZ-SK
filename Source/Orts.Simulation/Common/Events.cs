@@ -470,6 +470,7 @@ namespace Orts.Common
         ShunterFullTestBrakeSound_ReleaseBrake,
         ShunterFullTestBrakeSound_SecondSide,
         ShunterFullTestBrakeSound_SecondSideDone,
+        ShunterFullTestBrakeSound_CompletedNegative,
         ShunterFullTestBrakeSound_Completed,
         ShunterSimpleTestBrakeSound_Start,
         ShunterSimpleTestBrakeSound_ApplyBrake,
@@ -478,6 +479,7 @@ namespace Orts.Common
         ShunterSimpleTestBrakeSound_ReleaseBrake,
         ShunterSimpleTestBrakeSound_SecondSide,
         ShunterSimpleTestBrakeSound_SecondSideDone,
+        ShunterSimpleTestBrakeSound_CompletedNegative,
         ShunterSimpleTestBrakeSound_Completed,
         ShunterTestBrakeSound_CheckBrakeApply,
         ShunterTestBrakeSound_CheckBrakeRelease,
@@ -967,6 +969,7 @@ namespace Orts.Common
                         case 20335: return Event.ShunterFullTestBrakeSound_ReleaseBrake;
                         case 20340: return Event.ShunterFullTestBrakeSound_SecondSide;
                         case 20345: return Event.ShunterFullTestBrakeSound_SecondSideDone;
+                        case 20349: return Event.ShunterFullTestBrakeSound_CompletedNegative;
                         case 20350: return Event.ShunterFullTestBrakeSound_Completed;
                         case 20355: return Event.ShunterSimpleTestBrakeSound_Start;
                         case 20360: return Event.ShunterSimpleTestBrakeSound_ApplyBrake;
@@ -975,7 +978,8 @@ namespace Orts.Common
                         case 20375: return Event.ShunterSimpleTestBrakeSound_ReleaseBrake;
                         case 20380: return Event.ShunterSimpleTestBrakeSound_SecondSide;
                         case 20385: return Event.ShunterSimpleTestBrakeSound_SecondSideDone;
-                        case 20390: return Event.ShunterSimpleTestBrakeSound_Completed;
+                        case 20389: return Event.ShunterSimpleTestBrakeSound_CompletedNegative;
+                        case 20390: return Event.ShunterSimpleTestBrakeSound_Completed;                        
                         case 20391: return Event.ShunterTestBrakeSound_CheckBrakeApply;
                         case 20392: return Event.ShunterTestBrakeSound_CheckBrakeRelease;
                         case 20393: return Event.ShunterTestBrakeSound_BrakeDeactivate;

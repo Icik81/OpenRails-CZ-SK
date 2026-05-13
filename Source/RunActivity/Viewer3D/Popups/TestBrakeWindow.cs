@@ -82,6 +82,9 @@ namespace Orts.Viewer3D.Popups
             Visible = false;
             Owner.Viewer.Simulator.FullTestBrakeWindow = false;
             Owner.Viewer.Simulator.SimpleTestBrakeWindow = false;
+            Owner.Viewer.Simulator.ShunterFullTestBrakeEnable = false;
+            Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnable = false;
+            Owner.Viewer.Simulator.ShunterTestingBrakeChanged = true;
         }
     }
 }

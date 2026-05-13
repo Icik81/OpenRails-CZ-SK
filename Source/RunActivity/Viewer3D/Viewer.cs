@@ -1316,7 +1316,13 @@ namespace Orts.Viewer3D
                     QuitWindow.Visible = Simulator.Paused = !QuitWindow.Visible;                    
 
                 if (UnprotectedLvlCrossWindow.Visible) UnprotectedLvlCrossWindow.Visible = false;
-                if (TestBrakeWindow.Visible) TestBrakeWindow.Visible = false;
+                if (TestBrakeWindow.Visible)
+                {
+                    TestBrakeWindow.Visible = false;
+                    Simulator.ShunterFullTestBrakeEnable = false;
+                    Simulator.ShunterSimpleTestBrakeEnable = false;
+                    Simulator.ShunterTestingBrakeChanged = true;
+                }
             }
             if (MPManager.IsMultiPlayer() && UserInput.IsPressed(UserCommand.GamePauseMenu)) { if (Simulator.Confirmer != null) Simulator.Confirmer.Information(Viewer.Catalog.GetString("In MP, use Alt-F4 to quit directly")); }
 

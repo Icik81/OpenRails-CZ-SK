@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Orts.Simulation\n"
-"POT-Creation-Date: 2026-05-09 14:41:27+0200\n"
-"PO-Revision-Date: 2026-05-09 14:44+0200\n"
+"POT-Creation-Date: 2026-05-13 19:50:46+0200\n"
+"PO-Revision-Date: 2026-05-13 19:51+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: Open Rails Dev Team\n"
 "Language: cs\n"
@@ -1453,15 +1453,15 @@ msgctxt "Train type"
 msgid "Pax"
 msgstr "Osobní"
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2751
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2752
 msgid "Train can't be suspended with speed not equal 0"
 msgstr "Vlak nemůže být suspendován, pokud rychlost není 0"
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:2872
+#: ../../Orts.Simulation/Simulation/Simulator.cs:2873
 msgid "To return to static train speed must be = 0"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Simulator.cs:1121
+#: ../../Orts.Simulation/Simulation/Simulator.cs:1122
 #: ../../Orts.Simulation/Simulation/AIs/AITrain.cs:5139
 #, csharp-format
 msgid ""
@@ -1743,7 +1743,7 @@ msgid "Engine"
 msgstr "Pohon"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSDieselLocomotive.cs:988
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2256
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2257
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/PowerSupplies/DieselEngine.cs:410
 msgid "Control"
 msgstr "Řídící vůz"
@@ -2746,8 +2746,8 @@ msgstr "BPoj"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6637
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6658
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6660
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2250
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2252
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2251
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2253
 msgid "Yes"
 msgstr "Ano"
 
@@ -2772,8 +2772,8 @@ msgstr "Ano"
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6637
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6658
 #: ../../Orts.Simulation/Simulation/RollingStocks/MSTSSteamLocomotive.cs:6660
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2250
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2252
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2251
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2253
 msgid "No"
 msgstr "Ne"
 
@@ -3244,11 +3244,11 @@ msgstr "Začíná doplňovat"
 msgid "Preparing for unload"
 msgstr "Příprava k vyložení"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1652
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1653
 msgid "Tree leaves on track!"
 msgstr "Listí na kolejích!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2041
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2042
 msgid ""
 "You were travelling too fast for this curve, and have snapped a brake hose "
 "on Car "
@@ -3256,15 +3256,15 @@ msgstr ""
 "Jedete do tohoto oblouku moc rychle. Došlo k přetržení hladic hlavního "
 "potrubí (náhražka modelace vykolejení)."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1649
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1650
 msgid "Car ID: "
 msgstr "Vůz ID: "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1649
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:1650
 msgid " - experiencing braking force wheel skid."
 msgstr " - je kvůli vysoké brzdící síle ve smyku."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2003
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2004
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your freight car {0} "
@@ -3273,7 +3273,7 @@ msgstr ""
 "Jedete do tohoto oblouku příliš rychle!. Zpomalte, nebo dojde k poškození "
 "nákladního vozu č. {0}. Doporučená rychlost pro tento oblouk je: {1}"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2007
+#: ../../Orts.Simulation/Simulation/RollingStocks/TrainCar.cs:2008
 #, csharp-format
 msgid ""
 "You are travelling too fast for this curve. Slow down, your passengers in "
@@ -3324,19 +3324,25 @@ msgstr "Konec pomalé jízdy"
 msgid "Selected speed set to "
 msgstr "Rychlost nastavena na "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:190
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:480
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:162
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:627
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1101
+msgid "Shunter: Cab radio should be on!"
+msgstr "Posunovač: Vysílačka by se měla zapnout!"
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:225
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:691
 msgid "Train speed must be zero to perform the test brake!"
 msgstr "Vlak se nesmí pohybovat, aby mohla být provedena zkouška brzdy!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:193
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:483
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:228
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:694
 msgid "Train must have at least two cars to perform the test brake!"
 msgstr ""
 "Vlak musí být nejméně 2 vozy dlouhý, aby se mohla provést zkouška brzdy!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:196
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:486
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:231
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:697
 msgid ""
 "Train must have sufficient brakepipe pressure (5 bar) to perform the test "
 "brake!"
@@ -3344,102 +3350,98 @@ msgstr ""
 "Vlak nemá dostatečnou úroveň tlaku (5 bar) v hlavním potrubí, aby se mohla "
 "provést zkouška brzdy!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:202
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:237
 msgid "Shunter: Full test brake activated. Please follow the instructions."
 msgstr "Posunovač: Úplná zkouška brzdy aktivována. Prosím následuj instrukce."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:211
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:501
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:246
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:712
 msgid "Shunter: Please apply the brakes under 4.5 bar and holdon!"
 msgstr "Posunovač: Prosím zabrzdi na zkoušku brzdy pod 4.5 bar a vyčkej!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:269
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:347
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:560
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:639
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:333
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:482
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:800
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:953
 msgid "Shunter: Car "
 msgstr "Posunovač: Vůz "
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:269
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:347
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:560
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:639
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:333
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:482
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:800
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:953
 msgid " brake check done."
 msgstr " kontrola brzdy hotovo."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:280
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:386
 msgid "Shunter: Full test brake first side completed!"
 msgstr "Posunovač: Úplná zkouška brzdy pro první stranu kompletní!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:290
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:581
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:396
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:866
 msgid "Shunter: Please release the brakes and holdon!"
 msgstr "Posunovač: Prosím odbrzdi a vyčkej!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:358
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:535
 msgid "Shunter: Full test brake second side completed!"
 msgstr "Posunovač: Úplná zkouška brzdy pro druhou stranu kompletní!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:369
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:553
 msgid "Shunter: Full test brake completed successfully!"
 msgstr "Posunovač: Úplná zkouška brzdy kompletní úspěšná!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:397
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:580
 msgid "Full test brake completed successfully!"
 msgstr "Úplná zkouška brzdy hotovo!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:399
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:582
 msgid "These Cars have problems with brake and brake was deactivated:"
 msgstr "Tyto vozy mají problémy s brzdou a brzda byla vypnuta:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:401
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:584
 msgid "No problem with brake found in the train!"
 msgstr "Nenalezen žádný problém s brzdou!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:404
-msgid "These Cars are not connected:"
-msgstr "Tyto vozy nejsou propojeny:"
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:587
+msgid "These Cars were not connected:"
+msgstr "Tyto vozy nebyly propojeny:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:406
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:589
 msgid "All Cars are connected!"
 msgstr "Všechny vozy propojeny!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:492
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:703
 msgid "Shunter: Simple test brake activated. Please follow the instructions."
 msgstr ""
 "Posunovač: Jednoduchá zkouška brzdy aktivována. Prosím následuj instrukce."
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:571
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:856
 msgid "Shunter: Simple test brake first side completed!"
 msgstr "Posunovač: Jednoduchá zkouška brzdy pro první stranu kompletní!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:649
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1008
 msgid "Shunter: Simple test brake second side completed!"
 msgstr "Posunovač: Jednoduchá zkouška brzdy pro druhou stranu kompletní!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:660
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1026
 msgid "Shunter: Simple test brake completed successfully!"
 msgstr "Posunovač: Jednoduchá zkouška brzdy kompletní úspěšná!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:689
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1054
 msgid "Simple test brake completed successfully!"
 msgstr "Jednoduchá zkouška brzdy hotovo!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:691
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1056
 msgid "This Car has problem with brake and brake was deactivated:"
 msgstr "Tento vůz má problémy s brzdou a brzda byla vypnuta:"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:693
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1058
 msgid "No problem with brake found!"
 msgstr "Nenalezen žádný problém s brzdou!"
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:696
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1061
 msgid "This Car is not connected:"
 msgstr "Tento vůz není propojen:"
-
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1150
-msgid "Shunter: Cab radio should be on!"
-msgstr "Posunovač: Vysílačka by se měla zapnout!"
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:304
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/MSTS/AirSinglePipe.cs:1056

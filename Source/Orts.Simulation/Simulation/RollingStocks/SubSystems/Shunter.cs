@@ -113,7 +113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterFullTestBrakePhase2Timer;
         float ShunterFullTestBrakePhase3Timer;
         float ShunterFullTestBrakePhase4Timer;
-        float ShunterFullTestBrakePhase5Timer;
+        float ShunterFullTestBrakePhase5Timer;        
         float ShunterFullTestBrakePhase2CarCheckTimer;
         float ShunterFullTestBrakePhase4CarCheckTimer;
         bool ShunterSimpleTestBrakePhase1;
@@ -125,24 +125,41 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterSimpleTestBrakePhase2Timer;
         float ShunterSimpleTestBrakePhase3Timer;
         float ShunterSimpleTestBrakePhase4Timer;
-        float ShunterSimpleTestBrakePhase5Timer;
+        float ShunterSimpleTestBrakePhase5Timer;        
         float ShunterSimpleTestBrakePhase2CarCheckTimer;
         float ShunterSimpleTestBrakePhase4CarCheckTimer;
         float[] ShunterTestBrakeCarCheckTime = new float[100];        
         int CarNumber = 1;
         int LastCarConnectedNumber;
         TrainCar LastCarConnected;        
-        TrainCar[] CheckWagonList = new TrainCar[100];
+        TrainCar[] CheckWagonList = new TrainCar[100];        
         bool FirstBoggie;
-        bool SecondBoggie;
+        bool SecondBoggie;        
+        bool[] CheckCarBrakeFault = new bool[100];
 
         public void Update(float elapsedClockSeconds)
         {
             if (!Locomotive.IsLeadLocomotive()) return;
 
+            // Plánované spuštění v aktivitě
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ShunterFullTestBrake)            
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterFullTestBrakeEnable = true;
+            }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ShunterSimpleTestBrake)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterSimpleTestBrakeEnable = true;
+            }
+
             if (!Locomotive.Simulator.ShunterFullTestBrakeEnable && !Locomotive.Simulator.ShunterSimpleTestBrakeEnable)
             {
                 TestCarReset();
+                for (int i = 0; i < Locomotive.Train.Cars.Count; i++)
+                {
+                    CheckCarBrakeFault[i] = false;
+                }
             }
 
             #region ShunterFullTestBrake
@@ -170,7 +187,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
                 int CheckWagonListIndex = 0;
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => car.CarHasBrakePipeConnected))
+                foreach (TrainCar car in Locomotive.Train.Cars)
                 {
                     if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive()) { }
                     else
@@ -183,6 +200,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     CheckWagonListIndex++;
                     CheckWagonList[CheckWagonListIndex] = car;
+                    
+                    if (!car.CarHasBrakePipeConnected)
+                    {
+                        CheckCarBrakeFault[CheckWagonListIndex] = true;
+                    }
                 }
 
                 if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
@@ -297,7 +319,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             testCar.ShunterTestingBrake = false;
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
+                        }                        
+
+                        if (testCar == Locomotive.Train.FirstCar)
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = false;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
                         }
+                        else
+                            if (testCar == Locomotive.Train.LastCar)
+                            {
+                                testCar.BrakeSystem.AngleCockAOpen = true;
+                                testCar.BrakeSystem.AngleCockBOpen = false;
+                                testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                            }
+                            else
+                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                                {
+                                    testCar.BrakeSystem.AngleCockAOpen = true;
+                                    testCar.BrakeSystem.AngleCockBOpen = true;
+                                    testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                                }
+
                         ShunterFullTestBrakePhase2CarCheckTimer = 0;
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Car ") + CarNumber + Simulator.Catalog.GetString(" brake check done."));
                         CarNumber++;
@@ -331,7 +374,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             }
                         }
                         if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
-                        {
+                        {                            
                             if (!FirstBoggie && ShunterFullTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
                                 testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeRelease);
@@ -426,6 +469,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             testCar.ShunterTestingBrake = false;
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
                         }
+
+                        if (testCar == Locomotive.Train.FirstCar)
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = false;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
+                        }
+                        else
+                            if (testCar == Locomotive.Train.LastCar)
+                            {
+                                testCar.BrakeSystem.AngleCockAOpen = true;
+                                testCar.BrakeSystem.AngleCockBOpen = false;
+                                testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                            }
+                            else
+                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                                {
+                                    testCar.BrakeSystem.AngleCockAOpen = true;
+                                    testCar.BrakeSystem.AngleCockBOpen = true;
+                                    testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                                }
+
                         ShunterFullTestBrakePhase4CarCheckTimer = 0;
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Car ") + CarNumber + Simulator.Catalog.GetString(" brake check done."));
                         CarNumber--;
@@ -446,7 +510,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
 
                         if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
-                        {
+                        {                            
                             if (!FirstBoggie && ShunterFullTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
                                 testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
@@ -489,10 +553,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (ShunterFullTestBrakePhase5 && !ShunterFullTestBrakePhase1 && !ShunterFullTestBrakePhase2 && !ShunterFullTestBrakePhase3 && !ShunterFullTestBrakePhase4)
                 {
                     ShunterFullTestBrakePhase5Timer += elapsedClockSeconds;
+
+                    if (ShunterFullTestBrakePhase5Timer > 10.0f && ShunterFullTestBrakePhase5Timer < 10.5f)
+                    {
+                        // Bržděnka
+                        Locomotive.Simulator.FullTestBrakeWindow = true;
+                    }
+
                     if (ShunterFullTestBrakePhase5Timer > 5.0f && ShunterFullTestBrakePhase5Timer < 5.5f)
                     {
-                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed successfully!"));
-                        Locomotive.Simulator.FullTestBrakeWindow = true;
+                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed successfully!"));                                                                   
 
                         string TestBrakeWindowMessageProblemCars = "";
                         string TestBrakeWindowMessageNotConnectedCars = "";
@@ -513,9 +583,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 TestBrakeWindowMessageProblemCars += car.WagonName + " - " + car.CarID + "\n";
                                 BrakeProblemFound = true;
                             }
-                            if (!car.CarHasBrakePipeConnected)
+                            if (CheckCarBrakeFault[CarNumber])
                             {
-                                TestBrakeWindowMessageNotConnectedCars += car.WagonName + " - " + car.CarID + "\n";
+                                TestBrakeWindowMessageNotConnectedCars += CheckWagonList[CarNumber].WagonName + " - " + CheckWagonList[CarNumber].CarID + "\n";
                                 ConnectProblemFound = true;
                             }
                         }
@@ -526,12 +596,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             TestBrakeWindowMessage2 = Simulator.Catalog.GetString("No problem with brake found in the train!");
 
                         if (ConnectProblemFound)
-                            TestBrakeWindowMessage3 = Simulator.Catalog.GetString("These Cars are not connected:");
+                            TestBrakeWindowMessage3 = Simulator.Catalog.GetString("These Cars were not connected:");
                         else
                             TestBrakeWindowMessage3 = Simulator.Catalog.GetString("All Cars are connected!");
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
-                        Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_Completed);
+
+                        if (BrakeProblemFound || ConnectProblemFound)
+                            Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_CompletedNegative);
+                        else
+                            Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_Completed);
                     }
                 }
             }
@@ -572,27 +646,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 for (int i = 0; i < 100; i++)
                 {
                     ShunterTestBrakeCarCheckTime[i] = 0;                    
-                    CheckWagonList[i] = null;
+                    CheckWagonList[i] = null;                    
                 }
 
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
                 int CheckWagonListIndex = 0;
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => car.CarHasBrakePipeConnected))
-                {
+                foreach (TrainCar car in Locomotive.Train.Cars)
+                {                    
                     if (car is MSTSLocomotive && (car as MSTSLocomotive).IsLeadLocomotive()) { }
                     else
                     {
                         LastCarConnectedNumber++;
-                        LastCarConnected = car;                                                
+                        LastCarConnected = car;
                     }                    
                 }
-
+                
                 foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
                 {
                     CheckWagonListIndex++;
-                    CheckWagonList[CheckWagonListIndex] = car;
-                }
+                    CheckWagonList[1] = car;                    
+
+                    if (!car.CarHasBrakePipeConnected)
+                    {
+                        CheckCarBrakeFault[1] = true;
+                    }
+                }                
 
                 if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
                 {
@@ -708,6 +787,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             testCar.ShunterTestingBrake = false;
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
                         }
+
+                        if (testCar == Locomotive.Train.FirstCar)
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = false;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
+                        }
+                        else
+                            if (testCar == Locomotive.Train.LastCar)
+                            {
+                                testCar.BrakeSystem.AngleCockAOpen = true;
+                                testCar.BrakeSystem.AngleCockBOpen = false;
+                                testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                            }
+                            else
+                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                                {
+                                    testCar.BrakeSystem.AngleCockAOpen = true;
+                                    testCar.BrakeSystem.AngleCockBOpen = true;
+                                    testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                                }
+
                         ShunterSimpleTestBrakePhase2CarCheckTimer = 0;
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Car ") + CarNumber + Simulator.Catalog.GetString(" brake check done."));
                         CarNumber++;
@@ -730,7 +830,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (CarNumber <= CarTimeNumber)
                         {
                             if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
-                            {
+                            {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
@@ -743,7 +843,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                             }
                             if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
-                            {
+                            {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeRelease);
@@ -840,6 +940,27 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             testCar.ShunterTestingBrake = false;
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
                         }
+
+                        if (testCar == Locomotive.Train.FirstCar)
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = false;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
+                        }
+                        else
+                            if (testCar == Locomotive.Train.LastCar)
+                            {
+                                testCar.BrakeSystem.AngleCockAOpen = true;
+                                testCar.BrakeSystem.AngleCockBOpen = false;
+                                testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                            }
+                            else
+                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                                {
+                                    testCar.BrakeSystem.AngleCockAOpen = true;
+                                    testCar.BrakeSystem.AngleCockBOpen = true;
+                                    testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                                }
+
                         ShunterSimpleTestBrakePhase4CarCheckTimer = 0;
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Car ") + CarNumber + Simulator.Catalog.GetString(" brake check done."));
                         CarNumber--;                        
@@ -862,7 +983,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (CarNumber > 0)
                         {
                             if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
-                            {
+                            {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
@@ -875,7 +996,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 }
                             }
                             if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
-                            {
+                            {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeRelease);
@@ -905,10 +1026,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (ShunterSimpleTestBrakePhase5 && !ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4)
                 {
                     ShunterSimpleTestBrakePhase5Timer += elapsedClockSeconds;
+
+                    if (ShunterSimpleTestBrakePhase5Timer > 10.0f && ShunterSimpleTestBrakePhase5Timer < 10.5f)
+                    {
+                        // Bržděnka
+                        Locomotive.Simulator.SimpleTestBrakeWindow = true;
+                    }
+
                     if (ShunterSimpleTestBrakePhase5Timer > 5.0f && ShunterSimpleTestBrakePhase5Timer < 5.5f)
                     {
-                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed successfully!"));
-                        Locomotive.Simulator.SimpleTestBrakeWindow = true;
+                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed successfully!"));                    
 
                         string TestBrakeWindowMessageProblemCars = "";
                         string TestBrakeWindowMessageNotConnectedCars = "";
@@ -930,11 +1057,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 TestBrakeWindowMessageProblemCars += car.WagonName + " - " + car.CarID + "\n";                                
                                 BrakeProblemFound = true;
                             }
-                            if (!car.CarHasBrakePipeConnected)
+                            if (CheckCarBrakeFault[CarNumber])
                             {
-                                TestBrakeWindowMessageNotConnectedCars += car.WagonName + " - " + car.CarID + "\n";
+                                TestBrakeWindowMessageNotConnectedCars += CheckWagonList[CarNumber].WagonName + " - " + CheckWagonList[CarNumber].CarID + "\n";
                                 ConnectProblemFound = true;
-                            }                                                        
+                            }
                         }
                         TestBrakeWindowMessage1 = Simulator.Catalog.GetString("Simple test brake completed successfully!");
                         if (BrakeProblemFound)
@@ -943,10 +1070,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             TestBrakeWindowMessage2 = Simulator.Catalog.GetString("No problem with brake found!");
 
                         if (ConnectProblemFound)
-                            TestBrakeWindowMessage3 = Simulator.Catalog.GetString("This Car is not connected:");                        
+                            TestBrakeWindowMessage3 = Simulator.Catalog.GetString("This Car is not connected:");                                                
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
-                        Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_Completed);
+                        
+                        if (BrakeProblemFound || ConnectProblemFound)
+                            Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_CompletedNegative);
+                        else
+                            Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_Completed);
                     }
                 }
             }
@@ -1418,7 +1549,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             foreach (TrainCar car in Locomotive.Train.Cars.Where(car => car.ShunterTestingBrake))
             {
                 car.ShunterTestingBrake = false;
-            }
+            }            
             FirstBoggie = false;
             SecondBoggie = false;
         }

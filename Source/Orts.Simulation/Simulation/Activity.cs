@@ -1524,6 +1524,17 @@ namespace Orts.Simulation
                 var restartWaitingTrain = this.ParsedObject.Outcomes.RestartWaitingTrain;
                 Simulator.RestartWaitingTrain(restartWaitingTrain);
             }
+
+            // Icik
+            if (this.ParsedObject.ShunterFullTestBrake)
+            {
+                if (activity.triggeredEventWrapper == null) activity.triggeredEventWrapper = this;
+            }
+            if (this.ParsedObject.ShunterSimpleTestBrake)
+            {
+                if (activity.triggeredEventWrapper == null) activity.triggeredEventWrapper = this;
+            }
+
             return false;
         }
 

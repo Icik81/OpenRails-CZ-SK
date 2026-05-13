@@ -1208,6 +1208,10 @@ namespace Orts.Formats.Msts
         public string TrainService = "";
         public int TrainStartingTime = -1;
 
+        // Icik
+        public bool ShunterFullTestBrake;
+        public bool ShunterSimpleTestBrake;
+
         public virtual void AddOrModifyEvent(STFReader stf, string fileName)
         { }
     }
@@ -1444,6 +1448,9 @@ namespace Orts.Formats.Msts
                     stf.MustMatch(")");
                 }),
                 new STFReader.TokenProcessor("ortsweatherchange", ()=>{ ORTSWeatherChange = new ORTSWeatherChange(stf);}),
+                // Icik
+                new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
             });
         }
     }
