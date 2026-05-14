@@ -561,9 +561,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
 
                     if (ShunterFullTestBrakePhase5Timer > 5.0f && ShunterFullTestBrakePhase5Timer < 5.5f)
-                    {
-                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed successfully!"));                                                                   
-
+                    {                        
                         string TestBrakeWindowMessageProblemCars = "";
                         string TestBrakeWindowMessageNotConnectedCars = "";
                         string TestBrakeWindowMessage1 = "";
@@ -603,9 +601,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
 
                         if (BrakeProblemFound || ConnectProblemFound)
+                        {
+                            Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed unsuccessfully!"));
                             Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_CompletedNegative);
+                        }
                         else
-                            Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_Completed);
+                        {
+                            Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed successfully!"));
+                            Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_Completed);                            
+                        }
                     }
                 }
             }
@@ -1034,9 +1038,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
 
                     if (ShunterSimpleTestBrakePhase5Timer > 5.0f && ShunterSimpleTestBrakePhase5Timer < 5.5f)
-                    {
-                        Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed successfully!"));                    
-
+                    {                        
                         string TestBrakeWindowMessageProblemCars = "";
                         string TestBrakeWindowMessageNotConnectedCars = "";
                         string TestBrakeWindowMessage1 = "";
@@ -1073,11 +1075,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             TestBrakeWindowMessage3 = Simulator.Catalog.GetString("This Car is not connected:");                                                
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
-                        
+
                         if (BrakeProblemFound || ConnectProblemFound)
+                        {
+                            Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed unsuccessfully!"));
                             Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_CompletedNegative);
+                        }
                         else
+                        {
+                            Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed successfully!"));
                             Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_Completed);
+                        }
                     }
                 }
             }

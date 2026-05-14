@@ -2051,7 +2051,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                if (IsLeadLocomotive() || PowerUnit)
+                if (IsLeadLocomotive())
                 {
                     Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
                     Simulator.DataBreakPowerButton = BreakPowerButton;

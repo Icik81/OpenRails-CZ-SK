@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-05-13 19:50:46+0200\n"
-"PO-Revision-Date: 2026-05-13 19:50:47+0200\n"
+"POT-Creation-Date: 2026-05-14 18:04:06+0200\n"
+"PO-Revision-Date: 2026-05-14 18:04:07+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -372,15 +372,15 @@ msgstr ""
 msgid "Passenger boarding completed. Waiting for signal ahead to clear."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:1633
+#: ../../Orts.Simulation/Simulation/Activity.cs:1644
 msgid "We're in position to detach the wagons!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:2029
+#: ../../Orts.Simulation/Simulation/Activity.cs:2040
 msgid "Precise stop required!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Activity.cs:2029
+#: ../../Orts.Simulation/Simulation/Activity.cs:2040
 msgid "We're here, we can stop!"
 msgstr ""
 
@@ -1607,29 +1607,29 @@ msgstr ""
 msgid "Cannot clear signal behind train while in AUTO mode"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18178
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18179
 msgid "Passenger got out of the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18247
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18249
 msgid ""
 "Passenger cannot board the train!!! All the cars on the train are occupied!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18275
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18277
 msgid "Passenger cannot board the train!!!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18314
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18318
 msgid "Passenger got in the train "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18514
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18518
 msgid "Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18588
-#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18593
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18592
+#: ../../Orts.Simulation/Simulation/Physics/Train.cs:18597
 msgid "Locomotive "
 msgstr ""
 
@@ -3297,119 +3297,127 @@ msgstr ""
 msgid "Selected speed set to "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:162
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:627
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1101
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:174
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:643
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1121
 msgid "Shunter: Cab radio should be on!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:225
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:691
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:237
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:707
 msgid "Train speed must be zero to perform the test brake!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:228
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:694
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:240
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:710
 msgid "Train must have at least two cars to perform the test brake!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:231
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:697
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:243
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:713
 msgid ""
 "Train must have sufficient brakepipe pressure (5 bar) to perform the test "
 "brake!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:237
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:249
 msgid "Shunter: Full test brake activated. Please follow the instructions."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:246
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:712
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:258
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:728
 msgid "Shunter: Please apply the brakes under 4.5 bar and holdon!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:333
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:482
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:800
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:953
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:345
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:494
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:816
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:969
 msgid "Shunter: Car "
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:333
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:482
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:800
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:953
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:345
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:494
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:816
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:969
 msgid " brake check done."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:386
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:398
 msgid "Shunter: Full test brake first side completed!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:396
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:866
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:408
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:882
 msgid "Shunter: Please release the brakes and holdon!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:535
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:547
 msgid "Shunter: Full test brake second side completed!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:553
-msgid "Shunter: Full test brake completed successfully!"
-msgstr ""
-
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:580
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:590
 msgid "Full test brake completed successfully!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:582
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:592
 msgid "These Cars have problems with brake and brake was deactivated:"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:584
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:594
 msgid "No problem with brake found in the train!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:587
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:597
 msgid "These Cars were not connected:"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:589
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:599
 msgid "All Cars are connected!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:703
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:605
+msgid "Shunter: Full test brake completed unsuccessfully!"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:610
+msgid "Shunter: Full test brake completed successfully!"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:719
 msgid "Shunter: Simple test brake activated. Please follow the instructions."
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:856
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:872
 msgid "Shunter: Simple test brake first side completed!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1008
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1024
 msgid "Shunter: Simple test brake second side completed!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1026
-msgid "Shunter: Simple test brake completed successfully!"
-msgstr ""
-
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1054
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1068
 msgid "Simple test brake completed successfully!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1056
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1070
 msgid "This Car has problem with brake and brake was deactivated:"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1058
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1072
 msgid "No problem with brake found!"
 msgstr ""
 
-#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1061
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1075
 msgid "This Car is not connected:"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1081
+msgid "Shunter: Simple test brake completed unsuccessfully!"
+msgstr ""
+
+#: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Shunter.cs:1086
+msgid "Shunter: Simple test brake completed successfully!"
 msgstr ""
 
 #: ../../Orts.Simulation/Simulation/RollingStocks/SubSystems/Brakes/BrakeSystem.cs:304

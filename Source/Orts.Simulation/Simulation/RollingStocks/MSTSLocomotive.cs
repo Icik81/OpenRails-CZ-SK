@@ -7681,7 +7681,7 @@ namespace Orts.Simulation.RollingStocks
                     else if (DynamicBrakePercent <= 0 && ControllerVolts < 0 && CruiseControl != null && !CruiseControl.IReallyWantToBrake)
                         ControllerVolts = 0;
 
-                    if (ControllerVolts == 0)
+                    if (extendedPhysics != null && ControllerVolts == 0)
                         SetDynamicBrakeValue(-1);
                 }
             }
