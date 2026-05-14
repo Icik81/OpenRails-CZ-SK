@@ -1021,6 +1021,7 @@
     <Content Include="Content\ShunterSound\Czech\Readme.txt" />
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_ApplyBrake.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_Completed.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_CompletedNegative.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_FirstSide.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_FirstSideDone.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_ReleaseBrake.wav" />
@@ -1029,6 +1030,7 @@
     <Content Include="Content\ShunterSound\Czech\ShunterFullTestBrakeSound_Start.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_ApplyBrake.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_Completed.wav" />
+    <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_CompletedNegative.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_FirstSide.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_FirstSideDone.wav" />
     <Content Include="Content\ShunterSound\Czech\ShunterSimpleTestBrakeSound_ReleaseBrake.wav" />
