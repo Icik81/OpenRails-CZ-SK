@@ -2588,14 +2588,14 @@ namespace Orts.Viewer3D
 
                         // Icik
                         // Pokud je UserSelectShadow, pak se rozhodujeme podle počtu primitiv, jestli se jedná o objekt bez stínu (méně než 3 primitiva) nebo o normální objekt (3 a více primitiv).
-                        if (UserSelectShadow == ShapeFlags.UserSelectShadow)
+                        if (UserSelectShadow == ShapeFlags.UserSelectShadow && !interior)
                         {
                             if (shapePrimitive.PrimitiveCount < 9)
                                 flags = 0;
                             else
                                 flags = ShapeFlags.ShadowCaster;
-                        }
-                        
+                        }                        
+
                         frame.AddAutoPrimitive(mstsLocation, distanceDetail.ViewSphereRadius, distanceDetail.ViewingDistance * lodBias, shapePrimitive.Material, shapePrimitive, interior ? RenderPrimitiveGroup.Interior : RenderPrimitiveGroup.World, ref xnaMatrix, flags);
                     }
                 }
