@@ -29,6 +29,7 @@ using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Orts.Viewer3D
 {
@@ -352,8 +353,8 @@ namespace Orts.Viewer3D
                     NightBrightness = 0.05f;
                     vIn = NightBrightnessValue;
                     Program.Simulator.CarInDarkTunnel = true;
-                }
-            }
+                }                
+            }                        
 
             if (!Program.Simulator.PlayerCarIsInTunnel || Program.Simulator.TunnelLengthM < Program.Simulator.PlayerCarIsInTunnelBeginM)
             {
@@ -383,8 +384,8 @@ namespace Orts.Viewer3D
 
             float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
             Program.Simulator.FullBrightness = FullBrightness;
-            NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
-           
+            NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;            
+
             if (_imageTextureIsNight)
             {
                 FullBrightness = 1.2f;
@@ -400,7 +401,7 @@ namespace Orts.Viewer3D
                 const float finishNightTrans = -0.1f;
 
                 var nightEffect = MathHelper.Clamp((_sunDirection.Y - finishNightTrans) / (startNightTrans - finishNightTrans), 0, 1);
-
+                
                 nightColorModifier.SetValue(MathHelper.Lerp(NightBrightness, FullBrightness, nightEffect));
                 halfNightColorModifier.SetValue(MathHelper.Lerp(HalfNightBrightness, FullBrightness, nightEffect));
                 vegetationAmbientModifier.SetValue(MathHelper.Lerp(ShadowBrightness, FullBrightness, _zBias_Lighting.Y));
@@ -778,7 +779,16 @@ namespace Orts.Viewer3D
 
         public Vector3 LightVector
         {
-            set { lightVector.SetValue(value); }
+            set
+            {
+                if (Program.Simulator.FullBrightness < 0.8f)
+                {                    
+                    float diff = 0.8f - Program.Simulator.FullBrightness;
+                    double expFalloff = (Math.Pow(10f, diff * 2f) - 1f) * 0.1f;
+                    value.Y -= (float)expFalloff;
+                }
+                lightVector.SetValue(value);
+            }
         }
 
         public ParticleEmitterShader(GraphicsDevice graphicsDevice)
