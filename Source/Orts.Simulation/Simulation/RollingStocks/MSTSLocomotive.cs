@@ -12053,7 +12053,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 PowerKeyPosition[LocoStation]++;
 
-                if (!CarHavePocketPowerKey)
+                if (!CarHavePocketPowerKey && !OneCabOneConsole)
                 {
                     if (PowerKeyPosition[1] == PowerKeyPosition[2] || !Simulator.PowerKeyNoPocketBlocked)
                     {
@@ -12269,6 +12269,48 @@ namespace Orts.Simulation.RollingStocks
             TogglePowerKeyCycle++;
             if (TogglePowerKeyCycle > 10)
                 TogglePowerKeyCycle = 10;            
+        }
+
+        public void PowerKeyLogic()
+        {
+            if (IsLeadLocomotive() && AcceptMUSignals)
+            {
+                Simulator.TrainPowerKey = false;
+                foreach (TrainCar car in Train.Cars)
+                {
+                    if (car is MSTSLocomotive && car.AcceptMUSignals)
+                    {
+                        if (car.PowerKeyPosition[1] == 2 || car.PowerKeyPosition[2] == 2)
+                        {
+                            car.CarPowerKey = true;
+                            Simulator.TrainPowerKey = true;
+                        }
+                        else
+                        {
+                            car.CarPowerKey = false;
+                        }
+                    }
+                }
+            }
+            if (IsLeadLocomotive() && !AcceptMUSignals)
+                Simulator.TrainPowerKey = true;
+
+            if (this is MSTSSteamLocomotive)
+            {
+                this.CarPowerKey = true;
+                Simulator.TrainPowerKey = true;
+                StationIsActivated[1] = StationIsActivated[2] = false;
+                StationIsActivated[LocoStation] = true;
+            }
+            if (OneCabOneConsole)
+            {
+                StationIsActivated[1] = StationIsActivated[2] = false;
+                if (PowerKeyPosition[LocoStation] == 2)
+                {
+                    PowerKeyPosition[1] = PowerKeyPosition[2] = 2;
+                    StationIsActivated[LocoStation] = true;
+                }
+            }
         }
 
         // Klička topení vlaku 
@@ -13736,49 +13778,7 @@ namespace Orts.Simulation.RollingStocks
                     }
                 }
             }
-        }
-
-        public void PowerKeyLogic()
-        {
-            if (IsLeadLocomotive() && AcceptMUSignals)
-            {
-                Simulator.TrainPowerKey = false;
-                foreach (TrainCar car in Train.Cars)
-                {
-                    if (car is MSTSLocomotive && car.AcceptMUSignals)
-                    {
-                        if (car.PowerKeyPosition[1] == 2 || car.PowerKeyPosition[2] == 2)
-                        {
-                            car.CarPowerKey = true;
-                            Simulator.TrainPowerKey = true;
-                        }
-                        else
-                        {
-                            car.CarPowerKey = false;
-                        }
-                    }
-                }
-            }
-            if (IsLeadLocomotive() && !AcceptMUSignals)
-                Simulator.TrainPowerKey = true;
-            
-            if (this is MSTSSteamLocomotive)
-            {
-                this.CarPowerKey = true;
-                Simulator.TrainPowerKey = true;
-                StationIsActivated[1] = StationIsActivated[2] = false;
-                StationIsActivated[LocoStation] = true;                                
-            }
-            if (OneCabOneConsole)
-            {
-                StationIsActivated[1] = StationIsActivated[2] = false;                
-                if (PowerKeyPosition[LocoStation] == 2)
-                {                    
-                    StationIsActivated[LocoStation] = true;
-                }                
-            }
-        }
-
+        }        
 
         public bool PantoActivationEnable;
         public int[] PantoActivationSwitch = new int[3];

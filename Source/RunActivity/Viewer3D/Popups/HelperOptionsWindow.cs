@@ -115,7 +115,7 @@ namespace Orts.Viewer3D.Popups
         void buttonClose_Click(Control arg1, Point arg2)
         {
             (Viewer.PlayerTrain.Cars[CarID] as MSTSLocomotive).HelperOptionsOpened = false;
-            Viewer.HelperSpeedSelectWindow.Visible = false;
+            //Viewer.HelperSpeedSelectWindow.Visible = false;
             Visible = false;
         }
 

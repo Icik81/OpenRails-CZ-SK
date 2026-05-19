@@ -693,18 +693,47 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (loco.UsingRearCab)
                     loco.LocoStation = 2;
 
-                float TrainBrakeValueL = -1;
-                float TrainBrakeValueL_2 = -1;
+                bool LapPositionFound = false;
                 foreach (MSTSNotch notch in loco.TrainBrakeController.Notches)
                 {
                     switch (notch.Type)
-                    {                        
+                    {
                         case ControllerState.Lap:
-                            if (TrainBrakeValueL != -1)
-                                TrainBrakeValueL_2 = notch.Value;
-                            else
-                                TrainBrakeValueL = notch.Value;
-                            break;                        
+                            LapPositionFound = true;
+                            break;
+                    }
+                }
+
+                float TrainBrakeValueL = -1;
+                float TrainBrakeValueL_2 = -1;
+                if (LapPositionFound)
+                {                    
+                    foreach (MSTSNotch notch in loco.TrainBrakeController.Notches)
+                    {
+                        switch (notch.Type)
+                        {
+                            case ControllerState.Lap:
+                                if (TrainBrakeValueL != -1)
+                                    TrainBrakeValueL_2 = notch.Value;
+                                else
+                                    TrainBrakeValueL = notch.Value;
+                                break;
+                        }
+                    }
+                }
+                else
+                {                    
+                    foreach (MSTSNotch notch in loco.TrainBrakeController.Notches)
+                    {
+                        switch (notch.Type)
+                        {
+                            case ControllerState.Neutral:
+                                if (TrainBrakeValueL != -1)
+                                    TrainBrakeValueL_2 = notch.Value;
+                                else
+                                    TrainBrakeValueL = notch.Value;
+                                break;
+                        }
                     }
                 }
 
@@ -731,8 +760,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (loco.LocoStation == 1)
                     {
-                        if (loco.TrainBrakeController.DefaultBrakeValue > 0)
-                            loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultBrakeValue;
+                        if (TrainBrakeValueL_2 != -1)
+                        {                            
+                            loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultLapBrakeValue;
+                        }
+                        else
+                        {
+                            if (loco.TrainBrakeController.DefaultBrakeValue > 0)
+                                loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultBrakeValue;
+                        }
 
                         if (loco.TrainBrakeController.DefaultLapBrakeValue > 0)
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultLapBrakeValue;
@@ -749,6 +785,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[2] = loco.TrainBrakeController.DefaultBrakeValue;
                             loco.LapButtonEnable = true;
                         }
+                        loco.SetTrainBrakePercent(loco.TrainBrakeValue[1] * 100f);
                     }
                     if (loco.LocoStation == 2)
                     {
@@ -770,6 +807,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             loco.TrainBrakeValue[1] = loco.TrainBrakeController.DefaultBrakeValue;
                             loco.LapButtonEnable = true;
                         }
+                        loco.SetTrainBrakePercent(loco.TrainBrakeValue[2] * 100f);
                     }
                 }                
 

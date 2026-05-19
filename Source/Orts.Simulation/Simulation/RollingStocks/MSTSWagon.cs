@@ -3640,6 +3640,8 @@ namespace Orts.Simulation.RollingStocks
 
             var LocomotiveParameters = Simulator.PlayerLocomotive as MSTSLocomotive;
 
+            if (LocomotiveParameters == null) return;
+
             // if this is a heating steam boiler car then adjust steam pressure
             // Don't turn steam heat on until pressure valve has been opened, water and fuel capacity also needs to be present, steam heating shouldn't already be present on diesel or steam locomotive
             if (IsPlayerTrain && WagonSpecialType == MSTSWagon.WagonSpecialTypes.HeatingBoiler && !LocomotiveParameters.IsSteamHeatFitted && LocomotiveParameters.SteamHeatController.CurrentValue > 0.05 && CurrentCarSteamHeatBoilerWaterCapacityL > 0 && CurrentSteamHeatBoilerFuelCapacityL > 0 && !IsSteamHeatBoilerLockedOut)
@@ -3734,6 +3736,8 @@ namespace Orts.Simulation.RollingStocks
 
             bool ProcessWaterEffects = false; // Initialise test flag to see whether this wagon will have water sccop effects active
             var LocomotiveIdentification = Simulator.PlayerLocomotive as MSTSLocomotive;
+
+            if (LocomotiveIdentification == null) return;
 
             if (WagonType == WagonTypes.Tender || WagonType == WagonTypes.Engine)
             {
