@@ -5973,7 +5973,11 @@ namespace Orts.Simulation.RollingStocks
                     CarIsRunning = false;
                 }
 
-                // AI posunuje                     
+                // AI posunuje
+                float DistanceToReversalPoint = (Train as AITrain).ComputeDistanceToReversalPoint();
+                if ((Train as AITrain) != null && DistanceToReversalPoint > 0 && DistanceToReversalPoint < 1000)
+                    CarIsShunting = true;
+
                 if ((Train as AITrain) != null && (Train as AITrain).AITrainWillAttach)
                     CarIsShunting = true;
 
