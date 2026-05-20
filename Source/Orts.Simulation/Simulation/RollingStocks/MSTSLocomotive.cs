@@ -7131,19 +7131,33 @@ namespace Orts.Simulation.RollingStocks
                         {
                             EngineBrakeValue[LocoStation] = 1.0f;
                             SetEngineBrakePercent(EngineBrakeValue[LocoStation] * 100f);
-                            TrainBrakeValue[LocoStation] = TrainBrakeValueR;
-                            SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                            if (BrakeSystem is AirSinglePipe)
+                            {
+                                (BrakeSystem as AirSinglePipe).TrainBrakePositionSet();
+                            }
+                            else
+                            {
+                                TrainBrakeValue[LocoStation] = TrainBrakeValueR;
+                                SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                            }
                             SetTrainHandbrake(false);
                         }
                         else
                         {
                             EngineBrakeValue[LocoStation] = 0.0f;
                             SetEngineBrakePercent(EngineBrakeValue[LocoStation] * 100f);
-                            if (TrainBrakeValueL > 0)
-                                TrainBrakeValue[LocoStation] = TrainBrakeValueL;
+                            if (BrakeSystem is AirSinglePipe)
+                            {
+                                (BrakeSystem as AirSinglePipe).TrainBrakePositionSet();
+                            }
                             else
-                                TrainBrakeValue[LocoStation] = TrainBrakeController.DefaultBrakeValue; 
-                            SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                            {
+                                if (TrainBrakeValueL > 0)
+                                    TrainBrakeValue[LocoStation] = TrainBrakeValueL;
+                                else
+                                    TrainBrakeValue[LocoStation] = TrainBrakeController.DefaultBrakeValue;
+                                SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
+                            }                            
                             SetTrainHandbrake(true);                            
                         }
                     }                   
@@ -7889,7 +7903,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef_SM " + LoadSound_VolumeCoef);
                 //Simulator.Confirmer.MSG3("LoadSound_VolumeCoef_TM " + LoadSound_VolumeCoef);
-                //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);
+                //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);                
             }
 
             if (IsPlayerTrain && !Simulator.Paused)

@@ -19,6 +19,7 @@
 //#define DEBUG_TRAIN_PIPE_LEAK
 
 using Microsoft.Xna.Framework;
+using Newtonsoft.Json.Linq;
 using Orts.Common;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
@@ -32,6 +33,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 using static Orts.Simulation.RollingStocks.TrainCar;
 
 namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
@@ -1836,6 +1838,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 // Odbržďovač OL2 a OL3
                 if (OLBailOffLimitPressurePSI == 0) OLBailOffLimitPressurePSI = 3.2f * 14.50377f; // V15 definuje 3.2bar
                 if (OLBailOffType == null) OLBailOffType = "OL2";
+
+                if (Car is MSTSLocomotive && !(Car.Train.Cars[Car.Train.LeadLocomotiveIndex]).IsDriveable)
+                {                    
+                    for (int i = 0; i < Car.Train.Cars.Count; i++)
+                        if (Car.Train.Cars[i].IsDriveable)
+                        {
+                            loco.Train.LeadLocomotiveIndex = i;
+                            loco.Simulator.PlayerLocomotive = Car;
+                        }                    
+                }
+                                
                 if (Car is MSTSLocomotive
                     && loco.Train.LeadLocomotiveIndex >= 0 && ((MSTSLocomotive)loco.Train.Cars[loco.Train.LeadLocomotiveIndex]).BailOff
                     && loco.Direction != Direction.N

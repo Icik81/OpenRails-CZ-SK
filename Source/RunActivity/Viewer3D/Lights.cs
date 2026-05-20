@@ -364,16 +364,30 @@ namespace Orts.Viewer3D
             {
                 // AI posunuje
                 if (Car.CarIsShunting)
+                {
                     newTrainHeadlight = 0;
+                    TrainHeadlight = 1;
+                }
                 else
-                // AI vyčkává na místě
-                if (Car.CarIsWaiting)
-                    newTrainHeadlight = 1;
-                else
-                if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)                
-                    newTrainHeadlight = 2;                                    
-                else
-                    newTrainHeadlight = 1;                
+                    // AI vyčkává na místě
+                    if (Car.CarIsWaiting)
+                    {
+                        newTrainHeadlight = 1;
+                        TrainHeadlight = 0;
+                    }
+                    else
+                        if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)
+                        {
+                            newTrainHeadlight = 2;
+                            newIsDay = false;
+                            TrainHeadlight = 1;
+                        }
+                        else
+                        {
+                            newTrainHeadlight = 1;
+                            TrainHeadlight = 0;
+                        }
+                
             }            
 
             if (
@@ -539,15 +553,16 @@ namespace Orts.Viewer3D
                 if (Light.Unit == LightUnitCondition.Middle)
                     Enabled &= !lightViewer.CarIsFirst && !lightViewer.CarIsLast;
                 else if (Light.Unit == LightUnitCondition.First)
-                    Enabled &= lightViewer.CarIsFirst && !lightViewer.CarIsReversed;
+                    Enabled &= lightViewer.CarIsFirst && (!lightViewer.CarIsReversed || lightViewer.TrainHeadlight == 0);
                 else if (Light.Unit == LightUnitCondition.Last)
-                    Enabled &= lightViewer.CarIsLast && !lightViewer.CarIsReversed;
+                    Enabled &= lightViewer.CarIsLast && !lightViewer.CarIsReversed && lightViewer.TrainHeadlight != 0;
                 else if (Light.Unit == LightUnitCondition.LastRev)
-                    Enabled &= lightViewer.CarIsLast && lightViewer.CarIsReversed;
+                    Enabled &= lightViewer.CarIsLast && lightViewer.CarIsReversed && lightViewer.TrainHeadlight != 0;
                 else if (Light.Unit == LightUnitCondition.FirstRev)
-                    Enabled &= lightViewer.CarIsFirst && lightViewer.CarIsReversed;                
+                    Enabled &= lightViewer.CarIsFirst && (lightViewer.CarIsReversed || lightViewer.TrainHeadlight == 0);                
                 else
                     Enabled &= false;
+                
             }
             if (Light.Penalty != LightPenaltyCondition.Ignore)
             {
