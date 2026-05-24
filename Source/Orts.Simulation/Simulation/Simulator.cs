@@ -337,6 +337,8 @@ namespace Orts.Simulation
         public bool SimpleTestBrakeWindow;
         public string TestBrakeWindowMessage = "";
         public bool ShunterTestingBrakeChanged;
+        public string TrainOperationsInfoText = "";
+        public string TrainOperationsRealBrakePercentText = "";
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

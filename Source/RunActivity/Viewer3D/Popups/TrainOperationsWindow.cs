@@ -398,6 +398,8 @@ namespace Orts.Viewer3D.Popups
                 + Viewer.Catalog.GetString("Cars count") + " " + Viewer.PlayerTrain.Cars.Count;
             Color = Color.Yellow;
 
+            Viewer.Simulator.TrainOperationsInfoText = Text;
+
             Viewer.Simulator.TrainOperationsMenuMinimumTextWidth = (int)Math.Round(Text.Length / 2f) + 3;
         }
     }
@@ -413,6 +415,8 @@ namespace Orts.Viewer3D.Popups
             
             Text = Viewer.Catalog.GetString("Real braking percentages") + " " + (int)PlayerTrain.PlayerTrainBrakePercent + " %";                
             Color = Color.Yellow;
+
+            Viewer.Simulator.TrainOperationsRealBrakePercentText = Text;
         }
     }
 
