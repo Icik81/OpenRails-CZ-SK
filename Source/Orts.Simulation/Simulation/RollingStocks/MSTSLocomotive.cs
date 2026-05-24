@@ -7121,9 +7121,12 @@ namespace Orts.Simulation.RollingStocks
 
                 LocoSetUpTimer = 0;                
                 RDSTBreaker[LocoStation] = true;
-                
-                if (Battery)                
-                    LocoReadyToGo = true;                                    
+
+                if (Battery)
+                {
+                    LocoReadyToGo = true;
+                    PowerKey = true;
+                }
                                                 
                 if (IsLeadLocomotive())
                 {
