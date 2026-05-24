@@ -7103,10 +7103,17 @@ namespace Orts.Simulation.RollingStocks
             if (IsPlayerTrain && PlayerLocoSetUp)
             {
                 if (Wiper) SignalEvent(Event.WiperOff);
-                if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
-                    ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                else
-                    PowerKey = false;
+
+                PowerKey = false;
+                if (Battery)
+                {
+                    PowerKey = true;
+                    if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
+                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                    else
+                        PowerKey = false;
+                }                                    
+
                 // Mirel                   
                 if (Mirel != null)
                 {
@@ -7122,11 +7129,8 @@ namespace Orts.Simulation.RollingStocks
                 LocoSetUpTimer = 0;                
                 RDSTBreaker[LocoStation] = true;
 
-                if (Battery)
-                {
-                    LocoReadyToGo = true;
-                    PowerKey = true;
-                }
+                if (Battery)                
+                    LocoReadyToGo = true;                                    
                                                 
                 if (IsLeadLocomotive())
                 {
