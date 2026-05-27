@@ -873,8 +873,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 
@@ -1681,8 +1681,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 
@@ -1755,8 +1755,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 
@@ -1979,8 +1979,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 
@@ -2145,8 +2145,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
     }
@@ -2176,8 +2176,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 
@@ -2303,8 +2303,8 @@ namespace Orts.Viewer3D
                 if (base.IsUnderground)
                     return true;
                 var elevationAtCameraTarget = Viewer.Tiles.GetElevation(attachedCar.WorldPosition.WorldLocation);
-                //return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > 0;
-                return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                return attachedCar.WorldPosition.Location.Y + TerrainAltitudeMargin < elevationAtCameraTarget || attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
+                //return attachedCar.CarTunnelData.LengthMOfTunnelAheadFront > Viewer.Simulator.TunnelActivateM;
             }
         }
 

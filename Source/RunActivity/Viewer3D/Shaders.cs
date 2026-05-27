@@ -323,7 +323,7 @@ namespace Orts.Viewer3D
             // Zařídí tmu v tunelu
             Program.Simulator.TunnelActivateM = 0;
             Program.Simulator.CarInDarkTunnel = false;
-            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            if (Program.Simulator.PlayerCarIsInTunnel && ((Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0) || (Program.Viewer.Camera.IsUnderground && Program.Simulator.TunnelLengthM == 0)))
             {
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
                 {
@@ -984,7 +984,7 @@ namespace Orts.Viewer3D
 
             // Zařídí tmu v kabině v tunelu
             Program.Simulator.CabInDarkTunnel = false;
-            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0)
+            if (Program.Simulator.PlayerCarIsInTunnel && ((Program.Simulator.TunnelLengthM > 50 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0) || (Program.Viewer.Camera.IsUnderground && Program.Simulator.TunnelLengthM == 0)))                
             {
                 CabnightColorModifier = CabnightColorModifierValue;
                 if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < 35)
