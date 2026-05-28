@@ -1245,7 +1245,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 else
                     ShunterTimeWithOutRadio = 0;
 
-                TRAINAHEAD_Mode = Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.TRAIN_AHEAD ? true : false;
+                float DistanceToOtherTrain = -1000;
+                TRAINAHEAD_Mode = false;
+                for (int i = 0; i < Locomotive.Train.EndAuthorityType.Length; i++)
+                {
+                    if (Locomotive.Train.EndAuthorityType[i] == Train.END_AUTHORITY.TRAIN_AHEAD && Locomotive.Train.DistanceToEndNodeAuthorityM[i] < 1000)
+                    {
+                        DistanceToOtherTrain = Locomotive.Train.DistanceToEndNodeAuthorityM[i];
+                        TRAINAHEAD_Mode = true;
+                        break;
+                    }                    
+                }
+                
                 DistanceToReverse = Locomotive.Simulator.DistanceToReverse < 1 ? -1 : Locomotive.Train.ComputeDistanceToReversalPoint() > 1000 ? -1 : Locomotive.Simulator.DistanceToReverse;
                 float DistanceSpeedCorrectionM = MathHelper.Clamp(Locomotive.AbsSpeedMpS * 3.6f / 2f, 0, 10.0f); // Korekce vzdálenosti závislé na rychlosti pro aktivaci hlášek                
 
@@ -1266,17 +1277,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         ShunterDecideProcessTimer += elapsedClockSeconds;
 
-                        if (ShunterDecideProcessTimer > 2.0f) Locomotive.Simulator.ShunterDecideMarker = "ok";
+                        if (ShunterDecideProcessTimer > 1.0f) Locomotive.Simulator.ShunterDecideMarker = "ok";
                         else
-                            if (ShunterDecideProcessTimer > 1.5f) Locomotive.Simulator.ShunterDecideMarker = "|";
+                            if (ShunterDecideProcessTimer > 0.75f) Locomotive.Simulator.ShunterDecideMarker = "|";
                             else
-                                if (ShunterDecideProcessTimer > 1.0f) Locomotive.Simulator.ShunterDecideMarker = "-";
+                                if (ShunterDecideProcessTimer > 0.5f) Locomotive.Simulator.ShunterDecideMarker = "-";
                                 else
-                                    if (ShunterDecideProcessTimer > 0.5f) Locomotive.Simulator.ShunterDecideMarker = "|";
+                                    if (ShunterDecideProcessTimer > 0.25f) Locomotive.Simulator.ShunterDecideMarker = "|";
                                     else
                                         if (ShunterDecideProcessTimer > 0.0f) Locomotive.Simulator.ShunterDecideMarker = "-";
 
-                        if (ShunterDecideProcessTimer > 2.5f)
+                        if (ShunterDecideProcessTimer > 1.5f)
                         {
                             ShunterDecideProcess = true;
                             ShunterDecideProcessTimer = 0;
@@ -1287,14 +1298,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním                
-                if (DistanceToReverse != -1 && Locomotive.Train.DistanceToEndNodeAuthorityM[0] - Locomotive.Simulator.DistanceToReverse > 10) TRAINAHEAD_Mode = false;
+                if (DistanceToReverse != -1 && DistanceToOtherTrain - Locomotive.Simulator.DistanceToReverse > 10) TRAINAHEAD_Mode = false;
 
                 if (Locomotive.Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;
 
                 // Volná jízda
                 if (Locomotive.Train.ControlMode == Train.TRAIN_CONTROL.EXPLORER)
                 {
-                    Locomotive.Simulator.DistanceToOtherTrain = Locomotive.Simulator.DistanceToTrainMFreeRide;
+                    //Locomotive.Simulator.DistanceToOtherTrain = Locomotive.Simulator.DistanceToTrainMFreeRide;
+                    Locomotive.Simulator.DistanceToOtherTrain = DistanceToOtherTrain;
                     TRAINAHEAD_Mode = true;
                 }                
 
@@ -1324,7 +1336,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Při změně kabiny lokomotivy se provede test, jestli je napojovaný vlak před námi nebo za námi.
                 if ((TRAINAHEAD_Mode && Locomotive.Simulator.DistanceToOtherTrain == -1000) || Locomotive.Simulator.ChangeCabActivated || Locomotive.Simulator.LocoStationChange)
                 {
-                    Locomotive.Simulator.DistanceToOtherTrain = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
+                    Locomotive.Simulator.DistanceToOtherTrain = DistanceToOtherTrain;
                     DistanceToOtherTrain_0 = Locomotive.Simulator.DistanceToOtherTrain;
                     LastDistanceToOtherTrain = Locomotive.Simulator.DistanceToOtherTrain;
                     Locomotive.Simulator.OtherTrainPositionTest = false;
@@ -1338,9 +1350,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (Locomotive.Train.ControlMode != Train.TRAIN_CONTROL.EXPLORER)
                     {
                         // Určení, jestli je napojovaný vlak před námi nebo za námi, pro správné odpočítávání vzdálenosti od jiného vlaku pro dokončení procesu najetí na vlak.                    
-                        if (!Locomotive.Simulator.OtherTrainPositionTest && TRAINAHEAD_Mode && Locomotive.SpeedMpS != 0 && DistanceToOtherTrain_0 != Locomotive.Train.DistanceToEndNodeAuthorityM[0])
+                        if (!Locomotive.Simulator.OtherTrainPositionTest && TRAINAHEAD_Mode && Locomotive.SpeedMpS != 0 && DistanceToOtherTrain_0 != DistanceToOtherTrain)
                         {
-                            int CurrentDistanceToOtherTrain = (int)Locomotive.Train.DistanceToEndNodeAuthorityM[0];
+                            int CurrentDistanceToOtherTrain = (int)DistanceToOtherTrain;
                             int BaseDistanceToOtherTrain = (int)DistanceToOtherTrain_0;
                             if (Locomotive.SpeedMpS > 0)
                             {
@@ -1373,8 +1385,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
 
                         // Kalibrace vzdálenosti
-                        if (TRAINAHEAD_Mode && Locomotive.Train.DistanceToEndNodeAuthorityM[0] > 1 && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 300)
-                            Locomotive.Simulator.DistanceToOtherTrain = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
+                        if (TRAINAHEAD_Mode && DistanceToOtherTrain > 1 && DistanceToOtherTrain < 300)
+                            Locomotive.Simulator.DistanceToOtherTrain = DistanceToOtherTrain;
 
                         // Odpočítávání vzdálenosti od napojovaného vlaku pro dokončení procesu najetí na vlak                                                                                
                         if (Locomotive.Simulator.OtherTrainIsFront) // Napojovaný vlak před námi
