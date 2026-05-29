@@ -15,7 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using ORTS.Common;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using static Orts.Simulation.Physics.Train;
 
 namespace Orts.Viewer3D.WebServices
@@ -32,6 +35,91 @@ namespace Orts.Viewer3D.WebServices
         /// Value is the string equivalent to a <see cref="TRAIN_CONTROL"/> value.
         /// </remarks>
         public string ControlMode;
+
+        /// <summary>
+        /// Current player train speed in km/h.
+        /// </summary>
+        public float SpeedKmh;
+
+        /// <summary>
+        /// Projected player train speed in km/h.
+        /// </summary>
+        public float ProjectedSpeedKmh;
+
+        /// <summary>
+        /// Current speed limit known by OR in km/h.
+        /// </summary>
+        public float CurrentSpeedLimitKmh;
+
+        /// <summary>
+        /// Objects ahead of the player train, taken from OR internal Track Monitor data before rendering.
+        /// Contains only signals, speedposts and stations.
+        /// </summary>
+        public TrainForwardItem[] ForwardItems;
+
+        /// <summary>
+        /// Nearest signal ahead of the player train.
+        /// </summary>
+        public TrainForwardItem NextSignal;
+
+        /// <summary>
+        /// Nearest speedpost ahead of the player train.
+        /// </summary>
+        public TrainForwardItem NextSpeedpost;
+
+        /// <summary>
+        /// Nearest station/platform stop ahead of the player train.
+        /// </summary>
+        public TrainForwardItem NextStation;
+    }
+
+    /// <summary>
+    /// Clean API representation of one forward track object for DPS.
+    /// </summary>
+    public class TrainForwardItem
+    {
+        /// <summary>
+        /// Object type from TrainObjectItem.TRAINOBJECTTYPE.
+        /// Expected values for DPS: SIGNAL, SPEEDPOST, STATION.
+        /// </summary>
+        public string Type;
+
+        /// <summary>
+        /// Distance from player train to this object in metres.
+        /// </summary>
+        public float DistanceM;
+
+        /// <summary>
+        /// Speed value in km/h, when available. Otherwise -1.
+        /// </summary>
+        public float SpeedKmh;
+
+        /// <summary>
+        /// Signal aspect from TrackMonitorSignalAspect, when available.
+        /// Example: Clear_2, Clear_1, Approach_3, Approach_2, Approach_1, Restricted, StopAndProceed, Stop.
+        /// </summary>
+        public string SignalState;
+
+        /// <summary>
+        /// Authority type, when available.
+        /// </summary>
+        public string AuthorityType;
+
+        /// <summary>
+        /// Station/platform length in metres, when available.
+        /// </summary>
+        public int StationPlatformLengthM;
+
+        /// <summary>
+        /// Speed object type, when available.
+        /// Example: Standard, TempRestrictedStart, TempRestrictedResume.
+        /// </summary>
+        public string SpeedObjectType;
+
+        /// <summary>
+        /// Milepost text, when available.
+        /// </summary>
+        public string Milepost;
     }
 
     public static class TrainInfoExtensions
@@ -41,9 +129,54 @@ namespace Orts.Viewer3D.WebServices
         /// </summary>
         /// <param name="viewer">The Viewer3D instance.</param>
         /// <returns></returns>
-        public static TrainInfo GetWebTrainInfo(this Viewer viewer) => new TrainInfo
+        public static TrainInfo GetWebTrainInfo(this Viewer viewer)
         {
-            ControlMode = Enum.GetName(typeof(TRAIN_CONTROL), viewer.PlayerTrain.ControlMode),
-        };
+            var trainInfo = viewer.PlayerTrain.GetTrainInfo();
+            var forwardItems = new List<TrainForwardItem>();
+
+            foreach (var item in trainInfo.ObjectInfoForward)
+            {
+                if (item.DistanceToTrainM < 0)
+                    continue;
+
+                if (item.ItemType != TrainObjectItem.TRAINOBJECTTYPE.SIGNAL &&
+                    item.ItemType != TrainObjectItem.TRAINOBJECTTYPE.SPEEDPOST &&
+                    item.ItemType != TrainObjectItem.TRAINOBJECTTYPE.STATION)
+                    continue;
+
+                forwardItems.Add(ToWebForwardItem(item));
+            }
+
+            forwardItems = forwardItems
+                .OrderBy(item => item.DistanceM)
+                .ToList();
+
+            return new TrainInfo
+            {
+                ControlMode = Enum.GetName(typeof(TRAIN_CONTROL), trainInfo.ControlMode),
+                SpeedKmh = MpS.ToKpH(Math.Abs(trainInfo.speedMpS)),
+                ProjectedSpeedKmh = MpS.ToKpH(Math.Abs(trainInfo.projectedSpeedMpS)),
+                CurrentSpeedLimitKmh = MpS.ToKpH(trainInfo.allowedSpeedMpS),
+                ForwardItems = forwardItems.ToArray(),
+                NextSignal = forwardItems.FirstOrDefault(item => item.Type == "SIGNAL"),
+                NextSpeedpost = forwardItems.FirstOrDefault(item => item.Type == "SPEEDPOST"),
+                NextStation = forwardItems.FirstOrDefault(item => item.Type == "STATION"),
+            };
+        }
+
+        private static TrainForwardItem ToWebForwardItem(TrainObjectItem item)
+        {
+            return new TrainForwardItem
+            {
+                Type = item.ItemType.ToString(),
+                DistanceM = item.DistanceToTrainM,
+                SpeedKmh = item.AllowedSpeedMpS > 0 ? MpS.ToKpH(item.AllowedSpeedMpS) : -1,
+                SignalState = item.SignalState.ToString(),
+                AuthorityType = item.AuthorityType.ToString(),
+                StationPlatformLengthM = item.StationPlatformLength,
+                SpeedObjectType = item.SpeedObjectType.ToString(),
+                Milepost = item.ThisMile,
+            };
+        }
     }
 }
