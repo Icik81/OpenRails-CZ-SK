@@ -15,6 +15,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
@@ -71,6 +72,29 @@ namespace Orts.Viewer3D.WebServices
         /// Nearest station/platform stop ahead of the player train.
         /// </summary>
         public TrainForwardItem NextStation;
+
+        /// <summary>
+        /// Nearest voltage change marker around the player train, calculated by OR CZ/SK.
+        /// Distance is an aerial/geographical distance in metres, not distance along the track.
+        /// </summary>
+        public TrainVoltageMarkerInfo VoltageMarker;
+    }
+
+    /// <summary>
+    /// Clean API representation of nearest voltage marker for DPS.
+    /// </summary>
+    public class TrainVoltageMarkerInfo
+    {
+        /// <summary>
+        /// Distance from player train to the nearest voltage marker in metres.
+        /// This value is calculated by OR CZ/SK as geographical distance.
+        /// </summary>
+        public float DistanceM;
+
+        /// <summary>
+        /// Voltage value of the nearest marker. Example: 0, 3000, 25000.
+        /// </summary>
+        public int Voltage;
     }
 
     /// <summary>
@@ -151,6 +175,8 @@ namespace Orts.Viewer3D.WebServices
                 .OrderBy(item => item.DistanceM)
                 .ToList();
 
+            var voltageMarker = GetVoltageMarkerInfo(viewer);
+
             return new TrainInfo
             {
                 ControlMode = Enum.GetName(typeof(TRAIN_CONTROL), trainInfo.ControlMode),
@@ -161,6 +187,19 @@ namespace Orts.Viewer3D.WebServices
                 NextSignal = forwardItems.FirstOrDefault(item => item.Type == "SIGNAL"),
                 NextSpeedpost = forwardItems.FirstOrDefault(item => item.Type == "SPEEDPOST"),
                 NextStation = forwardItems.FirstOrDefault(item => item.Type == "STATION"),
+                VoltageMarker = voltageMarker,
+            };
+        }
+
+        private static TrainVoltageMarkerInfo GetVoltageMarkerInfo(Viewer viewer)
+        {
+            int voltage = -1;
+            var distanceM = viewer.PlayerLocomotive != null && viewer.PlayerLocomotive is MSTSLocomotive ? (viewer.PlayerLocomotive as MSTSLocomotive).DistanceToVoltageMarkerM(out voltage, out var _) : -1;
+
+            return new TrainVoltageMarkerInfo
+            {
+                DistanceM = distanceM,
+                Voltage = voltage,
             };
         }
 
