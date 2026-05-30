@@ -1233,7 +1233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ShunterSoundStartPlayed = true;
                 }
 
-                if (!Locomotive.Simulator.CabRadioOn || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.NO_PATH_RESERVED)
+                if (!Locomotive.Simulator.CabRadioOn)
                 {
                     ShunterTimeWithOutRadio += elapsedClockSeconds;
                     if (ShunterTimeWithOutRadio > 30f) // Po 30 sekundách bez rádia se zobrazí hláška upozornění posunovačem, že by rádio mělo být zapnuté
@@ -1324,15 +1324,15 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     TRAINAHEAD_Mode = true;
                 }
 
-                // Kontrola platnosti navádění                 
+                // Kontrola platnosti navádění na vůz                
                 if (Locomotive.AbsSpeedMpS > 0.1f)
                 {                    
-                    if ((TRAINAHEAD_Mode && DistanceToOtherTrain == CheckDistance) || (!TRAINAHEAD_Mode && Locomotive.Simulator.DistanceToReverse == CheckDistance))
+                    if ((TRAINAHEAD_Mode && DistanceToOtherTrain == CheckDistance))
                     {
                         Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("CONFUSED");
                         return;
                     }
-                    CheckDistance = TRAINAHEAD_Mode ? DistanceToOtherTrain : Locomotive.Simulator.DistanceToReverse;
+                    CheckDistance = DistanceToOtherTrain;
                 }                
 
                 // Dokončení procesu najetí k bodu obratu
