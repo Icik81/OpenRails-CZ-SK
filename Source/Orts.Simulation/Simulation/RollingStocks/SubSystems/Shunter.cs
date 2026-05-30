@@ -1459,7 +1459,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!Locomotive.Simulator.ShunterProcessTrainActive_Start)
                 {
-                    if (DistanceToReverse > 100) ShunterSoundReverseReset();
+                    if (DistanceToReverse > 150) ShunterSoundReverseReset();
                     // Hlášky posunovače podle vzdálenosti od reverzu                
                     if (Locomotive.Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -1)
                     {
