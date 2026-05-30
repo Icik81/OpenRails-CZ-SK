@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-05-14 18:04:08+0200\n"
-"PO-Revision-Date: 2026-05-14 18:04:08+0200\n"
+"POT-Creation-Date: 2026-05-30 12:30:13+0200\n"
+"PO-Revision-Date: 2026-05-30 12:30:14+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -3330,44 +3330,44 @@ msgstr ""
 msgid "Cars count"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:414
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:416
 msgid "Real braking percentages"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:432
-msgid "Shunter activated (Radio is ON)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:436
+msgid "Shunter (Radio is ON)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:437
-msgid "Shunter activated (Radio is OFF)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:441
+msgid "Shunter (Radio is OFF)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:443
-msgid "Shunter deactivated"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:447
+msgid "Shunter"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:462
-msgid "Full Test Brake activated (Radio is ON)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:466
+msgid "Full Test Brake (Radio is ON)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:467
-msgid "Full Test Brake activated (Radio is OFF)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:471
+msgid "Full Test Brake (Radio is OFF)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:473
-msgid "Full Test Brake deactivated"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:477
+msgid "Full Test Brake"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:492
-msgid "Simple Test Brake activated (Radio is ON)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:496
+msgid "Simple Test Brake (Radio is ON)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:497
-msgid "Simple Test Brake activated (Radio is OFF)"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:501
+msgid "Simple Test Brake (Radio is OFF)"
 msgstr ""
 
-#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:503
-msgid "Simple Test Brake deactivated"
+#: ../../RunActivity/Viewer3D/Popups/TrainOperationsWindow.cs:507
+msgid "Simple Test Brake"
 msgstr ""
 
 #: ../../RunActivity/Viewer3D/Popups/TTDetachWindow.cs:42

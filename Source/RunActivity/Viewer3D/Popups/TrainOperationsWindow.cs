@@ -433,18 +433,18 @@ namespace Orts.Viewer3D.Popups
             {
                 if (Viewer.Simulator.CabRadioOn)
                 {
-                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is ON)") + " " + Viewer.Simulator.ShunterDecideMarker;
+                    Text = Viewer.Catalog.GetString("Shunter (Radio is ON)") + " " + Viewer.Simulator.ShunterDecideMarker;
                     Color = Color.GreenYellow;
                 }
                 else
                 {
-                    Text = Viewer.Catalog.GetString("Shunter activated (Radio is OFF)");
+                    Text = Viewer.Catalog.GetString("Shunter (Radio is OFF)");
                     Color = Color.YellowGreen;
                 }
             }
             else
             {
-                Text = Viewer.Catalog.GetString("Shunter deactivated");
+                Text = Viewer.Catalog.GetString("Shunter");
                 Color = Color.White;
             }
         }
@@ -463,18 +463,18 @@ namespace Orts.Viewer3D.Popups
             {
                 if (Viewer.Simulator.CabRadioOn)
                 {
-                    Text = Viewer.Catalog.GetString("Full Test Brake activated (Radio is ON)");
+                    Text = Viewer.Catalog.GetString("Full Test Brake (Radio is ON)");
                     Color = Color.GreenYellow;
                 }
                 else
                 {
-                    Text = Viewer.Catalog.GetString("Full Test Brake activated (Radio is OFF)");
+                    Text = Viewer.Catalog.GetString("Full Test Brake (Radio is OFF)");
                     Color = Color.YellowGreen;
                 }
             }
             else
             {
-                Text = Viewer.Catalog.GetString("Full Test Brake deactivated");
+                Text = Viewer.Catalog.GetString("Full Test Brake");
                 Color = Color.White;
             }
         }
@@ -493,18 +493,18 @@ namespace Orts.Viewer3D.Popups
             {
                 if (Viewer.Simulator.CabRadioOn)
                 {
-                    Text = Viewer.Catalog.GetString("Simple Test Brake activated (Radio is ON)");
+                    Text = Viewer.Catalog.GetString("Simple Test Brake (Radio is ON)");
                     Color = Color.GreenYellow;
                 }
                 else
                 {
-                    Text = Viewer.Catalog.GetString("Simple Test Brake activated (Radio is OFF)");
+                    Text = Viewer.Catalog.GetString("Simple Test Brake (Radio is OFF)");
                     Color = Color.YellowGreen;
                 }
             }
             else
             {
-                Text = Viewer.Catalog.GetString("Simple Test Brake deactivated");
+                Text = Viewer.Catalog.GetString("Simple Test Brake");
                 Color = Color.White;
             }
         }

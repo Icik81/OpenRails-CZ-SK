@@ -104,6 +104,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterDecideProcessTimer;
         bool ShunterDecideProcess;
         string ShunterDecideMarker;
+        float ShunterTimerRandom;
+        float CheckDistance;
 
         bool ShunterFullTestBrakePhase1;
         bool ShunterFullTestBrakePhase2;
@@ -152,6 +154,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
                 Locomotive.Simulator.ShunterSimpleTestBrakeEnable = true;
+            }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Shunter)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterEnable = !Locomotive.Simulator.ShunterEnable;
             }
 
             if (!Locomotive.Simulator.ShunterFullTestBrakeEnable && !Locomotive.Simulator.ShunterSimpleTestBrakeEnable)
@@ -230,11 +237,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterFullTestBrakePhase1 && !ShunterFullTestBrakePhase2 && !ShunterFullTestBrakePhase3 && !ShunterFullTestBrakePhase4 && !ShunterFullTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterFullTestBrakeEnable = false;
 
-                        if (Locomotive.AbsSpeedMpS > 0.01f)
+                        if (Locomotive.AbsSpeedMpS > 0.1f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train speed must be zero to perform the test brake!"));
 
                         if (Locomotive.Train.Cars.Count < 2)
@@ -753,11 +760,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4 && !ShunterSimpleTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterSimpleTestBrakeEnable = false;
 
-                        if (Locomotive.AbsSpeedMpS > 0.01f)
+                        if (Locomotive.AbsSpeedMpS > 0.1f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train speed must be zero to perform the test brake!"));
 
                         if (Locomotive.Train.Cars.Count < 2)
@@ -1219,7 +1226,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             float DistanceToReverse = -1000;
             if (Locomotive.Simulator.ShunterEnable && !Locomotive.Simulator.PlayerLocomotiveChange)
             {
-                if (!Locomotive.Simulator.CabRadioOn)
+                // První hláška posunovače
+                if (Locomotive.AbsSpeedMpS < 0.01f)
+                {
+                    if (!ShunterSoundStartPlayed) Locomotive.SignalEvent(Event.ShunterSound_Start);
+                    ShunterSoundStartPlayed = true;
+                }
+
+                if (!Locomotive.Simulator.CabRadioOn || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.NO_PATH_RESERVED)
                 {
                     ShunterTimeWithOutRadio += elapsedClockSeconds;
                     if (ShunterTimeWithOutRadio > 30f) // Po 30 sekundách bez rádia se zobrazí hláška upozornění posunovačem, že by rádio mělo být zapnuté
@@ -1228,8 +1242,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Cab radio should be on!"));
                     }
                     ShunterSoundToTrainReset();
-                    ShunterSoundReverseReset();
-                    ShunterSoundStartPlayed = false;
+                    ShunterSoundReverseReset();                    
                     Locomotive.Simulator.ShunterProcessReverseActive_Start = false;
                     Locomotive.Simulator.ShunterProcessReverseActive_End = false;
                     Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
@@ -1240,10 +1253,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     Locomotive.Simulator.OtherTrainPositionTest = false;
                     ShunterSoundDonePlayed = false;
                     Locomotive.Simulator.DistanceToReverse = -1;
+                    Locomotive.Simulator.ShunterDecideMarker = "";
                     return;
                 }
                 else
-                    ShunterTimeWithOutRadio = 0;
+                    ShunterTimeWithOutRadio = 0;                
 
                 float DistanceToOtherTrain = -1000;
                 TRAINAHEAD_Mode = false;
@@ -1252,11 +1266,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     if (Locomotive.Train.EndAuthorityType[i] == Train.END_AUTHORITY.TRAIN_AHEAD && Locomotive.Train.DistanceToEndNodeAuthorityM[i] < 1000)
                     {
                         DistanceToOtherTrain = Locomotive.Train.DistanceToEndNodeAuthorityM[i];
-                        TRAINAHEAD_Mode = true;
+                        TRAINAHEAD_Mode = true;                        
                         break;
                     }                    
-                }
-                
+                }                               
+
                 DistanceToReverse = Locomotive.Simulator.DistanceToReverse < 1 ? -1 : Locomotive.Train.ComputeDistanceToReversalPoint() > 1000 ? -1 : Locomotive.Simulator.DistanceToReverse;
                 float DistanceSpeedCorrectionM = MathHelper.Clamp(Locomotive.AbsSpeedMpS * 3.6f / 2f, 0, 10.0f); // Korekce vzdálenosti závislé na rychlosti pro aktivaci hlášek                
 
@@ -1277,7 +1291,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         ShunterDecideProcessTimer += elapsedClockSeconds;
 
-                        if (ShunterDecideProcessTimer > 1.0f) Locomotive.Simulator.ShunterDecideMarker = "ok";
+                        if (ShunterDecideProcessTimer > 1.0f) Locomotive.Simulator.ShunterDecideMarker = "OK";
                         else
                             if (ShunterDecideProcessTimer > 0.75f) Locomotive.Simulator.ShunterDecideMarker = "|";
                             else
@@ -1295,7 +1309,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             return;
                     }
-                }
+                }                
 
                 // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od reverzu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje k reverzu a není tam žádný vlak před ním                
                 if (DistanceToReverse != -1 && DistanceToOtherTrain - Locomotive.Simulator.DistanceToReverse > 10) TRAINAHEAD_Mode = false;
@@ -1308,12 +1322,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     //Locomotive.Simulator.DistanceToOtherTrain = Locomotive.Simulator.DistanceToTrainMFreeRide;
                     Locomotive.Simulator.DistanceToOtherTrain = DistanceToOtherTrain;
                     TRAINAHEAD_Mode = true;
+                }
+
+                // Kontrola platnosti navádění                 
+                if (Locomotive.AbsSpeedMpS > 0.1f)
+                {                    
+                    if ((TRAINAHEAD_Mode && DistanceToOtherTrain == CheckDistance) || (!TRAINAHEAD_Mode && Locomotive.Simulator.DistanceToReverse == CheckDistance))
+                    {
+                        Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("CONFUSED");
+                        return;
+                    }
+                    CheckDistance = TRAINAHEAD_Mode ? DistanceToOtherTrain : Locomotive.Simulator.DistanceToReverse;
                 }                
 
                 // Dokončení procesu najetí k bodu obratu
                 if (Locomotive.Simulator.ShunterProcessReverseActive_Start)
                 {
-                    Locomotive.Simulator.ShunterDecideMarker = "REV";
+                    Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("REVERS");
                     if ((ShunterSoundStopReversePlayed && Locomotive.AbsSpeedMpS < 0.01f) || Locomotive.Train.nextRouteReady)
                     {
                         Locomotive.Simulator.DistanceToReverse = -1;
@@ -1346,7 +1371,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Dokončení procesu najetí na vlak                                                    
                 if (Locomotive.Simulator.ShunterProcessTrainActive_Start)
                 {
-                    Locomotive.Simulator.ShunterDecideMarker = "TRAH";
+                    Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("TRAIN AHEAD");
                     if (Locomotive.Train.ControlMode != Train.TRAIN_CONTROL.EXPLORER)
                     {
                         // Určení, jestli je napojovaný vlak před námi nebo za námi, pro správné odpočítávání vzdálenosti od jiného vlaku pro dokončení procesu najetí na vlak.                    
@@ -1445,12 +1470,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         LastDistanceToReverseTrain = DistanceToReverse;
 
+                        // Hláška "Posunuj" obecná
+                        if (Locomotive.AbsSpeedMpS > 5f / 3.6f)
+                        {
+                            bool DistanceToOtherTrainIsValid = false;
+                            DistanceToOtherTrainIsValid = DistanceToReverse > 100 && DistanceToReverse < 1000;
+
+                            ShunterTimerRandom = ShunterTimer == 0 ? Simulator.Random.Next(8, 15) : ShunterTimerRandom;
+                            ShunterTimer += elapsedClockSeconds;
+                            if (!ShunterSoundOff && ShunterTimer > ShunterTimerRandom && DistanceToOtherTrainIsValid)
+                            {
+                                ShunterSoundOff = true;
+                                ShunterTimer = 0;
+                                Locomotive.SignalEvent(Event.ShunterSound_Shunt);
+                            }
+                            else
+                                ShunterSoundOff = false;
+                        }
+                        else
+                            ShunterSoundOff = false;
+
                         if (DistanceToReverse < 50 + DistanceSpeedCorrectionM)
                         {
                             if (!ShunterSoundNearToReversePlayed) Locomotive.SignalEvent(Event.ShunterSound_NearReverse);
                             ShunterSoundNearToReversePlayed = true;
                         }
-                        if (DistanceToReverse < 20 + DistanceSpeedCorrectionM)
+                        if (DistanceToReverse < 25 + DistanceSpeedCorrectionM)
                         {
                             if (!ShunterSoundSlowNearToReversePlayed) Locomotive.SignalEvent(Event.ShunterSound_SlowNearReverse);
                             ShunterSoundSlowNearToReversePlayed = true;
@@ -1482,14 +1527,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 ShunterProcessTimer = 5;
                             }
                             return;
-                        }
-
-                        // První hláška posunovače
-                        if (Locomotive.AbsSpeedMpS < 0.01f && Locomotive.Simulator.DistanceToOtherTrain > 0)
-                        {
-                            if (!ShunterSoundStartPlayed) Locomotive.SignalEvent(Event.ShunterSound_Start);
-                            ShunterSoundStartPlayed = true;
-                        }
+                        }                        
 
                         if (LastDistanceToOtherTrain == Locomotive.Simulator.DistanceToOtherTrain)
                             return;
@@ -1497,16 +1535,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         LastDistanceToOtherTrain = Locomotive.Simulator.DistanceToOtherTrain;
 
                         // Hláška "Posunuj" obecná
-                        if (Locomotive.AbsSpeedMpS > 10f / 3.6f)
+                        if (Locomotive.AbsSpeedMpS > 5f / 3.6f)
                         {
                             bool DistanceToOtherTrainIsValid = false;
-                            DistanceToOtherTrainIsValid =
-                                (Locomotive.Simulator.DistanceToOtherTrain > 220 && Locomotive.Simulator.DistanceToOtherTrain > 230)
-                                || (Locomotive.Simulator.DistanceToOtherTrain > 170 && Locomotive.Simulator.DistanceToOtherTrain < 180)
-                                || (Locomotive.Simulator.DistanceToOtherTrain > 120 && Locomotive.Simulator.DistanceToOtherTrain < 130);
+                            DistanceToOtherTrainIsValid = DistanceToReverse > 300 && DistanceToReverse < 1000;
 
+                            ShunterTimerRandom = ShunterTimer == 0 ? Simulator.Random.Next(8, 15) : ShunterTimerRandom;
                             ShunterTimer += elapsedClockSeconds;
-                            if (!ShunterSoundOff && ShunterTimer > 10 && DistanceToOtherTrainIsValid)
+                            if (!ShunterSoundOff && ShunterTimer > ShunterTimerRandom && DistanceToOtherTrainIsValid)
                             {
                                 ShunterSoundOff = true;
                                 ShunterTimer = 0;
@@ -1636,7 +1672,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.Simulator.OtherTrainPositionTest = false;
                 ShunterSoundDonePlayed = false;
                 Locomotive.Simulator.DistanceToReverse = -1;
-                Locomotive.Simulator.ShunterDecideMarker = "-";
+                Locomotive.Simulator.ShunterDecideMarker = "";
             }
         }
         #endregion Shunter        

@@ -1211,6 +1211,7 @@ namespace Orts.Formats.Msts
         // Icik
         public bool ShunterFullTestBrake;
         public bool ShunterSimpleTestBrake;
+        public bool Shunter;
 
         public virtual void AddOrModifyEvent(STFReader stf, string fileName)
         { }
@@ -1451,6 +1452,7 @@ namespace Orts.Formats.Msts
                 // Icik
                 new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
             });
         }
     }
