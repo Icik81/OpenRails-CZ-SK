@@ -92,6 +92,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         bool ShunterSoundSlowlyPlayed;
         bool ShunterSoundDonePlayed;
         bool ShunterSoundNearToReversePlayed;
+        bool ShunterSoundSlowToReversePlayed;
         bool ShunterSoundReversePlayed;
         bool ShunterSoundSlowNearToReversePlayed;
         bool ShunterSoundStopReversePlayed;
@@ -1338,6 +1339,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Dokončení procesu najetí k bodu obratu
                 if (Locomotive.Simulator.ShunterProcessReverseActive_Start)
                 {
+                    ShunterSoundStartPlayed = true;
                     Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("REVERS");
                     if ((ShunterSoundStopReversePlayed && Locomotive.AbsSpeedMpS < 0.01f) || Locomotive.Train.nextRouteReady)
                     {
@@ -1371,6 +1373,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Dokončení procesu najetí na vlak                                                    
                 if (Locomotive.Simulator.ShunterProcessTrainActive_Start)
                 {
+                    ShunterSoundStartPlayed = true;
                     Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("TRAIN AHEAD");
                     if (Locomotive.Train.ControlMode != Train.TRAIN_CONTROL.EXPLORER)
                     {
@@ -1474,7 +1477,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (Locomotive.AbsSpeedMpS > 5f / 3.6f)
                         {
                             bool DistanceToOtherTrainIsValid = false;
-                            DistanceToOtherTrainIsValid = DistanceToReverse > 100 && DistanceToReverse < 1000;
+                            DistanceToOtherTrainIsValid = DistanceToReverse > 200 && DistanceToReverse < 1000;
 
                             ShunterTimerRandom = ShunterTimer == 0 ? Simulator.Random.Next(8, 15) : ShunterTimerRandom;
                             ShunterTimer += elapsedClockSeconds;
@@ -1489,13 +1492,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         else
                             ShunterSoundOff = false;
-
+                        
+                        if (DistanceToReverse < 150 + DistanceSpeedCorrectionM)
+                        {
+                            if (!ShunterSoundSlowToReversePlayed) Locomotive.SignalEvent(Event.ShunterSound_Slow);
+                            ShunterSoundSlowToReversePlayed = true;
+                        }
                         if (DistanceToReverse < 50 + DistanceSpeedCorrectionM)
                         {
                             if (!ShunterSoundNearToReversePlayed) Locomotive.SignalEvent(Event.ShunterSound_NearReverse);
                             ShunterSoundNearToReversePlayed = true;
                         }
-                        if (DistanceToReverse < 25 + DistanceSpeedCorrectionM)
+                        if (DistanceToReverse < 20 + DistanceSpeedCorrectionM)
                         {
                             if (!ShunterSoundSlowNearToReversePlayed) Locomotive.SignalEvent(Event.ShunterSound_SlowNearReverse);
                             ShunterSoundSlowNearToReversePlayed = true;
@@ -1701,6 +1709,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
         public void ShunterSoundReverseReset()
         {
+            ShunterSoundSlowToReversePlayed = false;
             ShunterSoundNearToReversePlayed = false;
             ShunterSoundReversePlayed = false;
             ShunterSoundSlowNearToReversePlayed = false;
