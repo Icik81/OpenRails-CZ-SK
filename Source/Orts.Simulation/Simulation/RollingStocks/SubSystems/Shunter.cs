@@ -381,6 +381,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         CarNumber++;
                         FirstBoggie = false;
                         SecondBoggie = false;
+                        SetCarMode(testCar);
                     }
                     else
                     {
@@ -557,6 +558,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         CarNumber--;
                         FirstBoggie = false;
                         SecondBoggie = false;
+                        SetCarMode(testCar);
                     }
                     else
                     {
@@ -1485,7 +1487,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 ShunterSoundOff = true;
                                 ShunterTimer = 0;
-                                Locomotive.SignalEvent(Event.ShunterSound_Shunt);
+                                if (Locomotive == (Locomotive as MSTSWagon).FirstCarHeadOfTrain)
+                                    Locomotive.SignalEvent(Event.ShunterSound_ShuntF);
+                                else
+                                    Locomotive.SignalEvent(Event.ShunterSound_ShuntB);
                             }
                             else
                                 ShunterSoundOff = false;
@@ -1554,7 +1559,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 ShunterSoundOff = true;
                                 ShunterTimer = 0;
-                                Locomotive.SignalEvent(Event.ShunterSound_Shunt);
+                                if (Locomotive == (Locomotive as MSTSWagon).FirstCarHeadOfTrain)
+                                    Locomotive.SignalEvent(Event.ShunterSound_ShuntF);
+                                else
+                                    Locomotive.SignalEvent(Event.ShunterSound_ShuntB);
                             }
                             else
                                 ShunterSoundOff = false;
@@ -1724,6 +1732,60 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }            
             FirstBoggie = false;
             SecondBoggie = false;
+        }
+
+        public void SetCarMode(TrainCar Wagon)
+        {
+            TrainCar wagon = Wagon;
+
+            if (wagon.WagonType == WagonTypes.Freight)
+            {
+                switch (wagon.WagonNumAxles)
+                {
+                    case int n when n < 4:
+                        if (wagon.MassKG > 10000)
+                        {
+                            wagon.BrakeSystem.BrakeCarModePL = 1;
+                            wagon.BrakeSystem.BrakeCarModeTextPL = Simulator.Catalog.GetString("Loaded");
+                        }
+                        else
+                        {
+                            wagon.BrakeSystem.BrakeCarModePL = 0;
+                            wagon.BrakeSystem.BrakeCarModeTextPL = Simulator.Catalog.GetString("Empty");
+                        }
+                        break;
+
+                    case int n when n >= 4:
+                        if (wagon.MassKG > 40000)
+                        {
+                            wagon.BrakeSystem.BrakeCarModePL = 1;
+                            wagon.BrakeSystem.BrakeCarModeTextPL = Simulator.Catalog.GetString("Loaded");
+                        }
+                        else
+                        {
+                            wagon.BrakeSystem.BrakeCarModePL = 0;
+                            wagon.BrakeSystem.BrakeCarModeTextPL = Simulator.Catalog.GetString("Empty");
+                        }
+                        break;
+                }
+            }
+
+            if (wagon.WagonType == WagonTypes.Passenger)
+            {
+                switch (wagon.WagonNumAxles)
+                {
+                    case int n when n < 4:
+                        wagon.BrakeSystem.BrakeCarMode = 1;
+                        wagon.BrakeSystem.BrakeCarModeText = "P";
+                        break;
+
+                    case int n when n >= 4:
+                        wagon.BrakeSystem.BrakeCarMode = 2;
+                        wagon.BrakeSystem.BrakeCarModeText = "R";
+                        break;
+                }
+            }
+            
         }
     }
 }
