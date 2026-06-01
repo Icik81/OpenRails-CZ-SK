@@ -5972,11 +5972,11 @@ namespace Orts.Simulation.RollingStocks
                     CarIsShunting = false;
                     CarIsRunning = false;
                 }
-                
-                // AI posunuje
+
+                // AI posunuje                
                 float DistanceToReversalPoint = (Train as AITrain).ComputeDistanceToReversalPoint();
                 if ((Train as AITrain) != null && DistanceToReversalPoint > 0 && DistanceToReversalPoint < 1000 
-                    && (Train as AITrain).nextActionInfo != null && (Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)                
+                    && (Train as AITrain).nextActionInfo != null && (Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE && (Train as AITrain).nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.REVERSAL)                
                     CarIsShunting = true;
 
                 if ((Train as AITrain) != null && (Train as AITrain).AITrainWillAttach)
