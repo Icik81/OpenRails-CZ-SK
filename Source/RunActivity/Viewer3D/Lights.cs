@@ -367,6 +367,7 @@ namespace Orts.Viewer3D
                 {
                     newTrainHeadlight = 0;
                     TrainHeadlight = 1;
+                    newIsDay = true;
                 }
                 else
                     // AI vyčkává na místě
@@ -386,8 +387,7 @@ namespace Orts.Viewer3D
                         {
                             newTrainHeadlight = 1;
                             TrainHeadlight = 0;
-                        }
-                
+                        }                
             }            
 
             if (
