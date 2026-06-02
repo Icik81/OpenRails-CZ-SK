@@ -1280,6 +1280,10 @@ namespace Orts.Formats.Msts
                     stf.MustMatch(")");
                 }),
                 new STFReader.TokenProcessor("ortsweatherchange", ()=>{ ORTSWeatherChange = new ORTSWeatherChange(stf);}),
+                // Icik
+                new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
             });
         }
 

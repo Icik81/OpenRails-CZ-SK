@@ -7109,9 +7109,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     PowerKey = true;
                     if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
-                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
-                    else
-                        PowerKey = false;
+                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;                    
                 }                                    
 
                 // Mirel                   

@@ -1120,6 +1120,12 @@
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_Done.wav" />
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_NearReverse.wav" />
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_Shunt.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntB_1.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntB_2.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntB_3.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntF_1.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntF_2.wav" />
+    <Content Include="Content\ShunterSound\Slovak\ShunterSound_ShuntF_3.wav" />
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_Slow.wav" />
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_Slowly.wav" />
     <Content Include="Content\ShunterSound\Slovak\ShunterSound_SlowNearReverse.wav" />
