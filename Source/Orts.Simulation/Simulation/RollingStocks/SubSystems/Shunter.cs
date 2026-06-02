@@ -1272,8 +1272,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         TRAINAHEAD_Mode = true;                        
                         break;
                     }                    
-                }                               
+                }
 
+                Locomotive.Train.GetTrainInfo();
                 DistanceToReverse = Locomotive.Simulator.DistanceToReverse < 1 ? -1 : Locomotive.Train.ComputeDistanceToReversalPoint() > 1000 ? -1 : Locomotive.Simulator.DistanceToReverse;
                 float DistanceSpeedCorrectionM = MathHelper.Clamp(Locomotive.AbsSpeedMpS * 3.6f / 2f, 0, 10.0f); // Korekce vzdálenosti závislé na rychlosti pro aktivaci hlášek                
 
@@ -1461,7 +1462,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!Locomotive.Simulator.ShunterProcessTrainActive_Start)
                 {
-                    if (DistanceToReverse > 150) ShunterSoundReverseReset();
+                    if (DistanceToReverse > 175) ShunterSoundReverseReset();
                     // Hlášky posunovače podle vzdálenosti od reverzu                
                     if (Locomotive.Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToReverse > -1)
                     {
