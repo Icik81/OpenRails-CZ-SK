@@ -5989,7 +5989,7 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AbsSpeedMpS < 0.01f && AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010)
+                            if (AbsSpeedMpS < 0.01f && ((AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (AIActionPoint0.Delay > 40100 && AIActionPoint0.Delay < 40200) || (AIActionPoint0.Delay > 50100 && AIActionPoint0.Delay < 50200)))
                             {
                                 CarIsShunting = true;
                                 AIStartOn = true;
