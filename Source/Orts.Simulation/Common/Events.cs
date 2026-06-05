@@ -461,9 +461,9 @@ namespace Orts.Common
         ShunterSound_Done,
         ShunterSound_ShuntF,
         ShunterSound_ShuntB,
-        ShunterSound_NearReverse,
-        ShunterSound_SlowNearReverse,
-        ShunterSound_StopReverse,
+        ShunterSound_NearSTP,
+        ShunterSound_SlowNearSTP,
+        ShunterSound_StopSTP,
         ShunterFullTestBrakeSound_Start,
         ShunterFullTestBrakeSound_ApplyBrake,
         ShunterFullTestBrakeSound_FirstSide,
@@ -961,9 +961,9 @@ namespace Orts.Common
                         case 20290: return Event.ShunterSound_Done;
                         case 20295: return Event.ShunterSound_ShuntF;
                         case 20296: return Event.ShunterSound_ShuntB;
-                        case 20300: return Event.ShunterSound_NearReverse;
-                        case 20305: return Event.ShunterSound_SlowNearReverse;
-                        case 20310: return Event.ShunterSound_StopReverse;
+                        case 20300: return Event.ShunterSound_NearSTP;
+                        case 20305: return Event.ShunterSound_SlowNearSTP;
+                        case 20310: return Event.ShunterSound_StopSTP;
                         case 20315: return Event.ShunterFullTestBrakeSound_Start;
                         case 20320: return Event.ShunterFullTestBrakeSound_ApplyBrake;
                         case 20325: return Event.ShunterFullTestBrakeSound_FirstSide;

@@ -316,10 +316,11 @@ namespace Orts.Simulation
         public bool CabRadioOn;
         public float DistanceToOtherTrain;
         public float DistanceToReverse;
+        public float DistanceToTriggerOnStop;
         public bool ShunterProcessTrainActive_Start;
         public bool ShunterProcessTrainActive_End;
-        public bool ShunterProcessReverseActive_Start;
-        public bool ShunterProcessReverseActive_End;
+        public bool ShunterProcessSTPActive_Start;
+        public bool ShunterProcessSTPActive_End;
         public bool OtherTrainPositionTest;
         public bool OtherTrainIsFront;
         public float DistanceToTrainMFreeRide;
@@ -721,8 +722,8 @@ namespace Orts.Simulation
             OtherTrainIsFront = inf.ReadBoolean();
             ShunterProcessTrainActive_Start = inf.ReadBoolean();
             ShunterProcessTrainActive_End = inf.ReadBoolean();
-            ShunterProcessReverseActive_Start = inf.ReadBoolean();
-            ShunterProcessReverseActive_End = inf.ReadBoolean();
+            ShunterProcessSTPActive_Start = inf.ReadBoolean();
+            ShunterProcessSTPActive_End = inf.ReadBoolean();
             DistanceToOtherTrain = inf.ReadSingle();
             ShunterEnable = inf.ReadBoolean();
             FatalIncident = inf.ReadBoolean();
@@ -783,8 +784,8 @@ namespace Orts.Simulation
             outf.Write(OtherTrainIsFront);
             outf.Write(ShunterProcessTrainActive_Start);
             outf.Write(ShunterProcessTrainActive_End);
-            outf.Write(ShunterProcessReverseActive_Start);
-            outf.Write(ShunterProcessReverseActive_End);
+            outf.Write(ShunterProcessSTPActive_Start);
+            outf.Write(ShunterProcessSTPActive_End);
             outf.Write(DistanceToOtherTrain);
             outf.Write(ShunterEnable);
             outf.Write(FatalIncident);

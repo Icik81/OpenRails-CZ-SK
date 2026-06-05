@@ -184,6 +184,9 @@ namespace Orts.Simulation
 
         public void Update()
         {
+            // Pro posunovače
+            Simulator.DistanceToTriggerOnStop = 1000;
+
             // Update freight events
             // Set the clock first time through. Can't set in the Activity constructor as Simulator.ClockTime is still 0 then.
             if (!StartTimeS.HasValue)
@@ -2052,6 +2055,17 @@ namespace Orts.Simulation
                 RideLength = 0;
                 return false;
             }
+            
+            var trainFrontPosition = new Traveller(train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid ?
+                train.RearTDBTraveller : train.FrontTDBTraveller); // just after reversal the old train front position must be considered                        
+            var distance = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, e.RadiusM);
+
+            // Pro posunovače            
+            float DistanceToTriggerOnStop = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, 1000);
+            if (e.TriggerOnStop && DistanceToTriggerOnStop != -1)
+            {
+                Simulator.DistanceToTriggerOnStop = DistanceToTriggerOnStop;
+            }
 
             if (e.TriggerOnStop)
             {
@@ -2062,10 +2076,7 @@ namespace Orts.Simulation
                     return triggered;
                 }
             }
-            var trainFrontPosition = new Traveller(train.nextRouteReady && train.TCRoute.activeSubpath > 0 && train.TCRoute.ReversalInfo[train.TCRoute.activeSubpath - 1].Valid ?
-                train.RearTDBTraveller : train.FrontTDBTraveller); // just after reversal the old train front position must be considered                        
-            var distance = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, e.RadiusM);
-                                    
+
             if (distance == -1)
             {
                 trainFrontPosition.ReverseDirection();
@@ -2075,7 +2086,8 @@ namespace Orts.Simulation
                     RecordDisplayMessage(e, triggered);
                     return triggered;
                 }
-            }
+            }            
+
             if (distance < e.RadiusM) { triggered = true; }
 
             RecordDisplayMessage(e, triggered);
