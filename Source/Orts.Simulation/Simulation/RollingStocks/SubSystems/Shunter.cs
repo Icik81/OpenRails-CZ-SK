@@ -111,6 +111,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterTimerRandom;
         float CheckDistance;
         string LastShunterDecideMarker = "";
+        float TouchingDistanceTimer;
 
         bool ShunterFullTestBrakePhase1;
         bool ShunterFullTestBrakePhase2;
@@ -1294,7 +1295,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 if (Locomotive.Train.DistanceToSignal.HasValue && Locomotive.Train.DistanceToSignal < 1000)
                                 {
-                                    DistanceToSIGNAL = Locomotive.Train.DistanceToSignal.Value - 10;                                    
+                                    DistanceToSIGNAL = Locomotive.Train.DistanceToSignal.Value;                                    
                                 }
                             }                            
                             break;                        
@@ -1306,7 +1307,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY)
                     && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 175)
                 {
-                    DistanceToEOA = Locomotive.Train.DistanceToEndNodeAuthorityM[0] - 10;
+                    DistanceToEOA = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
                 }
 
                 // Reverzní bod
@@ -1412,16 +1413,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
 
                 // Dokončení procesu najetí k bodu stopu
+                float DistanceSTPCorrectionM = 0;
                 if (Locomotive.Simulator.ShunterProcessSTPActive_Start)
                 {
-                    ShunterSoundStartPlayed = true;
+                    ShunterSoundStartPlayed = true;                   
                     switch (DistanceToSTP)
                     {
                         case float n when n == DistanceToSIGNAL:
                             Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("SIGNAL");
+                            DistanceSTPCorrectionM = 10;
                             break;
                         case float n when n == DistanceToEOA:
                             Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("END TRACK");
+                            DistanceSTPCorrectionM = 10;
                             break;
                         case float n when n == DistanceToReverse:
                             Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("REVERS");
@@ -1583,22 +1587,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             ShunterSoundOff = false;
                         
-                        if (DistanceToSTP > 140 + DistanceSpeedCorrectionM && DistanceToSTP < 150 + DistanceSpeedCorrectionM)
+                        if (DistanceToSTP > 140 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 150 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slow);
                             ShunterSoundSlowToSTPPlayed = true;
                         }
-                        if (DistanceToSTP > 40 + DistanceSpeedCorrectionM && DistanceToSTP < 50 + DistanceSpeedCorrectionM)
+                        if (DistanceToSTP > 40 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 50 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_NearSTP);
                             ShunterSoundNearToSTPPlayed = true;
                         }
-                        if (DistanceToSTP > 15 + DistanceSpeedCorrectionM && DistanceToSTP < 20 + DistanceSpeedCorrectionM)
+                        if (DistanceToSTP > 15 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 20 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_SlowNearSTP);
                             ShunterSoundSlowNearToSTPPlayed = true;
                         }
-                        if (DistanceToSTP > 1 + DistanceSpeedCorrectionM && DistanceToSTP < 2 + DistanceSpeedCorrectionM)
+                        if (DistanceToSTP > 1 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 2 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundStopSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_StopSTP);
                             ShunterSoundStopSTPPlayed = true;
@@ -1654,6 +1658,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         }
                         else
                             ShunterSoundOff = false;
+
+                        TouchingDistanceTimer += elapsedClockSeconds;
+                        if (TouchingDistanceTimer > 1.0f) TouchingDistanceTimer = 0.0f; 
 
                         // Odměřovací hlášky posunovače podle vzdálenosti od jiného vlaku
                         if (!ShunterSoundOff)
@@ -1718,37 +1725,52 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     ShunterSoundSlowPlayed = true;
                                     ShunterSound5Played = false;
                                     break;
-                                case float n when (n < 5 + DistanceSpeedCorrectionM && n > 4.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 5 + DistanceSpeedCorrectionM && n > 4.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound5Played) Locomotive.SignalEvent(Event.ShunterSound_5);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = false;
                                     break;
-                                case float n when (n < 4 + DistanceSpeedCorrectionM && n > 3.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 4 + DistanceSpeedCorrectionM && n > 3.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSound4Played) Locomotive.SignalEvent(Event.ShunterSound_4);
+                                    ShunterSound5Played = true;
                                     ShunterSound4Played = true;
                                     ShunterSound3Played = false;
                                     break;
-                                case float n when (n < 3 + DistanceSpeedCorrectionM && n > 2.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 3 + DistanceSpeedCorrectionM && n > 2.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound3Played) Locomotive.SignalEvent(Event.ShunterSound_3);
+                                    ShunterSound5Played = true;
+                                    ShunterSound4Played = true;
                                     ShunterSound3Played = true;
                                     ShunterSound2Played = false;
                                     break;
-                                case float n when (n < 2 + DistanceSpeedCorrectionM && n > 1.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 2 + DistanceSpeedCorrectionM && n > 1.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSound2Played) Locomotive.SignalEvent(Event.ShunterSound_2);
+                                    ShunterSound5Played = true;
+                                    ShunterSound4Played = true;
+                                    ShunterSound3Played = true;
                                     ShunterSound2Played = true;
                                     ShunterSound1Played = false;
                                     break;
-                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0.75f + DistanceSpeedCorrectionM):
+                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0.75f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound1Played) Locomotive.SignalEvent(Event.ShunterSound_1);
+                                    ShunterSound5Played = true;
+                                    ShunterSound4Played = true;
+                                    ShunterSound3Played = true;
+                                    ShunterSound2Played = true;
                                     ShunterSound1Played = true;
                                     ShunterSoundSlowlyPlayed = false;
                                     break;
-                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 0.5f + DistanceSpeedCorrectionM && n > 0.25f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSoundSlowlyPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slowly);
+                                    ShunterSound5Played = true;
+                                    ShunterSound4Played = true;
+                                    ShunterSound3Played = true;
+                                    ShunterSound2Played = true;
+                                    ShunterSound1Played = true;
                                     ShunterSoundSlowlyPlayed = true;
                                     ShunterSoundDonePlayed = false;
                                     break;
-                                case float n when (n < 0.25 + DistanceSpeedCorrectionM && n > 0.1f + DistanceSpeedCorrectionM):
+                                case float n when (n < 0.01 + DistanceSpeedCorrectionM && n > 0.005f + DistanceSpeedCorrectionM):
                                     if (!ShunterSoundDonePlayed) Locomotive.SignalEvent(Event.ShunterSound_Done);
                                     ShunterSoundDonePlayed = true;
                                     break;
