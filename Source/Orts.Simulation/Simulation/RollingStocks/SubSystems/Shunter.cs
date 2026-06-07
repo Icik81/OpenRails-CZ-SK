@@ -1233,14 +1233,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             bool TRAINAHEAD_Mode;
             float DistanceToSTP = -1000;            
             if (Locomotive.Simulator.ShunterEnable && !Locomotive.Simulator.PlayerLocomotiveChange)
-            {
-                // První hláška posunovače
-                if (Locomotive.AbsSpeedMpS < 0.01f)
-                {
-                    if (!ShunterSoundStartPlayed) Locomotive.SignalEvent(Event.ShunterSound_Start);
-                    ShunterSoundStartPlayed = true;
-                }
-
+            {                
                 if (!Locomotive.Simulator.CabRadioOn)
                 {
                     ShunterTimeWithOutRadio += elapsedClockSeconds;
@@ -1264,7 +1257,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     return;
                 }
                 else
-                    ShunterTimeWithOutRadio = 0;                
+                    ShunterTimeWithOutRadio = 0;
+
+                // První hláška posunovače
+                if (Locomotive.AbsSpeedMpS < 0.01f)
+                {
+                    if (!ShunterSoundStartPlayed) Locomotive.SignalEvent(Event.ShunterSound_Start);
+                    ShunterSoundStartPlayed = true;
+                }
 
                 // Detekce vozů před hráčem
                 float DistanceToOtherTrain = -1000;
