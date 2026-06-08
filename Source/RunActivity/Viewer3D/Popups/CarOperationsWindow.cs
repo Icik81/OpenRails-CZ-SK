@@ -304,6 +304,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonHandbrake_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).HandBrakePresent)
             {
                 new WagonHandbrakeCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).GetTrainHandbrakeStatus());
@@ -358,6 +361,9 @@ namespace Orts.Viewer3D.Popups
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocoReadyToGo)
                 return;
 
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
                 ||
               (Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSElectricLocomotive))
@@ -383,6 +389,9 @@ namespace Orts.Viewer3D.Popups
         void buttonToggleMUPower_Click(Control arg1, Point arg2)
         {
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive) != null && (Viewer.PlayerTrain.Cars[CarPosition] as MSTSLocomotive).LocoReadyToGo)
+                return;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
                 return;
 
             if ((Viewer.PlayerTrain.Cars[CarPosition].GetType() == typeof(MSTSLocomotive))
@@ -443,6 +452,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleBrakeHose_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             new WagonBrakeHoseConnectCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.FrontBrakeHoseConnected);
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.FrontBrakeHoseConnected)
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Front brake hose connected"));
@@ -452,6 +464,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleAngleCockA_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+            
             new ToggleAngleCockACommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockAOpen);
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockAOpen)
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Front angle cock opened"));
@@ -461,6 +476,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonToggleAngleCockB_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             new ToggleAngleCockBCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockBOpen);
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.AngleCockBOpen)
                 Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("Rear angle cock opened"));
@@ -471,6 +489,9 @@ namespace Orts.Viewer3D.Popups
         void buttonToggleBleedOffValve_Click(Control arg1, Point arg2)
         {
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
+                return;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
                 return;
 
             new ToggleBleedOffValveCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), !(Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BleedOffValveOpen);
@@ -488,6 +509,9 @@ namespace Orts.Viewer3D.Popups
         void buttonTwoPipesConnection_Click(Control arg1, Point arg2)
         {
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem is SingleTransferPipe)
+                return;
+
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
                 return;
 
             new TwoPipesConnectionCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.TwoPipesConnectionMenu += 1);
@@ -508,6 +532,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonBrakeCarDeactivate_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             new BrakeCarDeactivateCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu += 1);
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu = 0;
@@ -530,6 +557,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonLeftDoor_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             new LeftDoorCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu += 1);
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.LeftDoorMenu = 0;
@@ -549,6 +579,9 @@ namespace Orts.Viewer3D.Popups
 
         void buttonRightDoor_Click(Control arg1, Point arg2)
         {
+            if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
+                return;
+
             new RightDoorCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu += 1);
 
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu > 1) (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.RightDoorMenu = 0;

@@ -1605,6 +1605,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (AutoCylPressurePSI0 < 0)
                                 AutoCylPressurePSI0 = 0;
 
+                            AuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS;
+                            if (AuxResPressurePSI < 0)
+                                AuxResPressurePSI = 0;
+
                             TripleValveState = ValveState.Release;
                         }
                         if ((Car as MSTSWagon).EmergencyReservoirPresent)
@@ -1876,10 +1880,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (OLBailOff || OL3active)
                 {
                     if (BrakeLine1PressurePSI > OLBailOffLimitPressurePSI && Car is MSTSLocomotive && ((Car as MSTSLocomotive).AcceptMUSignals || (Car as MSTSLocomotive).IsLeadLocomotive()))
-                    {
-                        if (PrevAuxResPressurePSI > 0)
-                            PrevAuxResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS / AuxCylVolumeRatioBase;
-                        
+                    {                                                
                         if (AutoCylPressurePSI0 > 0)
                             AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
                         
