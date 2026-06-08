@@ -1580,6 +1580,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 CylVolumeM3 = EmergResVolumeM3 / EmergAuxVolumeRatio / AuxCylVolumeRatioBase;
                 AuxBrakeLineVolumeRatio = EmergResVolumeM3 / EmergAuxVolumeRatio / BrakePipeVolumeM3;
 
+                // Odvětrávání brzdy brzdové válce i pomocná jímka
                 if (BleedOffValveOpen || BrakeCarDeactivate)
                 {
                     if (AuxResPressurePSI < 0.01f && AutoCylPressurePSI0 < 0.01f && BrakeLine1PressurePSI < 0.01f && (EmergResPressurePSI < 0.01f || !(Car as MSTSWagon).EmergencyReservoirPresent))
@@ -1587,22 +1588,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         BleedOffValveOpen = false;
                     }
                     else
-                    {
-                        AuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS;
-                        if (AuxResPressurePSI < 0)
-                            AuxResPressurePSI = 0;
+                    {                        
+                        if (BrakeCarDeactivate)
+                        {
+                            AuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS;
+                            if (AuxResPressurePSI < 0)
+                                AuxResPressurePSI = 0;                            
+                        }
 
-                        AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                 
-                        if (AutoCylPressurePSI0 < 0)
-                            AutoCylPressurePSI0 = 0;
+                        if (BleedOffValveOpen)
+                        {
+                            if (PrevAuxResPressurePSI > 0)
+                                PrevAuxResPressurePSI -= elapsedClockSeconds * MaxApplicationRatePSIpS / AuxCylVolumeRatioBase;
 
+                            AutoCylPressurePSI0 -= elapsedClockSeconds * (1.0f * 14.50377f); // Rychlost odvětrání 1 bar/s                 
+                            if (AutoCylPressurePSI0 < 0)
+                                AutoCylPressurePSI0 = 0;
+
+                            TripleValveState = ValveState.Release;
+                        }
                         if ((Car as MSTSWagon).EmergencyReservoirPresent)
                         {
                             EmergResPressurePSI -= elapsedClockSeconds * EmergResChargingRatePSIpS;
                             if (EmergResPressurePSI < 0)
                                 EmergResPressurePSI = 0;
-                        }
-                        TripleValveState = ValveState.Release;
+                        }                        
                     }
                 }
                 else
@@ -1767,7 +1777,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 }
 
                 // Vypouští brzdový válec
-                if ((BrakeCylRelease || PressureConverterBase < AutoCylPressurePSI0) && !Status_CarHasAirStuckBrake_1)
+                if ((BrakeCylRelease || PressureConverterBase < AutoCylPressurePSI0) && !Status_CarHasAirStuckBrake_1 && !BrakeCarDeactivate)
                 {
                     float thresholdBreakPoint = 4.84f * 14.50377f;
                     if (AutoCylPressurePSI0 > threshold || BrakeLine1PressurePSI > thresholdBreakPoint)
@@ -1867,12 +1877,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (BrakeLine1PressurePSI > OLBailOffLimitPressurePSI && Car is MSTSLocomotive && ((Car as MSTSLocomotive).AcceptMUSignals || (Car as MSTSLocomotive).IsLeadLocomotive()))
                     {
+                        if (PrevAuxResPressurePSI > 0)
+                            PrevAuxResPressurePSI -= elapsedClockSeconds * AutoBailOffOnRatePSIpS / AuxCylVolumeRatioBase;
+                        
                         if (AutoCylPressurePSI0 > 0)
                             AutoCylPressurePSI0 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
+                        
                         if (AutoCylPressurePSI1 > 0)
                             AutoCylPressurePSI1 -= elapsedClockSeconds * AutoBailOffOnRatePSIpS;
-                        ThresholdBailOffOn = Math.Max(AutoCylPressurePSI0, AutoCylPressurePSI1);
-                        BrakeCylApply = false;
+                        
+                        ThresholdBailOffOn = Math.Max(AutoCylPressurePSI0, AutoCylPressurePSI1);                        
+                        BrakeCylApply = false;                                                
                         switch (OLBailOffType)
                         {
                             case "OL2":
