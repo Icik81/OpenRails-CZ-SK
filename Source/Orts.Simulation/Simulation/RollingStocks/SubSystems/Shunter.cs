@@ -145,6 +145,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         bool FirstBoggie;
         bool SecondBoggie;        
         bool[] CheckCarBrakeFault = new bool[100];
+        TrainCar CheckCar = null;
+        int CheckCarNumber = 0;
+        bool ShunterTestBrakeFirstTime;
 
         public void Update(float elapsedClockSeconds)
         {
@@ -169,6 +172,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
             if (!Locomotive.Simulator.ShunterFullTestBrakeEnable && !Locomotive.Simulator.ShunterSimpleTestBrakeEnable)
             {
+                ShunterTestBrakeFirstTime = false;
                 TestCarReset();
                 for (int i = 0; i < Locomotive.Train.Cars.Count; i++)
                 {
@@ -214,12 +218,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     CheckWagonListIndex++;
                     CheckWagonList[CheckWagonListIndex] = car;
-                    
+
+                    if (!ShunterTestBrakeFirstTime)
+                    {
+                        car.BrakeSystem.CarHasProblemWithBrake = false;
+                        car.BrakeSystem.BrakeCarDeactivate = false;
+                        car.BrakeSystem.BrakeCarDeactivateMenu = 0;
+                        car.BrakeSystem.BleedOffValveOpen = false;
+                    }
+
                     if (!car.CarHasBrakePipeConnected)
                     {
                         CheckCarBrakeFault[CheckWagonListIndex] = true;
                     }
                 }
+                ShunterTestBrakeFirstTime = true;
 
                 if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
                 {
@@ -346,8 +359,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
+                            testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
+                            testCar.BrakeSystem.BleedOffValveOpen = true;
                             testCar.SignalEvent(Event.ShunterTestBrakeSound_BrakeDeactivate);
-                        }
+                        }                        
                         if (testCar.BrakeSystem.HandBrakeActive)
                         {
                             testCar.BrakeSystem.HandBrakeDeactive = true;
@@ -401,7 +416,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
                         }
 
-                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
+                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
                         {
                             if (!FirstBoggie && ShunterFullTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
@@ -414,7 +429,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 SecondBoggie = true;
                             }
                         }
-                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
+                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.1f * 14.50377f)
                         {                            
                             if (!FirstBoggie && ShunterFullTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
@@ -425,6 +440,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeRelease);
                                 SecondBoggie = true;
+                                testCar.BrakeSystem.CarHasProblemWithBrake = true;
                             }
                         }
                     }
@@ -523,6 +539,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
+                            testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
+                            testCar.BrakeSystem.BleedOffValveOpen = true;
                             testCar.SignalEvent(Event.ShunterTestBrakeSound_BrakeDeactivate);
                         }
                         if (testCar.BrakeSystem.HandBrakeActive)
@@ -578,7 +596,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.Simulator.ShunterTestingBrakeChanged = true;
                         }
 
-                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
+                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
                         {                            
                             if (!FirstBoggie && ShunterFullTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
@@ -589,9 +607,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             {
                                 testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
                                 SecondBoggie = true;
+                                testCar.BrakeSystem.CarHasProblemWithBrake = true;
                             }
                         }
-                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
+                        if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.1f * 14.50377f)
                         {
                             if (!FirstBoggie && ShunterFullTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                             {
@@ -669,7 +688,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
 
-                        if (BrakeProblemFound || ConnectProblemFound)
+                        if (BrakeProblemFound)
                         {
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Full test brake completed unsuccessfully!"));
                             Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_CompletedNegative);
@@ -738,13 +757,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
                 {
                     CheckWagonListIndex++;
-                    CheckWagonList[1] = car;                    
+                    CheckWagonList[1] = car;
+
+                    if (!ShunterTestBrakeFirstTime)
+                    {
+                        car.BrakeSystem.CarHasProblemWithBrake = false;
+                        car.BrakeSystem.BrakeCarDeactivate = false;
+                        car.BrakeSystem.BrakeCarDeactivateMenu = 0;
+                        car.BrakeSystem.BleedOffValveOpen = false;
+                    }
 
                     if (!car.CarHasBrakePipeConnected)
                     {
                         CheckCarBrakeFault[1] = true;
                     }
-                }                
+                }
+                ShunterTestBrakeFirstTime = true;
 
                 if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
                 {
@@ -872,8 +900,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
+                            testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
+                            testCar.BrakeSystem.BleedOffValveOpen = true;
                             testCar.SignalEvent(Event.ShunterTestBrakeSound_BrakeDeactivate);
-                        }
+                        }                        
                         if (testCar.BrakeSystem.HandBrakeActive)
                         {
                             testCar.BrakeSystem.HandBrakeDeactive = true;
@@ -928,7 +958,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         if (CarNumber <= CarTimeNumber)
                         {
-                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
+                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
                             {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
@@ -941,7 +971,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     SecondBoggie = true;
                                 }
                             }
-                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
+                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.1f * 14.50377f)
                             {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase2CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
@@ -952,6 +982,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeRelease);
                                     SecondBoggie = true;
+                                    testCar.BrakeSystem.CarHasProblemWithBrake = true;
                                 }
                             }
                         }
@@ -999,7 +1030,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ShunterSimpleTestBrakePhase3 = true;
                 }
 
-                // Požadavek pro fázi 4: Kontrola uvolnění brzd od posledního vozu k prvnímu
+                // Požadavek pro fázi 4: Kontrola uvolnění brzd od posledního vozu k prvnímu                
                 if (ShunterSimpleTestBrakePhase4 && !ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase5)
                 {
                     float ShunterSimpleTestBrakePhase4Time = 5.0f;
@@ -1046,12 +1077,16 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterSimpleTestBrakePhase4CarCheckTimer += elapsedClockSeconds;
                     }
 
-                    TrainCar testCar = CheckWagonList[CarNumber];
+                    TrainCar testCar = CheckWagonList[CarNumber];                    
                     if (ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] && CarNumber > 0)
                     {
+                        CheckCar = testCar;
+                        CheckCarNumber = CarNumber;
                         if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
+                            testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
+                            testCar.BrakeSystem.BleedOffValveOpen = true;
                             testCar.SignalEvent(Event.ShunterTestBrakeSound_BrakeDeactivate);
                         }
                         if (testCar.BrakeSystem.HandBrakeActive)
@@ -1108,20 +1143,21 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         if (CarNumber > 0)
                         {
-                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.5f * 14.50377f)
+                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
                             {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
-                                    FirstBoggie = true;
+                                    FirstBoggie = true;                                    
                                 }
                                 if (!SecondBoggie && ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.75f)
                                 {
                                     testCar.SignalEvent(Event.ShunterTestBrakeSound_CheckBrakeApply);
                                     SecondBoggie = true;
+                                    testCar.BrakeSystem.CarHasProblemWithBrake = true;
                                 }
                             }
-                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.5f * 14.50377f)
+                            if (testCar != null && testCar.BrakeSystem.GetCylPressurePSI() <= 0.1f * 14.50377f)
                             {                                
                                 if (!FirstBoggie && ShunterSimpleTestBrakePhase4CarCheckTimer > ShunterTestBrakeCarCheckTime[CarNumber] * 0.25f)
                                 {
@@ -1169,24 +1205,20 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         bool BrakeProblemFound = false;
                         bool ConnectProblemFound = false;
-                        CarNumber = 0;
-                        foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
+                                                
+                        CheckCar.BrakeCarStatus();
+                        CheckCar.ShunterTestBrakeDone = true;
+                        if (CheckCar.BrakesStuck || CheckCar.BrakeSystem.CarHasProblemWithBrake || CheckCar.BrakeSystem.BrakeCarDeactivate)
                         {
-                            CarNumber++;
-                            if (CarNumber > 1) break;
-                            car.BrakeCarStatus();
-                            car.ShunterTestBrakeDone = true;
-                            if (car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake || car.BrakeSystem.BrakeCarDeactivate)
-                            {
-                                TestBrakeWindowMessageProblemCars += car.WagonName + " - " + car.CarID + "\n";                                
-                                BrakeProblemFound = true;
-                            }
-                            if (CheckCarBrakeFault[CarNumber])
-                            {
-                                TestBrakeWindowMessageNotConnectedCars += CheckWagonList[CarNumber].WagonName + " - " + CheckWagonList[CarNumber].CarID + "\n";
-                                ConnectProblemFound = true;
-                            }
+                            TestBrakeWindowMessageProblemCars += CheckCar.WagonName + " - " + CheckCar.CarID + "\n";
+                            BrakeProblemFound = true;
                         }
+                        if (CheckCarBrakeFault[CheckCarNumber])
+                        {
+                            TestBrakeWindowMessageNotConnectedCars += CheckWagonList[CheckCarNumber].WagonName + " - " + CheckWagonList[CheckCarNumber].CarID + "\n";
+                            ConnectProblemFound = true;
+                        }
+                        
                         TestBrakeWindowMessage1 = Simulator.Catalog.GetString("Simple test brake completed successfully!") + "\n\n" + Locomotive.Simulator.TrainOperationsInfoText + "\n" + Locomotive.Simulator.TrainOperationsRealBrakePercentText;
                         if (BrakeProblemFound)
                             TestBrakeWindowMessage2 = Simulator.Catalog.GetString("This Car has problem with brake and brake was deactivated:");
@@ -1198,7 +1230,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
 
-                        if (BrakeProblemFound || ConnectProblemFound)
+                        if (BrakeProblemFound)
                         {
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed unsuccessfully!"));
                             Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_CompletedNegative);

@@ -533,7 +533,7 @@ namespace Orts.Viewer3D.Popups
         void buttonBrakeCarDeactivate_Click(Control arg1, Point arg2)
         {
             if ((Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).AbsSpeedMpS > 0.1f)
-                return;
+                return;            
 
             new BrakeCarDeactivateCommand(Viewer.Log, (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon), (Viewer.PlayerTrain.Cars[CarPosition] as MSTSWagon).BrakeSystem.BrakeCarDeactivateMenu += 1);
 

@@ -1079,7 +1079,7 @@ namespace Orts.Simulation.RollingStocks
                 && Train.Cars.Count > 5)
             {
                 BrakeSystem.BrakeCarHasStatus = true;
-                switch (Simulator.Random.Next(0, 500))
+                switch (Simulator.Random.Next(0, 250))
                 {                    
                     case 150:
                         BrakeSystem.CarHasAirStuckBrake_1 = true; // Nejde odbrzdit                        
