@@ -13018,7 +13018,17 @@ namespace Orts.Simulation.RollingStocks
                     DriveResistance_Temperature(elapsedClockSeconds);                    
 
                     if (BrakeSystem.StartOn || AILocoSetUp)
-                    {                        
+                    {
+                        bool TrainFirstInitialized = false;
+                        foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                        {
+                            if (car.CarFrameUpdateState > 1)
+                            {
+                                TrainFirstInitialized = true;
+                                break;
+                            }
+                        }
+
                         foreach (TrainCar car in Train.Cars)
                         {
                             // Nastaví automaticky lokomotivu jako postrk, pokud se jedná o nákladní vlak
@@ -13044,8 +13054,8 @@ namespace Orts.Simulation.RollingStocks
                             Simulator.LeadAuxResVolumeM3 = AuxResVolumeM3;
 
                         MUCableLogic();
-                        // Osobní vlak s elektrickou lokomotivou                                                            
-                        if (Simulator.TrainIsPassenger && Simulator.LocoCount > 1)
+                        // Osobní vlak s více lokomotivy                                                            
+                        if (!TrainFirstInitialized && Simulator.TrainIsPassenger && Simulator.LocoCount > 1)
                             foreach (var car in Train.Cars)
                             {
                                 if (car is MSTSElectricLocomotive && !car.AcceptCableSignals && (car as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
@@ -13055,7 +13065,7 @@ namespace Orts.Simulation.RollingStocks
                             }
 
                         // Elektrické lokomotivy nebo oddíly spojené za sebou
-                        if (this.MUCableCanBeUsed && Simulator.LocoCount > 1)
+                        if (!TrainFirstInitialized && MUCableCanBeUsed && Simulator.LocoCount > 1)
                         {
                             if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                             {
@@ -13067,8 +13077,7 @@ namespace Orts.Simulation.RollingStocks
                                     else
                                         break;
                                 }
-                            }
-                            //MasterSlaveInitiate = true;
+                            }                            
                         }
 
                         // Řídící vůz v soupravě                    
