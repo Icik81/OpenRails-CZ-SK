@@ -282,6 +282,13 @@ namespace Orts.MultiPlayer
 
             }
 
+            //
+            var msgTC = new MSGTrackCircuit();
+            msgTC.AddNewItem(MPManager.GetUserName(), MPManager.Simulator.PlayerLocomotive.Train);
+            if (msgTC.OKtoSend())
+                MPManager.BroadCast(msgTC.ToString());
+            Simulator.Confirmer.MSG("MP verze");
+
             //client updates itself
             if (Client != null && Server == null && newtime - lastMoveTime >= 0.1f)
             {

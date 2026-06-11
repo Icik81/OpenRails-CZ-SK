@@ -182,7 +182,13 @@ namespace Orts.Simulation.RollingStocks
         public float CarHeatCurrentCompartmentHeatW;
         public float CarCurrentCarriageHeatTempC;
         public float TotalPossibleCarHeatW; // Total possible heat of the car, based upon the desired car temperature
-        public float CarCurrentCarriageHeatDeltaTempC;        
+        public float CarCurrentCarriageHeatDeltaTempC;
+
+        public int MPFrontTrackNodeIndex = 0;
+        public int MPFrontTrackVectorIndex = 0;
+        public int MPRearTrackNodeIndex = 0;
+        public int MPRearTrackVectorIndex = 0;
+
 
         // some properties of this car
         public float CarWidthM = 2.5f;

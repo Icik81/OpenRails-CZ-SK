@@ -80,6 +80,7 @@ namespace Orts.MultiPlayer
             else if (key == "SIGNALCHANGE") return new MSGSignalChange(m.Substring(index + 1));
             //else if (key == "EXHAUST") return new MSGExhaust(m.Substring(index + 1));
             else if (key == "FLIP") return new MSGFlip(m.Substring(index + 1));
+            else if (key == "TRACKCIRCUIT") return new MSGTrackCircuit(m.Substring(index + 1));
             else throw new Exception("Unknown Keyword" + key);
         }
 
@@ -4262,6 +4263,8 @@ namespace Orts.MultiPlayer
 
         }
 
+
+
         public MSGFlip(Train t, bool setMUParameters, int n)
         {
             cars = new string[t.Cars.Count];
@@ -4361,5 +4364,156 @@ namespace Orts.MultiPlayer
     }
 
     #endregion MSGFlip
+
+    #region MSGTrackCircuit
+    public class MSGTrackCircuit : Message
+    {
+        class MSGTrackCircuitItem
+        {
+            public string user;
+            public float speed;
+            public int num;
+            public int count;
+            public int[] frontTrackNodeIndex;
+            public int[] frontTrackVectorIndex;
+            public int[] rearTrackNodeIndex;
+            public int[] rearTrackVectorIndex;
+
+            public MSGTrackCircuitItem(string u, float s, int n, int cnt,
+                int[] fTNI, int[] fTVI, int[] rTNI, int[] rTVI)
+            {
+                user = u; speed = s; num = n; count = cnt;
+                frontTrackNodeIndex = fTNI;
+                frontTrackVectorIndex = fTVI;
+                rearTrackNodeIndex = rTNI;
+                rearTrackVectorIndex = rTVI;
+            }
+
+            public override string ToString()
+            {
+                string tmp = user + " " + speed.ToString(CultureInfo.InvariantCulture) + " " + num + " " + count;
+                for (int i = 0; i < count; i++)
+                {
+                    tmp += " " + frontTrackNodeIndex[i]
+                         + " " + frontTrackVectorIndex[i]
+                         + " " + rearTrackNodeIndex[i]
+                         + " " + rearTrackVectorIndex[i];
+                }
+                return tmp;
+            }
+        }
+
+        List<MSGTrackCircuitItem> items;
+
+        public MSGTrackCircuit(string m)
+        {
+            m = m.Trim();
+            items = new List<MSGTrackCircuitItem>();
+            if (m.Length == 0) return;
+
+            string[] trainEntries = m.Split('\t');
+            foreach (string entry in trainEntries)
+            {
+                if (entry.Trim().Length == 0) continue;
+                string[] parts = entry.Trim().Split(' ');
+                try
+                {
+                    string user = parts[0];
+                    float speed = float.Parse(parts[1], CultureInfo.InvariantCulture);
+                    int num = int.Parse(parts[2]);
+                    int count = int.Parse(parts[3]);
+
+                    int[] fTNI = new int[count];
+                    int[] fTVI = new int[count];
+                    int[] rTNI = new int[count];
+                    int[] rTVI = new int[count];
+
+                    for (int i = 0; i < count; i++)
+                    {
+                        fTNI[i] = int.Parse(parts[4 + i * 4 + 0]);
+                        fTVI[i] = int.Parse(parts[4 + i * 4 + 1]);
+                        rTNI[i] = int.Parse(parts[4 + i * 4 + 2]);
+                        rTVI[i] = int.Parse(parts[4 + i * 4 + 3]);
+                    }
+
+                    items.Add(new MSGTrackCircuitItem(user, speed, num, count, fTNI, fTVI, rTNI, rTVI));
+                }
+                catch (Exception e)
+                {
+                    throw new Exception("Parsing error MSGTrackCircuit: " + e.Message);
+                }
+            }
+        }
+
+        public MSGTrackCircuit()
+        {
+            items = new List<MSGTrackCircuitItem>();
+        }
+
+        public void AddNewItem(string u, Train t)
+        {
+            if (items == null) items = new List<MSGTrackCircuitItem>();
+
+            int count = t.Cars.Count;
+            int[] fTNI = new int[count];
+            int[] fTVI = new int[count];
+            int[] rTNI = new int[count];
+            int[] rTVI = new int[count];
+
+            Traveller traveller = new Traveller(t.RearTDBTraveller);
+
+            for (int i = count - 1; i >= 0; i--)
+            {
+                rTNI[i] = traveller.TrackNodeIndex;
+                rTVI[i] = traveller.TrackVectorSectionIndex;
+
+                traveller.Move(t.Cars[i].CarLengthM);
+
+                fTNI[i] = traveller.TrackNodeIndex;
+                fTVI[i] = traveller.TrackVectorSectionIndex;
+            }
+
+            items.Add(new MSGTrackCircuitItem(u, t.SpeedMpS, t.Number, count, fTNI, fTVI, rTNI, rTVI));
+        }
+
+        public bool OKtoSend()
+        {
+            return items != null && items.Count > 0;
+        }
+
+        public override string ToString()
+        {
+            string tmp = "TRACKCIRCUIT ";
+            if (items != null && items.Count > 0)
+                for (int i = 0; i < items.Count; i++)
+                    tmp += items[i].ToString() + "\t";
+            return " " + tmp.Length + ": " + tmp;
+        }
+
+        public override void HandleMsg()
+        {
+            foreach (MSGTrackCircuitItem m in items)
+            {
+                if (m.user == MPManager.GetUserName()) continue;
+
+                Train train = null;
+                foreach (Train t in MPManager.Simulator.Trains)
+                {
+                    if (t.Number == m.num) { train = t; break; }
+                }
+                if (train == null) continue;
+
+                for (int i = 0; i < m.count && i < train.Cars.Count; i++)
+                {
+                    train.Cars[i].MPFrontTrackNodeIndex = m.frontTrackNodeIndex[i];
+                    train.Cars[i].MPFrontTrackVectorIndex = m.frontTrackVectorIndex[i];
+                    train.Cars[i].MPRearTrackNodeIndex = m.rearTrackNodeIndex[i];
+                    train.Cars[i].MPRearTrackVectorIndex = m.rearTrackVectorIndex[i];
+                }
+            }
+        }
+    }
+    #endregion MSGTrackCircuit
+
 
 }
