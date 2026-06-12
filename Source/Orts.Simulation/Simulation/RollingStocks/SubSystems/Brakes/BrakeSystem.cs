@@ -207,6 +207,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes
         public bool CarHasMechanicStuckBrake_2;
         public bool CarHasProblemWithBrake;
         public bool CarHasMaybeProblemWithBrake;
+        public bool CarHasReallyProblemWithBrake;
 
         public bool Status_CarHasAirStuckBrake_1;
         public bool Status_CarHasAirStuckBrake_2;

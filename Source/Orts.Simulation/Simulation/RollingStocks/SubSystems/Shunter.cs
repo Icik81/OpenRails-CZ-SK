@@ -151,7 +151,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterCheckAirPressureTimer;        
 
         public void ShunterCheckAirPressureInCar(float elapsedClockSeconds, TrainCar testCar)
-        {
+        {            
             if (testCar.BrakeSystem.CarHasMaybeProblemWithBrake)
             {
                 // Odvzdušní soustavu brzdy
@@ -169,19 +169,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             
             // Kontrola tlaku naplnění pomocné jímky
-            if (testCar.BrakeSystem.AuxResPressurePSI < 0.9f * testCar.BrakeSystem.BrakeLine1PressurePSI || testCar.BrakeSystem.AuxResPressurePSI > 1.1f * testCar.BrakeSystem.BrakeLine1PressurePSI)
+            if (testCar.BrakeSystem.AuxResPressurePSI < 0.99f * testCar.BrakeSystem.BrakeLine1PressurePSI || testCar.BrakeSystem.AuxResPressurePSI > 1.01f * testCar.BrakeSystem.BrakeLine1PressurePSI)
             {                
                 ShunterCheckAirPressureTimer += elapsedClockSeconds;
                 ShunterCheckAirPressure = true;
-                if (ShunterCheckAirPressureTimer > 40.0f)
+                if (ShunterCheckAirPressureTimer > 20.0f)
                 {
                     ShunterCheckAirPressure = false;
                     ShunterCheckAirPressureTimer = 0;
-                    testCar.BrakeSystem.CarHasProblemWithBrake = true;
+                    testCar.BrakeSystem.CarHasReallyProblemWithBrake = true;
                 }
-                if (ShunterCheckAirPressureTimer > 30.0f && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
+                if (ShunterCheckAirPressureTimer > 15.0f && testCar.BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f)
                 {
-                    testCar.BrakeSystem.CarHasProblemWithBrake = true;
+                    testCar.BrakeSystem.CarHasReallyProblemWithBrake = true;
                 }
                 if (testCar.BrakeSystem.BleedOffValveOpen)
                 {
@@ -195,6 +195,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             else
             {
+                if (testCar.BrakeSystem.GetCylPressurePSI() < 0.1f * 14.50377f)
+                {
+                    testCar.BrakeSystem.CarHasReallyProblemWithBrake = false;
+                }
                 ShunterCheckAirPressure = false;
                 ShunterCheckAirPressureTimer = 0;                
             }
@@ -300,7 +304,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterFullTestBrakePhase1 && !ShunterFullTestBrakePhase2 && !ShunterFullTestBrakePhase3 && !ShunterFullTestBrakePhase4 && !ShunterFullTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterFullTestBrakeEnable = false;
 
@@ -310,7 +314,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (Locomotive.Train.Cars.Count < 2)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train must have at least two cars to perform the test brake!"));
 
-                        if (LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train must have sufficient brakepipe pressure (5 bar) to perform the test brake!"));
 
                         return;
@@ -383,8 +387,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     car.BrakeSystem.AngleCockBOpen = false;
                                     car.BrakeSystem.FrontBrakeHoseConnected = true;
                                 }
-                                else
-                                    if (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen)
+                                else                                    
                                     {
                                         car.BrakeSystem.AngleCockAOpen = true;
                                         car.BrakeSystem.AngleCockBOpen = true;
@@ -404,7 +407,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterCheckAirPressureInCar(elapsedClockSeconds, testCar);
                         if (ShunterCheckAirPressure) return;
 
-                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
+                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake || testCar.BrakeSystem.CarHasReallyProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
                             testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
@@ -436,8 +439,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 testCar.BrakeSystem.AngleCockBOpen = false;
                                 testCar.BrakeSystem.FrontBrakeHoseConnected = true;
                             }
-                            else
-                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                            else                                
                                 {
                                     testCar.BrakeSystem.AngleCockAOpen = true;
                                     testCar.BrakeSystem.AngleCockBOpen = true;
@@ -567,8 +569,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     car.BrakeSystem.AngleCockBOpen = false;
                                     car.BrakeSystem.FrontBrakeHoseConnected = true;
                                 }
-                                else
-                                    if (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen)
+                                else                                    
                                     {
                                         car.BrakeSystem.AngleCockAOpen = true;
                                         car.BrakeSystem.AngleCockBOpen = true;
@@ -588,7 +589,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterCheckAirPressureInCar(elapsedClockSeconds, testCar);
                         if (ShunterCheckAirPressure) return;
 
-                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
+                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake || testCar.BrakeSystem.CarHasReallyProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
                             testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
@@ -620,8 +621,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 testCar.BrakeSystem.AngleCockBOpen = false;
                                 testCar.BrakeSystem.FrontBrakeHoseConnected = true;
                             }
-                            else
-                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                            else                                
                                 {
                                     testCar.BrakeSystem.AngleCockAOpen = true;
                                     testCar.BrakeSystem.AngleCockBOpen = true;
@@ -716,7 +716,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             CarNumber++;
                             car.BrakeCarStatus();
                             car.ShunterTestBrakeDone = true;
-                            if (car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake || car.BrakeSystem.BrakeCarDeactivate)
+                            if (car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake || car.BrakeSystem.BrakeCarDeactivate || car.BrakeSystem.CarHasReallyProblemWithBrake)
                             {
                                 TestBrakeWindowMessageProblemCars += car.WagonName + " - " + car.CarID + "\n";
                                 BrakeProblemFound = true;
@@ -839,7 +839,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4 && !ShunterSimpleTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterSimpleTestBrakeEnable = false;
 
@@ -849,7 +849,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         if (Locomotive.Train.Cars.Count < 2)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train must have at least two cars to perform the test brake!"));
 
-                        if (LastCarConnected.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                        if (Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train must have sufficient brakepipe pressure (5 bar) to perform the test brake!"));
 
                         return;
@@ -905,33 +905,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
 
                     if (!ShunterCheckAirPressure)
-                        ShunterSimpleTestBrakePhase2Timer += elapsedClockSeconds;
-
-                    if (ShunterSimpleTestBrakePhase2Timer < 5.0f)
-                    {
-                        foreach (TrainCar car in Locomotive.Train.Cars.Where(car => (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
-                        {
-                            if (car == Locomotive.Train.FirstCar)
-                            {
-                                car.BrakeSystem.AngleCockAOpen = false;
-                                car.BrakeSystem.AngleCockBOpen = true;
-                            }
-                            else
-                                if (car == Locomotive.Train.LastCar)
-                                {
-                                    car.BrakeSystem.AngleCockAOpen = true;
-                                    car.BrakeSystem.AngleCockBOpen = false;
-                                    car.BrakeSystem.FrontBrakeHoseConnected = true;
-                                }
-                                else
-                                    if (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen)
-                                    {
-                                        car.BrakeSystem.AngleCockAOpen = true;
-                                        car.BrakeSystem.AngleCockBOpen = true;
-                                        car.BrakeSystem.FrontBrakeHoseConnected = true;
-                                    }
-                        }
-                    }
+                        ShunterSimpleTestBrakePhase2Timer += elapsedClockSeconds;                    
 
                     if (ShunterSimpleTestBrakePhase2Timer > 5.0f && !ShunterCheckAirPressure)
                     {
@@ -944,7 +918,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterCheckAirPressureInCar(elapsedClockSeconds, testCar);
                         if (ShunterCheckAirPressure) return;
 
-                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
+                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake || testCar.BrakeSystem.CarHasReallyProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
                             testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
@@ -976,8 +950,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 testCar.BrakeSystem.AngleCockBOpen = false;
                                 testCar.BrakeSystem.FrontBrakeHoseConnected = true;
                             }
-                            else
-                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                            else                                
                                 {
                                     testCar.BrakeSystem.AngleCockAOpen = true;
                                     testCar.BrakeSystem.AngleCockBOpen = true;
@@ -1092,33 +1065,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
 
                     if (!ShunterCheckAirPressure)
-                        ShunterSimpleTestBrakePhase4Timer += elapsedClockSeconds;
-
-                    if (ShunterSimpleTestBrakePhase4Timer < 5.0f)
-                    {
-                        foreach (TrainCar car in Locomotive.Train.Cars.Where(car => (car is MSTSLocomotive && (car as MSTSLocomotive).PowerOn)))
-                        {
-                            if (car == Locomotive.Train.FirstCar)
-                            {
-                                car.BrakeSystem.AngleCockAOpen = false;
-                                car.BrakeSystem.AngleCockBOpen = true;
-                            }
-                            else
-                                if (car == Locomotive.Train.LastCar)
-                                {
-                                    car.BrakeSystem.AngleCockAOpen = true;
-                                    car.BrakeSystem.AngleCockBOpen = false;
-                                    car.BrakeSystem.FrontBrakeHoseConnected = true;
-                                }
-                                else
-                                    if (car.BrakeSystem.AngleCockAOpen || car.BrakeSystem.AngleCockBOpen)
-                                    {
-                                        car.BrakeSystem.AngleCockAOpen = true;
-                                        car.BrakeSystem.AngleCockBOpen = true;
-                                        car.BrakeSystem.FrontBrakeHoseConnected = true;
-                                    }
-                        }
-                    }
+                        ShunterSimpleTestBrakePhase4Timer += elapsedClockSeconds;                    
 
                     if (ShunterSimpleTestBrakePhase4Timer > 5.0f && !ShunterCheckAirPressure)
                     {
@@ -1134,7 +1081,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         ShunterCheckAirPressureInCar(elapsedClockSeconds, testCar);
                         if (ShunterCheckAirPressure) return;
 
-                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake)
+                        if (testCar.BrakesStuck || testCar.BrakeSystem.CarHasProblemWithBrake || testCar.BrakeSystem.CarHasReallyProblemWithBrake)
                         {
                             testCar.BrakeSystem.BrakeCarDeactivate = true;
                             testCar.BrakeSystem.BrakeCarDeactivateMenu = 1;
@@ -1166,8 +1113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 testCar.BrakeSystem.AngleCockBOpen = false;
                                 testCar.BrakeSystem.FrontBrakeHoseConnected = true;
                             }
-                            else
-                                if (testCar.BrakeSystem.AngleCockAOpen || testCar.BrakeSystem.AngleCockBOpen)
+                            else                                
                                 {
                                     testCar.BrakeSystem.AngleCockAOpen = true;
                                     testCar.BrakeSystem.AngleCockBOpen = true;
@@ -1236,6 +1182,19 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }
 
+                // Pokud test přesáhne limitní test, tak je ZB neúspěšná
+                bool ShunterSimpleTestBrakePhaseTimeOut = false;
+                if (ShunterSimpleTestBrakePhase3Timer > 30)
+                {
+                    CheckCar = CheckWagonList[CarNumber]; 
+                    ShunterSimpleTestBrakePhase1 = false;
+                    ShunterSimpleTestBrakePhase2 = false;
+                    ShunterSimpleTestBrakePhase3 = false;
+                    ShunterSimpleTestBrakePhase4 = false;
+                    ShunterSimpleTestBrakePhase5 = true;
+                    ShunterSimpleTestBrakePhaseTimeOut = true;
+                }
+
                 // Fáze 5: Generuje informaci o vlaku
                 if (ShunterSimpleTestBrakePhase5 && !ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4)
                 {
@@ -1260,7 +1219,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                                 
                         CheckCar.BrakeCarStatus();
                         CheckCar.ShunterTestBrakeDone = true;
-                        if (CheckCar.BrakesStuck || CheckCar.BrakeSystem.CarHasProblemWithBrake || CheckCar.BrakeSystem.BrakeCarDeactivate)
+                        if (CheckCar.BrakesStuck || CheckCar.BrakeSystem.CarHasProblemWithBrake || CheckCar.BrakeSystem.BrakeCarDeactivate || CheckCar.BrakeSystem.CarHasReallyProblemWithBrake)
                         {
                             TestBrakeWindowMessageProblemCars += CheckCar.WagonName + " - " + CheckCar.CarID + "\n";
                             BrakeProblemFound = true;
@@ -1282,7 +1241,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                         Locomotive.Simulator.TestBrakeWindowMessage = TestBrakeWindowMessage1 + "\n\n" + TestBrakeWindowMessage2 + "\n\n" + TestBrakeWindowMessageProblemCars + "\n\n" + TestBrakeWindowMessage3 + "\n\n" + TestBrakeWindowMessageNotConnectedCars;
 
-                        if (BrakeProblemFound)
+                        if (BrakeProblemFound || ConnectProblemFound || ShunterSimpleTestBrakePhaseTimeOut)
                         {
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Simple test brake completed unsuccessfully!"));
                             Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_CompletedNegative);

@@ -12593,7 +12593,7 @@ namespace Orts.Simulation.RollingStocks
 
         public void ToggleCabRadio(bool newState)
         {
-            if (this is MSTSSteamLocomotive) return;
+            //if (this is MSTSSteamLocomotive) return;
             //CabRadioOn = newState;
             CabRadio[LocoStation] = !CabRadio[LocoStation];
             if (Simulator.PlayerLocomotive == this) Simulator.Confirmer.Confirm(CabControl.CabRadio, CabRadio[LocoStation] ? CabSetting.On : CabSetting.Off);
