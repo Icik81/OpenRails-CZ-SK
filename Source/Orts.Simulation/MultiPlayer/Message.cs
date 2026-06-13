@@ -4511,9 +4511,15 @@ namespace Orts.MultiPlayer
                     train.Cars[i].MPRearTrackVectorIndex = m.rearTrackVectorIndex[i];
                 }
             }
+
+            // Server přepošle zprávu všem ostatním klientům
+            if (MPManager.IsServer())
+                MPManager.BroadCast(this.ToString());
         }
     }
     #endregion MSGTrackCircuit
+
+
 
 
 }

@@ -286,8 +286,7 @@ namespace Orts.MultiPlayer
             var msgTC = new MSGTrackCircuit();
             msgTC.AddNewItem(MPManager.GetUserName(), MPManager.Simulator.PlayerLocomotive.Train);
             if (msgTC.OKtoSend())
-                MPManager.BroadCast(msgTC.ToString());
-            Simulator.Confirmer.MSG("MP verze");
+                    MPManager.Notify(msgTC.ToString());
 
             //client updates itself
             if (Client != null && Server == null && newtime - lastMoveTime >= 0.1f)
@@ -443,9 +442,10 @@ namespace Orts.MultiPlayer
         static public void Notify(string m)
         {
             if (m == null) return;
-            if (Client != null && Server == null) Client.Send(m); //client notify server
-            if (Server != null) Server.BroadCast(m); //server notify everybody else
+            if (Client != null && Server == null) Client.Send(m); // klient → server
+            if (Server != null) Server.BroadCast(m);              // server → všichni
         }
+
 
         static public void SendToServer(string m)
         {
