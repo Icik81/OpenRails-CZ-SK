@@ -539,33 +539,7 @@ namespace Orts.Simulation.AIs
                             TrainMaxSpeedMpS = Math.Min((float)Simulator.TRK.Tr_RouteFile.SpeedLimit, MaxVelocityA * sectionEfficiency);
 
                         // Icik
-                        // Určí maximální rychlost vlaku danou maximální rychlostí nejpomalejší lokomotivy
-                        float[] LocoMaxSpeedMpS = new float[100];
-                        float LocosMaxSpeedMpS;
-                        int LocoIndex = 0;
-                        if (!(this is Timetables.TTTrain) && !IsActualPlayerTrain)
-                        {
-                            foreach (var car in Cars.Where(car => car is MSTSLocomotive))
-                            {
-                                if (car is MSTSLocomotive)
-                                {
-                                    LocoIndex++;
-                                    LocoMaxSpeedMpS[LocoIndex] = (car as MSTSLocomotive).MaxSpeedMpS == 0 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : (car as MSTSLocomotive).MaxSpeedMpS;
-                                }
-                            }
-                            if (LocoIndex > 0)
-                            {
-                                LocoMaxSpeedMpS[LocoIndex + 1] = AIMaxTrainSpeedCalculatedFromConFile;
-                                LocosMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
-                                for (int i = 1; i < LocoIndex + 2; i++)
-                                {
-                                    if (LocoMaxSpeedMpS[i] != 0)
-                                        LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
-                                }
-                                TrainMaxSpeedMpS = LocosMaxSpeedMpS;
-                            }
-                        }
-
+                        SetMaxAITrainSpeedByLocos();
                     }
                 }
 

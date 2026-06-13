@@ -3709,7 +3709,7 @@ namespace Orts.Simulation.Physics
                         if (LocoMaxSpeedMpS[i] != 0)
                             LocosMaxSpeedMpS = Math.Min(LocosMaxSpeedMpS, LocoMaxSpeedMpS[i]);
                     }
-                    TrainMaxSpeedMpS = LocosMaxSpeedMpS;
+                    TrainMaxSpeedMpS = LocosMaxSpeedMpS;                    
                 }
             }
         }
@@ -3754,8 +3754,8 @@ namespace Orts.Simulation.Physics
                     var thisSpeedpost = signalRef.SignalObjects[speedpostList[0]];
                     var speed_info = thisSpeedpost.this_lim_speed(MstsSignalFunction.SPEED);
 
-                    AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
-                    allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                    //AllowedMaxSpeedMpS = Math.Min(AllowedMaxSpeedMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
+                    //allowedAbsoluteMaxSpeedLimitMpS = Math.Min(allowedAbsoluteMaxSpeedLimitMpS, IsFreight ? speed_info.speed_freight : speed_info.speed_pass);
                 }                
 
                 float validSpeedMpS = AllowedMaxSpeedMpS;
