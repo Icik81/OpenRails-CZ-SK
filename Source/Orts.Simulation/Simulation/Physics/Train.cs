@@ -3176,6 +3176,7 @@ namespace Orts.Simulation.Physics
             int thisSectionIndex = PresentPosition[0].TCSectionIndex;
             float thisSectionOffset = PresentPosition[0].TCOffset;
             int thisSectionDirection = PresentPosition[0].TCDirection;
+            Simulator.TunnelInfo = false;
 
             for (int icar = 0; icar <= Cars.Count - 1; icar++)
             {
@@ -3204,6 +3205,9 @@ namespace Orts.Simulation.Physics
                     // section has tunnels
                     if (thisSection.TunnelInfo != null)
                     {
+                        // Icik
+                        Simulator.TunnelInfo = true;
+
                         foreach (TrackCircuitSection.tunnelInfoData[] thisTunnel in thisSection.TunnelInfo)
                         {
                             float tunnelStartOffset = thisTunnel[thisSectionDirection].TunnelStart;
