@@ -2011,7 +2011,7 @@ namespace Orts.Simulation.AIs
 #endif
             Processing = true;
             int correctedTime = presentTime;
-            if (!Triggered)
+            if (!Triggered && !thisTrain.IsActualPlayerTrain)
             {
                 NextStepTimeS = correctedTime;
                 var locomotive = (MSTSLocomotive)thisTrain.FindLeadLocomotive();

@@ -4689,6 +4689,24 @@ namespace Orts.Simulation.AIs
                         }
                     }
                 }
+                else
+                // Houkání pro autopilota
+                if (waitingPoint[2] >= 60011 && waitingPoint[2] <= 60021) // Zahoukání
+                {
+                    var durationS = waitingPoint[2] - 60010;
+                    AILevelCrossingHornPattern hornPattern;
+                    switch (durationS)
+                        {
+                            case 11:
+                                hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.US);
+                                break;
+                            default:
+                                hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
+                                break;
+                        }
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, durationS, hornPattern);
+                        AuxActionsContain.Add(action);
+                    }
                 else if (insertSigDelegate && signalIndex[iWait] > -1)
                 {
                     AIActionWPRef action = new AIActionWPRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction);

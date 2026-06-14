@@ -5741,6 +5741,10 @@ namespace Orts.Simulation.RollingStocks
         bool CheckBellEvent;
         float AICutOffPowerTimer;
         float AICutOffPowerTime;
+        float AutopilotBellTimer;
+        float AutopilotHornTimer;
+        bool AutopilotDistanceSet;
+        float AutopilotDistanceOffset;
         public void SetAIAction(float elapsedClockSeconds)
         {                       
             if ((Train as AITrain) != null && (this as MSTSLocomotive) != null)
@@ -5868,6 +5872,60 @@ namespace Orts.Simulation.RollingStocks
                 }
 
                 // **** SPECIÁLNÍ BODY PRO AKCE ****
+                // Houkání a pískání pro autopilota
+                if ((Train as AITrain).IsActualPlayerTrain && (Train as AITrain).Simulator.PlayerTrainInAutopilotMode)
+                {
+                    if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
+                    {
+                        for (int i = 0; i < (Train as AITrain).AuxActionsContain.SpecAuxActions.Count; i++)
+                        {
+                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[i] as AIActionHornRef);
+                            if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                            {
+                                if (!AutopilotDistanceSet)
+                                {
+                                    AutopilotDistanceOffset = (Train as AITrain).PresentPosition[0].DistanceTravelledM;
+                                    AutopilotDistanceSet = true;
+                                }
+                                var AIDistanceToGoM = AIActionPoint0.RequiredDistance + AutopilotDistanceOffset - (Train as AITrain).PresentPosition[0].DistanceTravelledM;
+                                if (AIDistanceToGoM > 0 && AIDistanceToGoM < 1 && AIActionPoint0.DurationS != 0 && AIActionPoint0.DurationS < 60)
+                                {
+                                    // Pískání pokud je doba 1s
+                                    if (AIActionPoint0.DurationS < 2)
+                                    {
+                                        ManualBell = true;
+                                    }
+                                    // Houkání pokud je doba větší než 1s
+                                    else
+                                    {
+                                        ManualHorn = true;
+                                    }
+                                }
+                            }
+                            else
+                                AutopilotDistanceSet = false;
+                        }
+                        if (ManualBell)
+                        {
+                            AutopilotBellTimer += elapsedClockSeconds;
+                            if (AutopilotBellTimer > 1)
+                            {
+                                ManualBell = false;
+                                AutopilotBellTimer = 0;
+                            }
+                        }
+                        else
+                            if (ManualHorn)
+                            {
+                                AutopilotHornTimer += elapsedClockSeconds;
+                                if (AutopilotHornTimer > 1)
+                                {
+                                    ManualHorn = false;
+                                    AutopilotHornTimer = 0;
+                                }
+                            }
+                    }
+                }
 
                 //  Počet vozů k odebrání nebo zanechání
                 if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)

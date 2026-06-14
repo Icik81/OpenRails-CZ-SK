@@ -163,7 +163,7 @@ namespace Orts.Simulation
                     }                                                                                        
 
                     // Hráč
-                    if (train.IsActualPlayerTrain)
+                    if (train.IsActualPlayerTrain && !train.Simulator.PlayerTrainInAutopilotMode)
                     {
                         // Startovní pravidlo                        
                         if (UnprotectedLevelCross)
@@ -202,7 +202,7 @@ namespace Orts.Simulation
                     }
                     
                     // AI
-                    if (train is AITrain && !(train as AITrain).IsActualPlayerTrain)
+                    if (train is AITrain && (!(train as AITrain).IsActualPlayerTrain || ((train as AITrain).IsActualPlayerTrain && train.Simulator.PlayerTrainInAutopilotMode)))
                     {
                         var AItrain = train as AITrain;                        
 

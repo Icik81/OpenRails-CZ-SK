@@ -718,6 +718,7 @@ namespace Orts.Simulation
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
             // Icik
+            PlayerTrainInAutopilotMode = inf.ReadBoolean();
             LastNameFreeViewTrain = inf.ReadString();
             OtherTrainPositionTest = inf.ReadBoolean();
             OtherTrainIsFront = inf.ReadBoolean();
@@ -780,6 +781,7 @@ namespace Orts.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(PlayerTrainInAutopilotMode);
             outf.Write(LastNameFreeViewTrain);
             outf.Write(OtherTrainPositionTest);
             outf.Write(OtherTrainIsFront);
