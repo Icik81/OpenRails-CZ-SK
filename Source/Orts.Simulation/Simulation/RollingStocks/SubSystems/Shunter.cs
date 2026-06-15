@@ -1347,7 +1347,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 // Konec tratě
                 float DistanceToEOA = 1000;
-                if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY)
+                if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK /*|| Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY*/)
                     && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 175)
                 {
                     DistanceToEOA = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
@@ -1408,7 +1408,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }                
 
                 // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od stopu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje ke stopu a není tam žádný vlak před ním                
-                if (DistanceToSTP != 1000 && DistanceToOtherTrain - DistanceToSTP > 10) TRAINAHEAD_Mode = false;
+                if (DistanceToSTP != 1000 && DistanceToOtherTrain - DistanceToSTP > 15) TRAINAHEAD_Mode = false;
 
                 if (Locomotive.Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;                
 

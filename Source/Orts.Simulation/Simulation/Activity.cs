@@ -1976,6 +1976,9 @@ namespace Orts.Simulation
             }
             Train = train;
 
+            // Podmínka pro nezobrazení zprávy, pokud je posunovač a rychlost vlaku je menší než 40 km/h
+            bool NoRecordDisplayMessage = train.Simulator.ShunterEnable && Math.Abs(train.SpeedMpS) < 40f / 3.6f ? true : false;
+
             // Icik
             if (Simulator.Settings.MSTSCompatibilityMode)
             {
@@ -2034,7 +2037,8 @@ namespace Orts.Simulation
 
                 if (!e.TriggerOnStop && distanceMSTS != -1 && distanceMSTS < e.RadiusM)
                 {
-                    RecordDisplayMessage(e, true);
+                    if (!NoRecordDisplayMessage)
+                        RecordDisplayMessage(e, true);
                     return true;
                 }
 
@@ -2071,24 +2075,31 @@ namespace Orts.Simulation
             {
                 // Is train still moving?
                 if (Math.Abs(train.SpeedMpS) > 0.032f)
-                {
+                {                    
                     RecordDisplayMessage(e, triggered);
                     return triggered;
                 }
-            }
+            }            
 
             if (distance == -1)
             {
                 trainFrontPosition.ReverseDirection();
                 distance = trainFrontPosition.DistanceTo(e.TileX, e.TileZ, e.X, trainFrontPosition.Y, e.Z, e.RadiusM);
                 if (distance == -1)
-                {
+                {                    
                     RecordDisplayMessage(e, triggered);
                     return triggered;
                 }
             }            
 
             if (distance < e.RadiusM) { triggered = true; }
+
+            // Icik
+            if (!e.TriggerOnStop && NoRecordDisplayMessage)
+            {
+                //e.ORTSContinue = 3;
+                triggered = false;
+            }
 
             RecordDisplayMessage(e, triggered);
             return triggered;
