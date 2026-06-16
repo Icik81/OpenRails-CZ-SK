@@ -2097,8 +2097,7 @@ namespace Orts.Simulation
             // Icik
             if (!e.TriggerOnStop && NoRecordDisplayMessage)
             {
-                //e.ORTSContinue = 3;
-                triggered = false;
+                e.ORTSContinue = 0;                
             }
 
             RecordDisplayMessage(e, triggered);

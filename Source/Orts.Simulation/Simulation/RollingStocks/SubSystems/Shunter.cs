@@ -1407,8 +1407,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }
                 }                
 
-                // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od stopu o 50 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje ke stopu a není tam žádný vlak před ním                
-                if (DistanceToSTP != 1000 && DistanceToOtherTrain - DistanceToSTP > 15) TRAINAHEAD_Mode = false;
+                // Pokud je posunovač v režimu "vlak před námi" a vzdálenost od jiného vlaku je větší než vzdálenost od stopu o 10 metrů, režim "vlak před námi" se vypne, aby se zabránilo zbytečným hláškám posunovače, když se vlak přibližuje ke stopu a není tam žádný vlak před ním                
+                if (DistanceToSTP != 1000 && DistanceToOtherTrain - DistanceToSTP > 10) TRAINAHEAD_Mode = false;
 
                 if (Locomotive.Simulator.DistanceToOtherTrain == 0) TRAINAHEAD_Mode = false;                
 
@@ -1453,6 +1453,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     DistanceToOtherTrain_0 = -1000;
                     Locomotive.Simulator.OtherTrainPositionTest = false;
                     ShunterSoundDonePlayed = false;
+                }
+
+                if (Locomotive.Simulator.ShunterProcessSTPActive_Start && TRAINAHEAD_Mode)
+                {
+                    Locomotive.Simulator.ShunterDecideMarker = "";
+                    Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessSTPActive_End = false;                    
+                    ShunterSoundSTPReset();
                 }
 
                 // Dokončení procesu najetí k bodu stopu
@@ -1608,7 +1616,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         LastDistanceToSTPTrain = DistanceToSTP;
 
                         // Hláška "Posunuj" obecná
-                        if (Locomotive.AbsSpeedMpS > 5f / 3.6f)
+                        if (Locomotive.AbsSpeedMpS > 15f / 3.6f)
                         {
                             bool DistanceToOtherTrainIsValid = false;
                             DistanceToOtherTrainIsValid = DistanceToSTP > 200 && DistanceToSTP < 1000;
@@ -1813,7 +1821,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                     ShunterSoundSlowlyPlayed = true;
                                     ShunterSoundDonePlayed = false;
                                     break;
-                                case float n when (n < 0.01 + DistanceSpeedCorrectionM && n > 0.005f + DistanceSpeedCorrectionM):
+                                case float n when (n < 0.0 + DistanceSpeedCorrectionM && n > -0.10f + DistanceSpeedCorrectionM):
                                     if (!ShunterSoundDonePlayed) Locomotive.SignalEvent(Event.ShunterSound_Done);
                                     ShunterSoundDonePlayed = true;
                                     break;
