@@ -25,6 +25,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using Orts.Formats.Msts;
 using Orts.Simulation;
+using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
@@ -403,7 +404,7 @@ namespace Orts.Viewer3D
                 if (FullBrightnessFinal > FullBrightness)
                     FullBrightnessFinal -= FullBrightnessFinalCoef * Program.Simulator.OneSecondLoop;
 
-            if (Program.Simulator.Paused)
+            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && (Program.Simulator.PlayerLocomotive as MSTSLocomotive).LocoSetUpTimer < 5))
             {
                 FullBrightnessFinal = FullBrightness;
             }
@@ -1126,7 +1127,7 @@ namespace Orts.Viewer3D
                         CabnightColorModifierValueFinal -= CabnightColorModifierValueFinalCoef * Program.Simulator.OneSecondLoop;
             }
 
-            if (Program.Simulator.Paused)
+            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && (Program.Simulator.PlayerLocomotive as MSTSLocomotive).LocoSetUpTimer < 5))
             {
                 CabnightColorModifierValueFinal = CabnightColorModifierValue;
             }
