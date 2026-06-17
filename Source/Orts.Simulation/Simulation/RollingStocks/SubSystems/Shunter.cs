@@ -1485,7 +1485,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("TRIGGER");
                             break;
                     }
-                    if ((ShunterSoundStopSTPPlayed && Locomotive.AbsSpeedMpS < 0.01f) || Locomotive.Train.nextRouteReady)
+                    if ((ShunterSoundStopSTPPlayed || Locomotive.Train.nextRouteReady) && Locomotive.AbsSpeedMpS < 0.01f)
                     {                        
                         Locomotive.Simulator.ShunterProcessSTPActive_End = true;
                     }
@@ -1605,9 +1605,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     // Hlášky posunovače podle vzdálenosti od stopu                
                     if (Locomotive.Simulator.CabRadioOn && !TRAINAHEAD_Mode && DistanceToSTP < 1000)
                     {
+                        if (!Locomotive.Simulator.ShunterProcessSTPActive_Start) ShunterTimer = 0;
                         Locomotive.Simulator.ShunterProcessSTPActive_Start = true;
 
-                        if (LastDistanceToSTPTrain <= DistanceToSTP) // Pokud se vzdálenost od stopu zvětšuje, hlášky se resetují 
+                        if (LastDistanceToSTPTrain < DistanceToSTP) // Pokud se vzdálenost od stopu zvětšuje, hlášky se resetují 
                         {
                             LastDistanceToSTPTrain = DistanceToSTP;
                             ShunterSoundSTPReset();
@@ -1621,8 +1622,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             bool DistanceToOtherTrainIsValid = false;
                             DistanceToOtherTrainIsValid = DistanceToSTP > 200 && DistanceToSTP < 1000;
 
-                            ShunterTimerRandom = ShunterTimer == 0 ? Simulator.Random.Next(8, 15) : ShunterTimerRandom;
-                            ShunterTimer += elapsedClockSeconds;
+                            if (DistanceToOtherTrainIsValid)
+                            {
+                                ShunterTimerRandom = ShunterTimer == 0 ? Simulator.Random.Next(8, 15) : ShunterTimerRandom;
+                                ShunterTimer += elapsedClockSeconds;
+                            }
                             if (!ShunterSoundOff && ShunterTimer > ShunterTimerRandom && DistanceToOtherTrainIsValid)
                             {
                                 ShunterSoundOff = true;

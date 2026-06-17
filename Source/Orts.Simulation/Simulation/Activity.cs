@@ -2095,7 +2095,7 @@ namespace Orts.Simulation
             if (distance < e.RadiusM) { triggered = true; }
 
             // Icik
-            if (!e.TriggerOnStop && NoRecordDisplayMessage)
+            if (!e.TriggerOnStop && triggered && NoRecordDisplayMessage)
             {
                 e.ORTSContinue = 0;                
             }
