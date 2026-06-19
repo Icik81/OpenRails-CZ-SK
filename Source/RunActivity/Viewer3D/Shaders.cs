@@ -160,6 +160,7 @@ namespace Orts.Viewer3D
         float LastStateBrightness;
         float WorldThunderStartTime;
         float LastStateFogDistanceFinal = -1;
+        bool WorldThunderRun;
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
@@ -375,7 +376,7 @@ namespace Orts.Viewer3D
 
             // Záblesk od blesku
             if (Program.Simulator.WorldThunder)
-            {
+            {                
                 if (WorldThunderStartTime > (float)Program.Simulator.ClockTime) WorldThunderTimer = -1;
                 if (WorldThunderTimer == -1)
                 {
@@ -406,6 +407,18 @@ namespace Orts.Viewer3D
 
             if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && (Program.Simulator.PlayerLocomotive as MSTSLocomotive).LocoSetUpTimer < 5))
             {
+                FullBrightnessFinal = FullBrightness;
+            }
+
+            if (Program.Simulator.WorldThunder)
+            {
+                WorldThunderRun = true;
+                FullBrightnessFinal = FullBrightness;
+            }
+
+            if (!Program.Simulator.WorldThunder && WorldThunderRun)
+            {
+                WorldThunderRun = false;
                 FullBrightnessFinal = FullBrightness;
             }
 
@@ -989,6 +1002,7 @@ namespace Orts.Viewer3D
         float WorldThunderStartTime;
         float WorldThunderTime;
         float LastStateCabnightColorModifierValue;
+        bool WorldThunderRun;
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem, string TextureName)
         {            
             IsNightTexture = false;
@@ -1131,7 +1145,19 @@ namespace Orts.Viewer3D
             {
                 CabnightColorModifierValueFinal = CabnightColorModifierValue;
             }
-                
+
+            if (Program.Simulator.WorldThunder)
+            {
+                WorldThunderRun = true;
+                CabnightColorModifierValueFinal = CabnightColorModifierValue;
+            }
+
+            if (!Program.Simulator.WorldThunder && WorldThunderRun)
+            {
+                WorldThunderRun = false;
+                CabnightColorModifierValueFinal = CabnightColorModifierValue;
+            }
+
             if (LightItem || Program.Simulator.CabFloodLightActivate)            
                 nightColorModifier.SetValue(CabnightColorModifierValue);            
             else

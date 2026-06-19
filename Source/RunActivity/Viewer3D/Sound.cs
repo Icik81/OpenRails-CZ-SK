@@ -1504,7 +1504,24 @@ namespace Orts.Viewer3D
 
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
-            
+
+            // Úprava hlasitosti zvuku hromů            
+            if (car != null && MSTSStream != null)
+            {
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("thunder"))
+                                {
+                                    volume *= 2;                                   
+                                }                                
+                            }
+                }
+            }
+
             // Úprava hlasitosti zvuku motorů dle zatížení            
             if (car != null && MSTSStream != null)
             {
