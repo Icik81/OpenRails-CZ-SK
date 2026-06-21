@@ -240,28 +240,29 @@ Tr_SMS (
 			Stream (			
 				Skip (** Skripot a udery okolku v oblouku **)
 				Priority ( 6 )
-				Volume (0.6)
+				Volume (1.0)
 				Triggers ( 2
-					Variable_Trigger ( CurveForce_Inc_Past 100	StartLoopRelease ( 1	File ( "../4_Wheels/okolky.wav" -1 ) SelectionMethod ( SequentialSelection) ) )
-					Variable_Trigger ( CurveForce_Dec_Past 100	ReleaseLoopReleaseWithJump () )		
+					Variable_Trigger ( CurveForce_Inc_Past 10	StartLoopRelease ( 1	File ( "../4_Wheels/okolky.wav" -1 ) SelectionMethod ( SequentialSelection) ) )
+					Variable_Trigger ( CurveForce_Dec_Past 10	ReleaseLoopReleaseWithJump () )		
 				)
 				FrequencyCurve(
 					SpeedControlled
 					CurvePoints ( 3
-						0.0		6000
-						12.0	11025
-						35.0    15000
+						0.0		20050
+						12.0	22050
+						35.0    24050
 					)
 					Granularity ( 100 )
 				)
 				VolumeCurve(
 				CurveForceControlled
-				CurvePoints ( 5
+				CurvePoints ( 6
 					0    0.00
-					100  0.40
-					400  0.60	
-					600  0.80
-					800  1.00	
+					10	 0.40
+					100  0.60
+					400  0.80	
+					600  1.00
+					800  1.50	
 				)
 				Granularity  ( 0.10 )
 				)
