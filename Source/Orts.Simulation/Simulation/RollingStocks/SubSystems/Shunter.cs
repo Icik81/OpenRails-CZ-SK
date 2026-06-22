@@ -158,6 +158,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterCheckAirPressureTimer;
         bool CheckAuxResBrakeLine;
 
+        #region ShunterCheckAirPressureInCar
         public void ShunterCheckAirPressureInCar(float elapsedClockSeconds, TrainCar testCar)
         {            
             if (testCar.BrakeSystem.CarHasMaybeProblemWithBrake)
@@ -349,6 +350,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             }
             SkipAuxResPressureCheck: ;
         }
+        #endregion ShunterCheckAirPressureInCar
 
         public void Update(float elapsedClockSeconds)
         {
@@ -1579,7 +1581,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 // Konec tratě
                 float DistanceToEOA = 1000;
-                if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK /*|| Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY*/)
+                if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY)
                     && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 175)
                 {
                     DistanceToEOA = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
@@ -1699,7 +1701,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 float DistanceSTPCorrectionM = 0;
                 if (Locomotive.Simulator.ShunterProcessSTPActive_Start)
                 {
-                    ShunterSoundStartPlayed = true;                   
+                    ShunterSoundStartPlayed = true;
+
+                    if ((ShunterSoundStopSTPPlayed || Locomotive.Train.nextRouteReady) && Locomotive.AbsSpeedMpS < 0.01f)
+                    {
+                        // U reversu ukončí navádění až se obrátí cesta
+                        if (Locomotive.Simulator.ShunterDecideMarker == Simulator.Catalog.GetString("REVERS"))
+                        {
+                            if (Locomotive.Train.nextRouteReady)
+                                Locomotive.Simulator.ShunterProcessSTPActive_End = true;
+                            else
+                                goto SkipShunterDecideMarker;
+                        }
+                        else
+                            Locomotive.Simulator.ShunterProcessSTPActive_End = true;
+                    }
+
                     switch (DistanceToSTP)
                     {
                         case float n when n == DistanceToSIGNAL:
@@ -1717,10 +1734,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             Locomotive.Simulator.ShunterDecideMarker = Simulator.Catalog.GetString("TRIGGER");
                             break;
                     }
-                    if ((ShunterSoundStopSTPPlayed || Locomotive.Train.nextRouteReady) && Locomotive.AbsSpeedMpS < 0.01f)
-                    {                        
-                        Locomotive.Simulator.ShunterProcessSTPActive_End = true;
-                    }
+
+                    SkipShunterDecideMarker:;
+
                 }
                 if (Locomotive.Simulator.ShunterProcessSTPActive_End)
                 {
@@ -1874,17 +1890,17 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         else
                             ShunterSoundOff = false;
                         
-                        if (DistanceToSTP > 140 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 150 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
+                        if (DistanceToSTP > 149 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 150 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slow);
                             ShunterSoundSlowToSTPPlayed = true;
                         }
-                        if (DistanceToSTP > 40 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 50 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
+                        if (DistanceToSTP > 49 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 50 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_NearSTP);
                             ShunterSoundNearToSTPPlayed = true;
                         }
-                        if (DistanceToSTP > 15 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 20 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
+                        if (DistanceToSTP > 19 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 20 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_SlowNearSTP);
                             ShunterSoundSlowNearToSTPPlayed = true;

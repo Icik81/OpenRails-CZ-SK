@@ -1362,6 +1362,10 @@ namespace Orts.Formats.Msts
                     }
                     stf.MustMatch(")");
                 }),
+                // Icik
+                new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
             });
         }
     }
