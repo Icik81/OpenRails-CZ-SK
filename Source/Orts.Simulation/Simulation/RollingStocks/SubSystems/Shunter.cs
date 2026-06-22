@@ -144,6 +144,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         float ShunterSimpleTestBrakePhase5Timer;        
         float ShunterSimpleTestBrakePhase2CarCheckTimer;
         float ShunterSimpleTestBrakePhase4CarCheckTimer;
+        bool ShunterSimpleTestBrakeHandBrakeActivated;
+        float ShunterSimpleTestBrakeHandBrakeTimer;
         float[] ShunterTestBrakeCarCheckTime = new float[100];        
         int CarNumber = 1;
         int LastCarConnectedNumber;
@@ -1417,8 +1419,31 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ShunterSimpleTestBrakePhaseTimeOut = true;
                 }
 
+                // Kontrola, zda není aktivovaný ruční brzda u některého z vozů, pokud ano, tak se pokusí ruční brzdu uvolnit, aby test mohl pokračovat
+                if (ShunterSimpleTestBrakePhase5)
+                {
+                    ShunterSimpleTestBrakeHandBrakeActivated = false;
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive && !car.CarIsPlayerLoco)))
+                    {
+                        if (car.BrakeSystem.HandBrakeActive)
+                        {
+                            ShunterSimpleTestBrakeHandBrakeActivated = true;
+                            ShunterSimpleTestBrakeHandBrakeTimer += elapsedClockSeconds;
+                            if (ShunterSimpleTestBrakeHandBrakeTimer > car.CarLengthM)
+                            {
+                                ShunterSimpleTestBrakeHandBrakeTimer = 0;                                
+                                car.BrakeSystem.HandBrakeDeactive = true;
+                                car.BrakeSystem.HandBrakeActive = false;
+                                car.BrakeSystem.SetHandbrakePercent(0);
+                                car.SignalEvent(Event.ShunterTestBrakeSound_HandBrakeRelease);
+                                break;
+                            }
+                        }
+                    }
+                }                
+
                 // Fáze 5: Generuje informaci o vlaku
-                if (ShunterSimpleTestBrakePhase5 && !ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4)
+                if (!ShunterSimpleTestBrakeHandBrakeActivated && ShunterSimpleTestBrakePhase5 && !ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4)
                 {                    
                     ShunterSimpleTestBrakePhase5Timer += elapsedClockSeconds;
 
