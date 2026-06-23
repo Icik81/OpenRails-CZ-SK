@@ -807,7 +807,8 @@ namespace Orts.Simulation.Physics
 
         public Train(Simulator simulator, BinaryReader inf)
         {
-            // Icik            
+            // Icik
+            AIMaxTrainSpeedCalculatedFromConFile = inf.ReadSingle();
             AITrainOutOfPower = inf.ReadBoolean();
             AITrainSpeedZone = inf.ReadBoolean();
             FreeViewCameraX = inf.ReadSingle();
@@ -1214,6 +1215,7 @@ namespace Orts.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(AIMaxTrainSpeedCalculatedFromConFile);
             outf.Write(AITrainOutOfPower);
             outf.Write(AITrainSpeedZone);
             outf.Write(FreeViewCameraX);
