@@ -491,7 +491,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             ShunterFullTestBrakePhase1Timer = 10.0f;
                         }
 
-                        if (!ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && ShunterFullTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f)
+                        if (!ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && (ShunterFullTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f))
                         {
                             ShunterFullTestBrakePhase1 = false;
                             ShunterFullTestBrakePhase2 = true;
@@ -677,7 +677,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             ShunterFullTestBrakePhase3Timer = 5.0f;
                         }
 
-                        if (!ShunterFullTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI > 4.9f * 14.50377f && ShunterFullTestBrakePhase3Timer > Locomotive.Train.Cars.Count * 5.0f)
+                        if (!ShunterFullTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI > 4.9f * 14.50377f && (ShunterFullTestBrakePhase3Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() < 0.1f * 14.50377f))
                         {
                             ShunterFullTestBrakePhase3 = false;
                             ShunterFullTestBrakePhase4 = true;
@@ -965,7 +965,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 
                 foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive)))
                 {
-                    CheckWagonListIndex++;
+                    CheckWagonListIndex = 1;
                     CheckWagonList[1] = car;
                     
                     if (!car.CarHasBrakePipeConnected)
@@ -1034,7 +1034,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             ShunterSimpleTestBrakePhase1Timer = 10.0f;
                         }
 
-                        if (!ShunterSimpleTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && ShunterSimpleTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f)
+                        if (!ShunterSimpleTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && (ShunterSimpleTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f))
                         {
                             ShunterSimpleTestBrakePhase1 = false;
                             ShunterSimpleTestBrakePhase2 = true;
@@ -1198,7 +1198,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                             ShunterSimpleTestBrakePhase3Timer = 5.0f;
                         }
 
-                        if (!ShunterSimpleTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI > 4.9f * 14.50377f && ShunterSimpleTestBrakePhase3Timer > Locomotive.Train.Cars.Count * 5.0f)
+                        if (!ShunterSimpleTestBrakePhase4 && LastCarConnected.BrakeSystem.BrakeLine1PressurePSI > 4.9f * 14.50377f && (ShunterSimpleTestBrakePhase3Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() < 0.1f * 14.50377f))
                         {
                             ShunterSimpleTestBrakePhase3 = false;
                             ShunterSimpleTestBrakePhase4 = true;
