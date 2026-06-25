@@ -811,6 +811,7 @@ namespace Orts.Simulation.RollingStocks
         public bool LocomotiveFaulty;
         public bool ControllerAtNeutralDrivePosition;
         public Shunter Shunter;
+        public bool InitLocoShaders;
 
         // Jindrich
         public bool IsActive = false;
@@ -7974,10 +7975,11 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);                
             }
 
+            Simulator.Locomotive = this;            
             if (IsPlayerTrain && !Simulator.Paused)
             {                
                 if (IsLeadLocomotive())
-                {
+                {                    
                     Simulator.CabRadioOn = CabRadio[LocoStation];
                     // Pro 3D kabiny je vysílačka zapnutá vždy
                     if (HasFront3DCab || HasRear3DCab)
@@ -13208,6 +13210,9 @@ namespace Orts.Simulation.RollingStocks
                 this.CarFrameUpdateState++;
             if (this.CarFrameUpdateState > 100)
                 this.CarFrameUpdateState = 100;
+
+            if (AllCabItemReaded)
+                InitLocoShaders = true;
         }
 
         public void MUCableLogic()

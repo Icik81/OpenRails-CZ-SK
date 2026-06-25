@@ -1505,6 +1505,7 @@ namespace Orts.Viewer3D
                     volume *= Interpolate(x, MSTSStream.VolumeCurves[i]);
                 }
 
+
             // Úprava hlasitosti zvuku hromů            
             if (car != null && MSTSStream != null)
             {
@@ -1615,7 +1616,7 @@ namespace Orts.Viewer3D
             }
             
             // Ztiší zvuk vypínání motoru při automatické inicializaci volnoběhu
-            if (car != null && MSTSStream != null && car.CarInitStopSoundOff)
+            if (car != null && MSTSStream != null && (car.CarInitStopSoundOff || car.Train.TrainType == Train.TRAINTYPE.STATIC))
             {
                 // Vyhledá zvuk start/stop motoru
                 foreach (var trigger in Triggers)
@@ -1634,7 +1635,7 @@ namespace Orts.Viewer3D
             }
 
             // Ztiší zvuk start motoru při automatické inicializaci startu motoru
-            if (car != null && MSTSStream != null && car.CarInitStartSoundOff)
+            if (car != null && MSTSStream != null && (car.CarInitStartSoundOff || car.Train.TrainType == Train.TRAINTYPE.STATIC))
             {
                 // Vyhledá zvuk start/stop motoru
                 foreach (var trigger in Triggers)

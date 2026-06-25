@@ -405,7 +405,7 @@ namespace Orts.Viewer3D
                 if (FullBrightnessFinal > FullBrightness)
                     FullBrightnessFinal -= FullBrightnessFinalCoef * Program.Simulator.OneSecondLoop;
 
-            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && (Program.Simulator.PlayerLocomotive as MSTSLocomotive).LocoSetUpTimer < 5))
+            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
             {
                 FullBrightnessFinal = FullBrightness;
             }
@@ -1141,8 +1141,8 @@ namespace Orts.Viewer3D
                         CabnightColorModifierValueFinal -= CabnightColorModifierValueFinalCoef * Program.Simulator.OneSecondLoop;
             }
 
-            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && (Program.Simulator.PlayerLocomotive as MSTSLocomotive).LocoSetUpTimer < 5))
-            {
+            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
+            {                
                 CabnightColorModifierValueFinal = CabnightColorModifierValue;
             }
 

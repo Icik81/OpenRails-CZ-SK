@@ -1305,7 +1305,7 @@ namespace Orts.Simulation.RollingStocks
                     CarInitStopSoundOff = true;
                 }
 
-                if (CarInitStopSoundOff && Simulator.GameTime > 10.0f) CarInitStopSoundOff = false;
+                if (CarInitStopSoundOff && LocoSetUpTimer == 5.0f) CarInitStopSoundOff = false;
 
                 if (!PowerKey && !DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
                 {
@@ -1467,8 +1467,10 @@ namespace Orts.Simulation.RollingStocks
                         }
                     }
                 }
-                if (CarInitStartSoundOff && Simulator.GameTime > 10.0f) CarInitStartSoundOff = false;
+                if (CarInitStartSoundOff && LocoSetUpTimer == 5.0f) CarInitStartSoundOff = false;
             }
+
+            if (CarInitStopSoundOff && LocoSetUpTimer == 5.0f) CarInitStopSoundOff = false;
 
             // Kontrolní žárovka pro dobíjení baterií
             float CheckMotorLampConstant_0 = 1.01f;                        
