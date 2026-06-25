@@ -167,7 +167,7 @@ namespace Orts.Viewer3D.Debugging
                         var Variable1 = selectedSoundSource.Car.Variable1;
                         var Variable2 = selectedSoundSource.Car.Variable2;
                         var Variable3 = selectedSoundSource.Car.Variable3;
-                        var Variable5 = selectedSoundSource.Car.Variable5;
+                        var Variable5 = selectedSoundSource.Car.Variable5 / 1000;
 
                         if (selectedSoundSource.Car is MSTSSteamLocomotive)
                         {

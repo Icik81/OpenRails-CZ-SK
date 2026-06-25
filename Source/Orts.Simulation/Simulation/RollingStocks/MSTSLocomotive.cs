@@ -8090,9 +8090,8 @@ namespace Orts.Simulation.RollingStocks
 
             // Hodnoty pro výpočet zvukových proměnných
             TrainBrakeControllerValueForSound = (float)Math.Round(TrainBrakeController.CurrentValue, 2);
-            EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);
-            Variable5 = (float)Math.Round(Math.Abs(CurrentFilter.Filter(DriveForceN, elapsedClockSeconds) / 1000));
-
+            EngineBrakeControllerValueForSound = (float)Math.Round(EngineBrakeController.CurrentValue, 2);            
+            Variable5 = (float)Math.Round(Math.Abs(CurrentFilter.Filter(DriveForceN, elapsedClockSeconds) / 1));
 
             TrainControlSystem.Update();
 
