@@ -1132,7 +1132,7 @@ namespace Orts.Viewer3D
             }
 
             float CabnightColorModifierValueFinalCoef = Program.Simulator.TunnelInfo ? 0.05f : 0.0025f;
-            if (!Program.Simulator.CabFloodLightActivate)
+            if (!LightItem && !Program.Simulator.CabFloodLightActivate)
             {
                 if (CabnightColorModifierValueFinal < CabnightColorModifierValue)
                     CabnightColorModifierValueFinal += CabnightColorModifierValueFinalCoef * Program.Simulator.OneSecondLoop;
