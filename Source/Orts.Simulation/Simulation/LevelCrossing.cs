@@ -1,21 +1,21 @@
 ﻿// COPYRIGHT 2012, 2013 by the Open Rails project.
-// 
+//
 // This file is part of Open Rails.
-// 
+//
 // Open Rails is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
 // the Free Software Foundation, either version 3 of the License, or
 // (at your option) any later version.
-// 
+//
 // Open Rails is distributed in the hope that it will be useful,
 // but WITHOUT ANY WARRANTY; without even the implied warranty of
 // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 // GNU General Public License for more details.
-// 
+//
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
-
-// This file is the responsibility of the 3D & Environment Team. 
+//
+// This file is the responsibility of the 3D & Environment Team.
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
@@ -80,6 +80,7 @@ namespace Orts.Simulation
                 for (var i = 0; i < roadItems.Length; i++)
                     if (!RoadToTrackCrossingItems.ContainsKey(roadItems[i]))
                         RoadToTrackCrossingItems.Add(roadItems[i], trackItems[i]);
+
             return new LevelCrossing(trackItems.Union(roadItems), warningTime, minimumDistance, crashProbability);
         }
 
@@ -88,36 +89,41 @@ namespace Orts.Simulation
         {
             foreach (var train in Simulator.Trains)
                 UpdateCrossings(train, elapsedClockSeconds);
+
+            // NEW: after HasTrain lists were updated, update any per-crossing state machines (e.g. CZ logic).
+            foreach (var crossing in TrackCrossingItems.Values
+                         .Where(ci => ci.CrossingGroup != null)
+                         .Select(ci => ci.CrossingGroup)
+                         .Distinct())
+            {
+                crossing.Update(elapsedClockSeconds);
+            }
         }
 
-        [CallOnThread("Updater")]        
+        [CallOnThread("Updater")]
         void UpdateCrossings(Train train, float elapsedTime)
-        {            
+        {
             var speedMpS = train.SpeedMpS;
             var absSpeedMpS = Math.Abs(speedMpS);
             var maxSpeedMpS = train.AllowedMaxSpeedMpS;
             var minCrossingActivationSpeed = 5.0f;  //5.0MpS is equalivalent to 11.1mph.  This is the estimated min speed that MSTS uses to activate the gates when in range.
 
-
             bool validTrain = false;
             bool validStaticConsist = false;
-            //var stopTime = elapsedTime; // This has been set up, but it is not being used in the code.
-            //stopTime = 0;
-
 
             // We only care about crossing items which are:
             //   a) Grouped properly.
             //   b) Within the maximum activation distance of front/rear of the train.
             // Separate tests are performed for present speed and for possible maximum speed to avoid anomolies if train accelerates.
-            // Special test is also done to check on section availability to avoid closure beyond signal at danger.            
-            int crossingNr = 0;            
+            // Special test is also done to check on section availability to avoid closure beyond signal at danger.
+            int crossingNr = 0;
             foreach (var crossing in TrackCrossingItems.Values.Where(ci => ci.CrossingGroup != null))
             {
                 crossingNr++;
                 bool UnprotectedLevelCross = crossing.CrossingGroup.CrashProbability > 0f ? true : false;
                 bool UnprotectedLevelCross1 = crossing.CrossingGroup.CrashProbability == 1f ? true : false;
-                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability >= 2f ? true : false;                                
-                              
+                bool UnprotectedLevelCross2 = crossing.CrossingGroup.CrashProbability >= 2f ? true : false;
+
                 var predictedDist = crossing.CrossingGroup.WarningTime * absSpeedMpS;
                 var maxPredictedDist = crossing.CrossingGroup.WarningTime * (maxSpeedMpS - absSpeedMpS) / 2; // added distance if train accelerates to maxspeed
                 var minimumDist = crossing.CrossingGroup.MinimumDistance;
@@ -125,18 +131,11 @@ namespace Orts.Simulation
                 var totalMaxDist = predictedDist + maxPredictedDist + minimumDist + 1;
 
                 var reqDist = 0f; // actual used distance
-                var adjustDist = 0f;                
+                var adjustDist = 0f;
 
-                //  The first 2 tests are critical for STATIC CONSISTS, but at the same time should be mandatory since there should always be checks for any null situation.
-                //  The first 2 tests cover a situation where a STATIC consist is found on a crossing attached to a road where other crossings are attached to the same road.
-                //  These tests will only allow the activation of the crossing that should be activated but prevent the actvation of the other crossings which was the issue.
-                //  The source of the issue is not known yet since this only happens with STATIC consists.
-
-                // The purpose of this test is to validate the static consist that is within vicinity of the crossing.
+                // Validate STATIC consists near the crossing.
                 if (train.TrainType == Train.TRAINTYPE.STATIC)
                 {
-                    // An issue was found where a road sharing more than one crossing would have all crossings activated instead of the one crossing when working with STATIC consists.
-                    // The test below corrects this, but the source of the issue is not understood.
                     if (!WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, (minimumDist + (train.Length / 2))) && !WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, (minimumDist + (train.Length / 2))))
                         continue;
                     if (WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, (minimumDist + (train.Length / 2))) || WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, (minimumDist + (train.Length / 2))))
@@ -148,24 +147,23 @@ namespace Orts.Simulation
                         }
                     }
                 }
-                
+
                 if ((train.TrainType != Train.TRAINTYPE.STATIC) && WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, totalDist) || WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, totalDist))
                 {
                     validTrain = true;
                     reqDist = totalDist;
-                    
+
                     foreach (TrainCar Car in train.Cars)
                     {
                         if (WorldLocation.Within(crossing.Location, Car.WorldPosition.WorldLocation, 5))
-                            Car.CarIsOnLvlCrossover = true; // Vůz je na přejezdu                    
+                            Car.CarIsOnLvlCrossover = true; // Vůz je na přejezdu
                         else
                             Car.CarIsOnLvlCrossover = false;
-                    }                                                                                        
+                    }
 
                     // Hráč
                     if (train.IsActualPlayerTrain && !train.Simulator.PlayerTrainInAutopilotMode)
                     {
-                        // Startovní pravidlo                        
                         if (UnprotectedLevelCross)
                         {
                             train.TrainIsNearToLvlCross = true;
@@ -197,14 +195,12 @@ namespace Orts.Simulation
                                 }
                             }
                         }
-                        //else
-                        //    train.UnprotectedLevelCrossWarningCanEnable[crossingNr] = false;
                     }
-                    
+
                     // AI
                     if (train is AITrain && (!(train as AITrain).IsActualPlayerTrain || ((train as AITrain).IsActualPlayerTrain && train.Simulator.PlayerTrainInAutopilotMode)))
                     {
-                        var AItrain = train as AITrain;                        
+                        var AItrain = train as AITrain;
 
                         // AI LvlCr Setup
                         if (!AItrain.AIUnprotectedLevelCrossSetup[crossingNr] && !AItrain.AIUnprotectedLevelCrossWarningRunning)
@@ -239,7 +235,7 @@ namespace Orts.Simulation
                                     AItrain.AIUnprotectedLevelCrossWarningCanEnable[crossingNr] = true;
                                 else
                                 {
-                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable[crossingNr] = false;                                    
+                                    AItrain.AIUnprotectedLevelCrossWarningCanEnable[crossingNr] = false;
                                     if (frontDistance > 0)
                                     {
                                         AItrain.AIUnprotectedLevelCrossSetup[crossingNr] = false;
@@ -261,8 +257,8 @@ namespace Orts.Simulation
                                         AItrain.AIUnprotectedLevelCrossWarningRunning = false;
                                     }
                                 }
-                            }                            
-                        }                        
+                            }
+                        }
 
                         if (AItrain.AIUnprotectedLevelCrossWarningRunning || AItrain.AIUnprotectedLevelCrossWarningCanEnable[crossingNr])
                         {
@@ -292,8 +288,8 @@ namespace Orts.Simulation
                                                         car.SignalEvent(Common.Event.HornOn);
                                                     if (car.TriggerHornNumber == 2)
                                                         car.SignalEvent(Common.Event.Horn2On);
-                                                    if (car.TriggerHornNumber == 3)                                                                                                            
-                                                        car.SignalEvent(Common.Event.HornOn);                                                                                                            
+                                                    if (car.TriggerHornNumber == 3)
+                                                        car.SignalEvent(Common.Event.HornOn);
                                                 }
                                                 if (AItrain.AIUnprotectedLevelCrossWarningType[crossingNr] == 2)
                                                     car.SignalEvent(Common.Event.BellOn);
@@ -336,16 +332,15 @@ namespace Orts.Simulation
                                         }
                                     }
                                 }
-                            }                            
-                        }                        
+                            }
+                        }
                     }
-                }                                
-
+                }
                 else if ((train.TrainType != Train.TRAINTYPE.STATIC) && WorldLocation.Within(crossing.Location, train.FrontTDBTraveller.WorldLocation, totalMaxDist) || WorldLocation.Within(crossing.Location, train.RearTDBTraveller.WorldLocation, totalMaxDist))
                 {
                     validTrain = true;
-                    reqDist = totalMaxDist;                    
-                }                                
+                    reqDist = totalMaxDist;
+                }
 
                 if ((train.TrainType == Train.TRAINTYPE.STATIC) && !validStaticConsist && !crossing.StaticConsists.Contains(train))
                 {
@@ -376,20 +371,7 @@ namespace Orts.Simulation
                 {
                     //  Add generic actions if needed
                     aiTrain.AuxActionsContain.CheckGenActions(this.GetType(), crossing.Location, rearDist, frontDist, crossing.TrackIndex, aiTrain.LevelCrossingHornPattern);
-                // Train speed is 0.  This was the initial issue that was found under one the MSTS activities.  Activity should start without gates being activated.
                 }
-
-                // The tests below is to allow the crossings operate like the crossings under MSTS
-                // Tests as follows
-                // There are 2 tests for train speed between 0 and 5.0MpS(11.1mph).  Covering forward movement and reverse movement.  
-                // The last 2 tests is for testing trains running at line speed, forward or reverse.
-
-                // The crossing only becomes active if the train has been added to the list such as crossing.AddTrain(train).
-                // Note: With the conditions below, OR's crossings operates like the crossings in MSTS, with exception to the simulation of the timout below.
-
-                // MSTS did not simulate a timeout, I introduced a simple timout using speedMpS.
-
-                // Depending upon future development in this area, it would probably be best to have the current operation in its own class followed by any new region specific operations. 
 
                 if (absSpeedMpS > 5f / 3.6f) train.TrainStopAtLevelCrossTimer = 0; // Reset časovače při rychlosti vlaku vyšší než 5 km/h
 
@@ -406,7 +388,6 @@ namespace Orts.Simulation
                             crossing.RemoveTrain(train);
                     }
                     //adjustDist is used to allow static cars to be placed closer to the crossing without activation.
-                    // One example would be industry sidings with a crossing nearby.  This was found in a custom route.
                     if (minimumDist >= 20)
                         adjustDist = minimumDist - 13.5f;
                     else if (minimumDist < 20)
@@ -425,9 +406,7 @@ namespace Orts.Simulation
                     else if (frontDist < 0 && rearDist > 0)
                         crossing.AddTrain(train);
 
-                    // This is an odd test because a custom route has a particular
-                    // crossing object placement that is creating different results.
-                    // Testing to check if consist is straddling the crossing.
+                    // Odd test
                     else if (frontDist < 0 && rearDist < 0)
                         crossing.AddTrain(train);
 
@@ -442,65 +421,58 @@ namespace Orts.Simulation
                 // Train is stopped.
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER || train.TrainType == Train.TRAINTYPE.REMOTE) && Math.Abs(speedMpS) <= Simulator.MaxStoppedMpS && frontDist <= reqDist && (train.ReservedTrackLengthM <= 0 || frontDist < train.ReservedTrackLengthM) && rearDist <= minimumDist)
                 {
-                    // First test is to simulate a timeout if a train comes to a stop before minimumDist
-                    
                     float DistanceToOpenCrossing = 250f; // Vzdálenost pro otevření přejezdu po zastavení vlaku před přejezdem
-                    if (frontDist > DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
+                    if (frontDist > DistanceToOpenCrossing && Simulator.Trains.Contains(train))
                     {
-                        crossing.RemoveTrain(train); // Přejezd se nezavře, pokud je vlak vzdálen více jak DistanceToOpenCrossing                       
-                    }
-                    
-                    // This test is to factor in the train sitting on the crossing at the start of the activity.
-                    if (frontDist <= DistanceToOpenCrossing /*minimumDist*/ && Simulator.Trains.Contains(train))
-                    {
-                        crossing.AddTrain(train); // Přejezd se zavře, pokud je vlak ve vzdálenosti DistanceToOpenCrossing a méně od přejezdu
-                        if (frontDist > 30f && train.TrainStopAtLevelCrossTimer == 0) train.TrainStopAtLevelCrossTimer += elapsedTime; // Spustí časovač při zastavení vlaku 
+                        crossing.RemoveTrain(train);
                     }
 
-                    float TrainStopAtLevelCrossWaitTime = 3f * 60f; // Vteřinový časový limit pro otevření přejezdu po zastavení vlaku před přejezdem
+                    if (frontDist <= DistanceToOpenCrossing && Simulator.Trains.Contains(train))
+                    {
+                        crossing.AddTrain(train);
+                        if (frontDist > 30f && train.TrainStopAtLevelCrossTimer == 0) train.TrainStopAtLevelCrossTimer += elapsedTime;
+                    }
+
+                    float TrainStopAtLevelCrossWaitTime = 3f * 60f;
                     if (frontDist > 30f && train.TrainStopAtLevelCrossTimer > TrainStopAtLevelCrossWaitTime && Simulator.Trains.Contains(train))
                     {
-                        crossing.RemoveTrain(train); // Otevření přejezdu po zastavení vlaku před minimální vzdáleností                       
+                        crossing.RemoveTrain(train);
                     }
                 }
 
                 // Train is travelling toward crossing below 11.1mph.
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER || train.TrainType == Train.TRAINTYPE.STATIC || train.TrainType == Train.TRAINTYPE.REMOTE) && speedMpS > 0 && speedMpS <= minCrossingActivationSpeed && frontDist <= reqDist && (train.ReservedTrackLengthM <= 0 || frontDist < train.ReservedTrackLengthM) && rearDist <= minimumDist)
                 {
-                    // This will allow a slow train to approach to the crossing's minmum distance without activating the crossing.
-                    if (frontDist <= minimumDist + 65f) // Not all crossing systems operate the same so adding an additional 65 meters is only an option to improve operation.
+                    if (frontDist <= minimumDist + 65f)
                         crossing.AddTrain(train);
                 }
 
-                // Checking for reverse movement when train is approaching crossing while travelling under 11.1mph.
+                // Reverse movement under 11.1mph.
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER) && speedMpS < 0 && absSpeedMpS <= minCrossingActivationSpeed && rearDist <= reqDist && (train.ReservedTrackLengthM <= 0 || rearDist < train.ReservedTrackLengthM) && frontDist <= minimumDist)
                 {
-                    // This will allow a slow train to approach a crossing to a certain point without activating the system.
-                    // First test covers front of train clearing crossing.
-                    // Second test covers rear of train approaching crossing.
-                    if (frontDist > 9.5) // The value of 9.5 which is within minimumDist is used to test against frontDist to give the best possible distance the gates should deactivate.
+                    if (frontDist > 9.5)
                         crossing.RemoveTrain(train);
-                    else if (rearDist <= minimumDist + 65f) // Not all crossing systems operate the same so adding an additional 65 meters is only an option to improve operation.
+                    else if (rearDist <= minimumDist + 65f)
                         crossing.AddTrain(train);
                 }
 
-                // Checking for reverse movement through crossing when train is travelling above 11.1mph.
+                // Reverse movement above 11.1mph.
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER || train.TrainType == Train.TRAINTYPE.REMOTE) && speedMpS < 0 && absSpeedMpS > minCrossingActivationSpeed && rearDist <= reqDist && (train.ReservedTrackLengthM <= 0 || rearDist < train.ReservedTrackLengthM) && frontDist <= minimumDist)
                 {
                     crossing.AddTrain(train);
                 }
 
-                // Player train travelling in forward direction above 11.1mph will activate the crossing.  
+                // Forward above 11.1mph.
                 else if ((train is AITrain || train.TrainType == Train.TRAINTYPE.PLAYER || train.TrainType == Train.TRAINTYPE.REMOTE) && speedMpS > 0 && speedMpS > minCrossingActivationSpeed && frontDist <= reqDist && (train.ReservedTrackLengthM <= 0 || frontDist < train.ReservedTrackLengthM) && rearDist <= minimumDist)
                 {
                     crossing.AddTrain(train);
                 }
-
                 else
-                {                    
+                {
                     crossing.RemoveTrain(train);
-                }                
+                }
             }
+
             train.UnprotectedLevelCrossCount = crossingNr;
         }
 
@@ -554,7 +526,6 @@ namespace Orts.Simulation
 
         public LevelCrossingItem()
         {
-
         }
 
         [CallOnThread("Updater")]
@@ -569,7 +540,6 @@ namespace Orts.Simulation
                     newStaticConsists.Add(train);
                     StaticConsists = newStaticConsists;
                 }
-
             }
             else
             {
@@ -596,9 +566,6 @@ namespace Orts.Simulation
                     newStaticConsists.Remove(train);
                     StaticConsists = newStaticConsists;
                 }
-                // Secondary option to remove Static entry from list in case the above does not work.
-                // Since the above process would not be able to remove the static consist from the list when the locomotive attaches to the consist.
-                // The process below will be able to do it. 
                 else
                 {
                     var newStaticConsists = new List<Train>(staticConsists);
@@ -634,12 +601,171 @@ namespace Orts.Simulation
         }
     }
 
+    /// <summary>
+    /// LevelCrossing now contains both:
+    ///  - original (default) MSTS logic driven by HasTrain
+    ///  - optional "CZ" state machine (barrier+lights), deterministic in simulation.
+    /// Viewer may ignore CZ fields for non-CZ shapes.
+    /// </summary>
     public class LevelCrossing
     {
         internal readonly List<LevelCrossingItem> Items;
         internal readonly float WarningTime;
         internal readonly float MinimumDistance;
         internal readonly int CrashProbability;
+
+        // ===== New optional CZ logic =====================================================
+
+        public enum VisualLogic
+        {
+            DefaultMsts = 0,
+            Czech = 1,
+        }
+
+        public enum CzechPhase
+        {
+            Open = 0,
+            Warning = 1,
+            Closing = 2,
+            Closed = 3,
+            Opening = 4,
+        }
+
+        public VisualLogic LogicMode { get; private set; } = VisualLogic.DefaultMsts;
+
+        public float CzechWarningDelayS { get; private set; } = 10f;
+        public float CzechBarrierSpeed01PerS { get; private set; } = 0.2f;
+        public float CzechRedFlashesPerMinute { get; private set; } = 60f;
+        public float CzechWhiteFlashesPerMinute { get; private set; } = 40f;
+
+        public CzechPhase CzPhase { get; private set; } = CzechPhase.Open;
+
+        /// <summary>0..1 poloha závory (0=nahoře, 1=dole)</summary>
+        public float CzBarrierPos01 { get; private set; } = 0f;
+
+        public bool CzRed1On { get; private set; } = false;
+        public bool CzRed2On { get; private set; } = false;
+        public bool CzWhiteOn { get; private set; } = true;
+
+        float CzStateTimerS = 0f;
+        float CzLightTimerS = 0f;
+
+        public void EnableCzechLogic(
+            float warningDelayS = 10f,
+            float barrierSpeed01PerS = 0.2f,
+            float redFlashesPerMinute = 60f,
+            float whiteFlashesPerMinute = 40f)
+        {
+            LogicMode = VisualLogic.Czech;
+
+            CzechWarningDelayS = Math.Max(0f, warningDelayS);
+            CzechBarrierSpeed01PerS = Math.Max(0.001f, barrierSpeed01PerS);
+            CzechRedFlashesPerMinute = Math.Max(1f, redFlashesPerMinute);
+            CzechWhiteFlashesPerMinute = Math.Max(1f, whiteFlashesPerMinute);
+
+            CzPhase = CzechPhase.Open;
+            CzBarrierPos01 = 0f;
+            CzStateTimerS = 0f;
+            CzLightTimerS = 0f;
+
+            CzRed1On = false;
+            CzRed2On = false;
+            CzWhiteOn = true;
+        }
+
+        [CallOnThread("Updater")]
+        public void Update(float elapsedClockSeconds)
+        {
+            if (LogicMode != VisualLogic.Czech)
+                return;
+
+            float dt = elapsedClockSeconds;
+            if (dt <= 0) return;
+
+            bool hasTrain = HasTrain;
+
+            switch (CzPhase)
+            {
+                case CzechPhase.Open:
+                    if (hasTrain)
+                    {
+                        CzPhase = CzechPhase.Warning;
+                        CzStateTimerS = 0f;
+                    }
+                    break;
+
+                case CzechPhase.Warning:
+                    if (!hasTrain)
+                    {
+                        CzPhase = CzechPhase.Open;
+                        CzStateTimerS = 0f;
+                    }
+                    else
+                    {
+                        CzStateTimerS += dt;
+                        if (CzStateTimerS >= CzechWarningDelayS)
+                        {
+                            CzPhase = CzechPhase.Closing;
+                            CzStateTimerS = 0f;
+                        }
+                    }
+                    break;
+
+                case CzechPhase.Closing:
+                    CzBarrierPos01 += dt * CzechBarrierSpeed01PerS;
+                    if (CzBarrierPos01 >= 1f)
+                    {
+                        CzBarrierPos01 = 1f;
+                        CzPhase = CzechPhase.Closed;
+                        CzStateTimerS = 0f;
+                    }
+                    break;
+
+                case CzechPhase.Closed:
+                    if (!hasTrain)
+                    {
+                        CzPhase = CzechPhase.Opening;
+                        CzStateTimerS = 0f;
+                    }
+                    break;
+
+                case CzechPhase.Opening:
+                    CzBarrierPos01 -= dt * CzechBarrierSpeed01PerS;
+                    if (CzBarrierPos01 <= 0f)
+                    {
+                        CzBarrierPos01 = 0f;
+                        CzPhase = CzechPhase.Open;
+                        CzStateTimerS = 0f;
+                    }
+                    break;
+            }
+
+            CzLightTimerS += dt;
+
+            float redPeriod = 60f / CzechRedFlashesPerMinute;
+            float whitePeriod = 60f / CzechWhiteFlashesPerMinute;
+
+            if (CzPhase != CzechPhase.Open)
+            {
+                float t = CzLightTimerS % redPeriod;
+                bool red1 = t < redPeriod * 0.5f;
+
+                CzRed1On = red1;
+                CzRed2On = !red1;
+                CzWhiteOn = false;
+            }
+            else
+            {
+                float t = CzLightTimerS % whitePeriod;
+                bool whiteOn = t < whitePeriod * 0.5f;
+
+                CzWhiteOn = whiteOn;
+                CzRed1On = false;
+                CzRed2On = false;
+            }
+        }
+
+        // ===============================================================================
 
         public LevelCrossing(IEnumerable<LevelCrossingItem> items, float warningTime, float minimumDistance, int crashProbability)
         {
@@ -657,12 +783,7 @@ namespace Orts.Simulation
             {
                 bool trains = Items.Any(i => i.Trains.Count > 0);
                 bool staticconsists = Items.Any(i => i.StaticConsists.Count > 0);
-                if (trains && staticconsists)
-                    return true;
-                else if (trains || staticconsists)
-                    return true;
-                else
-                    return false;
+                return trains || staticconsists;
             }
         }
     }

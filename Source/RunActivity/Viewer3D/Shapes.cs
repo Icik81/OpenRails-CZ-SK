@@ -137,7 +137,7 @@ namespace Orts.Viewer3D
         // Shape is an interior and must be rendered in a separate group.
         Interior = 4,
         // NOTE: Use powers of 2 for values!
-        UserSelectShadow = 5, 
+        UserSelectShadow = 5,
     }
 
     public class StaticShape
@@ -419,7 +419,7 @@ namespace Orts.Viewer3D
         {
         }
 
-        float[] TimeAction = new float[21];        
+        float[] TimeAction = new float[21];
         float TCoef;
         bool TestCondition1;
         bool TestCondition2;
@@ -449,13 +449,13 @@ namespace Orts.Viewer3D
                         if (DLoco != null)
                         {
                             if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning || (DLoco.DieselEngines[0].IndependentWaterPlates && DLoco.DieselEngines[0].WaterTempCoolingLowRunning)))
-                            {                                
+                            {
                                 TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
                                 TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[0] == 0 ? 3.0f : TimeAction[0]);
                                 if (AnimationKey[0] < SharedShape.Animations[0].FrameCount)
                                 {
                                     AnimationKey[0] += elapsedTime.ClockSeconds * TCoef;
-                                    
+
                                     // Testovací čas přehrátí animace
                                     TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate;
                                     //DLoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
@@ -463,9 +463,9 @@ namespace Orts.Viewer3D
                                 else
                                     TimeTest = 0;
                             }
-                            
+
                             if (!TestCondition1 && ((!DLoco.DieselEngines[0].IndependentWaterPlates && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentWaterPlates && !DLoco.DieselEngines[0].TopWaterPlatesOpened && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingLowRunning))))
-                            {                                
+                            {
                                 if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
                                 {
                                     TimeAction[0] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
@@ -486,330 +486,330 @@ namespace Orts.Viewer3D
                         }
                     }
                     else
-                    // 1
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
-                    {
-                        if (DLoco != null)
-                        {                                                        
-                            if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentOilPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
-                            {                                
-                                TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
-                                if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
-                                    AnimationKey[1] += elapsedTime.ClockSeconds * TCoef;
-                            }
-
-                            if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].TopOilPlatesOpened && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingLowRunning))))
-                            {                                
-                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
-                                {
-                                    TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
-                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
-                                    if (AnimationKey[1] > 0)
-                                        AnimationKey[1] -= elapsedTime.ClockSeconds * TCoef;
-                                }
-                            }
-                            AnimateMatrix(matrix, AnimationKey[1]);
-                        }
-                    }
-                    else
-                    // 2
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_w"))
-                    {
-                        if (DLoco != null)
+                        // 1
+                        if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_o"))
                         {
-                            bool FanWRunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
-
-                            if (FanWRunning)
+                            if (DLoco != null)
                             {
-                                if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
+                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning || (DLoco.DieselEngines[0].IndependentOilPlates && DLoco.DieselEngines[0].OilTempCoolingLowRunning)))
                                 {
-                                    TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[2] < 0.05f)
-                                        TimeAction[2] = 0.05f;
-                                    if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                    TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
+                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
+                                    if (AnimationKey[1] < SharedShape.Animations[0].FrameCount)
+                                        AnimationKey[1] += elapsedTime.ClockSeconds * TCoef;
                                 }
-                                if (!TestCondition1 && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning))
-                                {
-                                    if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
-                                    {
-                                        TimeAction[2] += DLoco.DieselEngines[0].WaterFanStopIdle ? (1.0f * elapsedTime.ClockSeconds) : (0.01f * elapsedTime.ClockSeconds);
-                                        if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                            TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (TimeAction[2] < 100.0f)
-                                    TimeAction[2] += 0.1f * elapsedTime.ClockSeconds;
-                            }
 
-                            if (TimeAction[2] == 0f)
-                            {                                
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow = DLoco.DieselEngines[0].WaterFanStopIdle ? 1000000 : Simulator.Random.Next(3, 11) / 10f;
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
-                                TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow;
-                            }
-                            
-                            TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / TimeAction[2];
-
-                            AnimationKey[2] += elapsedTime.ClockSeconds * TCoef;
-                            while (AnimationKey[2] > SharedShape.Animations[0].FrameCount) AnimationKey[2] -= SharedShape.Animations[0].FrameCount;
-                            while (AnimationKey[2] < 0) AnimationKey[2] += SharedShape.Animations[0].FrameCount;
-                            AnimateMatrix(matrix, AnimationKey[2]);
-                        }
-                    }
-                    else
-                    // 3
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_o"))
-                    {
-                        if (DLoco != null)
-                        {     
-                            bool FanORunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
-
-                            if (FanORunning)
-                            {
-                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
-                                {
-                                    TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
-                                    if (TimeAction[3] < 0.05f)
-                                        TimeAction[3] = 0.05f;
-                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
-                                }
-                                if (!TestCondition2 && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning))
+                                if (!TestCondition2 && ((!DLoco.DieselEngines[0].IndependentOilPlates && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning)) || (DLoco.DieselEngines[0].IndependentOilPlates && !DLoco.DieselEngines[0].TopOilPlatesOpened && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingLowRunning))))
                                 {
                                     if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
                                     {
-                                        TimeAction[3] += DLoco.DieselEngines[0].OilFanStopIdle ? (1.0f * elapsedTime.ClockSeconds) : (0.01f * elapsedTime.ClockSeconds);
-                                        if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
-                                            TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                        TimeAction[1] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
+                                        TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[1] == 0 ? 3.0f : TimeAction[1]);
+                                        if (AnimationKey[1] > 0)
+                                            AnimationKey[1] -= elapsedTime.ClockSeconds * TCoef;
                                     }
+                                }
+                                AnimateMatrix(matrix, AnimationKey[1]);
+                            }
+                        }
+                        else
+                            // 2
+                            if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_w"))
+                            {
+                                if (DLoco != null)
+                                {
+                                    bool FanWRunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
+
+                                    if (FanWRunning)
+                                    {
+                                        if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
+                                        {
+                                            TimeAction[2] -= 0.1f * elapsedTime.ClockSeconds;
+                                            if (TimeAction[2] < 0.05f)
+                                                TimeAction[2] = 0.05f;
+                                            if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                                TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                        }
+                                        if (!TestCondition1 && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning))
+                                        {
+                                            if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
+                                            {
+                                                TimeAction[2] += DLoco.DieselEngines[0].WaterFanStopIdle ? (1.0f * elapsedTime.ClockSeconds) : (0.01f * elapsedTime.ClockSeconds);
+                                                if (TimeAction[2] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                                    TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (TimeAction[2] < 100.0f)
+                                            TimeAction[2] += 0.1f * elapsedTime.ClockSeconds;
+                                    }
+
+                                    if (TimeAction[2] == 0f)
+                                    {
+                                        (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow = DLoco.DieselEngines[0].WaterFanStopIdle ? 1000000 : Simulator.Random.Next(3, 11) / 10f;
+                                        (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
+                                        TimeAction[2] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanWSpeedLow;
+                                    }
+
+                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / TimeAction[2];
+
+                                    AnimationKey[2] += elapsedTime.ClockSeconds * TCoef;
+                                    while (AnimationKey[2] > SharedShape.Animations[0].FrameCount) AnimationKey[2] -= SharedShape.Animations[0].FrameCount;
+                                    while (AnimationKey[2] < 0) AnimationKey[2] += SharedShape.Animations[0].FrameCount;
+                                    AnimateMatrix(matrix, AnimationKey[2]);
                                 }
                             }
                             else
-                            {
-                                if (TimeAction[3] < 100.0f)
-                                    TimeAction[3] += 0.1f * elapsedTime.ClockSeconds;
-                            }
-                            
-                            if (TimeAction[3] == 0f)
-                            {
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow = DLoco.DieselEngines[0].OilFanStopIdle ? 1000000 : Simulator.Random.Next(3, 11) / 10f;
-                                (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
-                                TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow;
-                            }
-
-                            TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / TimeAction[3];
-
-                            AnimationKey[3] += elapsedTime.ClockSeconds * TCoef;
-                            while (AnimationKey[3] > SharedShape.Animations[0].FrameCount) AnimationKey[3] -= SharedShape.Animations[0].FrameCount;
-                            while (AnimationKey[3] < 0) AnimationKey[3] += SharedShape.Animations[0].FrameCount;
-                            AnimateMatrix(matrix, AnimationKey[3]);
-                        }
-                    }
-                    else
-                    // 4
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_tw"))
-                    {
-                        if (DLoco != null)
-                        {
-                            DLoco.DieselEngines[0].TopWaterPlatesOpened = AnimationKey[4] <= 0 ? false : true;
-
-                            if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
-                            {
-                                TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
-                                if (AnimationKey[4] < SharedShape.Animations[0].FrameCount)
-                                    AnimationKey[4] += elapsedTime.ClockSeconds * TCoef;
-                            }
-
-                            if (!TestCondition1 && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning))
-                            {
-                                if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
+                                // 3
+                                if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("fan_o"))
                                 {
-                                    TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
-                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
-                                    if (AnimationKey[4] > 0)
-                                        AnimationKey[4] -= elapsedTime.ClockSeconds * TCoef;
+                                    if (DLoco != null)
+                                    {
+                                        bool FanORunning = DLoco.DieselEngines[0].RealRPM0 > 0.99f * DLoco.DieselEngines[0].IdleRPM ? true : false;
+
+                                        if (FanORunning)
+                                        {
+                                            if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
+                                            {
+                                                TimeAction[3] -= 0.1f * elapsedTime.ClockSeconds;
+                                                if (TimeAction[3] < 0.05f)
+                                                    TimeAction[3] = 0.05f;
+                                                if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                                    TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                            }
+                                            if (!TestCondition2 && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning))
+                                            {
+                                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
+                                                {
+                                                    TimeAction[3] += DLoco.DieselEngines[0].OilFanStopIdle ? (1.0f * elapsedTime.ClockSeconds) : (0.01f * elapsedTime.ClockSeconds);
+                                                    if (TimeAction[3] > (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0))
+                                                        TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow / (DLoco.DieselEngines[0].RealRPM / DLoco.DieselEngines[0].RealRPM0);
+                                                }
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if (TimeAction[3] < 100.0f)
+                                                TimeAction[3] += 0.1f * elapsedTime.ClockSeconds;
+                                        }
+
+                                        if (TimeAction[3] == 0f)
+                                        {
+                                            (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow = DLoco.DieselEngines[0].OilFanStopIdle ? 1000000 : Simulator.Random.Next(3, 11) / 10f;
+                                            (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedHigh = Simulator.Random.Next(13, 16) / 300f;
+                                            TimeAction[3] = (Viewer.Simulator.MSTSWagon as MSTSWagon).FanOSpeedLow;
+                                        }
+
+                                        TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / TimeAction[3];
+
+                                        AnimationKey[3] += elapsedTime.ClockSeconds * TCoef;
+                                        while (AnimationKey[3] > SharedShape.Animations[0].FrameCount) AnimationKey[3] -= SharedShape.Animations[0].FrameCount;
+                                        while (AnimationKey[3] < 0) AnimationKey[3] += SharedShape.Animations[0].FrameCount;
+                                        AnimateMatrix(matrix, AnimationKey[3]);
+                                    }
                                 }
-                            }
-                            AnimateMatrix(matrix, AnimationKey[4]);
-                        }
-                    }
-                    else
-                    // 5
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_to"))
-                    {
-                        if (DLoco != null)
-                        {
-                            DLoco.DieselEngines[0].TopOilPlatesOpened = AnimationKey[5] <= 0 ? false : true;
+                                else
+                                    // 4
+                                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_tw"))
+                                    {
+                                        if (DLoco != null)
+                                        {
+                                            DLoco.DieselEngines[0].TopWaterPlatesOpened = AnimationKey[4] <= 0 ? false : true;
 
-                            if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
-                            {
-                                TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
-                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
-                                if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
-                                    AnimationKey[5] += elapsedTime.ClockSeconds * TCoef;
-                            }
+                                            if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer == 0 && (TestCondition1 || DLoco.DieselEngines[0].WaterTempCoolingRunning))
+                                            {
+                                                TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesUpS;
+                                                TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
+                                                if (AnimationKey[4] < SharedShape.Animations[0].FrameCount)
+                                                    AnimationKey[4] += elapsedTime.ClockSeconds * TCoef;
+                                            }
 
-                            if (!TestCondition2 && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning))
-                            {
-                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
-                                {
-                                    TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
-                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
-                                    if (AnimationKey[5] > 0)
-                                        AnimationKey[5] -= elapsedTime.ClockSeconds * TCoef;
-                                }
-                            }
-                            AnimateMatrix(matrix, AnimationKey[5]);
-                        }
-                    }
-                    else
-                    // 6
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("3"))
-                    {
-                        if (ELoco != null && ELoco.Pantographs.Count == 4)
-                        {
-                            //if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
-                            //{
-                            //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
-                            //    if (AnimationKey[6] < 1)
-                            //    {
-                            //        if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
-                            //        {
-                            //            float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
-                            //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
-                            //            if (AnimationKey[6] < 0.99f * LimitPantoHeight)
-                            //            {
-                            //                AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                            //                ELoco.Pantographs[3].State = PantographState.Raising;
-                            //            }
-                            //            else
-                            //            if (AnimationKey[6] > 1.01f * LimitPantoHeight)
-                            //            {
-                            //                AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
-                            //                ELoco.Pantographs[3].State = PantographState.Lowering;
-                            //            }
-                            //            else
-                            //                ELoco.Pantographs[3].State = PantographState.Up;
-                            //        }
-                            //        else
-                            //        {
-                            //            AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
-                            //            ELoco.Pantographs[3].State = PantographState.Raising;
-                            //        }
+                                            if (!TestCondition1 && (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].WaterTempCoolingRunning))
+                                            {
+                                                if (DLoco.DieselEngines[0].WaterTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].WaterTempCoolingOffAnimationDelayS)
+                                                {
+                                                    TimeAction[4] = DLoco.DieselEngines[0].WaterCoolingPlatesDownS;
+                                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[4] == 0 ? 3.0f / 2.0f : TimeAction[4] / 2.0f);
+                                                    if (AnimationKey[4] > 0)
+                                                        AnimationKey[4] -= elapsedTime.ClockSeconds * TCoef;
+                                                }
+                                            }
+                                            AnimateMatrix(matrix, AnimationKey[4]);
+                                        }
+                                    }
+                                    else
+                                        // 5
+                                        if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("lamela_to"))
+                                        {
+                                            if (DLoco != null)
+                                            {
+                                                DLoco.DieselEngines[0].TopOilPlatesOpened = AnimationKey[5] <= 0 ? false : true;
 
-                            //        // Testovací čas přehrátí animace
-                            //        TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
-                            //        //ELoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
-                            //    }
-                            //    else
-                            //    {
-                            //        ELoco.Pantographs[3].State = PantographState.Up;
-                            //        TimeTest = 0;
-                            //    }
-                            //}
+                                                if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer == 0 && (TestCondition2 || DLoco.DieselEngines[0].OilTempCoolingRunning))
+                                                {
+                                                    TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesUpS;
+                                                    TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
+                                                    if (AnimationKey[5] < SharedShape.Animations[0].FrameCount)
+                                                        AnimationKey[5] += elapsedTime.ClockSeconds * TCoef;
+                                                }
 
-                            //if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
-                            //{
-                            //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
-                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
-                            //    if (AnimationKey[6] > 0)
-                            //    {
-                            //        AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
-                            //        ELoco.Pantographs[3].State = PantographState.Lowering;
-                            //    }
-                            //    else
-                            //        ELoco.Pantographs[3].State = PantographState.Down;
-                            //}                            
-                            AnimationKey[6] = ELoco.Panto3AnimFrame;
-                            AnimateMatrix(matrix, AnimationKey[6]);
-                        }
-                    }
-                    else
-                    // 7
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("4"))
-                    {
-                        if (ELoco != null && ELoco.Pantographs.Count == 4)
-                        {
-                            //if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
-                            //{
-                            //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
-                            //    if (AnimationKey[7] < 1)
-                            //    {
-                            //        if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
-                            //        {
-                            //            float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
-                            //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
-                            //            if (AnimationKey[7] < 0.99f * LimitPantoHeight)
-                            //            {
-                            //                AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
-                            //                ELoco.Pantographs[4].State = PantographState.Raising;
-                            //            }
-                            //            else
-                            //            if (AnimationKey[7] > 1.01f * LimitPantoHeight)
-                            //            {
-                            //                AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
-                            //                ELoco.Pantographs[4].State = PantographState.Lowering;
-                            //            }
-                            //            else
-                            //                ELoco.Pantographs[4].State = PantographState.Up;
-                            //        }
-                            //        else
-                            //        {
-                            //            AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
-                            //            ELoco.Pantographs[4].State = PantographState.Raising;
-                            //        }
-                            //    }
-                            //    else
-                            //        ELoco.Pantographs[4].State = PantographState.Up;
-                            //}
+                                                if (!TestCondition2 && (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > 0 || !DLoco.DieselEngines[0].OilTempCoolingRunning))
+                                                {
+                                                    if (DLoco.DieselEngines[0].OilTempCoolingOffAnimDelayTimer > DLoco.DieselEngines[0].OilTempCoolingOffAnimationDelayS)
+                                                    {
+                                                        TimeAction[5] = DLoco.DieselEngines[0].OilCoolingPlatesDownS;
+                                                        TCoef = (float)SharedShape.Animations[0].FrameCount / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[5] == 0 ? 3.0f / 2.0f : TimeAction[5] / 2.0f);
+                                                        if (AnimationKey[5] > 0)
+                                                            AnimationKey[5] -= elapsedTime.ClockSeconds * TCoef;
+                                                    }
+                                                }
+                                                AnimateMatrix(matrix, AnimationKey[5]);
+                                            }
+                                        }
+                                        else
+                                            // 6
+                                            if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("3"))
+                                            {
+                                                if (ELoco != null && ELoco.Pantographs.Count == 4)
+                                                {
+                                                    //if (ELoco.Pantographs[3].State == PantographState.Raising || ELoco.Pantographs[3].State == PantographState.Up)
+                                                    //{
+                                                    //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                                                    //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                                                    //    if (AnimationKey[6] < 1)
+                                                    //    {
+                                                    //        if (ELoco.Pantographs[3].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                                                    //        {
+                                                    //            float Panto57HeightCorrection = ELoco.Pantographs[3].Panto57HeightCorrection / 100f;
+                                                    //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
+                                                    //            if (AnimationKey[6] < 0.99f * LimitPantoHeight)
+                                                    //            {
+                                                    //                AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                                                    //                ELoco.Pantographs[3].State = PantographState.Raising;
+                                                    //            }
+                                                    //            else
+                                                    //            if (AnimationKey[6] > 1.01f * LimitPantoHeight)
+                                                    //            {
+                                                    //                AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
+                                                    //                ELoco.Pantographs[3].State = PantographState.Lowering;
+                                                    //            }
+                                                    //            else
+                                                    //                ELoco.Pantographs[3].State = PantographState.Up;
+                                                    //        }
+                                                    //        else
+                                                    //        {
+                                                    //            AnimationKey[6] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefUp;
+                                                    //            ELoco.Pantographs[3].State = PantographState.Raising;
+                                                    //        }
 
-                            //if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
-                            //{
-                            //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
-                            //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
-                            //    if (AnimationKey[7] > 0)
-                            //    {
-                            //        AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
-                            //        ELoco.Pantographs[4].State = PantographState.Lowering;
-                            //    }
-                            //    else
-                            //        ELoco.Pantographs[4].State = PantographState.Down;
-                            //}
-                            AnimationKey[7] = ELoco.Panto4AnimFrame;
-                            AnimateMatrix(matrix, AnimationKey[7]);
-                        }
-                    }
-                    else
-                    // 8
-                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("trasa")) // letadla (čmelák)
-                    {
-                        if (Viewer.Simulator.GameTimeHours > 8 && Viewer.Simulator.GameTimeHours < 20 && Viewer.Simulator.Season != SeasonType.Winter)
-                        {
-                            TCoef = 0.0075f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount *  SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
-                            AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                            while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
-                            while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
-                        }
-                        else
-                        {
-                            if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
-                            {
-                                TCoef = 0.010f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.002f : TimeAction[8]);
-                                AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
-                            }                            
-                        }
-                        AnimateMatrix(matrix, AnimationKey[8]);
-                    }                    
+                                                    //        // Testovací čas přehrátí animace
+                                                    //        TimeTest += elapsedTime.ClockSeconds / (float)SharedShape.Animations[0].FrameRate * 10f;
+                                                    //        //ELoco.Simulator.Confirmer.Information("TimeTest: " + TimeTest);
+                                                    //    }
+                                                    //    else
+                                                    //    {
+                                                    //        ELoco.Pantographs[3].State = PantographState.Up;
+                                                    //        TimeTest = 0;
+                                                    //    }
+                                                    //}
+
+                                                    //if (ELoco.Pantographs[3].State == PantographState.Lowering || ELoco.Pantographs[3].State == PantographState.Down)
+                                                    //{
+                                                    //    TimeAction[6] = ELoco.Pantographs[3].DelayS;
+                                                    //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[6] == 0 ? 8.0f / 1.0f : TimeAction[6] / 1.0f);
+                                                    //    if (AnimationKey[6] > 0)
+                                                    //    {
+                                                    //        AnimationKey[6] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[3].AnimCorrectTimeCoefDown;
+                                                    //        ELoco.Pantographs[3].State = PantographState.Lowering;
+                                                    //    }
+                                                    //    else
+                                                    //        ELoco.Pantographs[3].State = PantographState.Down;
+                                                    //}                            
+                                                    AnimationKey[6] = ELoco.Panto3AnimFrame;
+                                                    AnimateMatrix(matrix, AnimationKey[6]);
+                                                }
+                                            }
+                                            else
+                                                // 7
+                                                if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("pantograph") && SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("4"))
+                                                {
+                                                    if (ELoco != null && ELoco.Pantographs.Count == 4)
+                                                    {
+                                                        //if (ELoco.Pantographs[4].State == PantographState.Raising || ELoco.Pantographs[4].State == PantographState.Up)
+                                                        //{
+                                                        //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
+                                                        //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                                                        //    if (AnimationKey[7] < 1)
+                                                        //    {
+                                                        //        if (ELoco.Pantographs[4].PantoIs62 && ELoco.Simulator.WireHeigth == 5.7f)
+                                                        //        {
+                                                        //            float Panto57HeightCorrection = ELoco.Pantographs[4].Panto57HeightCorrection / 100f;
+                                                        //            float LimitPantoHeight = 1f + Panto57HeightCorrection;
+                                                        //            if (AnimationKey[7] < 0.99f * LimitPantoHeight)
+                                                        //            {
+                                                        //                AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                                                        //                ELoco.Pantographs[4].State = PantographState.Raising;
+                                                        //            }
+                                                        //            else
+                                                        //            if (AnimationKey[7] > 1.01f * LimitPantoHeight)
+                                                        //            {
+                                                        //                AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
+                                                        //                ELoco.Pantographs[4].State = PantographState.Lowering;
+                                                        //            }
+                                                        //            else
+                                                        //                ELoco.Pantographs[4].State = PantographState.Up;
+                                                        //        }
+                                                        //        else
+                                                        //        {
+                                                        //            AnimationKey[7] += elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefUp;
+                                                        //            ELoco.Pantographs[4].State = PantographState.Raising;
+                                                        //        }
+                                                        //    }
+                                                        //    else
+                                                        //        ELoco.Pantographs[4].State = PantographState.Up;
+                                                        //}
+
+                                                        //if (ELoco.Pantographs[4].State == PantographState.Lowering || ELoco.Pantographs[4].State == PantographState.Down)
+                                                        //{
+                                                        //    TimeAction[7] = ELoco.Pantographs[4].DelayS;
+                                                        //    TCoef = 10f / ((float)SharedShape.Animations[0].FrameRate * FrameRateMultiplier) / (TimeAction[7] == 0 ? 8.0f / 1.0f : TimeAction[7] / 1.0f);
+                                                        //    if (AnimationKey[7] > 0)
+                                                        //    {
+                                                        //        AnimationKey[7] -= elapsedTime.ClockSeconds * TCoef * ELoco.Pantographs[4].AnimCorrectTimeCoefDown;
+                                                        //        ELoco.Pantographs[4].State = PantographState.Lowering;
+                                                        //    }
+                                                        //    else
+                                                        //        ELoco.Pantographs[4].State = PantographState.Down;
+                                                        //}
+                                                        AnimationKey[7] = ELoco.Panto4AnimFrame;
+                                                        AnimateMatrix(matrix, AnimationKey[7]);
+                                                    }
+                                                }
+                                                else
+                                                    // 8
+                                                    if (SharedShape.Animations[0].anim_nodes[matrix].Name.ToLower().Contains("trasa")) // letadla (čmelák)
+                                                    {
+                                                        if (Viewer.Simulator.GameTimeHours > 8 && Viewer.Simulator.GameTimeHours < 20 && Viewer.Simulator.Season != SeasonType.Winter)
+                                                        {
+                                                            TCoef = 0.0075f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount * SharedShape.Animations[0].FrameCount) * TimeAction[8] == 0 ? 0.005f : TimeAction[8]);
+                                                            AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                                            while (AnimationKey[8] > SharedShape.Animations[0].FrameCount) AnimationKey[8] -= SharedShape.Animations[0].FrameCount;
+                                                            while (AnimationKey[8] < 0) AnimationKey[8] += SharedShape.Animations[0].FrameCount;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (AnimationKey[8] < SharedShape.Animations[0].FrameCount && AnimationKey[8] > 0)
+                                                            {
+                                                                TCoef = 0.010f / (8.0f / SharedShape.Animations[0].FrameCount * TimeAction[8] == 0 ? 0.002f : TimeAction[8]);
+                                                                AnimationKey[8] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                                            }
+                                                        }
+                                                        AnimateMatrix(matrix, AnimationKey[8]);
+                                                    }
                 }
-            }                        
+            }
 
             if (SharedShape.Animations?.Count > 0 && SharedShape.Animations[0].FrameCount > 0)
             {
@@ -833,12 +833,12 @@ namespace Orts.Viewer3D
                     AnimateMatrix(matrix, AnimationKey[20]);
             }
 
-         AnimationSkip:
+            AnimationSkip:
             SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
             return;
 
             // Vyloučené animace, které nemají stín
-         AnimationSkipUserSelectShadow:
+            AnimationSkipUserSelectShadow:
             SharedShape.PrepareFrame(frame, Location, XNAMatrices, ShapeFlags.UserSelectShadow);
         }
     }
@@ -1071,7 +1071,7 @@ namespace Orts.Viewer3D
                     if (item.IsFreight == true && item.IsPassenger == false) speed += "F";
                     else if (item.IsFreight == false && item.IsPassenger == true) speed += "P";
 
-                    if (item != null) speed += item.SpeedInd;                    
+                    if (item != null) speed += item.SpeedInd;
                 }
                 VertexList = new VertexPositionNormalTexture[maxVertex];
                 TriangleListIndices = new short[maxVertex / 2 * 3]; // as is NumIndices
@@ -1226,16 +1226,84 @@ namespace Orts.Viewer3D
         bool Opening = true;
         float AnimationKey;
 
+        // cesky prejezdy
+        readonly bool IsCzechCrossing;
+        int ZavoraMatrixIndex = -1;
+        int Cervene1MatrixIndex = -1;
+        int Cervene2MatrixIndex = -1;
+        int BileMatrixIndex = -1;
+
+
+        const float CzRed1OnKey = 8f;
+        const float CzRed1OffKey = 25f;
+        const float CzRed2OnKey = 18f;
+        const float CzRed2OffKey = 0f;
+        const float CzWhiteOnKey = 6f;
+        const float CzWhiteOffKey = 0f;
+
+        const float DefaultCzInitialWarningDelayS = 10f;
+        const float DefaultCzGateAnimLengthS = 5f;
+
+        static float ReadFloatFromObject(object obj, params string[] names)
+        {
+            if (obj == null) return float.NaN;
+
+            var t = obj.GetType();
+            foreach (var name in names)
+            {
+                var p = t.GetProperty(name, BindingFlags.Public | BindingFlags.Instance);
+                if (p != null && p.PropertyType == typeof(float))
+                    return (float)p.GetValue(obj, null);
+
+                var f = t.GetField(name, BindingFlags.Public | BindingFlags.Instance);
+                if (f != null && f.FieldType == typeof(float))
+                    return (float)f.GetValue(obj);
+            }
+            return float.NaN;
+        }
+
+        static float GetCzInitialWarningDelayS(LevelCrossingObj crossingObj)
+        {
+            float v = float.NaN;
+            try
+            {
+                v = ReadFloatFromObject(crossingObj?.levelCrTiming,
+                    "initialWarningPhase", "InitialWarningPhase",
+                    "initialWarningS", "InitialWarningS",
+                    "warningPhase1", "WarningPhase1",
+                    "warning1", "Warning1");
+            }
+            catch { /* ignore */ }
+
+            if (float.IsNaN(v)) return DefaultCzInitialWarningDelayS;
+            return Math.Max(0f, v);
+        }
+
+        static float GetCzGateAnimLengthS(LevelCrossingObj crossingObj)
+        {
+            float v = DefaultCzGateAnimLengthS;
+            try
+            {
+                if (crossingObj?.levelCrTiming != null && crossingObj.levelCrTiming.animTiming > 0f)
+                    v = crossingObj.levelCrTiming.animTiming;
+            }
+            catch { /* ignore */ }
+
+            return Math.Max(0.01f, v);
+        }
+
         public LevelCrossingShape(Viewer viewer, string path, WorldPosition position, ShapeFlags shapeFlags, LevelCrossingObj crossingObj)
             : base(viewer, path, position, shapeFlags)
         {
             CrossingObj = crossingObj;
+
             if (!CrossingObj.silent)
             {
                 var soundFileName = "";
                 if (CrossingObj.SoundFileName != "") soundFileName = CrossingObj.SoundFileName;
                 else if (SharedShape.SoundFileName != "") soundFileName = SharedShape.SoundFileName;
                 else if (viewer.Simulator.TRK.Tr_RouteFile.DefaultCrossingSMS != null) soundFileName = viewer.Simulator.TRK.Tr_RouteFile.DefaultCrossingSMS;
+
                 if (soundFileName != "")
                 {
                     var soundPath = viewer.Simulator.RoutePath + @"\\sound\\" + soundFileName;
@@ -1259,6 +1327,7 @@ namespace Orts.Viewer3D
                     }
                 }
             }
+
             Crossing = viewer.Simulator.LevelCrossings.CreateLevelCrossing(
                 position,
                 from tid in CrossingObj.trItemIDList where tid.db == 0 select tid.dbID,
@@ -1266,19 +1335,40 @@ namespace Orts.Viewer3D
                 CrossingObj.levelCrParameters.warningTime,
                 CrossingObj.levelCrParameters.minimumDistance,
                 CrossingObj.crashProbability);
-            // If there are no animations, we leave the frame count and speed at 0 and nothing will try to animate.
+
             if (SharedShape.Animations != null && SharedShape.Animations.Count > 0)
             {
-                // LOOPED COSSINGS (animTiming < 0)
-                //     MSTS plays through all the frames of the animation for "closed" and sits on frame 0 for "open". The
-                //     speed of animation is the normal speed (frame rate at 30FPS) scaled by the timing value. Since the
-                //     timing value is negative, the animation actually plays in reverse.
-                // NON-LOOPED CROSSINGS (animTiming > 0)
-                //     MSTS plays through the first 1.0 seconds of the animation forwards for closing and backwards for
-                //     opening. The number of frames defined doesn't matter; the animation is limited by time so the frame
-                //     rate (based on 30FPS) is what's needed.
-                AnimationFrames = CrossingObj.levelCrTiming.animTiming < 0 ? SharedShape.Animations[0].FrameCount : SharedShape.Animations[0].FrameRate / 30f;
+                AnimationFrames = CrossingObj.levelCrTiming.animTiming < 0
+                    ? SharedShape.Animations[0].FrameCount
+                    : SharedShape.Animations[0].FrameRate / 30f;
+
                 AnimationSpeed = SharedShape.Animations[0].FrameRate / 30f / CrossingObj.levelCrTiming.animTiming;
+            }
+
+            // Detekce ceskeho prejezdu podle nazvu matic
+            for (int i = 0; i < SharedShape.MatrixNames.Count; i++)
+            {
+                string name = SharedShape.MatrixNames[i].ToUpperInvariant();
+                if (name.Contains("ZAVORA")) ZavoraMatrixIndex = i;
+                else if (name.Contains("SVETLO_CERVENE1")) Cervene1MatrixIndex = i;
+                else if (name.Contains("SVETLO_CERVENE2")) Cervene2MatrixIndex = i;
+                else if (name.Contains("SVETLO_BILE")) BileMatrixIndex = i;
+            }
+
+            if (Cervene1MatrixIndex != -1 && Cervene2MatrixIndex != -1 && BileMatrixIndex != -1)
+            {
+                IsCzechCrossing = true;
+
+                float warningDelayS = GetCzInitialWarningDelayS(CrossingObj);
+                float gateAnimLengthS = GetCzGateAnimLengthS(CrossingObj);
+                float barrierSpeed01PerS = 1f / gateAnimLengthS;
+
+                Crossing.EnableCzechLogic(
+                    warningDelayS: warningDelayS,
+                    barrierSpeed01PerS: barrierSpeed01PerS,
+                    redFlashesPerMinute: 60f,
+                    whiteFlashesPerMinute: 40f
+                );
             }
         }
 
@@ -1297,6 +1387,14 @@ namespace Orts.Viewer3D
             if (CrossingObj.visible != true)
                 return;
 
+            // CZ logika
+            if (IsCzechCrossing)
+            {
+                PrepareCzechFrame(frame);
+                return;
+            }
+
+            // MSTS logika (beze změny)
             if (Opening == Crossing.HasTrain)
             {
                 Opening = !Crossing.HasTrain;
@@ -1310,7 +1408,6 @@ namespace Orts.Viewer3D
 
             if (CrossingObj.levelCrTiming.animTiming < 0)
             {
-                // Stick to frame 0 for "open" and loop for "closed".
                 if (Opening) AnimationKey = 0;
                 if (AnimationKey < 0) AnimationKey += AnimationFrames;
             }
@@ -1322,7 +1419,52 @@ namespace Orts.Viewer3D
 
             SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
         }
+
+        private void PrepareCzechFrame(RenderFrame frame)
+        {
+            bool hasTrain = Crossing.HasTrain;
+            if (hasTrain)
+            {
+                if (Opening)
+                {
+                    Opening = false;
+                    if (Sound != null) Sound.HandleEvent(Event.CrossingClosing);
+                }
+            }
+            else
+            {
+                if (!Opening)
+                {
+                    Opening = true;
+                    if (Sound != null) Sound.HandleEvent(Event.CrossingOpening);
+                }
+            }
+
+
+            float barrierKey = Crossing.CzBarrierPos01;
+
+            float cervene1Key = Crossing.CzRed1On ? CzRed1OnKey : CzRed1OffKey;
+            float cervene2Key = Crossing.CzRed2On ? CzRed2OnKey : CzRed2OffKey;
+            float bileKey = Crossing.CzWhiteOn ? CzWhiteOnKey : CzWhiteOffKey;
+
+            for (int i = 0; i < SharedShape.Matrices.Length; ++i)
+            {
+                if (i == ZavoraMatrixIndex)
+                    AnimateMatrix(i, barrierKey);
+                else if (i == Cervene1MatrixIndex)
+                    AnimateMatrix(i, cervene1Key);
+                else if (i == Cervene2MatrixIndex)
+                    AnimateMatrix(i, cervene2Key);
+                else if (i == BileMatrixIndex)
+                    AnimateMatrix(i, bileKey);
+                else
+                    AnimateMatrix(i, 0f);
+            }
+
+            SharedShape.PrepareFrame(frame, Location, XNAMatrices, Flags);
+        }
     }
+
 
     public class HazzardShape : PoseableShape
     {
@@ -2594,7 +2736,7 @@ namespace Orts.Viewer3D
                                 flags = 0;
                             else
                                 flags = ShapeFlags.ShadowCaster;
-                        }                        
+                        }
 
                         frame.AddAutoPrimitive(mstsLocation, distanceDetail.ViewSphereRadius, distanceDetail.ViewingDistance * lodBias, shapePrimitive.Material, shapePrimitive, interior ? RenderPrimitiveGroup.Interior : RenderPrimitiveGroup.World, ref xnaMatrix, flags);
                     }
