@@ -3177,8 +3177,7 @@ namespace Orts.Simulation.Physics
             // start at front of train
             int thisSectionIndex = PresentPosition[0].TCSectionIndex;
             float thisSectionOffset = PresentPosition[0].TCOffset;
-            int thisSectionDirection = PresentPosition[0].TCDirection;
-            Simulator.TunnelInfo = false;
+            int thisSectionDirection = PresentPosition[0].TCDirection;            
 
             for (int icar = 0; icar <= Cars.Count - 1; icar++)
             {
@@ -3198,6 +3197,34 @@ namespace Orts.Simulation.Physics
                     TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisSectionIndex];
                     inTunnel = false;
 
+                    // Detekuje tunel 2 sekce před a 2 sekce za vozem, aby se předešlo blikání kamery při průjezdu tunelů
+                    if (car == Simulator.TunnelCarCameraCanActivated)
+                    {
+                        Simulator.TunnelInfo = false;
+                        for (int i = PresentPosition[0].TCSectionIndex; i < PresentPosition[0].TCSectionIndex + 2; i++)
+                        {
+                            if (i < signalRef.TrackCircuitList.Count)
+                            {
+                                if (signalRef.TrackCircuitList[i].TunnelInfo != null)
+                                {
+                                    Simulator.TunnelInfo = true;
+                                    break;
+                                }
+                            }
+                        }
+                        for (int i = PresentPosition[0].TCSectionIndex; i > PresentPosition[0].TCSectionIndex - 2; i--)
+                        {
+                            if (i >= 0)
+                            {
+                                if (signalRef.TrackCircuitList[i].TunnelInfo != null)
+                                {
+                                    Simulator.TunnelInfo = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
                     // car spans sections
                     if ((car.CarLengthM - processedCarLength) > thisSectionOffset)
                     {
@@ -3206,10 +3233,7 @@ namespace Orts.Simulation.Physics
 
                     // section has tunnels
                     if (thisSection.TunnelInfo != null)
-                    {
-                        // Icik
-                        Simulator.TunnelInfo = true;
-
+                    {                                                
                         foreach (TrackCircuitSection.tunnelInfoData[] thisTunnel in thisSection.TunnelInfo)
                         {
                             float tunnelStartOffset = thisTunnel[thisSectionDirection].TunnelStart;
