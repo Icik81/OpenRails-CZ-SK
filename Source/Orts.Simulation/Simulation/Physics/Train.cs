@@ -99,7 +99,7 @@ namespace Orts.Simulation.Physics
             }
         }
 
-        // Icik
+        // Icik        
         public bool MasterSlaveTestOK;
         public float MasterSlaveTestTimer;
         public float MasterTestTimer;
@@ -1970,7 +1970,7 @@ namespace Orts.Simulation.Physics
             
             // Omezení rychlosti pro vlak hráče událostí SpeedZone
             if (IsActualPlayerTrain)
-            {
+            {                
                 if (AITrainSpeedZone)                
                     AllowedMaxSpeedMpS = TriggerTrainSpeedZoneSpeedMpS;
                 else
@@ -4692,7 +4692,13 @@ namespace Orts.Simulation.Physics
                     Simulator.Confirmer.Warning(CabControl.InitializeBrakes, CabSetting.Warn1);
                 return;
             }
-            UnconditionalInitializeBrakes();
+
+            // Icik                                                                                
+            if (Name == "PLAYER")
+            {
+                UnconditionalInitializeBrakes();
+            }
+
             return;
         }
 
@@ -5014,7 +5020,7 @@ namespace Orts.Simulation.Physics
 
                 Cars[0].BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
                 int CurrentCar = 0;
-                int HandBrakeCount = 1;
+                int HandBrakeCount = 1;                
                 foreach (TrainCar car in Cars)
                 {
                     car.WagonIsStatic = true;

@@ -39,6 +39,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using static Orts.Simulation.Physics.Train;
+using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
@@ -179,6 +180,7 @@ namespace Orts.Simulation
         public bool SuperUser = false;
 
         // Icik
+        public TrainCar OldPlayerLocomotive;
         public TrainCar Locomotive;
         public float VoltageSprung = 1;
         public float GameTimeCyklus10;
@@ -962,7 +964,7 @@ namespace Orts.Simulation
             }
 
             foreach (Train train in Trains)
-            {
+            {                                
                 // Spouštěč se aktivuje pouze pro vlak EventTrigger            
                 if (train.TrainType == Train.TRAINTYPE.STATIC && (train.Cars[0] as MSTSWagon).EventTrigger)
                 {

@@ -20,6 +20,7 @@ using Orts.Common;
 using Orts.MultiPlayer;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Physics;
+using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
 using ORTS.Common;
@@ -979,7 +980,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
-                
+
+                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+                {
+                    RealRPM0 = IdleRPM;
+                }
+
                 if (RealRPM0 > 0)
                 {
                     resCoef = k * RealRPM0 + q - dieseloilfailurePSI;
@@ -1002,6 +1008,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                     res = 0f;
 
                 //locomotive.Simulator.Confirmer.Information("res: " + res);
+
+                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+                {
+                    res = resCoef;
+                }
 
                 return res;
             }
@@ -1352,12 +1363,32 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
             if (locomotive.BrakeSystem.StartOn && ((!locomotive.IsPlayerTrain && !locomotive.LocoIsStatic) || locomotive.CarLengthM < 1f))
             {
                 RealRPM = IdleRPM;
+                if (locomotive.DieselEngines.DieselEngine1)
+                {
+                    locomotive.FakeRPM = RealRPM;
+                    locomotive.FakeOilPressure = DieselOilPressurePSI;
+                }
+                if (locomotive.DieselEngines.DieselEngine2)
+                {
+                    locomotive.FakeRPM2 = RealRPM;
+                    locomotive.FakeOilPressure2 = DieselOilPressurePSI;
+                }
                 EngineStatus = Status.Running;
             }
             // Inicializace hráče            
             if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
             {
-                RealRPM = IdleRPM;
+                RealRPM = IdleRPM;                
+                if (locomotive.DieselEngines.DieselEngine1)
+                {                    
+                    locomotive.FakeRPM = RealRPM;
+                    locomotive.FakeOilPressure = DieselOilPressurePSI;
+                }
+                if (locomotive.DieselEngines.DieselEngine2)
+                {
+                    locomotive.FakeRPM2 = RealRPM;
+                    locomotive.FakeOilPressure2 = DieselOilPressurePSI;
+                }
                 EngineStatus = Status.Running;
             }
             if (locomotive.IsPlayerTrain && EngineStatus != Status.Running && !InitTriggerSetOff)
@@ -1366,9 +1397,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
                 InitTriggerSetOff = true;
             }
             // Inicializace Static
-            if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && locomotive.LocoIsStatic)
+            if (locomotive.IsPlayerTrain && locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn)
             {
-                RealRPM = 0;
+                RealRPM = 0;                
                 EngineStatus = Status.Stopped;
                 locomotive.Battery = false;
                 locomotive.PowerKey = false;                                

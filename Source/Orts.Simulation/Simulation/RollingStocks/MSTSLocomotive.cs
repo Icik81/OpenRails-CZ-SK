@@ -13571,18 +13571,14 @@ namespace Orts.Simulation.RollingStocks
         float TrainBrakeValueAGA;
         float TrainBrakeValueSA; // SlowApply
         float TrainBrakeValueRUN; // Running        
-        float LocoStationChangeTimer;
+        float LocoStationChangeTimer;                
         public void TrainBrakeValueLogic()
         {
             if (IsLeadLocomotive())
             {
-                if (OneCabDummyStation && TrainBrakeController.BS2ControllerOnStation)
-                    return;
+                if (Simulator.OldPlayerLocomotive != this)
+                    Simulator.LocoStationChange = true;
 
-                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                            
-                LocoStation = 1;
-                if (UsingRearCab)
-                    LocoStation = 2;
                 if (Simulator.LocoStationChange)
                 {
                     if (LocoStationChangeTimer == 0)
@@ -13591,9 +13587,19 @@ namespace Orts.Simulation.RollingStocks
                     if (LocoStationChangeTimer > 0.5f)
                     {
                         Simulator.LocoStationChange = false;
+                        Simulator.OldPlayerLocomotive = this;
                         LocoStationChangeTimer = 0;
                     }
                 }
+
+                if (OneCabDummyStation && TrainBrakeController.BS2ControllerOnStation)
+                    return;
+
+                //Simulator.Confirmer.MSG("TrainBrakeValue[0] = " + TrainBrakeValue[0] + "        TrainBrakeValue[1] = " + TrainBrakeValue[1] + "   TrainBrakeValue[2] = " + TrainBrakeValue[2]);                            
+                LocoStation = 1;
+                if (UsingRearCab)
+                    LocoStation = 2;
+                
                 #region TrainBrakeCheckPosition
                 TrainBrakeValueL = -1;
                 TrainBrakeValueL_2 = -1;
