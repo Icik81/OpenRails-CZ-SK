@@ -68,16 +68,32 @@ namespace Orts.Viewer3D
         int VisibleTileZ;
         long CameraTile;
         int CameraTileX;
-        int CameraTileZ;
+        int CameraTileZ;        
 
         public SceneryDrawer(Viewer viewer)
         {
             Viewer = viewer;
         }
-
+        bool FirstRunIsDay = true;
         [CallOnThread("Loader")]
         public void Load()
         {
+            // Načte objekty světa, pokud se změní denní doba
+            if (Viewer.World.Sky.solarDirection.Y != 0)
+            {
+                if (Viewer.World.Sky.solarDirection.Y > 0 && (!Viewer.IsDay || FirstRunIsDay))
+                {
+                    Viewer.IsDay = true;
+                    Viewer.Simulator.RefreshWorld = true;
+                }
+                if (Viewer.World.Sky.solarDirection.Y <= 0 && (Viewer.IsDay || FirstRunIsDay))
+                {
+                    Viewer.IsDay = false;
+                    Viewer.Simulator.RefreshWorld = true;
+                }
+                FirstRunIsDay = false;
+            }
+
             var cancellation = Viewer.LoaderProcess.CancellationToken;
             Viewer.DontLoadNightTextures = (Program.Simulator.Settings.ConditionalLoadOfDayOrNightTextures &&
             ((Viewer.MaterialManager.sunDirection.Y > 0.05f && Program.Simulator.ClockTime % 86400 < 43200) ||
@@ -281,22 +297,16 @@ namespace Orts.Viewer3D
         public List<PickupObj> PickupList = new List<PickupObj>();
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
 
-        readonly Viewer Viewer;        
-
+        readonly Viewer Viewer;
+        
         bool VisibleCondition(int staticDetailLevel)
-        {
+        {            
             switch (staticDetailLevel)
             {                
-                case 10: return Program.Simulator.Season != SeasonType.Spring; // Nezobrazí objekty na jaře
-                case 11: return Program.Simulator.Season == SeasonType.Spring; // Zobrazí objekty pouze na jaře
-                case 12: return Program.Simulator.Season != SeasonType.Summer; // Nezobrazí objekty v létě
-                case 13: return Program.Simulator.Season == SeasonType.Summer; // Zobrazí objekty pouze v létě
-                case 14: return Program.Simulator.Season != SeasonType.Autumn; // Nezobrazí objekty na podzim
-                case 15: return Program.Simulator.Season == SeasonType.Autumn; // Zobrazí objekty pouze na podzim
-                case 16: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
-                case 17: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
-                case 18: return Program.Viewer.World.Sky.solarDirection.Y > 0; // Zobrazí objekty pouze za denního světla
-                case 19: return Program.Viewer.World.Sky.solarDirection.Y < 0; // Zobrazí objekty pouze za tmy
+                case 7: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
+                case 8: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
+                case 9: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false; // Zobrazí objekty pouze za denního světla
+                case 10: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false; // Zobrazí objekty pouze za tmy
             }            
             return true;
         }

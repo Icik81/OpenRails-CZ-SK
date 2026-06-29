@@ -251,6 +251,7 @@ namespace Orts.Viewer3D
         public bool DbfEvalAutoPilot = false;//DebriefEval
 
         public bool Try3DCabSetOn;
+        public bool IsDay;
 
         /// <summary>
         /// Finds time of last entry to set ReplayEndsAt and provide the Replay started message.
@@ -577,7 +578,7 @@ namespace Orts.Viewer3D
 
             // Icik
             HelperOptionsWindow.CarID = inf.ReadInt32();
-            CarOperationsWindow.CarPosition = inf.ReadInt32();
+            CarOperationsWindow.CarPosition = inf.ReadInt32();            
         }
 
         /// <summary>
@@ -1035,8 +1036,7 @@ namespace Orts.Viewer3D
             World.Load();
             WindowManager.Load();
         }
-
-        bool IsDay;
+        
         [CallOnThread("Updater")]
         public void Update(RenderFrame frame, float elapsedRealTime)
         {
@@ -1045,19 +1045,7 @@ namespace Orts.Viewer3D
             {
                 Try3DCabSetOn = false;
                 if (ThreeDimCabCamera.IsAvailable) ThreeDimCabCamera.Activate();                                    
-            }
-
-            // Načte objekty světa, pokud se změní denní doba
-            if (World.Sky.solarDirection.Y > 0 && !IsDay)
-            {
-                IsDay = true;
-                Simulator.RefreshWorld = true;
-            }
-            if (World.Sky.solarDirection.Y <= 0 && IsDay)
-            {
-                IsDay = false;
-                Simulator.RefreshWorld = true;
-            }
+            }                      
 
             RealTime += elapsedRealTime;
             var elapsedTime = new ElapsedTime(Simulator.GetElapsedClockSeconds(elapsedRealTime), elapsedRealTime);
