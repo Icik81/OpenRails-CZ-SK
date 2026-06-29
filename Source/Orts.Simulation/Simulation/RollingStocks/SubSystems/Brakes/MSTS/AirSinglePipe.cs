@@ -32,6 +32,7 @@ using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
 using static Orts.Simulation.RollingStocks.TrainCar;
@@ -931,7 +932,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     AngleCockBOpen = false;
                 }
                 if (BrakeLine1PressurePSI == 0)
+                {
                     loco.LocoIsStatic = false;
+                    Car.Train.TrainWasStatic = false;
+                }
                 else
                 {
                     FullServPressurePSI = 0;
@@ -945,7 +949,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     prevBrakeLine1PressurePSI = 0;
                     TotalCapacityMainResBrakePipe = 0;
                     loco.MainResPressurePSI = 0;
-                    loco.AuxResPressurePSI = 0;                    
+                    loco.AuxResPressurePSI = 0;
                 }
             }
             if (wagon != null && wagon.WagonIsStatic)
@@ -1012,11 +1016,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     {
                         if (!(Car as MSTSWagon).IsDriveable)
                         {
-                            int HandBrakeTotalCount = (int)(Car.Train.Cars.Count / 2f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 2f);
+                            int HandBrakeTotalCount = (int)(Car.Train.Cars.Count / 3f) == 0 ? 1 : (int)(Car.Train.Cars.Count / 3f);
                             Car.Train.TrainCurrentCarHandBrake++;
                             if (Car.Train.TrainHandBrakeCount <= HandBrakeTotalCount)
                             {
-                                if (Simulator.Random.Next(0, 2) == 1)
+                                //if (Simulator.Random.Next(0, 2) == 1)
                                 {
                                     Car.Train.TrainHandBrakeCount++;
                                     HandBrakeActive = true;
@@ -2258,6 +2262,14 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Brake pressures are calculated on the lead locomotive first, and then propogated along each wagon in the consist.
             var train = trainCar.Train;
             var lead = (train.IsActualPlayerTrain) ? (trainCar is MSTSLocomotive) ? (trainCar as MSTSLocomotive).IsLeadLocomotive() ? (trainCar as MSTSLocomotive) : null : null : (trainCar as MSTSLocomotive);
+
+            // Nastavení static vlaku při přechodu na něj
+            if (train.TrainWasStatic)
+            {                
+                train.Simulator.SetStaticCars(train);
+                train.Simulator.SetStaticLocos(train);
+                return;
+            }
 
             if (lead != null)
             {                

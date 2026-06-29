@@ -142,74 +142,90 @@ namespace Orts.Viewer3D.RollingStock
             var mstsElectricLocomotive = car as MSTSElectricLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && !mstsElectricLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;
                 this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsElectricLocomotive != null && mstsElectricLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
 
             var mstsControlUnit = car as MSTSControlUnit;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsControlUnit != null && !mstsControlUnit.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;
                 this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsControlUnit != null && mstsControlUnit.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
 
             var mstsSteamLocomotive = car as MSTSSteamLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && !mstsSteamLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;
                 this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
             // STATIC je zapnutý po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsSteamLocomotive != null && mstsSteamLocomotive.PowerOn)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
 
             var mstsDieselLocomotive = car as MSTSDieselLocomotive;
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0].EngineStatus != DieselEngine.Status.Running)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOff);
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = true;
                 this.MSTSLocomotive.Battery = false;   
-                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;                
+                this.MSTSLocomotive.BrakeSystem.PowerForWagon = false;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }
             // STATIC je nastartovaný po nahrání uložené pozice
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && mstsDieselLocomotive != null && mstsDieselLocomotive.DieselEngines[0].EngineStatus == DieselEngine.Status.Running)
             {
-                this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
+                if (MSTSLocomotive.JVSetup)
+                    this.MSTSLocomotive.SignalEvent(Event.EnginePowerOn);
                 this.MSTSLocomotive.PowerOn = true;
                 this.MSTSLocomotive.LocoIsStatic = true;
                 this.MSTSLocomotive.UserPowerOff = false;
                 this.MSTSLocomotive.Battery = true;
+                this.MSTSLocomotive.Train.TrainWasStatic = true;
             }            
 
             if (this.MSTSLocomotive.Train.TrainType == Train.TRAINTYPE.STATIC && !this.MSTSLocomotive.BrakeSystem.PowerForWagon)

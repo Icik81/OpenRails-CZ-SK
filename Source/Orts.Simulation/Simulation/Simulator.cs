@@ -1229,16 +1229,16 @@ namespace Orts.Simulation
         }
 
         // Detekuje zda jsou ve vlaku vozy, které byly již nastaveny jako Static
-        bool StaticSetCarsDetect(Train train)
+        public bool StaticSetCarsDetect(Train train)
         {
             foreach (var car in train.Cars)
                 if (car.StaticSet) return true;
             return false;
         }
 
-        void SetStaticLocos(Train train)
+        public void SetStaticLocos(Train train)
         {
-            if (train.TrainType == Train.TRAINTYPE.STATIC && train.Cars.Count < 3)
+            if ((train.TrainType == Train.TRAINTYPE.STATIC || train.TrainWasStatic) && train.Cars.Count < 3)
             {
                 foreach (var car in train.Cars.Where(car => car.IsDriveable))
                 {
@@ -1268,9 +1268,9 @@ namespace Orts.Simulation
             }
         }
 
-        void SetStaticCars(Train train)
+        public void SetStaticCars(Train train)
         {
-            if (train.TrainType == Train.TRAINTYPE.STATIC && train.Cars.Count > 2 && !StaticSetCarsDetect(train))
+            if ((train.TrainType == Train.TRAINTYPE.STATIC || train.TrainWasStatic) && train.Cars.Count > 2 && !StaticSetCarsDetect(train))
             {
                 foreach (var car in train.Cars)
                 {

@@ -210,6 +210,7 @@ namespace Orts.Simulation.Physics
         public bool TriggerTrainSpeedZone;
         public float TriggerTrainSpeedZoneSpeedMpS;
         public bool AITrainSpeedZone;
+        public bool TrainWasStatic;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
@@ -5028,7 +5029,10 @@ namespace Orts.Simulation.Physics
                     {
                         var loco = car as MSTSLocomotive;
                         if (loco.MainResPressurePSI == 0)
+                        {
                             loco.LocoIsStatic = true;
+                            TrainWasStatic = true;
+                        }
                         if (loco.CompressorIsOn)
                             SignalEvent(Event.CompressorOff);
                         if (loco.Compressor2IsOn)

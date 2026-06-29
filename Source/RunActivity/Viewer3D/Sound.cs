@@ -1628,7 +1628,7 @@ namespace Orts.Viewer3D
                                 if (name.ToLower().Contains("motor") && name.ToLower().Contains("stop"))
                                 {
                                     volume *= 0;
-                                    break;
+                                    //break;
                                 }
                             }
                 }
@@ -1647,7 +1647,7 @@ namespace Orts.Viewer3D
                                 if (name.ToLower().Contains("motor") && name.ToLower().Contains("start"))
                                 {
                                     volume *= 0;
-                                    break;
+                                    //break;
                                 }                                
                             }
                 }                
