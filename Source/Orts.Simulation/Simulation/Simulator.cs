@@ -38,6 +38,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Windows.Forms;
 using static Orts.Simulation.Physics.Train;
 using static Orts.Simulation.RollingStocks.MSTSLocomotive;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
@@ -929,7 +930,7 @@ namespace Orts.Simulation
             GameTimeCyklus10++;
             if (GameTimeCyklus10 > 10)            
                 GameTimeCyklus10 = 0;                         
-            OneSecondLoop = elapsedClockSeconds;
+            OneSecondLoop = elapsedClockSeconds;            
 
             // Check if there is a request to switch to another played train
             if (TrainSwitcher.ClickedSelectedAsPlayer && !playerSwitchOngoing)

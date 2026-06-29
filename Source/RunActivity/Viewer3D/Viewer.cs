@@ -1036,6 +1036,7 @@ namespace Orts.Viewer3D
             WindowManager.Load();
         }
 
+        bool IsDay;
         [CallOnThread("Updater")]
         public void Update(RenderFrame frame, float elapsedRealTime)
         {
@@ -1044,6 +1045,18 @@ namespace Orts.Viewer3D
             {
                 Try3DCabSetOn = false;
                 if (ThreeDimCabCamera.IsAvailable) ThreeDimCabCamera.Activate();                                    
+            }
+
+            // Načte objekty světa, pokud se změní denní doba
+            if (World.Sky.solarDirection.Y > 0 && !IsDay)
+            {
+                IsDay = true;
+                Simulator.RefreshWorld = true;
+            }
+            if (World.Sky.solarDirection.Y <= 0 && IsDay)
+            {
+                IsDay = false;
+                Simulator.RefreshWorld = true;
             }
 
             RealTime += elapsedRealTime;

@@ -176,7 +176,7 @@ namespace Orts.Viewer3D
 
             if (Viewer.Simulator.RefreshWorld)
             {
-                Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("World Object reloaded!"));
+                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("World Object reloaded!"));
                 Viewer.Simulator.RefreshWorld = false;
             }
         }
@@ -283,12 +283,31 @@ namespace Orts.Viewer3D
 
         readonly Viewer Viewer;        
 
+        bool VisibleCondition(int staticDetailLevel)
+        {
+            switch (staticDetailLevel)
+            {                
+                case 10: return Program.Simulator.Season != SeasonType.Spring; // Nezobrazí objekty na jaře
+                case 11: return Program.Simulator.Season == SeasonType.Spring; // Zobrazí objekty pouze na jaře
+                case 12: return Program.Simulator.Season != SeasonType.Summer; // Nezobrazí objekty v létě
+                case 13: return Program.Simulator.Season == SeasonType.Summer; // Zobrazí objekty pouze v létě
+                case 14: return Program.Simulator.Season != SeasonType.Autumn; // Nezobrazí objekty na podzim
+                case 15: return Program.Simulator.Season == SeasonType.Autumn; // Zobrazí objekty pouze na podzim
+                case 16: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
+                case 17: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
+                case 18: return Program.Viewer.World.Sky.solarDirection.Y > 0; // Zobrazí objekty pouze za denního světla
+                case 19: return Program.Viewer.World.Sky.solarDirection.Y < 0; // Zobrazí objekty pouze za tmy
+            }            
+            return true;
+        }
+
+
         /// <summary>
         /// Open the specified WFile and load all the scenery objects into the viewer.
         /// If the file doesn't exist, then return an empty WorldFile object.
         /// </summary>
         /// <param name="visible">Tiles adjacent to the current visible tile may not be modelled.
-        /// This flag decides whether a missing file leads to a warning message.</param>
+        /// This flag decides whether a missing file leads to a warning message.</param>                
         public WorldFile(Viewer viewer, int tileX, int tileZ, bool visible)
         {
             Viewer = viewer;
@@ -341,6 +360,10 @@ namespace Orts.Viewer3D
                 if (worldObject.StaticDetailLevel > viewer.Settings.WorldObjectDensity)
                     continue;
 
+                // Přeskočit objekty, které nejsou viditelné pro daný StaticDetailLevel
+                if (VisibleCondition(worldObject.StaticDetailLevel) == false)
+                    continue;
+                
                 // If the loader has been asked to temrinate, bail out early.
                 if (cancellation.IsCancellationRequested)
                     break;
@@ -394,7 +417,7 @@ namespace Orts.Viewer3D
                 }
 
                 try
-                {
+                {                        
                     if (worldObject.GetType() == typeof(TrackObj))
                     {
                         var trackObj = (TrackObj)worldObject;
@@ -520,7 +543,7 @@ namespace Orts.Viewer3D
                         }
                         else if (animated)
                             sceneryObjects.Add(new AnimatedShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
-                        else
+                        else                            
                             sceneryObjects.Add(new StaticShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
                     }
                     else if (worldObject.GetType() == typeof(PickupObj))
