@@ -932,8 +932,8 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.ToggleLapButton(false);
                 }
             }
-            // Ovládání tlačítka a přepínače přerušení EDB            
-            if (Locomotive.BreakEDBButtonEnable)
+            // Ovládání tlačítka přerušení EDB            
+            if (Locomotive.BreakEDBButtonEnable && !Locomotive.BreakEDBSwitchEnable)
             {
                 if (UserInput.IsPressed(UserCommand.ControlBreakEDBButton))
                 {
@@ -942,6 +942,19 @@ namespace Orts.Viewer3D.RollingStock
                 if (UserInput.IsReleased(UserCommand.ControlBreakEDBButton))
                 {
                     Locomotive.ToggleBreakEDBButton(false);
+                }
+            }
+            // Ovládání přepínače přerušení EDB            
+            if (Locomotive.BreakEDBButtonEnable && Locomotive.BreakEDBSwitchEnable)
+            {
+                if (UserInput.IsPressed(UserCommand.ControlBreakEDBButton) && Locomotive.BreakEDBButton_Activated)
+                {                    
+                    Locomotive.ToggleBreakEDBButton(false);
+                }
+                else
+                if (UserInput.IsPressed(UserCommand.ControlBreakEDBButton) && !Locomotive.BreakEDBButton_Activated)
+                {
+                    Locomotive.ToggleBreakEDBButton(true);
                 }
             }
             // Ovládání Diesel kontroléru
@@ -5529,12 +5542,12 @@ namespace Orts.Viewer3D.RollingStock
                     Locomotive.BreakEDBSwitchEnable = true;
                     if (ChangedValue(0) > 0 && !IsChanged)
                     {
-                        Locomotive.ToggleBreakEDBButton(false);
+                        Locomotive.ToggleBreakEDBButton(true);
                         IsChanged = true;
                     }
                     if (ChangedValue(0) < 0 && !IsChanged)
                     {
-                        Locomotive.ToggleBreakEDBButton(true);
+                        Locomotive.ToggleBreakEDBButton(false);
                         IsChanged = true;
                     }
                     break;

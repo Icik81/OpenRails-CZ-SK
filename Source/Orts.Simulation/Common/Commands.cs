@@ -2591,7 +2591,7 @@ namespace Orts.Common
 
         public override void Redo()
         {
-            Receiver.ToggleBreakEDBButton(true);
+            //Receiver.ToggleBreakEDBButton(true);
         }
     }
     [Serializable()]

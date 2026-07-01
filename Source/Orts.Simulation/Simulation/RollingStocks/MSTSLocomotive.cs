@@ -676,10 +676,10 @@ namespace Orts.Simulation.RollingStocks
         public int DirectionButtonPositionOffset;
         public bool CarIsPlayerLocoSet;
         public bool BatterySetOn;
-        public bool BreakEDBButtonEnable = false;
-        public bool BreakEDBSwitchEnable = false;
+        public bool BreakEDBButtonEnable;
+        public bool BreakEDBSwitchEnable;        
         public bool BreakEDBButton;
-        bool BreakEDBButtonPressed = false;
+        bool BreakEDBButtonPressed;
         public bool BreakEDBButton_Activated;
         public bool AripotControllerEnable;
         public bool AripotControllerAuto;
