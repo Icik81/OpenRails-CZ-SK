@@ -529,6 +529,25 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                                 testCar.BrakeSystem.FrontBrakeHoseConnected = true;
                             }
                     }
+                    testCar = Locomotive;
+                    if (testCar == Locomotive.Train.FirstCar)
+                    {
+                        testCar.BrakeSystem.AngleCockAOpen = false;
+                        testCar.BrakeSystem.AngleCockBOpen = true;
+                    }
+                    else
+                        if (testCar == Locomotive.Train.LastCar)
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = true;
+                            testCar.BrakeSystem.AngleCockBOpen = false;
+                            testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                        }
+                        else
+                        {
+                            testCar.BrakeSystem.AngleCockAOpen = true;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
+                            testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                        }
                 }
 
                 // Požadavek pro fázi 1: Aplikovat brzdy pod 4.5 bar
