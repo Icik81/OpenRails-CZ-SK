@@ -129,9 +129,9 @@ namespace Orts.Viewer3D
                             oldWorldFiles.Remove(tile);
                         }
                     }
-                }
+                }                
                 foreach (var tile in oldWorldFiles)
-                    tile.Unload();
+                    tile.Unload();                
                 WorldFiles = newWorldFiles;
                 Viewer.tryLoadingNightTextures = true; // when Tiles loaded change you can try
                 Viewer.tryLoadingDayTextures = true; // when Tiles loaded change you can try
@@ -303,10 +303,10 @@ namespace Orts.Viewer3D
         {            
             switch (staticDetailLevel)
             {                
-                case 7: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
-                case 8: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
-                case 9: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false; // Zobrazí objekty pouze za denního světla
-                case 10: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false; // Zobrazí objekty pouze za tmy
+                case 11: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
+                case 12: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
+                case 13: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false; // Zobrazí objekty pouze za denního světla
+                case 14: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false; // Zobrazí objekty pouze za tmy
             }            
             return true;
         }
@@ -373,7 +373,7 @@ namespace Orts.Viewer3D
                 // Přeskočit objekty, které nejsou viditelné pro daný StaticDetailLevel
                 if (VisibleCondition(worldObject.StaticDetailLevel) == false)
                     continue;
-                
+
                 // If the loader has been asked to temrinate, bail out early.
                 if (cancellation.IsCancellationRequested)
                     break;
@@ -749,12 +749,12 @@ namespace Orts.Viewer3D
             }
 
             if (viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) SuperElevationManager.DecomposeStaticSuperElevation(Viewer, dTrackList, TileX, TileZ);
-            
+
             // Icik
-            if (viewer.Simulator.RefreshWorld || viewer.Simulator.RefreshWire)            
-                Unload();
-            
-            if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
+            if (!Viewer.Simulator.RefreshWorld && !Viewer.Simulator.RefreshWire)
+            {
+                if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
+            }
         }
 
         //Method to check a shape name is listed in "openrails\clocks.dat"
@@ -782,7 +782,12 @@ namespace Orts.Viewer3D
         {
             foreach (var obj in sceneryObjects)
                 obj.Unload();
-            if (Viewer.World.Sounds != null) Viewer.World.Sounds.RemoveByTile(TileX, TileZ);
+
+            // Icik
+            if (!Viewer.Simulator.RefreshWorld && !Viewer.Simulator.RefreshWire)
+            {
+                if (Viewer.World.Sounds != null) Viewer.World.Sounds.RemoveByTile(TileX, TileZ);
+            }
         }
 
         [CallOnThread("Loader")]
