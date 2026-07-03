@@ -605,8 +605,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     else
                         PowerForWagon = false;
                 }
+                
                 if (!Car.Train.IsPlayerDriven && Car as MSTSLocomotive != null)
                     (Car as MSTSLocomotive).SetAIAction(Car.Train.Simulator.OneSecondLoop);
+                
+                TrainBrakePositionSet();
             }            
 
             BrakeLine1PressurePSI = maxPressurePSI0;
@@ -634,8 +637,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             HoldingValve = ValveState.Release;
             if ((Car as MSTSWagon).HandBrakePresent)
                 HandbrakePercent = 0;
-            SetRetainer(RetainerSetting.Exhaust);
-            TrainBrakePositionSet();
+            SetRetainer(RetainerSetting.Exhaust);            
             MSTSLocomotive loco = Car as MSTSLocomotive;
             if (loco != null)
             {
