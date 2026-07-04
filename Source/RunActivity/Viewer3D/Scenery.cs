@@ -51,6 +51,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace Orts.Viewer3D
 {
@@ -308,7 +309,7 @@ namespace Orts.Viewer3D
                 case 13: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false; // Zobrazí objekty pouze za denního světla
                 case 14: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false; // Zobrazí objekty pouze za tmy
             }            
-            return true;
+            return staticDetailLevel <= Viewer.Settings.WorldObjectDensity;
         }
 
 
@@ -366,12 +367,9 @@ namespace Orts.Viewer3D
 
             // create all the individual scenery objects specified in the WFile
             foreach (var worldObject in WFile.Tr_Worldfile)
-            {
-                if (worldObject.StaticDetailLevel > viewer.Settings.WorldObjectDensity)
-                    continue;
-
+            {                
                 // Přeskočit objekty, které nejsou viditelné pro daný StaticDetailLevel
-                if (VisibleCondition(worldObject.StaticDetailLevel) == false)
+                if (!VisibleCondition(worldObject.StaticDetailLevel))                
                     continue;
 
                 // If the loader has been asked to temrinate, bail out early.
