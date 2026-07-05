@@ -525,11 +525,11 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
 	float AmbientLightCoef = 1.0;
-	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
-	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
+	if (_PSGetAmbientEffect(In) > 0.6) AmbientLightCoef = 0.6 / _PSGetAmbientEffect(In);
+	if (AmbientLightCoef < 0.7) AmbientLightCoef = 0.7;
 
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.65;
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.85;
 	
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -570,8 +570,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 	
-	// Specular effect next.
-	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
+	// No Specular effect next.	
 	
 	// Overcast blanks out ambient, shadow effects (so use original Color).
 	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;	
@@ -579,8 +578,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
-	// Night-time darkens everything, except night-time textures.
-	
+	// Night-time darkens everything, except night-time textures.	
 	litColor *= NightColorModifier;
 	
 	//Ubere světlo, pokud je mlha 
@@ -597,8 +595,8 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
 	float AmbientLightCoef = 1.0;
-	if (_PSGetAmbientEffect(In) > 1.0) AmbientLightCoef = 1.0 / _PSGetAmbientEffect(In);
-	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
+	if (_PSGetAmbientEffect(In) > 0.6) AmbientLightCoef = 0.6 / _PSGetAmbientEffect(In);
+	if (AmbientLightCoef < 0.7) AmbientLightCoef = 0.7;
 
 	//Přidá světlo, pokud není mlha
 	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.70;	
@@ -652,8 +650,12 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	MaxDim3 = MaxDim1 + MaxDim2;
 	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
+		float AmbientLightCoef = 1.0;
+	if (_PSGetAmbientEffect(In) > 0.6) AmbientLightCoef = 0.6 / _PSGetAmbientEffect(In);
+	if (AmbientLightCoef < 0.7) AmbientLightCoef = 0.7;
+
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= (float3)tex2D(Overlay, In.TexCoords.xy * OverlayScale) * (3.0 - MaxDim3);
+	litColor.rgb *= (float3)tex2D(Overlay, In.TexCoords.xy * OverlayScale) * (3.0 - MaxDim3) * AmbientLightCoef * 1.0;
 
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
