@@ -473,7 +473,7 @@ void _PSApplyFog(inout float3 Color, in VERTEX_OUTPUT In)
 void _PSSceneryFade(inout float4 Color, in VERTEX_OUTPUT In)
 {
 	if (ReferenceAlpha < 0.01) Color.a = 1;
-	Color.a *= saturate((LightVector_ZFar.w - length(In.RelPosition.xyz)) / 50);
+	Color.a *= saturate((LightVector_ZFar.w - length(In.RelPosition.xyz)) / 500);
 }
 
 
@@ -494,7 +494,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
 	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 1.0;	
-	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.25, 1.0);
+	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
 
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
@@ -503,7 +503,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
 	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;	
-	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.25, 1.0);
+	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
 		
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
@@ -513,7 +513,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 0.1;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
@@ -529,7 +529,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
 
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.75;
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.65;
 	
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -585,7 +585,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 0.1;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
@@ -601,7 +601,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	if (AmbientLightCoef < 1.0) AmbientLightCoef = 1.0;
 
 	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.75;	
+	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.70;	
 
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In);
@@ -623,7 +623,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 
 	// Ambient and shadow effects apply first; night-time textures cancel out all normal lighting.
 	if (Fog.a != 0) MaxShadowBrightness = Fog.a * 1000 * 1.0;	
-	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.25, 1.0);
+	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
 	
 	float3 litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(_PSGetAmbientEffect(In) * _PSGetShadowEffect(true, In) + ImageTextureIsNight));
 
@@ -631,7 +631,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 
 	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
 	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;	
-	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.25, 1.0);
+	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
 	
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
@@ -641,7 +641,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 2.0;
+	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 0.1;
 	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
 	float MaxDim2 = 0;
