@@ -423,7 +423,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         LastCarConnected = car;                                                
                     }                 
                 }
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && (car as MSTSLocomotive).HasPassengerCapacity)))
+                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
                 {
                     CheckWagonListIndex++;
                     CheckWagonList[CheckWagonListIndex] = car;
@@ -1039,7 +1039,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     }                    
                 }
 
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && (car as MSTSLocomotive).HasPassengerCapacity)))
+                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
                 {
                     CheckWagonListIndex = 1;
                     CheckWagonList[1] = car;
