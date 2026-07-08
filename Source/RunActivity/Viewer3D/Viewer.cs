@@ -1174,7 +1174,32 @@ namespace Orts.Viewer3D
                     }
 
                 if (PlayerLocomotive.Train.IsPlayerDriven)
-                    ((AITrain)PlayerLocomotive.Train).SwitchToAutopilotControl();
+                {
+                    if (PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)
+                    {
+                        var success = ((AITrain)PlayerLocomotive.Train).SwitchToPlayerControl();
+                        if (success)
+                        {
+                            Simulator.Confirmer.Message(ConfirmLevel.Information, Viewer.Catalog.GetString("Switched to player control"));
+                            DbfEvalAutoPilot = false;//Debrief eval                        
+                        }
+                    }
+                    else if (PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN)
+                    {
+                        if (PlayerLocomotive.Train.ControlMode == Train.TRAIN_CONTROL.MANUAL)
+                            Simulator.Confirmer.Message(ConfirmLevel.Warning, Viewer.Catalog.GetString("You can't switch from manual to autopilot mode"));
+                        else
+                        {
+                            var success = ((AITrain)PlayerLocomotive.Train).SwitchToAutopilotControl();
+                            if (success)
+                            {
+                                Simulator.Confirmer.Message(ConfirmLevel.Information, Viewer.Catalog.GetString("Switched to autopilot"));
+                                DbfEvalIniAutoPilotTimeS = Simulator.ClockTime;//Debrief eval
+                                DbfEvalAutoPilot = true;//Debrief eval                            
+                            }
+                        }
+                    }
+                }
                 
                 Simulator.ForceSuppressConfirmations = true;
             }
