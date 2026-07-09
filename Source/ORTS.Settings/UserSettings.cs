@@ -534,7 +534,9 @@ namespace ORTS.Settings
         public UserSettings(IEnumerable<string> options)
             : base(SettingsStore.GetSettingStore(SettingsFilePath, RegistryKey, null))
         {
-            CustomDefaultValues["LoggingPath"] = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            //CustomDefaultValues["LoggingPath"] = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            // Icik
+            CustomDefaultValues["LoggingPath"] = Path.GetDirectoryName(Application.ExecutablePath);            
             CustomDefaultValues["ScreenshotPath"] = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), Application.ProductName);
             CustomDefaultValues["Multiplayer_User"] = Environment.UserName;
             Load(options);
