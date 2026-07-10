@@ -158,6 +158,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         int CheckCarNumber = 0;                
         float ShunterCheckAirPressureTimer;
         bool CheckAuxResBrakeLine;
+        float ShunterFullTestBrakePhase1TimeOffset;
 
         #region ShunterCheckAirPressureInCar
         public void ShunterCheckAirPressureInCar(float elapsedClockSeconds, TrainCar testCar)
@@ -407,6 +408,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 int CheckWagonListIndex = 0;
                 int CheckLeadIndex = 0;
                 int CheckCarIndex = 0;
+                int ConnectedCarCount = 1;
                 foreach (TrainCar car in Locomotive.Train.Cars)
                 {
                     CheckCarIndex++;
@@ -426,6 +428,10 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         CheckCarBrakeFault[CheckWagonListIndex] = true;
                     }
+                    else
+                    {
+                        ConnectedCarCount++;
+                    }
                 }             
 
                 if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
@@ -443,6 +449,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     ShunterFullTestBrakePhase2CarCheckTimer = 0;
                     ShunterFullTestBrakePhase4CarCheckTimer = 0;
                     Locomotive.Simulator.FullTestBrakeWindow = false;
+                    ShunterFullTestBrakePhase1TimeOffset = 0;
                     FirstBoggie = false;
                     SecondBoggie = false;
                     if (LastCarConnected == null) return;
@@ -473,19 +480,22 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 if (ShunterFullTestBrakePhase1 && !ShunterFullTestBrakePhase2 && !ShunterFullTestBrakePhase3 && !ShunterFullTestBrakePhase4 && !ShunterFullTestBrakePhase5)
                 {
-                    if (ShunterFullTestBrakePhase1Timer > 9.5f && ShunterFullTestBrakePhase1Timer < 10.0f)
+                    if (ShunterFullTestBrakePhase1Timer > 9.5f && ShunterFullTestBrakePhase1Timer < 10.5f)
                     {
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Please apply the brakes under 4.5 bar and holdon!"));
                         Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_ApplyBrake);
+                        ShunterFullTestBrakePhase1TimeOffset = 0;
                     }
 
-                    ShunterFullTestBrakePhase1Timer += elapsedClockSeconds;
+                    if (ShunterFullTestBrakePhase1TimeOffset == 0)
+                        ShunterFullTestBrakePhase1Timer += elapsedClockSeconds;
+
                     if (ShunterFullTestBrakePhase1Timer > 10.0f + 30.0f && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.5f * 14.50377f)
                     {
                         ShunterFullTestBrakePhase1Timer = 10.0f;
                     }
 
-                    if (!ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && (ShunterFullTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f))
+                    if (ShunterFullTestBrakePhase1TimeOffset == 0 && !ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.5f * 14.50377f && (ShunterFullTestBrakePhase1Timer > Locomotive.Train.Cars.Count * 5.0f || CheckWagonList[CheckWagonListIndex].BrakeSystem.GetCylPressurePSI() > 0.1f * 14.50377f))
                     {
                         ShunterFullTestBrakePhase1 = false;
                         ShunterFullTestBrakePhase2 = true;
@@ -493,9 +503,62 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         CarNumber = 1;
                         Locomotive.SignalEvent(Event.ShunterFullTestBrakeSound_FirstSide);
                     }
+
+                    // Pokud lokomotiva hráče nebude propojena s vozy, posunovač si ji napojí sám
+                    float TrainBrakePipePressure = 0;
+                    float TrainAuxPressure = 0;
+                    if (ShunterFullTestBrakePhase1TimeOffset > 0)
+                    {
+                        for (int i = 0; i < Locomotive.Train.Cars.Count; i++)
+                        {
+                            var car = Locomotive.Train.Cars[i];
+                            if (car.CarHasBrakePipeConnected)
+                            {
+                                TrainBrakePipePressure += car.BrakeSystem.BrakeLine1PressurePSI;
+                                TrainAuxPressure += car.BrakeSystem.AuxResPressurePSI;
+                            }
+                        }
+                        if (TrainBrakePipePressure / ConnectedCarCount > 4.9f * 14.50377f && TrainAuxPressure / ConnectedCarCount > 4.9f * 14.50377f)
+                        {
+                            ShunterFullTestBrakePhase1TimeOffset = 0;
+                            ShunterFullTestBrakePhase1Timer = 10.0f;
+                        }
+                    }
+
+                    TrainCar testCar = Locomotive.Simulator.PlayerLocomotive;                    
+                    if (testCar == Locomotive.Train.FirstCar)
+                    {
+                        if (!testCar.BrakeSystem.AngleCockBOpen)
+                        {
+                            ShunterFullTestBrakePhase1TimeOffset = Locomotive.Train.Cars.Count * 10.0f;
+                        }
+                        testCar.BrakeSystem.AngleCockAOpen = false;
+                        testCar.BrakeSystem.AngleCockBOpen = true;
+                    }
+                    else
+                        if (testCar == Locomotive.Train.LastCar)
+                        {
+                            if (!testCar.BrakeSystem.AngleCockAOpen || !testCar.BrakeSystem.FrontBrakeHoseConnected)
+                            {
+                                ShunterFullTestBrakePhase1TimeOffset = Locomotive.Train.Cars.Count * 10.0f;
+                            }
+                            testCar.BrakeSystem.AngleCockAOpen = true;
+                            testCar.BrakeSystem.AngleCockBOpen = false;
+                            testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                        }
+                        else
+                        {
+                            if (!testCar.BrakeSystem.AngleCockAOpen || !testCar.BrakeSystem.AngleCockBOpen || !testCar.BrakeSystem.FrontBrakeHoseConnected)
+                            {
+                                ShunterFullTestBrakePhase1TimeOffset = Locomotive.Train.Cars.Count * 10.0f;
+                            }
+                            testCar.BrakeSystem.AngleCockAOpen = true;
+                            testCar.BrakeSystem.AngleCockBOpen = true;
+                            testCar.BrakeSystem.FrontBrakeHoseConnected = true;
+                        }
                 }
 
-                if (ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.8f * 14.50377f)
+                if (ShunterFullTestBrakePhase1TimeOffset == 0 && ShunterFullTestBrakePhase2 && Locomotive.BrakeSystem.BrakeLine1PressurePSI > 4.8f * 14.50377f)
                 {
                     ShunterFullTestBrakePhase2 = false;
                 }                
@@ -858,7 +921,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 ShunterFullTestBrakePhase5Timer = 0;
                 ShunterFullTestBrakePhase2CarCheckTimer = 0;
                 ShunterFullTestBrakePhase4CarCheckTimer = 0;                
-                Locomotive.Simulator.FullTestBrakeWindow = false;                
+                Locomotive.Simulator.FullTestBrakeWindow = false;
+                ShunterFullTestBrakePhase1TimeOffset = 0;
             }
             #endregion ShunterFullTestBrake            
 
@@ -954,7 +1018,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 // Požadavek pro fázi 1: Aplikovat brzdy pod 4.5 bar                
                 if (ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4 && !ShunterSimpleTestBrakePhase5)
                 {
-                    if (ShunterSimpleTestBrakePhase1Timer > 9.5f && ShunterSimpleTestBrakePhase1Timer < 10.0f)
+                    if (ShunterSimpleTestBrakePhase1Timer > 9.5f && ShunterSimpleTestBrakePhase1Timer < 10.5f)
                     {
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Please apply the brakes under 4.5 bar and holdon!"));
                         Locomotive.SignalEvent(Event.ShunterSimpleTestBrakeSound_ApplyBrake);
