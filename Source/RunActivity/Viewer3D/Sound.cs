@@ -1555,14 +1555,15 @@ namespace Orts.Viewer3D
             }
 
             // Včetně zvuků v *_in.sms pro kabiny
-            if (!SoundSource.IsExternal && SoundSource.SMSFileName != null && SoundSource.SMSFileName.ToLower().Contains("_in.sms") && SoundSource.Viewer.Camera.Style != Camera.Styles.External)
-            {        
-                if (((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent > -1)
-                    volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;                
+            if (!SoundSource.IsExternal && SoundSource.SMSFileName != null && SoundSource.SMSFileName.ToLower().Contains("_in.sms") && SoundSource.Viewer?.Camera?.Style != Camera.Styles.External)
+            {
+                var attachedWagon = SoundSource.Viewer?.Camera?.AttachedCar as MSTSWagon;
+                if (attachedWagon != null && attachedWagon.ExternalSoundPassThruPercent > -1)
+                    volume *= attachedWagon.ExternalSoundPassThruPercent * 0.01f;
             }
-            
+
             // Shodí příznak MSTSStreamSoundOffInit pro aktivní vozidla
-            if (car != null && car.BrakeSystem.PowerForWagon && MSTSStreamSoundOffInit)
+            if (car != null && car.BrakeSystem?.PowerForWagon == true && MSTSStreamSoundOffInit)
                 MSTSStreamSoundOffInit = false;
 
             // Vyhledá zvuky start/stop motoru
@@ -1614,9 +1615,9 @@ namespace Orts.Viewer3D
                     if (MSTSStreamSoundOff) break;
                 }
             }
-            
+
             // Ztiší zvuk vypínání motoru při automatické inicializaci volnoběhu
-            if (car != null && MSTSStream != null && (car.CarInitStopSoundOff || car.Train.TrainType == Train.TRAINTYPE.STATIC))
+            if (car != null && MSTSStream != null && (car.CarInitStopSoundOff || car.Train?.TrainType == Train.TRAINTYPE.STATIC))
             {
                 // Vyhledá zvuk start/stop motoru
                 foreach (var trigger in Triggers)
@@ -1635,7 +1636,7 @@ namespace Orts.Viewer3D
             }
 
             // Ztiší zvuk start motoru při automatické inicializaci startu motoru
-            if (car != null && MSTSStream != null && (car.CarInitStartSoundOff || car.Train.TrainType == Train.TRAINTYPE.STATIC))
+            if (car != null && MSTSStream != null && (car.CarInitStartSoundOff || car.Train?.TrainType == Train.TRAINTYPE.STATIC))
             {
                 // Vyhledá zvuk start/stop motoru
                 foreach (var trigger in Triggers)
@@ -1656,7 +1657,7 @@ namespace Orts.Viewer3D
             if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))
             {
                 // Plynule ztišší zvuk motoru                 
-                if (car != null && !(car is MSTSSteamLocomotive) && !car.BrakeSystem.PowerForWagon)
+                if (car != null && !(car is MSTSSteamLocomotive) && !car.BrakeSystem?.PowerForWagon == true)
                 {
                     car.CarSoundActivationTimer = 0;
                     if (MSTSStreamSoundOffInit) car.CarSoundDeactivationTimer = 100; // Při prvním průchodu nastaví timer na 100, aby se hned spustilo ztišení                    
@@ -1671,7 +1672,7 @@ namespace Orts.Viewer3D
                     MSTSStreamSoundOffInit = false;
                 }
                 // Plynule zesílí zvuk motoru
-                if (car != null && !(car is MSTSSteamLocomotive) && car.BrakeSystem.PowerForWagon && car.CarSoundDeactivationTimer > 0)
+                if (car != null && !(car is MSTSSteamLocomotive) && car.BrakeSystem?.PowerForWagon == true && car.CarSoundDeactivationTimer > 0)
                 {                    
                     car.CarSoundActivationTimer += car.Simulator.OneSecondLoop;
                     if (car.CarSoundActivationTimer > 150) car.CarSoundActivationTimer = 150; // Maximální hodnota timeru je 150 sekund
