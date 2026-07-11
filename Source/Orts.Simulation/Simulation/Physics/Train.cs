@@ -7601,9 +7601,20 @@ namespace Orts.Simulation.Physics
             int passedSignalIndex = -1;
             if (NextSignalObject[direction] != null)
             {
+                // POJISTKA: Počítadlo průchodů cyklem, aby se simulace nezasekla
+                int loopCount = 0;
+                const int MAX_SIGNALS_PER_FRAME = 50;
 
                 while (NextSignalObject[direction] != null && !ValidRoute[direction].SignalIsAheadOfTrain(NextSignalObject[direction], trainPosition)) // signal not in front //
                 {
+                    // Ochrana proti nekonečné smyčce
+                    loopCount++;
+                    if (loopCount > MAX_SIGNALS_PER_FRAME)
+                    {
+                        Trace.TraceError("CRITICAL: CheckSignalPassed se zacyklil pro vlak {0}! Nouzové opuštění cyklu.", Number.ToString());
+                        break;
+                    }
+
                     // correct route index if necessary
                     int correctedRouteIndex = ValidRoute[0].GetRouteIndex(trainPreviousPos.TCSectionIndex, 0);
                     if (correctedRouteIndex >= 0) trainPreviousPos.RouteListIndex = correctedRouteIndex;
@@ -7709,7 +7720,7 @@ namespace Orts.Simulation.Physics
                     {
                         // get next signal
                         int nextSignalIndex = NextSignalObject[direction].sigfound[(int)MstsSignalFunction.NORMAL];
-                        if (nextSignalIndex >= 0)
+                        if (nextSignalIndex >= 0 && signalRef.SignalObjects[nextSignalIndex] != NextSignalObject[direction])
                         {
                             NextSignalObject[direction] = signalRef.SignalObjects[nextSignalIndex];
 
