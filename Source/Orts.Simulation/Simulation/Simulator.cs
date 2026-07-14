@@ -345,6 +345,7 @@ namespace Orts.Simulation
         public bool ShunterTestingBrakeChanged;
         public string TrainOperationsInfoText = "";
         public string TrainOperationsRealBrakePercentText = "";
+        public int CabViewControlCount;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

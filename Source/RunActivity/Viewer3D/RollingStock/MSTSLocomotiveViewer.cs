@@ -2602,7 +2602,7 @@ namespace Orts.Viewer3D.RollingStock
         {
             //Sequence = RenderPrimitiveSequence.CabView;
             _Viewer = viewer;
-            _Locomotive = car;
+            _Locomotive = car;            
 
             // _Viewer.DisplaySize intercepted to adjust cab view height
             Point DisplaySize = _Viewer.DisplaySize;
@@ -2645,6 +2645,9 @@ namespace Orts.Viewer3D.RollingStock
                     var controlSortIndex = 1;  // Controls are drawn atop the cabview and in order they appear in the CVF file.
                                                // This allows the segments of moving-scale meters to be hidden by covers (e.g. TGV-A)
                     CabViewControlRenderersList.Add(new List<CabViewControlRenderer>());
+
+                    car.Simulator.CabViewControlCount = cabView.CVFFile.CabViewControls.Count;
+
                     foreach (CabViewControl cvc in cabView.CVFFile.CabViewControls)
                     {
                         controlSortIndex++;

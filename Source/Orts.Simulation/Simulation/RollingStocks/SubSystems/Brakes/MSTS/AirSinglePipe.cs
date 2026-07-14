@@ -2318,14 +2318,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 float BrakePipeChargingRateCoef = (float)Math.Pow(BrakePipeChargingRateBreakPoint / lead.BrakeSystem.BrakeLine1PressurePSI, 30);
                 
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable) BrakePipeChargingRateCoef = 1.0f;
-                BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 5.0f);
-
-                float ReferenceRatioResVolumeM3 = 0;                
-                if (lead.TrainBrakeController.BS2ControllerOnStation)
-                    ReferenceRatioResVolumeM3 = (200.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro BS2 ovladač
-                else
-                    ReferenceRatioResVolumeM3 = (250.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
-
+                BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 10.0f);
+                
+                float ReferenceRatioResVolumeM3 = (500.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
                 BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (ReferenceRatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
             }
                                 
@@ -2334,7 +2329,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Výpočet z údaje vlaku dlouhého 330m (25 vozů) sníží tlak v hp z 5 na 3.4bar za 22s
             float brakePipeTimeFactorSToTrainLength = train.TrainTotalAirBrakeLengthM / (330f / (brakePipeTimeFactorS * 7.5f * 25f) * train.TrainTotalAirBrakeCarsCount);
             
-            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 10f;  // Vytvoří zpoždění tlakové vlny při odbržďování
+            float brakePipeTimeFactorS_Release = brakePipeTimeFactorSToTrainLength / 20f;  // Vytvoří zpoždění tlakové vlny při odbržďování
             float brakePipeTimeFactorS_Apply = brakePipeTimeFactorSToTrainLength / 2f; // Vytvoří zpoždění náběhu brzdy vlaku kvůli průrazné tlakové vlně            
 
             // Výchozí zpoždění tlakové vlny v potrubí 
