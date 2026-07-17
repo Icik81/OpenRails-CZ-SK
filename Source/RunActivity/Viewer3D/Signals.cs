@@ -661,7 +661,19 @@ namespace Orts.Viewer3D
                                     CZRoutes = true;
                                     break;
 
-                                // 64x64 Malá   
+                                // 64x64 Malá
+                                case "trat zsr 191-193":
+                                    {
+                                        if (!viewer.Simulator.GameWasRestored)
+                                        {
+                                            viewer.Simulator.WireHeigth = -100f;
+                                            viewer.Simulator.RefreshWire = true;
+                                        }
+                                        Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64M.ace"));
+                                        glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize / 2f; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize / 2f;
+                                        CZRoutes = true;
+                                        break;
+                                    }
                                 case "breclav - praha":
                                 case "dvoukolejka":
                                 case "caslav - tremosnice":
@@ -699,7 +711,7 @@ namespace Orts.Viewer3D
                                     break;
 
                                 // 64x64 Velká 
-                                case "trat zsr 191-193":                                
+                                case "xxx":
                                     Material = viewer.MaterialManager.Load("SignalLight", System.IO.Path.Combine(viewer.ContentPath, "..\\Content\\SignalLight\\SignalLight64V.ace"));
                                     glowDay = viewer.Simulator.Settings.DaySignalLightGlowSize; glowNight = viewer.Simulator.Settings.NightSignalLightGlowSize;
                                     CZRoutes = true;
