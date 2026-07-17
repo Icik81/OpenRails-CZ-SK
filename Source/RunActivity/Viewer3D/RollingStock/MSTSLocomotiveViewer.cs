@@ -502,10 +502,79 @@ namespace Orts.Viewer3D.RollingStock
             return Status2KeyPressed;
         }
 
+        float LongPressedCycle;        
+        float StartLongPressedCycleTimer;
+        public bool LongPressedKeyTest(string command, float threshold1, float threshold2)
+        {
+            bool StatusLongKeyPressed = false;
+            LongPressedCycle += Locomotive.Simulator.OneSecondLoop;
+            if (LongPressedCycle > threshold1)
+            {
+                StartLongPressedCycleTimer += Locomotive.Simulator.OneSecondLoop;
+                if (StartLongPressedCycleTimer > threshold2)
+                {
+                    StatusLongKeyPressed = true;
+                    StartLongPressedCycleTimer = 0;
+                }
+            }
+            if (!StatusLongKeyPressed) StartLongPressedCycleTimer = threshold2;
+            return StatusLongKeyPressed;
+        }
+
+        
         public override void HandleUserInput(ElapsedTime elapsedTime)
         {
             // Icik
             DoublePressedKeyTest();
+
+            // Testuje dlouhý stisk klávesy pro ovládání brzd
+            if (UserInput.IsDown(UserCommand.ControlTrainBrakeIncrease) && Locomotive.BrakeSystem.NextLocoEPApply)
+            {
+                if (LongPressedKeyTest("TrainBrake", 0.5f, 0.5f))
+                {                    
+                    Locomotive.TrainBrakeController.StartIncrease();
+                    Locomotive.TrainBrakeController.StopIncrease();
+                    if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
+                    {
+                        Locomotive.TrainBrakeController.StartDecrease();
+                        Locomotive.TrainBrakeController.StopDecrease();
+                    }
+                }
+            }
+            else
+            if (UserInput.IsDown(UserCommand.ControlTrainBrakeDecrease) && Locomotive.BrakeSystem.NextLocoEPApply)
+            {
+                if (LongPressedKeyTest("TrainBrake", 0.5f, 0.5f))
+                {                        
+                    Locomotive.TrainBrakeController.StartDecrease();
+                    Locomotive.TrainBrakeController.StopDecrease();
+                    if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease)
+                    {
+                        Locomotive.TrainBrakeController.StartIncrease();
+                        Locomotive.TrainBrakeController.StopIncrease();
+                    }
+                }
+            }
+            else
+            if (UserInput.IsDown(UserCommand.ControlEngineBrakeIncrease) && Locomotive.EngineBrakeController.Notches.Count() > 1 && !Locomotive.EngineBrakeController.Notches[Locomotive.EngineBrakeController.CurrentNotch].Smooth)
+            {
+                if (LongPressedKeyTest("EngineBrake", 0.5f, 0.5f))
+                {                    
+                    Locomotive.EngineBrakeController.StartIncrease();
+                    Locomotive.EngineBrakeController.StopIncrease();                    
+                }
+            }
+            else
+            if (UserInput.IsDown(UserCommand.ControlEngineBrakeDecrease) && Locomotive.EngineBrakeController.Notches.Count() > 1 && !Locomotive.EngineBrakeController.Notches[Locomotive.EngineBrakeController.CurrentNotch].Smooth)
+            {
+                if (LongPressedKeyTest("EngineBrake", 0.5f, 0.5f))
+                {                        
+                    Locomotive.EngineBrakeController.StartDecrease();
+                    Locomotive.EngineBrakeController.StopDecrease();                    
+                }
+            }
+            else
+                LongPressedCycle = 0;
 
             // Aretace v nulovém bodě ovladače výkonu Vectronu
             if (Locomotive.UsingForceHandle)
