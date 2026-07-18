@@ -22629,6 +22629,7 @@ namespace Orts.Simulation.RollingStocks
         public float DoorSwitchTime = 0;
         int preDataPressureBrake_State;
         int CabRead500Cycle = 0;
+        float preData;
         public virtual float GetDataOf(CabViewControl cvc)
         {            
             CheckBlankDisplay(cvc);
@@ -23155,41 +23156,39 @@ namespace Orts.Simulation.RollingStocks
                             maxForce = (maxForce / MaxForceN) * 100;                                                                            
                     }
 
-                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;                    
 
                     if (!(cvc is Orts.Formats.Msts.CVCDigital))
                     {
-                        cvc.ElapsedTime += elapsedTime;
-                        if (cvc.ElapsedTime < 0.15f)
+                        preData = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
+                        if ((int)preData % 3 == 0)
                         {
-                            data = cvc.PreviousData;
-                            break;
+                            cvc.PreviousData = (int)preData;
                         }
-                        cvc.ElapsedTime = 0;
-                        cvc.PreviousData = data;
+                        data = cvc.PreviousData;
                     }                    
                     break;
-                case CABViewControlTypes.REQUESTED_MOTOR_FORCE:                    
-                    data = 0.0f;
+                case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
+                    preData = 0f;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                     {
                         foreach (ExtendedAxle ea in uc.Axles)
                         {
                             if (ea.Id == cvc.AxleId)
                             {
-                                data = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
-                                if (data < 0 && cvc.CurrentSource == "")
+                                preData = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
+                                if (preData < 0 && cvc.CurrentSource == "")
                                     cvc.IsVisible = false;
-                                if (data >= 0 && cvc.CurrentSource == "")
+                                if (preData >= 0 && cvc.CurrentSource == "")
                                     cvc.IsVisible = true;
-                                if (cvc.CurrentSource.ToLower() == "negative_force" && data < 0)
+                                if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
                                 {
-                                    data = -data;
+                                    preData = -preData;
                                     cvc.IsVisible = true;
                                 }
                                 else if (cvc.CurrentSource.ToLower() == "negative_force")
                                 {
-                                    data = 0;
+                                    preData = 0;
                                     cvc.IsVisible = false;
                                 }
                             }
@@ -23205,11 +23204,11 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
                             if (ThrottlePercent > 0)
                             {
-                                data = (data / MaxForceN) * MaxCurrentA;
+                                preData = (preData / MaxForceN) * MaxCurrentA;
                             }
                             if (DynamicBrakePercent > 0)
                             {
-                                data = (data / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
+                                preData = (preData / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
                             }
                             break;
 
@@ -23217,41 +23216,35 @@ namespace Orts.Simulation.RollingStocks
                             break;
 
                         case CABViewControlUnits.KILO_NEWTONS:
-                            data = data / 1000.0f;
+                            preData = preData / 1000.0f;
                             break;
                         case CABViewControlUnits.KILO_LBS:
-                            data = N.ToLbf(data) * 0.001f;
+                            preData = N.ToLbf(preData) * 0.001f;
                             break;
                     }
 
-                    cvc.ElapsedTime += elapsedTime;
-                    if (cvc.ElapsedTime < 0.50f)
+                    if ((int)preData % 2 == 0)
                     {
-                        data = cvc.PreviousData;
-                        break;
+                        cvc.PreviousData = (int)preData;
                     }
-                    cvc.ElapsedTime = 0;
-                    cvc.PreviousData = data;
-
-                    //                       if (direction == 1 && !(cvc is CVCGauge))
-                    //                           data = -data;
+                    data = cvc.PreviousData;
                     break;
-                case CABViewControlTypes.TOTAL_FORCE:                    
-                    data = 0;
+                case CABViewControlTypes.TOTAL_FORCE:
+                    preData = 0f;
                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                     {
                         foreach (ExtendedAxle ea in uc.Axles)
                         {
-                            data += ea.ForceNFiltered;
+                            preData += ea.ForceNFiltered;
                         }
                     }
-                    if (data < 0)
+                    if (preData < 0)
                     {
-                        data = (data / MaxDynamicBrakeForceN) * 100;
+                        preData = (preData / MaxDynamicBrakeForceN) * 100;
                         if (ControllerVolts == 0) ControllerVolts = preControllerVolts;
                     }
                     else
-                        data = (data / MaxForceN) * 100;
+                        preData = (preData / MaxForceN) * 100;
 
                     float ControllerVoltsDetectTime = 0.5f;                    
                     if (preControllerVolts != ControllerVolts)
@@ -23264,10 +23257,10 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             if (ControllerVolts > 0)
-                                data = -100;
+                                preData = -100;
                             else
-                                data = 100;
-                            cvc.PreviousData = data;
+                                preData = 100;
+                            cvc.PreviousData = (int)preData;
                         }
                     }
                     if (ControllerVolts > -0.05f && ControllerVolts < 0.05f)
@@ -23290,33 +23283,29 @@ namespace Orts.Simulation.RollingStocks
                             cvc.IsVisible = NegativeMask = true;
                     }
 
-                    cvc.ElapsedTime += elapsedTime;
-                    if (cvc.ElapsedTime < 0.30f)
+                    if ((int)preData % 4 == 0)
                     {
-                        data = cvc.PreviousData;
-                        break;
+                        cvc.PreviousData = (int)preData;                        
                     }
-                    cvc.ElapsedTime = 0;
-                    cvc.PreviousData = data;                    
-
+                    data = cvc.PreviousData;
                     break;
                 case CABViewControlTypes.MOTOR_FORCE:
                     {
                         var direction = 0; // Forwards
                         if (cvc is CVCGauge && ((CVCGauge)cvc).Orientation == 0)
                             direction = ((CVCGauge)cvc).Direction;
-                        data = 0.0f;
+                        preData = 0f;
                         foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
                             foreach (ExtendedAxle ea in uc.Axles)
                             {
                                 if (ea.Id == cvc.AxleId)
                                 {
-                                    data = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
-                                    if (cvc.CurrentSource.ToLower() == "negative_force" && data < 0)
-                                        data = -data;
+                                    preData = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
+                                    if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                        preData = -preData;
                                     else if (cvc.CurrentSource.ToLower() == "negative_force")
-                                        data = 0;
+                                        preData = 0;
                                 }
                             }                           
                         }
@@ -23330,11 +23319,11 @@ namespace Orts.Simulation.RollingStocks
                                     DynamicBrakeMaxCurrentA = (float)cvc.MinValue;
                                 if (ThrottlePercent > 0)
                                 {
-                                    data = (data / MaxForceN) * MaxCurrentA;
+                                    preData = (preData / MaxForceN) * MaxCurrentA;
                                 }
                                 if (DynamicBrakePercent > 0)
                                 {
-                                    data = (data / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
+                                    preData = (preData / MaxDynamicBrakeForceN) * DynamicBrakeMaxCurrentA;
                                 }
                                 break;
 
@@ -23342,15 +23331,19 @@ namespace Orts.Simulation.RollingStocks
                                 break;
 
                             case CABViewControlUnits.KILO_NEWTONS:
-                                data = data / 1000.0f;
+                                preData = preData / 1000.0f;
                                 break;
 
                             case CABViewControlUnits.KILO_LBS:
-                                data = N.ToLbf(data) * 0.001f;
+                                preData = N.ToLbf(preData) * 0.001f;
                                 break;
                         }
-                        //                       if (direction == 1 && !(cvc is CVCGauge))
-                        //                           data = -data;
+
+                        if ((int)preData % 2 == 0)
+                        {
+                            cvc.PreviousData = (int)preData;
+                        }
+                        data = cvc.PreviousData;
                         break;
                     }                // this considers both the dynamic as well as the train braking
                 case CABViewControlTypes.ORTS_SIGNED_TRACTION_TOTAL_BRAKING:
