@@ -2318,9 +2318,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 float BrakePipeChargingRateCoef = (float)Math.Pow(BrakePipeChargingRateBreakPoint / lead.BrakeSystem.BrakeLine1PressurePSI, 30);
                 
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable) BrakePipeChargingRateCoef = 1.0f;
-                BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 10.0f);
+                BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 5.0f);
                 
-                float ReferenceRatioResVolumeM3 = (500.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
+                float ReferenceRatioResVolumeM3 = (250.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
                 BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (ReferenceRatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
             }
                                 
