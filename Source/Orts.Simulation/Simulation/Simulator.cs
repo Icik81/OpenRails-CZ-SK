@@ -1303,7 +1303,7 @@ namespace Orts.Simulation
         }
 
         public void AutomaticSetHosesAndAngles(Train train)
-        {
+        {            
             foreach (var car in train.Cars)
             {
                 if (car == train.FirstCar)

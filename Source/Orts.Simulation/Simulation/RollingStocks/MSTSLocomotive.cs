@@ -7359,11 +7359,11 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 SystemAnnunciator = 2;
                                 
-                                if (SystemAnnunciator != 5)
+                                if (SystemAnnunciator != 4)
                                     HvPantoTimer += elapsedClockSeconds;
 
                                 if (HvPantoTimer > 5)
-                                    SystemAnnunciator = 5;
+                                    SystemAnnunciator = 4;
                             }                                                                                    
 
                             if (CircuitBreakerOn)
@@ -7447,7 +7447,7 @@ namespace Orts.Simulation.RollingStocks
                             MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
                             if (PantographUp && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
                             {
-                                SystemAnnunciator = 4;
+                                SystemAnnunciator = 5;
                             }
                         }
                     }
@@ -16263,11 +16263,11 @@ namespace Orts.Simulation.RollingStocks
             {
                 SystemAnnunciator = 2;
 
-                if (SystemAnnunciator != 4)
+                if (SystemAnnunciator != 5)
                     HvPantoTimer += elapsedSeconds;
 
                 if (HvPantoTimer > 5)
-                    SystemAnnunciator = 4;
+                    SystemAnnunciator = 5;
             }            
 
             PantoBlocked = false;
@@ -16306,11 +16306,11 @@ namespace Orts.Simulation.RollingStocks
             }
             if (!PowerOn && SystemAnnunciator == 0)
             {
-                SystemAnnunciator = 5;
+                SystemAnnunciator = 4;
                 continuingTimeChangingSystem -= elapsedSeconds;
                 return;
             }
-            if (!PowerOn && SystemAnnunciator == 4)
+            if (!PowerOn && SystemAnnunciator == 5)
             {
                 HVOn = true;
                 continuingTimeChangingSystem -= elapsedSeconds;
