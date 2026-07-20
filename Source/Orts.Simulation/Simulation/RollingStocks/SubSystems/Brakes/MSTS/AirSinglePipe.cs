@@ -2320,7 +2320,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.FullQuickRelease || lead.QuickReleaseButton && lead.QuickReleaseButtonEnable) BrakePipeChargingRateCoef = 1.0f;
                 BrakePipeChargingRateCoef = MathHelper.Clamp(BrakePipeChargingRateCoef, 1.0f, 5.0f);
                 
-                float ReferenceRatioResVolumeM3 = (250.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
+                float ReferenceRatioResVolumeM3 = (300.0f + 15.0f) / 1000f; // Referenční objem jímky a potrubí lokomotivy pro ostatní ovladače
                 BrakePipeChargingRatePSIorInHgpS0 = BrakePipeChargingRateCoef * lead.BrakePipeChargingRatePSIorInHgpS * (ReferenceRatioResVolumeM3 / train.TrainTotalAirBrakeVolumeM3);
             }
                                 
@@ -2583,14 +2583,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.OverchargeStart
                         || (lead.LowPressureReleaseButton && lead.LowPressureReleaseButtonEnable)
                         || (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated))
-                    {
+                    {                        
                         BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingQuickPSIpS;  // Rychlost plnění ve vysokotlakém švihu 
+
                         if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI * 1.11f) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS * elapsedClockSeconds / brakePipeTimeFactorCorection;
                         else if (lead.TrainBrakeController.MaxPressurePSI > lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI -= lead.TrainBrakeController.QuickReleaseRatePSIpS / 20 * elapsedClockSeconds / brakePipeTimeFactorCorection; // Zpomalí 
 
                         // Vectron zavádí přebití 5.2bar při odbrždění
                         if (lead.LocoType == MSTSLocomotive.LocoTypes.Vectron && lead.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release && !lead.LowPressureReleaseButton && !lead.BrakeSystem.OverChargeActivated)
+                        {
                             lead.TrainBrakeController.MaxPressurePSI = 5.2f * 14.50377f;
+                            BrakePipeChargingRatePSIorInHgpS0 = brakePipeChargingNormalPSIpS;  // Standardní rychlost plnění 
+                        }
                         else
                         if (lead.TrainBrakeController.MaxPressurePSI < lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI) lead.TrainBrakeController.MaxPressurePSI = lead.BrakeSystem.TrainBrakesControllerMaxOverchargePressurePSI;
 
