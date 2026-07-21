@@ -5207,7 +5207,7 @@ namespace Orts.Simulation.RollingStocks
                         }
 
                         // Klimatizace
-                        if (car.CarOutsideTempC > 24)
+                        if (car.CarOutsideTempC >= 18)
                         {
                             float SetTempCHyst = 2.5f;
                             if (car.SetTemperatureCHeat == 0 && car.SetTempCThreshold == 0)
