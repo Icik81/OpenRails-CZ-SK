@@ -218,6 +218,9 @@ namespace Orts.Simulation.RollingStocks
                         var PU = car as MSTSElectricLocomotive;
                         PowerControlUnit = PU;
 
+                        Pantographs = PU.Pantographs;
+                        PantographUp = PU.PantographUp;
+                        PantographDown = PU.PantographDown;
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
                         CircuitBreakerOn = PU.CircuitBreakerOn;
                         DriveForceN = PU.DriveForceN;
@@ -251,6 +254,13 @@ namespace Orts.Simulation.RollingStocks
 
                         if (!PU.LocoReadyToGo) LocoReadyToGo = false;
 
+                        if (LocoReadyToGo && LocoType == LocoTypes.Vectron)
+                        {
+                            SelectingPowerSystem = PU.SelectingPowerSystem;
+                            SelectedPowerSystem = PU.SelectedPowerSystem;
+                            SystemAnnunciator = PU.SystemAnnunciator;
+                        }
+
                         // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
                         {                           
@@ -274,12 +284,33 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];  
-                            
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
+
+                            PU.LightFrontLR = LightFrontLR;
+                            PU.LightFrontRR = LightFrontRR;
+                            PU.LightFrontLW = LightFrontLW; 
+                            PU.LightFrontRW = LightFrontRW;
+                            PU.LightRearLR = LightRearLR;
+                            PU.LightRearRR = LightRearRR;
+                            PU.LightRearLW = LightRearLW;
+                            PU.LightRearRW = LightRearRW;
+
                             if (LocomotiveFaultyActivated)                            
                             {
                                 PU.HVOff = true;
                             }
+
+                            if (PU.LocoType == LocoTypes.Vectron)
+                            {
+                                PU.Switch51LightEnable = Switch51LightEnable;
+                                PU.Switch52LightEnable = Switch52LightEnable;
+                                SystemAnnunciator = PU.SystemAnnunciator;                                                                
+                                PU.ChangingPowerSystem = ChangingPowerSystem;
+                                PU.SelectingPowerSystem = SelectingPowerSystem;
+                                SelectedPowerSystem = PU.SelectedPowerSystem;
+                                PU.ChangePowerSystem();
+                            }
+
                         }                        
 
                         break;
@@ -353,10 +384,19 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
                             PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
 
+                            PU.LightFrontLR = LightFrontLR;
+                            PU.LightFrontRR = LightFrontRR;
+                            PU.LightFrontLW = LightFrontLW;
+                            PU.LightFrontRW = LightFrontRW;
+                            PU.LightRearLR = LightRearLR;
+                            PU.LightRearRR = LightRearRR;
+                            PU.LightRearLW = LightRearLW;
+                            PU.LightRearRW = LightRearRW;
+
                             if (LocomotiveFaultyActivated)
                             {
                                 Battery = false;
-                            }
+                            }                            
                         }
 
                         break;

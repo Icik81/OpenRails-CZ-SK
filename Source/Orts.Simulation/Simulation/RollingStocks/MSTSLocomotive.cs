@@ -7345,109 +7345,112 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
                             extendedPhysics.GeneratoricModeBlocked = false;
-                        if (ChangingPowerSystem)
+                        if (ChangingPowerSystem && !ControlUnit)
                             PowerChangeRoutine(elapsedClockSeconds);
                         else
-                        {                            
-                            if (PantographDown)
+                        {
+                            if (!ControlUnit)
                             {
-                                SystemAnnunciator = 1;
-                                HvPantoTimer = 0;
-                            }
-
-                            if (PantographUp)
-                            {
-                                SystemAnnunciator = 2;
-                                
-                                if (SystemAnnunciator != 4)
-                                    HvPantoTimer += elapsedClockSeconds;
-
-                                if (HvPantoTimer > 5)
-                                    SystemAnnunciator = 4;
-                            }                                                                                    
-
-                            if (CircuitBreakerOn)
-                            {
-                                for (int j = 1; j <= Pantographs.Count; j++)
+                                if (PantographDown)
                                 {
-                                    if (Pantographs[j].State == PantographState.Up)
+                                    SystemAnnunciator = 1;
+                                    HvPantoTimer = 0;
+                                }
+
+                                if (PantographUp)
+                                {
+                                    SystemAnnunciator = 2;
+
+                                    if (SystemAnnunciator != 4)
+                                        HvPantoTimer += elapsedClockSeconds;
+
+                                    if (HvPantoTimer > 5)
+                                        SystemAnnunciator = 4;
+                                }
+
+                                if (CircuitBreakerOn)
+                                {
+                                    for (int j = 1; j <= Pantographs.Count; j++)
                                     {
-                                        bool motorDisabled = false;
-                                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                        if (Pantographs[j].State == PantographState.Up)
                                         {
-                                            foreach (ExtendedAxle ea in uc.Axles)
+                                            bool motorDisabled = false;
+                                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                             {
-                                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                                foreach (ExtendedAxle ea in uc.Axles)
                                                 {
-                                                    if (em.Disabled)
+                                                    foreach (ElectricMotor em in ea.ElectricMotors)
                                                     {
-                                                        motorDisabled = true;
-                                                        goto Action;
+                                                        if (em.Disabled)
+                                                        {
+                                                            motorDisabled = true;
+                                                            goto Action;
+                                                        }
                                                     }
                                                 }
                                             }
-                                        }
-                                        Action:
-                                        HvPantoTimer = 0;
-                                        if (!motorDisabled)
-                                        {
-                                            SystemAnnunciator = 0;
-                                        }
-                                        else
-                                        {
-                                            SystemAnnunciator = 6;
+                                            Action:
+                                            HvPantoTimer = 0;
+                                            if (!motorDisabled)
+                                            {
+                                                SystemAnnunciator = 0;
+                                            }
+                                            else
+                                            {
+                                                SystemAnnunciator = 6;
+                                            }
                                         }
                                     }
                                 }
-                            }                            
 
-                            if (!SlaveLoco && SystemAnnunciator == 0 && TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
-                            {
-                                SystemAnnunciator = 6;
-                            }
+                                if (!SlaveLoco && SystemAnnunciator == 0 && TrainBrakeController.TrainBrakeControllerState != ControllerState.Release)
+                                {
+                                    SystemAnnunciator = 6;
+                                }
 
-                            if (Pantographs.Count == 4)
-                            {
-                                if (Pantographs.List[0].State == PantographState.Lowering
-                                    || Pantographs.List[1].State == PantographState.Lowering
-                                    || Pantographs.List[2].State == PantographState.Lowering
-                                    || Pantographs.List[3].State == PantographState.Lowering)
+                                if (Pantographs.Count == 4)
                                 {
-                                    SystemAnnunciator = 3;
+                                    if (Pantographs.List[0].State == PantographState.Lowering
+                                        || Pantographs.List[1].State == PantographState.Lowering
+                                        || Pantographs.List[2].State == PantographState.Lowering
+                                        || Pantographs.List[3].State == PantographState.Lowering)
+                                    {
+                                        SystemAnnunciator = 3;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                if (Pantographs.List[0].State == PantographState.Lowering
-                                    || Pantographs.List[1].State == PantographState.Lowering)
+                                else
                                 {
-                                    SystemAnnunciator = 3;
+                                    if (Pantographs.List[0].State == PantographState.Lowering
+                                        || Pantographs.List[1].State == PantographState.Lowering)
+                                    {
+                                        SystemAnnunciator = 3;
+                                    }
                                 }
-                            }
 
-                            if (Pantographs.Count == 4)
-                            {
-                                if (Pantographs.List[0].State == PantographState.Raising
-                                    || Pantographs.List[1].State == PantographState.Raising
-                                    || Pantographs.List[2].State == PantographState.Raising
-                                    || Pantographs.List[3].State == PantographState.Raising)
+                                if (Pantographs.Count == 4)
                                 {
-                                    SystemAnnunciator = 3;
+                                    if (Pantographs.List[0].State == PantographState.Raising
+                                        || Pantographs.List[1].State == PantographState.Raising
+                                        || Pantographs.List[2].State == PantographState.Raising
+                                        || Pantographs.List[3].State == PantographState.Raising)
+                                    {
+                                        SystemAnnunciator = 3;
+                                    }
                                 }
-                            }
-                            else
-                            {
-                                if (Pantographs.List[0].State == PantographState.Raising
-                                    || Pantographs.List[1].State == PantographState.Raising)
+                                else
                                 {
-                                    SystemAnnunciator = 3;
+                                    if (Pantographs.List[0].State == PantographState.Raising
+                                        || Pantographs.List[1].State == PantographState.Raising)
+                                    {
+                                        SystemAnnunciator = 3;
+                                    }
                                 }
-                            }
 
-                            MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
-                            if (PantographUp && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
-                            {
-                                SystemAnnunciator = 5;
+                                MSTSElectricLocomotive elecLoco = this as MSTSElectricLocomotive;
+                                if (PantographUp && elecLoco.PowerSupply.CircuitBreaker.State == CircuitBreakerState.Closing)
+                                {
+                                    SystemAnnunciator = 5;
+                                }
                             }
                         }
                     }
@@ -16133,7 +16136,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ChangingPowerSystem = false;
         public void ChangePowerSystem()
         {
-            if (SelectingPowerSystem == SelectedPowerSystem)
+            if (SelectingPowerSystem == SelectedPowerSystem || ControlUnit)
                 return;
 
             ChangingPowerSystem = true;
@@ -16321,6 +16324,13 @@ namespace Orts.Simulation.RollingStocks
             if (continuingTimeChangingSystem > 23)
             {
                 ChangingPowerSystem = false;
+                foreach (var car in Train.Cars)
+                {
+                    if (car.ControlUnit)
+                    {
+                        (car as MSTSLocomotive).ChangingPowerSystem = false;
+                    }
+                }
                 timeChangingPowerSystem = 0;
                 continuingTimeChangingSystem = 0;
                 pantoCommandSent = false;                
