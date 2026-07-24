@@ -528,7 +528,7 @@ namespace Orts.Viewer3D.RollingStock
             DoublePressedKeyTest();
 
             // Testuje dlouhý stisk klávesy pro ovládání brzd
-            if (UserInput.IsDown(UserCommand.ControlTrainBrakeIncrease) && Locomotive.BrakeSystem.NextLocoEPApply)
+            if (UserInput.IsDown(UserCommand.ControlTrainBrakeIncrease) && Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
             {
                 if (LongPressedKeyTest("TrainBrake", 0.5f, 0.5f))
                 {                    
@@ -542,7 +542,7 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
             else
-            if (UserInput.IsDown(UserCommand.ControlTrainBrakeDecrease) && Locomotive.BrakeSystem.NextLocoEPApply)
+            if (UserInput.IsDown(UserCommand.ControlTrainBrakeDecrease) && Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.EPApply)
             {
                 if (LongPressedKeyTest("TrainBrake", 0.5f, 0.5f))
                 {                        

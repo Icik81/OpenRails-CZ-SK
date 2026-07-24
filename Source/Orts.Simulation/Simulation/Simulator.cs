@@ -346,6 +346,7 @@ namespace Orts.Simulation
         public string TrainOperationsInfoText = "";
         public string TrainOperationsRealBrakePercentText = "";
         public int CabViewControlCount;
+        public float controllerVolts;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

@@ -30,6 +30,7 @@
 
 using Microsoft.Xna.Framework;
 using Newtonsoft.Json.Serialization;
+using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
@@ -343,15 +344,37 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
-                if (Locomotive.LocomotiveAxle.AdhesionK == 0.0f)
-                    Locomotive.LocomotiveAxle.AdhesionK = 1.0f;
-                float A = 2.0f * Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
-                float B = Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
-                float C = Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionK;
-                float a = -2.0f * A * B;
-                float b = A * B;
-                float c = A * C;
-                return ((-b - (float)Math.Sqrt(b * b - 4.0f * a * c)) / (2.0f * a));
+                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                {
+                    if (Locomotive.LocomotiveAxle.AdhesionK == 0.0f)
+                        Locomotive.LocomotiveAxle.AdhesionK = 1.0f;
+                    float A = 2.0f * Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
+                    float B = Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
+                    float C = Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionK;
+                    float a = -2.0f * A * B;
+                    float b = A * B;
+                    float c = A * C;
+                    return ((-b - (float)Math.Sqrt(b * b - 4.0f * a * c)) / (2.0f * a));
+                }
+                else
+                {
+                    foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        if (car.PowerUnit && car.AcceptCableSignals)
+                        {
+                            if ((car as MSTSLocomotive).LocomotiveAxle.AdhesionK == 0.0f)
+                                (car as MSTSLocomotive).LocomotiveAxle.AdhesionK = 1.0f;
+                            float A = 2.0f * (car as MSTSLocomotive).LocomotiveAxle.AdhesionK * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions;
+                            float B = (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions;
+                            float C = (car as MSTSLocomotive).LocomotiveAxle.AdhesionK * (car as MSTSLocomotive).LocomotiveAxle.AdhesionK;
+                            float a = -2.0f * A * B;
+                            float b = A * B;
+                            float c = A * C;
+                            return ((-b - (float)Math.Sqrt(b * b - 4.0f * a * c)) / (2.0f * a));
+                        }
+                    }
+                }
+                return 0;
             }
         }
 
@@ -359,8 +382,23 @@ namespace Orts.Simulation.RollingStocks
         {
             get
             {
-                float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) ? Math.Abs(Locomotive.AxleSpeedMpSEP) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarkerEP) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
-                return SlipSpeedMpS;
+                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                {
+                    float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) ? Math.Abs(Locomotive.AxleSpeedMpSEP) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarkerEP) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
+                    return SlipSpeedMpS;
+                }
+                else
+                {
+                    foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        if (car.PowerUnit && car.AcceptCableSignals)
+                        {
+                            float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs((car as MSTSLocomotive).LocomotiveAxle.TrainSpeedMpS) ? Math.Abs((car as MSTSLocomotive).AxleSpeedMpSEP) : FastestAxleSpeedMpS) * (car as MSTSLocomotive).WheelSpeedDirectionMarkerEP) - (car as MSTSLocomotive).LocomotiveAxle.TrainSpeedMpS;
+                            return SlipSpeedMpS;
+                        }
+                    }
+                }
+                return 0;
             }
         }
 
@@ -385,7 +423,7 @@ namespace Orts.Simulation.RollingStocks
         public float AxleForceNSum;
         bool LastStateIsWheelSlipWarning;        
         public void Update(float elapsedClockSeconds)
-        {
+        {                    
             LastStateIsWheelSlipWarning = IsWheelSlipWarning;            
 
             if (Locomotive.Pantograph3Switch[Locomotive.LocoStation] == -1)
@@ -445,7 +483,7 @@ namespace Orts.Simulation.RollingStocks
                     if (tc is MSTSLocomotive)
                     {
                         MSTSLocomotive loco = (MSTSLocomotive)tc;
-                        if (loco.ControlUnit)
+                        if (loco.ControlUnit && loco.AcceptCableSignals)
                             controlUnitInTrain = true;
                     }
                 }
@@ -455,7 +493,8 @@ namespace Orts.Simulation.RollingStocks
             {
                 if (Locomotive.ThrottlePercent > 0)
                 {
-                    Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.ThrottlePercent / 10;
+                    // ???
+                    //Locomotive.ControllerVolts = OverridenControllerVolts = Locomotive.ThrottlePercent / 10;
                 }
             }
             
@@ -471,7 +510,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (Locomotive.SlaveLoco && Locomotive.TractionBlocked) Locomotive.TractionBlocked = false;
 
-                if (Locomotive.IsLeadLocomotive())
+                if (Locomotive.IsLeadLocomotive() || (controlUnitInTrain && Locomotive.PowerUnit))
                 {
                     if (Locomotive.ForceHandleValue == 0)
                     {
@@ -513,27 +552,51 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     Locomotive.DynamicBrakeForceN = 0;                    
                 }
-                // Funkce EDB při generátorickém režimu Vectrona
-                if (GeneratoricModeActive && !GeneratoricModeDisabled && Locomotive.ForceHandleValue >= 0)
-                {
-                    if (Math.Abs(FakeDynamicBrakePercent) > 10f)
-                        FakeDynamicBrakePercent = 0;
 
-                    if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
-                    {                        
-                        if (Math.Abs(Locomotive.DriveForceN) > 1.05f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
+                // Funkce EDB při generátorickém režimu Vectrona
+                if (Locomotive.PowerUnit)
+                {
+                    Locomotive.GeneratoricModeActive = GeneratoricModeActive;
+                    if (GeneratoricModeActive && !GeneratoricModeDisabled && Locomotive.ForceHandleValue >= 0)
+                    {
+                        if (Math.Abs(FakeDynamicBrakePercent) > 100f)
+                            FakeDynamicBrakePercent = 0;
+
+                        if (Locomotive.AbsSpeedMpS >= 30f / 3.6f)
                         {
-                            FakeDynamicBrakePercent -= 0.1f;
+                            if (Math.Abs(Locomotive.DriveForceN) > 1.05f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
+                            {
+                                FakeDynamicBrakePercent -= 0.1f;
+                            }
+                            if (Math.Abs(Locomotive.DriveForceN) < 0.95f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
+                            {
+                                FakeDynamicBrakePercent += 0.1f;
+                            }
+                            Locomotive.DynamicBrakePercent = FakeDynamicBrakePercent;
+                            Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
+
+                            foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                            {
+                                if (car.ControlUnit && car.AcceptCableSignals)
+                                {
+                                    (car as MSTSLocomotive).DynamicBrakePercent = FakeDynamicBrakePercent;
+                                    (car as MSTSLocomotive).ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
+                                }
+                            }
                         }
-                        if (Math.Abs(Locomotive.DriveForceN) < 0.95f * (-Locomotive.extendedPhysics.GeneratorConsumptionKn * 1000))
-                        {
-                            FakeDynamicBrakePercent += 0.1f;
-                        }                                                
-                        Locomotive.DynamicBrakePercent = FakeDynamicBrakePercent;
-                        Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10f;
                     }
                 }
             }
+
+            //if (Locomotive.PowerUnit)
+            //{
+            //    Locomotive.Simulator.Confirmer.MSG3("PowerUnit Locomotive.ControllerVolts " + Locomotive.ControllerVolts);
+            //}
+            //if (Locomotive.ControlUnit)
+            //{
+            //    Locomotive.Simulator.Confirmer.MSG4("ControlUnit Locomotive.ControllerVolts " + Locomotive.ControllerVolts);
+            //}
+
 
             if (Locomotive.ControllerVolts > 0)
             {
@@ -548,13 +611,34 @@ namespace Orts.Simulation.RollingStocks
                 if (Locomotive.DynamicBrakePercent > 0 && Locomotive.LocoType != LocoTypes.Vectron)
                     Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
                 Locomotive.SetThrottlePercent(0);
-                foreach (Undercarriage uc in Undercarriages)
+
+                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
                 {
-                    foreach (ExtendedAxle ea in uc.Axles)
+                    foreach (Undercarriage uc in Undercarriages)
                     {
-                        ea.ForceN = 0;
+                        foreach (ExtendedAxle ea in uc.Axles)
+                        {
+                            ea.ForceN = 0;
+                        }
                     }
                 }
+                else
+                {
+                    foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        if (car.PowerUnit && car.AcceptCableSignals)
+                        {
+                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                            {
+                                foreach (ExtendedAxle ea in uc.Axles)
+                                {
+                                    ea.ForceN = 0;
+                                }
+                            }                            
+                            break;
+                        }
+                    }
+                }                
             }
             if (Locomotive.IsLeadLocomotive() && Locomotive.DynamicBrakePercent < 0.7 && Locomotive.ControllerVolts < 0)
             {
@@ -569,47 +653,101 @@ namespace Orts.Simulation.RollingStocks
             AverageAxleSpeedMpS = 0;
             TotalForceN = 0;
             TotalMaxForceN = 0;
-            AxleForceNSum = 0;            
-            foreach (Undercarriage uc in Undercarriages)
+            AxleForceNSum = 0;
+            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
             {
-                uc.StatorsCurrent = 0;
-                uc.RotorsCurrent = 0;
-                uc.Mass = Locomotive.MassKG / Undercarriages.Count;
-                foreach (ExtendedAxle ea in uc.Axles)
+                foreach (Undercarriage uc in Undercarriages)
                 {
-                    if (ea.WheelSpeedMpS == 0)
-                        ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
-
-                    ea.WheelSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
-
-                    AverageAxleSpeedMpS += ea.WheelSpeedMpS;
-
-                    if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
-                        FastestAxleSpeedMpS = ea.WheelSpeedMpS;
-
-                    float ForceToChangespeedDiffCoef = Locomotive.MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
-                    speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
-                    if (speedDiff < 0)
-                        speedDiff = 0;
-                    if (OverridenControllerVolts - speedDiff < 0)
-                        speedDiff = OverridenControllerVolts;
-                    if (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
-                        speedDiff = 0;
-                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    uc.StatorsCurrent = 0;
+                    uc.RotorsCurrent = 0;
+                    uc.Mass = Locomotive.MassKG / Undercarriages.Count;
+                    foreach (ExtendedAxle ea in uc.Axles)
                     {
-                        ea.GetCorrectedMass(this);                        
-                        ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts - speedDiff, UseControllerVolts);
-                        TotalCurrent += em.RotorCurrent;
-                        StarorsCurrent += em.StatorCurrent;
-                        RotorsCurrent += em.RotorCurrent;
-                        uc.StatorsCurrent += em.StatorCurrent;
-                        uc.RotorsCurrent += em.RotorCurrent;
-                    }                    
-                    TotalForceN += ea.ForceN;
-                    TotalMaxForceN += ea.maxForceN;
-                    if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
-                        TotalMaxForceN *= 1.017f;
-                }                
+                        if (ea.WheelSpeedMpS == 0)
+                            ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+
+                        ea.WheelSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
+
+                        AverageAxleSpeedMpS += ea.WheelSpeedMpS;
+
+                        if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
+                            FastestAxleSpeedMpS = ea.WheelSpeedMpS;
+
+                        float ForceToChangespeedDiffCoef = Locomotive.MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
+                        speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
+                        if (speedDiff < 0)
+                            speedDiff = 0;
+                        if (OverridenControllerVolts - speedDiff < 0)
+                            speedDiff = OverridenControllerVolts;
+                        if (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+                            speedDiff = 0;
+                        foreach (ElectricMotor em in ea.ElectricMotors)
+                        {
+                            ea.GetCorrectedMass(this);
+                            ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts - speedDiff, UseControllerVolts);
+                            TotalCurrent += em.RotorCurrent;
+                            StarorsCurrent += em.StatorCurrent;
+                            RotorsCurrent += em.RotorCurrent;
+                            uc.StatorsCurrent += em.StatorCurrent;
+                            uc.RotorsCurrent += em.RotorCurrent;
+                        }
+                        TotalForceN += ea.ForceN;
+                        TotalMaxForceN += ea.maxForceN;
+                        if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                            TotalMaxForceN *= 1.017f;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    if (car.PowerUnit && car.AcceptCableSignals)
+                    {
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        {
+                            uc.StatorsCurrent = 0;
+                            uc.RotorsCurrent = 0;
+                            uc.Mass = Locomotive.MassKG / Undercarriages.Count;
+                            foreach (ExtendedAxle ea in uc.Axles)
+                            {
+                                if (ea.WheelSpeedMpS == 0)
+                                    ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+
+                                ea.WheelSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
+
+                                AverageAxleSpeedMpS += ea.WheelSpeedMpS;
+
+                                if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
+                                    FastestAxleSpeedMpS = ea.WheelSpeedMpS;
+
+                                float ForceToChangespeedDiffCoef = Locomotive.MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
+                                speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
+                                if (speedDiff < 0)
+                                    speedDiff = 0;
+                                if (OverridenControllerVolts - speedDiff < 0)
+                                    speedDiff = OverridenControllerVolts;
+                                if (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+                                    speedDiff = 0;
+                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                {
+                                    ea.GetCorrectedMass(this);
+                                    ea.Update(NumMotors, elapsedClockSeconds, OverridenControllerVolts - speedDiff, UseControllerVolts);
+                                    TotalCurrent += em.RotorCurrent;
+                                    StarorsCurrent += em.StatorCurrent;
+                                    RotorsCurrent += em.RotorCurrent;
+                                    uc.StatorsCurrent += em.StatorCurrent;
+                                    uc.RotorsCurrent += em.RotorCurrent;
+                                }
+                                TotalForceN += ea.ForceN;
+                                TotalMaxForceN += ea.maxForceN;
+                                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                                    TotalMaxForceN *= 1.017f;
+                            }
+                        }                        
+                        break;
+                    }
+                }
             }
 
             // Tažná síla
@@ -624,7 +762,7 @@ namespace Orts.Simulation.RollingStocks
                 if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                 {
                     Locomotive.MotiveForceN = Locomotive.TractiveForceN = TotalMaxForceN;
-                }
+                }                
             }
             
             if (Locomotive.IsLeadLocomotive())
@@ -663,18 +801,40 @@ namespace Orts.Simulation.RollingStocks
             //Locomotive.Simulator.Confirmer.MSG(TotalForceN.ToString() + " " + Locomotive.TractiveForceN.ToString());
             //Locomotive.Simulator.Confirmer.MSG(Undercarriages[0].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[0].Axles[1].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[0].WheelSpeedMpS.ToString() + " " + Undercarriages[1].Axles[1].WheelSpeedMpS.ToString());
             //Locomotive.Simulator.Confirmer.MSG(MpS.ToKpH((FastestAxleSpeedMpS - AverageAxleSpeedMpS)).ToString());
-            myAverageAxleSpeedMps = AverageAxleSpeedMpS;            
+            myAverageAxleSpeedMps = AverageAxleSpeedMpS;                           
         }
         protected float speedDiff = 0;
         public void DisableMotors()
         {
-            foreach (Undercarriage uc in Undercarriages)
+            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
             {
-                foreach (ExtendedAxle ea in uc.Axles)
+                foreach (Undercarriage uc in Undercarriages)
                 {
-                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    foreach (ExtendedAxle ea in uc.Axles)
                     {
-                        em.Disabled = true;
+                        foreach (ElectricMotor em in ea.ElectricMotors)
+                        {
+                            em.Disabled = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    if (car.PowerUnit && car.AcceptCableSignals)
+                    {
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        {
+                            foreach (ExtendedAxle ea in uc.Axles)
+                            {
+                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                {
+                                    em.Disabled = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -682,14 +842,37 @@ namespace Orts.Simulation.RollingStocks
 
         public void EnableMotors()
         {
-            foreach (Undercarriage uc in Undercarriages)
+            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
             {
-                foreach (ExtendedAxle ea in uc.Axles)
+                foreach (Undercarriage uc in Undercarriages)
                 {
-                    foreach (ElectricMotor em in ea.ElectricMotors)
+                    foreach (ExtendedAxle ea in uc.Axles)
                     {
-                        if (em.Disabled)
-                            em.Enabling = true;
+                        foreach (ElectricMotor em in ea.ElectricMotors)
+                        {
+                            if (em.Disabled)
+                                em.Enabling = true;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                {
+                    if (car.PowerUnit && car.AcceptCableSignals)
+                    {
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        {
+                            foreach (ExtendedAxle ea in uc.Axles)
+                            {
+                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                {
+                                    if (em.Disabled)
+                                        em.Enabling = true;
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -1092,8 +1275,8 @@ namespace Orts.Simulation.RollingStocks
                     ForceFilterMotor.RemoveAt(0);
                     ForceNFilteredMotor = ForceFilterMotor.Average();
                 }
-            }
-            
+            }                       
+
             //if (WheelSpeedMpS == 0 && Locomotive.WheelSpeedMpS > 0)
             //    WheelSpeedMpS = Locomotive.WheelSpeedMpS;
         }

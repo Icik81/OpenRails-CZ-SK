@@ -119,7 +119,8 @@ namespace Orts.Simulation.RollingStocks
         }
 
         public TrainCar PowerControlUnit;
-        bool MUCableOk;
+        bool MUCableOk;        
+
         public override void Update(float elapsedClockSeconds)
         {            
             ResetControlUnitParameters();
@@ -217,13 +218,13 @@ namespace Orts.Simulation.RollingStocks
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
                         PowerControlUnit = PU;
-
+                        
                         Pantographs = PU.Pantographs;
                         PantographUp = PU.PantographUp;
                         PantographDown = PU.PantographDown;
                         PowerSupply.CircuitBreaker = PU.PowerSupply.CircuitBreaker;
                         CircuitBreakerOn = PU.CircuitBreakerOn;
-                        DriveForceN = PU.DriveForceN;
+                        DriveForceN = PU.DriveForceN;                        
                         MaxCurrentA = PU.MaxCurrentA;
                         MaxForceN = PU.MaxForceN;
                         DynamicBrakeMaxCurrentA = PU.DynamicBrakeMaxCurrentA;
@@ -249,7 +250,8 @@ namespace Orts.Simulation.RollingStocks
                         AuxResPressurePSI = PU.AuxResPressurePSI;
                         PantographsCurrent = PU.PantographsCurrent;
                         Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
-                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;
+                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;                        
+
                         //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);
 
                         if (!PU.LocoReadyToGo) LocoReadyToGo = false;
@@ -308,7 +310,9 @@ namespace Orts.Simulation.RollingStocks
                                 PU.ChangingPowerSystem = ChangingPowerSystem;
                                 PU.SelectingPowerSystem = SelectingPowerSystem;
                                 SelectedPowerSystem = PU.SelectedPowerSystem;
-                                PU.ChangePowerSystem();
+                                PU.ChangePowerSystem();                                
+                                GeneratoricModeActive = PU.GeneratoricModeActive;
+                                PU.ForceHandleValue = ForceHandleValue;                                
                             }
 
                         }                        

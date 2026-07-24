@@ -7666,6 +7666,7 @@ namespace Orts.Simulation.RollingStocks
 
                     if (extendedPhysics != null && !LocoHelperOn)
                         extendedPhysics.Update(elapsedClockSeconds);
+
                     if (CruiseControl != null)
                     {
                         if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
@@ -8274,7 +8275,7 @@ namespace Orts.Simulation.RollingStocks
                 else if (CruiseControl.SelectedSpeedMpS > 0)
                     CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
                 else if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
-                    CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);
+                    CruiseControl.Update(elapsedClockSeconds, AbsWheelSpeedMpS);                               
             }
             else
                 if (CruiseControl != null && (TrainBrakeController.TCSEmergencyBraking || TrainBrakeController.TCSFullServiceBraking))
@@ -8317,7 +8318,7 @@ namespace Orts.Simulation.RollingStocks
             // For flipped locomotives the force is "flipped" elsewhere, whereas dynamic brake force is "flipped" below by the direction of the speed.            
 
             // Icik            
-            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || (LocoType == LocoTypes.Vectron && TractionBlocked))
+            if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || (LocoType == LocoTypes.Vectron && (TractionBlocked || ControlUnit)))
                 TractiveForceN = 0;
 
             MotiveForceN = TractiveForceN;
@@ -8470,7 +8471,7 @@ namespace Orts.Simulation.RollingStocks
                     }
 
                     //Force to display
-                    if (Simulator.GameSpeed == 1)
+                    if (Simulator.GameSpeed == 1 && !ControlUnit)
                         FilteredMotiveForceN = CurrentFilter.Filter(MotiveForceN, elapsedClockSeconds);
 
                     break;
@@ -11729,8 +11730,11 @@ namespace Orts.Simulation.RollingStocks
                 SignalEvent(Event.DynamicBrakeOff);                
                 DynamicBrakeController.CommandStartTime = Simulator.ClockTime;
                 StopDynamicBrakeIncrease();
-                DynamicBrakePercent = -1;
-                LocalDynamicBrakePercent = -1;
+                if (!GeneratoricModeActive)
+                {
+                    DynamicBrakePercent = -1;
+                    LocalDynamicBrakePercent = -1;
+                }
                 EDBOn = false;
                 LastStateDynamicBrakePercent = -1;
                 DynamicBrakeInterventionNormalState = false;
@@ -13629,7 +13633,7 @@ namespace Orts.Simulation.RollingStocks
                         LapActive[1] = LapActive[2];
                 }
 
-                if (LocoType == LocoTypes.Vectron)
+                if (LocoType == LocoTypes.Vectron && LocoSetUpTimer > 1)
                 {
                     if (!Battery)
                     {
@@ -14859,6 +14863,8 @@ namespace Orts.Simulation.RollingStocks
                     BreakPowerButton_Activated = true;
                 if (BreakPowerButton_Activated && Pantograph3Switch[LocoStation] == 1)
                     BreakPowerButton_Activated = false;
+
+                if (LocoSetUpTimer < 1) PrePantoStatus[LocoStation] = -2;
 
                 if ((Pantograph3CanOn || HV4Enable) && Battery && StationIsActivated[LocoStation] && !BreakPowerButton_Activated && LocoSetUpTimer > 1)
                 {
@@ -23068,11 +23074,31 @@ namespace Orts.Simulation.RollingStocks
                     if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         maxForce = 0;
-                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                        if (PowerUnit && IsLeadLocomotive())
                         {
-                            foreach (ExtendedAxle ea in uc.Axles)
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
-                                maxForce += ea.ForceNFiltered;
+                                foreach (ExtendedAxle eaa in uc.Axles)
+                                {
+                                    maxForce += eaa.ForceNFiltered;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                            {
+                                if (car.PowerUnit && car.AcceptCableSignals)
+                                {
+                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    {
+                                        foreach (ExtendedAxle ea in uc.Axles)
+                                        {
+                                            maxForce += ea.ForceNFiltered;
+                                        }
+                                    }
+                                    break;
+                                }
                             }
                         }
                         if (maxForce < 0)
@@ -23096,11 +23122,31 @@ namespace Orts.Simulation.RollingStocks
                         if (diff < 0 || TractiveForceN < 0)
                         {
                             maxForce = 0;
-                            foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
+                            if (PowerUnit && IsLeadLocomotive())
                             {
-                                foreach (ExtendedAxle eaa in ucc.Axles)
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
-                                    maxForce += eaa.ForceNFiltered;
+                                    foreach (ExtendedAxle eaa in uc.Axles)
+                                    {
+                                        maxForce += eaa.ForceNFiltered;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                {
+                                    if (car.PowerUnit && car.AcceptCableSignals)
+                                    {
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        {
+                                            foreach (ExtendedAxle eaa in uc.Axles)
+                                            {
+                                                maxForce += eaa.ForceNFiltered;
+                                            }
+                                        }
+                                        break;
+                                    }
                                 }
                             }
                             if (maxForce < 0)
@@ -23122,21 +23168,43 @@ namespace Orts.Simulation.RollingStocks
                     {
                         requestedForce.Clear();
                         maxForce = 0;
-                        foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
+
+                        if (PowerUnit && IsLeadLocomotive())
                         {
-                            foreach (ExtendedAxle eaa in ucc.Axles)
+                            foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
                             {
-                                maxForce += eaa.ForceNFiltered;
+                                foreach (ExtendedAxle eaa in ucc.Axles)
+                                {
+                                    maxForce += eaa.ForceNFiltered;
+                                }
                             }
                         }
+                        else
+                        {
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                            {
+                                if (car.PowerUnit && car.AcceptCableSignals)
+                                {
+                                    foreach (Undercarriage ucc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    {
+                                        foreach (ExtendedAxle eaa in ucc.Axles)
+                                        {
+                                            maxForce += eaa.ForceNFiltered;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
                         if (maxForce < 0)                        
                             maxForce = (maxForce / MaxDynamicBrakeForceN) * 100;                        
                         else                        
                             maxForce = (maxForce / MaxForceN) * 100;                                                                            
                     }
 
-                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;                    
-
+                    data = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
+                    
                     if (!(cvc is Orts.Formats.Msts.CVCDigital))
                     {
                         preData = cvc is Orts.Formats.Msts.CVCDigital ? ForceHandleValue : maxForce;
@@ -23149,30 +23217,68 @@ namespace Orts.Simulation.RollingStocks
                     break;
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     preData = 0f;
-                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+
+                    if (PowerUnit && IsLeadLocomotive())
                     {
-                        foreach (ExtendedAxle ea in uc.Axles)
+                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
-                            if (ea.Id == cvc.AxleId)
+                            foreach (ExtendedAxle ea in uc.Axles)
                             {
-                                preData = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
-                                if (preData < 0 && cvc.CurrentSource == "")
-                                    cvc.IsVisible = false;
-                                if (preData >= 0 && cvc.CurrentSource == "")
-                                    cvc.IsVisible = true;
-                                if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                if (ea.Id == cvc.AxleId)
                                 {
-                                    preData = -preData;
-                                    cvc.IsVisible = true;
-                                }
-                                else if (cvc.CurrentSource.ToLower() == "negative_force")
-                                {
-                                    preData = 0;
-                                    cvc.IsVisible = false;
+                                    preData = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
+                                    if (preData < 0 && cvc.CurrentSource == "")
+                                        cvc.IsVisible = false;
+                                    if (preData >= 0 && cvc.CurrentSource == "")
+                                        cvc.IsVisible = true;
+                                    if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                    {
+                                        preData = -preData;
+                                        cvc.IsVisible = true;
+                                    }
+                                    else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                    {
+                                        preData = 0;
+                                        cvc.IsVisible = false;
+                                    }
                                 }
                             }
                         }
                     }
+                    else
+                    {
+                        foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                        {
+                            if (car.PowerUnit && car.AcceptCableSignals)
+                            {
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                {
+                                    foreach (ExtendedAxle ea in uc.Axles)
+                                    {
+                                        if (ea.Id == cvc.AxleId)
+                                        {
+                                            preData = ea.ForceNFilteredMotor / extendedPhysics.NumAxles * 2;
+                                            if (preData < 0 && cvc.CurrentSource == "")
+                                                cvc.IsVisible = false;
+                                            if (preData >= 0 && cvc.CurrentSource == "")
+                                                cvc.IsVisible = true;
+                                            if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                            {
+                                                preData = -preData;
+                                                cvc.IsVisible = true;
+                                            }
+                                            else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                            {
+                                                preData = 0;
+                                                cvc.IsVisible = false;
+                                            }
+                                        }
+                                    }
+                                }
+                                break;
+                            }
+                        }
+                    }                    
                     
                     switch (cvc.Units)
                     {
@@ -23207,16 +23313,41 @@ namespace Orts.Simulation.RollingStocks
                         cvc.PreviousData = (int)preData;
                     }
                     data = cvc.PreviousData;
+                    
                     break;
                 case CABViewControlTypes.TOTAL_FORCE:
                     preData = 0f;
-                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                    if (PowerUnit && IsLeadLocomotive())
                     {
-                        foreach (ExtendedAxle ea in uc.Axles)
+                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
-                            preData += ea.ForceNFiltered;
+                            foreach (ExtendedAxle eaa in uc.Axles)
+                            {
+                                preData += eaa.ForceNFiltered;
+                            }
                         }
                     }
+                    else
+                    {
+                        foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                        {
+                            if (car.PowerUnit && car.AcceptCableSignals)
+                            {
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                {
+                                    foreach (ExtendedAxle ea in uc.Axles)
+                                    {
+                                        preData += ea.ForceNFiltered;
+                                    }
+                                }
+                                if (Math.Abs((car as MSTSLocomotive).ControllerVolts) > 0.5f) ControllerVolts = (car as MSTSLocomotive).ControllerVolts;                                
+                                FilteredMotiveForceN = (car as MSTSLocomotive).FilteredMotiveForceN;
+                                DynamicBrakeForceN = (car as MSTSLocomotive).FilteredMotiveForceN; 
+                                break;
+                            }
+                        }
+                    }                    
+
                     if (preData < 0)
                     {
                         preData = (preData / MaxDynamicBrakeForceN) * 100;
@@ -23274,19 +23405,47 @@ namespace Orts.Simulation.RollingStocks
                         if (cvc is CVCGauge && ((CVCGauge)cvc).Orientation == 0)
                             direction = ((CVCGauge)cvc).Direction;
                         preData = 0f;
-                        foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+
+                        if (PowerUnit && IsLeadLocomotive())
                         {
-                            foreach (ExtendedAxle ea in uc.Axles)
+                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
-                                if (ea.Id == cvc.AxleId)
+                                foreach (ExtendedAxle ea in uc.Axles)
                                 {
-                                    preData = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
-                                    if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
-                                        preData = -preData;
-                                    else if (cvc.CurrentSource.ToLower() == "negative_force")
-                                        preData = 0;
+                                    if (ea.Id == cvc.AxleId)
+                                    {
+                                        preData = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
+                                        if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                            preData = -preData;
+                                        else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                            preData = 0;
+                                    }
                                 }
-                            }                           
+                            }
+                        }
+                        else
+                        {
+                            foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                            {
+                                if (car.PowerUnit && car.AcceptCableSignals)
+                                {
+                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    {
+                                        foreach (ExtendedAxle ea in uc.Axles)
+                                        {
+                                            if (ea.Id == cvc.AxleId)
+                                            {
+                                                preData = ea.ForceNFiltered / extendedPhysics.NumAxles * 2;
+                                                if (cvc.CurrentSource.ToLower() == "negative_force" && preData < 0)
+                                                    preData = -preData;
+                                                else if (cvc.CurrentSource.ToLower() == "negative_force")
+                                                    preData = 0;
+                                            }
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
                         }
 
                         switch (cvc.Units)

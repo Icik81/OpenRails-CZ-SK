@@ -1688,7 +1688,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     }
 
                     // Pro loco typu Vectron nenapouští brzdový válec vzduchem při průběžném brždění
-                    if (loco != null && loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && !loco.BreakEDBButton_Activated && loco.AbsSpeedMpS > 3f / 3.6f && !EDBCutOffActivated)
+                    if (loco != null && loco.LocoType == MSTSLocomotive.LocoTypes.Vectron && loco.PowerUnit && !loco.BreakEDBButton_Activated && loco.AbsSpeedMpS > 3f / 3.6f && !EDBCutOffActivated)
                     {
                         if (loco.PowerOn /*|| (loco.EDBIndependent && loco.PowerOnFilter > 0)*/)
                         {

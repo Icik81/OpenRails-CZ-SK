@@ -210,7 +210,7 @@ namespace Orts.Simulation.Physics
         public bool TriggerTrainSpeedZone;
         public float TriggerTrainSpeedZoneSpeedMpS;
         public bool AITrainSpeedZone;
-        public bool TrainWasStatic;
+        public bool TrainWasStatic;        
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
