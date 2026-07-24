@@ -978,6 +978,18 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (Locomotive.extendedPhysics != null && speedSensorAxleIndex > -1 && speedSensorUndercarriageIndex > -1)
             {
                 wheelSpeedMpS = Locomotive.extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
+
+                if (Locomotive.ControlUnit && Locomotive.AcceptCableSignals)
+                {
+                    foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                    {
+                        if (car.PowerUnit && car.AcceptCableSignals)
+                        {
+                            wheelSpeedMpS = (car as MSTSLocomotive).extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
+                        }
+                    }
+                }
+
                 // wheelSpeedMpS = Locomotive.Train.SpeedMpS;
                 if (Locomotive.UsingRearCab && wheelSpeedMpS < 0)
                     wheelSpeedMpS = -wheelSpeedMpS;
