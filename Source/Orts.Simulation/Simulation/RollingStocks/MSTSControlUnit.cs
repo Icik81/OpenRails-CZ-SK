@@ -218,7 +218,9 @@ namespace Orts.Simulation.RollingStocks
                         ControlUnitType = ControlUnitTypes.Electric;
                         var PU = car as MSTSElectricLocomotive;
                         PowerControlUnit = PU;
-                        
+
+                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
+
                         Pantographs = PU.Pantographs;
                         PantographUp = PU.PantographUp;
                         PantographDown = PU.PantographDown;
@@ -252,15 +254,53 @@ namespace Orts.Simulation.RollingStocks
                         Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
                         Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;                        
 
-                        //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);
+                        //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);                        
 
-                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
-
-                        if (LocoReadyToGo && LocoType == LocoTypes.Vectron)
+                        if (LocomotiveFaultyActivated)
                         {
-                            SelectingPowerSystem = PU.SelectingPowerSystem;
-                            SelectedPowerSystem = PU.SelectedPowerSystem;
-                            SystemAnnunciator = PU.SystemAnnunciator;
+                            PU.HVOff = true;
+                        }                        
+
+                        if (LocoType == LocoTypes.Vectron)
+                        {
+                            // Řídící jednotka není obsazená - přijímá signály z PU
+                            if (!IsLeadLocomotive())
+                            {
+                                SelectingPowerSystem = PU.SelectingPowerSystem;
+                                SelectedPowerSystem = PU.SelectedPowerSystem;
+                                SystemAnnunciator = PU.SystemAnnunciator;
+                                Switch5LightPosition[LocoStation] = PU.Switch5LightPosition[PU.LocoStation];
+                                Switch6LightPosition[LocoStation] = PU.Switch6LightPosition[PU.LocoStation];
+                            }
+                            
+                            // Řídící jednotka je obsazená - přijímá signály z PU a posílá signály do PU
+                            if (IsLeadLocomotive())
+                            {
+                                PU.Switch51LightEnable = Switch51LightEnable;
+                                PU.Switch5LightPosition[PU.LocoStation] = Switch5LightPosition[LocoStation];
+                                PU.Switch52LightEnable = Switch52LightEnable;
+                                PU.Switch6LightPosition[PU.LocoStation] = Switch6LightPosition[LocoStation];
+                                SystemAnnunciator = PU.SystemAnnunciator;
+                                PU.ChangingPowerSystem = ChangingPowerSystem;
+                                PU.SelectingPowerSystem = SelectingPowerSystem;
+                                SelectedPowerSystem = PU.SelectedPowerSystem;
+                                PU.ChangePowerSystem();
+                                GeneratoricModeActive = PU.GeneratoricModeActive;
+                                PU.ForceHandleValue = ForceHandleValue;                                
+                            }
+                        }
+
+                        // Světla
+                        if (IsLeadLocomotive())
+                        {                            
+                            PU.LightFrontLR = LightFrontLR;
+                            PU.LightFrontRR = LightFrontRR;
+                            PU.LightFrontLW = LightFrontLW;
+                            PU.LightFrontRW = LightFrontRW;
+                            PU.LightRearLR = LightRearLR;
+                            PU.LightRearRR = LightRearRR;
+                            PU.LightRearLW = LightRearLW;
+                            PU.LightRearRW = LightRearRW;
                         }
 
                         // Řídící jednotka je obsazená
@@ -286,35 +326,7 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
-
-                            PU.LightFrontLR = LightFrontLR;
-                            PU.LightFrontRR = LightFrontRR;
-                            PU.LightFrontLW = LightFrontLW; 
-                            PU.LightFrontRW = LightFrontRW;
-                            PU.LightRearLR = LightRearLR;
-                            PU.LightRearRR = LightRearRR;
-                            PU.LightRearLW = LightRearLW;
-                            PU.LightRearRW = LightRearRW;
-
-                            if (LocomotiveFaultyActivated)                            
-                            {
-                                PU.HVOff = true;
-                            }
-
-                            if (PU.LocoType == LocoTypes.Vectron)
-                            {
-                                PU.Switch51LightEnable = Switch51LightEnable;
-                                PU.Switch52LightEnable = Switch52LightEnable;
-                                SystemAnnunciator = PU.SystemAnnunciator;                                                                
-                                PU.ChangingPowerSystem = ChangingPowerSystem;
-                                PU.SelectingPowerSystem = SelectingPowerSystem;
-                                SelectedPowerSystem = PU.SelectedPowerSystem;
-                                PU.ChangePowerSystem();                                
-                                GeneratoricModeActive = PU.GeneratoricModeActive;
-                                PU.ForceHandleValue = ForceHandleValue;                                
-                            }
-
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                                                                                    
                         }                        
 
                         break;
@@ -326,6 +338,8 @@ namespace Orts.Simulation.RollingStocks
                         ControlUnitType = ControlUnitTypes.Diesel;
                         var PU = car as MSTSDieselLocomotive;
                         PowerControlUnit = PU;
+
+                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
 
                         DriveForceN = PU.DriveForceN;
                         MaxCurrentA = PU.MaxCurrentA;
@@ -346,9 +360,7 @@ namespace Orts.Simulation.RollingStocks
 
                         FakeDieselWaterTemperatureDeg = PU.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         FakeDieselOilTemperatureDeg = PU.DieselEngines[0].FakeDieselOilTemperatureDeg;
-                        RealRPM = PU.DieselEngines[0].RealRPM;
-
-                        if (!PU.LocoReadyToGo) LocoReadyToGo = false;
+                        RealRPM = PU.DieselEngines[0].RealRPM;                                               
 
                         if (PU.DieselEngines.Count > 1)
                         {
@@ -357,7 +369,25 @@ namespace Orts.Simulation.RollingStocks
                             RealRPM2 = PU.DieselEngines[1].RealRPM;
                         }
 
-                        // Řídící jednotka je obsazená
+                        if (LocomotiveFaultyActivated)
+                        {
+                            PU.Battery = false;
+                        }
+
+                        // Světla
+                        if (IsLeadLocomotive())
+                        {
+                            PU.LightFrontLR = LightFrontLR;
+                            PU.LightFrontRR = LightFrontRR;
+                            PU.LightFrontLW = LightFrontLW;
+                            PU.LightFrontRW = LightFrontRW;
+                            PU.LightRearLR = LightRearLR;
+                            PU.LightRearRR = LightRearRR;
+                            PU.LightRearLW = LightRearLW;
+                            PU.LightRearRW = LightRearRW;
+                        }
+
+                        // Řídící jednotka je obsazená - inicializace
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
                         {
                             LocoReadyToGo = false;
@@ -386,21 +416,7 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
-
-                            PU.LightFrontLR = LightFrontLR;
-                            PU.LightFrontRR = LightFrontRR;
-                            PU.LightFrontLW = LightFrontLW;
-                            PU.LightFrontRW = LightFrontRW;
-                            PU.LightRearLR = LightRearLR;
-                            PU.LightRearRR = LightRearRR;
-                            PU.LightRearLW = LightRearLW;
-                            PU.LightRearRW = LightRearRW;
-
-                            if (LocomotiveFaultyActivated)
-                            {
-                                Battery = false;
-                            }                            
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                                                                                   
                         }
 
                         break;
