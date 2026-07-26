@@ -4948,6 +4948,21 @@ namespace Orts.Simulation.RollingStocks
                         // Defaulty
                         if (!car.WagonHasTemperature && LocoSetUpTimer > 1 || car.CarOutsideTempCLastStatus != car.CarOutsideTempC)
                         {
+                            // Lokomotivy mimo parních lokomotiv mají výchozí hodnoty topení stanoviště
+                            if (car.WagonType == WagonTypes.Engine && !(car is MSTSSteamLocomotive))
+                            {
+                                if (car.CarLengthM <= 10)
+                                {
+                                    if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                    
+                                    if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 2; // 2l/h
+                                }
+                                if (car.CarLengthM > 10)
+                                {
+                                    if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 15.0f * 1000;   // 15kW
+                                    if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 3; // 3l/h
+                                }
+                            }
+
                             // Přeskočí nastavení výchozích hodnot el.topení pokud je nalezeno topení párou nebo kamny
                             if (car.HasWagonSteamHeatingElements || car.WagonHasStove) goto skipDefaultHeaterValue;
 
@@ -4972,21 +4987,7 @@ namespace Orts.Simulation.RollingStocks
                                         if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 50.0f * 1000;   // 50kW
                                         if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 14; // 14l/h                                            
                                     }
-                                }
-                                else
-                                // Lokomotivy
-                                {
-                                    if (car.CarLengthM <= 10)
-                                    {
-                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 10.0f * 1000;   // 10kW                    
-                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 2; // 2l/h
-                                    }
-                                    if (car.CarLengthM > 10)
-                                    {
-                                        if (car.PowerReductionByHeating == 0) car.PowerReductionByHeating = 15.0f * 1000;   // 15kW
-                                        if (car.DieselHeaterConsumptionPerHour == 0) car.DieselHeaterConsumptionPerHour = 3; // 3l/h
-                                    }
-                                }
+                                }                                                                
                             }
                             else
                             {
