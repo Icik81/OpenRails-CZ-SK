@@ -252,7 +252,7 @@ namespace Orts.Simulation.RollingStocks
                         AuxResPressurePSI = PU.AuxResPressurePSI;
                         PantographsCurrent = PU.PantographsCurrent;
                         Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
-                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;                        
+                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;                                                
 
                         //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);                        
 
@@ -281,12 +281,21 @@ namespace Orts.Simulation.RollingStocks
                                 PU.Switch52LightEnable = Switch52LightEnable;
                                 PU.Switch6LightPosition[PU.LocoStation] = Switch6LightPosition[LocoStation];
                                 SystemAnnunciator = PU.SystemAnnunciator;
-                                PU.ChangingPowerSystem = ChangingPowerSystem;
-                                PU.SelectingPowerSystem = SelectingPowerSystem;
-                                SelectedPowerSystem = PU.SelectedPowerSystem;
-                                PU.ChangePowerSystem();
+                                if (PU.LocoReadyToGo)
+                                {
+                                    SelectingPowerSystem = PU.SelectingPowerSystem;
+                                    SelectedPowerSystem = PU.SelectedPowerSystem;
+                                }
+                                else
+                                {
+                                    PU.ChangingPowerSystem = ChangingPowerSystem;
+                                    PU.SelectingPowerSystem = SelectingPowerSystem;
+                                    SelectedPowerSystem = PU.SelectedPowerSystem;
+                                    PU.ChangePowerSystem();
+                                }                                
                                 GeneratoricModeActive = PU.GeneratoricModeActive;
-                                PU.ForceHandleValue = ForceHandleValue;                                
+                                PU.ForceHandleValue = ForceHandleValue;    
+                                
                             }
                         }
 
@@ -315,7 +324,9 @@ namespace Orts.Simulation.RollingStocks
                                 DynamicBrakeIntervention = MathHelper.Max(PU.DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
 
                             PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
-                            PU.PowerKey = PowerKey;                                                                              
+                            PU.PowerKey = PowerKey;
+                            PU.UpdateTimeEnable = UpdateTimeEnable;
+                            PU.Sander = Sander;
 
                             PU.HVOn = HVOn; PU.HVOff = HVOff;
                             HVOn = false; HVOff = false;                            
@@ -400,7 +411,8 @@ namespace Orts.Simulation.RollingStocks
 
                             PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
                             PU.PowerKey = PowerKey;
-                           
+                            PU.Sander = Sander;
+
                             PU.BreakPowerButton = BreakPowerButton;
                             if (AuxCompressor) PU.AuxCompressor = true;
 

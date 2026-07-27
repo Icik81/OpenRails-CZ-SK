@@ -392,7 +392,7 @@ namespace Orts.Simulation.RollingStocks
                     foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
                     {
                         if (car.PowerUnit && car.AcceptCableSignals)
-                        {
+                        {                            
                             float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs((car as MSTSLocomotive).LocomotiveAxle.TrainSpeedMpS) ? Math.Abs((car as MSTSLocomotive).AxleSpeedMpSEP) : FastestAxleSpeedMpS) * (car as MSTSLocomotive).WheelSpeedDirectionMarkerEP) - (car as MSTSLocomotive).LocomotiveAxle.TrainSpeedMpS;
                             return SlipSpeedMpS;
                         }
@@ -708,11 +708,11 @@ namespace Orts.Simulation.RollingStocks
                         {
                             uc.StatorsCurrent = 0;
                             uc.RotorsCurrent = 0;
-                            uc.Mass = Locomotive.MassKG / Undercarriages.Count;
+                            uc.Mass = (car as MSTSLocomotive).MassKG / Undercarriages.Count;
                             foreach (ExtendedAxle ea in uc.Axles)
                             {
                                 if (ea.WheelSpeedMpS == 0)
-                                    ea.WheelSpeedMpS = Locomotive.WheelSpeedMpS;
+                                    ea.WheelSpeedMpS = (car as MSTSLocomotive).WheelSpeedMpS;
 
                                 ea.WheelSpeedMpS = Math.Abs(ea.WheelSpeedMpS);
 
@@ -721,13 +721,13 @@ namespace Orts.Simulation.RollingStocks
                                 if (FastestAxleSpeedMpS < ea.WheelSpeedMpS)
                                     FastestAxleSpeedMpS = ea.WheelSpeedMpS;
 
-                                float ForceToChangespeedDiffCoef = Locomotive.MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
+                                float ForceToChangespeedDiffCoef = (car as MSTSLocomotive).MaxForceN; // Dynamické počítání coefu kvůli oscilaci síly motorů
                                 speedDiff = (ea.WheelSpeedMpS - myAverageAxleSpeedMps) * Math.Abs(TotalForceN / ForceToChangespeedDiffCoef * 20f); // Jirko když to budeš měnit, řekni pro kterou mašinu, jinak přestanou fungovat ostatní.
                                 if (speedDiff < 0)
                                     speedDiff = 0;
                                 if (OverridenControllerVolts - speedDiff < 0)
                                     speedDiff = OverridenControllerVolts;
-                                if (Locomotive.LocoType != MSTSLocomotive.LocoTypes.Vectron)
+                                if ((car as MSTSLocomotive).LocoType != MSTSLocomotive.LocoTypes.Vectron)
                                     speedDiff = 0;
                                 foreach (ElectricMotor em in ea.ElectricMotors)
                                 {
@@ -741,7 +741,7 @@ namespace Orts.Simulation.RollingStocks
                                 }
                                 TotalForceN += ea.ForceN;
                                 TotalMaxForceN += ea.maxForceN;
-                                if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                                if ((car as MSTSLocomotive).LocoType == MSTSLocomotive.LocoTypes.Vectron)
                                     TotalMaxForceN *= 1.017f;
                             }
                         }                        
@@ -1293,11 +1293,26 @@ namespace Orts.Simulation.RollingStocks
             float Gp = Gs / extendedPhysics.Undercarriages.Count;
             float Gn = Gs / extendedPhysics.NumAxles;
             float Fh = 0;
-            foreach (TrainCar tc in Locomotive.Train.Cars)
+            
+            for (int i = 0; i < Locomotive.Train.Cars.Count; i++)
             {
+                TrainCar tc = Locomotive.Train.Cars[i];
                 if (tc == Locomotive)
                 {
-                    Fh = -tc.CouplerForceU / 1000;
+                    if (tc == Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar && tc != Locomotive.FirstCarHeadOfTrain) // Poslední ale ne v čele vlaku
+                        Fh = Locomotive.Train.Cars[i - 1].CouplerForceU / 1000 / 2f;
+                    else
+                    if (tc == Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar && tc == Locomotive.FirstCarHeadOfTrain) // Poslední ale v čele vlaku
+                        Fh = Locomotive.Train.Cars[i - 1].CouplerForceU / 1000;
+                    else
+                    if (tc != Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar) // Uprostřed
+                        Fh = -tc.CouplerForceU / 1000 / 2f;
+                    else
+                    if (tc != Locomotive.Train.LastCar && tc == Locomotive.Train.FirstCar && tc != Locomotive.FirstCarHeadOfTrain) // První ale ne v čele vlaku
+                        Fh = -tc.CouplerForceU / 1000 / 2f;
+                    else
+                    if (tc != Locomotive.Train.LastCar && tc == Locomotive.Train.FirstCar && tc == Locomotive.FirstCarHeadOfTrain) // První v čele vlaku
+                        Fh = -tc.CouplerForceU / 1000;
                     break;
                 }
             }

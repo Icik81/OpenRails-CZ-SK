@@ -7376,20 +7376,47 @@ namespace Orts.Simulation.RollingStocks
                                         if (Pantographs[j].State == PantographState.Up)
                                         {
                                             bool motorDisabled = false;
-                                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                            if (PowerUnit && IsLeadLocomotive())
                                             {
-                                                foreach (ExtendedAxle ea in uc.Axles)
+                                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                                 {
-                                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                                    foreach (ExtendedAxle ea in uc.Axles)
                                                     {
-                                                        if (em.Disabled)
+                                                        foreach (ElectricMotor em in ea.ElectricMotors)
                                                         {
-                                                            motorDisabled = true;
-                                                            goto Action;
+                                                            if (em.Disabled)
+                                                            {
+                                                                motorDisabled = true;
+                                                                goto Action;
+                                                            }
                                                         }
                                                     }
                                                 }
                                             }
+                                            else
+                                            {
+                                                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                                {
+                                                    if (car.PowerUnit && car.AcceptCableSignals)
+                                                    {
+                                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                                        {
+                                                            foreach (ExtendedAxle ea in uc.Axles)
+                                                            {
+                                                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                                                {
+                                                                    if (em.Disabled)
+                                                                    {
+                                                                        motorDisabled = true;
+                                                                        goto Action;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        break;
+                                                    }
+                                                }
+                                            }                                            
                                             Action:
                                             HvPantoTimer = 0;
                                             if (!motorDisabled)
@@ -13209,13 +13236,13 @@ namespace Orts.Simulation.RollingStocks
                     if (car is MSTSLocomotive)
                     {
                         Simulator.LocoCount++;
-                        if (!car.CarIsPlayerLoco)
+                        if (!car.CarIsPlayerLoco && !Simulator.ControlUnitInTrain)
                             (car as MSTSLocomotive).Sander = false;
                     }
                     if (car is MSTSLocomotive && car.AcceptCableSignals)
                     {
                         Simulator.MUCableLocoCount++;
-                        if (!car.CarIsPlayerLoco && Simulator.SanderIsOn && !ControlUnit && !PowerUnitWithControl)
+                        if (!car.CarIsPlayerLoco && Simulator.SanderIsOn && !Simulator.ControlUnitInTrain)
                         {
                             (car as MSTSLocomotive).Sander = true;
                             Simulator.Confirmer.MSG2(Simulator.Catalog.GetString("MU") + " " + (car as MSTSLocomotive).CurrentTrackSandBoxCapacityKG + " Kg");

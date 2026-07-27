@@ -1859,7 +1859,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 if (OLBailOffLimitPressurePSI == 0) OLBailOffLimitPressurePSI = 3.2f * 14.50377f; // V15 definuje 3.2bar
                 if (OLBailOffType == null) OLBailOffType = "OL2";
 
-                if (Car is MSTSLocomotive && !(Car.Train.Cars[Car.Train.LeadLocomotiveIndex]).IsDriveable)
+                if (Car is MSTSLocomotive && (Car.Train.LeadLocomotiveIndex == -1 || !(Car.Train.Cars[Car.Train.LeadLocomotiveIndex]).IsDriveable))
                 {                    
                     for (int i = 0; i < Car.Train.Cars.Count; i++)
                         if (Car.Train.Cars[i].IsDriveable)
