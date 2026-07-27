@@ -200,8 +200,7 @@ namespace Orts.Simulation
         public bool NightTime;
         public bool PlayerCarIsInTunnel;
         public float PlayerCarIsInTunnelBeginM;
-        public float PlayerCarIsInTunnelEndM;
-        public bool TunnelInfo;
+        public float PlayerCarIsInTunnelEndM;        
         public float TunnelLengthM;        
         public float TunnelActivateM;
         public bool CabLightActivate;

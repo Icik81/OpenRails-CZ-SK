@@ -12854,7 +12854,7 @@ namespace Orts.Simulation.RollingStocks
                     WorldThunderCount = Simulator.Random.Next(2, 5);
                 }                
                 
-                Simulator.WorldThunderTime = Simulator.Random.Next(1, 5) / 10f;                
+                Simulator.WorldThunderTime = Simulator.Random.Next(1, 5) / 15f;                
                 ThunderSoundTimerOn += Simulator.OneSecondLoop;
                 
                 if (ThunderSoundTimerOn > ThunderSoundTime) // ThunderSoundTime

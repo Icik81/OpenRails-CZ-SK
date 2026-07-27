@@ -3191,40 +3191,12 @@ namespace Orts.Simulation.Physics
                 float? FrontCarPositionInTunnel = null;
                 float? FrontCarLengthOfTunnelAhead = null;
                 float? RearCarLengthOfTunnelBehind = null;
-                int numTunnelPaths = 0;
+                int numTunnelPaths = 0;                
 
                 while (validSections)
                 {
                     TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisSectionIndex];
-                    inTunnel = false;
-
-                    // Detekuje tunel 2 sekce před a 2 sekce za vozem, aby se předešlo blikání kamery při průjezdu tunelů
-                    if (car == Simulator.TunnelCarCameraCanActivated)
-                    {
-                        Simulator.TunnelInfo = false;
-                        for (int i = PresentPosition[0].TCSectionIndex; i < PresentPosition[0].TCSectionIndex + 2; i++)
-                        {
-                            if (i < signalRef.TrackCircuitList.Count)
-                            {
-                                if (signalRef.TrackCircuitList[i].TunnelInfo != null)
-                                {
-                                    Simulator.TunnelInfo = true;
-                                    break;
-                                }
-                            }
-                        }
-                        for (int i = PresentPosition[0].TCSectionIndex; i > PresentPosition[0].TCSectionIndex - 2; i--)
-                        {
-                            if (i >= 0)
-                            {
-                                if (signalRef.TrackCircuitList[i].TunnelInfo != null)
-                                {
-                                    Simulator.TunnelInfo = true;
-                                    break;
-                                }
-                            }
-                        }
-                    }
+                    inTunnel = false;                    
 
                     // car spans sections
                     if ((car.CarLengthM - processedCarLength) > thisSectionOffset)

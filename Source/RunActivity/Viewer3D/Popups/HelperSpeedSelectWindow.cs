@@ -96,7 +96,13 @@ namespace Orts.Viewer3D.Popups
 
             if (!MovingCurrentWindow && updateFull)
             {
-                Layout();
+                if (CarID >= Viewer.PlayerTrain.Cars.Count || Viewer.PlayerTrain.Cars[CarID] == null)
+                {
+                    Visible = false;
+                    CarID = Viewer.HelperOptionsWindow.CarID;
+                }
+                else
+                    Layout();
             }
             base.PrepareFrame(elapsedTime, updateFull);
         }
