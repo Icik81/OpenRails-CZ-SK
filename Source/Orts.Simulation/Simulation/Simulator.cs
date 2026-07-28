@@ -41,6 +41,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using static Orts.Simulation.Physics.Train;
 using static Orts.Simulation.RollingStocks.MSTSLocomotive;
+using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
 using Event = Orts.Common.Event;
@@ -345,7 +346,7 @@ namespace Orts.Simulation
         public string TrainOperationsInfoText = "";
         public string TrainOperationsRealBrakePercentText = "";
         public int CabViewControlCount;
-        public float controllerVolts;
+        public float controllerVolts;        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

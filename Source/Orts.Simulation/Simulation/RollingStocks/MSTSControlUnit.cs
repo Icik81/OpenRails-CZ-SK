@@ -270,7 +270,7 @@ namespace Orts.Simulation.RollingStocks
                                 SelectedPowerSystem = PU.SelectedPowerSystem;
                                 SystemAnnunciator = PU.SystemAnnunciator;
                                 Switch5LightPosition[LocoStation] = PU.Switch5LightPosition[PU.LocoStation];
-                                Switch6LightPosition[LocoStation] = PU.Switch6LightPosition[PU.LocoStation];
+                                Switch6LightPosition[LocoStation] = PU.Switch6LightPosition[PU.LocoStation];                                                               
                             }
                             
                             // Řídící jednotka je obsazená - přijímá signály z PU a posílá signály do PU
@@ -287,15 +287,15 @@ namespace Orts.Simulation.RollingStocks
                                     SelectedPowerSystem = PU.SelectedPowerSystem;
                                 }
                                 else
-                                {
-                                    PU.ChangingPowerSystem = ChangingPowerSystem;
+                                {                                    
                                     PU.SelectingPowerSystem = SelectingPowerSystem;
                                     SelectedPowerSystem = PU.SelectedPowerSystem;
                                     PU.ChangePowerSystem();
                                 }                                
                                 GeneratoricModeActive = PU.GeneratoricModeActive;
-                                PU.ForceHandleValue = ForceHandleValue;    
-                                
+                                PU.ForceHandleValue = ForceHandleValue;
+                                TractionBlocked = PU.TractionBlocked;
+                                InverterTest = PU.InverterTest;
                             }
                         }
 
@@ -337,7 +337,7 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                                                                                    
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                            
                         }                        
 
                         break;

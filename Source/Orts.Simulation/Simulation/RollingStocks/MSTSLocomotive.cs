@@ -7346,7 +7346,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (CircuitBreakerOn && extendedPhysics.GeneratoricModeBlocked)
                             extendedPhysics.GeneratoricModeBlocked = false;
-                        if (ChangingPowerSystem && !ControlUnit)
+                        if (ChangingPowerSystem)
                             PowerChangeRoutine(elapsedClockSeconds);
                         else
                         {
@@ -16342,19 +16342,20 @@ namespace Orts.Simulation.RollingStocks
                 SystemAnnunciator = 6;
             }
             if (!PowerOn && SystemAnnunciator == 0)
-            {
-                SystemAnnunciator = 4;
+            {                
                 continuingTimeChangingSystem -= elapsedSeconds;
+                HVOff = true;
                 return;
             }
-            if (!PowerOn && SystemAnnunciator == 5)
-            {
-                HVOn = true;
+            if (!PowerOn && SystemAnnunciator != 5)
+            {                
                 continuingTimeChangingSystem -= elapsedSeconds;
+                HVOff = true;
                 return;
-            }            
+            }
 
-            InverterTest = RouteVoltageV == 3000 ? 0 : 1;
+            HVOff = true;
+            InverterTest = RouteVoltageV == 3000 ? 0 : 1;            
             if (continuingTimeChangingSystem > 23)
             {
                 ChangingPowerSystem = false;
@@ -24713,36 +24714,79 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {
-                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                                if (PowerUnit && IsLeadLocomotive())
                                 {
-                                    if (uc.Id == cvc.CurrentSourceID)
+                                    foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                     {
-                                        if (string.IsNullOrEmpty(cvc.CurrentType))
+                                        if (uc.Id == cvc.CurrentSourceID)
                                         {
-                                            data = uc.StatorsCurrent + uc.RotorsCurrent;
-                                            if (data < 0)
-                                                data = -data;
-                                            break;
-                                        }
-                                        else if (cvc.CurrentType.ToLower() == "stator")
-                                        {
-                                            data = uc.StatorsCurrent;
-                                            if (data < 0)
-                                                data = -data;
-                                            break;
-                                        }
-                                        else if (cvc.CurrentType.ToLower() == "rotor")
-                                        {
-                                            data = uc.RotorsCurrent;
-                                            if (data < 0)
-                                                data = -data;
-                                            if (cvc.UpdateTime > 0)
-                                                cvc.PreviousData = data;
-                                            cvc.ElapsedTime = 0;
-                                            break;
+                                            if (string.IsNullOrEmpty(cvc.CurrentType))
+                                            {
+                                                data = uc.StatorsCurrent + uc.RotorsCurrent;
+                                                if (data < 0)
+                                                    data = -data;
+                                                break;
+                                            }
+                                            else if (cvc.CurrentType.ToLower() == "stator")
+                                            {
+                                                data = uc.StatorsCurrent;
+                                                if (data < 0)
+                                                    data = -data;
+                                                break;
+                                            }
+                                            else if (cvc.CurrentType.ToLower() == "rotor")
+                                            {
+                                                data = uc.RotorsCurrent;
+                                                if (data < 0)
+                                                    data = -data;
+                                                if (cvc.UpdateTime > 0)
+                                                    cvc.PreviousData = data;
+                                                cvc.ElapsedTime = 0;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
+                                else
+                                {
+                                    foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                    {
+                                        if (car.PowerUnit && car.AcceptCableSignals)
+                                        {
+                                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                            {
+                                                if (uc.Id == cvc.CurrentSourceID)
+                                                {
+                                                    if (string.IsNullOrEmpty(cvc.CurrentType))
+                                                    {
+                                                        data = uc.StatorsCurrent + uc.RotorsCurrent;
+                                                        if (data < 0)
+                                                            data = -data;
+                                                        break;
+                                                    }
+                                                    else if (cvc.CurrentType.ToLower() == "stator")
+                                                    {
+                                                        data = uc.StatorsCurrent;
+                                                        if (data < 0)
+                                                            data = -data;
+                                                        break;
+                                                    }
+                                                    else if (cvc.CurrentType.ToLower() == "rotor")
+                                                    {
+                                                        data = uc.RotorsCurrent;
+                                                        if (data < 0)
+                                                            data = -data;
+                                                        if (cvc.UpdateTime > 0)
+                                                            cvc.PreviousData = data;
+                                                        cvc.ElapsedTime = 0;
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }                                
                             }
                             //cvc.ElapsedTime = 0;
                             //cvc.PreviousData = data;
@@ -24750,40 +24794,86 @@ namespace Orts.Simulation.RollingStocks
                         }
                         else if (cvc.CurrentSource.ToLower() == "motor")
                         {
-                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+                            if (PowerUnit && IsLeadLocomotive())
                             {
-                                foreach (ExtendedAxle ea in uc.Axles)
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
-                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    foreach (ExtendedAxle ea in uc.Axles)
                                     {
-                                        if (em.Id == cvc.CurrentSourceID)
+                                        foreach (ElectricMotor em in ea.ElectricMotors)
                                         {
-                                            if (string.IsNullOrEmpty(cvc.CurrentType))
+                                            if (em.Id == cvc.CurrentSourceID)
                                             {
-                                                data = em.RotorCurrent + em.StatorCurrent;
-                                                if (data < 0)
-                                                    data = -data;
-                                                break;
-                                            }
-                                            else if (cvc.CurrentType.ToLower() == "stator")
-                                            {
-                                                data = em.StatorCurrent;
-                                                if (data < 0)
-                                                    data = -data;
-                                                break;
-                                            }
-                                            else if (cvc.CurrentType.ToLower() == "rotor")
-                                            {
-                                                data = em.RotorCurrent;
-                                                if (data < 0)
-                                                    data = -data;
-                                                break;
+                                                if (string.IsNullOrEmpty(cvc.CurrentType))
+                                                {
+                                                    data = em.RotorCurrent + em.StatorCurrent;
+                                                    if (data < 0)
+                                                        data = -data;
+                                                    break;
+                                                }
+                                                else if (cvc.CurrentType.ToLower() == "stator")
+                                                {
+                                                    data = em.StatorCurrent;
+                                                    if (data < 0)
+                                                        data = -data;
+                                                    break;
+                                                }
+                                                else if (cvc.CurrentType.ToLower() == "rotor")
+                                                {
+                                                    data = em.RotorCurrent;
+                                                    if (data < 0)
+                                                        data = -data;
+                                                    break;
+                                                }
                                             }
                                         }
                                     }
                                 }
                             }
-                            break;
+                            else
+                            {
+                                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                {
+                                    if (car.PowerUnit && car.AcceptCableSignals)
+                                    {
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        {
+                                            foreach (ExtendedAxle ea in uc.Axles)
+                                            {
+                                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                                {
+                                                    if (em.Id == cvc.CurrentSourceID)
+                                                    {
+                                                        if (string.IsNullOrEmpty(cvc.CurrentType))
+                                                        {
+                                                            data = em.RotorCurrent + em.StatorCurrent;
+                                                            if (data < 0)
+                                                                data = -data;
+                                                            break;
+                                                        }
+                                                        else if (cvc.CurrentType.ToLower() == "stator")
+                                                        {
+                                                            data = em.StatorCurrent;
+                                                            if (data < 0)
+                                                                data = -data;
+                                                            break;
+                                                        }
+                                                        else if (cvc.CurrentType.ToLower() == "rotor")
+                                                        {
+                                                            data = em.RotorCurrent;
+                                                            if (data < 0)
+                                                                data = -data;
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                                break;
+                            }
                         }
                     }
                     cvc.PreviousData = data;
@@ -26713,18 +26803,44 @@ namespace Orts.Simulation.RollingStocks
                         else
                         {
                             int id = 0;
-                            foreach (Undercarriage uc in extendedPhysics.Undercarriages)
+
+                            if (PowerUnit && IsLeadLocomotive())
                             {
-                                foreach (ExtendedAxle ea in uc.Axles)
+                                foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
-                                    foreach (ElectricMotor em in ea.ElectricMotors)
+                                    foreach (ExtendedAxle ea in uc.Axles)
                                     {
-                                        if (id == cvc.MotorId)
-                                            data = em.Disabled ? 1 : 0;
-                                        id++;
+                                        foreach (ElectricMotor em in ea.ElectricMotors)
+                                        {
+                                            if (id == cvc.MotorId)
+                                                data = em.Disabled ? 1 : 0;
+                                            id++;
+                                        }
                                     }
                                 }
                             }
+                            else
+                            {
+                                foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                {
+                                    if (car.PowerUnit && car.AcceptCableSignals)
+                                    {
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        {
+                                            foreach (ExtendedAxle ea in uc.Axles)
+                                            {
+                                                foreach (ElectricMotor em in ea.ElectricMotors)
+                                                {
+                                                    if (id == cvc.MotorId)
+                                                        data = em.Disabled ? 1 : 0;
+                                                    id++;
+                                                }
+                                            }
+                                        }
+                                        break;
+                                    }
+                                }
+                            }                            
                         }
                         break;
                     }
