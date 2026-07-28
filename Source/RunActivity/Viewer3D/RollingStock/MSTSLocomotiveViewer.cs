@@ -829,6 +829,11 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.HV3Switch[Locomotive.LocoStation] = 1;
                         Locomotive.HVOffPressedTest = false;
                     }
+                    else
+                    if (Locomotive.HVOffPressedTest && Locomotive.HV3Switch[Locomotive.LocoStation] == 1)
+                    {                        
+                        Locomotive.HVOffPressedTest = false;
+                    }
                 }
             }            
             // Ovládání HV4 nearetované pozice
@@ -949,7 +954,20 @@ namespace Orts.Viewer3D.RollingStock
                 }
                 if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.PantoCommandDown)
                 {
-                    Locomotive.HVOff = true;
+                    if (Locomotive.ControlUnit)
+                    {
+                        foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
+                        {
+                            if ((car as MSTSLocomotive).LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                            {
+                                (car as MSTSLocomotive).HVOff = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Locomotive.HVOff = true;
+                    }
                 }
             }
             // Ovládání tlačítka vysokotlakého švihu

@@ -7272,10 +7272,7 @@ namespace Orts.Simulation.RollingStocks
 
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
-                {
-                    PantoCommandDown = true;
-                    HV3Switch[1] = HV3Switch[2] = 0;
-                    LastStateHV3[1] = LastStateHV3[2] = 0;
+                {                    
                     if (CruiseControl != null)
                     {
                         badNumber:

@@ -296,6 +296,7 @@ namespace Orts.Simulation.RollingStocks
                                 PU.ForceHandleValue = ForceHandleValue;
                                 TractionBlocked = PU.TractionBlocked;
                                 InverterTest = PU.InverterTest;
+                                PantoCommandDown = PU.PantoCommandDown;
                             }
                         }
 
