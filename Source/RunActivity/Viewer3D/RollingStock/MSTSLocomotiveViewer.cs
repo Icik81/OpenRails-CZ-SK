@@ -961,12 +961,14 @@ namespace Orts.Viewer3D.RollingStock
                             if ((car as MSTSLocomotive).LocoType == MSTSLocomotive.LocoTypes.Vectron)
                             {
                                 (car as MSTSLocomotive).HVOff = true;
+                                (car as MSTSLocomotive).PantoCommandDown = false;
                             }
                         }
                     }
                     else
                     {
                         Locomotive.HVOff = true;
+                        Locomotive.PantoCommandDown = false;
                     }
                 }
             }

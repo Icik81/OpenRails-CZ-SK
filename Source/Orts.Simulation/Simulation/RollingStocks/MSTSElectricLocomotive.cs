@@ -2051,33 +2051,36 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             {
-                if (IsLeadLocomotive())
+                if (!Simulator.ControlUnitInTrain)
                 {
-                    Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
-                    Simulator.DataBreakPowerButton = BreakPowerButton;
-                    if (!MultiSystemEngine)
-                        Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
-                }
-                if (AcceptMUSignals && !IsLeadLocomotive())
-                {
-                    SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
-                    BreakPowerButton = Simulator.DataBreakPowerButton;
-                    if (!MultiSystemEngine)
-                        LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
-                    switch (SwitchingVoltageMode)
+                    if (IsLeadLocomotive())
                     {
-                        case 0:
-                            SwitchingVoltageMode_OffDC = true;
-                            SwitchingVoltageMode_OffAC = false;
-                            break;
-                        case 1:
-                            SwitchingVoltageMode_OffDC = false;
-                            SwitchingVoltageMode_OffAC = false;
-                            break;
-                        case 2:
-                            SwitchingVoltageMode_OffDC = false;
-                            SwitchingVoltageMode_OffAC = true;
-                            break;
+                        Simulator.DataSwitchingVoltageMode = SwitchingVoltageMode;
+                        Simulator.DataBreakPowerButton = BreakPowerButton;
+                        if (!MultiSystemEngine)
+                            Simulator.DataLocomotivePowerVoltage = LocomotivePowerVoltage;
+                    }
+                    if (AcceptMUSignals && !IsLeadLocomotive())
+                    {
+                        SwitchingVoltageMode = Simulator.DataSwitchingVoltageMode;
+                        BreakPowerButton = Simulator.DataBreakPowerButton;
+                        if (!MultiSystemEngine)
+                            LocomotivePowerVoltage = Simulator.DataLocomotivePowerVoltage;
+                        switch (SwitchingVoltageMode)
+                        {
+                            case 0:
+                                SwitchingVoltageMode_OffDC = true;
+                                SwitchingVoltageMode_OffAC = false;
+                                break;
+                            case 1:
+                                SwitchingVoltageMode_OffDC = false;
+                                SwitchingVoltageMode_OffAC = false;
+                                break;
+                            case 2:
+                                SwitchingVoltageMode_OffDC = false;
+                                SwitchingVoltageMode_OffAC = true;
+                                break;
+                        }
                     }
                 }
             }

@@ -248,7 +248,7 @@ namespace Orts.Simulation.RollingStocks
                         AuxPowerOn = PU.AuxPowerOn;                        
                         PantoCanHVOffon = PU.PantoCanHVOffon;
                         SwitchingVoltageMode_OffAC = PU.SwitchingVoltageMode_OffAC;
-                        SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;
+                        SwitchingVoltageMode_OffDC = PU.SwitchingVoltageMode_OffDC;                        
                         AuxResPressurePSI = PU.AuxResPressurePSI;
                         PantographsCurrent = PU.PantographsCurrent;
                         Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
@@ -290,7 +290,7 @@ namespace Orts.Simulation.RollingStocks
                                 {                                    
                                     PU.SelectingPowerSystem = SelectingPowerSystem;
                                     SelectedPowerSystem = PU.SelectedPowerSystem;
-                                    PU.ChangePowerSystem();
+                                    PU.ChangePowerSystem();                                    
                                 }                                
                                 GeneratoricModeActive = PU.GeneratoricModeActive;
                                 PU.ForceHandleValue = ForceHandleValue;
@@ -338,7 +338,11 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];                            
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                            
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
+
+                            PU.Compressor_I = Compressor_I;
+                            PU.Compressor_II = Compressor_II;
+                            PU.AuxCompressor = AuxCompressor;
                         }                        
 
                         break;
@@ -429,7 +433,11 @@ namespace Orts.Simulation.RollingStocks
                             PU.CompressorMode_OffAuto[PU.LocoStation] = CompressorMode_OffAuto[LocoStation];
                             PU.Compressor_I_HandMode[PU.LocoStation] = Compressor_I_HandMode[LocoStation];
                             PU.CompressorMode2_OffAuto[PU.LocoStation] = CompressorMode2_OffAuto[LocoStation];
-                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];                                                                                   
+                            PU.Compressor_II_HandMode[PU.LocoStation] = Compressor_II_HandMode[LocoStation];
+
+                            PU.Compressor_I = Compressor_I;
+                            PU.Compressor_II = Compressor_II;
+                            PU.AuxCompressor = AuxCompressor;
                         }
 
                         break;
