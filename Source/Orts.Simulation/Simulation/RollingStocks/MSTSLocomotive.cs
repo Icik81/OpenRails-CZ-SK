@@ -12216,7 +12216,7 @@ namespace Orts.Simulation.RollingStocks
             if (UsingRearCab)
                 LocoStation = 2;
 
-            //if (!Simulator.ControlUnitIsLead)
+            if (!Simulator.ControlUnitIsLead)
             {
                 if (PowerKeyPosition[LocoStation] == 2)
                     StationIsActivated[LocoStation] = true;

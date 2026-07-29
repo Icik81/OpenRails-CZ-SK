@@ -1685,6 +1685,41 @@ namespace Orts.Simulation.RollingStocks
                     }
                     HV3Switch[1] = HV3Switch[2] = 1;
                     LastStateHV3[1] = LastStateHV3[2] = 1;
+
+                    switch (SelectingPowerSystem)
+                    {
+                        case PowerSystem.AT15kV:
+                        case PowerSystem.DE15kV:
+                            SwitchingVoltageMode = 2;
+                            Loco15kV = true;
+                            break;
+                        case PowerSystem.CZ25kV:
+                        case PowerSystem.SK25kV:
+                            SwitchingVoltageMode = 2;
+                            Loco15kV = false;
+                            break;
+                        case PowerSystem.CZ3kV:
+                        case PowerSystem.SK3kV:
+                            SwitchingVoltageMode = 0;
+                            Loco15kV = false;
+                            break;
+                    }
+
+                    switch (SwitchingVoltageMode)
+                    {
+                        case 0:
+                            SwitchingVoltageMode_OffDC = true;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 1:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = false;
+                            break;
+                        case 2:
+                            SwitchingVoltageMode_OffDC = false;
+                            SwitchingVoltageMode_OffAC = true;
+                            break;
+                    }
                 }
 
                 if (MultiSystemEngine && RouteVoltageV != 1)
