@@ -1300,19 +1300,19 @@ namespace Orts.Simulation.RollingStocks
                 if (tc == Locomotive)
                 {
                     if (tc == Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar && tc != Locomotive.FirstCarHeadOfTrain) // Poslední ale ne v čele vlaku
-                        Fh = Locomotive.Train.Cars[i - 1].CouplerForceU / 1000 / 2f;
+                        Fh = Math.Abs(Locomotive.Train.Cars[i - 1].CouplerForceU) / 1000 / 2f;
                     else
                     if (tc == Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar && tc == Locomotive.FirstCarHeadOfTrain) // Poslední ale v čele vlaku
-                        Fh = Locomotive.Train.Cars[i - 1].CouplerForceU / 1000;
+                        Fh = Math.Abs(Locomotive.Train.Cars[i - 1].CouplerForceU) / 1000;
                     else
                     if (tc != Locomotive.Train.LastCar && tc != Locomotive.Train.FirstCar) // Uprostřed
-                        Fh = -tc.CouplerForceU / 1000 / 2f;
+                        Fh = -Math.Abs(tc.CouplerForceU) / 1000 / 2f;
                     else
                     if (tc != Locomotive.Train.LastCar && tc == Locomotive.Train.FirstCar && tc != Locomotive.FirstCarHeadOfTrain) // První ale ne v čele vlaku
-                        Fh = -tc.CouplerForceU / 1000 / 2f;
+                        Fh = -Math.Abs(tc.CouplerForceU) / 1000 / 2f;
                     else
                     if (tc != Locomotive.Train.LastCar && tc == Locomotive.Train.FirstCar && tc == Locomotive.FirstCarHeadOfTrain) // První v čele vlaku
-                        Fh = -tc.CouplerForceU / 1000;
+                        Fh = -Math.Abs(tc.CouplerForceU) / 1000;
                     break;
                 }
             }

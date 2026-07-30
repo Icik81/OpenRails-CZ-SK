@@ -1589,11 +1589,15 @@ namespace Orts.Simulation.RollingStocks
                     Loco15kV = SwitchingVoltageMode_OffAC ? true : false;
                 }
                 RouteVoltageVInfo = RouteVoltageV;
-                AuxAirConsumption(elapsedClockSeconds);
-                FaultByPlayer(elapsedClockSeconds);
-                MUCableCommunication();
-                HelperLoco();
-                Pantographs_Current(elapsedClockSeconds);
+                
+                if (LocoSetUpTimer > 1)
+                {
+                    AuxAirConsumption(elapsedClockSeconds);
+                    FaultByPlayer(elapsedClockSeconds);
+                    MUCableCommunication();
+                    HelperLoco();
+                    Pantographs_Current(elapsedClockSeconds);
+                }
 
                 if (!Simulator.TrainPowerKey)
                 {

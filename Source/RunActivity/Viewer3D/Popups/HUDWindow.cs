@@ -787,7 +787,7 @@ namespace Orts.Viewer3D.Popups
                 //7
                 train.MUDynamicBrakePercent >= 0 ? string.Format("{0:F0}%", train.MUDynamicBrakePercent) : Viewer.Catalog.GetString("off"),
                 //8
-                Viewer.PlayerLocomotive is MSTSElectricLocomotive ? string.Format(Viewer.Catalog.GetString("Route Voltage") + ": {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
+                Viewer.PlayerLocomotive is MSTSElectricLocomotive || Viewer.PlayerLocomotive is MSTSControlUnit ? string.Format(Viewer.Catalog.GetString("Route Voltage") + ": {0:F0}V", Viewer.PlayerLocomotive.RouteVoltageVInfo) : Viewer.Catalog.GetString(""),
             //9
             Viewer.Catalog.GetString("PlayerLoco")
             //Add new Header data here, if adding additional column.

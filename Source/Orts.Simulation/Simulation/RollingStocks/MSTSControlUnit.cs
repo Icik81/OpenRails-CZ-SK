@@ -46,6 +46,10 @@ namespace Orts.Simulation.RollingStocks
         public float FakeDieselWaterTemperatureDeg2;
         public float FakeDieselOilTemperatureDeg2;
         public float RealRPM2;
+        public float Diesel0MaxOilPressurePSI;
+        public float Diesel1MaxOilPressurePSI;
+        public float Diesel0OilPressurePSI;
+        public float Diesel1OilPressurePSI;
 
         public MSTSControlUnit(Simulator simulator, string wagFile, string wagFileBase) :
             base(simulator, wagFile, wagFileBase)
@@ -252,7 +256,8 @@ namespace Orts.Simulation.RollingStocks
                         AuxResPressurePSI = PU.AuxResPressurePSI;
                         PantographsCurrent = PU.PantographsCurrent;
                         Simulator.AlternatorOverloadCoef = PU.AlternatorOverloadCoef;
-                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;                                                
+                        Simulator.HeatingOverloadCoef = PU.HeatingOverloadCoef;
+                        RouteVoltageVInfo = PU.RouteVoltageVInfo;
 
                         //Simulator.Confirmer.MSG("Proud sberace PU: " + PantographsCurrent);                        
 
@@ -376,13 +381,17 @@ namespace Orts.Simulation.RollingStocks
 
                         FakeDieselWaterTemperatureDeg = PU.DieselEngines[0].FakeDieselWaterTemperatureDeg;
                         FakeDieselOilTemperatureDeg = PU.DieselEngines[0].FakeDieselOilTemperatureDeg;
-                        RealRPM = PU.DieselEngines[0].RealRPM;                                               
+                        RealRPM = PU.DieselEngines[0].RealRPM;                        
+                        Diesel0MaxOilPressurePSI = PU.DieselEngines[0].DieselMaxOilPressurePSI;
+                        Diesel0OilPressurePSI = PU.DieselEngines[0].DieselOilPressurePSI;                        
 
                         if (PU.DieselEngines.Count > 1)
                         {
                             FakeDieselWaterTemperatureDeg2 = PU.DieselEngines[1].FakeDieselWaterTemperatureDeg;
                             FakeDieselOilTemperatureDeg2 = PU.DieselEngines[1].FakeDieselOilTemperatureDeg;
                             RealRPM2 = PU.DieselEngines[1].RealRPM;
+                            Diesel1MaxOilPressurePSI = PU.DieselEngines[1].DieselMaxOilPressurePSI;
+                            Diesel1OilPressurePSI = PU.DieselEngines[1].DieselOilPressurePSI;
                         }
 
                         if (LocomotiveFaultyActivated)
