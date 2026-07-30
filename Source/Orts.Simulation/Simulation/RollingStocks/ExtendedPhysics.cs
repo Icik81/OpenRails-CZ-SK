@@ -654,7 +654,7 @@ namespace Orts.Simulation.RollingStocks
             TotalForceN = 0;
             TotalMaxForceN = 0;
             AxleForceNSum = 0;
-            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+            if ((Locomotive.PowerUnit && Locomotive.IsLeadLocomotive()) || Locomotive.LocoHelperOn)
             {
                 foreach (Undercarriage uc in Undercarriages)
                 {

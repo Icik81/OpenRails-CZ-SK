@@ -6534,6 +6534,13 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (LocalThrottlePercent > 0)
                                             LocalThrottlePercent--;
+
+                                        if (LocoType == LocoTypes.Vectron)
+                                        {
+                                            if (LocalThrottlePercent > 0)
+                                                LocalThrottlePercent -= 10f;
+                                        }
+
                                         HelperTimerDecrease = 0;
                                     }
                                 }
@@ -6565,8 +6572,15 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {
+                                if (LocoType == LocoTypes.Vectron)
+                                {
+                                    if (LocalThrottlePercent < 100)
+                                        LocalThrottlePercent += 0.5f;
+                                }
+                                else
                                 if (LocalThrottlePercent < 100)
                                     LocalThrottlePercent++;
+
                                 HelperTimerIncrease = 0;
                             }
                         }
@@ -6615,6 +6629,12 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 LocalThrottlePercent--;
                                 HelperTimerDecrease = 0;
+
+                                if (LocoType == LocoTypes.Vectron)
+                                {
+                                    if (LocalThrottlePercent > 0)
+                                        LocalThrottlePercent -= 10f;
+                                }
                             }
                         }
                         if (LocalThrottlePercent == 0)
@@ -6702,6 +6722,13 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (LocalThrottlePercent > 0)
                                         LocalThrottlePercent--;
+
+                                    if (LocoType == LocoTypes.Vectron)
+                                    {
+                                        if (LocalThrottlePercent > 0)
+                                            LocalThrottlePercent -= 10f;
+                                    }
+
                                     HelperTimerDecrease = 0;
                                 }
                                 else
@@ -6768,9 +6795,16 @@ namespace Orts.Simulation.RollingStocks
                                 }
                             }
                             else
-                            {
+                            {                                
+                                if (LocoType == LocoTypes.Vectron)
+                                {
+                                    if (LocalThrottlePercent < 100)
+                                        LocalThrottlePercent += 0.5f;
+                                }
+                                else
                                 if (LocalThrottlePercent < 100)
                                     LocalThrottlePercent++;
+
                                 HelperTimerIncrease = 0;
                             }
                         }
