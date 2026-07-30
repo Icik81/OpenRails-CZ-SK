@@ -1541,6 +1541,10 @@ namespace Orts.Simulation
             {
                 if (activity.triggeredEventWrapper == null) activity.triggeredEventWrapper = this;
             }
+            if (this.ParsedObject.AutomaticShunter)
+            {
+                if (activity.triggeredEventWrapper == null) activity.triggeredEventWrapper = this;
+            }
 
             return false;
         }

@@ -726,7 +726,7 @@ namespace Orts.Simulation
 
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
-            // Icik
+            // Icik            
             PlayerTrainInAutopilotMode = inf.ReadBoolean();
             LastNameFreeViewTrain = inf.ReadString();
             OtherTrainPositionTest = inf.ReadBoolean();
@@ -737,6 +737,7 @@ namespace Orts.Simulation
             ShunterProcessSTPActive_End = inf.ReadBoolean();
             DistanceToOtherTrain = inf.ReadSingle();
             ShunterEnable = inf.ReadBoolean();
+            AutomaticShunterEnable = inf.ReadBoolean();
             FatalIncident = inf.ReadBoolean();
             NotFatalIncident = inf.ReadBoolean();
             GroundLevelFinal = inf.ReadSingle();
@@ -789,7 +790,7 @@ namespace Orts.Simulation
 
         public void Save(BinaryWriter outf)
         {
-            // Icik
+            // Icik            
             outf.Write(PlayerTrainInAutopilotMode);
             outf.Write(LastNameFreeViewTrain);
             outf.Write(OtherTrainPositionTest);
@@ -800,6 +801,7 @@ namespace Orts.Simulation
             outf.Write(ShunterProcessSTPActive_End);
             outf.Write(DistanceToOtherTrain);
             outf.Write(ShunterEnable);
+            outf.Write(AutomaticShunterEnable);
             outf.Write(FatalIncident);
             outf.Write(NotFatalIncident);
             outf.Write(GroundLevelFinal);

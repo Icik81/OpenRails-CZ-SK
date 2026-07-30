@@ -370,6 +370,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
                 Locomotive.Simulator.ShunterEnable = !Locomotive.Simulator.ShunterEnable;
             }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.AutomaticShunter)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.AutomaticShunterEnable = !Locomotive.Simulator.AutomaticShunterEnable;
+            }
 
             if (!Locomotive.Simulator.ShunterFullTestBrakeEnable && !Locomotive.Simulator.ShunterSimpleTestBrakeEnable)
             {                                

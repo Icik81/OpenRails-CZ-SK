@@ -1212,6 +1212,7 @@ namespace Orts.Formats.Msts
         public bool ShunterFullTestBrake;
         public bool ShunterSimpleTestBrake;
         public bool Shunter;
+        public bool AutomaticShunter;
 
         public virtual void AddOrModifyEvent(STFReader stf, string fileName)
         { }
@@ -1284,6 +1285,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("automaticshunter", ()=>{ AutomaticShunter = stf.ReadBoolBlock(false); }),
             });
         }
 
@@ -1366,6 +1368,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("automaticshunter", ()=>{ AutomaticShunter = stf.ReadBoolBlock(false); }),
             });
         }
     }
@@ -1461,6 +1464,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("shunterfulltestbrake", ()=>{ ShunterFullTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shuntersimpletestbrake", ()=>{ ShunterSimpleTestBrake = stf.ReadBoolBlock(false); }),
                 new STFReader.TokenProcessor("shunter", ()=>{ Shunter = stf.ReadBoolBlock(false); }),
+                new STFReader.TokenProcessor("automaticshunter", ()=>{ AutomaticShunter = stf.ReadBoolBlock(false); }),
             });
         }
     }
