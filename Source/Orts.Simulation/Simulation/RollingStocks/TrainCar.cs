@@ -3727,7 +3727,8 @@ namespace Orts.Simulation.RollingStocks
 
                     if (AbsSpeedMpS < 0.1f)
                     {
-                        SpeedMpS = 0;
+                        (this as MSTSWagon).SpeedMpS = 0;
+                        (this as MSTSWagon).WheelSpeedMpS = 0;
                         Train.TrainIsDerailed = true;
                         WheelSlip = false;
                         WheelSkid = false;
@@ -3791,7 +3792,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.50f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(95, 101) / 100f;
+                    TrackFactor = Simulator.Random.Next(85, 101) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3804,7 +3805,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.70f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(90, 96) / 100f;
+                    TrackFactor = Simulator.Random.Next(80, 96) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3817,7 +3818,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(85, 91) / 100f;
+                    TrackFactor = Simulator.Random.Next(75, 91) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3830,7 +3831,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 1.0f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(80, 86) / 100f;
+                    TrackFactor = Simulator.Random.Next(70, 86) / 100f;
                     AdhCycle = 0;
                 }                
             }
@@ -3842,7 +3843,7 @@ namespace Orts.Simulation.RollingStocks
                 TrackFactorValue = 0.90f;
                 if ((AdhCycle > AdhTime && AbsSpeedMpS > 0.1f) || FirstFrame)
                 {
-                    TrackFactor = Simulator.Random.Next(85, 91) / 100f;
+                    TrackFactor = Simulator.Random.Next(75, 91) / 100f;
                     AdhCycle = 0;
                 }                
             }

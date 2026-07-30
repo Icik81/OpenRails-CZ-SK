@@ -346,7 +346,10 @@ namespace Orts.Simulation
         public string TrainOperationsInfoText = "";
         public string TrainOperationsRealBrakePercentText = "";
         public int CabViewControlCount;
-        public float controllerVolts;        
+        public float controllerVolts;
+        public bool AutomaticShunterEnable;
+        public bool AutomaticShunterEnableChanged;
+
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -1304,7 +1307,9 @@ namespace Orts.Simulation
         }
 
         public void AutomaticSetHosesAndAngles(Train train)
-        {            
+        {
+            if (!AutomaticShunterEnable) return;
+
             foreach (var car in train.Cars)
             {
                 if (car == train.FirstCar)
@@ -1409,7 +1414,8 @@ namespace Orts.Simulation
                             }
                             SetStaticCars(train);
                             SetStaticLocos(train);
-                            FinishRearCoupling(drivenTrain, train, true);                            
+                            FinishRearCoupling(drivenTrain, train, true);
+                            AutomaticSetHosesAndAngles(drivenTrain);
                             CouplingAction = true;
                             return;
                         }
@@ -1433,7 +1439,8 @@ namespace Orts.Simulation
                             }
                             SetStaticCars(train);
                             SetStaticLocos(train);
-                            FinishRearCoupling(drivenTrain, train, false);                            
+                            FinishRearCoupling(drivenTrain, train, false);
+                            AutomaticSetHosesAndAngles(drivenTrain);
                             CouplingAction = true;
                             return;
                         }
@@ -1461,7 +1468,8 @@ namespace Orts.Simulation
                                 //Rear coupling
                                 SetStaticCars(train);
                                 SetStaticLocos(train);
-                                FinishRearCoupling(train, drivenTrain, false);                                
+                                FinishRearCoupling(train, drivenTrain, false);
+                                AutomaticSetHosesAndAngles(drivenTrain);
                                 CouplingAction = true;
                             }
                             else
@@ -1478,7 +1486,8 @@ namespace Orts.Simulation
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                                 SetStaticCars(train);
                                 SetStaticLocos(train);
-                                FinishFrontCoupling(drivenTrain, train, lead, true);                                
+                                FinishFrontCoupling(drivenTrain, train, lead, true);
+                                AutomaticSetHosesAndAngles(drivenTrain);
                                 CouplingAction = true;
                             }
                             return;
@@ -1505,7 +1514,8 @@ namespace Orts.Simulation
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
                             SetStaticCars(train);
                             SetStaticLocos(train);
-                            FinishFrontCoupling(drivenTrain, train, lead, false);                            
+                            FinishFrontCoupling(drivenTrain, train, lead, false);
+                            AutomaticSetHosesAndAngles(drivenTrain);
                             CouplingAction = true;
                             return;
                         }                                            

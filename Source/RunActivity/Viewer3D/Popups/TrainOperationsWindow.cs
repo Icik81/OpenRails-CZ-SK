@@ -112,6 +112,11 @@ namespace Orts.Viewer3D.Popups
                 ShunterLabel.Click += new Action<Control, Point>(ShunterLabel_Click);                
                 scrollbox.AddHorizontalSeparator();
 
+                var AutomaticShunterLabel = new TrainOperationsAutomaticShunter(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
+                scrollbox.Add(AutomaticShunterLabel);
+                AutomaticShunterLabel.Click += new Action<Control, Point>(AutomaticShunterLabel_Click);
+                scrollbox.AddHorizontalSeparator();
+
                 var ShunterFullTestBrakeLabel = new TrainOperationsShunterFullTestBrake(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
                 scrollbox.Add(ShunterFullTestBrakeLabel);
                 ShunterFullTestBrakeLabel.Click += new Action<Control, Point>(ShunterFullTestBrakeLabel_Click);
@@ -120,8 +125,10 @@ namespace Orts.Viewer3D.Popups
                 var ShunterSimpleTestBrakeLabel = new TrainOperationsShunterSimpleTestBrake(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Owner.Viewer, LabelAlignment.Center);
                 scrollbox.Add(ShunterSimpleTestBrakeLabel);
                 ShunterSimpleTestBrakeLabel.Click += new Action<Control, Point>(ShunterSimpleTestBrakeLabel_Click);
-                scrollbox.AddHorizontalSeparator();
+                scrollbox.AddHorizontalSeparator();               
 
+                scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
+                scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
                 scrollbox2.AddHorizontalSeparator();
                 scrollbox2.Add(new Label(textHeight * Owner.Viewer.Simulator.TrainOperationsMenuTextWidth, textHeight, Viewer.Catalog.GetString(""), LabelAlignment.Center));
@@ -214,6 +221,12 @@ namespace Orts.Viewer3D.Popups
             Owner.Viewer.Simulator.ShunterEnable = false;
         }
 
+        void AutomaticShunterLabel_Click(Control arg1, Point arg2)
+        {
+            Owner.Viewer.Simulator.AutomaticShunterEnable = !Owner.Viewer.Simulator.AutomaticShunterEnable;
+            Owner.Viewer.Simulator.AutomaticShunterEnableChanged = true;            
+        }
+
         public override void PrepareFrame(ElapsedTime elapsedTime, bool updateFull)
         {
             base.PrepareFrame(elapsedTime, updateFull);
@@ -233,6 +246,7 @@ namespace Orts.Viewer3D.Popups
                     || Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged
                     || Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged
                     || Owner.Viewer.Simulator.ShunterTestingBrakeChanged
+                    || Owner.Viewer.Simulator.AutomaticShunterEnableChanged
                     )
                 {
                     Owner.Viewer.PlayerTrain.PlayerTrainBrakePercentChange = false;
@@ -242,6 +256,7 @@ namespace Orts.Viewer3D.Popups
                     Owner.Viewer.Simulator.ShunterFullTestBrakeEnableChanged = false;
                     Owner.Viewer.Simulator.ShunterSimpleTestBrakeEnableChanged = false;
                     Owner.Viewer.Simulator.ShunterTestingBrakeChanged = false;
+                    Owner.Viewer.Simulator.AutomaticShunterEnableChanged = false;
                     PlayerTrain = Owner.Viewer.PlayerTrain;
                     LastPlayerTrainCars = Owner.Viewer.PlayerTrain.Cars.Count;
                     if (Owner.Viewer.PlayerLocomotive != null) LastPlayerLocomotiveFlippedState = Owner.Viewer.PlayerLocomotive.Flipped;
@@ -505,6 +520,28 @@ namespace Orts.Viewer3D.Popups
             else
             {
                 Text = Viewer.Catalog.GetString("Simple Test Brake");
+                Color = Color.White;
+            }
+        }
+    }
+
+    class TrainOperationsAutomaticShunter : Label
+    {
+        readonly Viewer Viewer;
+
+        public TrainOperationsAutomaticShunter(int x, int y, Viewer viewer, LabelAlignment alignment)
+            : base(x, y, "", alignment)
+        {
+            Viewer = viewer;
+            Train PlayerTrain = Viewer.PlayerTrain;
+            if (Viewer.Simulator.AutomaticShunterEnable)
+            {
+                Text = Viewer.Catalog.GetString("Auto-connect hoses and anglecocks");
+                Color = Color.GreenYellow;
+            }
+            else
+            {
+                Text = Viewer.Catalog.GetString("Auto-connect hoses and anglecocks");
                 Color = Color.White;
             }
         }

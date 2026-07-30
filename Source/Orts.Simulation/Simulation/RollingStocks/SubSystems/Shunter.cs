@@ -2196,7 +2196,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 }
             }
 
-            if (wagon.WagonType == WagonTypes.Passenger)
+            if (wagon.WagonType == WagonTypes.Passenger && wagon.MassKG >= 37000)
             {
                 switch (wagon.WagonNumAxles)
                 {
