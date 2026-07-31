@@ -1602,6 +1602,8 @@ namespace Orts.Simulation
                                 drivenTrain.Cars.Add(car);
                                 car.Train = drivenTrain;
                             }
+                            SetStaticCars(train);
+                            SetStaticLocos(train);
                             FinishRearCoupling(drivenTrain, train, true);
                             AutomaticSetHosesAndAngles(drivenTrain);
                             return;
@@ -1677,6 +1679,8 @@ namespace Orts.Simulation
                                 car.Train = drivenTrain;
                                 car.Flipped = !car.Flipped;
                             }
+                            SetStaticCars(train);
+                            SetStaticLocos(train);
                             FinishRearCoupling(drivenTrain, train, false);
                             AutomaticSetHosesAndAngles(drivenTrain);
                             return;
@@ -1783,6 +1787,8 @@ namespace Orts.Simulation
                                     car.Train = train;
                                 }
                                 //Rear coupling
+                                SetStaticCars(train);
+                                SetStaticLocos(train);
                                 FinishRearCoupling(train, drivenTrain, false);
                                 AutomaticSetHosesAndAngles(drivenTrain);
                             }
@@ -1801,6 +1807,8 @@ namespace Orts.Simulation
                                     car.Train = drivenTrain;
                                 }
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
+                                SetStaticCars(train);
+                                SetStaticLocos(train);
                                 FinishFrontCoupling(drivenTrain, train, lead, true);
                                 AutomaticSetHosesAndAngles(drivenTrain);
                             }
@@ -1877,6 +1885,8 @@ namespace Orts.Simulation
                                 car.Flipped = !car.Flipped;
                             }
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
+                            SetStaticCars(train);
+                            SetStaticLocos(train);
                             FinishFrontCoupling(drivenTrain, train, lead, false);
                             AutomaticSetHosesAndAngles(drivenTrain);
                             return;

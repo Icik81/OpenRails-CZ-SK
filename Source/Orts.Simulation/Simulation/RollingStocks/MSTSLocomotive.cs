@@ -6978,6 +6978,8 @@ namespace Orts.Simulation.RollingStocks
 
         public void CheckPantos()
         {
+            if (Train.MasterSlaveCarsFound && SlaveLoco) return;
+
             Pantograph p1;
             Pantograph p2;
             Pantograph p3;
@@ -7010,6 +7012,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Master - Slave
             if (Train.MasterSlaveCarsFound && MasterLoco && AcceptMUSignals)
+            {
                 foreach (TrainCar car in Train.Cars)
                 {
                     if (car.AcceptMUSignals && car.SlaveLoco)
@@ -7030,9 +7033,10 @@ namespace Orts.Simulation.RollingStocks
                                 (car as MSTSWagon).Pantographs.List[3].State = p3.State;
                                 (car as MSTSWagon).Pantographs.List[2].State = p4.State;
                             }
-                        }                        
+                        }
                     }
-                }
+                }                
+            }
 
             switch (PantoMode)
             {
