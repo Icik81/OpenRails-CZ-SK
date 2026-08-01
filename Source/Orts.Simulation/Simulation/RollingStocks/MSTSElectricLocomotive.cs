@@ -43,6 +43,7 @@ using ORTS.Scripting.Api;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
 using Event = Orts.Common.Event;
@@ -1189,6 +1190,18 @@ namespace Orts.Simulation.RollingStocks
                                     ForceBreakPower = true;
                                     PantoCommandDown = true;
                                     SignalEvent(Event.Failure);
+                                }
+
+                                if (ForceBreakPower && PantoCommandDown)
+                                {                                    
+                                    foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
+                                    {
+                                        if (car.ControlUnit && car.AcceptCableSignals)
+                                        {
+                                            (car as MSTSLocomotive).ForceBreakPower = ForceBreakPower;
+                                            (car as MSTSLocomotive).PantoCommandDown = PantoCommandDown;
+                                        }
+                                    }
                                 }
                             }
                         }

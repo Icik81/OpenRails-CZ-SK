@@ -6975,10 +6975,10 @@ namespace Orts.Simulation.RollingStocks
                 }
             }
         }
-
+        
         public void CheckPantos()
         {
-            if (Train.MasterSlaveCarsFound && SlaveLoco) return;
+            if (Train.MasterSlaveCarsFound && SlaveLoco) return;                        
 
             Pantograph p1;
             Pantograph p2;
@@ -7011,17 +7011,17 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Master - Slave
-            if (Train.MasterSlaveCarsFound && MasterLoco && AcceptMUSignals)
+            if (Train.MasterSlaveCarsFound && MasterLoco && AcceptCableSignals)
             {
                 foreach (TrainCar car in Train.Cars)
                 {
-                    if (car.AcceptMUSignals && car.SlaveLoco)
+                    if (car.AcceptCableSignals && car.SlaveLoco)
                     {
                         (car as MSTSElectricLocomotive).SelectedPowerSystem = SelectedPowerSystem;
                         (car as MSTSElectricLocomotive).SelectingPowerSystem = SelectingPowerSystem;
                         (car as MSTSElectricLocomotive).Loco15kV = Loco15kV;
                         (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
-                        (car as MSTSElectricLocomotive).PantoMode = PantoMode;
+                        (car as MSTSElectricLocomotive).PantoMode = PantoMode;                        
 
                         if (car.Flipped ^ UsingRearCab)
                         {
@@ -7038,6 +7038,25 @@ namespace Orts.Simulation.RollingStocks
                 }                
             }
 
+            switch (SelectingPowerSystem)
+            {
+                case PowerSystem.AT15kV:
+                case PowerSystem.DE15kV:
+                    SwitchingVoltageMode = 2;
+                    Loco15kV = true;
+                    break;
+                case PowerSystem.CZ25kV:
+                case PowerSystem.SK25kV:
+                    SwitchingVoltageMode = 2;
+                    Loco15kV = false;
+                    break;
+                case PowerSystem.CZ3kV:
+                case PowerSystem.SK3kV:
+                    SwitchingVoltageMode = 0;
+                    Loco15kV = false;
+                    break;
+            }
+
             switch (PantoMode)
             {
                 case PantoModes.Auto:
@@ -7050,7 +7069,9 @@ namespace Orts.Simulation.RollingStocks
                                 if (p1.State == PantographState.Down)
                                     p1.State = PantographState.Raising;
                                 if (p2.State == PantographState.Up && p1.State == PantographState.Up)
-                                    p2.State = PantographState.Lowering;
+                                {
+                                    p2.State = PantographState.Lowering;                                   
+                                }
                                 if (p3.State == PantographState.Up)
                                     p3.State = PantographState.Lowering;
                                 if (p4.State == PantographState.Up)
@@ -7065,7 +7086,9 @@ namespace Orts.Simulation.RollingStocks
                                 if (p3.State == PantographState.Down)
                                     p3.State = PantographState.Raising;
                                 if (p4.State == PantographState.Up && p3.State == PantographState.Up)
-                                    p4.State = PantographState.Lowering;
+                                {
+                                    p4.State = PantographState.Lowering;                                   
+                                }
                             }
                         }
                         else
@@ -7073,7 +7096,9 @@ namespace Orts.Simulation.RollingStocks
                             if (p1.State == PantographState.Down)
                                 p1.State = PantographState.Raising;
                             if (p2.State == PantographState.Up && p1.State == PantographState.Up)
-                                p2.State = PantographState.Lowering;
+                            {
+                                p2.State = PantographState.Lowering;                                
+                            }
                         }
                     }
                     break;
@@ -7091,7 +7116,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (p3.State == PantographState.Up)
                                     p3.State = PantographState.Lowering;
                                 if (p4.State == PantographState.Up)
-                                    p4.State = PantographState.Lowering;
+                                    p4.State = PantographState.Lowering;                                
                             }
                             if (SwitchingVoltageMode == 0)
                             {
@@ -7102,13 +7127,13 @@ namespace Orts.Simulation.RollingStocks
                                 if (p3.State == PantographState.Down)
                                     p3.State = PantographState.Raising;
                                 if (p4.State == PantographState.Down)
-                                    p4.State = PantographState.Raising;
+                                    p4.State = PantographState.Raising;                                
                             }
                         }
                         else
                         {
                             if (pantograph4.State == PantographState.Down)
-                                pantograph4.State = PantographState.Raising;
+                                pantograph4.State = PantographState.Raising;                            
                         }
                     }
                     break;
@@ -7120,7 +7145,9 @@ namespace Orts.Simulation.RollingStocks
                             if (p1.State == PantographState.Down)
                                 p1.State = PantographState.Raising;
                             if (p2.State == PantographState.Up && p1.State == PantographState.Up)
-                                p2.State = PantographState.Lowering;
+                            {
+                                p2.State = PantographState.Lowering;                                
+                            }
                             if (p3.State == PantographState.Up)
                                 p3.State = PantographState.Lowering;
                             if (p4.State == PantographState.Up)
@@ -7135,7 +7162,9 @@ namespace Orts.Simulation.RollingStocks
                             if (p3.State == PantographState.Down)
                                 p3.State = PantographState.Raising;
                             if (p4.State == PantographState.Up && p3.State == PantographState.Up)
-                                p4.State = PantographState.Lowering;
+                            {
+                                p4.State = PantographState.Lowering;                                
+                            }
                         }
                     }
                     else
@@ -7143,7 +7172,9 @@ namespace Orts.Simulation.RollingStocks
                         if (p1.State == PantographState.Down)
                             p1.State = PantographState.Raising;
                         if (p2.State == PantographState.Up && p1.State == PantographState.Up)
-                            p2.State = PantographState.Lowering;
+                        {
+                            p2.State = PantographState.Lowering;                            
+                        }
                     }
                     break;
                 case PantoModes.Forward:
@@ -7154,7 +7185,9 @@ namespace Orts.Simulation.RollingStocks
                             if (p2.State == PantographState.Down)
                                 p2.State = PantographState.Raising;
                             if (p1.State == PantographState.Up && p2.State == PantographState.Up)
-                                p1.State = PantographState.Lowering;
+                            {
+                                p1.State = PantographState.Lowering;                                
+                            }
                             if (p3.State == PantographState.Up)
                                 p3.State = PantographState.Lowering;
                             if (p4.State == PantographState.Up)
@@ -7169,7 +7202,9 @@ namespace Orts.Simulation.RollingStocks
                             if (p4.State == PantographState.Down)
                                 p4.State = PantographState.Raising;
                             if (p3.State == PantographState.Up && p4.State == PantographState.Up)
-                                p3.State = PantographState.Lowering;
+                            {
+                                p3.State = PantographState.Lowering;                                
+                            }
                         }
                     }
                     else
@@ -7177,7 +7212,9 @@ namespace Orts.Simulation.RollingStocks
                         if (p2.State == PantographState.Down)
                             p2.State = PantographState.Raising;
                         if (p1.State == PantographState.Up && p2.State == PantographState.Up)
-                            p1.State = PantographState.Lowering;
+                        {
+                            p1.State = PantographState.Lowering;                            
+                        }
                     }
                     break;
             }

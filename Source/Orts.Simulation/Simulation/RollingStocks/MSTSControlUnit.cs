@@ -284,7 +284,7 @@ namespace Orts.Simulation.RollingStocks
                                 PU.Switch51LightEnable = Switch51LightEnable;
                                 PU.Switch5LightPosition[PU.LocoStation] = Switch5LightPosition[LocoStation];
                                 PU.Switch52LightEnable = Switch52LightEnable;
-                                PU.Switch6LightPosition[PU.LocoStation] = Switch6LightPosition[LocoStation];
+                                PU.Switch6LightPosition[PU.LocoStation] = Switch6LightPosition[LocoStation];                                
                                 SystemAnnunciator = PU.SystemAnnunciator;
                                 if (PU.LocoReadyToGo)
                                 {
@@ -301,7 +301,8 @@ namespace Orts.Simulation.RollingStocks
                                 PU.ForceHandleValue = ForceHandleValue;
                                 TractionBlocked = PU.TractionBlocked;
                                 InverterTest = PU.InverterTest;
-                                PantoCommandDown = PU.PantoCommandDown;
+                                PU.PantoCommandDown = PantoCommandDown;
+                                PU.PantoMode = PantoMode;                                
                             }
                         }
 
@@ -347,7 +348,7 @@ namespace Orts.Simulation.RollingStocks
 
                             PU.Compressor_I = Compressor_I;
                             PU.Compressor_II = Compressor_II;
-                            PU.AuxCompressor = AuxCompressor;
+                            PU.AuxCompressor = AuxCompressor;                            
                         }                        
 
                         break;
