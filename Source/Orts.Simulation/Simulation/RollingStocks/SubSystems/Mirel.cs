@@ -690,7 +690,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         engineBrakeApplied = true;
                     if (Locomotive.EngineBrakeController.CurrentValue < 0.05f)
                         engineBrakeReleased = true;
-                    if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > (0.99f * Locomotive.BrakeSystem.MCP / 14.50377f) && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > PressureForTestPassBar && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         Test5 = true;
                     if (engineBrakeApplied && engineBrakeReleased)
                         Test5 = true;
@@ -770,7 +770,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 if (selectedDriveMode != DriveMode.Trailing && initTest == InitTest.Passed) CheckNZ5(elapsedClockSeconds);
                 if (performingCMTest)
                 {
-                    Locomotive.BrakeSystem.BrakeLine1PressurePSI = Locomotive.BrakeSystem.BrakeLine1PressurePSI - 7;
+                    if (Locomotive.Train.EqualReservoirPressurePSIorInHg > 3f * 14.50377f)
+                        Locomotive.Train.EqualReservoirPressurePSIorInHg -= Locomotive.TrainBrakeController.EmergencyRatePSIpS * elapsedClockSeconds;
                 }
             }
             catch (Exception ec)
@@ -1120,7 +1121,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             if (numCMTested > 1 && brakesFilling)
                 return;
 
-            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 3) // napustíme potrubí
+            if (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < 3f) // napustíme potrubí
             {
                 if (initTest != InitTest.Passed)
                 {
