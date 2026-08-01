@@ -690,7 +690,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         engineBrakeApplied = true;
                     if (Locomotive.EngineBrakeController.CurrentValue < 0.05f)
                         engineBrakeReleased = true;
-                    if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > PressureForTestPassBar && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
+                    if (Bar.FromPSI(Locomotive.BrakeSystem.GetCylPressurePSI()) > (0.99f * Locomotive.BrakeSystem.MCP / 14.50377f) && Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
                         Test5 = true;
                     if (engineBrakeApplied && engineBrakeReleased)
                         Test5 = true;
@@ -1113,7 +1113,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
             {
                 Test7 = true;
             }
-            if (!initialCheckForCMtest && (Bar.FromPSI(Locomotive.BrakeSystem.BrakeLine1PressurePSI) < PressureForTestPassBar))
+            if (!initialCheckForCMtest && Locomotive.BrakeSystem.BrakeLine1PressurePSI < 0.99f * Locomotive.BrakeSystem.maxPressurePSI0) // iniciace při provozním tlaku v potrubí 5 bar
                 return;
             else
                 initialCheckForCMtest = true;
