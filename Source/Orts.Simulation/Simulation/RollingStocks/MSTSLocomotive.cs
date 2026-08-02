@@ -6535,10 +6535,10 @@ namespace Orts.Simulation.RollingStocks
                                         if (LocalThrottlePercent > 0)
                                             LocalThrottlePercent--;
 
-                                        if (LocoType == LocoTypes.Vectron)
+                                        if (this is MSTSElectricLocomotive)
                                         {
                                             if (LocalThrottlePercent > 0)
-                                                LocalThrottlePercent -= 10f;
+                                                LocalThrottlePercent -= 5f;
                                         }
 
                                         HelperTimerDecrease = 0;
@@ -6572,7 +6572,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {
-                                if (LocoType == LocoTypes.Vectron)
+                                if (this is MSTSElectricLocomotive)
                                 {
                                     if (LocalThrottlePercent < 100)
                                         LocalThrottlePercent += 0.5f;
@@ -6630,10 +6630,10 @@ namespace Orts.Simulation.RollingStocks
                                 LocalThrottlePercent--;
                                 HelperTimerDecrease = 0;
 
-                                if (LocoType == LocoTypes.Vectron)
+                                if (this is MSTSElectricLocomotive)
                                 {
                                     if (LocalThrottlePercent > 0)
-                                        LocalThrottlePercent -= 10f;
+                                        LocalThrottlePercent -= 5f;
                                 }
                             }
                         }
@@ -6723,10 +6723,10 @@ namespace Orts.Simulation.RollingStocks
                                     if (LocalThrottlePercent > 0)
                                         LocalThrottlePercent--;
 
-                                    if (LocoType == LocoTypes.Vectron)
+                                    if (this is MSTSElectricLocomotive)
                                     {
                                         if (LocalThrottlePercent > 0)
-                                            LocalThrottlePercent -= 10f;
+                                            LocalThrottlePercent -= 5f;
                                     }
 
                                     HelperTimerDecrease = 0;
@@ -6796,7 +6796,7 @@ namespace Orts.Simulation.RollingStocks
                             }
                             else
                             {                                
-                                if (LocoType == LocoTypes.Vectron)
+                                if (this is MSTSElectricLocomotive)
                                 {
                                     if (LocalThrottlePercent < 100)
                                         LocalThrottlePercent += 0.5f;
@@ -18366,7 +18366,7 @@ namespace Orts.Simulation.RollingStocks
             }
             else
             if (Switch5LightEnable && Switch6LightEnable) // 361
-            {
+            {                
                 // Lights setup
                 if (LightsFrameUpdate == 2 && LocoReadyToGo)
                 {
@@ -26672,12 +26672,20 @@ namespace Orts.Simulation.RollingStocks
                     }                                                                        
                 case CABViewControlTypes.SWITCH5_LIGHT:
                     {
+                        if (LocoSetUpTimer == 0 && !Simulator.GameWasRestored && Switch5LightEnable && Switch6LightEnable)
+                        {
+                            Switch5LightPosition[1] = Switch5LightPosition[2] = 2;
+                        }
                         Switch5LightEnable = true;
                         data = Switch5LightPosition[LocoStation];
                         break;
                     }                
                 case CABViewControlTypes.SWITCH6_LIGHT:
                     {
+                        if (LocoSetUpTimer == 0 && !Simulator.GameWasRestored && Switch5LightEnable && Switch6LightEnable)
+                        {
+                            Switch6LightPosition[1] = Switch6LightPosition[2] = 2;
+                        }
                         Switch6LightEnable = true;
                         data = Switch6LightPosition[LocoStation];
                         break;
