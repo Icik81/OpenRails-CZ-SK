@@ -12997,7 +12997,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Wipers3ActivationSwitch[LocoStation]++;
                     ToggleWipers3ActivationSwitch();
-                    SignalEvent(Event.ToggleUpNA); // Zvuk přepínače
+                    SignalEvent(Event.ToggleUpA); // Zvuk přepínače
                 }
                 Wipers3ActivationSwitch[LocoStation] = MathHelper.Clamp(Wipers3ActivationSwitch[LocoStation], 0, 2);
             }
@@ -13010,7 +13010,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     Wipers3ActivationSwitch[LocoStation]--;
                     ToggleWipers3ActivationSwitch();
-                    SignalEvent(Event.ToggleDownNA); // Zvuk přepínače
+                    SignalEvent(Event.ToggleDownA); // Zvuk přepínače
                 }
                 Wipers3ActivationSwitch[LocoStation] = MathHelper.Clamp(Wipers3ActivationSwitch[LocoStation], 0, 2);
             }
