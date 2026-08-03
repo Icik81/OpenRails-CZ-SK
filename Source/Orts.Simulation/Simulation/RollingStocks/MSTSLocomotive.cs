@@ -6997,7 +6997,7 @@ namespace Orts.Simulation.RollingStocks
         
         public void CheckPantos()
         {
-            if (Train.MasterSlaveCarsFound && SlaveLoco) return;                        
+            if (Train.MasterSlaveCarsFound && SlaveLoco) return;
 
             Pantograph p1;
             Pantograph p2;
@@ -7040,7 +7040,16 @@ namespace Orts.Simulation.RollingStocks
                         (car as MSTSElectricLocomotive).SelectingPowerSystem = SelectingPowerSystem;
                         (car as MSTSElectricLocomotive).Loco15kV = Loco15kV;
                         (car as MSTSElectricLocomotive).PantoCommandDown = PantoCommandDown;
-                        (car as MSTSElectricLocomotive).PantoMode = PantoMode;                        
+                        (car as MSTSElectricLocomotive).PantoMode = PantoMode;
+
+                        (car as MSTSWagon).Pantographs.List[0].State = p1.State;
+                        (car as MSTSWagon).Pantographs.List[1].State = p2.State;
+
+                        if ((car as MSTSWagon).Pantographs.Count == 4)
+                        {
+                            (car as MSTSWagon).Pantographs.List[2].State = p3.State;
+                            (car as MSTSWagon).Pantographs.List[3].State = p4.State;
+                        }
 
                         if (car.Flipped ^ UsingRearCab)
                         {
@@ -7117,6 +7126,47 @@ namespace Orts.Simulation.RollingStocks
                             if (p2.State == PantographState.Up && p1.State == PantographState.Up)
                             {
                                 p2.State = PantographState.Lowering;                                
+                            }
+                        }
+                    }
+                    if (Direction == Direction.Reverse)
+                    {
+                        if (Pantographs.Count == 4)
+                        {
+                            if (SwitchingVoltageMode == 2)
+                            {
+                                if (p2.State == PantographState.Down)
+                                    p2.State = PantographState.Raising;
+                                if (p1.State == PantographState.Up && p2.State == PantographState.Up)
+                                {
+                                    p1.State = PantographState.Lowering;
+                                }
+                                if (p3.State == PantographState.Up)
+                                    p3.State = PantographState.Lowering;
+                                if (p4.State == PantographState.Up)
+                                    p4.State = PantographState.Lowering;
+                            }
+                            if (SwitchingVoltageMode == 0)
+                            {
+                                if (p1.State == PantographState.Up)
+                                    p1.State = PantographState.Lowering;
+                                if (p2.State == PantographState.Up)
+                                    p2.State = PantographState.Lowering;
+                                if (p4.State == PantographState.Down)
+                                    p4.State = PantographState.Raising;
+                                if (p3.State == PantographState.Up && p4.State == PantographState.Up)
+                                {
+                                    p3.State = PantographState.Lowering;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (p2.State == PantographState.Down)
+                                p2.State = PantographState.Raising;
+                            if (p1.State == PantographState.Up && p2.State == PantographState.Up)
+                            {
+                                p1.State = PantographState.Lowering;
                             }
                         }
                     }
@@ -7862,6 +7912,7 @@ namespace Orts.Simulation.RollingStocks
             JVHack(elapsedClockSeconds);
             TrainCarHeatInitialize();
             TriggerTrainLogic(elapsedClockSeconds);
+            WireHeightSwitching();
 
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             if (!Simulator.Paused && Simulator.GameSpeed == 1)
@@ -8140,8 +8191,7 @@ namespace Orts.Simulation.RollingStocks
                 CabRadioOnOff();
                 CheckWheelSlip(elapsedClockSeconds);
                 DoorSwitchLogic();
-                TrainBrakePercent();
-                WireHeightSwitching();
+                TrainBrakePercent();                
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
                 ThunderSound();                        

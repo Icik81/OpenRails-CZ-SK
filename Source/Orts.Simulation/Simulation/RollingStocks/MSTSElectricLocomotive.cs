@@ -1741,7 +1741,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (MultiSystemEngine && RouteVoltageV != 1)
                 {
-                    if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
+                    if (LocoType != LocoTypes.Vectron && !Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
                     {
                         if (Pantographs.Count == 4)
                         {
@@ -2157,11 +2157,11 @@ namespace Orts.Simulation.RollingStocks
         float AITrainOutOfPowerTime;
         protected void SetAIPantoDown(float elapsedClockSeconds)
         {
-            if (IsPlayerTrain || Train as AITrain == null)
+            if (IsPlayerTrain || Train as AITrain == null || LocoSetUpTimer < 1)
                 return;
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
-                      
+            
             foreach (Pantograph p in Pantographs.List)
             {
                 p.PantographsBlocked = false;
