@@ -5866,10 +5866,13 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AIActionPoint0.Delay < 40000 && CarIsShunting && Math.Abs((Train as AITrain).SpeedMpS) > 0)
-                                CarIsRunning = true;
-                            if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
-                                CarIsWaiting = true;
+                            if (AIActionPoint0 != null)
+                            {
+                                if (AIActionPoint0.Delay < 40000 && CarIsShunting && Math.Abs((Train as AITrain).SpeedMpS) > 0)
+                                    CarIsRunning = true;
+                                if (AIActionPoint0.Delay < 40000 && CarIsRunning && (Train as AITrain).SpeedMpS == 0)
+                                    CarIsWaiting = true;
+                            }
                         }
                     }
                 }
@@ -5883,7 +5886,7 @@ namespace Orts.Simulation.RollingStocks
                         for (int i = 0; i < (Train as AITrain).AuxActionsContain.SpecAuxActions.Count; i++)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[i] as AIActionHornRef);
-                            if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                            if (AIActionPoint0 != null && AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                             {
                                 if (!AutopilotDistanceSet)
                                 {
@@ -5937,7 +5940,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
                     {
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
-                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        if (AIActionPoint0 != null && AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
                             if (AIActionPoint0.DurationS >= 49900 && AIActionPoint0.DurationS <= 49999)
                             {
@@ -5957,7 +5960,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
                     {
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
-                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        if (AIActionPoint0 != null && AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {                       
                             if (AIActionPoint0.DurationS > 49000 && AIActionPoint0.DurationS < 49900)
                             {
@@ -5988,7 +5991,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.SOUND_HORN)
                     {
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionHornRef);
-                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        if (AIActionPoint0 != null && AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
                             if (AIActionPoint0.DurationS == 40000)
                             {
@@ -6010,7 +6013,7 @@ namespace Orts.Simulation.RollingStocks
                     if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                     {
                         var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                        if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
+                        if (AIActionPoint0 != null && AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
                             var AITrainOutOfPowerdistanceToGoM = AIActionPoint0.keepIt.ActivateDistanceM - (Train as AITrain).PresentPosition[0].DistanceTravelledM;
                             if (AIActionPoint0.Delay == 40001 && AITrainOutOfPowerdistanceToGoM < 0.05f)
@@ -6030,18 +6033,21 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            float GameClock = AIActionPoint0.Delay - 30000;
-                            int GameClockHour = (int)(GameClock / 100);
-                            int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
-                            float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
-
-                            if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait + 1)
+                            if (AIActionPoint0 != null)
                             {
-                                // Půlnoční AI
-                                if (Simulator.ClockTime - GameClockToWait > 3600)
-                                    (Train as AITrain).DontStopABSWP = false;
-                                else
-                                    (Train as AITrain).DontStopABSWP = true;
+                                float GameClock = AIActionPoint0.Delay - 30000;
+                                int GameClockHour = (int)(GameClock / 100);
+                                int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
+                                float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
+
+                                if ((AIActionPoint0.Delay > 30000 && AIActionPoint0.Delay < 39999) && Simulator.ClockTime > GameClockToWait + 1)
+                                {
+                                    // Půlnoční AI
+                                    if (Simulator.ClockTime - GameClockToWait > 3600)
+                                        (Train as AITrain).DontStopABSWP = false;
+                                    else
+                                        (Train as AITrain).DontStopABSWP = true;
+                                }
                             }
                         }
                     }
@@ -6069,15 +6075,18 @@ namespace Orts.Simulation.RollingStocks
                         if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
                         {
                             var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AbsSpeedMpS < 0.01f && ((AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (AIActionPoint0.Delay > 40100 && AIActionPoint0.Delay < 40200) || (AIActionPoint0.Delay > 50100 && AIActionPoint0.Delay < 50200)))
+                            if (AIActionPoint0 != null)
                             {
-                                CarIsShunting = true;
-                                AIStartOn = true;
-                            }
-                            else
-                            {
-                                AIStartOn = false;
-                                AIBellStartOn = false;
+                                if (AbsSpeedMpS < 0.01f && ((AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (AIActionPoint0.Delay > 40100 && AIActionPoint0.Delay < 40200) || (AIActionPoint0.Delay > 50100 && AIActionPoint0.Delay < 50200)))
+                                {
+                                    CarIsShunting = true;
+                                    AIStartOn = true;
+                                }
+                                else
+                                {
+                                    AIStartOn = false;
+                                    AIBellStartOn = false;
+                                }
                             }
                         }
                     }
