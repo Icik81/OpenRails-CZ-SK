@@ -2144,7 +2144,7 @@ namespace Orts.Simulation.Physics
                 if ((TrainType != TRAINTYPE.AI && TrainType != TRAINTYPE.AI_PLAYERHOSTING) && ControlMode != TRAIN_CONTROL.OUT_OF_CONTROL)
                 {
                     stillExist = CheckRouteActions(elapsedClockSeconds);                          // check routepath (AI check at other point) //
-                }
+                }                
 
                 if (stillExist)
                 {

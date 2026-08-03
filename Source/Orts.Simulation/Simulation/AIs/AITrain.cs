@@ -4690,7 +4690,7 @@ namespace Orts.Simulation.AIs
                     }
                 }
                 else
-                // Houkání pro autopilota
+                // Autopilot
                 if (waitingPoint[2] >= 60011 && waitingPoint[2] <= 60021) // Zahoukání
                 {
                     var durationS = waitingPoint[2] - 60010;
@@ -4705,6 +4705,38 @@ namespace Orts.Simulation.AIs
                                 break;
                         }
                         AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, durationS, hornPattern);
+                        AuxActionsContain.Add(action);
+                }
+                else
+                if (waitingPoint[2] > 59000 && waitingPoint[2] < 59900) // Zastavení ve stanici x metrů za výchozím zastavením
+                    {                        
+                        AILevelCrossingHornPattern hornPattern;
+                        hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
+                        AuxActionsContain.Add(action);
+                    }
+                    else
+                    if (waitingPoint[2] > 49000 && waitingPoint[2] < 49900) // Zastavení ve stanici x metrů před výchozím zastavením
+                    {                        
+                        AILevelCrossingHornPattern hornPattern;
+                        hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
+                        AuxActionsContain.Add(action);
+                    }
+                    else
+                    if (waitingPoint[2] == 40000) // AI má prioritu před hráčem
+                    {
+                        AILevelCrossingHornPattern hornPattern;
+                        hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
+                        AuxActionsContain.Add(action);
+                    }
+                    else                    
+                    if (waitingPoint[2] >= 49900 && waitingPoint[2] <= 49999) // Odebrání nebo zanechání vozů
+                    {                        
+                        AILevelCrossingHornPattern hornPattern;
+                        hornPattern = AILevelCrossingHornPattern.CreateInstance(ORTS.Common.LevelCrossingHornPattern.Single);
+                        AIActionHornRef action = new AIActionHornRef(this, waitingPoint[5], 0f, waitingPoint[0], lastIndex, thisRoute[lastIndex].TCSectionIndex, direction, waitingPoint[2], hornPattern);                        
                         AuxActionsContain.Add(action);
                     }
                 else if (insertSigDelegate && signalIndex[iWait] > -1)

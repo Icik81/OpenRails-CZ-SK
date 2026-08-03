@@ -5903,31 +5903,32 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         ManualHorn = true;
                                     }
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
                                 }
                             }
                             else
                                 AutopilotDistanceSet = false;
-                        }
-                        if (ManualBell)
-                        {
-                            AutopilotBellTimer += elapsedClockSeconds;
-                            if (AutopilotBellTimer > 1)
-                            {
-                                ManualBell = false;
-                                AutopilotBellTimer = 0;
-                            }
-                        }
-                        else
-                            if (ManualHorn)
-                            {
-                                AutopilotHornTimer += elapsedClockSeconds;
-                                if (AutopilotHornTimer > 1)
-                                {
-                                    ManualHorn = false;
-                                    AutopilotHornTimer = 0;
-                                }
-                            }
+                        }                        
                     }
+                    if (ManualBell)
+                    {
+                        AutopilotBellTimer += elapsedClockSeconds;
+                        if (AutopilotBellTimer > 1)
+                        {
+                            ManualBell = false;
+                            AutopilotBellTimer = 0;
+                        }
+                    }
+                    else
+                        if (ManualHorn)
+                        {
+                            AutopilotHornTimer += elapsedClockSeconds;
+                            if (AutopilotHornTimer > 1)
+                            {
+                                ManualHorn = false;
+                                AutopilotHornTimer = 0;
+                            }
+                        }
                 }
 
                 //  Počet vozů k odebrání nebo zanechání
@@ -5941,6 +5942,10 @@ namespace Orts.Simulation.RollingStocks
                             if (AIActionPoint0.DurationS >= 49900 && AIActionPoint0.DurationS <= 49999)
                             {
                                 (Train as AITrain).NumberOfCarsToLeaveOrSteal = (int)(AIActionPoint0.DurationS - 49900);
+                                if ((Train as AITrain).IsActualPlayerTrain && (Train as AITrain).Simulator.PlayerTrainInAutopilotMode)
+                                {
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                }
                             }
                         }
                     }
@@ -5958,12 +5963,20 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = (int)(AIActionPoint0.DurationS - 49000);
+                                if ((Train as AITrain).IsActualPlayerTrain && (Train as AITrain).Simulator.PlayerTrainInAutopilotMode)
+                                {
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                }
                             }                         
 
                             if (AIActionPoint0.DurationS > 59000 && AIActionPoint0.DurationS < 59900)
                             {
                                 (Train as AITrain).AITrainOffsetStop = true;
                                 (Train as AITrain).AITrainOffsetStopDistance = (int)(-AIActionPoint0.DurationS + 59000);
+                                if ((Train as AITrain).IsActualPlayerTrain && (Train as AITrain).Simulator.PlayerTrainInAutopilotMode)
+                                {
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                }
                             }
                         }
                     }
@@ -5978,7 +5991,13 @@ namespace Orts.Simulation.RollingStocks
                         if (AIActionPoint0.TCSectionIndex == (Train as AITrain).PresentPosition[0].TCSectionIndex && AIActionPoint0.SubrouteIndex == (Train as AITrain).TCRoute.activeSubpath)
                         {
                             if (AIActionPoint0.DurationS == 40000)
+                            {
                                 Simulator.AIPreference = true;
+                                if ((Train as AITrain).IsActualPlayerTrain && (Train as AITrain).Simulator.PlayerTrainInAutopilotMode)
+                                {
+                                    (Train as AITrain).AuxActionsContain.SpecAuxActions.RemoveAt(0);
+                                }
+                            }
                         }
                     }
                 }
