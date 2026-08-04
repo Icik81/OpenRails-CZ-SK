@@ -1162,16 +1162,51 @@ namespace Orts.Viewer3D
             Simulator.ForceSuppressConfirmations = false;
             if (PlayerLocomotive.Train.PassengerViewTrain)
             {
-                if (Camera != PassengerCamera && PassengerCamera.IsAvailable)
-                    PassengerCamera.Activate();
+                if (PlayerLocomotive.Train.SpeedMpS > 0.5f && !PlayerLocomotive.Train.TrainIsStarting)
+                {
+                    PlayerLocomotive.Train.TrainIsStarting = true;
+                    PlayerLocomotive.Train.TrainIsStopping = false;
+                }
                 else
-                    if (!PassengerCamera.IsAvailable)
+                if (PlayerLocomotive.Train.SpeedMpS < 0.1f && !PlayerLocomotive.Train.TrainIsStopping)
+                {
+                    PlayerLocomotive.Train.TrainIsStopping = true;
+                    PlayerLocomotive.Train.TrainIsStarting = false;
+                    if (FreeRoamCameraList.Count > 0 && (Camera == PassengerCamera || Camera == HeadOutForwardCamera))
+                        FreeRoamCameraList.Clear();                    
+                }
+
+                if (PlayerLocomotive.Train.TrainIsStopping)
+                {
+                    if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
                     {
-                        if (Camera != HeadOutForwardCamera)
-                        {
-                            HeadOutForwardCamera.Activate();                                                   
-                        }
+                        FreeRoamCamera.Activate();
                     }
+                    else
+                        if (FreeRoamCameraList.Count == 0)
+                        {
+                            if (Simulator.GameTime > 0)
+                            {
+                                CheckReplaying();
+                                new UseFreeRoamCameraCommand(Log);                                
+                            }
+                        }
+                }
+                else
+                {
+                    if (Camera != PassengerCamera && PassengerCamera.IsAvailable)
+                    {
+                        PassengerCamera.Activate();
+                    }
+                    //else
+                    //    if (!PassengerCamera.IsAvailable)
+                    //    {
+                    //        if (Camera != HeadOutForwardCamera)
+                    //        {
+                    //            HeadOutForwardCamera.Activate();
+                    //        }
+                    //    }
+                }
 
                 if (PlayerLocomotive.Train.IsPlayerDriven)
                 {

@@ -630,7 +630,7 @@ namespace Orts.Simulation.RollingStocks
                 Amps = 0;
             }
 
-            //RouteVoltageV = 15000;
+            //RouteVoltageV = 25000;
 
             foreach (PowerSupplyStation pss in Simulator.powerSupplyStations)
             {

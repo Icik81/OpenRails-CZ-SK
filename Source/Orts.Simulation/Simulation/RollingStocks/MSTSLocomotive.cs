@@ -3266,9 +3266,11 @@ namespace Orts.Simulation.RollingStocks
         protected PowerSupplyStation myStation = null;
         public void WireHeightSwitching()
         {
+            if (!IsLeadLocomotive()) return;
+
             // Určení napětí v trati pro neelektrické lokomotivy hráče
             #region RouteVoltage
-            if (IsLeadLocomotive() && !(this is MSTSElectricLocomotive))
+            if (!(this is MSTSElectricLocomotive))
             {
                 int powerSys = -1;
                 int markerVoltage = 0;
@@ -3312,7 +3314,7 @@ namespace Orts.Simulation.RollingStocks
             }
             #endregion RouteVoltage
 
-            //RouteVoltageV = 3000;
+            //RouteVoltageV = 25000;
             if (RouteVoltageV != preRouteVoltage && !Simulator.WireHeightDoNothing)
             {
                 if (Simulator.WireHeigth >= 0)
@@ -7920,8 +7922,7 @@ namespace Orts.Simulation.RollingStocks
             VentilationDR(elapsedClockSeconds);
             JVHack(elapsedClockSeconds);
             TrainCarHeatInitialize();
-            TriggerTrainLogic(elapsedClockSeconds);
-            WireHeightSwitching();
+            TriggerTrainLogic(elapsedClockSeconds);            
 
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             if (!Simulator.Paused && Simulator.GameSpeed == 1)
@@ -8203,7 +8204,8 @@ namespace Orts.Simulation.RollingStocks
                 TrainBrakePercent();                
                 TractionSwitch();
                 ToggleWipers3ActivationSwitch();
-                ThunderSound();                        
+                ThunderSound();
+                WireHeightSwitching();
                 Shunter.Update(elapsedClockSeconds);
 
                 // Loco 361
