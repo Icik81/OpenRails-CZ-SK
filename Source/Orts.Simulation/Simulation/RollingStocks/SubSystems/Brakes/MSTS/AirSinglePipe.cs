@@ -3243,7 +3243,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                         if (loco.LocomotiveTypeNumber == 361)
                         {                            
                             loco.Compressor_I = true;
-                            loco.Compressor_II = true;
+                            //loco.Compressor_II = true;
                             if (loco.AutoCompressor)
                             {
                                 loco.AuxCompressorMode_OffOn[loco.LocoStation] = true;
@@ -3255,12 +3255,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                             if (loco.CircuitBreakerOn)
                             {
                                 loco.CompressorMode_OffAuto[loco.LocoStation] = true;
-                                loco.CompressorMode2_OffAuto[loco.LocoStation] = true;
+                                //loco.CompressorMode2_OffAuto[loco.LocoStation] = true;
                             }
                             else
                             {
                                 loco.CompressorMode_OffAuto[loco.LocoStation] = false;
-                                loco.CompressorMode2_OffAuto[loco.LocoStation] = false;
+                                //loco.CompressorMode2_OffAuto[loco.LocoStation] = false;
                             }
                         }
 
