@@ -2268,8 +2268,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
             // Nastavení static vlaku při přechodu na něj
             if (train.TrainWasStatic)
             {                
-                train.Simulator.SetStaticCars(train);
-                train.Simulator.SetStaticLocos(train);
+                train.Simulator.SetStaticCars(train, false);
+                train.Simulator.SetStaticLocos(train, false);
                 return;
             }
 

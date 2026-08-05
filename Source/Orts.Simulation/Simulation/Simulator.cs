@@ -1244,7 +1244,7 @@ namespace Orts.Simulation
             return false;
         }
 
-        public void SetStaticLocos(Train train)
+        public void SetStaticLocos(Train train, bool back)
         {
             if ((train.TrainType == Train.TRAINTYPE.STATIC || train.TrainWasStatic) && train.Cars.Count < 3)
             {
@@ -1256,6 +1256,13 @@ namespace Orts.Simulation
                         car.BrakeSystem.AngleCockBOpen = true;
                         car.BrakeSystem.FrontBrakeHoseConnected = false;
                         car.StaticSet = true;
+                        if (back)
+                        {
+                            car.BrakeSystem.AngleCockAOpen = true;
+                            car.BrakeSystem.AngleCockBOpen = false;
+                            car.BrakeSystem.FrontBrakeHoseConnected = true;
+                            car.StaticSet = true;
+                        }
                     }
                     else
                         if (car == train.LastCar)
@@ -1264,6 +1271,13 @@ namespace Orts.Simulation
                             car.BrakeSystem.AngleCockBOpen = false;
                             car.BrakeSystem.FrontBrakeHoseConnected = true;
                             car.StaticSet = true;
+                            if (back)
+                            {
+                                car.BrakeSystem.AngleCockAOpen = false;
+                                car.BrakeSystem.AngleCockBOpen = true;
+                                car.BrakeSystem.FrontBrakeHoseConnected = false;
+                                car.StaticSet = true;
+                            }
                         }
                         else
                         {
@@ -1276,7 +1290,7 @@ namespace Orts.Simulation
             }
         }
 
-        public void SetStaticCars(Train train)
+        public void SetStaticCars(Train train, bool back)
         {
             if ((train.TrainType == Train.TRAINTYPE.STATIC || train.TrainWasStatic) && train.Cars.Count > 2 && !StaticSetCarsDetect(train))
             {
@@ -1288,6 +1302,13 @@ namespace Orts.Simulation
                         car.BrakeSystem.AngleCockBOpen = true;
                         car.BrakeSystem.FrontBrakeHoseConnected = false;
                         car.StaticSet = true;
+                        if (back)
+                        {
+                            car.BrakeSystem.AngleCockAOpen = true;
+                            car.BrakeSystem.AngleCockBOpen = false;
+                            car.BrakeSystem.FrontBrakeHoseConnected = true;
+                            car.StaticSet = true;
+                        }
                     }
                     else
                         if (car == train.LastCar)
@@ -1296,6 +1317,13 @@ namespace Orts.Simulation
                             car.BrakeSystem.AngleCockBOpen = false;
                             car.BrakeSystem.FrontBrakeHoseConnected = true;
                             car.StaticSet = true;
+                            if (back)
+                            {
+                                car.BrakeSystem.AngleCockAOpen = false;
+                                car.BrakeSystem.AngleCockBOpen = true;
+                                car.BrakeSystem.FrontBrakeHoseConnected = false;
+                                car.StaticSet = true;
+                            }
                         }
                         else
                         {
@@ -1308,7 +1336,7 @@ namespace Orts.Simulation
             }
         }
 
-        public void AutomaticSetHosesAndAngles(Train train)
+        public void AutomaticSetHosesAndAngles(Train train, bool back)
         {
             if (!AutomaticShunterEnable) return;
 
@@ -1320,14 +1348,28 @@ namespace Orts.Simulation
                     car.BrakeSystem.AngleCockBOpen = true;
                     car.BrakeSystem.FrontBrakeHoseConnected = false;
                     car.StaticSet = true;
-                }
-                else
-                    if (car == train.LastCar)
+                    if (back)
                     {
                         car.BrakeSystem.AngleCockAOpen = true;
                         car.BrakeSystem.AngleCockBOpen = false;
                         car.BrakeSystem.FrontBrakeHoseConnected = true;
                         car.StaticSet = true;
+                    }
+                }
+                else                
+                    if (car == train.LastCar)
+                    {                        
+                        car.BrakeSystem.AngleCockAOpen = true;
+                        car.BrakeSystem.AngleCockBOpen = false;
+                        car.BrakeSystem.FrontBrakeHoseConnected = true;
+                        car.StaticSet = true;
+                        if (back)
+                        {
+                            car.BrakeSystem.AngleCockAOpen = false;
+                            car.BrakeSystem.AngleCockBOpen = true;
+                            car.BrakeSystem.FrontBrakeHoseConnected = false;
+                            car.StaticSet = true;
+                        }
                     }
                     else
                     {
@@ -1335,7 +1377,7 @@ namespace Orts.Simulation
                         car.BrakeSystem.AngleCockBOpen = true;
                         car.BrakeSystem.FrontBrakeHoseConnected = true;
                         car.StaticSet = true;
-                    }
+                    }                
             }
         }
 
@@ -1414,10 +1456,10 @@ namespace Orts.Simulation
                                 drivenTrain.Cars.Add(car);
                                 car.Train = drivenTrain;
                             }
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, false);
+                            SetStaticLocos(train, false);
                             FinishRearCoupling(drivenTrain, train, true);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, false);
                             CouplingAction = true;
                             return;
                         }
@@ -1439,10 +1481,10 @@ namespace Orts.Simulation
                                 car.Train = drivenTrain;
                                 car.Flipped = !car.Flipped;
                             }
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, false);
+                            SetStaticLocos(train, false);
                             FinishRearCoupling(drivenTrain, train, false);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, false);
                             CouplingAction = true;
                             return;
                         }
@@ -1468,10 +1510,10 @@ namespace Orts.Simulation
                                     car.Train = train;
                                 }
                                 //Rear coupling
-                                SetStaticCars(train);
-                                SetStaticLocos(train);
+                                SetStaticCars(train, false);
+                                SetStaticLocos(train, false);
                                 FinishRearCoupling(train, drivenTrain, false);
-                                AutomaticSetHosesAndAngles(drivenTrain);
+                                AutomaticSetHosesAndAngles(drivenTrain, false);
                                 CouplingAction = true;
                             }
                             else
@@ -1486,10 +1528,10 @@ namespace Orts.Simulation
                                     car.Train = drivenTrain;
                                 }
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
-                                SetStaticCars(train);
-                                SetStaticLocos(train);
+                                SetStaticCars(train, true);
+                                SetStaticLocos(train, true);
                                 FinishFrontCoupling(drivenTrain, train, lead, true);
-                                AutomaticSetHosesAndAngles(drivenTrain);
+                                AutomaticSetHosesAndAngles(drivenTrain, true);
                                 CouplingAction = true;
                             }
                             return;
@@ -1514,10 +1556,10 @@ namespace Orts.Simulation
                                 car.Flipped = !car.Flipped;
                             }
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, true);
+                            SetStaticLocos(train, true);
                             FinishFrontCoupling(drivenTrain, train, lead, false);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, true);
                             CouplingAction = true;
                             return;
                         }                                            
@@ -1602,10 +1644,10 @@ namespace Orts.Simulation
                                 drivenTrain.Cars.Add(car);
                                 car.Train = drivenTrain;
                             }
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, false);
+                            SetStaticLocos(train, false);
                             FinishRearCoupling(drivenTrain, train, true);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, false);
                             return;
                         }                        
                         
@@ -1679,10 +1721,10 @@ namespace Orts.Simulation
                                 car.Train = drivenTrain;
                                 car.Flipped = !car.Flipped;
                             }
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, false);
+                            SetStaticLocos(train, false);
                             FinishRearCoupling(drivenTrain, train, false);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, false);
                             return;
                         }                        
                         UpdateUncoupled(drivenTrain, train, d1, d2, false);
@@ -1787,10 +1829,10 @@ namespace Orts.Simulation
                                     car.Train = train;
                                 }
                                 //Rear coupling
-                                SetStaticCars(train);
-                                SetStaticLocos(train);
+                                SetStaticCars(drivenTrain, false);
+                                SetStaticLocos(drivenTrain, false);
                                 FinishRearCoupling(train, drivenTrain, false);
-                                AutomaticSetHosesAndAngles(drivenTrain);
+                                AutomaticSetHosesAndAngles(train, false);
                             }
                             else
                             {                                                                
@@ -1807,10 +1849,10 @@ namespace Orts.Simulation
                                     car.Train = drivenTrain;
                                 }
                                 if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
-                                SetStaticCars(train);
-                                SetStaticLocos(train);
+                                SetStaticCars(train, true);
+                                SetStaticLocos(train, true);
                                 FinishFrontCoupling(drivenTrain, train, lead, true);
-                                AutomaticSetHosesAndAngles(drivenTrain);
+                                AutomaticSetHosesAndAngles(drivenTrain, true);
                             }
                             return;
                         }
@@ -1885,10 +1927,10 @@ namespace Orts.Simulation
                                 car.Flipped = !car.Flipped;
                             }
                             if (drivenTrain.LeadLocomotiveIndex >= 0) drivenTrain.LeadLocomotiveIndex += train.Cars.Count;
-                            SetStaticCars(train);
-                            SetStaticLocos(train);
+                            SetStaticCars(train, true);
+                            SetStaticLocos(train, true);
                             FinishFrontCoupling(drivenTrain, train, lead, false);
-                            AutomaticSetHosesAndAngles(drivenTrain);
+                            AutomaticSetHosesAndAngles(drivenTrain, true);
                             return;
                         }                        
                         UpdateUncoupled(drivenTrain, train, d1, d2, true);
