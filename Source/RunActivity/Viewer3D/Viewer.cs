@@ -1162,38 +1162,47 @@ namespace Orts.Viewer3D
             Simulator.ForceSuppressConfirmations = false;
             if (PlayerLocomotive.Train.PassengerViewTrain)
             {
-                if (PlayerLocomotive.Train.SpeedMpS > 0.5f && !PlayerLocomotive.Train.TrainIsStarting)
+                // Vlak se rozjíždí
+                if (PlayerLocomotive.Train.SpeedMpS > 0.1f && !PlayerLocomotive.Train.TrainIsStarting)
                 {
                     PlayerLocomotive.Train.TrainIsStarting = true;
                     PlayerLocomotive.Train.TrainIsStopping = false;
                 }
                 else
-                if (PlayerLocomotive.Train.SpeedMpS < 0.1f && !PlayerLocomotive.Train.TrainIsStopping)
+                // Vlak zastavuje
+                if (PlayerLocomotive.Train.SpeedMpS < 0.01f && !PlayerLocomotive.Train.TrainIsStopping)
                 {
                     PlayerLocomotive.Train.TrainIsStopping = true;
                     PlayerLocomotive.Train.TrainIsStarting = false;
+                    // Vymazání seznamu kamer volného pohledu, pokud je aktivní pohled pasažéra nebo pohled hlavy ven
                     if (FreeRoamCameraList.Count > 0 && (Camera == PassengerCamera || Camera == HeadOutForwardCamera))
                         FreeRoamCameraList.Clear();                    
                 }
 
+                // Vlak je zastaven a je stisknuto tlačítko pro volný pohled, umožní se volný pohled
                 if (PlayerLocomotive.Train.TrainIsStopping)
                 {
-                    if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
+                    if (UserInput.IsPressed(UserCommand.CameraFree) || Camera == CabCamera)
                     {
-                        FreeRoamCamera.Activate();
-                    }
-                    else
-                        if (FreeRoamCameraList.Count == 0)
+                        if (FreeRoamCameraList.Count > 0 && Camera != FreeRoamCamera)
                         {
-                            if (Simulator.GameTime > 0)
-                            {
-                                CheckReplaying();
-                                new UseFreeRoamCameraCommand(Log);                                
-                            }
+                            FreeRoamCamera.Activate();
                         }
+                        else
+                            if (FreeRoamCameraList.Count == 0)
+                            {
+                                if (Simulator.GameTime > 0)
+                                {
+                                    CheckReplaying();
+                                    new UseFreeRoamCameraCommand(Log);
+                                }
+                            }
+                    }
                 }
-                else
+                // Vlak se rozjel a vynutí se pohled pasažéra, pokud je dostupný a není aktivní
+                if (PlayerLocomotive.Train.TrainIsStarting)
                 {
+                    // Jinak se přepne kamera na pohled pasažéra, pokud je dostupný a není aktivní
                     if (Camera != PassengerCamera && PassengerCamera.IsAvailable)
                     {
                         PassengerCamera.Activate();
@@ -1207,7 +1216,16 @@ namespace Orts.Viewer3D
                     //        }
                     //    }
                 }
+                // Vlak je zastaven a je stisknuto tlačítko pro pohled pasažéra, umožní se pohled pasažéra
+                if (PlayerLocomotive.Train.TrainIsStopping && UserInput.IsPressed(UserCommand.CameraPassenger))
+                {
+                    if (Camera != PassengerCamera && PassengerCamera.IsAvailable)
+                    {
+                        PassengerCamera.Activate();
+                    }
+                }
 
+                // Přepnutí na autopilota
                 if (PlayerLocomotive.Train.IsPlayerDriven)
                 {
                     if (PlayerLocomotive.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING)
