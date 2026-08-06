@@ -3951,6 +3951,8 @@ namespace Orts.Simulation.RollingStocks
 
         // Icik
         // Protiskluzová ochrana
+        float SlipProtectionTimer;
+        bool SlipProtectionActive;
         public void AntiSlip_Protection()
         {
             if (!IsLeadLocomotive() || Train.NoSpeedLimit)
@@ -3959,16 +3961,46 @@ namespace Orts.Simulation.RollingStocks
             if (MaxCurrentA > 0)  // Zohlední jen elektrické a dieselelektrické lokomotivy 
             {
                 if (SlipSpeedCritical == 0) SlipSpeedCritical = 40 / 3.6f; // Výchozí hodnota 40 km/h     
-                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS_Cab) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu 
-                                                                                    //if (extendedPhysics != null)
-                                                                                    //{
-                                                                                    //    SlipSpeedCritical = 10 / 3.6f; // 10kmh pokud počítáme pátou osu
-                                                                                    //    AbsSlipSpeedMpS = extendedPhysics.FastestAxleSpeedMpS - extendedPhysics.AverageAxleSpeedMpS;
-                                                                                    //}
-                                                                                    //Trace.TraceInformation("WheelSlipTime {0},  Simulator.GameTime {1},  Time0 {2},   SlipSpeed {3}", WheelSlipTime, Simulator.GameTime, Time0, SlipSpeed);
+                float AbsSlipSpeedMpS = Math.Abs(WheelSpeedMpS_Cab) - AbsSpeedMpS;  // Zjistí absolutní rychlost prokluzu                                                                                     
 
                 if (AbsSlipSpeedMpS > SlipSpeedCritical) // Přepěťová ochrana při skluzu 
                     OverVoltage = true;
+
+                // Dieselelektrické lokomotivy používají protiskluzovou ochranu, která omezuje výkon trakčních motorů při skluzu.
+                // Elektrické lokomotivy používají nadproudovou ochranu, která odpojí lokomotivu od sítě.
+                if (this is MSTSDieselLocomotive) 
+                {
+                    if (AbsSlipSpeedMpS > 0.30f * SlipSpeedCritical) // Začíná klouzat
+                    {
+                        SlipProtectionActive = true;
+                        SlipProtectionTimer += Simulator.OneSecondLoop;
+                        if (SlipProtectionTimer > 0.75f)
+                        {
+                            SlipProtectionTimer = 0;
+                            if (PowerReductionResult4 < 1.0f)
+                                PowerReductionResult4 += 0.1f; // Omezení trakčních motorů  
+                            if (PowerReductionResult4 > 1.0f)
+                                PowerReductionResult4 = 1.0f;
+                        }
+                    }
+                    if (SlipProtectionActive && AbsSlipSpeedMpS < 0.10f * SlipSpeedCritical) // Prokluz se snižuje
+                    {
+                        SlipProtectionTimer += Simulator.OneSecondLoop;
+                        if (SlipProtectionTimer > 1.5f)
+                        {
+                            SlipProtectionTimer = 0;
+                            if (PowerReductionResult4 > 0f)
+                            {
+                                PowerReductionResult4 -= 0.1f; // Omezení trakčních motorů  
+                                if (PowerReductionResult4 < 0f)
+                                {
+                                    SlipProtectionActive = false;
+                                    PowerReductionResult4 = 0;
+                                }
+                            }
+                        }
+                    }
+                }
 
                 if (OverVoltage)
                 {
@@ -3993,10 +4025,9 @@ namespace Orts.Simulation.RollingStocks
                         SignalEvent(Event.Failure);
                     }
                     if (this is MSTSDieselLocomotive) // Dieselelektrické lokomotivy
-                    {
+                    {                                                
                         LocalDynamicBrakePercent = 0;
-                        PowerReductionResult4 = 0.9f; // Omezení trakčních motorů  
-                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));
+                        Simulator.Confirmer.Message(ConfirmLevel.Warning, Simulator.Catalog.GetString("Slip protection!"));                        
                     }
                 }
 
