@@ -7139,48 +7139,7 @@ namespace Orts.Simulation.RollingStocks
                                 p2.State = PantographState.Lowering;                                
                             }
                         }
-                    }
-                    if (Direction == Direction.Reverse)
-                    {
-                        if (Pantographs.Count == 4)
-                        {
-                            if (SwitchingVoltageMode == 2)
-                            {
-                                if (p2.State == PantographState.Down)
-                                    p2.State = PantographState.Raising;
-                                if (p1.State == PantographState.Up && p2.State == PantographState.Up)
-                                {
-                                    p1.State = PantographState.Lowering;
-                                }
-                                if (p3.State == PantographState.Up)
-                                    p3.State = PantographState.Lowering;
-                                if (p4.State == PantographState.Up)
-                                    p4.State = PantographState.Lowering;
-                            }
-                            if (SwitchingVoltageMode == 0)
-                            {
-                                if (p1.State == PantographState.Up)
-                                    p1.State = PantographState.Lowering;
-                                if (p2.State == PantographState.Up)
-                                    p2.State = PantographState.Lowering;
-                                if (p4.State == PantographState.Down)
-                                    p4.State = PantographState.Raising;
-                                if (p3.State == PantographState.Up && p4.State == PantographState.Up)
-                                {
-                                    p3.State = PantographState.Lowering;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (p2.State == PantographState.Down)
-                                p2.State = PantographState.Raising;
-                            if (p1.State == PantographState.Up && p2.State == PantographState.Up)
-                            {
-                                p1.State = PantographState.Lowering;
-                            }
-                        }
-                    }
+                    }                    
                     break;
                 case PantoModes.Both:
                     foreach (Pantograph pantograph4 in Pantographs.List)
