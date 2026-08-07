@@ -2211,8 +2211,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         break;
 
                     case int n when n >= 4:
-                        wagon.BrakeSystem.BrakeCarMode = 2;
-                        wagon.BrakeSystem.BrakeCarModeText = "R";
+                        if (wagon.BrakeSystem.BrakeCarMode != 3)
+                        {
+                            wagon.BrakeSystem.BrakeCarMode = 2;
+                            wagon.BrakeSystem.BrakeCarModeText = "R";
+                        }
                         break;
                 }
             }

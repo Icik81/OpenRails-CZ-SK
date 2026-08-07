@@ -1741,7 +1741,7 @@ namespace Orts.Simulation.RollingStocks
 
                 if (MultiSystemEngine && RouteVoltageV != 1)
                 {
-                    if (LocoType != LocoTypes.Vectron && !Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable)
+                    if (!Pantograph5Enable && !Pantograph4Enable && !Pantograph3Enable && LocoSetUpTimer > 1f)
                     {
                         if (Pantographs.Count == 4)
                         {
@@ -1761,7 +1761,7 @@ namespace Orts.Simulation.RollingStocks
                                 SignalEvent(PowerSupplyEvent.RaisePantograph, 1);
                             }
                         }
-                    }
+                    }                    
 
                     Pantograph3Switch[LocoStation] = 2;
                     Pantograph4Switch[LocoStation] = 1;
@@ -1931,9 +1931,19 @@ namespace Orts.Simulation.RollingStocks
 
                 if (RouteVoltageV > 1 && !UserPowerOff)
                 {
-                    if (!PowerOn)
+                    if (MultiSystemEngine)
                     {
-                        HVOn = true;
+                        if (!PowerOn && PantographUp)
+                        {
+                            HVOn = true;
+                        }
+                    }
+                    if (!MultiSystemEngine)
+                    {
+                        if (!PowerOn)
+                        {
+                            HVOn = true;
+                        }
                     }
 
                     if (Flipped ^ UsingRearCab)
