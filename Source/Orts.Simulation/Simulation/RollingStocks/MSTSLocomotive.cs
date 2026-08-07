@@ -2519,6 +2519,11 @@ namespace Orts.Simulation.RollingStocks
             return Train.LeadLocomotive == this;
         }
 
+        public bool IsLeadAILocomotive()
+        {
+            return Train.AILeadLocomotive == this;
+        }
+
         protected void ParseCombData(string lowercasetoken, STFReader stf)
         {
             var throttle = false;
@@ -2857,6 +2862,160 @@ namespace Orts.Simulation.RollingStocks
 
             base.Initialize();
             if (DynamicBrakeBlendingEnabled) airPipeSystem = BrakeSystem as AirSinglePipe;
+        }
+
+        public bool IsFacingHeadToHead(WorldPosition aiPos, float aiHeadingDegrees, WorldPosition playerPos, float playerHeadingDegrees)
+        {
+            // 1. Převod úhlů natočení (Heading) na normované dopředné vektory (X, Z v rovině trati)
+            float playerRad = MathHelper.ToRadians(playerHeadingDegrees);
+            float aiRad = MathHelper.ToRadians(aiHeadingDegrees);
+
+            Vector2 playerForward = new Vector2((float)Math.Sin(playerRad), (float)Math.Cos(playerRad));
+            Vector2 aiForward = new Vector2((float)Math.Sin(aiRad), (float)Math.Cos(aiRad));
+
+            // 2. Skalární součin orientací (Dot Product)
+            // Pokud směřují proti sobě, hodnota je blízko -1.0 (úhel cca 180°)
+            // Pokud směřují stejným směrem, hodnota je blízko +1.0
+            float dotFacing = Vector2.Dot(playerForward, aiForward);
+
+            // 3. Vektor směřující od hráče k AI lokomotivě
+            float tileSize = 2048f;
+            float diffX = (aiPos.TileX - playerPos.TileX) * tileSize + (aiPos.WorldLocation.Location.X - playerPos.WorldLocation.Location.X);
+            float diffZ = (aiPos.TileZ - playerPos.TileZ) * tileSize + (aiPos.WorldLocation.Location.Z - playerPos.WorldLocation.Location.Z);
+
+            Vector2 dirToAI = Vector2.Normalize(new Vector2(diffX, diffZ));
+
+            // 4. Skalární součin směru k AI a pohledu hráče (ověří, že AI je PŘED čelem hráče)
+            float dotPosition = Vector2.Dot(playerForward, dirToAI);
+
+            // Podmínky pro platné míjení čelem:
+            // - dotFacing < -0.7f  -> lokomotivy jsou natočeny čely proti sobě (úhel 135° až 180°)
+            // - dotPosition > 0.5f -> AI lokomotiva leží v předním zorném poli hráče
+            return dotFacing < -0.7f && dotPosition > 0.5f;
+        }
+
+        public float Heading
+        {
+            get
+            {
+                // Získání matice rotace z lokální pozice
+                var m = WorldPosition.XNAMatrix;
+
+                // Vektor dopředného směru z matice rotace (osy X a Z v rovině trati)
+                // Pozor: podle verze XNA/MonoGame se používá M31/M33 nebo M13/M33
+                float x = m.M13;
+                float z = m.M33;
+
+                // Výpočet úhlu v radiánech a převod na stupně (0° až 360°)
+                float radians = (float)Math.Atan2(x, z);
+                if (this.SpeedMpS < 0) radians *= -1; 
+
+                return MathHelper.ToDegrees(radians);
+            }
+        }
+
+        double LastDistanceToOtherTrainM = 10000;
+        public bool OtherTrainFlash;
+        public bool OtherTrainFlashOn;
+        float OtherTrainFlashTimer;
+        bool OtherTrainSoundOn;
+        float OtherTrainSoundTimer;
+        float OtherTrainSoundTime;
+        public float DistanceToOtherTrainM(float elapsedSeconds)
+        {
+            // Pokud je to hráčův vlak, aktualizujeme jeho pozici v Simulatoru
+            if (IsPlayerTrain && IsLeadLocomotive())
+            {
+                Simulator.PlayerWorldPosition = WorldPosition;
+                Simulator.PlayerHeading = Heading;
+                return 0f;
+            }
+
+            // Pro AI vlak spočítáme vzdálenost od uložené pozice hráče
+            if (IsLeadAILocomotive() && this == FirstCarHeadOfTrain && Simulator.PlayerWorldPosition != null && AbsSpeedMpS > 10f / 3.6f)
+            {
+                // Rozdíl v dlaždicích přepočítaný na metry (standardní velikost dlaždice v OR/MSTS je 2048m)
+                const float tileSize = 2048f;
+
+                float diffX = (WorldPosition.TileX - Simulator.PlayerWorldPosition.TileX) * tileSize
+                            + (WorldPosition.WorldLocation.Location.X - Simulator.PlayerWorldPosition.WorldLocation.Location.X);
+
+                float diffY = (WorldPosition.TileZ - Simulator.PlayerWorldPosition.TileZ) * tileSize
+                            + (WorldPosition.WorldLocation.Location.Y - Simulator.PlayerWorldPosition.WorldLocation.Location.Y);
+
+                float diffZ = WorldPosition.WorldLocation.Location.Z - Simulator.PlayerWorldPosition.WorldLocation.Location.Z;
+
+                // Vzdálenost ve 3D (nebo vynechej diffZ pro 2D vzdálenost po koleji)
+                double distance = Math.Sqrt(diffX * diffX + diffY * diffY + diffZ * diffZ);                
+                
+                if (distance < LastDistanceToOtherTrainM && IsFacingHeadToHead(this.WorldPosition, this.Heading, Simulator.PlayerWorldPosition, Simulator.PlayerHeading))
+                {
+                    //Simulator.Confirmer.MSG4("Distance to player train: " + distance.ToString("0.00") + " m");
+
+                    if (distance > 25f && distance < 100f)
+                    {
+                        OtherTrainFlash = true;
+                        OtherTrainFlashTimer += elapsedSeconds;
+                        if (OtherTrainFlashTimer > 0.5f)
+                        {
+                            OtherTrainFlashOn = !OtherTrainFlashOn;
+                            OtherTrainFlashTimer = 0f;
+                        }
+
+                        if (OtherTrainSoundTime == 0f) OtherTrainSoundTime = Simulator.Random.Next(20, 40) / 10f;
+
+                        if (OtherTrainSoundTimer == 0f)                                                    
+                            OtherTrainSoundOn = true;
+                        else
+                            OtherTrainSoundOn = false;
+
+                        OtherTrainSoundTimer += elapsedSeconds;
+                        if (OtherTrainSoundTimer > OtherTrainSoundTime)
+                        {
+                            OtherTrainSoundTimer = 0f;
+                            OtherTrainSoundTime = 0f;
+                        }
+                    }
+                }
+                else
+                {
+                    OtherTrainFlash = false;
+                    OtherTrainFlashOn = false;
+                    if (OtherTrainSoundOn && ManualBell)
+                    { 
+                        ManualBell = false;                        
+                        ManualHorn = false;
+                        ManualHorn2 = false;
+                    }
+                    OtherTrainSoundOn = false;
+                }
+
+                if (OtherTrainFlash)
+                {
+                    if (OtherTrainSoundOn)
+                    {
+                        ManualBell = true;
+                        if (LocoType == LocoTypes.Vectron)
+                        {
+                            if (OtherTrainSoundTime < 2.5f)
+                                ManualHorn2 = true;
+                            else
+                                ManualHorn = true;
+                        }
+                    }
+                    else
+                    {                        
+                        ManualBell = false;
+                        ManualHorn = false;
+                        ManualHorn2 = false;
+                    }
+                }
+
+                LastDistanceToOtherTrainM = distance;
+                return (float)distance;
+            }
+
+            return 100000f;
         }
 
         public float DistanceToPowerSupplyStationM(int PowerSystem, out PowerSupplyStation myStation)
@@ -7912,7 +8071,8 @@ namespace Orts.Simulation.RollingStocks
             VentilationDR(elapsedClockSeconds);
             JVHack(elapsedClockSeconds);
             TrainCarHeatInitialize();
-            TriggerTrainLogic(elapsedClockSeconds);            
+            TriggerTrainLogic(elapsedClockSeconds);
+            DistanceToOtherTrainM(elapsedClockSeconds);
 
             // Časovač pro počáteční nastavení lokomotivy, vždy se inicializuje
             if (!Simulator.Paused && Simulator.GameSpeed == 1)

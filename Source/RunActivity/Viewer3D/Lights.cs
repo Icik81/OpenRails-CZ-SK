@@ -387,7 +387,24 @@ namespace Orts.Viewer3D
                         {
                             newTrainHeadlight = 1;
                             TrainHeadlight = 0;
-                        }                
+                        }
+
+                if ((Car is MSTSLocomotive) && (Car as MSTSLocomotive).OtherTrainFlash)
+                {
+                    if ((Car as MSTSLocomotive).OtherTrainFlashOn)
+                    {
+                        newTrainHeadlight = 2;
+                        newIsDay = false;
+                        TrainHeadlight = 1;
+                    }
+                    else
+                    {
+                        newTrainHeadlight = 0;
+                        newIsDay = true;
+                        TrainHeadlight = 0;                        
+                        newCarIsFirst = false;
+                    }
+                }
             }            
 
             if (

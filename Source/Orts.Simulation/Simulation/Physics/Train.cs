@@ -629,6 +629,24 @@ namespace Orts.Simulation.Physics
             }
         }
 
+        public TrainCar AILeadLocomotive
+        {
+            get
+            {
+                if (!IsActualPlayerTrain)
+                {
+                    foreach (TrainCar car in Cars)
+                    {
+                        if (car.IsDriveable)
+                        {
+                            return car;
+                        }
+                    }                    
+                }
+                return null;
+            }            
+        }
+
         // Icik
         public TrainCar TrainWagon
         {
