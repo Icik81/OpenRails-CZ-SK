@@ -2951,12 +2951,12 @@ namespace Orts.Simulation.RollingStocks
                 if (distance < LastDistanceToOtherTrainM && IsFacingHeadToHead(this.WorldPosition, this.Heading, Simulator.PlayerWorldPosition, Simulator.PlayerHeading))
                 {
                     //Simulator.Confirmer.MSG4("Distance to player train: " + distance.ToString("0.00") + " m");
-
-                    if (distance > 25f && distance < 100f)
+                    float distanceSpeedLimit = AbsSpeedMpS * 3.6f * 2f;
+                    if (distance > distanceSpeedLimit / 10f && distance < distanceSpeedLimit)
                     {
                         OtherTrainFlash = true;
                         OtherTrainFlashTimer += elapsedSeconds;
-                        if (OtherTrainFlashTimer > 0.5f)
+                        if (OtherTrainFlashTimer > 0.35f)
                         {
                             OtherTrainFlashOn = !OtherTrainFlashOn;
                             OtherTrainFlashTimer = 0f;
