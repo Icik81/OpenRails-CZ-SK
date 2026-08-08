@@ -865,8 +865,13 @@ namespace Orts.Viewer3D
         readonly EffectParameter groundLevel;
         readonly EffectParameter heightFalloff;
         readonly EffectParameter globalDensity;
+        readonly EffectParameter glowScaleParameter;
+        readonly EffectParameter lightGlowTexture2;
+        readonly EffectParameter textureBlend;
 
         public Texture2D LightGlowTexture { set { lightGlowTexture.SetValue(value); } }
+        public Texture2D LightGlowTexture2 { set { lightGlowTexture2.SetValue(value); } }
+        public float TextureBlend { set { textureBlend.SetValue(value); } }
 
         public void SetMatrix(ref Matrix wvp)
         {
@@ -876,6 +881,11 @@ namespace Orts.Viewer3D
         public void SetFade(Vector2 fadeValues)
         {
             fade.SetValue(fadeValues);
+        }
+
+        public void SetGlowScale(float scale)
+        {
+            glowScaleParameter.SetValue(scale);
         }
 
         public LightGlowShader(GraphicsDevice graphicsDevice)
@@ -889,6 +899,9 @@ namespace Orts.Viewer3D
             groundLevel = Parameters["GroundLevel"];
             heightFalloff = Parameters["HeightFalloff"];
             globalDensity = Parameters["GlobalDensity"];
+            glowScaleParameter = Parameters["GlowScale"];
+            lightGlowTexture2 = Parameters["LightGlowTexture2"];
+            textureBlend = Parameters["TextureBlend"];
         }
 
         public Vector3 ViewerPos { set { viewerPos.SetValue(value); } }

@@ -350,9 +350,7 @@ namespace Orts.Simulation
         public bool AutomaticShunterEnable;
         public bool AutomaticShunterEnableChanged;
         public WorldPosition PlayerWorldPosition;
-        public float PlayerHeading;
-
-
+        public float PlayerHeading;        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

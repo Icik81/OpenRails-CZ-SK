@@ -32,6 +32,13 @@ float3 ViewerPos;   // Musí být předáno z aplikace (shodné se SceneryShader
 float GroundLevel;
 float HeightFalloff;
 float GlobalDensity;
+float GlowScale = 1.0;
+
+// Hodnota 0.0 = pouze 1. textura, 1.0 = pouze 2. textura (Bulb)
+float TextureBlend = 0.0;
+
+// Druhá textura pro prolínání
+texture LightGlowTexture2;
 
 sampler LightGlowSampler = sampler_state
 {
@@ -41,6 +48,14 @@ sampler LightGlowSampler = sampler_state
 	MipFilter = Linear;
 	AddressU = Clamp;
 	AddressV = Wrap;
+};
+
+sampler2D LightGlowSampler2 = sampler_state
+{
+    Texture = <LightGlowTexture2>;
+    MinFilter = Linear;
+    MagFilter = Linear;
+    MipFilter = Linear;
 };
 
 ////////////////////    V E R T E X   I N P U T S    ///////////////////////////
@@ -71,7 +86,7 @@ struct VERTEX_OUTPUT
 VERTEX_OUTPUT VSLightGlow(in VERTEX_INPUT In)
 {
 	VERTEX_OUTPUT Out = (VERTEX_OUTPUT)0;
-	float radius = lerp(In.TexCoords_Radius.z, In.TexCoords_Radius.w, Fade.y);
+	float radius = lerp(In.TexCoords_Radius.z, In.TexCoords_Radius.w, Fade.y) * GlowScale;
 	float3 position = lerp(In.PositionO, In.PositionT, Fade.y);
 	float3 normal = lerp(In.NormalO, In.NormalT, Fade.y);
     
@@ -100,7 +115,9 @@ VERTEX_OUTPUT VSLightGlow(in VERTEX_INPUT In)
 float4 PSLightGlow(in VERTEX_OUTPUT In) : COLOR0
 {
 	float4 texColor = tex2D(LightGlowSampler, In.TexCoords.xy);
-	float4 finalColor = In.Color * texColor;
+	float4 texColor2 = tex2D(LightGlowSampler2, In.TexCoords.xy);
+
+	float4 finalColor = In.Color * lerp(texColor, texColor2, TextureBlend);
 
 	// Parametry mlhy (laditelné) 
 	float groundLevel = GroundLevel;     

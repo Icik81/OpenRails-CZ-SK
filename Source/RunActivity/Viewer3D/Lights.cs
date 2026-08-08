@@ -28,6 +28,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.MultiPlayer;
+using Orts.Simulation;
 using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.Processes;
@@ -1011,12 +1012,14 @@ namespace Orts.Viewer3D
     public class LightGlowMaterial : Material
     {
         readonly Texture2D LightGlowTexture;
+        readonly Texture2D BulbTexture; // Záložní textura pro slití světla
 
         public LightGlowMaterial(Viewer viewer, string textureName)
             : base(viewer, textureName)
         {
             // TODO: This should happen on the loader thread.
             LightGlowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, textureName);
+            BulbTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
         }
 
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
@@ -1033,15 +1036,45 @@ namespace Orts.Viewer3D
         {
             var shader = Viewer.MaterialManager.LightGlowShader;
 
+            // Nastavení záložní textury do druhého slotu
+            shader.LightGlowTexture2 = BulbTexture;
+            shader.TextureBlend = 0.0f;
+
             foreach (var pass in shader.CurrentTechnique.Passes)
             {
                 foreach (var item in renderItems)
                 {
-                    // Glow lights were not working properly because farPlaneDistance used by XNASkyProjection is hardcoded at 6100.  So when view distance was greater than 6100, the 
-                    // glow lights were unable to render properly.
                     Matrix wvp = item.XNAMatrix * XNAViewMatrix * Viewer.Camera.XnaProjection;
                     shader.SetMatrix(ref wvp);
                     shader.SetFade(((LightPrimitive)item.RenderPrimitive).Fade);
+
+                    // Matice transformující objekt přímo do prostoru kamery (View Space)
+                    Matrix worldView = item.XNAMatrix * XNAViewMatrix;
+
+                    // Kamera je ve View Space v bodě (0,0,0), takže délka vektoru pozice = reálná vzdálenost od kamery
+                    float distance = worldView.Translation.Length();
+
+                    // 2. Definovat násobič velikosti rádiusu (např. základ 1.0 + nárůst se vzdáleností)
+                    // Lze nastavit min/max limity pomocí MathHelper.Clamp
+                    float minDistance = 10f;
+                    float maxDistance = 100f;
+                    float factor = MathHelper.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
+
+                    // Plynulý přechod textur mezi 15 m a 40 m
+                    float fadeStart = 15f;
+                    float fadeEnd = 40f;
+                    float blendFactor = MathHelper.Clamp((distance - fadeStart) / (fadeEnd - fadeStart), 0f, 1f);
+                    shader.TextureBlend = blendFactor;                    
+
+                    // Rádius vzroste např. až na 3-násobek původní velikosti
+                    float glowScale = MathHelper.Lerp(1.0f, 5.0f, factor);
+
+                    if (Program.Viewer.IsDay)
+                        glowScale = MathHelper.Lerp(1.0f, 2.5f, factor);
+
+                    // 3. Předat hodnotu do shaderu
+                    shader.SetGlowScale(glowScale);
+
                     pass.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
                 }
@@ -1062,6 +1095,7 @@ namespace Orts.Viewer3D
         public override void Mark()
         {
             Viewer.TextureManager.Mark(LightGlowTexture);
+            Viewer.TextureManager.Mark(BulbTexture);
             base.Mark();
         }
     }
