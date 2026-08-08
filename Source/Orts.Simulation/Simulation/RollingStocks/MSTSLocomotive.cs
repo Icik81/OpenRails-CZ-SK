@@ -2918,6 +2918,8 @@ namespace Orts.Simulation.RollingStocks
         public bool OtherTrainFlash;
         public bool OtherTrainFlashOn;
         float OtherTrainFlashTimer;
+        float OtherTrainFlashCounter;
+        float OtherTrainFlashCount;
         bool OtherTrainSoundOn;
         float OtherTrainSoundTimer;
         float OtherTrainSoundTime;
@@ -2928,6 +2930,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 Simulator.PlayerWorldPosition = WorldPosition;
                 Simulator.PlayerHeading = Heading;
+                Simulator.PlayerAbsSpeedMpS = AbsSpeedMpS;
                 return 0f;
             }
 
@@ -2951,15 +2954,27 @@ namespace Orts.Simulation.RollingStocks
                 if (distance < LastDistanceToOtherTrainM && IsFacingHeadToHead(this.WorldPosition, this.Heading, Simulator.PlayerWorldPosition, Simulator.PlayerHeading))
                 {
                     //Simulator.Confirmer.MSG4("Distance to player train: " + distance.ToString("0.00") + " m");
-                    float distanceSpeedLimit = AbsSpeedMpS * 3.6f * 2f;
-                    if (distance > distanceSpeedLimit / 10f && distance < distanceSpeedLimit)
+                    float distanceLimit1 = AbsSpeedMpS * 3.6f;
+                    float distanceLimit2 = AbsSpeedMpS * 3.6f * 2.0f;
+                    if (distance > distanceLimit1 && distance < distanceLimit2)
                     {
-                        OtherTrainFlash = true;
-                        OtherTrainFlashTimer += elapsedSeconds;
-                        if (OtherTrainFlashTimer > 0.35f)
+                        if (OtherTrainFlashCount == 0f) OtherTrainFlashCount = Simulator.Random.Next(2, 6);
+
+                        if (OtherTrainFlashCounter < OtherTrainFlashCount)
                         {
-                            OtherTrainFlashOn = !OtherTrainFlashOn;
-                            OtherTrainFlashTimer = 0f;
+                            OtherTrainFlash = true;
+                            OtherTrainFlashTimer += elapsedSeconds;
+                            if (OtherTrainFlashTimer > 0.35f)
+                            {
+                                if (!OtherTrainFlashOn) OtherTrainFlashCounter++; 
+                                OtherTrainFlashOn = !OtherTrainFlashOn;
+                                OtherTrainFlashTimer = 0f;                                
+                            }
+                        }
+                        else
+                        {
+                            OtherTrainFlash = false;
+                            OtherTrainFlashOn = false;
                         }
 
                         if (OtherTrainSoundTime == 0f) OtherTrainSoundTime = Simulator.Random.Next(20, 40) / 10f;
@@ -2988,6 +3003,8 @@ namespace Orts.Simulation.RollingStocks
                         ManualHorn2 = false;
                     }
                     OtherTrainSoundOn = false;
+                    OtherTrainFlashCount = 0f;
+                    OtherTrainFlashCounter = 0f;
                 }
 
                 if (OtherTrainFlash)
