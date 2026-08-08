@@ -1056,24 +1056,24 @@ namespace Orts.Viewer3D
 
                     // 2. Definovat násobič velikosti rádiusu (např. základ 1.0 + nárůst se vzdáleností)
                     // Lze nastavit min/max limity pomocí MathHelper.Clamp
-                    float minDistance = 10f;
+                    float minDistance = 40f;
                     float maxDistance = 100f;
                     float factor = MathHelper.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
 
-                    // Plynulý přechod textur mezi 15 m a 40 m
-                    float fadeStart = 15f;
-                    float fadeEnd = 40f;
+                    // Plynulý přechod textur
+                    float fadeStart = 40f;
+                    float fadeEnd = 60f;
                     float blendFactor = MathHelper.Clamp((distance - fadeStart) / (fadeEnd - fadeStart), 0f, 1f);
                     shader.TextureBlend = blendFactor;                    
 
                     // Rádius vzroste např. až na 3-násobek původní velikosti
-                    float glowScale = MathHelper.Lerp(1.0f, 5.0f, factor);
+                    float glowScale = MathHelper.Lerp(1.0f, 2.5f, factor);
 
                     if (Program.Viewer.IsDay)
-                        glowScale = MathHelper.Lerp(1.0f, 2.5f, factor);
+                        glowScale = MathHelper.Lerp(1.0f, 1.25f, factor);
 
                     // 3. Předat hodnotu do shaderu
-                    shader.SetGlowScale(glowScale);
+                    shader.SetGlowScale(glowScale * (1f + blendFactor));
 
                     pass.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
