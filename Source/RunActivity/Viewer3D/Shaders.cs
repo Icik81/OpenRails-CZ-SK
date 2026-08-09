@@ -128,6 +128,11 @@ namespace Orts.Viewer3D
         readonly EffectParameter groundLevel;
         readonly EffectParameter heightFalloff;
         readonly EffectParameter globalDensity;
+        private EffectParameter epHeadlightPositions;
+        private EffectParameter epHeadlightDirections;
+        private EffectParameter epHeadlightColors;
+        private EffectParameter epHeadlightRcpDistances;
+        private EffectParameter epActiveHeadlightCount;
 
         Vector3 _eyeVector;
         Vector4 _zBias_Lighting;
@@ -504,6 +509,15 @@ namespace Orts.Viewer3D
             headlightPosition.SetValue(Vector4.Zero);
         }
 
+        public void SetMultiHeadlights(Vector4[] pos, Vector4[] dir, Vector4[] col, float[] rcpDist, int count)
+        {
+            if (epHeadlightPositions != null) epHeadlightPositions.SetValue(pos);
+            if (epHeadlightDirections != null) epHeadlightDirections.SetValue(dir);
+            if (epHeadlightColors != null) epHeadlightColors.SetValue(col);
+            if (epHeadlightRcpDistances != null) epHeadlightRcpDistances.SetValue(rcpDist);
+            if (epActiveHeadlightCount != null) epActiveHeadlightCount.SetValue(count);
+        }
+
         public float SignalLightIntensity { set { signalLightIntensity.SetValue(value); } }
 
         public float Overcast { set { overcast.SetValue(new Vector2(value, value / 2)); } }
@@ -557,6 +571,11 @@ namespace Orts.Viewer3D
             groundLevel = Parameters["GroundLevel"];
             heightFalloff = Parameters["HeightFalloff"];
             globalDensity = Parameters["GlobalDensity"];
+            epHeadlightPositions = Parameters["HeadlightPositions"];
+            epHeadlightDirections = Parameters["HeadlightDirections"];
+            epHeadlightColors = Parameters["HeadlightColors"];
+            epHeadlightRcpDistances = Parameters["HeadlightRcpDistances"];
+            epActiveHeadlightCount = Parameters["ActiveHeadlightCount"];
         }
     }
 

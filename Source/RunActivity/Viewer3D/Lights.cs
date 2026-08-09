@@ -210,12 +210,12 @@ namespace Orts.Viewer3D
                     if ((lightPrimitive.Enabled || lightPrimitive.FadeOut) && lightPrimitive is LightGlowPrimitive)                    
                         frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
                     
-#if DEBUG_LIGHT_CONE
+
             foreach (var lightPrimitive in LightPrimitives)
                 if (lightPrimitive.Enabled || lightPrimitive.FadeOut)
                     if (lightPrimitive is LightConePrimitive)
                             frame.AddPrimitive(LightConeMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
-#endif
+
 
             // Set the active light cone info for the material code.
             if (HasLightCone && ActiveLightCone != null)
@@ -227,6 +227,14 @@ namespace Orts.Viewer3D
                 LightConeDistance = MathHelper.Lerp(ActiveLightCone.Distance1, ActiveLightCone.Distance2, ActiveLightCone.Fade.Y);
                 LightConeMinDotProduct = (float)Math.Cos(MathHelper.Lerp(ActiveLightCone.Angle1, ActiveLightCone.Angle2, ActiveLightCone.Fade.Y));
                 LightConeColor = Vector4.Lerp(ActiveLightCone.Color1, ActiveLightCone.Color2, ActiveLightCone.Fade.Y);
+
+                Viewer.RegisterActiveLightCone(
+                    LightConePosition,
+                    LightConeDirection,
+                    LightConeColor,
+                    LightConeDistance,
+                    LightConeMinDotProduct
+                );
             }
         }
 
@@ -945,29 +953,42 @@ namespace Orts.Viewer3D
             UpdateState(lightViewer);
         }
 
+        private static readonly DepthStencilState FirstPassDepthState = new DepthStencilState
+        {
+            DepthBufferEnable = true,
+            DepthBufferWriteEnable = false, // KLÍČOVÉ: Nesmí zapisovat do depth bufferu
+            StencilEnable = true,
+            StencilFunction = CompareFunction.Always,
+            StencilPass = StencilOperation.Increment,
+            DepthBufferFunction = CompareFunction.Greater
+        };
+
+        private static readonly DepthStencilState SecondPassDepthState = new DepthStencilState
+        {
+            DepthBufferEnable = true,
+            DepthBufferWriteEnable = false, // KLÍČOVÉ: Nesmí zapisovat do depth bufferu
+            StencilEnable = true,
+            StencilFunction = CompareFunction.Less,
+            StencilPass = StencilOperation.Zero,
+            DepthBufferFunction = CompareFunction.Less
+        };
+
         public override void Draw(GraphicsDevice graphicsDevice)
         {
             graphicsDevice.SetVertexBuffer(VertexBuffer);
             graphicsDevice.Indices = IndexBuffer;
 
-#if DEBUG_LIGHT_CONE_FULL
-            graphicsDevice.BlendState = Blendstate.AlphaBlend;
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, (CircleSegments + 2) * State, 0, CircleSegments + 2, 0, 2 * CircleSegments);
-#else
+            // První průchod (CullClockwise)
             graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            graphicsDevice.DepthStencilState.StencilFunction = CompareFunction.Always;
-            graphicsDevice.DepthStencilState.StencilPass = StencilOperation.Increment;
-            graphicsDevice.DepthStencilState.DepthBufferFunction = CompareFunction.Greater;
+            graphicsDevice.DepthStencilState = FirstPassDepthState;
             graphicsDevice.BlendState = BlendState_SourceZeroDestOne;
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, baseVertex: (CircleSegments + 2) * State, startIndex: 0, primitiveCount: 2 * CircleSegments);
+            //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, (CircleSegments + 2) * State, 0, 2 * CircleSegments);
 
+            // Druhý průchod (CullCounterClockwise)
             graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-            graphicsDevice.DepthStencilState.StencilFunction = CompareFunction.Less;
-            graphicsDevice.DepthStencilState.StencilPass = StencilOperation.Zero;
-            graphicsDevice.DepthStencilState.DepthBufferFunction = CompareFunction.LessEqual;
+            graphicsDevice.DepthStencilState = SecondPassDepthState;
             graphicsDevice.BlendState = BlendState.AlphaBlend;
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, baseVertex: (CircleSegments + 2) * State, startIndex: 0, primitiveCount: 2 * CircleSegments);
-#endif
+            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, (CircleSegments + 2) * State, 0, 2 * CircleSegments);
         }
 
         public Vector3 Position1, Position2, Direction1, Direction2;
@@ -1107,14 +1128,21 @@ namespace Orts.Viewer3D
         {
         }
 
+        // Definice statického stavu (např. ve třídě materiálu nebo rendereru)
+        private static readonly DepthStencilState LightConeDepthState = new DepthStencilState
+        {
+            DepthBufferEnable = true,
+            DepthBufferWriteEnable = false, // Odpovídá chování DepthRead
+            StencilEnable = true
+        };
+
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
         {
             var shader = Viewer.MaterialManager.LightConeShader;
             shader.CurrentTechnique = shader.Techniques["LightCone"];
 
             graphicsDevice.BlendState = BlendState.NonPremultiplied;
-            graphicsDevice.DepthStencilState = DepthStencilState.DepthRead;
-            graphicsDevice.DepthStencilState.StencilEnable = true;
+            graphicsDevice.DepthStencilState = LightConeDepthState;
         }
 
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
@@ -1139,8 +1167,7 @@ namespace Orts.Viewer3D
         public override void ResetState(GraphicsDevice graphicsDevice)
         {
             graphicsDevice.BlendState = BlendState.Opaque;
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;
-            graphicsDevice.DepthStencilState.StencilEnable = false;
+            graphicsDevice.DepthStencilState = DepthStencilState.Default;            
         }
     }
 }

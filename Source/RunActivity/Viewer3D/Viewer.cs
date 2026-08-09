@@ -253,6 +253,32 @@ namespace Orts.Viewer3D
         public bool Try3DCabSetOn;
         public bool IsDay;
 
+        public const int MaxHeadlights = 8;
+        public Vector4[] HeadlightPositions = new Vector4[MaxHeadlights];
+        public Vector4[] HeadlightDirections = new Vector4[MaxHeadlights];
+        public Vector4[] HeadlightColors = new Vector4[MaxHeadlights];
+        public float[] HeadlightRcpDistances = new float[MaxHeadlights];
+        public int ActiveHeadlightCount = 0;
+
+        public void BeginFrame()
+        {
+            ActiveHeadlightCount = 0;
+        }
+
+        public void RegisterActiveLightCone(Vector3 pos, Vector3 dir, Vector4 color, float distance, float minDot)
+        {
+            if (ActiveHeadlightCount >= MaxHeadlights)
+                return;
+
+            int idx = ActiveHeadlightCount;
+            HeadlightPositions[idx] = new Vector4(pos, 1.0f);
+            HeadlightDirections[idx] = new Vector4(dir, minDot);
+            HeadlightColors[idx] = color;
+            HeadlightRcpDistances[idx] = distance > 0 ? (1.0f / distance) : 0f;
+
+            ActiveHeadlightCount++;
+        }
+
         /// <summary>
         /// Finds time of last entry to set ReplayEndsAt and provide the Replay started message.
         /// </summary>
@@ -1041,6 +1067,8 @@ namespace Orts.Viewer3D
         public void Update(RenderFrame frame, float elapsedRealTime)
         {
             // Icik
+            this.BeginFrame(); // Vynuluje ActiveHeadlightCount = 0
+
             if (Try3DCabSetOn)
             {
                 Try3DCabSetOn = false;

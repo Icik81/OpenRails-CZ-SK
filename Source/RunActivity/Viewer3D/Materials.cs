@@ -629,8 +629,18 @@ namespace Orts.Viewer3D
             }
             else
             {
-                SceneryShader.SetHeadlightOff();
-            }
+                SceneryShader?.SetHeadlightOff();
+            }            
+
+            // NOVÉ: Odeslání pole všech nasbíraných AI i hráčských světel do shaderu
+            SceneryShader.SetMultiHeadlights(
+                Viewer.HeadlightPositions,
+                Viewer.HeadlightDirections,
+                Viewer.HeadlightColors,
+                Viewer.HeadlightRcpDistances,
+                Viewer.ActiveHeadlightCount
+            );
+        
             // End headlight illumination
             if (Viewer.Settings.UseMSTSEnv == false)
             {

@@ -61,6 +61,15 @@ float	 GroundLevel;
 float 	 HeightFalloff;
 float	 GlobalDensity;
 
+#define MAX_HEADLIGHTS 8
+
+// Globální proměnné pro více světel 
+float4 HeadlightPositions[MAX_HEADLIGHTS];
+float4 HeadlightDirections[MAX_HEADLIGHTS];
+float4 HeadlightColors[MAX_HEADLIGHTS];
+float  HeadlightRcpDistances[MAX_HEADLIGHTS];
+int    ActiveHeadlightCount;
+
 sampler Image = sampler_state
 {
 	Texture = (ImageTexture);
@@ -429,15 +438,37 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 // fade-in/fade-out animations.
 void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
 {
-	float3 headlightToSurface = normalize(In.LightDir_Fog.xyz);
-	float coneDot = dot(headlightToSurface, HeadlightDirection.xyz);	
-	headlightToSurface = 0;	
-	float shading = step(0, coneDot);
-	shading *= step(0, dot(In.Normal_Light.xyz, -headlightToSurface));
-	shading *= saturate(HeadlightDirection.w / (1 - coneDot));
-	shading *= saturate(1 - length(In.LightDir_Fog.xyz) * HeadlightRcpDistance);
-	shading *= HeadlightPosition.w;
-	Color += (float3)OriginalColor * HeadlightColor.rgb * HeadlightColor.a * shading;
+    // Celkový násobič síly reflektorů (upravte podle potřeby, např. 2.0 až 5.0)
+    const float INTENSITY_BOOST = 3.5;
+
+    [unroll]
+    for (int i = 0; i < MAX_HEADLIGHTS; i++)
+    {
+        float activeMask = (i < ActiveHeadlightCount) ? 1.0 : 0.0;
+
+        float3 lightToSurfaceVec = In.Shadow.xyz - HeadlightPositions[i].xyz;
+        float dist = length(lightToSurfaceVec);
+        float3 headlightToSurface = normalize(lightToSurfaceVec);
+
+        float coneDot = dot(headlightToSurface, HeadlightDirections[i].xyz);
+        float cosOuterAngle = HeadlightDirections[i].w;
+
+        // 1. Ořez úhlu kuželu
+        float coneAttenuation = saturate((coneDot - cosOuterAngle) / (1.0 - cosOuterAngle));
+
+        // 2. Zjemněný dopad podle normály (lerp zabrání nepřirozenému tmavnutí na plochém terénu)
+        float rawNormal = saturate(dot(In.Normal_Light.xyz, -headlightToSurface));
+        float normalAttenuation = lerp(0.4, 1.0, rawNormal); 
+
+        // 3. Pomalejší pokles svítivosti se vzdáleností (odmocnina pro delší dosvit)
+        float distFactor = saturate(1.0 - dist * HeadlightRcpDistances[i]);
+        float distanceAttenuation = sqrt(distFactor); 
+
+        // Výsledná intenzita s násobičem
+        float shading = coneAttenuation * normalAttenuation * distanceAttenuation * activeMask * INTENSITY_BOOST;
+
+        Color += (float3)OriginalColor * HeadlightColors[i].rgb * HeadlightColors[i].a * shading;
+    }
 }
 
 // Applies distance fog to the pixel.
@@ -787,71 +818,71 @@ float4 PSSignalLight(in VERTEX_OUTPUT In) : COLOR0
 
 technique ImagePS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSGeneral();
-		PixelShader = compile ps_4_0_level_9_3 PSImage();
+		VertexShader = compile vs_5_0 VSGeneral();
+		PixelShader = compile ps_5_0 PSImage();
 	}
 }
 
 
 technique TransferPS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSTransfer();
-		PixelShader = compile ps_4_0_level_9_3 PSTransfer();
+		VertexShader = compile vs_5_0 VSTransfer();
+		PixelShader = compile ps_5_0 PSTransfer();
 	}
 }
 
 technique Forest {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSForest();
-		PixelShader = compile ps_4_0_level_9_3 PSVegetation();
+		VertexShader = compile vs_5_0 VSForest();
+		PixelShader = compile ps_5_0 PSVegetation();
 	}
 }
 
 technique VegetationPS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSGeneral();
-		PixelShader = compile ps_4_0_level_9_3 PSVegetation();
+		VertexShader = compile vs_5_0 VSGeneral();
+		PixelShader = compile ps_5_0 PSVegetation();
 	}
 }
 
 technique TerrainPS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSTerrain();
-		PixelShader = compile ps_4_0_level_9_3 PSTerrain();
+		VertexShader = compile vs_5_0 VSTerrain();
+		PixelShader = compile ps_5_0 PSTerrain();
 	}
 }
 
 technique DarkShadePS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSGeneral();
-		PixelShader = compile ps_4_0_level_9_3 PSDarkShade();
+		VertexShader = compile vs_5_0 VSGeneral();
+		PixelShader = compile ps_5_0 PSDarkShade();
 	}
 }
 
 technique HalfBrightPS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSGeneral();
-		PixelShader = compile ps_4_0_level_9_3 PSHalfBright();
+		VertexShader = compile vs_5_0 VSGeneral();
+		PixelShader = compile ps_5_0 PSHalfBright();
 	}
 }
 
 technique FullBrightPS {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSGeneral();
-		PixelShader = compile ps_4_0_level_9_3 PSFullBright();
+		VertexShader = compile vs_5_0 VSGeneral();
+		PixelShader = compile ps_5_0 PSFullBright();
 	}
 }
 
 technique SignalLight {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSSignalLight();
-		PixelShader = compile ps_4_0_level_9_3 PSSignalLight();
+		VertexShader = compile vs_5_0 VSSignalLight();
+		PixelShader = compile ps_5_0 PSSignalLight();
 	}
 }
 
 technique SignalLightGlow {
 	pass Pass_0 {
-		VertexShader = compile vs_4_0_level_9_3 VSSignalLightGlow();
-		PixelShader = compile ps_4_0_level_9_3 PSSignalLight();
+		VertexShader = compile vs_5_0 VSSignalLightGlow();
+		PixelShader = compile ps_5_0 PSSignalLight();
 	}
 }
