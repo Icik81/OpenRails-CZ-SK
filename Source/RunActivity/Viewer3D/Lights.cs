@@ -71,7 +71,7 @@ namespace Orts.Viewer3D
         public bool CarFrontHeadLight;
         public bool CarRearHeadLight;
         public int TrainHeadlightFront;
-        public int TrainHeadlightRear;
+        public int TrainHeadlightRear;        
 
         public bool IsLightConeActive { get { return ActiveLightCone != null; } }
         List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
@@ -97,9 +97,11 @@ namespace Orts.Viewer3D
 
             UpdateState();
             if (Car.Lights != null)
-            {
+            {                
                 foreach (var light in Car.Lights.Lights)
                 {
+                    if (!Car.Train.LightDimFound) Car.Train.LightDimFound = light.LightDimFound;
+
                     switch (light.Type)
                     {
                         case LightType.Glow:
@@ -411,7 +413,10 @@ namespace Orts.Viewer3D
                         newIsDay = false;
                         TrainHeadlight = 0;                        
                     }
-                }                                
+                }
+                
+                // Vlaky bez tlumeného reflektoru
+                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) { newTrainHeadlight = 2; }
             }            
 
             if (
@@ -514,7 +519,7 @@ namespace Orts.Viewer3D
             StateCount = Light.Cycle ? 2 * Light.States.Count - 2 : Light.States.Count;
             if (StateCount == 0)
                 StateCount = 1;
-            UpdateStates(State, (State + 1) % StateCount);
+            UpdateStates(State, (State + 1) % StateCount);            
         }
 
         protected void SetUpTransitions(Action<int, int, int> transitionHandler)

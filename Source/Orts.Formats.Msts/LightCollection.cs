@@ -237,6 +237,7 @@ namespace Orts.Formats.Msts
         public LightHeadlightCondition HeadlightRear;
         public LightGlowType LightGlowType;
         public string LightGlowName;
+        public bool LightDimFound;
 
         public bool Cycle;
         public float FadeIn;
@@ -252,7 +253,7 @@ namespace Orts.Formats.Msts
                 new STFReader.TokenProcessor("lightglowtype", ()=>{ LightGlowType = (LightGlowType)stf.ReadIntBlock(null); }),
                 new STFReader.TokenProcessor("lightglowname", ()=>{ LightGlowName = stf.ReadStringBlock(null); }),
                 new STFReader.TokenProcessor("conditions", ()=>{ stf.MustMatch("("); stf.ParseBlock(new[] {
-                    new STFReader.TokenProcessor("headlight", ()=>{ Headlight = (LightHeadlightCondition)stf.ReadIntBlock(null); }),
+                    new STFReader.TokenProcessor("headlight", ()=>{ Headlight = (LightHeadlightCondition)stf.ReadIntBlock(null); if (Headlight == LightHeadlightCondition.Dim) LightDimFound = true; }),
                     new STFReader.TokenProcessor("unit", ()=>{ Unit = (LightUnitCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("penalty", ()=>{ Penalty = (LightPenaltyCondition)stf.ReadIntBlock(null); }),
                     new STFReader.TokenProcessor("control", ()=>{ Control = (LightControlCondition)stf.ReadIntBlock(null); }),
@@ -307,6 +308,7 @@ namespace Orts.Formats.Msts
             HeadlightRear = light.HeadlightRear;
             LightGlowType = light.LightGlowType;
             LightGlowName = light.LightGlowName;
+            LightDimFound = light.LightDimFound;
 
             foreach (var state in light.States)
                 States.Add(new LightState(state, reverse));

@@ -214,6 +214,7 @@ namespace Orts.Simulation.Physics
         public bool TrainIsStarting;
         public bool TrainIsStopping;
         public int TrainHeadlight;
+        public bool LightDimFound;
 
         public Traveller RearTDBTraveller;               // positioned at the back of the last car in the train
         public Traveller FrontTDBTraveller;              // positioned at the front of the train by CalculatePositionOfCars
