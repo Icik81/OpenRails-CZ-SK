@@ -253,7 +253,7 @@ namespace Orts.Viewer3D
         public bool Try3DCabSetOn;
         public bool IsDay;
 
-        public const int MaxHeadlights = 16;
+        public const int MaxHeadlights = 32;
         public Vector4[] HeadlightPositions = new Vector4[MaxHeadlights];
         public Vector4[] HeadlightDirections = new Vector4[MaxHeadlights];
         public Vector4[] HeadlightColors = new Vector4[MaxHeadlights];

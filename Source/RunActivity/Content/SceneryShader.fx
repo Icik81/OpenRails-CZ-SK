@@ -61,7 +61,7 @@ float	 GroundLevel;
 float 	 HeightFalloff;
 float	 GlobalDensity;
 
-#define MAX_HEADLIGHTS 16
+#define MAX_HEADLIGHTS 32
 
 // Globální proměnné pro více světel 
 float4 HeadlightPositions[MAX_HEADLIGHTS];

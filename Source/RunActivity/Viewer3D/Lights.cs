@@ -382,7 +382,7 @@ namespace Orts.Viewer3D
                     // AI stojí
                     if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
                     {
-                        newTrainHeadlight = 0;                        
+                        newTrainHeadlight = 1;                        
                     }
 
                     TrainHeadlight = 3;
@@ -554,7 +554,7 @@ namespace Orts.Viewer3D
                 Enabled = true;
 
             if (Light.Headlight != LightHeadlightCondition.Ignore)
-            {                
+            {                                
                 if (Light.Headlight == LightHeadlightCondition.Off)
                     Enabled &= lightViewer.TrainHeadlight == 0;                
                 else if (Light.Headlight == LightHeadlightCondition.Dim)
@@ -568,9 +568,11 @@ namespace Orts.Viewer3D
                 else if (Light.Headlight == LightHeadlightCondition.OffDim)
                     Enabled &= lightViewer.TrainHeadlight <= 1;
                 else if (Light.Headlight == LightHeadlightCondition.OffBright)
-                    Enabled &= lightViewer.TrainHeadlight != 1;
+                    Enabled &= lightViewer.TrainHeadlight != 1;                
                 else
-                    Enabled &= false;                
+                    Enabled &= false;
+
+                
             }
             if (Light.Unit != LightUnitCondition.Ignore)
             {

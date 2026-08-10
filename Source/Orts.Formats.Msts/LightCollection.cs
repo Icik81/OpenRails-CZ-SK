@@ -107,6 +107,8 @@ namespace Orts.Formats.Msts
         OffBright, // MSTSBin
         OffDim, // MSTSBin
         DLight, // Poziční světla
+        FrontLightCone, // Světla pro přední světelný kužel
+        RearLightCone, // Světla pro zadní světelný kužel
         // TODO: DimBright?, // MSTSBin labels this the same as DimBright. Not sure what it means.
     }
 
