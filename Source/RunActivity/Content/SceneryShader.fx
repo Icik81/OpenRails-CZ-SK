@@ -61,7 +61,7 @@ float	 GroundLevel;
 float 	 HeightFalloff;
 float	 GlobalDensity;
 
-#define MAX_HEADLIGHTS 8
+#define MAX_HEADLIGHTS 16
 
 // Globální proměnné pro více světel 
 float4 HeadlightPositions[MAX_HEADLIGHTS];
@@ -439,7 +439,7 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
 {
     // Celkový násobič síly reflektorů (upravte podle potřeby, např. 2.0 až 5.0)
-    const float INTENSITY_BOOST = 3.5;
+    const float INTENSITY_BOOST = 2.5;
 
     [unroll]
     for (int i = 0; i < MAX_HEADLIGHTS; i++)

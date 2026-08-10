@@ -77,6 +77,8 @@ namespace Orts.Viewer3D
         List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
 
         LightConePrimitive ActiveLightCone;
+        readonly List<LightConePrimitive> ActiveLightCones = new List<LightConePrimitive>();
+
         public bool HasLightCone;
         public float LightConeFadeIn;
         public float LightConeFadeOut;
@@ -136,37 +138,10 @@ namespace Orts.Viewer3D
         }
         void UpdateActiveLightCone()
         {
-            var newLightCone = (LightConePrimitive)LightPrimitives.FirstOrDefault(lm => lm is LightConePrimitive && lm.Enabled);
-
-            // Fade-in should be NEW headlight.
-            if ((ActiveLightCone == null || TrainHeadlight == 2) && (newLightCone != null))
-                LightConeFadeIn = newLightCone.Light.FadeIn;
-            else
-                LightConeFadeIn = 0;
-
-            // Fade-out should be OLD headlight.
-            if ((ActiveLightCone != null) && (newLightCone == null))
-                LightConeFadeOut = ActiveLightCone.Light.FadeOut;
-            else
-                LightConeFadeOut = 0;
-
-#if DEBUG_LIGHT_STATES
-            if (ActiveLightCone != null)
-                Console.WriteLine("Old headlight: index = {0}, fade-in = {1:F1}, fade-out = {2:F1}, position = {3}, angle = {4:F1}, radius = {5:F1}", ActiveLightCone.Light.Index, ActiveLightCone.Light.FadeIn, ActiveLightCone.Light.FadeOut, ActiveLightCone.Light.States[0].Position, ActiveLightCone.Light.States[0].Angle, ActiveLightCone.Light.States[0].Radius);
-            else
-                Console.WriteLine("Old headlight: <none>");
-            if (newLightCone != null)
-                Console.WriteLine("New headlight: index = {0}, fade-in = {1:F1}, fade-out = {2:F1}, position = {3}, angle = {4:F1}, radius = {5:F1}", newLightCone.Light.Index, newLightCone.Light.FadeIn, newLightCone.Light.FadeOut, newLightCone.Light.States[0].Position, newLightCone.Light.States[0].Angle, newLightCone.Light.States[0].Radius);
-            else
-                Console.WriteLine("New headlight: <none>");
-            if ((ActiveLightCone != null) || (newLightCone != null))
-            {
-                Console.WriteLine("Headlight changed from {0} to {1}, fade-in = {2:F1}, fade-out = {3:F1}", ActiveLightCone != null ? ActiveLightCone.Light.Index.ToString() : "<none>", newLightCone != null ? newLightCone.Light.Index.ToString() : "<none>", LightConeFadeIn, LightConeFadeOut);
-                Console.WriteLine();
-            }
-#endif
-
-            ActiveLightCone = newLightCone;
+            // Načtení všech aktivních světelných kuželů
+            ActiveLightCones.Clear();
+            var enabledCones = LightPrimitives.OfType<LightConePrimitive>().Where(lm => lm.Enabled);
+            ActiveLightCones.AddRange(enabledCones);           
         }
 
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
@@ -209,31 +184,34 @@ namespace Orts.Viewer3D
                 foreach (var lightPrimitive in LightPrimitives)
                     if ((lightPrimitive.Enabled || lightPrimitive.FadeOut) && lightPrimitive is LightGlowPrimitive)                    
                         frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
-                    
 
-            foreach (var lightPrimitive in LightPrimitives)
+            if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
+                foreach (var lightPrimitive in LightPrimitives)
                 if (lightPrimitive.Enabled || lightPrimitive.FadeOut)
                     if (lightPrimitive is LightConePrimitive)
                             frame.AddPrimitive(LightConeMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
+            
+            // Registrace všech aktivních i dohasínajících světelných kuželů
+            var visibleCones = LightPrimitives.OfType<LightConePrimitive>()
+                .Where(c => c.Enabled || c.FadeOut || c.Fade.X > 0f);
 
-
-            // Set the active light cone info for the material code.
-            if (HasLightCone && ActiveLightCone != null)
+            foreach (var cone in visibleCones)
             {
-                LightConePosition = Vector3.Transform(Vector3.Lerp(ActiveLightCone.Position1, ActiveLightCone.Position2, ActiveLightCone.Fade.Y), xnaDTileTranslation);
-                LightConeDirection = Vector3.Transform(Vector3.Lerp(ActiveLightCone.Direction1, ActiveLightCone.Direction2, ActiveLightCone.Fade.Y), Car.WorldPosition.XNAMatrix);
-                LightConeDirection -= Car.WorldPosition.XNAMatrix.Translation;
-                LightConeDirection.Normalize();
-                LightConeDistance = MathHelper.Lerp(ActiveLightCone.Distance1, ActiveLightCone.Distance2, ActiveLightCone.Fade.Y);
-                LightConeMinDotProduct = (float)Math.Cos(MathHelper.Lerp(ActiveLightCone.Angle1, ActiveLightCone.Angle2, ActiveLightCone.Fade.Y));
-                LightConeColor = Vector4.Lerp(ActiveLightCone.Color1, ActiveLightCone.Color2, ActiveLightCone.Fade.Y);
+                Vector3 conePos = Vector3.Transform(Vector3.Lerp(cone.Position1, cone.Position2, cone.Fade.Y), xnaDTileTranslation);
+                Vector3 coneDir = Vector3.Transform(Vector3.Lerp(cone.Direction1, cone.Direction2, cone.Fade.Y), Car.WorldPosition.XNAMatrix);
+                coneDir -= Car.WorldPosition.XNAMatrix.Translation;
+                coneDir.Normalize();
+
+                float coneDist = MathHelper.Lerp(cone.Distance1, cone.Distance2, cone.Fade.Y);
+                float coneMinDot = (float)Math.Cos(MathHelper.Lerp(cone.Angle1, cone.Angle2, cone.Fade.Y));
+                Vector4 coneColor = Vector4.Lerp(cone.Color1, cone.Color2, cone.Fade.Y) * cone.Fade.X;
 
                 Viewer.RegisterActiveLightCone(
-                    LightConePosition,
-                    LightConeDirection,
-                    LightConeColor,
-                    LightConeDistance,
-                    LightConeMinDotProduct
+                    conePos,
+                    coneDir,
+                    coneColor,
+                    coneDist,
+                    coneMinDot
                 );
             }
         }
@@ -375,28 +353,49 @@ namespace Orts.Viewer3D
                 if (Car.CarIsShunting)
                 {
                     newTrainHeadlight = 0;
-                    TrainHeadlight = 1;
-                    newIsDay = true;
+                    TrainHeadlight = 1;                    
+                }
+
+                // AI vyčkává na místě
+                if (Car.CarIsWaiting)
+                {
+                    newTrainHeadlight = 0;
+                    TrainHeadlight = 1;                    
+                }                
+
+                // Jízda v noci nebo za mlhy
+                if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)
+                {
+                    newTrainHeadlight = 2;
+                    newIsDay = false;
+
+                    if (Math.Abs(Car.Train.SpeedMpS) < 50.0 / 3.6f)
+                    {
+                        newTrainHeadlight = 1;                        
+                    }
+
+                    if (Car.CarIsShunting)
+                    {
+                        newTrainHeadlight = 1;                        
+                    }
+
+                    // AI stojí
+                    if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
+                    {
+                        newTrainHeadlight = 0;                        
+                    }
+
+                    TrainHeadlight = 3;
                 }
                 else
-                    // AI vyčkává na místě
-                    if (Car.CarIsWaiting)
+                {
+                    // Normální jízda
+                    if (!Car.CarIsShunting && !Car.CarIsWaiting)
                     {
                         newTrainHeadlight = 1;
-                        TrainHeadlight = 0;
+                        TrainHeadlight = 0;                        
                     }
-                    else
-                        if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)
-                        {
-                            newTrainHeadlight = 2;
-                            newIsDay = false;
-                            TrainHeadlight = 1;
-                        }
-                        else
-                        {
-                            newTrainHeadlight = 1;
-                            TrainHeadlight = 0;
-                        }
+                }
 
                 if ((Car is MSTSLocomotive) && (Car as MSTSLocomotive).OtherTrainFlash)
                 {
@@ -404,16 +403,15 @@ namespace Orts.Viewer3D
                     {
                         newTrainHeadlight = 2;
                         newIsDay = false;
-                        TrainHeadlight = 1;
+                        TrainHeadlight = 0;                        
                     }
                     else
                     {
-                        newTrainHeadlight = 0;
-                        newIsDay = true;
+                        newTrainHeadlight = 1;
+                        newIsDay = false;
                         TrainHeadlight = 0;                        
-                        newCarIsFirst = false;
                     }
-                }
+                }                                
             }            
 
             if (
@@ -604,7 +602,7 @@ namespace Orts.Viewer3D
                 if (Light.Control == LightControlCondition.AI)
                     Enabled &= !lightViewer.CarIsPlayer;
                 else if (Light.Control == LightControlCondition.Player)
-                    Enabled &= lightViewer.CarIsPlayer;
+                    Enabled &= (lightViewer.CarIsPlayer || !lightViewer.CarIsPlayer); // AI jako hráč, aby se reflektory rozsvítily i na AI vlacích
                 else
                     Enabled &= false;
             }
@@ -1088,7 +1086,7 @@ namespace Orts.Viewer3D
                     shader.TextureBlend = blendFactor;                    
 
                     // Rádius vzroste např. až na 3-násobek původní velikosti
-                    float glowScale = MathHelper.Lerp(1.0f, 2.5f, factor);
+                    float glowScale = MathHelper.Lerp(1.0f, 2.0f, factor);
 
                     if (Program.Viewer.IsDay)
                         glowScale = MathHelper.Lerp(1.0f, 1.25f, factor);

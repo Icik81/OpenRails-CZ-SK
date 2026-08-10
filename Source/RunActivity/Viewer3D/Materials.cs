@@ -624,7 +624,7 @@ namespace Orts.Viewer3D
                     else if (clampValue * 0.99f > AmbientLightCoef)
                         clampValue -= 0.01f;                                       
                     distance = lightDrawer.LightConeDistance; // and min distance                                                              
-                    SceneryShader.SetHeadlight(ref lightDrawer.LightConePosition, ref lightDrawer.LightConeDirection, distance, lightDrawer.LightConeMinDotProduct, (float)(Viewer.Simulator.GameTime - fadeStartTimer), fadeDuration, clampValue, ref lightDrawer.LightConeColor);
+                    //SceneryShader.SetHeadlight(ref lightDrawer.LightConePosition, ref lightDrawer.LightConeDirection, distance, lightDrawer.LightConeMinDotProduct, (float)(Viewer.Simulator.GameTime - fadeStartTimer), fadeDuration, clampValue, ref lightDrawer.LightConeColor);
                 }
             }
             else
