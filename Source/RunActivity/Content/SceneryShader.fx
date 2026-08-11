@@ -61,7 +61,7 @@ float	 GroundLevel;
 float 	 HeightFalloff;
 float	 GlobalDensity;
 
-#define MAX_HEADLIGHTS 32
+#define MAX_HEADLIGHTS 16
 
 // Globální proměnné pro více světel 
 float4 HeadlightPositions[MAX_HEADLIGHTS];
@@ -438,18 +438,20 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 // fade-in/fade-out animations.
 void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
 {
+    // Pokud není aktivní žádné světlo, výpočet se zcela přeskočí
+    if (ActiveHeadlightCount <= 0)
+        return;
+
     float nightFactor = saturate(1.0 - NightColorModifier);
     nightFactor = pow(nightFactor, 2.0);
 
     const float DAY_INTENSITY = 0.05;   
     const float NIGHT_INTENSITY = 3.5; 
     float intensityBoost = lerp(DAY_INTENSITY, NIGHT_INTENSITY, nightFactor);
-
-    [unroll]
-    for (int i = 0; i < MAX_HEADLIGHTS; i++)
+    
+    [loop]
+    for (int i = 0; i < ActiveHeadlightCount; i++)
     {
-        float activeMask = (i < ActiveHeadlightCount) ? 1.0 : 0.0;
-
         float3 lightToSurfaceVec = In.Shadow.xyz - HeadlightPositions[i].xyz;
         float dist = length(lightToSurfaceVec);
         float3 headlightToSurface = normalize(lightToSurfaceVec);
@@ -457,20 +459,16 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
         float coneDot = dot(headlightToSurface, HeadlightDirections[i].xyz);
         float cosOuterAngle = HeadlightDirections[i].w;
 
-        // 1. Zjemněný ořez úhlu kuželu (Smoothstep vytvoří měkký přechod na bocích)
         float coneLinear = saturate((coneDot - cosOuterAngle) / (1.0 - cosOuterAngle));
         float coneAttenuation = smoothstep(0.0, 1.0, coneLinear);
 
-        // 2. Dopad podle normály
         float rawNormal = saturate(dot(In.Normal_Light.xyz, -headlightToSurface));
         float normalAttenuation = lerp(0.4, 1.0, rawNormal); 
 
-        // 3. Plynulý dojezd vzdálenosti (Smoothstep odstraní ostrý odseknutý konec paprsku)
         float distFactor = saturate(1.0 - dist * HeadlightRcpDistances[i]);
         float distanceAttenuation = smoothstep(0.0, 1.0, distFactor);
 
-        // Výsledná intenzita
-        float shading = coneAttenuation * normalAttenuation * distanceAttenuation * activeMask * intensityBoost;
+        float shading = coneAttenuation * normalAttenuation * distanceAttenuation * intensityBoost;
 
         Color += (float3)OriginalColor * HeadlightColors[i].rgb * HeadlightColors[i].a * shading;
     }
