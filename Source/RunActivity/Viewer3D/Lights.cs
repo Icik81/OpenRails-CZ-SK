@@ -416,7 +416,10 @@ namespace Orts.Viewer3D
                 }
                 
                 // Vlaky bez tlumeného reflektoru
-                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) { newTrainHeadlight = 2; }
+                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) 
+                {
+                    newTrainHeadlight = 2; 
+                }
             }            
 
             if (

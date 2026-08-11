@@ -438,8 +438,12 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 // fade-in/fade-out animations.
 void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
 {
-    // Celkový násobič síly reflektorů (upravte podle potřeby, např. 2.0 až 5.0)
-    const float INTENSITY_BOOST = 2.5;
+    float nightFactor = saturate(1.0 - NightColorModifier);
+    nightFactor = pow(nightFactor, 2.0);
+
+    const float DAY_INTENSITY = 0.05;   
+    const float NIGHT_INTENSITY = 15; 
+    float intensityBoost = lerp(DAY_INTENSITY, NIGHT_INTENSITY, nightFactor);
 
     [unroll]
     for (int i = 0; i < MAX_HEADLIGHTS; i++)
@@ -453,19 +457,20 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
         float coneDot = dot(headlightToSurface, HeadlightDirections[i].xyz);
         float cosOuterAngle = HeadlightDirections[i].w;
 
-        // 1. Ořez úhlu kuželu
-        float coneAttenuation = saturate((coneDot - cosOuterAngle) / (1.0 - cosOuterAngle));
+        // 1. Zjemněný ořez úhlu kuželu (Smoothstep vytvoří měkký přechod na bocích)
+        float coneLinear = saturate((coneDot - cosOuterAngle) / (1.0 - cosOuterAngle));
+        float coneAttenuation = smoothstep(0.0, 1.0, coneLinear);
 
-        // 2. Zjemněný dopad podle normály (lerp zabrání nepřirozenému tmavnutí na plochém terénu)
+        // 2. Dopad podle normály
         float rawNormal = saturate(dot(In.Normal_Light.xyz, -headlightToSurface));
         float normalAttenuation = lerp(0.4, 1.0, rawNormal); 
 
-        // 3. Pomalejší pokles svítivosti se vzdáleností (odmocnina pro delší dosvit)
+        // 3. Plynulý dojezd vzdálenosti (Smoothstep odstraní ostrý odseknutý konec paprsku)
         float distFactor = saturate(1.0 - dist * HeadlightRcpDistances[i]);
-        float distanceAttenuation = sqrt(distFactor); 
+        float distanceAttenuation = smoothstep(0.0, 1.0, distFactor);
 
-        // Výsledná intenzita s násobičem
-        float shading = coneAttenuation * normalAttenuation * distanceAttenuation * activeMask * INTENSITY_BOOST;
+        // Výsledná intenzita
+        float shading = coneAttenuation * normalAttenuation * distanceAttenuation * activeMask * intensityBoost;
 
         Color += (float3)OriginalColor * HeadlightColors[i].rgb * HeadlightColors[i].a * shading;
     }
