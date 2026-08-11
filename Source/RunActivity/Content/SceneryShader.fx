@@ -442,7 +442,7 @@ void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_O
     nightFactor = pow(nightFactor, 2.0);
 
     const float DAY_INTENSITY = 0.05;   
-    const float NIGHT_INTENSITY = 15; 
+    const float NIGHT_INTENSITY = 3.5; 
     float intensityBoost = lerp(DAY_INTENSITY, NIGHT_INTENSITY, nightFactor);
 
     [unroll]
