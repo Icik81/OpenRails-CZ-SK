@@ -204,6 +204,10 @@ namespace Orts.Formats.Msts
         RearRR,  // 8
         FrontHeadLight, // 9
         RearHeadLight, // 10
+        FrontW,  // 11 - Přední bílá na obou stranách (LW nebo RW)
+        RearW,   // 12 - Zadní bílá na obou stranách (LW nebo RW)
+        FrontR,  // 13 - Přední červená na obou stranách (LR nebo RR)
+        RearR,   // 14 - Zadní červená na obou stranách (LR nebo RR)
     }
 
     public enum LightGlowType
@@ -346,7 +350,10 @@ namespace Orts.Formats.Msts
             // MSTSBin created reverse headlight cones automatically, so we shall do so too.
             foreach (var light in Lights.ToArray())
                 if (light.Type == LightType.Cone)
-                    Lights.Add(new Light(light, true));
+                {
+                    var reverseLight = light.UnitSide != LightHandleCondition.FrontW && light.UnitSide != LightHandleCondition.RearW && light.UnitSide != LightHandleCondition.FrontR && light.UnitSide != LightHandleCondition.RearR;
+                    Lights.Add(new Light(light, reverseLight));
+                }
         }
     }
 }

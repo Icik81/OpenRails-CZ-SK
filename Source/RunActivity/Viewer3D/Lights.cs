@@ -72,14 +72,10 @@ namespace Orts.Viewer3D
         public bool CarRearHeadLight;
         public int TrainHeadlightFront;
         public int TrainHeadlightRear;        
-
-        public bool IsLightConeActive { get { return ActiveLightCone != null; } }
-        List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();
-
-        LightConePrimitive ActiveLightCone;
+        
+        List<LightPrimitive> LightPrimitives = new List<LightPrimitive>();        
         readonly List<LightConePrimitive> ActiveLightCones = new List<LightConePrimitive>();
-
-        public bool HasLightCone;
+        
         public float LightConeFadeIn;
         public float LightConeFadeOut;
         public Vector3 LightConePosition;
@@ -126,17 +122,12 @@ namespace Orts.Viewer3D
                                 (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\" + light.LightGlowName));                            
 
                             break;
-                        case LightType.Cone:
-                            LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));
+                        case LightType.Cone:                                                        
+                                LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));                            
                             break;
                     }
                 }
-            }
-            HasLightCone = LightPrimitives.Any(lm => lm is LightConePrimitive);
-#if DEBUG_LIGHT_STATES
-            Console.WriteLine();
-#endif
-            UpdateActiveLightCone();
+            }            
         }
         void UpdateActiveLightCone()
         {
@@ -152,23 +143,20 @@ namespace Orts.Viewer3D
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
             var mstsLocomotive = locomotive as MSTSLocomotive;
 
+            // Pokud má vlak vypnuté napájení světel, tak se světla nezobrazují
             if (Car.Train != null && !Car.CarLightsPowerOn)                              
-            {
-                HasLightCone = false;
+            {                
                 return;
-            }
-            else
-                HasLightCone = true;
+            }            
 
             if (UpdateState())
             {
                 foreach (var lightPrimitive in LightPrimitives)
                     lightPrimitive.UpdateState(this);
-#if DEBUG_LIGHT_STATES
-                Console.WriteLine();
-#endif
+
                 UpdateActiveLightCone();
             }
+
             foreach (var lightPrimitive in LightPrimitives)
                 lightPrimitive.PrepareFrame(frame, elapsedTime);
 
@@ -196,9 +184,9 @@ namespace Orts.Viewer3D
             // Registrace všech aktivních i dohasínajících světelných kuželů
             var visibleCones = LightPrimitives.OfType<LightConePrimitive>()
                 .Where(c => c.Enabled || c.FadeOut || c.Fade.X > 0f);
-
+            
             foreach (var cone in visibleCones)
-            {
+            {                
                 Vector3 conePos = Vector3.Transform(Vector3.Lerp(cone.Position1, cone.Position2, cone.Fade.Y), xnaDTileTranslation);
                 Vector3 coneDir = Vector3.Transform(Vector3.Lerp(cone.Direction1, cone.Direction2, cone.Fade.Y), Car.WorldPosition.XNAMatrix);
                 coneDir -= Car.WorldPosition.XNAMatrix.Translation;
@@ -230,7 +218,7 @@ namespace Orts.Viewer3D
 
         public static void CalculateLightCone(LightState lightState, out Vector3 position, out Vector3 direction, out float angle, out float radius, out float distance, out Vector4 color)
         {
-            position = lightState.Position;
+            position = lightState.Position;                        
             position.Z *= -1;
             direction = -Vector3.UnitZ;
             direction = Vector3.Transform(Vector3.Transform(-Vector3.UnitZ, Matrix.CreateRotationX(MathHelper.ToRadians(-lightState.Elevation.Y))), Matrix.CreateRotationY(MathHelper.ToRadians(-lightState.Azimuth.Y)));
@@ -314,8 +302,8 @@ namespace Orts.Viewer3D
             var newCarFrontHeadLight = Car.FrontHeadLight;
             var newCarRearHeadLight = Car.RearHeadLight;
             var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
-            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;
-            
+            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;            
+
             // AI
             if (!newCarIsPlayer)
             {
@@ -679,7 +667,15 @@ namespace Orts.Viewer3D
                 else if (Light.UnitSide == LightHandleCondition.FrontHeadLight)
                     Enabled &= lightViewer.CarFrontHeadLight;
                 else if (Light.UnitSide == LightHandleCondition.RearHeadLight)
-                    Enabled &= lightViewer.CarRearHeadLight;
+                    Enabled &= lightViewer.CarRearHeadLight;                
+                else if (Light.UnitSide == LightHandleCondition.FrontW)
+                    Enabled &= (lightViewer.CarLightFrontLW || lightViewer.CarLightFrontRW);
+                else if (Light.UnitSide == LightHandleCondition.RearW)
+                    Enabled &= (lightViewer.CarLightRearLW || lightViewer.CarLightRearRW);
+                else if (Light.UnitSide == LightHandleCondition.FrontR)
+                    Enabled &= (lightViewer.CarLightFrontLR || lightViewer.CarLightFrontRR);
+                else if (Light.UnitSide == LightHandleCondition.RearR)
+                    Enabled &= (lightViewer.CarLightRearLR || lightViewer.CarLightRearRR);
                 else
                     Enabled &= false;
             }

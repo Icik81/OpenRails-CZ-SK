@@ -552,12 +552,6 @@ namespace Orts.Viewer3D
         public static Color FogColor = new Color(110, 110, 110, 255);
 
         internal Vector3 sunDirection;
-        bool lastLightState;
-        double fadeStartTimer;
-        float fadeDuration = -1;
-        float clampValue = 1;
-        float distance = 1000;
-        bool TrainHeadlightOn;
         internal void UpdateShaders()
         {
             if (Viewer.Settings.UseMSTSEnv == false)
@@ -566,72 +560,7 @@ namespace Orts.Viewer3D
                 sunDirection = Viewer.World.MSTSSky.mstsskysolarDirection;
 
             SceneryShader.SetLightVector_ZFar(sunDirection, Viewer.Settings.ViewingDistance);
-
-            // Headlight illumination
-            if (Viewer.PlayerLocomotiveViewer != null
-                && Viewer.PlayerLocomotiveViewer.lightDrawer != null
-                && Viewer.PlayerLocomotiveViewer.lightDrawer.HasLightCone)
-            {
-                var lightDrawer = Viewer.PlayerLocomotiveViewer.lightDrawer;
-                var lightState = lightDrawer.IsLightConeActive;
-                // TrainHeadlight 1
-                if (lightState != lastLightState)
-                {
-                    if (lightDrawer.LightConeFadeIn > 0)
-                    {
-                        fadeStartTimer = Viewer.Simulator.GameTime;
-                        fadeDuration = lightDrawer.LightConeFadeIn;
-                    }
-                    else if (lightDrawer.LightConeFadeOut > 0)
-                    {
-                        fadeStartTimer = Viewer.Simulator.GameTime;
-                        fadeDuration = -lightDrawer.LightConeFadeOut;
-                    }
-                    lastLightState = lightState;
-                }
-                else if (!lastLightState && fadeDuration < 0 && Viewer.Simulator.GameTime > fadeStartTimer - fadeDuration)
-                {
-                    fadeDuration = 0;
-                }
-                // TrainHeadlight 2
-                if (lightDrawer.TrainHeadlight == 2 && !TrainHeadlightOn)
-                {
-                    if (lightDrawer.LightConeFadeIn > 0)
-                    {
-                        fadeStartTimer = Viewer.Simulator.GameTime;
-                        fadeDuration = lightDrawer.LightConeFadeIn;
-                    }
-                    else if (lightDrawer.LightConeFadeOut > 0)
-                    {
-                        fadeStartTimer = Viewer.Simulator.GameTime;
-                        fadeDuration = -lightDrawer.LightConeFadeOut;
-                    }
-                    TrainHeadlightOn = true;
-                }
-                if (lightDrawer.TrainHeadlight == 1)
-                    TrainHeadlightOn = false;
-
-                if (!lightState && fadeDuration == 0)
-                    // This occurs when switching locos and needs to be handled or we get lingering light.
-                    SceneryShader.SetHeadlightOff();
-                else
-                {
-                    // Icik                    
-                    double AmbientLightCoef = Math.Pow((1 - Program.Simulator.FullBrightness) * 1.5f, 2.0f);
-                    AmbientLightCoef = MathHelper.Clamp((float)AmbientLightCoef, 0, 2.5f);
-                    if (clampValue * 1.01f < AmbientLightCoef)
-                        clampValue += 0.01f;
-                    else if (clampValue * 0.99f > AmbientLightCoef)
-                        clampValue -= 0.01f;                                       
-                    distance = lightDrawer.LightConeDistance; // and min distance                                                              
-                    //SceneryShader.SetHeadlight(ref lightDrawer.LightConePosition, ref lightDrawer.LightConeDirection, distance, lightDrawer.LightConeMinDotProduct, (float)(Viewer.Simulator.GameTime - fadeStartTimer), fadeDuration, clampValue, ref lightDrawer.LightConeColor);
-                }
-            }
-            else
-            {
-                SceneryShader?.SetHeadlightOff();
-            }            
-
+                        
             // NOVÉ: Odeslání pole všech nasbíraných AI i hráčských světel do shaderu
             SceneryShader.SetMultiHeadlights(
                 Viewer.HeadlightPositions,
@@ -640,8 +569,7 @@ namespace Orts.Viewer3D
                 Viewer.HeadlightRcpDistances,
                 Viewer.ActiveHeadlightCount
             );
-        
-            // End headlight illumination
+                    
             if (Viewer.Settings.UseMSTSEnv == false)
             {
                 SceneryShader.Overcast = Viewer.Simulator.Weather.OvercastFactor;
