@@ -520,7 +520,7 @@ namespace Orts.Viewer3D
             }
 
             // Světla pro AI
-            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode)
+            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
             {
                 // AI posunuje
                 if (Car.CarIsShunting)
@@ -555,7 +555,7 @@ namespace Orts.Viewer3D
                     // AI stojí
                     if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
                     {
-                        newTrainHeadlight = 0;                        
+                        newTrainHeadlight = 1;                        
                     }
 
                     TrainHeadlight = 3;
