@@ -136,6 +136,8 @@ namespace Orts.Viewer3D
 
         private void AutoGeneratePositionalLightCones(TrainCar car)
         {
+            if (Car.Lights == null) return;
+
             // Zjistíme, které typy kuželů už v eng souboru existují
             var existingCones = LightPrimitives.Select(p => p.Light)
                 .Concat(Car.Lights.Lights)
