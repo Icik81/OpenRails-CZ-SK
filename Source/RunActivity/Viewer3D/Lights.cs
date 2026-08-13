@@ -555,7 +555,7 @@ namespace Orts.Viewer3D
                     // AI stojí
                     if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
                     {
-                        newTrainHeadlight = 1;                        
+                        newTrainHeadlight = 0;                        
                     }
 
                     TrainHeadlight = 3;
