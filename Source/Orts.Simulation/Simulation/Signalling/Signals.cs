@@ -1289,11 +1289,32 @@ namespace Orts.Simulation.Signalling
 
         public KeyValuePair<SignalObject, SignalHead>? FindByTrItem(uint trItem)
         {
+            int tr = (int)trItem;
+
+            // předpoklad: signalObjects je kolekce (např. List<SignalObject> nebo pole)
             foreach (var signal in signalObjects)
-                if (signal != null)
-                    foreach (var head in signal.SignalHeads)
-                        if (SignalObject.trackNodes[signal.trackNode].TrVectorNode.TrItemRefs[head.trItemIndex] == (int)trItem)
-                            return new KeyValuePair<SignalObject, SignalHead>(signal, head);
+            {
+                if (signal == null)
+                    continue;
+
+                // cache často přistupované reference
+                var trackNodeIndex = signal.trackNode;
+                var trackNode = SignalObject.trackNodes[trackNodeIndex];
+                var trItemRefs = trackNode.TrVectorNode.TrItemRefs;
+
+                // získat kolekci hlav signálu a projít bez enumerátoru (pokud je možné použít index)
+                var heads = signal.SignalHeads;
+                for (int i = 0, n = heads.Count; i < n; i++)
+                {
+                    var head = heads[i];
+                    // volitelná kontrola hranic, pokud není zaručená
+                    // if (head.trItemIndex < 0 || head.trItemIndex >= trItemRefs.Length) continue;
+
+                    if (trItemRefs[head.trItemIndex] == tr)
+                        return new KeyValuePair<SignalObject, SignalHead>(signal, head);
+                }
+            }
+
             return null;
         }//FindByTrItem
 

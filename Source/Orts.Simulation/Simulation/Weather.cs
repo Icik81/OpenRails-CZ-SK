@@ -41,7 +41,7 @@ namespace Orts.Simulation
         public float PricipitationIntensityPPSPM2;
 
         // Fog/visibility distance. Ranges from 10m (can't see anything), 5km (medium), 20km (clear) to 100km (clear arctic).
-        public float FogDistance;
+        public float FogDistance;        
 
         // Precipitation liquidity; =1 for rain, =0 for snow; intermediate values possible with dynamic weather;
         public float PrecipitationLiquidity;
@@ -54,7 +54,6 @@ namespace Orts.Simulation
         // Icik
         public float SnowVelocityMpS;
         public float MPWindSpeed;
-        public float MPWindDirection;
-
+        public float MPWindDirection;        
     }
 }

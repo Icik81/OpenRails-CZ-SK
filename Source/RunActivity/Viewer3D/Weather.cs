@@ -1429,7 +1429,7 @@ namespace Orts.Viewer3D
                 ORTSFogTransitionTimeS = inf.ReadInt32();
                 stableWeatherTimer = inf.ReadSingle();
                 precipitationIntensityDelayTimer = inf.ReadSingle();
-            }
+            }                                 
 
             public void ResetWeatherTargets()
             {
@@ -1439,6 +1439,7 @@ namespace Orts.Viewer3D
                 ORTSPrecipitationLiquidity = -1;
                 ORTSFogDensity = -1;
                 ORTSFogGroundLevel = -1;
+                Program.Simulator.WeatherResetEmitter = true;
             }
 
             // Check for correctness of parameters and initialize rates of change

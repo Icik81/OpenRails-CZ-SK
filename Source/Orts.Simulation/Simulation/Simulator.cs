@@ -352,6 +352,7 @@ namespace Orts.Simulation
         public WorldPosition PlayerWorldPosition;
         public float PlayerHeading;
         public float PlayerAbsSpeedMpS;
+        public bool WeatherResetEmitter;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

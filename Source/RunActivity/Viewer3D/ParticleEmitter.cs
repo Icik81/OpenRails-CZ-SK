@@ -316,9 +316,15 @@ namespace Orts.Viewer3D
 
             return (MaxParticles - nextFree) + FirstRetiredParticle;
         }
-
+       
         public void Update(float currentTime, ElapsedTime elapsedTime)
         {
+            if (viewer.Simulator.WeatherResetEmitter)
+            {
+                TimeParticlesLastEmitted = currentTime;
+                viewer.Simulator.WeatherResetEmitter = false;
+            }
+
             windDisplacementX = viewer.Simulator.Weather.WindSpeedMpS.X * 0.25f;
             windDisplacementZ = viewer.Simulator.Weather.WindSpeedMpS.Y * 0.25f;
 
@@ -326,7 +332,10 @@ namespace Orts.Viewer3D
             velocity.X += (WorldPosition.TileX - LastWorldPosition.TileX) * 2048;
             velocity.Z += (WorldPosition.TileZ - LastWorldPosition.TileZ) * 2048;
             velocity.Z *= -1;
-            velocity /= elapsedTime.ClockSeconds;
+            if (elapsedTime.ClockSeconds > 0.0001f)
+                velocity /= elapsedTime.ClockSeconds;
+            else
+                velocity = Vector3.Zero;
             LastWorldPosition.Location = WorldPosition.Location;
             LastWorldPosition.TileX = WorldPosition.TileX;
             LastWorldPosition.TileZ = WorldPosition.TileZ;
@@ -334,8 +343,13 @@ namespace Orts.Viewer3D
             RetireActiveParticles(currentTime);
             FreeRetiredParticles();
 
-            if (ParticlesPerSecond < 0.1)
+            if (ParticlesPerSecond < 0.1f)
                 TimeParticlesLastEmitted = currentTime;
+            else
+            if (currentTime - TimeParticlesLastEmitted > 1.0f)
+            {
+                TimeParticlesLastEmitted = currentTime;
+            }
 
             var numToBeEmitted = (int)((currentTime - TimeParticlesLastEmitted) * ParticlesPerSecond);
             var numCanBeEmitted = GetCountFreeParticles();

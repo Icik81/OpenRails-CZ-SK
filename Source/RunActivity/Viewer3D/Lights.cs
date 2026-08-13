@@ -168,7 +168,7 @@ namespace Orts.Viewer3D
             Vector3 mstsLocation = new Vector3(xnaDTileTranslation.Translation.X, xnaDTileTranslation.Translation.Y, -xnaDTileTranslation.Translation.Z);
 
             float objectRadius = 20; // Even more arbitrary.
-            float objectViewingDistance = Viewer.Settings.ViewingDistance; // Arbitrary.            
+            float objectViewingDistance = Viewer.Settings.ViewingDistance * 0.5f; // Arbitrary.            
 
             if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
                 foreach (var lightPrimitive in LightPrimitives)
@@ -337,7 +337,7 @@ namespace Orts.Viewer3D
             }
 
             // Světla pro AI
-            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
+            if (Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode)
             {
                 // AI posunuje
                 if (Car.CarIsShunting)

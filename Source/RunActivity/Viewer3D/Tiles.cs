@@ -397,9 +397,47 @@ namespace Orts.Viewer3D
             }
         }
 
+        // Tile: příkladné doplnění pro cache elevation dat
+        // (vložit do třídy Tile)
+        private float[] _elevationCache;
+        private readonly object _elevationCacheLock = new object();
+
+        private void EnsureElevationCacheLoaded()
+        {
+            if (_elevationCache != null)
+                return;
+
+            lock (_elevationCacheLock)
+            {
+                if (_elevationCache != null)
+                    return;
+
+                int n = SampleCount;
+                // alokace: n * n floatů
+                var cache = new float[n * n];
+                // vypočítat položky jednou a uložit
+                for (int z = 0; z < n; z++)
+                {
+                    int rowBase = z * n;
+                    for (int x = 0; x < n; x++)
+                    {
+                        // čtení z YFile proběhne jen při této inicializaci
+                        cache[rowBase + x] = (float)YFile.GetElevation(x, z) * Resolution + Floor;
+                    }
+                }
+                // atomicky přiřadit referenci
+                _elevationCache = cache;
+            }
+        }
+
         internal float GetElevation(int ux, int uz)
         {
-            return (float)YFile.GetElevation(ux, uz) * Resolution + Floor;
+            // volání EnsureElevationCacheLoaded() lze udělat i externě při načítání dlaždice
+            EnsureElevationCacheLoaded();
+
+            // bezpečné indexování (předpoklad: volající už zkontroloval rozsah)
+            int index = uz * SampleCount + ux;
+            return _elevationCache[index];
         }
 
         internal bool IsVertexHidden(int ux, int uz)
