@@ -92,6 +92,10 @@ namespace Orts.Viewer3D
             LightConeMaterial = viewer.MaterialManager.Load("LightCone");
 
             UpdateState();
+
+            // Automatické doplnění chybějících kuželů pozičních světel
+            AutoGeneratePositionalLightCones(car);
+
             if (Car.Lights != null)
             {                
                 foreach (var light in Car.Lights.Lights)
@@ -129,6 +133,107 @@ namespace Orts.Viewer3D
                 }
             }            
         }
+
+        private void AutoGeneratePositionalLightCones(TrainCar car)
+        {
+            // Zjistíme, které typy kuželů už v eng souboru existují
+            var existingCones = LightPrimitives.Select(p => p.Light)
+                .Concat(Car.Lights.Lights)
+                .Where(l => l.Type == LightType.Cone)
+                .Select(l => l.UnitSide)
+                .ToHashSet();
+
+            // Výchozí pozice podle délky vozidla (pokud nenajdeme Glow světla)
+            float frontZ = Car.CarLengthM / 2.0f;
+            float rearZ = -Car.CarLengthM / 2.0f;
+            float posY = 0.5f;
+
+            // Pokusíme se zpřesnit pozici Z a Y podle předních a zadních Glow světel
+            var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0);
+            if (frontGlow != null)
+            {
+                frontZ = frontGlow.States[0].Position.Z;
+                posY = frontGlow.States[0].Position.Y;
+            }
+            else
+            {
+                frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0);
+                if (frontGlow != null)
+                {
+                    frontZ = frontGlow.States[0].Position.Z;
+                    posY = frontGlow.States[0].Position.Y;
+                    car.NoUnitSideCar = true;
+                }
+            }
+
+            var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0);
+            if (rearGlow != null)
+            {
+                rearZ = rearGlow.States[0].Position.Z;
+            }
+            else
+            {
+                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0);
+                if (rearGlow != null)
+                {
+                    rearZ = rearGlow.States[0].Position.Z;
+                    car.NoUnitSideCar = true;
+                }
+            }
+
+            uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
+            uint redColor = ConvertMstsColor(0xAAFF0000);
+
+            // 11 - FrontW (Přední bílá)
+            if (!existingCones.Contains(LightHandleCondition.FrontW))
+            {
+                AddConeLight(LightHandleCondition.FrontW, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), whiteColor);
+            }
+
+            // 12 - RearW (Zadní bílá)
+            if (!existingCones.Contains(LightHandleCondition.RearW))
+            {
+                AddConeLight(LightHandleCondition.RearW, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), whiteColor);
+            }
+
+            // 13 - FrontR (Přední červená)
+            if (!existingCones.Contains(LightHandleCondition.FrontR))
+            {
+                AddConeLight(LightHandleCondition.FrontR, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), redColor);
+            }
+
+            // 14 - RearR (Zadní červená)
+            if (!existingCones.Contains(LightHandleCondition.RearR))
+            {
+                AddConeLight(LightHandleCondition.RearR, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), redColor);
+            }
+        }
+
+        private void AddConeLight(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
+        {
+            var state = new LightState(color, position, azimuth, angle: 150f, radius: 20f);
+            var light = new Light(
+                Car.Lights.Lights.Count,
+                LightType.Cone,
+                unitSide,
+                LightControlCondition.Player,
+                new List<LightState> { state }
+            );
+
+            Car.Lights.Lights.Add(light);
+        }
+
+        private uint ConvertMstsColor(uint color)
+        {
+            return new Color()
+            {
+                B = (byte)(color),
+                G = (byte)(color >> 8),
+                R = (byte)(color >> 16),
+                A = (byte)(color >> 24)
+            }.PackedValue;
+        }
+
         void UpdateActiveLightCone()
         {
             // Načtení všech aktivních světelných kuželů
@@ -240,7 +345,7 @@ namespace Orts.Viewer3D
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
             if (locomotive == null && Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.REMOTE && Car is MSTSLocomotive && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive)
                 locomotive = Car.Train.LeadLocomotive;
-            var mstsLocomotive = locomotive as MSTSLocomotive;
+            var mstsLocomotive = locomotive != null ? locomotive as MSTSLocomotive : null;
 
             // Headlight
             //var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
@@ -276,7 +381,7 @@ namespace Orts.Viewer3D
 
             // Icik
             // Ovládání obou reflektorů v jedné kabině 
-            if (locomotive != null && mstsLocomotive.HeadLight2Enable)
+            if (locomotive != null && mstsLocomotive?.HeadLight2Enable == true)
             {
                 if (Car.FrontHeadLight)
                 {
@@ -291,6 +396,84 @@ namespace Orts.Viewer3D
                     }
             }
 
+            // Ovládání reflektorů u vozů bez UnitSide reflektorů
+            #region NoUnitSideCar
+            if (Car.NoUnitSideCar)
+            {
+                Car.LightFrontLW = false; Car.LightFrontRW = false; Car.LightRearLW = false; Car.LightRearRW = false;
+                Car.LightFrontLR = false; Car.LightFrontRR = false; Car.LightRearLR = false; Car.LightRearRR = false;
+
+                if (newCarIsFirst && !newCarIsLast)
+                {
+                    if (!newCarIsReversed)
+                    {
+                        Car.LightFrontLW = true;
+                        Car.LightFrontRW = true;
+                    }
+                    else
+                    {
+                        Car.LightRearLW = true;
+                        Car.LightRearRW = true;
+                    }
+                }
+
+                if (newCarIsLast && !newCarIsFirst)
+                {
+                    if (!newCarIsReversed)
+                    {
+                        Car.LightFrontLR = true;
+                        Car.LightFrontRR = true;
+                    }
+                    else
+                    {
+                        Car.LightRearLR = true;
+                        Car.LightRearRR = true;
+                    }
+                }
+
+                if (newTrainHeadlight > 0)
+                {
+                    if (newCarIsFirst && newCarIsLast)
+                    {
+                        if (!newCarIsReversed)
+                        {
+                            Car.LightFrontLW = true;
+                            Car.LightFrontRW = true;
+                            Car.LightRearLR = true;
+                            Car.LightRearRR = true;
+                        }
+                        else
+                        {
+                            Car.LightRearLW = true;
+                            Car.LightRearRW = true;
+                            Car.LightFrontLR = true;
+                            Car.LightFrontRR = true;
+                        }
+                    }
+                }
+                else
+                {
+                    if (newCarIsFirst && newCarIsLast)
+                    {
+                        if (!newCarIsReversed)
+                        {
+                            Car.LightFrontLW = true;
+                            Car.LightFrontRW = true;
+                            Car.LightRearLW = true;
+                            Car.LightRearRW = true;
+                        }
+                        else
+                        {
+                            Car.LightRearLW = true;
+                            Car.LightRearRW = true;
+                            Car.LightFrontLW = true;
+                            Car.LightFrontRW = true;
+                        }
+                    }
+                }
+            }
+            #endregion NoUnitSideCar
+
             var newCarLightFrontLW = Car.LightFrontLW;
             var newCarLightFrontRW = Car.LightFrontRW;
             var newCarLightRearLW = Car.LightRearLW;
@@ -302,7 +485,7 @@ namespace Orts.Viewer3D
             var newCarFrontHeadLight = Car.FrontHeadLight;
             var newCarRearHeadLight = Car.RearHeadLight;
             var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
-            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;            
+            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;                        
 
             // AI
             if (!newCarIsPlayer)

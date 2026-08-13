@@ -36,6 +36,18 @@ namespace Orts.Formats.Msts
         public bool Transition;
         public float Angle;
 
+        public LightState(uint color, Vector3 position, Vector3 azimuth, float angle = 150f, float radius = 20f)
+        {
+            Duration = 0f;
+            Color = color;
+            Position = position;
+            Radius = radius;
+            Azimuth = azimuth;
+            Elevation = Vector3.Zero;
+            Transition = true;
+            Angle = angle;
+        }
+
         public LightState(STFReader stf)
         {
             stf.MustMatch("(");
@@ -247,6 +259,25 @@ namespace Orts.Formats.Msts
         public float FadeIn;
         public float FadeOut;
         public List<LightState> States = new List<LightState>();
+
+        public Light(int index, LightType type, LightHandleCondition unitSide, LightControlCondition control, List<LightState> states)
+        {
+            Index = index;
+            Type = type;
+            UnitSide = unitSide;
+            Control = control;
+            Headlight = LightHeadlightCondition.Ignore;
+            Unit = LightUnitCondition.Ignore;
+            Penalty = LightPenaltyCondition.Ignore;
+            Service = LightServiceCondition.Ignore;
+            TimeOfDay = LightTimeOfDayCondition.Ignore;
+            Weather = LightWeatherCondition.Ignore;
+            Coupling = LightCouplingCondition.Ignore;
+            Cycle = false;
+            FadeIn = 0.0f;
+            FadeOut = 0.0f;
+            States = states;
+        }
 
         public Light(int index, STFReader stf)
         {
