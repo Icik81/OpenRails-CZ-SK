@@ -396,85 +396,172 @@ namespace Orts.Viewer3D
                         newTrainHeadlight = locomotive.Headlight[2];
                         newCarIsReversed = true;
                     }
-            }
+            }            
 
             // Ovládání reflektorů u vozů bez UnitSide reflektorů
-            #region NoUnitSideCar
-            if (Car.NoUnitSideCar)
-            {
+            #region Poziční kužely světla k reflektorům
+            if (Car.NoUnitSideCar || (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode)))
+            { 
                 Car.LightFrontLW = false; Car.LightFrontRW = false; Car.LightRearLW = false; Car.LightRearRW = false;
                 Car.LightFrontLR = false; Car.LightFrontRR = false; Car.LightRearLR = false; Car.LightRearRR = false;
 
-                if (newCarIsFirst && !newCarIsLast)
+                // Vozy
+                if (!(Car is MSTSLocomotive))
                 {
-                    if (!newCarIsReversed)
+                    newTrainHeadlight = 7;
+                    if (Car == Car.Train.FirstCar)
                     {
-                        Car.LightFrontLW = true;
-                        Car.LightFrontRW = true;
-                    }
-                    else
-                    {
-                        Car.LightRearLW = true;
-                        Car.LightRearRW = true;
-                    }
-                }
-
-                if (newCarIsLast && !newCarIsFirst)
-                {
-                    if (!newCarIsReversed)
-                    {
-                        Car.LightFrontLR = true;
-                        Car.LightFrontRR = true;
-                    }
-                    else
-                    {
-                        Car.LightRearLR = true;
-                        Car.LightRearRR = true;
-                    }
-                }
-
-                if (newTrainHeadlight > 0)
-                {
-                    if (newCarIsFirst && newCarIsLast)
-                    {
-                        if (!newCarIsReversed)
+                        if (!Car.Flipped)
                         {
                             Car.LightFrontLW = true;
                             Car.LightFrontRW = true;
-                            Car.LightRearLR = true;
-                            Car.LightRearRR = true;
                         }
                         else
                         {
                             Car.LightRearLW = true;
                             Car.LightRearRW = true;
+                        }
+                    }
+
+                    if (Car == Car.Train.LastCar)
+                    {
+                        if (Car.Flipped)
+                        {
                             Car.LightFrontLR = true;
                             Car.LightFrontRR = true;
                         }
-                    }
-                }
-                else
-                {
-                    if (newCarIsFirst && newCarIsLast)
-                    {
-                        if (!newCarIsReversed)
-                        {
-                            Car.LightFrontLW = true;
-                            Car.LightFrontRW = true;
-                            Car.LightRearLW = true;
-                            Car.LightRearRW = true;
-                        }
                         else
                         {
-                            Car.LightRearLW = true;
-                            Car.LightRearRW = true;
-                            Car.LightFrontLW = true;
-                            Car.LightFrontRW = true;
+                            Car.LightRearLR = true;
+                            Car.LightRearRR = true;
+                        }
+                    }
+                }
+
+                // Lokomotivy
+                if (Car is MSTSLocomotive)
+                {
+                    if (Car.Train != null && Car.Train.IsActualPlayerTrain)
+                    {                        
+                        if (newCarIsFirst && !newCarIsLast)
+                        {
+                            if (!newCarIsReversed)
+                            {
+                                Car.LightFrontLW = true;
+                                Car.LightFrontRW = true;
+                            }
+                            else
+                            {
+                                Car.LightRearLW = true;
+                                Car.LightRearRW = true;
+                            }
+                        }
+
+                        if (newCarIsLast && !newCarIsFirst)
+                        {
+                            if (!newCarIsReversed)
+                            {
+                                if (newCarCoupledFront)
+                                {
+                                    Car.LightRearLR = true;
+                                    Car.LightRearRR = true;
+                                }
+                                if (newCarCoupledRear)
+                                {
+                                    Car.LightFrontLR = true;
+                                    Car.LightFrontRR = true;
+                                }
+                            }
+                            else
+                            {
+                                if (newCarCoupledFront)
+                                {
+                                    Car.LightFrontLR = true;
+                                    Car.LightFrontRR = true;
+                                }
+                                if (newCarCoupledRear)
+                                {
+                                    Car.LightRearLR = true;
+                                    Car.LightRearRR = true;
+                                }
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (newCarIsFirst && !newCarIsLast)
+                        {
+                            if (!newCarIsReversed)
+                            {
+                                Car.LightFrontLW = true;
+                                Car.LightFrontRW = true;
+                            }
+                            else
+                            {
+                                Car.LightRearLW = true;
+                                Car.LightRearRW = true;
+                            }
+                        }
+
+                        if (newCarIsLast && !newCarIsFirst)
+                        {
+                            if (newCarIsReversed)
+                            {
+                                Car.LightFrontLR = true;
+                                Car.LightFrontRR = true;
+                            }
+                            else
+                            {
+                                Car.LightRearLR = true;
+                                Car.LightRearRR = true;
+                            }
+                        }
+                    }
+
+                    // Sólo
+                    if (newTrainHeadlight > 0)
+                    {
+                        if (newCarIsFirst && newCarIsLast)
+                        {
+                            if (!newCarIsReversed)
+                            {
+                                Car.LightFrontLW = true;
+                                Car.LightFrontRW = true;
+                                Car.LightRearLR = true;
+                                Car.LightRearRR = true;
+                            }
+                            else
+                            {
+                                Car.LightRearLW = true;
+                                Car.LightRearRW = true;
+                                Car.LightFrontLR = true;
+                                Car.LightFrontRR = true;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (newCarIsFirst && newCarIsLast)
+                        {
+                            if (!newCarIsReversed)
+                            {
+                                Car.LightFrontLW = true;
+                                Car.LightFrontRW = true;
+                                Car.LightRearLW = true;
+                                Car.LightRearRW = true;
+                            }
+                            else
+                            {
+                                Car.LightRearLW = true;
+                                Car.LightRearRW = true;
+                                Car.LightFrontLW = true;
+                                Car.LightFrontRW = true;
+                            }
                         }
                     }
                 }
             }
-            #endregion NoUnitSideCar
+            #endregion 
 
             var newCarLightFrontLW = Car.LightFrontLW;
             var newCarLightFrontRW = Car.LightFrontRW;
@@ -488,21 +575,9 @@ namespace Orts.Viewer3D
             var newCarRearHeadLight = Car.RearHeadLight;
             var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
             var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;                        
+            
 
-            // AI
-            if (!newCarIsPlayer)
-            {
-                newCarLightFrontLW = false;
-                newCarLightFrontRW = false;
-                newCarLightRearLW = false;
-                newCarLightRearRW = false;
-                newCarLightFrontLR = false;
-                newCarLightFrontRR = false;
-                newCarLightRearLR = false;
-                newCarLightRearRR = false;
-            }
-
-            if (LightCycle < 1 && Car.Train != null && Car.Train.TrainType == Train.TRAINTYPE.AI)
+            if (LightCycle < 1 && Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
             {
                 LightCycle++;
                 return true;
@@ -1229,7 +1304,7 @@ namespace Orts.Viewer3D
         {
             // TODO: This should happen on the loader thread.
             LightGlowTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, textureName);
-            BulbTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
+            BulbTexture = SharedTextureManager.Get(Viewer.RenderProcess.GraphicsDevice, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Star.png"));
         }
 
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
