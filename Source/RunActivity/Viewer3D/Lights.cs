@@ -250,12 +250,12 @@ namespace Orts.Viewer3D
             var locomotive = Car.Train != null && Car.Train.IsActualPlayerTrain ? Viewer.PlayerLocomotive : null;
             var mstsLocomotive = locomotive as MSTSLocomotive;
 
-            // Pokud má vlak vypnuté napájení světel, tak se světla nezobrazují
-            if (Car.Train != null && !Car.CarLightsPowerOn)                              
+            // Pokud má vlak vypnuté napájení světel, tak se světla nezobrazují, také pokud je vůz bez UnitSide reflektorů a není první ani poslední vůz vlaku, tak se světla nezobrazují
+            if (Car.Train != null && (!Car.CarLightsPowerOn || (Car.NoUnitSideCar && Car != Car.Train.FirstCar && Car != Car.Train.LastCar)))                              
             {                
                 return;
-            }            
-
+            }
+            
             if (UpdateState())
             {
                 foreach (var lightPrimitive in LightPrimitives)
@@ -275,23 +275,26 @@ namespace Orts.Viewer3D
             Vector3 mstsLocation = new Vector3(xnaDTileTranslation.Translation.X, xnaDTileTranslation.Translation.Y, -xnaDTileTranslation.Translation.Z);
 
             float objectRadius = 20; // Even more arbitrary.
-            float objectViewingDistance = Viewer.Settings.ViewingDistance * 0.5f; // Arbitrary.            
+            float objectViewingDistance = Viewer.Settings.ViewingDistance > 2000f ? 2000 : Viewer.Settings.ViewingDistance; // Arbitrary.            
 
             if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
                 foreach (var lightPrimitive in LightPrimitives)
-                    if ((lightPrimitive.Enabled || lightPrimitive.FadeOut) && lightPrimitive is LightGlowPrimitive)                    
-                        frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
+                {
+                    if ((lightPrimitive.Enabled || lightPrimitive.FadeOut))
+                    {
+                        if (lightPrimitive is LightGlowPrimitive)
+                            frame.AddPrimitive((lightPrimitive as LightGlowPrimitive).LightGlowMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
 
-            if (Viewer.Camera.CanSee(mstsLocation, objectRadius, objectViewingDistance))
-                foreach (var lightPrimitive in LightPrimitives)
-                if (lightPrimitive.Enabled || lightPrimitive.FadeOut)
-                    if (lightPrimitive is LightConePrimitive)
+                        if (lightPrimitive is LightConePrimitive)
                             frame.AddPrimitive(LightConeMaterial, lightPrimitive, RenderPrimitiveGroup.Lights, ref xnaDTileTranslation);
+                    }                                       
+                }                            
             
             // Registrace všech aktivních i dohasínajících světelných kuželů
             var visibleCones = LightPrimitives.OfType<LightConePrimitive>()
                 .Where(c => c.Enabled || c.FadeOut || c.Fade.X > 0f);
-            
+
+            int visibleConesCount = 0;
             foreach (var cone in visibleCones)
             {                
                 Vector3 conePos = Vector3.Transform(Vector3.Lerp(cone.Position1, cone.Position2, cone.Fade.Y), xnaDTileTranslation);
@@ -310,6 +313,8 @@ namespace Orts.Viewer3D
                     coneDist,
                     coneMinDot
                 );
+                
+                visibleConesCount++;
             }
         }
 
@@ -319,8 +324,8 @@ namespace Orts.Viewer3D
             LightGlowMaterial.Mark();
             LightConeMaterial.Mark();
             foreach (var lightPrimitive in LightPrimitives)
-                if (lightPrimitive is LightGlowPrimitive)                
-                    (lightPrimitive as LightGlowPrimitive).LightGlowMaterial.Mark();                
+                if (lightPrimitive is LightGlowPrimitive)
+                    (lightPrimitive as LightGlowPrimitive).LightGlowMaterial.Mark();
         }
 
         public static void CalculateLightCone(LightState lightState, out Vector3 position, out Vector3 direction, out float angle, out float radius, out float distance, out Vector4 color)
@@ -380,7 +385,7 @@ namespace Orts.Viewer3D
             // Coupling
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
-
+            
             // Icik
             // Ovládání obou reflektorů v jedné kabině 
             if (locomotive != null && mstsLocomotive?.HeadLight2Enable == true)
@@ -1138,7 +1143,7 @@ namespace Orts.Viewer3D
     }
 
     public class LightConePrimitive : LightPrimitive
-    {
+    {        
         const int CircleSegments = 16;
 
         static VertexDeclaration VertexDeclaration;

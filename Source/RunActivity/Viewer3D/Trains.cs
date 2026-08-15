@@ -125,8 +125,8 @@ namespace Orts.Viewer3D
         [CallOnThread("Updater")]
         public void LoadPrep()
         {
-            var visibleCars = new List<TrainCar>();
-            var removeDistance = Viewer.Settings.ViewingDistance * 1.5f;
+            var visibleCars = new List<TrainCar>();            
+            var removeDistance = Viewer.Settings.ViewingDistance > 2000f ? 2000 : Viewer.Settings.ViewingDistance;
             visibleCars.Add(Viewer.PlayerLocomotive);
             foreach (var train in Viewer.Simulator.Trains)
                 foreach (var car in train.Cars)
@@ -138,11 +138,12 @@ namespace Orts.Viewer3D
 
         [CallOnThread("Updater")]
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
-        {
+        {            
             var cars = Cars;
             foreach (var car in cars.Values)
                 car.PrepareFrame(frame, elapsedTime);
-            // Do the lights separately for proper alpha sorting
+            // Do the lights separately for proper alpha sorting            
+            if (Viewer.Simulator.GameTime == 0) return;
             foreach (var car in cars.Values)
                 if (car.lightDrawer != null)
                     car.lightDrawer.PrepareFrame(frame, elapsedTime);

@@ -93,6 +93,6 @@ float4 PSCabShader(PIXEL_INPUT In) : COLOR0
 
 technique CabShader {
 	pass Pass_0 {
-		PixelShader = compile ps_4_0_level_9_3 PSCabShader();
+		PixelShader = compile ps_5_0 PSCabShader();
 	}
 }

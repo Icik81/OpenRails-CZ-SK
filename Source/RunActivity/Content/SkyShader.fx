@@ -319,28 +319,28 @@ float4 PSThunder(VERTEX_OUTPUT In) : COLOR
 
 technique Sky {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSSky();
-	  PixelShader = compile ps_4_0_level_9_3 PSSky();
+	  VertexShader = compile vs_5_0 VSSky();
+	  PixelShader = compile ps_5_0 PSSky();
    }
 }
 
 technique Moon {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSMoon();
-	  PixelShader = compile ps_4_0_level_9_3 PSMoon();
+	  VertexShader = compile vs_5_0 VSMoon();
+	  PixelShader = compile ps_5_0 PSMoon();
    }
 }
 
 technique Clouds {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSSky();
-	  PixelShader = compile ps_4_0_level_9_3 PSClouds();
+	  VertexShader = compile vs_5_0 VSSky();
+	  PixelShader = compile ps_5_0 PSClouds();
    }
 }
 
 technique Thunder {
    pass Pass_0 {
-	  VertexShader = compile vs_4_0_level_9_3 VSSky();
-	  PixelShader = compile ps_4_0_level_9_3 PSThunder();
+	  VertexShader = compile vs_5_0 VSSky();
+	  PixelShader = compile ps_5_0 PSThunder();
    }
 }
