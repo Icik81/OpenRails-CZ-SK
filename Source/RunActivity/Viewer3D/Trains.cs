@@ -142,8 +142,7 @@ namespace Orts.Viewer3D
             var cars = Cars;
             foreach (var car in cars.Values)
                 car.PrepareFrame(frame, elapsedTime);
-            // Do the lights separately for proper alpha sorting            
-            if (Viewer.Simulator.GameTime == 0) return;
+            // Do the lights separately for proper alpha sorting                        
             foreach (var car in cars.Values)
                 if (car.lightDrawer != null)
                     car.lightDrawer.PrepareFrame(frame, elapsedTime);

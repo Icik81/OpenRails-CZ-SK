@@ -1011,6 +1011,7 @@ namespace Orts.Viewer3D
                 if (Light.States[State % Light.States.Count].Transition)
                     Fade.Y = StateTime / Light.States[State % Light.States.Count].Duration;
             }
+            if (Light.FadeIn <= 0) Light.FadeIn = 0.01f;
             if (FadeIn)
             {
                 FadeTime += elapsedTime.ClockSeconds;
