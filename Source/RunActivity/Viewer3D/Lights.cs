@@ -409,9 +409,9 @@ namespace Orts.Viewer3D
                 if (!(Car is MSTSLocomotive))
                 {
                     newTrainHeadlight = 7;
-                    if (Car == Car.Train.FirstCar)
+                    if (newCarIsFirst)
                     {
-                        if (!Car.Flipped)
+                        if (!newCarIsReversed)
                         {
                             Car.LightFrontLW = true;
                             Car.LightFrontRW = true;
@@ -423,9 +423,9 @@ namespace Orts.Viewer3D
                         }
                     }
 
-                    if (Car == Car.Train.LastCar)
+                    if (newCarIsLast)
                     {
-                        if (Car.Flipped)
+                        if (newCarIsReversed)
                         {
                             Car.LightFrontLR = true;
                             Car.LightFrontRR = true;
