@@ -340,10 +340,6 @@ namespace Orts.Viewer3D
             color = new Color() { PackedValue = lightState.Color }.ToVector4();
         }
 
-#if DEBUG_LIGHT_STATES
-        public const string PrimitiveStateLabel = "Index       Enabled     Type        Headlight   Unit        Penalty     Control     Service     Time        Weather     Coupling  ";
-        public const string PrimitiveStateFormat = "{0,-10  }  {1,-10   }  {2,-10   }  {3,-10   }  {4,-10   }  {5,-10   }  {6,-10   }  {7,-10   }  {8,-10   }  {9,-10   }  {10,-10  }";
-#endif
         int LightCycle = 0;
         bool UpdateState()
         {
@@ -524,7 +520,7 @@ namespace Orts.Viewer3D
                     }
 
                     // Sólo
-                    if (newTrainHeadlight > 0)
+                    if (newTrainHeadlight > 0 && !Car.CarIsShunting)
                     {
                         if (newCarIsFirst && newCarIsLast)
                         {
@@ -601,11 +597,12 @@ namespace Orts.Viewer3D
                 newIsDay = false;
             }
 
+            #region AI
             // Světla pro AI
             if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
             {
                 // AI posunuje
-                if (Car.CarIsShunting)
+                if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
                 {
                     newTrainHeadlight = 0;
                     TrainHeadlight = 1;                    
@@ -614,7 +611,7 @@ namespace Orts.Viewer3D
                 // AI vyčkává na místě
                 if (Car.CarIsWaiting)
                 {
-                    newTrainHeadlight = 0;
+                    newTrainHeadlight = 7;                    
                     TrainHeadlight = 1;                    
                 }                
 
@@ -629,15 +626,15 @@ namespace Orts.Viewer3D
                         newTrainHeadlight = 1;                        
                     }
 
-                    if (Car.CarIsShunting)
+                    if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
                     {
-                        newTrainHeadlight = 1;                        
+                        newTrainHeadlight = 0;
                     }
 
                     // AI stojí
                     if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
                     {
-                        newTrainHeadlight = 1;                        
+                        newTrainHeadlight = 7;                        
                     }
 
                     TrainHeadlight = 3;
@@ -673,7 +670,8 @@ namespace Orts.Viewer3D
                 {
                     newTrainHeadlight = 2; 
                 }
-            }            
+            }
+            #endregion
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
@@ -686,8 +684,7 @@ namespace Orts.Viewer3D
                 (IsDay != newIsDay) ||
                 (Weather != newWeather) ||
                 (CarCoupledFront != newCarCoupledFront) ||
-                (CarCoupledRear != newCarCoupledRear) ||
-                // Icik
+                (CarCoupledRear != newCarCoupledRear) ||                
                 (CarLightFrontLW != newCarLightFrontLW) ||
                 (CarLightFrontRW != newCarLightFrontRW) ||
                 (CarLightRearLW != newCarLightRearLW) ||
@@ -712,8 +709,7 @@ namespace Orts.Viewer3D
                 IsDay = newIsDay;
                 Weather = newWeather;
                 CarCoupledFront = newCarCoupledFront;
-                CarCoupledRear = newCarCoupledRear;
-                // Icik
+                CarCoupledRear = newCarCoupledRear;                
                 CarLightFrontLW = newCarLightFrontLW;
                 CarLightFrontRW = newCarLightFrontRW;
                 CarLightRearLW = newCarLightRearLW;
@@ -726,30 +722,7 @@ namespace Orts.Viewer3D
                 CarRearHeadLight = newCarRearHeadLight;
                 TrainHeadlightFront = newTrainHeadlightFront;
                 TrainHeadlightRear = newTrainHeadlightRear;
-
-#if DEBUG_LIGHT_STATES
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine("LightViewer: {0} {1} {2:D}{3}:{4}{5}{6}{7}{8}{9}{10}{11}{12}{13}{14}",
-                    Car.Train != null ? Car.Train.FrontTDBTraveller.WorldLocation : Car.WorldPosition.WorldLocation, Car.Train != null ? "train car" : "car", Car.Train != null ? Car.Train.Cars.IndexOf(Car) : 0, Car.Flipped ? " (flipped)" : "",
-                    TrainHeadlight == 2 ? " HL=Bright" : TrainHeadlight == 1 ? " HL=Dim" : "",
-                    CarIsReversed ? " Reversed" : "",
-                    CarIsFirst ? " First" : "",
-                    CarIsLast ? " Last" : "",
-                    Penalty ? " Penalty" : "",
-                    CarIsPlayer ? " Player" : " AI",
-                    CarInService ? " Service" : "",
-                    IsDay ? "" : " Night",
-                    Weather == WeatherType.Snow ? " Snow" : Weather == WeatherType.Rain ? " Rain" : "",
-                    CarCoupledFront ? " CoupledFront" : "",
-                    CarCoupledRear ? " CoupledRear" : "");
-                if (Car.Lights != null)
-                {
-                    Console.WriteLine();
-                    Console.WriteLine(PrimitiveStateLabel);
-                    Console.WriteLine(new String('=', PrimitiveStateLabel.Length));
-                }
-#endif                          
+    
                 return true;
             }
             return false;
@@ -1145,120 +1118,13 @@ namespace Orts.Viewer3D
 
     public class LightConePrimitive : LightPrimitive
     {        
-        const int CircleSegments = 16;
-
-        static VertexDeclaration VertexDeclaration;
-        VertexBuffer VertexBuffer;
-        static IndexBuffer IndexBuffer;
-        static BlendState BlendState_SourceZeroDestOne;
-
         public LightConePrimitive(LightViewer lightViewer, RenderProcess renderProcess, Light light)
             : base(light)
         {
-            Debug.Assert(light.Type == LightType.Cone, "LightConePrimitive is only for LightType.Cone lights.");
-
-            if (VertexDeclaration == null)
-                VertexDeclaration = new VertexDeclaration(LightConeVertex.SizeInBytes, LightConeVertex.VertexElements);
-            if (VertexBuffer == null)
-            {
-                var vertexData = new LightConeVertex[(CircleSegments + 2) * StateCount];
-                SetUpTransitions((state, stateIndex1, stateIndex2) =>
-                {
-                    var state1 = Light.States[stateIndex1];
-                    var state2 = Light.States[stateIndex2];
-
-#if DEBUG_LIGHT_TRANSITIONS
-                    Console.WriteLine("    Transition {0} is from state {1} to state {2} over {3:F1}s", state, stateIndex1, stateIndex2, state1.Duration);
-#endif
-
-                    Vector3 position1, position2, direction1, direction2;
-                    float angle1, angle2, radius1, radius2, distance1, distance2;
-                    Vector4 color1, color2;
-                    LightViewer.CalculateLightCone(state1, out position1, out direction1, out angle1, out radius1, out distance1, out color1);
-                    LightViewer.CalculateLightCone(state2, out position2, out direction2, out angle2, out radius2, out distance2, out color2);
-                    var direction1Right = Vector3.Cross(direction1, Vector3.UnitY);
-                    var direction1Up = Vector3.Cross(direction1Right, direction1);
-                    var direction2Right = Vector3.Cross(direction2, Vector3.UnitY);
-                    var direction2Up = Vector3.Cross(direction2Right, direction2);
-
-                    for (var i = 0; i < CircleSegments; i++)
-                    {
-                        var a1 = MathHelper.TwoPi * i / CircleSegments;
-                        var a2 = MathHelper.TwoPi * (i + 1) / CircleSegments;
-                        var v1 = position1 + direction1 * distance1 + direction1Right * (float)(radius1 * Math.Cos(a1)) + direction1Up * (float)(radius1 * Math.Sin(a1));
-                        var v2 = position2 + direction2 * distance2 + direction2Right * (float)(radius2 * Math.Cos(a2)) + direction2Up * (float)(radius2 * Math.Sin(a2));
-                        vertexData[(CircleSegments + 2) * state + i] = new LightConeVertex(v1, v2, color1, color2);
-                    }
-                    vertexData[(CircleSegments + 2) * state + CircleSegments + 0] = new LightConeVertex(position1, position2, color1, color2);
-                    vertexData[(CircleSegments + 2) * state + CircleSegments + 1] = new LightConeVertex(new Vector3(position1.X, position1.Y, position1.Z - distance1), new Vector3(position2.X, position2.Y, position2.Z - distance2), color1, color2);
-                });
-                VertexBuffer = new VertexBuffer(renderProcess.GraphicsDevice, VertexDeclaration, vertexData.Length, BufferUsage.WriteOnly);
-                VertexBuffer.SetData(vertexData);
-            }
-            if (IndexBuffer == null)
-            {
-                var indexData = new short[6 * CircleSegments];
-                for (var i = 0; i < CircleSegments; i++)
-                {
-                    var i2 = (i + 1) % CircleSegments;
-                    indexData[6 * i + 0] = (short)(CircleSegments + 0);
-                    indexData[6 * i + 1] = (short)i2;
-                    indexData[6 * i + 2] = (short)i;
-                    indexData[6 * i + 3] = (short)i;
-                    indexData[6 * i + 4] = (short)i2;
-                    indexData[6 * i + 5] = (short)(CircleSegments + 1);
-                }
-                IndexBuffer = new IndexBuffer(renderProcess.GraphicsDevice, typeof(short), indexData.Length, BufferUsage.WriteOnly);
-                IndexBuffer.SetData(indexData);
-            }
-            if (BlendState_SourceZeroDestOne == null)
-                BlendState_SourceZeroDestOne = new BlendState
-                {
-                    ColorSourceBlend = Blend.Zero,
-                    ColorDestinationBlend = Blend.One,
-                    AlphaSourceBlend = Blend.Zero,
-                    AlphaDestinationBlend = Blend.One
-                };
-
-            UpdateState(lightViewer);
-        }
-
-        private static readonly DepthStencilState FirstPassDepthState = new DepthStencilState
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = false, // KLÍČOVÉ: Nesmí zapisovat do depth bufferu
-            StencilEnable = true,
-            StencilFunction = CompareFunction.Always,
-            StencilPass = StencilOperation.Increment,
-            DepthBufferFunction = CompareFunction.Greater
-        };
-
-        private static readonly DepthStencilState SecondPassDepthState = new DepthStencilState
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = false, // KLÍČOVÉ: Nesmí zapisovat do depth bufferu
-            StencilEnable = true,
-            StencilFunction = CompareFunction.Less,
-            StencilPass = StencilOperation.Zero,
-            DepthBufferFunction = CompareFunction.Less
-        };
+        }        
 
         public override void Draw(GraphicsDevice graphicsDevice)
-        {
-            graphicsDevice.SetVertexBuffer(VertexBuffer);
-            graphicsDevice.Indices = IndexBuffer;
-
-            // První průchod (CullClockwise)
-            graphicsDevice.RasterizerState = RasterizerState.CullClockwise;
-            graphicsDevice.DepthStencilState = FirstPassDepthState;
-            graphicsDevice.BlendState = BlendState_SourceZeroDestOne;
-            //graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, (CircleSegments + 2) * State, 0, 2 * CircleSegments);
-
-            // Druhý průchod (CullCounterClockwise)
-            graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-            graphicsDevice.DepthStencilState = SecondPassDepthState;
-            graphicsDevice.BlendState = BlendState.AlphaBlend;
-            graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, (CircleSegments + 2) * State, 0, 2 * CircleSegments);
+        {            
         }
 
         public Vector3 Position1, Position2, Direction1, Direction2;
@@ -1396,48 +1262,6 @@ namespace Orts.Viewer3D
         public LightConeMaterial(Viewer viewer)
             : base(viewer, null)
         {
-        }
-
-        // Definice statického stavu (např. ve třídě materiálu nebo rendereru)
-        private static readonly DepthStencilState LightConeDepthState = new DepthStencilState
-        {
-            DepthBufferEnable = true,
-            DepthBufferWriteEnable = false, // Odpovídá chování DepthRead
-            StencilEnable = true
-        };
-
-        public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
-        {
-            var shader = Viewer.MaterialManager.LightConeShader;
-            shader.CurrentTechnique = shader.Techniques["LightCone"];
-
-            graphicsDevice.BlendState = BlendState.NonPremultiplied;
-            graphicsDevice.DepthStencilState = LightConeDepthState;
-        }
-
-        public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
-        {
-            var shader = Viewer.MaterialManager.LightConeShader;
-
-            foreach (var pass in shader.CurrentTechnique.Passes)
-            {
-                foreach (var item in renderItems)
-                {
-                    // Light cone was originally using XNASkyProjection, but with no problems.
-                    // Switched to Viewer.Camera.XnaProjection to keep the standard since farPlaneDistance used by XNASkyProjection is limited to 6100.
-                    Matrix wvp = item.XNAMatrix * XNAViewMatrix * Viewer.Camera.XnaProjection;
-                    shader.SetMatrix(ref wvp);
-                    shader.SetFade(((LightPrimitive)item.RenderPrimitive).Fade);
-                    pass.Apply();
-                    item.RenderPrimitive.Draw(graphicsDevice);
-                }
-            }
-        }
-
-        public override void ResetState(GraphicsDevice graphicsDevice)
-        {
-            graphicsDevice.BlendState = BlendState.Opaque;
-            graphicsDevice.DepthStencilState = DepthStencilState.Default;            
-        }
+        }        
     }
 }
