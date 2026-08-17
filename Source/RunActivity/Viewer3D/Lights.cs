@@ -149,71 +149,85 @@ namespace Orts.Viewer3D
             float frontZ = Car.CarLengthM / 2.0f;
             float rearZ = -Car.CarLengthM / 2.0f;
             float posY = 0.5f;
+            uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
+            uint redColor = ConvertMstsColor(0x88E00000);
 
             // Pokusíme se zpřesnit pozici Z a Y podle předních a zadních Glow světel
-            var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0);
+            var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);
             if (frontGlow != null)
             {
                 frontZ = frontGlow.States[0].Position.Z;
                 posY = frontGlow.States[0].Position.Y;
+                whiteColor = frontGlow.States[0].Color;
             }
             else
             {
-                frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0);
+                frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0 && l.States[0].Azimuth.Z == 0f);
                 if (frontGlow != null)
                 {
                     frontZ = frontGlow.States[0].Position.Z;
-                    posY = frontGlow.States[0].Position.Y;
+                    posY = frontGlow.States[0].Position.Y;                    
+                    whiteColor = frontGlow.States[0].Color;
                     car.NoUnitSideCar = true;
                 }
             }
 
-            var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0);
+            var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);            
             if (rearGlow != null)
             {
-                rearZ = rearGlow.States[0].Position.Z;
+                rearZ = rearGlow.States[0].Position.Z;                
             }
             else
             {
-                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0);
+                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0 && l.States[0].Azimuth.Z == 180f);                
                 if (rearGlow != null)
                 {
-                    rearZ = rearGlow.States[0].Position.Z;
+                    rearZ = rearGlow.States[0].Position.Z;                                        
                     car.NoUnitSideCar = true;
                 }
-            }
-
-            uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
-            uint redColor = ConvertMstsColor(0xAAFF0000);
+            }            
 
             // 11 - FrontW (Přední bílá)
             if (!existingCones.Contains(LightHandleCondition.FrontW))
             {
-                AddConeLight(LightHandleCondition.FrontW, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), whiteColor);
+                AddConeLightW(LightHandleCondition.FrontW, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), whiteColor);
             }
 
             // 12 - RearW (Zadní bílá)
             if (!existingCones.Contains(LightHandleCondition.RearW))
             {
-                AddConeLight(LightHandleCondition.RearW, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), whiteColor);
+                AddConeLightW(LightHandleCondition.RearW, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), whiteColor);
             }
 
             // 13 - FrontR (Přední červená)
             if (!existingCones.Contains(LightHandleCondition.FrontR))
             {
-                AddConeLight(LightHandleCondition.FrontR, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), redColor);
+                AddConeLightR(LightHandleCondition.FrontR, new Vector3(0, posY, frontZ), new Vector3(0, 0, 0), redColor);
             }
 
             // 14 - RearR (Zadní červená)
             if (!existingCones.Contains(LightHandleCondition.RearR))
             {
-                AddConeLight(LightHandleCondition.RearR, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), redColor);
+                AddConeLightR(LightHandleCondition.RearR, new Vector3(0, posY, rearZ), new Vector3(180, 180, 180), redColor);
             }
         }
 
-        private void AddConeLight(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
+        private void AddConeLightW(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
         {
-            var state = new LightState(color, position, azimuth, angle: 150f, radius: 20f);
+            var state = new LightState(color, position, azimuth, angle: 150f, radius: 35f);
+            var light = new Light(
+                Car.Lights.Lights.Count,
+                LightType.Cone,
+                unitSide,
+                LightControlCondition.Player,
+                new List<LightState> { state }
+            );
+
+            Car.Lights.Lights.Add(light);
+        }
+        private void AddConeLightR(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
+        {
+            var state = new LightState(color, position, azimuth, angle: 150f, radius: 15f);
             var light = new Light(
                 Car.Lights.Lights.Count,
                 LightType.Cone,
@@ -668,7 +682,7 @@ namespace Orts.Viewer3D
                 // Vlaky bez tlumeného reflektoru
                 if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) 
                 {
-                    newTrainHeadlight = 2; 
+                    //newTrainHeadlight = 2; 
                 }
             }
             #endregion

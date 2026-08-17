@@ -36,7 +36,7 @@ namespace Orts.Formats.Msts
         public bool Transition;
         public float Angle;
 
-        public LightState(uint color, Vector3 position, Vector3 azimuth, float angle = 150f, float radius = 20f)
+        public LightState(uint color, Vector3 position, Vector3 azimuth, float angle = 150f, float radius = 30f)
         {
             Duration = 0f;
             Color = color;

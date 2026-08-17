@@ -1007,10 +1007,17 @@ namespace Orts.Simulation
                         break;
                     }
                 }
-                                               
+
+                // Vypne světla u static vozů
+                if (train.TrainType == Train.TRAINTYPE.STATIC)
+                {
+                    foreach (TrainCar car in train.Cars.Where(car => car.CarLightsPowerOn))                    
+                        car.CarLightsPowerOn = false;                    
+                }
+
                 // Icik                                
                 if (train.PlayerTrainStartTime == -1)
-                    train.PlayerTrainStartTime = (int)ClockTime;                
+                train.PlayerTrainStartTime = (int)ClockTime;                
 
                 if ((train.SpeedMpS != 0 || (train.ControlMode == Train.TRAIN_CONTROL.EXPLORER && train.TrainType == Train.TRAINTYPE.REMOTE && MPManager.IsServer())) &&
                     train.GetType() != typeof(AITrain) && train.GetType() != typeof(TTTrain) &&
