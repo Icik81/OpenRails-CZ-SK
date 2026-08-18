@@ -460,6 +460,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ShunterTestBrakeDone;
         public bool ShunterTestingBrake;
         public bool NoUnitSideCar;
+        public bool ConeUnitSideCar;
 
         public float PowerReductionResult1;  // Redukce výkonu od topení, klimatizace, kompresoru
         public float PowerReductionResult2;  // Redukce výkonu od nedostatečného tlaku vzduchu v potrubí

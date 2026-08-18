@@ -220,6 +220,10 @@ namespace Orts.Formats.Msts
         RearW,   // 12 - Zadní bílá na obou stranách (LW nebo RW)
         FrontR,  // 13 - Přední červená na obou stranách (LR nebo RR)
         RearR,   // 14 - Zadní červená na obou stranách (LR nebo RR)
+        ConeFDim, // 15 - Přední reflektor tlumený
+        ConeFBright, // 16  - Přední reflektor dálkový
+        ConeRDim, // 17  - Zadní reflektor tlumený
+        ConeRBright, // 18  - Zadní reflektor dálkový
     }
 
     public enum LightGlowType
@@ -382,7 +386,8 @@ namespace Orts.Formats.Msts
             foreach (var light in Lights.ToArray())
                 if (light.Type == LightType.Cone)
                 {
-                    var reverseLight = light.UnitSide != LightHandleCondition.FrontW && light.UnitSide != LightHandleCondition.RearW && light.UnitSide != LightHandleCondition.FrontR && light.UnitSide != LightHandleCondition.RearR;
+                    var reverseLight = light.UnitSide != LightHandleCondition.FrontW && light.UnitSide != LightHandleCondition.RearW && light.UnitSide != LightHandleCondition.FrontR && light.UnitSide != LightHandleCondition.RearR
+                        && light.UnitSide != LightHandleCondition.ConeFDim && light.UnitSide != LightHandleCondition.ConeFBright && light.UnitSide != LightHandleCondition.ConeRDim && light.UnitSide != LightHandleCondition.ConeRBright;
                     Lights.Add(new Light(light, reverseLight));
                 }
         }

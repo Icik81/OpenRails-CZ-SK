@@ -152,6 +152,15 @@ namespace Orts.Viewer3D
             uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
             uint redColor = ConvertMstsColor(0x88E00000);
 
+            foreach (var light in Car.Lights.Lights)
+            {
+                if (light.Type == LightType.Cone && (light.UnitSide == LightHandleCondition.ConeFDim || light.UnitSide == LightHandleCondition.ConeFBright || light.UnitSide == LightHandleCondition.ConeRDim || light.UnitSide == LightHandleCondition.ConeRBright))
+                {
+                    car.ConeUnitSideCar = true;
+                    break;
+                }
+            }
+
             // Pokusíme se zpřesnit pozici Z a Y podle předních a zadních Glow světel
             var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);
             if (frontGlow != null)
@@ -214,7 +223,7 @@ namespace Orts.Viewer3D
 
         private void AddConeLightW(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
         {
-            var state = new LightState(color, position, azimuth, angle: 150f, radius: 35f);
+            var state = new LightState(color, position, azimuth, angle: 150f, radius: 25f);
             var light = new Light(
                 Car.Lights.Lights.Count,
                 LightType.Cone,
@@ -364,8 +373,7 @@ namespace Orts.Viewer3D
                 locomotive = Car.Train.LeadLocomotive;
             var mstsLocomotive = locomotive != null ? locomotive as MSTSLocomotive : null;
 
-            // Headlight
-            //var newTrainHeadlight = locomotive != null && mstsLocomotive.Battery ? locomotive.Headlight : Car.Train != null && Car.Train.TrainType != Train.TRAINTYPE.STATIC ? 2 : 0;
+            // Headlight            
             var newTrainHeadlight = locomotive != null ? locomotive.Headlight[mstsLocomotive.LocoStation] : 0;            
 
             // Unit
@@ -395,8 +403,22 @@ namespace Orts.Viewer3D
             // Coupling
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
-            
+
             // Icik
+            var newCarLightFrontLW = Car.LightFrontLW;
+            var newCarLightFrontRW = Car.LightFrontRW;
+            var newCarLightRearLW = Car.LightRearLW;
+            var newCarLightRearRW = Car.LightRearRW;
+            var newCarLightFrontLR = Car.LightFrontLR;
+            var newCarLightFrontRR = Car.LightFrontRR;
+            var newCarLightRearLR = Car.LightRearLR;
+            var newCarLightRearRR = Car.LightRearRR;
+            var newCarFrontHeadLight = Car.FrontHeadLight;
+            var newCarRearHeadLight = Car.RearHeadLight;
+            var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
+            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;
+
+            
             // Ovládání obou reflektorů v jedné kabině 
             if (locomotive != null && mstsLocomotive?.HeadLight2Enable == true)
             {
@@ -411,12 +433,123 @@ namespace Orts.Viewer3D
                         newTrainHeadlight = locomotive.Headlight[2];
                         newCarIsReversed = true;
                     }
-            }            
+            }                                              
+
+            if (LightCycle < 1 && Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
+            {
+                LightCycle++;
+                return true;
+            }
+
+            // Dovolí zapnout reflektor i pokud má před sebou vozy
+            if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
+            {
+                newCarIsLast = true;
+                newCarIsFirst = true;
+            }
+
+            // Povolí kužel reflektoru v tunelu
+            if (Viewer.Simulator.PlayerCarIsInTunnel)
+            {
+                newIsDay = false;
+            }
+
+            // AI vlaky
+            #region AI
+            // Světla pro AI
+            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
+            {
+                // AI posunuje
+                if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
+                {
+                    newTrainHeadlight = 0;                    
+                }
+
+                // AI vyčkává na místě
+                if (Car.CarIsWaiting)
+                {
+                    newTrainHeadlight = 7;                                                       
+                }                
+
+                // Jízda v noci nebo za mlhy
+                if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)
+                {
+                    newTrainHeadlight = 2;
+                    newIsDay = false;
+
+                    if (Math.Abs(Car.Train.SpeedMpS) < 50.0 / 3.6f)
+                    {
+                        newTrainHeadlight = 1;                        
+                    }
+
+                    if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
+                    {
+                        newTrainHeadlight = 0;
+                    }
+
+                    // AI stojí
+                    if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
+                    {
+                        newTrainHeadlight = 7;                        
+                    }                    
+                }
+                else
+                {
+                    // Normální jízda
+                    if (!Car.CarIsShunting && !Car.CarIsWaiting)
+                    {
+                        newTrainHeadlight = 1;                        
+                    }
+                }
+
+                if ((Car is MSTSLocomotive) && (Car as MSTSLocomotive).OtherTrainFlash)
+                {
+                    if ((Car as MSTSLocomotive).OtherTrainFlashOn)
+                    {
+                        newTrainHeadlight = 2;
+                        newIsDay = false;                        
+                    }
+                    else
+                    {
+                        newTrainHeadlight = 1;
+                        newIsDay = false;                                              
+                    }
+                }
+                
+                // Vlaky bez tlumeného reflektoru
+                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) 
+                {
+                    //newTrainHeadlight = 2; 
+                }
+
+                // Vlak s kužely reflektorů přes UnitSide 15/16/17/18
+                if (Car.ConeUnitSideCar)
+                {
+                    newCarFrontHeadLight = false;
+                    newTrainHeadlightFront = 0;
+                    newCarRearHeadLight = false;
+                    newTrainHeadlightRear = 0;
+                    if (newCarIsFirst)
+                    {
+                        if (!newCarIsReversed)
+                        {
+                            newCarFrontHeadLight = true;
+                            newTrainHeadlightFront = newTrainHeadlight;
+                        }
+                        else
+                        {
+                            newCarRearHeadLight = true;
+                            newTrainHeadlightRear = newTrainHeadlight;
+                        }
+                    }
+                }                                    
+            }
+            #endregion
 
             // Ovládání reflektorů u vozů bez UnitSide reflektorů
             #region Poziční kužely světla k reflektorům
             if (Car.NoUnitSideCar || (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode)))
-            { 
+            {
                 Car.LightFrontLW = false; Car.LightFrontRW = false; Car.LightRearLW = false; Car.LightRearRW = false;
                 Car.LightFrontLR = false; Car.LightFrontRR = false; Car.LightRearLR = false; Car.LightRearRR = false;
 
@@ -457,7 +590,7 @@ namespace Orts.Viewer3D
                 if (Car is MSTSLocomotive)
                 {
                     if (Car.Train != null && Car.Train.IsActualPlayerTrain)
-                    {                        
+                    {
                         if (newCarIsFirst && !newCarIsLast)
                         {
                             if (!newCarIsReversed)
@@ -577,115 +710,6 @@ namespace Orts.Viewer3D
                 }
             }
             #endregion 
-
-            var newCarLightFrontLW = Car.LightFrontLW;
-            var newCarLightFrontRW = Car.LightFrontRW;
-            var newCarLightRearLW = Car.LightRearLW;
-            var newCarLightRearRW = Car.LightRearRW;
-            var newCarLightFrontLR = Car.LightFrontLR;
-            var newCarLightFrontRR = Car.LightFrontRR;
-            var newCarLightRearLR = Car.LightRearLR;
-            var newCarLightRearRR = Car.LightRearRR;
-            var newCarFrontHeadLight = Car.FrontHeadLight;
-            var newCarRearHeadLight = Car.RearHeadLight;
-            var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
-            var newTrainHeadlightRear = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[2] : 0;                        
-            
-
-            if (LightCycle < 1 && Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
-            {
-                LightCycle++;
-                return true;
-            }
-
-            // Dovolí zapnout reflektor i pokud má před sebou vozy
-            if (locomotive != null && (Car as MSTSLocomotive) == Car.Train.LeadLocomotive && newCarIsLast)
-            {
-                newCarIsLast = true;
-                newCarIsFirst = true;
-            }
-
-            // Povolí kužel reflektoru v tunelu
-            if (Viewer.Simulator.PlayerCarIsInTunnel)
-            {
-                newIsDay = false;
-            }
-
-            #region AI
-            // Světla pro AI
-            if (Car.Train != null && (Car.Train.TrainType == Train.TRAINTYPE.AI || Car.Train.Simulator.PlayerTrainInAutopilotMode))
-            {
-                // AI posunuje
-                if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
-                {
-                    newTrainHeadlight = 0;
-                    TrainHeadlight = 1;                    
-                }
-
-                // AI vyčkává na místě
-                if (Car.CarIsWaiting)
-                {
-                    newTrainHeadlight = 7;                    
-                    TrainHeadlight = 1;                    
-                }                
-
-                // Jízda v noci nebo za mlhy
-                if (!newIsDay || Viewer.Simulator.Weather.FogDistance < 1000.0f)
-                {
-                    newTrainHeadlight = 2;
-                    newIsDay = false;
-
-                    if (Math.Abs(Car.Train.SpeedMpS) < 50.0 / 3.6f)
-                    {
-                        newTrainHeadlight = 1;                        
-                    }
-
-                    if (Car.CarIsShunting && newCarIsFirst && newCarIsLast)
-                    {
-                        newTrainHeadlight = 0;
-                    }
-
-                    // AI stojí
-                    if (Math.Abs(Car.Train.SpeedMpS) < 0.01f)
-                    {
-                        newTrainHeadlight = 7;                        
-                    }
-
-                    TrainHeadlight = 3;
-                }
-                else
-                {
-                    // Normální jízda
-                    if (!Car.CarIsShunting && !Car.CarIsWaiting)
-                    {
-                        newTrainHeadlight = 1;
-                        TrainHeadlight = 0;                        
-                    }
-                }
-
-                if ((Car is MSTSLocomotive) && (Car as MSTSLocomotive).OtherTrainFlash)
-                {
-                    if ((Car as MSTSLocomotive).OtherTrainFlashOn)
-                    {
-                        newTrainHeadlight = 2;
-                        newIsDay = false;
-                        TrainHeadlight = 0;                        
-                    }
-                    else
-                    {
-                        newTrainHeadlight = 1;
-                        newIsDay = false;
-                        TrainHeadlight = 0;                        
-                    }
-                }
-                
-                // Vlaky bez tlumeného reflektoru
-                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) 
-                {
-                    //newTrainHeadlight = 2; 
-                }
-            }
-            #endregion
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
@@ -816,11 +840,9 @@ namespace Orts.Viewer3D
                 else if (Light.Headlight == LightHeadlightCondition.OffDim)
                     Enabled &= lightViewer.TrainHeadlight <= 1;
                 else if (Light.Headlight == LightHeadlightCondition.OffBright)
-                    Enabled &= lightViewer.TrainHeadlight != 1;                
+                    Enabled &= lightViewer.TrainHeadlight != 1;                               
                 else
-                    Enabled &= false;
-
-                
+                    Enabled &= false;                
             }
             if (Light.Unit != LightUnitCondition.Ignore)
             {
@@ -835,8 +857,7 @@ namespace Orts.Viewer3D
                 else if (Light.Unit == LightUnitCondition.FirstRev)
                     Enabled &= lightViewer.CarIsFirst && (lightViewer.CarIsReversed || lightViewer.TrainHeadlight == 0);                
                 else
-                    Enabled &= false;
-                
+                    Enabled &= false;                
             }
             if (Light.Penalty != LightPenaltyCondition.Ignore)
             {
@@ -920,14 +941,25 @@ namespace Orts.Viewer3D
                     Enabled &= lightViewer.CarFrontHeadLight;
                 else if (Light.UnitSide == LightHandleCondition.RearHeadLight)
                     Enabled &= lightViewer.CarRearHeadLight;                
+                
+                // Nutno přebíjet false na true při splnění
                 else if (Light.UnitSide == LightHandleCondition.FrontW)
-                    Enabled &= (lightViewer.CarLightFrontLW || lightViewer.CarLightFrontRW);
+                    Enabled = (lightViewer.CarLightFrontLW || lightViewer.CarLightFrontRW);
                 else if (Light.UnitSide == LightHandleCondition.RearW)
-                    Enabled &= (lightViewer.CarLightRearLW || lightViewer.CarLightRearRW);
+                    Enabled = (lightViewer.CarLightRearLW || lightViewer.CarLightRearRW);
                 else if (Light.UnitSide == LightHandleCondition.FrontR)
-                    Enabled &= (lightViewer.CarLightFrontLR || lightViewer.CarLightFrontRR);
+                    Enabled = (lightViewer.CarLightFrontLR || lightViewer.CarLightFrontRR);
                 else if (Light.UnitSide == LightHandleCondition.RearR)
-                    Enabled &= (lightViewer.CarLightRearLR || lightViewer.CarLightRearRR);
+                    Enabled = (lightViewer.CarLightRearLR || lightViewer.CarLightRearRR);
+                
+                else if (Light.UnitSide == LightHandleCondition.ConeFDim)
+                    Enabled = lightViewer.CarFrontHeadLight && lightViewer.TrainHeadlightFront == 1;
+                else if (Light.UnitSide == LightHandleCondition.ConeFBright)
+                    Enabled = lightViewer.CarFrontHeadLight && lightViewer.TrainHeadlightFront == 2;
+                else if (Light.UnitSide == LightHandleCondition.ConeRDim)
+                    Enabled = lightViewer.CarRearHeadLight && lightViewer.TrainHeadlightRear == 1;
+                else if (Light.UnitSide == LightHandleCondition.ConeRBright)
+                    Enabled = lightViewer.CarRearHeadLight && lightViewer.TrainHeadlightRear == 2;
                 else
                     Enabled &= false;
             }
