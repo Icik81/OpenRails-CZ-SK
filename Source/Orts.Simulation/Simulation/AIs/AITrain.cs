@@ -761,7 +761,7 @@ namespace Orts.Simulation.AIs
             // Tento kamerový vlak se nesmí pohybovat
             if (FreeViewTrain || TriggerTrain)
             {
-                if (!TriggerTrainIsSolid && TriggerTrainWasActivated) RemoveTrain();                                                    
+                if (TriggerTrain && !TriggerTrainIsSolid && TriggerTrainWasActivated) RemoveTrain();                                                    
                 AITrainBrakePercent = 100;
                 AITrainThrottlePercent = 0;
                 if (TrainInitiate)
@@ -4963,7 +4963,7 @@ namespace Orts.Simulation.AIs
                 }
             }            
 
-            if (removeIt)
+            if (removeIt && !FreeViewTrain && !TriggerTrain)
             {
                 if (IncorporatedTrainNo >= 0 && Simulator.TrainDictionary.Count > IncorporatedTrainNo &&
                    Simulator.TrainDictionary[IncorporatedTrainNo] != null) Simulator.TrainDictionary[IncorporatedTrainNo].RemoveTrain();
