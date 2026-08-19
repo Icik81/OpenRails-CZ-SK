@@ -7718,7 +7718,7 @@ namespace Orts.Simulation.RollingStocks
                                                 {
                                                     if (car.PowerUnit && car.AcceptCableSignals)
                                                     {
-                                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                                         {
                                                             foreach (ExtendedAxle ea in uc.Axles)
                                                             {
@@ -23441,7 +23441,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (car.PowerUnit && car.AcceptCableSignals)
                                 {
-                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                     {
                                         foreach (ExtendedAxle ea in uc.Axles)
                                         {
@@ -23489,7 +23489,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (car.PowerUnit && car.AcceptCableSignals)
                                     {
-                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                         {
                                             foreach (ExtendedAxle eaa in uc.Axles)
                                             {
@@ -23536,7 +23536,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (car.PowerUnit && car.AcceptCableSignals)
                                 {
-                                    foreach (Undercarriage ucc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    foreach (Undercarriage ucc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                     {
                                         foreach (ExtendedAxle eaa in ucc.Axles)
                                         {
@@ -23602,7 +23602,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car.PowerUnit && car.AcceptCableSignals)
                             {
-                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                 {
                                     foreach (ExtendedAxle ea in uc.Axles)
                                     {
@@ -23684,7 +23684,7 @@ namespace Orts.Simulation.RollingStocks
                         {
                             if (car.PowerUnit && car.AcceptCableSignals)
                             {
-                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                 {
                                     foreach (ExtendedAxle ea in uc.Axles)
                                     {
@@ -23780,7 +23780,7 @@ namespace Orts.Simulation.RollingStocks
                             {
                                 if (car.PowerUnit && car.AcceptCableSignals)
                                 {
-                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                    foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                     {
                                         foreach (ExtendedAxle ea in uc.Axles)
                                         {
@@ -25149,7 +25149,7 @@ namespace Orts.Simulation.RollingStocks
                                     {
                                         if (car.PowerUnit && car.AcceptCableSignals)
                                         {
-                                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                             {
                                                 if (uc.Id == cvc.CurrentSourceID)
                                                 {
@@ -25232,7 +25232,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (car.PowerUnit && car.AcceptCableSignals)
                                     {
-                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                         {
                                             foreach (ExtendedAxle ea in uc.Axles)
                                             {
@@ -27229,7 +27229,7 @@ namespace Orts.Simulation.RollingStocks
                                 {
                                     if (car.PowerUnit && car.AcceptCableSignals)
                                     {
-                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                         {
                                             foreach (ExtendedAxle ea in uc.Axles)
                                             {

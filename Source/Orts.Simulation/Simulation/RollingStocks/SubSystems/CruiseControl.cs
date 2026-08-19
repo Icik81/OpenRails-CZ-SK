@@ -943,7 +943,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         {
                             if (car.PowerUnit && car.AcceptCableSignals)
                             {
-                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                                 {
                                     eaIndex = 0;
                                     foreach (ExtendedAxle ea in uc.Axles)

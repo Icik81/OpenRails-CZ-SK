@@ -628,7 +628,7 @@ namespace Orts.Simulation.RollingStocks
                     {
                         if (car.PowerUnit && car.AcceptCableSignals)
                         {
-                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                            foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                             {
                                 foreach (ExtendedAxle ea in uc.Axles)
                                 {
@@ -704,7 +704,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (car.PowerUnit && car.AcceptCableSignals)
                     {
-                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                         {
                             uc.StatorsCurrent = 0;
                             uc.RotorsCurrent = 0;
@@ -825,7 +825,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (car.PowerUnit && car.AcceptCableSignals)
                     {
-                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                         {
                             foreach (ExtendedAxle ea in uc.Axles)
                             {
@@ -862,7 +862,7 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (car.PowerUnit && car.AcceptCableSignals)
                     {
-                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
+                        foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
                         {
                             foreach (ExtendedAxle ea in uc.Axles)
                             {

@@ -923,7 +923,7 @@ namespace Orts.Viewer3D
                 Weather.PricipitationIntensityPPSPM2 = 1.0f;
             } 
             else
-            if (!WeatherInitSet && Viewer.Simulator.GameTime > 0.25f)
+            if (!WeatherInitSet && Viewer.Simulator.GameTime > 0.1f)
             {                                        
                 Weather.PricipitationIntensityPPSPM2 = PrePricipitationIntensityPPSPM2;
                 WeatherInitSet = true;
@@ -932,7 +932,7 @@ namespace Orts.Viewer3D
             MP_Messages(elapsedTime, this);
 
             // Icik                        
-            if (Viewer.Simulator.GameTimeCyklus10 == 10)
+            if (WeatherInitSet && Viewer.Simulator.GameTimeCyklus10 == 10)
             {
                 DayNightTimeChangeCyklus();
                 if (DayNightTimeChange || (Viewer.Simulator.GameTime < 0.1f && NightTime))
