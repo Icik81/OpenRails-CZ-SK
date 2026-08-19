@@ -907,12 +907,27 @@ namespace Orts.Viewer3D
             }
         }
 
-        float PrePricipitationIntensityPPSPM2;
+        float PrePricipitationIntensityPPSPM2 = -1f;
+        bool WeatherInitSet;
         [CallOnThread("Updater")]
         public virtual void Update(ElapsedTime elapsedTime)
         {
             Time += elapsedTime.ClockSeconds;
             var manager = MPManager.Instance();
+
+            // Iniciace srážek kvùli záseku
+            if (Viewer.Simulator.GameTime == 0)
+            {
+                if (PrePricipitationIntensityPPSPM2 == -1f)
+                    PrePricipitationIntensityPPSPM2 = Weather.PricipitationIntensityPPSPM2;                
+                Weather.PricipitationIntensityPPSPM2 = 1.0f;
+            } 
+            else
+            if (!WeatherInitSet && Viewer.Simulator.GameTime > 0.25f)
+            {                                        
+                Weather.PricipitationIntensityPPSPM2 = PrePricipitationIntensityPPSPM2;
+                WeatherInitSet = true;
+            }
 
             MP_Messages(elapsedTime, this);
 
