@@ -941,9 +941,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     {
                         foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
                         {
-                            if (car.PowerUnit && car.AcceptCableSignals)
+                            if (car.PowerUnit && car.AcceptCableSignals && (car as MSTSLocomotive).extendedPhysics != null)
                             {
-                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics?.Undercarriages)
+                                foreach (Undercarriage uc in (car as MSTSLocomotive).extendedPhysics.Undercarriages)
                                 {
                                     eaIndex = 0;
                                     foreach (ExtendedAxle ea in uc.Axles)
@@ -983,7 +983,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 {
                     foreach (var car in Locomotive.Train.Cars.Where(car => car is MSTSLocomotive))
                     {
-                        if (car.PowerUnit && car.AcceptCableSignals)
+                        if (car.PowerUnit && car.AcceptCableSignals && (car as MSTSLocomotive).extendedPhysics != null)
                         {
                             wheelSpeedMpS = (car as MSTSLocomotive).extendedPhysics.Undercarriages[speedSensorUndercarriageIndex].Axles[speedSensorAxleIndex].WheelSpeedMpS;
                         }

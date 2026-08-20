@@ -908,14 +908,14 @@ namespace Orts.Viewer3D
         }
 
         float PrePricipitationIntensityPPSPM2 = -1f;
-        bool WeatherInitSet;
+        public bool WeatherInitSet;
         [CallOnThread("Updater")]
         public virtual void Update(ElapsedTime elapsedTime)
         {
             Time += elapsedTime.ClockSeconds;
             var manager = MPManager.Instance();
 
-            // Iniciace srážek kvùli záseku
+            // Iniciace srážek kvùli odstranìní záseku pøi jejich spuštìní za jízdy
             if (Viewer.Simulator.GameTime == 0)
             {
                 if (PrePricipitationIntensityPPSPM2 == -1f)
@@ -1644,7 +1644,7 @@ namespace Orts.Viewer3D
                                 break;
                         }
 
-                        if (weatherControl.Weather.PricipitationIntensityPPSPM2 > 0.3f)
+                        if (weatherControl.WeatherInitSet && weatherControl.Weather.PricipitationIntensityPPSPM2 > 0.3f)
                         {
                             if (weatherControl.Weather.FogDistance > MathHelper.Clamp((1 - weatherControl.Weather.PricipitationIntensityPPSPM2) * SeasonCoef, SeasonCoefMin, Program.Simulator.FogDistanceFinal))
                             {
@@ -1679,7 +1679,7 @@ namespace Orts.Viewer3D
                                 break;
                         }
 
-                        if (weatherControl.Weather.PricipitationIntensityPPSPM2 > 0.3f)
+                        if (weatherControl.WeatherInitSet && weatherControl.Weather.PricipitationIntensityPPSPM2 > 0.3f)
                         {
                             if (preFogDistanceFinal == -1)
                                 preFogDistanceFinal = Program.Simulator.FogDistanceFinal;
