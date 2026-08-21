@@ -820,7 +820,7 @@ namespace Orts.Viewer3D
         /// </summary>
         void CircArcGen()
         {
-            WireProfile.expectedSegmentLength = 15;
+            WireProfile.expectedSegmentLength = 40;
 
             float arcLength = Math.Abs(DTrackData.param2 * DTrackData.param1);
             // Define the number of track cross sections in addition to the base.
