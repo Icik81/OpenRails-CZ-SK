@@ -32,59 +32,13 @@ using System.Threading;
 
 namespace Orts.Viewer3D
 {
-    public struct MaterialKey : IEquatable<MaterialKey>
-    {
-        public readonly string MaterialName;
-        public readonly string TextureName;
-        public readonly int Options;
-        public readonly float MipMapBias;
-        public readonly int CabShaderKey;
-
-        public MaterialKey(string materialName, string textureName, int options, float mipMapBias, int cabShaderKey)
-        {
-            MaterialName = materialName;
-            TextureName = textureName;
-            Options = options;
-            MipMapBias = mipMapBias;
-            CabShaderKey = cabShaderKey;
-        }
-
-        public bool Equals(MaterialKey other)
-        {
-            return Options == other.Options
-                && CabShaderKey == other.CabShaderKey
-                && MipMapBias.Equals(other.MipMapBias)
-                && string.Equals(MaterialName, other.MaterialName, StringComparison.Ordinal)
-                && string.Equals(TextureName, other.TextureName, StringComparison.OrdinalIgnoreCase);
-        }
-
-        public override bool Equals(object obj)
-        {
-            return obj is MaterialKey other && Equals(other);
-        }
-
-        public override int GetHashCode()
-        {
-            unchecked
-            {
-                int hash = (MaterialName != null ? StringComparer.Ordinal.GetHashCode(MaterialName) : 0);
-                hash = (hash * 397) ^ (TextureName != null ? StringComparer.OrdinalIgnoreCase.GetHashCode(TextureName) : 0);
-                hash = (hash * 397) ^ Options;
-                hash = (hash * 397) ^ MipMapBias.GetHashCode();
-                hash = (hash * 397) ^ CabShaderKey;
-                return hash;
-            }
-        }
-    }
-
     [CallOnThread("Loader")]
     public class SharedTextureManager
     {
         readonly Viewer Viewer;
         readonly GraphicsDevice GraphicsDevice;
-        readonly Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>(StringComparer.OrdinalIgnoreCase);
-        readonly Dictionary<string, bool> TextureMarks = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
-        readonly Dictionary<string, bool> FileExistenceCache = new Dictionary<string, bool>(StringComparer.OrdinalIgnoreCase);
+        Dictionary<string, Texture2D> Textures = new Dictionary<string, Texture2D>();
+        Dictionary<string, bool> TextureMarks;
 
         [CallOnThread("Render")]
         internal SharedTextureManager(Viewer viewer, GraphicsDevice graphicsDevice)
@@ -98,135 +52,110 @@ namespace Orts.Viewer3D
             return (Get(path, SharedMaterialManager.MissingTexture, required));
         }
 
-        private bool CheckFileExistsCached(string filePath)
-        {
-            if (!FileExistenceCache.TryGetValue(filePath, out bool exists))
-            {
-                exists = File.Exists(filePath);
-                FileExistenceCache[filePath] = exists;
-            }
-            return exists;
-        }
-
         public Texture2D Get(string path, Texture2D defaultTexture, bool required = false)
         {
             if (Thread.CurrentThread.Name != "Loader Process")
                 Trace.TraceError("SharedTextureManager.Get incorrectly called by {0}; must be Loader Process or crashes will occur.", Thread.CurrentThread.Name);
 
-            if (string.IsNullOrEmpty(path))
+            if (path == null || path == "")
                 return defaultTexture;
-
-            if (Textures.TryGetValue(path, out var cachedTexture))
-                return cachedTexture;
 
             Texture2D texture;
 
-            // Icik - optimalizovaná kontrola rychlostníků s mezipamětí existence souborů
-            string fileName = Path.GetFileName(path);
-            if (fileName.IndexOf("speed", StringComparison.OrdinalIgnoreCase) >= 0 ||
-                fileName.IndexOf("post", StringComparison.OrdinalIgnoreCase) >= 0)
+            // Icik
+            string pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" + Path.GetFileName(path);
+            if (File.Exists(pathRestrictedSpeedZone))
             {
-                string speedZoneDir = Path.Combine(Viewer.ContentPath, "RestrictedSpeedPost");
-                string pathRestrictedSpeedZone = Path.Combine(speedZoneDir, fileName);
-
-                if (CheckFileExistsCached(pathRestrictedSpeedZone))
+                texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
+                return texture;
+            }
+            else
+            {
+                pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" + Path.GetFileNameWithoutExtension(path) + "_cz" + Path.GetExtension(path);
+                if (File.Exists(pathRestrictedSpeedZone))
                 {
                     texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
-                    Textures[path] = texture;
                     return texture;
                 }
-
-                string nameNoExt = Path.GetFileNameWithoutExtension(path);
-                string ext = Path.GetExtension(path);
-
-                string pathCz = Path.Combine(speedZoneDir, nameNoExt + "_cz" + ext);
-                if (CheckFileExistsCached(pathCz))
+                pathRestrictedSpeedZone = Viewer.ContentPath + "\\RestrictedSpeedPost\\" + Path.GetFileNameWithoutExtension(path) + "_sk" + Path.GetExtension(path);
+                if (File.Exists(pathRestrictedSpeedZone))
                 {
-                    texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathCz);
-                    Textures[path] = texture;
-                    return texture;
-                }
-
-                string pathSk = Path.Combine(speedZoneDir, nameNoExt + "_sk" + ext);
-                if (CheckFileExistsCached(pathSk))
-                {
-                    texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathSk);
-                    Textures[path] = texture;
+                    texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, pathRestrictedSpeedZone);
                     return texture;
                 }
             }
 
-            try
+            path = path.ToLowerInvariant();
+            if (!Textures.ContainsKey(path))
             {
-                string extension = Path.GetExtension(path);
-
-                if (string.Equals(extension, ".dds", StringComparison.OrdinalIgnoreCase))
+                try
                 {
-                    if (CheckFileExistsCached(path))
+                    if (Path.GetExtension(path) == ".dds")
                     {
-                        DDSLib.DDSFromFile(path, GraphicsDevice, true, out texture);
-                    }
-                    else
-                    {
-                        var aceTexture = Path.ChangeExtension(path, ".ace");
-                        if (CheckFileExistsCached(aceTexture))
+                        if (File.Exists(path))
                         {
-                            texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, aceTexture);
-                            Trace.TraceWarning("Required texture {0} not existing; using existing texture {1}", path, aceTexture);
+                            DDSLib.DDSFromFile(path, GraphicsDevice, true, out texture);
+                        }
+                        else
+                        // This solves the case where the global shapes have been overwritten and point to .dds textures
+                        // therefore avoiding that routes providing .ace textures show blank global shapes
+                        {
+                            var aceTexture = Path.ChangeExtension(path, ".ace");
+                            if (File.Exists(aceTexture))
+                            {
+                                texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, aceTexture);
+                                Trace.TraceWarning("Required texture {1} not existing; using existing texture {2}", path, aceTexture);
+                            }
+                            else texture = defaultTexture;
+                        }
+                    }
+                    else if (Path.GetExtension(path) == ".ace")
+                    {
+                        var alternativeTexture = Path.ChangeExtension(path, ".dds");
+
+                        if (Viewer.Settings.PreferDDSTexture && File.Exists(alternativeTexture))
+                        {
+                            DDSLib.DDSFromFile(alternativeTexture, GraphicsDevice, true, out texture);
+                        }
+                        else if (File.Exists(path))
+                        {
+                            texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, path);
                         }
                         else
                         {
-                            texture = defaultTexture;
-                        }
-                    }
-                }
-                else if (string.Equals(extension, ".ace", StringComparison.OrdinalIgnoreCase))
-                {
-                    var alternativeTexture = Path.ChangeExtension(path, ".dds");
-
-                    if (Viewer.Settings.PreferDDSTexture && CheckFileExistsCached(alternativeTexture))
-                    {
-                        DDSLib.DDSFromFile(alternativeTexture, GraphicsDevice, true, out texture);
-                    }
-                    else if (CheckFileExistsCached(path))
-                    {
-                        texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, path);
-                    }
-                    else
-                    {
-                        Texture2D missing()
-                        {
-                            if (required)
-                                Trace.TraceWarning("Missing texture {0} replaced with default texture", path);
-                            return defaultTexture;
-                        }
-                        Texture2D invalid()
-                        {
-                            if (required)
-                                Trace.TraceWarning("Invalid texture {0} replaced with default texture", path);
-                            return defaultTexture;
-                        }
-
-                        try
-                        {
-                            var currentDir = Directory.GetParent(path);
-                            if (currentDir != null && currentDir.Parent != null)
+                            Texture2D missing()
                             {
-                                string searchPath = Path.Combine(currentDir.Parent.FullName, fileName);
-                                if (searchPath.IndexOf("texture", StringComparison.OrdinalIgnoreCase) >= 0 && CheckFileExistsCached(searchPath))
+                                if (required)
+                                    Trace.TraceWarning("Missing texture {0} replaced with default texture", path);
+                                return defaultTexture;
+                            }
+                            Texture2D invalid()
+                            {
+                                if (required)
+                                    Trace.TraceWarning("Invalid texture {0} replaced with default texture", path);
+                                return defaultTexture;
+                            }
+                            //in case of no texture in wintersnow etc, go up one level
+                            DirectoryInfo currentDir;
+                            string searchPath;
+                            try
+                            {
+                                currentDir = Directory.GetParent(path);//returns the current level of dir
+                                searchPath = $"{Directory.GetParent(currentDir.FullName).FullName}\\{Path.GetFileName(path)}";
+                            }
+                            catch
+                            {
+                                return missing();
+                            }
+                            if (File.Exists(searchPath) && searchPath.ToLower().Contains("texture")) //in texture and exists
+                            {
+                                try
                                 {
-                                    try
-                                    {
-                                        texture = Orts.Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, searchPath);
-                                    }
-                                    catch
-                                    {
-                                        return invalid();
-                                    }
+                                    texture = Formats.Msts.AceFile.Texture2DFromFile(GraphicsDevice, searchPath);
                                 }
-                                else
+                                catch
                                 {
-                                    return missing();
+                                    return invalid();
                                 }
                             }
                             else
@@ -234,58 +163,54 @@ namespace Orts.Viewer3D
                                 return missing();
                             }
                         }
-                        catch
-                        {
-                            return missing();
-                        }
                     }
+                    else
+                        return defaultTexture;
+
+                    Textures.Add(path, texture);
+                    return texture;
                 }
-                else
+                catch (InvalidDataException error)
                 {
+                    Trace.TraceWarning("Skipped texture with error: {1} in {0}", path, error.Message);
                     return defaultTexture;
                 }
-
-                Textures[path] = texture;
-                return texture;
+                catch (Exception error)
+                {
+                    if (File.Exists(path))
+                        Trace.WriteLine(new FileLoadException(path, error));
+                    else
+                        Trace.TraceWarning("Ignored missing texture file {0}", path);
+                    return defaultTexture;
+                }
             }
-            catch (InvalidDataException error)
+            else
             {
-                Trace.TraceWarning("Skipped texture with error: {1} in {0}", path, error.Message);
-                return defaultTexture;
-            }
-            catch (Exception error)
-            {
-                if (CheckFileExistsCached(path))
-                    Trace.WriteLine(new FileLoadException(path, error));
-                else
-                    Trace.TraceWarning("Ignored missing texture file {0}", path);
-                return defaultTexture;
+                return Textures[path];
             }
         }
 
         public static Texture2D Get(GraphicsDevice graphicsDevice, string path)
         {
-            if (string.IsNullOrEmpty(path))
+            if (path == null || path == "")
                 return SharedMaterialManager.MissingTexture;
 
+            path = path.ToLowerInvariant();
             var ext = Path.GetExtension(path);
 
-            if (string.Equals(ext, ".ace", StringComparison.OrdinalIgnoreCase))
+            if (ext == ".ace")
                 return Orts.Formats.Msts.AceFile.Texture2DFromFile(graphicsDevice, path);
 
             if (!File.Exists(path))
                 return SharedMaterialManager.MissingTexture;
 
+            if (!File.Exists(path))
+                return SharedMaterialManager.MissingTexture;
             using (var stream = File.OpenRead(path))
             {
-                if (string.Equals(ext, ".gif", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(ext, ".jpg", StringComparison.OrdinalIgnoreCase) ||
-                    string.Equals(ext, ".png", StringComparison.OrdinalIgnoreCase))
-                {
+                if (ext == ".gif" || ext == ".jpg" || ext == ".png")
                     return Texture2D.FromStream(graphicsDevice, stream);
-                }
-                else if (string.Equals(ext, ".bmp", StringComparison.OrdinalIgnoreCase))
-                {
+                else if (ext == ".bmp")
                     using (var image = System.Drawing.Image.FromStream(stream))
                     {
                         using (var memoryStream = new MemoryStream())
@@ -295,52 +220,35 @@ namespace Orts.Viewer3D
                             return Texture2D.FromStream(graphicsDevice, memoryStream);
                         }
                     }
-                }
                 else
-                {
                     Trace.TraceWarning("Unsupported texture format: {0}", path);
-                }
                 return SharedMaterialManager.MissingTexture;
             }
         }
 
         public void Mark()
         {
-            TextureMarks.Clear();
+            TextureMarks = new Dictionary<string, bool>(Textures.Count);
             foreach (var path in Textures.Keys)
-                TextureMarks[path] = false;
+                TextureMarks.Add(path, false);
         }
 
         public void Mark(Texture2D texture)
         {
-            foreach (var kvp in Textures)
-            {
-                if (kvp.Value == texture)
-                {
-                    TextureMarks[kvp.Key] = true;
-                    break;
-                }
-            }
+            if (Textures.ContainsValue(texture))
+                TextureMarks[Textures.First(kvp => kvp.Value == texture).Key] = true;
         }
 
         public void Sweep()
         {
-            var keysToRemove = new List<string>();
-            foreach (var kvp in TextureMarks)
-            {
-                if (!kvp.Value)
-                    keysToRemove.Add(kvp.Key);
-            }
-
-            foreach (var path in keysToRemove)
+            foreach (var path in TextureMarks.Where(kvp => !kvp.Value).Select(kvp => kvp.Key))
             {
                 var texture = Textures[path];
                 Textures.Remove(path);
-                TextureMarks.Remove(path);
-
-                if (Viewer.Settings.ReduceMemory && texture != null)
+                if (Viewer.Settings.ReduceMemory)
                 {
                     texture.Dispose();
+                    texture = null;
                 }
             }
         }
@@ -356,8 +264,8 @@ namespace Orts.Viewer3D
     public class SharedMaterialManager
     {
         readonly Viewer Viewer;
-        readonly Dictionary<MaterialKey, Material> Materials = new Dictionary<MaterialKey, Material>();
-        readonly Dictionary<MaterialKey, bool> MaterialMarks = new Dictionary<MaterialKey, bool>();
+        Dictionary<string, Material> Materials = new Dictionary<string, Material>();
+        Dictionary<string, bool> MaterialMarks = new Dictionary<string, bool>();
 
         public readonly LightConeShader LightConeShader;
         public readonly LightGlowShader LightGlowShader;
@@ -377,6 +285,7 @@ namespace Orts.Viewer3D
         public SharedMaterialManager(Viewer viewer)
         {
             Viewer = viewer;
+            // TODO: Move to Loader process.
             LightConeShader = new LightConeShader(viewer.RenderProcess.GraphicsDevice);
             LightGlowShader = new LightGlowShader(viewer.RenderProcess.GraphicsDevice);
             ParticleEmitterShader = new ParticleEmitterShader(viewer.RenderProcess.GraphicsDevice);
@@ -423,12 +332,15 @@ namespace Orts.Viewer3D
             SkyShader = new SkyShader(viewer.RenderProcess.GraphicsDevice);
             DebugShader = new DebugShader(viewer.RenderProcess.GraphicsDevice);
 
+            // TODO: This should happen on the loader thread.
             MissingTexture = SharedTextureManager.Get(viewer.RenderProcess.GraphicsDevice, Path.Combine(viewer.ContentPath, "blank.bmp"));
 
+            // Managing default snow textures
             var defaultSnowTexturePath = viewer.Simulator.RoutePath + @"\TERRTEX\SNOW\ORTSDefaultSnow.ace";
             DefaultSnowTexture = Viewer.TextureManager.Get(defaultSnowTexturePath);
             var defaultDMSnowTexturePath = viewer.Simulator.RoutePath + @"\TERRTEX\SNOW\ORTSDefaultDMSnow.ace";
             DefaultDMSnowTexture = Viewer.TextureManager.Get(defaultDMSnowTexturePath);
+
         }
 
         public Material Load(string materialName)
@@ -448,115 +360,120 @@ namespace Orts.Viewer3D
 
         public Material Load(string materialName, string textureName, int options, float mipMapBias)
         {
-            return Load(materialName, textureName, options, mipMapBias, 0, null, false);
+            return Load(materialName, textureName, options, 0, 0, null, false);
         }
-
         public Material Load(string materialName, string textureName, int options, float mipMapBias, int cabShaderKey, CabShader cabShader, bool lightItem)
         {
-            var materialKey = new MaterialKey(materialName, textureName, options, mipMapBias, cabShaderKey);
+            string TextureName = textureName;
+            if (textureName != null)
+                textureName = textureName.ToLower();
 
-            if (!Materials.TryGetValue(materialKey, out var material))
+            var materialKey = String.Format("{0}:{1}:{2}:{3}:{4}", materialName, textureName, options, mipMapBias, cabShaderKey);
+
+            if (!Materials.ContainsKey(materialKey))
             {
                 switch (materialName)
                 {
                     case "Debug":
-                        material = new HUDGraphMaterial(Viewer);
+                        Materials[materialKey] = new HUDGraphMaterial(Viewer);
                         break;
                     case "DebugNormals":
-                        material = new DebugNormalMaterial(Viewer);
+                        Materials[materialKey] = new DebugNormalMaterial(Viewer);
                         break;
                     case "Forest":
-                        material = new ForestMaterial(Viewer, textureName);
+                        Materials[materialKey] = new ForestMaterial(Viewer, textureName);
                         break;
                     case "Label3D":
-                        material = new Label3DMaterial(Viewer);
+                        Materials[materialKey] = new Label3DMaterial(Viewer);
                         break;
                     case "LightCone":
-                        material = new LightConeMaterial(Viewer);
+                        Materials[materialKey] = new LightConeMaterial(Viewer);
                         break;
                     case "LightGlow":
-                        material = new LightGlowMaterial(Viewer, textureName);
+                        Materials[materialKey] = new LightGlowMaterial(Viewer, textureName);
                         break;
                     case "PopupWindow":
-                        material = new PopupWindowMaterial(Viewer);
+                        Materials[materialKey] = new PopupWindowMaterial(Viewer);
                         break;
                     case "ParticleEmitter":
-                        material = new ParticleEmitterMaterial(Viewer, textureName);
+                        Materials[materialKey] = new ParticleEmitterMaterial(Viewer, textureName);
                         break;
                     case "Precipitation":
-                        material = new PrecipitationMaterial(Viewer);
+                        Materials[materialKey] = new PrecipitationMaterial(Viewer);
                         break;
                     case "Scenery":
-                        material = new SceneryMaterial(Viewer, textureName, (SceneryMaterialOptions)options, mipMapBias);
+                        Materials[materialKey] = new SceneryMaterial(Viewer, textureName, (SceneryMaterialOptions)options, mipMapBias);
                         break;
                     case "ShadowMap":
-                        material = new ShadowMapMaterial(Viewer);
+                        Materials[materialKey] = new ShadowMapMaterial(Viewer);
                         break;
                     case "SignalLight":
-                        material = new SignalLightMaterial(Viewer, textureName);
+                        Materials[materialKey] = new SignalLightMaterial(Viewer, textureName);
                         break;
                     case "SignalLightGlow":
-                        material = new SignalLightGlowMaterial(Viewer);
+                        Materials[materialKey] = new SignalLightGlowMaterial(Viewer);
                         break;
                     case "Sky":
-                        material = new SkyMaterial(Viewer);
+                        Materials[materialKey] = new SkyMaterial(Viewer);
                         break;
                     case "MSTSSky":
-                        material = new MSTSSkyMaterial(Viewer);
+                        Materials[materialKey] = new MSTSSkyMaterial(Viewer);
                         break;
                     case "SpriteBatch":
-                        material = new SpriteBatchMaterial(Viewer);
+                        Materials[materialKey] = new SpriteBatchMaterial(Viewer);
                         break;
                     case "CabSpriteBatch":
-                        if (string.IsNullOrEmpty(textureName) || textureName.IndexOf("LIGHT", StringComparison.OrdinalIgnoreCase) >= 0)
+                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                         {
-                            material = new CabSpriteBatchMaterial(Viewer, cabShader, true, textureName);
+                            // Textura s vlastností světla neovlivněná shaderem
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, true, TextureName);
                         }
                         else
                         {
-                            material = new CabSpriteBatchMaterial(Viewer, cabShader, false, textureName);
+                            Materials[materialKey] = new CabSpriteBatchMaterial(Viewer, cabShader, false, TextureName);
                         }
                         break;
                     case "Terrain":
-                        material = new TerrainMaterial(Viewer, textureName, SharedMaterialManager.MissingTexture);
+                        Materials[materialKey] = new TerrainMaterial(Viewer, textureName, SharedMaterialManager.MissingTexture);
                         break;
                     case "TerrainShared":
-                        material = new TerrainSharedMaterial(Viewer, textureName);
+                        Materials[materialKey] = new TerrainSharedMaterial(Viewer, textureName);
                         break;
                     case "TerrainSharedDistantMountain":
-                        material = new TerrainSharedDistantMountain(Viewer, textureName);
+                        Materials[materialKey] = new TerrainSharedDistantMountain(Viewer, textureName);
                         break;
                     case "Transfer":
-                        material = new TransferMaterial(Viewer, textureName);
+                        Materials[materialKey] = new TransferMaterial(Viewer, textureName);
                         break;
                     case "Water":
-                        material = new WaterMaterial(Viewer, textureName);
+                        Materials[materialKey] = new WaterMaterial(Viewer, textureName);
                         break;
                     default:
                         Trace.TraceInformation("Skipped unknown material type {0}", materialName);
-                        material = new YellowMaterial(Viewer);
+                        Materials[materialKey] = new YellowMaterial(Viewer);
                         break;
                 }
-                Materials[materialKey] = material;
             }
-            return material;
+            return Materials[materialKey];
         }
 
         public bool LoadNightTextures()
         {
             int count = 0;
-            foreach (var materialPair in Materials)
+            foreach (KeyValuePair<string, Material> materialPair in Materials)
             {
-                if (materialPair.Value is SceneryMaterial material)
+                if (materialPair.Value is SceneryMaterial)
                 {
+                    var material = materialPair.Value as SceneryMaterial;
                     if (material.LoadNightTexture()) count++;
                     if (count >= 20)
                     {
                         count = 0;
+                        // retest if there is enough free memory left;
                         var remainingMemorySpace = Viewer.LoadMemoryThreshold - Viewer.HUDWindow.GetWorkingSetSize();
                         if (remainingMemorySpace < 0)
                         {
-                            return false;
+                            return false; // too bad, no more space, other night textures won't be loaded
                         }
                     }
                 }
@@ -567,18 +484,20 @@ namespace Orts.Viewer3D
         public bool LoadDayTextures()
         {
             int count = 0;
-            foreach (var materialPair in Materials)
+            foreach (KeyValuePair<string, Material> materialPair in Materials)
             {
-                if (materialPair.Value is SceneryMaterial material)
+                if (materialPair.Value is SceneryMaterial)
                 {
+                    var material = materialPair.Value as SceneryMaterial;
                     if (material.LoadDayTexture()) count++;
                     if (count >= 20)
                     {
                         count = 0;
+                        // retest if there is enough free memory left;
                         var remainingMemorySpace = Viewer.LoadMemoryThreshold - Viewer.HUDWindow.GetWorkingSetSize();
                         if (remainingMemorySpace < 0)
                         {
-                            return false;
+                            return false; // too bad, no more space, other night textures won't be loaded
                         }
                     }
                 }
@@ -588,36 +507,24 @@ namespace Orts.Viewer3D
 
         public void Mark()
         {
-            MaterialMarks.Clear();
-            foreach (var key in Materials.Keys)
-                MaterialMarks[key] = false;
+            MaterialMarks = new Dictionary<string, bool>(Materials.Count);
+            foreach (var path in Materials.Keys)
+                MaterialMarks.Add(path, false);
         }
 
         public void Mark(Material material)
         {
-            foreach (var kvp in Materials)
-            {
-                if (kvp.Value == material)
-                {
-                    MaterialMarks[kvp.Key] = true;
-                    break;
-                }
-            }
+            if (Materials.ContainsValue(material))
+                MaterialMarks[Materials.First(kvp => kvp.Value == material).Key] = true;
         }
 
         public void Sweep()
         {
-            var keysToRemove = new List<MaterialKey>();
-            foreach (var kvp in MaterialMarks)
+            foreach (var path in MaterialMarks.Where(kvp => !kvp.Value).Select(kvp => kvp.Key))
             {
-                if (!kvp.Value)
-                    keysToRemove.Add(kvp.Key);
-            }
-
-            foreach (var key in keysToRemove)
-            {
-                Materials.Remove(key);
-                MaterialMarks.Remove(key);
+                var material = Materials[path];
+                Materials.Remove(path);
+                if (Viewer.Settings.ReduceMemory) material = null;
             }
         }
 
@@ -635,6 +542,7 @@ namespace Orts.Viewer3D
             }
         }
 
+
         [CallOnThread("Updater")]
         public string GetStatus()
         {
@@ -643,7 +551,7 @@ namespace Orts.Viewer3D
 
         public static Color FogColor = new Color(110, 110, 110, 255);
 
-        internal Vector3 sunDirection;
+        internal Vector3 sunDirection;        
         internal void UpdateShaders()
         {
             if (Viewer.Settings.UseMSTSEnv == false)
@@ -697,9 +605,9 @@ namespace Orts.Viewer3D
 
         public override string ToString()
         {
-            if (string.IsNullOrEmpty(Key))
+            if (String.IsNullOrEmpty(Key))
                 return GetType().Name;
-            return string.Format("{0}({1})", GetType().Name, Key);
+            return String.Format("{0}({1})", GetType().Name, Key);
         }
 
         public virtual void SetState(GraphicsDevice graphicsDevice, Material previousMaterial) { }
@@ -709,9 +617,9 @@ namespace Orts.Viewer3D
         public virtual bool GetBlending() { return false; }
         public virtual Texture2D GetShadowTexture() { return null; }
         public virtual SamplerState GetShadowTextureAddressMode() { return SamplerState.LinearWrap; }
-        public int KeyLengthRemainder()
+        public int KeyLengthRemainder() //used as a "pseudorandom" number
         {
-            if (string.IsNullOrEmpty(Key))
+            if (String.IsNullOrEmpty(Key))
                 return 0;
             return Key.Length % 10;
         }
@@ -822,28 +730,36 @@ namespace Orts.Viewer3D
     public enum SceneryMaterialOptions
     {
         None = 0,
+        // Diffuse
         Diffuse = 0x1,
+        // Alpha test
         AlphaTest = 0x2,
+        // Blending
         AlphaBlendingNone = 0x0,
         AlphaBlendingBlend = 0x4,
         AlphaBlendingAdd = 0x8,
         AlphaBlendingMask = 0xC,
+        // Shader
         ShaderImage = 0x00,
         ShaderDarkShade = 0x10,
         ShaderHalfBright = 0x20,
         ShaderFullBright = 0x30,
         ShaderVegetation = 0x40,
         ShaderMask = 0x70,
+        // Lighting
         Specular0 = 0x000,
         Specular25 = 0x080,
         Specular750 = 0x100,
         SpecularMask = 0x180,
+        // Texture address mode
         TextureAddressModeWrap = 0x000,
         TextureAddressModeMirror = 0x200,
         TextureAddressModeClamp = 0x400,
         TextureAddressModeBorder = 0x600,
         TextureAddressModeMask = 0x600,
+        // Night texture
         NightTexture = 0x800,
+        // Texture to be shown in tunnels and underground (used for 3D cab night textures)
         UndergroundTexture = 0x40000000,
     }
 
@@ -854,7 +770,7 @@ namespace Orts.Viewer3D
         protected Texture2D Texture;
         private readonly string TexturePath;
         protected Texture2D NightTexture;
-        byte AceAlphaBits;
+        byte AceAlphaBits;   // the number of bits in the ace file's alpha channel 
         IEnumerator<EffectPass> ShaderPassesDarkShade;
         IEnumerator<EffectPass> ShaderPassesFullBright;
         IEnumerator<EffectPass> ShaderPassesHalfBright;
@@ -869,20 +785,20 @@ namespace Orts.Viewer3D
         private static readonly Dictionary<TextureAddressMode, Dictionary<float, SamplerState>> SamplerStates = new Dictionary<TextureAddressMode, Dictionary<float, SamplerState>>();
 
         public SceneryMaterial(Viewer viewer, string texturePath, SceneryMaterialOptions options, float mipMapBias)
-            : base(viewer, texturePath)
+            : base(viewer, String.Format("{0}:{1:X}:{2}", texturePath, options, mipMapBias))
         {
             Options = options;
             MipMapBias = mipMapBias;
             TexturePath = texturePath;
             Texture = SharedMaterialManager.MissingTexture;
             NightTexture = SharedMaterialManager.MissingTexture;
-
-            if (!string.IsNullOrEmpty(texturePath) && (Options & SceneryMaterialOptions.NightTexture) != 0 && ((!viewer.DontLoadNightTextures && !viewer.DontLoadDayTextures)
-                || TexturePath.IndexOf(@"\trainset\", StringComparison.OrdinalIgnoreCase) >= 0))
+            // <CSComment> if "trainset" is in the path (true for night textures for 3DCabs) deferred load of night textures is disabled 
+            if (!String.IsNullOrEmpty(texturePath) && (Options & SceneryMaterialOptions.NightTexture) != 0 && ((!viewer.DontLoadNightTextures && !viewer.DontLoadDayTextures)
+                || TexturePath.Contains(@"\trainset\")))
             {
                 var nightTexturePath = Helpers.GetNightTextureFile(Viewer.Simulator, texturePath);
-                if (!string.IsNullOrEmpty(nightTexturePath))
-                    NightTexture = Viewer.TextureManager.Get(nightTexturePath);
+                if (!String.IsNullOrEmpty(nightTexturePath))
+                    NightTexture = Viewer.TextureManager.Get(nightTexturePath.ToLower());
                 Texture = Viewer.TextureManager.Get(texturePath, true);
             }
             else if ((Options & SceneryMaterialOptions.NightTexture) != 0 && viewer.DontLoadNightTextures)
@@ -890,21 +806,20 @@ namespace Orts.Viewer3D
                 viewer.NightTexturesNotLoaded = true;
                 Texture = Viewer.TextureManager.Get(texturePath, true);
             }
+
             else if ((Options & SceneryMaterialOptions.NightTexture) != 0 && viewer.DontLoadDayTextures)
             {
                 var nightTexturePath = Helpers.GetNightTextureFile(Viewer.Simulator, texturePath);
-                if (!string.IsNullOrEmpty(nightTexturePath))
-                    NightTexture = Viewer.TextureManager.Get(nightTexturePath);
+                if (!String.IsNullOrEmpty(nightTexturePath))
+                    NightTexture = Viewer.TextureManager.Get(nightTexturePath.ToLower());
                 if (NightTexture != SharedMaterialManager.MissingTexture)
                 {
                     viewer.DayTexturesNotLoaded = true;
                 }
             }
-            else
-            {
-                Texture = Viewer.TextureManager.Get(texturePath, true);
-            }
+            else Texture = Viewer.TextureManager.Get(texturePath, true);
 
+            // Record the number of bits in the alpha channel of the original ace file
             var texture = SharedMaterialManager.MissingTexture;
             if (Texture != SharedMaterialManager.MissingTexture && Texture != null) texture = Texture;
             else if (NightTexture != SharedMaterialManager.MissingTexture && NightTexture != null) texture = NightTexture;
@@ -912,6 +827,7 @@ namespace Orts.Viewer3D
                 AceAlphaBits = ((Orts.Formats.Msts.AceInfo)texture.Tag).AlphaBits;
             else
                 AceAlphaBits = 0;
+
         }
 
         public bool LoadNightTexture()
@@ -920,9 +836,9 @@ namespace Orts.Viewer3D
             if (((Options & SceneryMaterialOptions.NightTexture) != 0) && (NightTexture == SharedMaterialManager.MissingTexture))
             {
                 var nightTexturePath = Helpers.GetNightTextureFile(Viewer.Simulator, TexturePath);
-                if (!string.IsNullOrEmpty(nightTexturePath))
+                if (!String.IsNullOrEmpty(nightTexturePath))
                 {
-                    NightTexture = Viewer.TextureManager.Get(nightTexturePath);
+                    NightTexture = Viewer.TextureManager.Get(nightTexturePath.ToLower());
                     oneMore = true;
                 }
             }
@@ -932,9 +848,9 @@ namespace Orts.Viewer3D
         public bool LoadDayTexture()
         {
             bool oneMore = false;
-            if (Texture == SharedMaterialManager.MissingTexture && !string.IsNullOrEmpty(TexturePath))
+            if (Texture == SharedMaterialManager.MissingTexture && !String.IsNullOrEmpty(TexturePath))
             {
-                Texture = Viewer.TextureManager.Get(TexturePath);
+                Texture = Viewer.TextureManager.Get(TexturePath.ToLower());
                 oneMore = true;
             }
             return oneMore;
@@ -954,23 +870,28 @@ namespace Orts.Viewer3D
 
             shader.LightingDiffuse = (Options & SceneryMaterialOptions.Diffuse) != 0 ? 1 : 0;
 
+            // Set up for alpha blending and alpha test 
+
             if (GetBlending())
             {
-                if (previousMaterial == null
+                // Skip blend for near transparent alpha's (eliminates sorting issues for many simple alpha'd textures )
+                if (previousMaterial == null  // Search for opaque pixels in alpha blended polygons
                     && (Options & SceneryMaterialOptions.AlphaBlendingMask) != SceneryMaterialOptions.AlphaBlendingAdd)
                 {
+                    // Enable alpha blending for everything: this allows distance scenery to appear smoothly.
                     graphicsDevice.BlendState = BlendState.NonPremultiplied;
                     graphicsDevice.DepthStencilState = DepthStencilState.Default;
                     shader.ReferenceAlpha = 250;
                 }
-                else
+                else // Alpha blended pixels only
                 {
-                    shader.ReferenceAlpha = 10;
+                    shader.ReferenceAlpha = 10;  // ie default lightcone's are 9 in full transparent areas
 
+                    // Set up for blending
                     if ((Options & SceneryMaterialOptions.AlphaBlendingMask) == SceneryMaterialOptions.AlphaBlendingBlend)
                     {
                         graphicsDevice.BlendState = BlendState.NonPremultiplied;
-                        graphicsDevice.DepthStencilState = DepthReadCompareLess;
+                        graphicsDevice.DepthStencilState = DepthReadCompareLess; // To avoid processing already drawn opaque pixels
                     }
                     else
                     {
@@ -984,13 +905,16 @@ namespace Orts.Viewer3D
                 graphicsDevice.BlendState = BlendState.Opaque;
                 if ((Options & SceneryMaterialOptions.AlphaTest) != 0)
                 {
-                    shader.ReferenceAlpha = 200;
+                    // Transparency testing is enabled
+                    shader.ReferenceAlpha = 200;  // setting this to 128, chain link fences become solid at distance, at 200, they become
                 }
                 else
                 {
+                    // Solid rendering.
                     shader.ReferenceAlpha = -1;
                 }
             }
+
 
             switch (Options & SceneryMaterialOptions.ShaderMask)
             {
@@ -1034,7 +958,9 @@ namespace Orts.Viewer3D
                     throw new InvalidDataException("Options has unexpected SceneryMaterialOptions.SpecularMask value.");
             }
 
-            if (TexturePath != null && TexturePath.IndexOf("acleantrack", StringComparison.OrdinalIgnoreCase) >= 0)
+            // Icik 
+            // Zruší Specular efekt u textur hlavy kolejnic
+            if (TexturePath != null && TexturePath.ToLower().Contains("acleantrack"))
             {
                 shader.LightingSpecular = 0;
             }
@@ -1042,7 +968,7 @@ namespace Orts.Viewer3D
             graphicsDevice.SamplerStates[0] = GetShadowTextureAddressMode();
 
             if (NightTexture != null && NightTexture != SharedMaterialManager.MissingTexture && (((Options & SceneryMaterialOptions.UndergroundTexture) != 0 &&
-                (Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Simulator.CabInDarkTunnel || Viewer.Simulator.CarInDarkTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
+                (Viewer.MaterialManager.sunDirection.Y <= -0.085f /*|| Viewer.Camera.IsUnderground*/ || Viewer.Simulator.CabInDarkTunnel || Viewer.Simulator.CarInDarkTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
             {
                 shader.ImageTexture = NightTexture;
                 shader.ImageTextureIsNight = true;
@@ -1083,20 +1009,30 @@ namespace Orts.Viewer3D
             graphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
 
+        /// <summary>
+        /// Return true if this material requires alpha blending
+        /// </summary>
+        /// <returns></returns>
         public override bool GetBlending()
         {
-            bool alphaTestRequested = (Options & SceneryMaterialOptions.AlphaTest) != 0;
-            bool alphaBlendRequested = (Options & SceneryMaterialOptions.AlphaBlendingMask) != 0;
+            bool alphaTestRequested = (Options & SceneryMaterialOptions.AlphaTest) != 0;            // the artist requested alpha testing for this material
+            bool alphaBlendRequested = (Options & SceneryMaterialOptions.AlphaBlendingMask) != 0;   // the artist specified a blend capable shader
 
-            return alphaBlendRequested
-                    && (AceAlphaBits > 1
-                          || (AceAlphaBits == 1 && !alphaTestRequested));
+            return alphaBlendRequested                                   // the material is using a blend capable shader   
+                    && (AceAlphaBits > 1                                    // and the original ace has more than 1 bit of alpha
+                          || (AceAlphaBits == 1 && !alphaTestRequested));    //  or its just 1 bit, but with no alphatesting, we must blend it anyway
+
+            // To summarize, assuming we are using a blend capable shader ..
+            //     0 bits of alpha - never blend
+            //     1 bit of alpha - only blend if the alpha test wasn't requested
+            //     >1 bit of alpha - always blend
         }
 
         public override Texture2D GetShadowTexture()
         {
+            var timeOffset = ((float)KeyLengthRemainder()) / 5000f; // TODO for later use for pseudorandom texture switch time
             if (NightTexture != null && NightTexture != SharedMaterialManager.MissingTexture && (((Options & SceneryMaterialOptions.UndergroundTexture) != 0 &&
-                (Viewer.MaterialManager.sunDirection.Y <= -0.085f || Viewer.Simulator.CabInDarkTunnel || Viewer.Simulator.CarInDarkTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
+                (Viewer.MaterialManager.sunDirection.Y <= -0.085f /*|| Viewer.Camera.IsUnderground*/ || Viewer.Simulator.CabInDarkTunnel || Viewer.Simulator.CarInDarkTunnel)) || Viewer.MaterialManager.sunDirection.Y < 0.0f - ((float)KeyLengthRemainder()) / 5000f))
                 return NightTexture;
 
             return Texture;
@@ -1134,6 +1070,7 @@ namespace Orts.Viewer3D
                 });
 
             return SamplerStates[textureAddressMode][mipMapBias];
+
         }
 
         public override void Mark()
@@ -1259,6 +1196,8 @@ namespace Orts.Viewer3D
             if (ShaderPassesPopupWindow == null) ShaderPassesPopupWindow = shader.Techniques["PopupWindow"].Passes.GetEnumerator();
             if (ShaderPassesPopupWindowGlass == null) ShaderPassesPopupWindowGlass = shader.Techniques["PopupWindowGlass"].Passes.GetEnumerator();
             ShaderPasses = screen == null ? ShaderPassesPopupWindow : ShaderPassesPopupWindowGlass;
+            // FIXME: MonoGame cannot read backbuffer contents
+            //shader.Screen = screen;
             shader.GlassColor = Color.Black;
 
             graphicsDevice.BlendState = BlendState.NonPremultiplied;
@@ -1330,6 +1269,7 @@ namespace Orts.Viewer3D
 
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
         {
+
             basicEffect.View = XNAViewMatrix;
             basicEffect.Projection = XNAProjectionMatrix;
 
@@ -1381,6 +1321,7 @@ namespace Orts.Viewer3D
 
         public override void Render(GraphicsDevice graphicsDevice, IEnumerable<RenderItem> renderItems, ref Matrix XNAViewMatrix, ref Matrix XNAProjectionMatrix)
         {
+
             basicEffect.View = XNAViewMatrix;
             basicEffect.Projection = XNAProjectionMatrix;
 
@@ -1414,6 +1355,7 @@ namespace Orts.Viewer3D
         public override void SetState(GraphicsDevice graphicsDevice, Material previousMaterial)
         {
             var scaling = (float)graphicsDevice.PresentationParameters.BackBufferHeight / Viewer.RenderProcess.GraphicsDeviceManager.PreferredBackBufferHeight;
+            Vector3 screenScaling = new Vector3(scaling);
             SpriteBatch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, null, null, null, null, Matrix.CreateScale(scaling));
             SpriteBatch.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
         }
@@ -1431,13 +1373,17 @@ namespace Orts.Viewer3D
 
         public Point GetTextLocation(int x, int y, string text)
         {
+            // Start with a box in the location specified.
             var textBox = new Rectangle(x, y, Font.MeasureString(text), Font.Height);
             textBox.X -= textBox.Width / 2;
             textBox.Inflate(5, 2);
+            // Find all the existing boxes which overlap with the new box, as if its top was extended upwards to infinity.
             var boxes = TextBoxes.Where(box => box.Top <= textBox.Bottom && box.Right >= textBox.Left && box.Left <= textBox.Right).OrderBy(box => -box.Top);
+            // For each possible colliding box, if it does collide, shift the new box above it.
             foreach (var box in boxes)
                 if (box.Top <= textBox.Bottom && box.Bottom >= textBox.Top)
                     textBox.Y = box.Top - textBox.Height;
+            // And we're done.
             TextBoxes.Add(textBox);
             return new Point(textBox.X + 5, textBox.Y + 2);
         }
