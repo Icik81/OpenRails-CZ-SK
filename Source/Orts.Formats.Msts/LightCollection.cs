@@ -34,7 +34,7 @@ namespace Orts.Formats.Msts
         public Vector3 Azimuth;
         public Vector3 Elevation;
         public bool Transition;
-        public float Angle;
+        public float Angle;        
 
         public LightState(uint color, Vector3 position, Vector3 azimuth, float angle = 150f, float radius = 30f)
         {
@@ -45,7 +45,7 @@ namespace Orts.Formats.Msts
             Azimuth = azimuth;
             Elevation = Vector3.Zero;
             Transition = true;
-            Angle = angle;
+            Angle = angle;            
         }
 
         public LightState(STFReader stf)
@@ -118,9 +118,7 @@ namespace Orts.Formats.Msts
         DimBright, // MSTSBin
         OffBright, // MSTSBin
         OffDim, // MSTSBin
-        DLight, // Poziční světla
-        FrontLightCone, // Světla pro přední světelný kužel
-        RearLightCone, // Světla pro zadní světelný kužel
+        DLight, // Poziční světla        
         // TODO: DimBright?, // MSTSBin labels this the same as DimBright. Not sure what it means.
     }
 
@@ -202,6 +200,7 @@ namespace Orts.Formats.Msts
     // Icik
     /// <summary>
     /// Specifies on which sides of the unit light is illuminated.
+    /// UnitSide
     /// </summary>
     public enum LightHandleCondition
     {

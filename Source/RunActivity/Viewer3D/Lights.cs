@@ -89,9 +89,7 @@ namespace Orts.Viewer3D
             Viewer = viewer;
             Car = car;
             LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\Bulb.png"));
-            LightConeMaterial = viewer.MaterialManager.Load("LightCone");
-
-            UpdateState();
+            LightConeMaterial = viewer.MaterialManager.Load("LightCone");            
 
             // Automatické doplnění chybějících kuželů pozičních světel
             AutoGeneratePositionalLightCones(car);
@@ -126,8 +124,26 @@ namespace Orts.Viewer3D
                                 (LightPrimitives.Last() as LightGlowPrimitive).LightGlowMaterial = viewer.MaterialManager.Load("LightGlow", System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\FX\\" + light.LightGlowName));                            
 
                             break;
-                        case LightType.Cone:                                                        
-                                LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));                            
+                        case LightType.Cone:
+                            {
+                                // Nejdříve zkontrolujeme pozici kuželu světla, jestli nezasahuje do vozu
+                                float frontZBase = Car.CarLengthM / 2.0f;
+                                float rearZBase = -Car.CarLengthM / 2.0f;
+                                float finalZ = light.States[0].Position.Z;
+
+                                if (finalZ > 0)
+                                {
+                                    finalZ = Math.Max(finalZ, frontZBase);
+                                    light.States[0].Position.Z = finalZ;
+                                }
+                                if (finalZ < 0)
+                                {
+                                    finalZ = Math.Min(finalZ, rearZBase);
+                                    light.States[0].Position.Z = finalZ;
+                                }
+
+                                LightPrimitives.Add(new LightConePrimitive(this, Viewer.RenderProcess, light));
+                            }
                             break;
                     }
                 }
@@ -146,8 +162,10 @@ namespace Orts.Viewer3D
                 .ToHashSet();
 
             // Výchozí pozice podle délky vozidla (pokud nenajdeme Glow světla)
-            float frontZ = Car.CarLengthM / 2.0f;
-            float rearZ = -Car.CarLengthM / 2.0f;
+            float frontZBase = Car.CarLengthM / 2.0f;
+            float rearZBase = -Car.CarLengthM / 2.0f;
+            float frontZ = 0;
+            float rearZ = 0;
             float posY = 0.5f;
             uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
             uint redColor = ConvertMstsColor(0x88E00000);
@@ -180,6 +198,7 @@ namespace Orts.Viewer3D
                     car.NoUnitSideCar = true;
                 }
             }
+            frontZ = Math.Max(frontZ, frontZBase);
 
             var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);            
             if (rearGlow != null)
@@ -194,7 +213,8 @@ namespace Orts.Viewer3D
                     rearZ = rearGlow.States[0].Position.Z;                                        
                     car.NoUnitSideCar = true;
                 }
-            }            
+            }
+            rearZ = Math.Min(rearZ, rearZBase);
 
             // 11 - FrontW (Přední bílá)
             if (!existingCones.Contains(LightHandleCondition.FrontW))
@@ -404,15 +424,7 @@ namespace Orts.Viewer3D
             var newCarCoupledFront = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.LastCar : Car.Train.FirstCar) != Car);
             var newCarCoupledRear = Car.Train != null && (Car.Train.Cars.Count > 1) && ((Car.Flipped ? Car.Train.FirstCar : Car.Train.LastCar) != Car);
 
-            // Icik
-            var newCarLightFrontLW = Car.LightFrontLW;
-            var newCarLightFrontRW = Car.LightFrontRW;
-            var newCarLightRearLW = Car.LightRearLW;
-            var newCarLightRearRW = Car.LightRearRW;
-            var newCarLightFrontLR = Car.LightFrontLR;
-            var newCarLightFrontRR = Car.LightFrontRR;
-            var newCarLightRearLR = Car.LightRearLR;
-            var newCarLightRearRR = Car.LightRearRR;
+            // Icik            
             var newCarFrontHeadLight = Car.FrontHeadLight;
             var newCarRearHeadLight = Car.RearHeadLight;
             var newTrainHeadlightFront = Car.Train != null && Car is MSTSLocomotive ? Car.Headlight[1] : 0;
@@ -517,9 +529,9 @@ namespace Orts.Viewer3D
                 }
                 
                 // Vlaky bez tlumeného reflektoru
-                if (newTrainHeadlight == 1 && !Car.Train.LightDimFound) 
+                if (newTrainHeadlight == 0 && !Car.Train.LightDimFound) 
                 {
-                    //newTrainHeadlight = 2; 
+                    newTrainHeadlight = 7; 
                 }
 
                 // Vlak s kužely reflektorů přes UnitSide 15/16/17/18
@@ -589,6 +601,7 @@ namespace Orts.Viewer3D
                 // Lokomotivy
                 if (Car is MSTSLocomotive)
                 {
+                    // Hráč
                     if (Car.Train != null && Car.Train.IsActualPlayerTrain)
                     {
                         if (newCarIsFirst && !newCarIsLast)
@@ -633,9 +646,10 @@ namespace Orts.Viewer3D
                                     Car.LightRearRR = true;
                                 }
                             }
-                        }
+                        }                        
                     }
                     else
+                    // AI traffic
                     {
                         if (newCarIsFirst && !newCarIsLast)
                         {
@@ -666,50 +680,80 @@ namespace Orts.Viewer3D
                         }
                     }
 
-                    // Sólo
-                    if (newTrainHeadlight > 0 && !Car.CarIsShunting)
+                    // Vlaky bez tlumeného reflektoru
+                    if (Car.Train != null)
                     {
-                        if (newCarIsFirst && newCarIsLast)
+                        // Hráč
+                        if (Car.Train.IsActualPlayerTrain)
                         {
-                            if (!newCarIsReversed)
+                            if (newTrainHeadlight == 0 && !Car.Train.LightDimFound)
                             {
-                                Car.LightFrontLW = true;
-                                Car.LightFrontRW = true;
-                                Car.LightRearLR = true;
-                                Car.LightRearRR = true;
+                                Car.LightFrontLW = false; Car.LightFrontRW = false; Car.LightRearLW = false; Car.LightRearRW = false;
+                                Car.LightFrontLR = false; Car.LightFrontRR = false; Car.LightRearLR = false; Car.LightRearRR = false;
                             }
-                            else
+                        }
+                        else
+                        // AI traffic
+                        if (newTrainHeadlight == 0 && !Car.Train.LightDimFound)
+                        {
+                            newTrainHeadlight = 7;
+                        }
+
+                        // Sólo
+                        if (newTrainHeadlight > 0 && (!Car.CarIsShunting || !Car.Train.LightDimFound))
+                        {
+                            if (newCarIsFirst && newCarIsLast)
                             {
-                                Car.LightRearLW = true;
-                                Car.LightRearRW = true;
-                                Car.LightFrontLR = true;
-                                Car.LightFrontRR = true;
+                                if (!newCarIsReversed)
+                                {
+                                    Car.LightFrontLW = true;
+                                    Car.LightFrontRW = true;
+                                    Car.LightRearLR = true;
+                                    Car.LightRearRR = true;
+                                }
+                                else
+                                {
+                                    Car.LightRearLW = true;
+                                    Car.LightRearRW = true;
+                                    Car.LightFrontLR = true;
+                                    Car.LightFrontRR = true;
+                                }
+                            }
+                        }
+                        else
+                        if (Car.Train.LightDimFound)
+                        {
+                            if (newCarIsFirst && newCarIsLast)
+                            {
+                                if (!newCarIsReversed)
+                                {
+                                    Car.LightFrontLW = true;
+                                    Car.LightFrontRW = true;
+                                    Car.LightRearLW = true;
+                                    Car.LightRearRW = true;
+                                }
+                                else
+                                {
+                                    Car.LightRearLW = true;
+                                    Car.LightRearRW = true;
+                                    Car.LightFrontLW = true;
+                                    Car.LightFrontRW = true;
+                                }
                             }
                         }
                     }
-                    else
-                    {
-                        if (newCarIsFirst && newCarIsLast)
-                        {
-                            if (!newCarIsReversed)
-                            {
-                                Car.LightFrontLW = true;
-                                Car.LightFrontRW = true;
-                                Car.LightRearLW = true;
-                                Car.LightRearRW = true;
-                            }
-                            else
-                            {
-                                Car.LightRearLW = true;
-                                Car.LightRearRW = true;
-                                Car.LightFrontLW = true;
-                                Car.LightFrontRW = true;
-                            }
-                        }
-                    }
-                }
+                }                
             }
-            #endregion 
+            #endregion
+
+            var newCarLightFrontLW = Car.LightFrontLW;
+            var newCarLightFrontRW = Car.LightFrontRW;
+            var newCarLightRearLW = Car.LightRearLW;
+            var newCarLightRearRW = Car.LightRearRW;
+            var newCarLightFrontLR = Car.LightFrontLR;
+            var newCarLightFrontRR = Car.LightFrontRR;
+            var newCarLightRearLR = Car.LightRearLR;
+            var newCarLightRearRR = Car.LightRearRR;
 
             if (
                 (TrainHeadlight != newTrainHeadlight) ||
@@ -1185,32 +1229,7 @@ namespace Orts.Viewer3D
             LightViewer.CalculateLightCone(state1, out Position1, out Direction1, out Angle1, out Radius1, out Distance1, out Color1);
             LightViewer.CalculateLightCone(state2, out Position2, out Direction2, out Angle2, out Radius2, out Distance2, out Color2);
         }
-    }
-
-    struct LightConeVertex
-    {
-        public Vector3 PositionO;
-        public Vector3 PositionT;
-        public Vector4 ColorO;
-        public Vector4 ColorT;
-
-        public LightConeVertex(Vector3 position1, Vector3 position2, Vector4 color1, Vector4 color2)
-        {
-            PositionO = position1;
-            PositionT = position2;
-            ColorO = color1;
-            ColorT = color2;
-        }
-
-        public static readonly VertexElement[] VertexElements = {
-            new VertexElement(sizeof(float) * 0, VertexElementFormat.Vector3, VertexElementUsage.Position, 0),
-            new VertexElement(sizeof(float) * (3), VertexElementFormat.Vector3, VertexElementUsage.Position, 1),
-            new VertexElement(sizeof(float) * (3 + 3), VertexElementFormat.Vector4, VertexElementUsage.Color, 0),
-            new VertexElement(sizeof(float) * (3 + 3 + 4), VertexElementFormat.Vector4, VertexElementUsage.Color, 1),
-        };
-
-        public static int SizeInBytes = sizeof(float) * (3 + 3 + 4 + 4);
-    }
+    }    
 
     public class LightGlowMaterial : Material
     {

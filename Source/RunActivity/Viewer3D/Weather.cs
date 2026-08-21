@@ -685,7 +685,8 @@ namespace Orts.Viewer3D
 
         void UpdateVolume()
         {
-            // Icik                            
+            // Icik
+            if (!WeatherInitSet) return;
             foreach (var soundSource in ClearSound) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.25f)) / (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS + 1);
             foreach (var soundSource in ClearSoundNight) soundSource.Volume = (1 - (Weather.PricipitationIntensityPPSPM2 / 0.25f)) / (Viewer.Simulator.PlayerLocomotive.AbsSpeedMpS + 1);
             if ((Viewer.FreeRoamCameraList.Count > 0 && Viewer.Camera == Viewer.FreeRoamCamera) || Viewer.Camera == Viewer.TracksideCamera)
@@ -932,7 +933,7 @@ namespace Orts.Viewer3D
             MP_Messages(elapsedTime, this);
 
             // Icik                        
-            if (WeatherInitSet && Viewer.Simulator.GameTimeCyklus10 == 10)
+            if (Viewer.Simulator.GameTimeCyklus10 == 10)
             {
                 DayNightTimeChangeCyklus();
                 if (DayNightTimeChange || (Viewer.Simulator.GameTime < 0.1f && NightTime))
