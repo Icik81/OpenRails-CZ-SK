@@ -236,15 +236,24 @@ namespace Orts.Viewer3D
             CarSpawnerListIdx = carSpawnerListIdx;
         
         RepeatGen:
-            Type = Viewer.Random.Next() % viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].shapeNames.Length;
+            lock (Viewer.Random)
+            {
+                Type = Viewer.Random.Next(viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].shapeNames.Length);
+            }
             Length = viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].distanceFrom[Type];
 
             // Icik
-            Length += MathHelper.Clamp(Viewer.Random.Next(-25, 25) / 100f * Length, -1, 0.5f);
+            lock (Viewer.Random)
+            {
+                Length += MathHelper.Clamp(Viewer.Random.Next(-25, 25) / 100f * Length, -1, 0.5f);
+            }
             if (LastType != Type)
             {
                 LastType = Type;
-                TypeGenChanceToRelease = Length > 5 ? Viewer.Random.Next(15) : Viewer.Random.Next(10);
+                lock (Viewer.Random)
+                {
+                    TypeGenChanceToRelease = Length > 5 ? Viewer.Random.Next(15) : Viewer.Random.Next(10);
+                }
                 if (TypeGenChanceToRelease == 0) goto SkipRepeatGen;
             }
             else
@@ -274,7 +283,10 @@ namespace Orts.Viewer3D
             RearTraveller.Move(Length * 0.85f);
             // Travelled is the center of the vehicle.
             Travelled = Length * 0.50f;
-            Speed = SpeedMax = averageSpeed * (0.75f + (float)Viewer.Random.NextDouble() / 2);
+            lock (Viewer.Random)
+            {
+                Speed = SpeedMax = averageSpeed * (0.75f + (float)Viewer.Random.NextDouble() / 2);
+            }
             IgnoreXRotation = viewer.Simulator.CarSpawnerLists[CarSpawnerListIdx].IgnoreXRotation;
         }
 
