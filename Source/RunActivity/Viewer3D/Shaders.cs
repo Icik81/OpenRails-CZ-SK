@@ -152,39 +152,43 @@ namespace Orts.Viewer3D
         bool NightBrightnessSet;
         float NightBrightnessValue;
         float FullBrightnessFinal;
-        float DayBrightnessCoef;                
+        float DayBrightnessCoef;
         float SeasonAmbientLightCoef = 1.0f;
         float GameTimeToHoursLowBorder;
         float GameTimeToHoursHighBorder;
         float DayTimeAmbientLightChangeCoef;
         float MorningFogDistance;
         float MorningFogHour;
-        float EveningFogHour;        
+        float EveningFogHour;
         float WorldThunderTimer = -1;
         float WorldThunderTime;
         float LastStateBrightness;
         float WorldThunderStartTime;
         float LastStateFogDistanceFinal = -1;
         bool WorldThunderRun;
+        double lastSceneryUpdateClockTime = -1;
+
+        bool wasInTunnel = false;
+        float tunnelExitCooldown = 0f;
+        float undergroundEnterTimer = 0f;
+
+        bool fogInitialized = false;
+        Vector3 currentTunnelFogRgb = Vector3.One;
+        float currentTunnelFogDepth = 5000f;
+
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
             view.SetValue(v);
             projection.SetValue(p);
 
-            //int vIn = Program.Simulator.Settings.DayAmbientLight;            
-            //const float HalfShadowBrightness = 0.75;
             const float HalfNightBrightness = 0.6f;
             const float ShadowBrightness = 0.5f;
-            //const float NightBrightness = 0.2f;
 
-            // Icik            
             // Mění intenzitu okolního světla v závislosti na ročním období a denní době
             float GameTimeToHours = (float)Program.Simulator.ClockTime / 60f / 60f;
             while (GameTimeToHours > 24f) GameTimeToHours = GameTimeToHours - 24f;
             Program.Simulator.GameTimeHours = GameTimeToHours;
-
-            //Program.Simulator.Confirmer.Information("DayTimeAmbientLightCoef = " + Program.Simulator.DayTimeAmbientLightCoef);            
 
             Program.Simulator.SeasonAmbientLightCoef = SeasonAmbientLightCoef;
             switch (Program.Simulator.Season)
@@ -265,21 +269,19 @@ namespace Orts.Viewer3D
 
             if (Program.Simulator.WeatherChangesPresent)
             {
-                // Aktivitář používá své počasí
                 Program.Simulator.Weather.FogDistance = Program.Simulator.FogDistanceFinal;
             }
             else
             {
-                // Ranní mlha
                 if (GameTimeToHours < MorningFogHour && GameTimeToHours > EveningFogHour)
                 {
-                    if (Program.Simulator.WeatherAdv != 7) // Profily
+                    if (Program.Simulator.WeatherAdv != 7)
                         LastStateFogDistanceFinal = Program.Simulator.FogDistanceFinalBase;
                     else
                         if (LastStateFogDistanceFinal == -1)
                             LastStateFogDistanceFinal = Program.Simulator.FogDistanceFinal;
 
-                    if (Program.Simulator.ChanceToMorningFog < 3) // 30% šance na mlhu
+                    if (Program.Simulator.ChanceToMorningFog < 3)
                     {
                         if (Program.Simulator.GameTime == 0)
                             Program.Simulator.Weather.FogDistance = MorningFogDistance;
@@ -300,10 +302,7 @@ namespace Orts.Viewer3D
                 }
             }
 
-            // Nastaví parametry mlhy            
             Program.Simulator.GlobalDensity = MathHelper.Clamp(10 * Program.Simulator.HeightFalloff, 3, 10);
-
-            // Mění intenzitu okolního světla v závislosti na zatažení oblohy
             Program.Simulator.OvercastAmbientLightCoef = 1.0f - (Program.Simulator.Weather.OvercastFactor / 3.0f);
 
             if (!NightBrightnessSet)
@@ -328,105 +327,119 @@ namespace Orts.Viewer3D
             }
 
             DayBrightnessCoef = Program.Simulator.Settings.DayAmbientLight / 20.0f;
-            // Zařídí tmu v tunelu
+
+            float dtReal = (float)Program.Simulator.RealTimeDifference;
+            if (dtReal > 0.1f) dtReal = 0.1f;
+            if (dtReal < 0.0f) dtReal = 0.0f;
+
+            if (wasInTunnel && !Program.Simulator.PlayerCarIsInTunnel)
+            {
+                tunnelExitCooldown = 3.5f;
+            }
+            wasInTunnel = Program.Simulator.PlayerCarIsInTunnel;
+
+            if (tunnelExitCooldown > 0f)
+            {
+                tunnelExitCooldown -= dtReal;
+                if (tunnelExitCooldown < 0f) tunnelExitCooldown = 0f;
+            }
+
+            if (Program.Viewer.Camera.IsUnderground && !Program.Simulator.PlayerCarIsInTunnel && tunnelExitCooldown <= 0f)
+            {
+                undergroundEnterTimer += dtReal;
+            }
+            else
+            {
+                undergroundEnterTimer = 0f;
+            }
+
             Program.Simulator.TunnelActivateM = 0;
             Program.Simulator.CarInDarkTunnel = false;
-            bool IsUnderground = Program.Viewer.Camera.IsUnderground || (Program.Simulator.TunnelLengthM > 100 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0);
+            float InTunnelBreakConstant = 25f;
 
-            if (Program.Simulator.PlayerCarIsInTunnel && IsUnderground)
+            float dayLightValue = Program.Simulator.Settings.DayAmbientLight;
+
+            if (Program.Simulator.PlayerCarIsInTunnel)
             {
-                float InTunnelBreakConstant = 10f;
-                if (Program.Viewer.Camera.IsUnderground || IsUnderground)
+                if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < InTunnelBreakConstant)
                 {
+                    float factor = Program.Simulator.PlayerCarIsInTunnelBeginM / InTunnelBreakConstant;
+                    vIn = MathHelper.Lerp(dayLightValue, 1.0f, factor);
+                    NightBrightness = MathHelper.Lerp(NightBrightnessValue, 0.05f, factor);
+                    Program.Simulator.CarInDarkTunnel = false;
+                }
+                else if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < InTunnelBreakConstant)
+                {
+                    float factor = Program.Simulator.PlayerCarIsInTunnelEndM / InTunnelBreakConstant;
+                    vIn = MathHelper.Lerp(dayLightValue, 1.0f, factor);
+                    NightBrightness = MathHelper.Lerp(NightBrightnessValue, 0.05f, factor);
+                    Program.Simulator.CarInDarkTunnel = false;
+                }
+                else if (Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant && Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant)
+                {
+                    vIn = 1.0f;
                     NightBrightness = 0.05f;
-                    vIn = NightBrightnessValue;
                     Program.Simulator.CarInDarkTunnel = true;
                 }
                 else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < InTunnelBreakConstant)
                 {
-                    vIn = Program.Simulator.Settings.DayAmbientLight;
-                    vIn = vIn - (Program.Simulator.PlayerCarIsInTunnelBeginM * DayBrightnessCoef);
-                    if (vIn < 1) vIn = 1;
-
+                    vIn = dayLightValue;
                     NightBrightness = NightBrightnessValue;
-                    NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelBeginM * (NightBrightnessValue / InTunnelBreakConstant));
-                    if (NightBrightness < 0.05f) NightBrightness = 0.05f;
                     Program.Simulator.CarInDarkTunnel = false;
                 }
-                else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < InTunnelBreakConstant)
-                {
-                    vIn = Program.Simulator.Settings.DayAmbientLight;
-                    vIn = vIn - (Program.Simulator.PlayerCarIsInTunnelEndM * DayBrightnessCoef);
-                    if (vIn < 1) vIn = 1;
-
-                    NightBrightness = NightBrightnessValue;
-                    NightBrightness = NightBrightness - (Program.Simulator.PlayerCarIsInTunnelEndM * (NightBrightnessValue / InTunnelBreakConstant));
-                    if (NightBrightness < 0.05f) NightBrightness = 0.05f;
-                    Program.Simulator.CarInDarkTunnel = false;
-                }    
-                else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant && Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant)
-                {
-                    NightBrightness = 0.05f;
-                    vIn = NightBrightnessValue;
-                    Program.Simulator.CarInDarkTunnel = true;
-                }                                
             }
-
-            if (!Program.Simulator.PlayerCarIsInTunnel || (!Program.Viewer.Camera.IsUnderground && Program.Simulator.TunnelLengthM < Program.Simulator.PlayerCarIsInTunnelBeginM))
+            else if (undergroundEnterTimer > 2.0f)
             {
-                vIn = Program.Simulator.Settings.DayAmbientLight;
+                vIn = 1.0f;
+                NightBrightness = 0.05f;
+                Program.Simulator.CarInDarkTunnel = true;
+            }
+            else
+            {
+                vIn = dayLightValue;
+                NightBrightness = NightBrightnessValue;
                 Program.Simulator.CarInDarkTunnel = false;
-            }
-
-            // Záblesk od blesku
-            if (Program.Simulator.WorldThunder)
-            {                
-                if (WorldThunderStartTime > (float)Program.Simulator.ClockTime) WorldThunderTimer = -1;
-                if (WorldThunderTimer == -1)
-                {
-                    LastStateBrightness = Program.Simulator.DayTimeAmbientLightCoef;
-                    WorldThunderStartTime = (float)Program.Simulator.ClockTime;
-                    WorldThunderTime = Program.Simulator.WorldThunderTime;
-                }
-                if (!Program.Simulator.CarInDarkTunnel) Program.Simulator.DayTimeAmbientLightCoef = 1.2f;
-                WorldThunderTimer = (float)Program.Simulator.ClockTime - WorldThunderStartTime;
-                if (WorldThunderTimer > WorldThunderTime || Program.Simulator.CarInDarkTunnel)
-                {
-                    WorldThunderTimer = -1;
-                    Program.Simulator.WorldThunder = false;
-                    Program.Simulator.DayTimeAmbientLightCoef = LastStateBrightness;
-                }
             }
 
             float FullBrightness = (float)vIn / 20.0f * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
             Program.Simulator.FullBrightness = FullBrightness;
-            NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
+            NightBrightness = NightBrightness * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
 
-            float FullBrightnessFinalCoef = 0.0025f;
-            if (FullBrightnessFinal < FullBrightness)
-                FullBrightnessFinal += FullBrightnessFinalCoef * Program.Simulator.OneSecondLoop;
-            else
-                if (FullBrightnessFinal > FullBrightness)
-                    FullBrightnessFinal -= FullBrightnessFinalCoef * Program.Simulator.OneSecondLoop;
-
-            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
+            if (Program.Simulator.ClockTime != lastSceneryUpdateClockTime)
             {
-                FullBrightnessFinal = FullBrightness;
-            }
+                if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
+                {
+                    FullBrightnessFinal = FullBrightness;
+                }
+                else if (Program.Simulator.WorldThunder)
+                {
+                    WorldThunderRun = true;
+                    FullBrightnessFinal = FullBrightness;
+                }
+                else if (!Program.Simulator.WorldThunder && WorldThunderRun)
+                {
+                    WorldThunderRun = false;
+                    FullBrightnessFinal = FullBrightness;
+                }
+                else
+                {
+                    float fadeSpeed = (FullBrightnessFinal < FullBrightness) ? 4.0f : 1.0f;
 
-            if (Program.Simulator.WorldThunder)
-            {
-                WorldThunderRun = true;
-                FullBrightnessFinal = FullBrightness;
-            }
+                    if (FullBrightnessFinal < FullBrightness)
+                    {
+                        FullBrightnessFinal += fadeSpeed * dtReal;
+                        if (FullBrightnessFinal > FullBrightness)
+                            FullBrightnessFinal = FullBrightness;
+                    }
+                    else if (FullBrightnessFinal > FullBrightness)
+                    {
+                        FullBrightnessFinal -= fadeSpeed * dtReal;
+                        if (FullBrightnessFinal < FullBrightness)
+                            FullBrightnessFinal = FullBrightness;
+                    }
+                }
 
-            if (!Program.Simulator.WorldThunder && WorldThunderRun)
-            {
-                WorldThunderRun = false;
-                FullBrightnessFinal = FullBrightness;
+                lastSceneryUpdateClockTime = Program.Simulator.ClockTime;
             }
 
             if (_imageTextureIsNight)
@@ -438,8 +451,6 @@ namespace Orts.Viewer3D
             }
             else
             {
-                // The following constants define the beginning and the end conditions of
-                // the day-night transition. Values refer to the Y postion of LightVector.
                 const float startNightTrans = 0.1f;
                 const float finishNightTrans = -0.1f;
 
@@ -473,7 +484,6 @@ namespace Orts.Viewer3D
             get { return _zBias_Lighting.Z; }
             set
             {
-                // Setting this exponent of HLSL pow() function to 0 in DX11 leads to undefined result. (HLSL bug?)
                 _zBias_Lighting.Z = value >= 1 ? value : 1;
                 _zBias_Lighting.W = value >= 1 ? 1 : 0;
                 zBias_Lighting.SetValue(_zBias_Lighting);
@@ -482,7 +492,80 @@ namespace Orts.Viewer3D
 
         public void SetFog(float depth, ref Color color)
         {
-            fog.SetValue(new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f / depth));
+            Vector3 baseFogRgb = new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
+            Vector3 targetFogRgb = baseFogRgb;
+            float targetDepth = depth;
+
+            if (!fogInitialized)
+            {
+                currentTunnelFogRgb = baseFogRgb;
+                currentTunnelFogDepth = depth;
+                fogInitialized = true;
+            }
+
+            bool isDay = Program.Viewer.MaterialManager.sunDirection.Y > -0.05f;
+            float dt = (float)Program.Simulator.RealTimeDifference;
+            if (dt > 0.1f) dt = 0.1f;
+            if (dt < 0.0f) dt = 0.0f;
+
+            if (isDay && Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.PlayerLocomotive != null)
+            {
+                const float GlareVisibleDistance = 180f;
+
+                if (Program.Simulator.PlayerCarIsInTunnelEndM > 0)
+                {
+                    float distToEnd = Program.Simulator.PlayerCarIsInTunnelEndM;
+
+                    if (distToEnd < GlareVisibleDistance)
+                    {
+                        if (distToEnd > 30f)
+                        {
+                            float t = (distToEnd - 30f) / (GlareVisibleDistance - 30f);
+                            float glareCurve = (float)Math.Pow(1.0f - t, 1.3f);
+
+                            float glareIntensity = MathHelper.Lerp(0.0f, 1.6f, glareCurve);
+                            targetFogRgb = new Vector3(glareIntensity, glareIntensity, glareIntensity);
+                            targetDepth = MathHelper.Lerp(160f, 90f, glareCurve);
+                        }
+                        else
+                        {
+                            float t = distToEnd / 30f;
+                            targetFogRgb = Vector3.Lerp(baseFogRgb, new Vector3(1.6f, 1.6f, 1.6f), t);
+                            targetDepth = MathHelper.Lerp(Math.Min(depth, 500f), 90f, t);
+                        }
+                    }
+                    else
+                    {
+                        targetFogRgb = Vector3.Zero;
+                        targetDepth = 160f;
+                    }
+                }
+            }
+            else if (tunnelExitCooldown > 0f && isDay)
+            {
+                float exitProgress = 1.0f - (tunnelExitCooldown / 3.5f);
+                targetFogRgb = Vector3.Lerp(new Vector3(1.2f, 1.2f, 1.2f), baseFogRgb, exitProgress);
+                targetDepth = MathHelper.Lerp(250f, depth, exitProgress);
+            }
+            else
+            {
+                targetFogRgb = baseFogRgb;
+                targetDepth = depth;
+            }
+
+            if (dt > 0.0001f)
+            {
+                float blendSpeed = 3.5f;
+                currentTunnelFogRgb = Vector3.Lerp(currentTunnelFogRgb, targetFogRgb, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
+                currentTunnelFogDepth = MathHelper.Lerp(currentTunnelFogDepth, targetDepth, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
+            }
+            else
+            {
+                currentTunnelFogRgb = targetFogRgb;
+                currentTunnelFogDepth = targetDepth;
+            }
+
+            fog.SetValue(new Vector4(currentTunnelFogRgb.X, currentTunnelFogRgb.Y, currentTunnelFogRgb.Z, 1f / currentTunnelFogDepth));
             groundLevel.SetValue(Program.Simulator.GroundLevel);
             heightFalloff.SetValue(Program.Simulator.HeightFalloff);
             globalDensity.SetValue(Program.Simulator.GlobalDensity);
@@ -492,21 +575,6 @@ namespace Orts.Viewer3D
         {
             _sunDirection = sunDirection;
             lightVector_ZFar.SetValue(new Vector4(sunDirection.X, sunDirection.Y, sunDirection.Z, zFar));
-        }
-
-        public void SetHeadlight(ref Vector3 position, ref Vector3 direction, float distance, float minDotProduct, float fadeTime, float fadeDuration, float clampValue, ref Vector4 color)
-        {
-            var lighting = fadeTime / fadeDuration * clampValue;
-            if (lighting < 0) lighting = 1 + lighting;
-            headlightPosition.SetValue(new Vector4(position, MathHelper.Clamp(lighting, 0, clampValue)));
-            headlightDirection.SetValue(new Vector4(direction, 0.5f * (1 - minDotProduct))); // We want 50% brightness at the given dot product.
-            headlightRcpDistance.SetValue(1f / distance); // Needed to be separated (direction * distance) because no pre-shaders are supported in XNA 4
-            headlightColor.SetValue(color);
-        }
-
-        public void SetHeadlightOff()
-        {
-            headlightPosition.SetValue(Vector4.Zero);
         }
 
         public void SetMultiHeadlights(Vector4[] pos, Vector4[] dir, Vector4[] col, float[] rcpDist, int count)
@@ -647,6 +715,10 @@ namespace Orts.Viewer3D
         readonly EffectParameter thunderMapTexture;
         readonly EffectParameter heightFalloff;
 
+        bool fogInitialized = false;
+        Vector3 currentTunnelFogRgb = Vector3.One;
+        float currentTunnelFogDepth = 5000f;
+
         public Vector3 LightVector
         {
             set
@@ -658,7 +730,7 @@ namespace Orts.Viewer3D
                 var skyColor1 = Day2Night(0.25f, -0.25f, -0.5f, value.Y);
                 var skyColor2 = MathHelper.Clamp(skyColor1 + 0.55f, 0, 1);
                 var skyColor3 = 0.001f / (0.8f * Math.Abs(value.Y - 0.1f));
-                skyColor.SetValue(new Vector3(skyColor1, skyColor2, skyColor3));                
+                skyColor.SetValue(new Vector3(skyColor1, skyColor2, skyColor3));
 
                 if (Program.Simulator.WorldThunder && Program.Simulator.Weather.FogDistance < 2200)
                 {
@@ -666,9 +738,7 @@ namespace Orts.Viewer3D
                     skyColor.SetValue(new Vector3(50, 50, 50));
                 }
 
-                // Fade moon during daylight
                 var moonColor1 = value.Y > 0.1f ? (1 - value.Y) / 1.5f : 1;
-                // Mask stars behind dark side (mask fades in)
                 var moonColor2 = _moonPhase != 6 && value.Y < 0.13 ? -6.25f * value.Y + 0.8125f : 0;
                 moonColor.SetValue(new Vector2(moonColor1, moonColor2));
             }
@@ -676,8 +746,75 @@ namespace Orts.Viewer3D
 
         public void SetFog(float depth, ref Color color)
         {
-            fogColor.SetValue(new Vector3(color.R / 255f, color.G / 255f, color.B / 255f));            
-            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));
+            Vector3 baseFogRgb = new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
+            Vector3 targetFogRgb = baseFogRgb;
+            float targetDepth = depth;
+
+            if (!fogInitialized)
+            {
+                currentTunnelFogRgb = baseFogRgb;
+                currentTunnelFogDepth = depth;
+                fogInitialized = true;
+            }
+
+            bool isDay = Program.Viewer.MaterialManager.sunDirection.Y > -0.05f;
+            float dt = (float)Program.Simulator.RealTimeDifference;
+            if (dt > 0.1f) dt = 0.1f;
+            if (dt < 0.0f) dt = 0.0f;
+
+            if (isDay && Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.PlayerLocomotive != null)
+            {
+                const float GlareVisibleDistance = 180f;
+
+                if (Program.Simulator.PlayerCarIsInTunnelEndM > 0)
+                {
+                    float distToEnd = Program.Simulator.PlayerCarIsInTunnelEndM;
+
+                    if (distToEnd < GlareVisibleDistance)
+                    {
+                        if (distToEnd > 30f)
+                        {
+                            float t = (distToEnd - 30f) / (GlareVisibleDistance - 30f);
+                            float glareCurve = (float)Math.Pow(1.0f - t, 1.3f);
+
+                            float glareIntensity = MathHelper.Lerp(0.0f, 1.6f, glareCurve);
+                            targetFogRgb = new Vector3(glareIntensity, glareIntensity, glareIntensity);
+                            targetDepth = MathHelper.Lerp(160f, 90f, glareCurve);
+                        }
+                        else
+                        {
+                            float t = distToEnd / 30f;
+                            targetFogRgb = Vector3.Lerp(baseFogRgb, new Vector3(1.6f, 1.6f, 1.6f), t);
+                            targetDepth = MathHelper.Lerp(Math.Min(depth, 500f), 90f, t);
+                        }
+                    }
+                    else
+                    {
+                        targetFogRgb = Vector3.Zero;
+                        targetDepth = 160f;
+                    }
+                }
+            }
+            else
+            {
+                targetFogRgb = baseFogRgb;
+                targetDepth = depth;
+            }
+
+            if (dt > 0.0001f)
+            {
+                float blendSpeed = 3.5f;
+                currentTunnelFogRgb = Vector3.Lerp(currentTunnelFogRgb, targetFogRgb, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
+                currentTunnelFogDepth = MathHelper.Lerp(currentTunnelFogDepth, targetDepth, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
+            }
+            else
+            {
+                currentTunnelFogRgb = targetFogRgb;
+                currentTunnelFogDepth = targetDepth;
+            }
+
+            fogColor.SetValue(currentTunnelFogRgb);
+            fog.SetValue(new Vector4(5000f / currentTunnelFogDepth, 0.015f * MathHelper.Clamp(currentTunnelFogDepth / 5000f, 0, 1), MathHelper.Clamp(currentTunnelFogDepth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(currentTunnelFogDepth / 10000f, 0, 1)));
             heightFalloff.SetValue(Program.Simulator.HeightFalloff);
         }
 
@@ -708,7 +845,6 @@ namespace Orts.Viewer3D
                 if (value < 0.2f)
                     overcast.SetValue(new Vector4(4 * value + 0.2f, 0.0f, 0.0f, 0.0f));
                 else
-                    // Coefficients selected by author to achieve the desired appearance
                     overcast.SetValue(new Vector4(MathHelper.Clamp(2 * value - 0.4f, 0, 1), 1.25f - 1.125f * value, 1.15f - 0.75f * value, 1f));
             }
         }
@@ -719,7 +855,7 @@ namespace Orts.Viewer3D
         {
             set
             {
-                var totalWindDisplacement = 50 * WindSpeed * _time; // This exaggerates the wind speed, but it is necessary to get a visible effect
+                var totalWindDisplacement = 50 * WindSpeed * _time;
                 windDisplacement.SetValue(new Vector2(-(float)Math.Sin(value) * totalWindDisplacement, (float)Math.Cos(value) * totalWindDisplacement));
             }
         }
@@ -778,23 +914,19 @@ namespace Orts.Viewer3D
             heightFalloff = Parameters["HeightFalloff"];
         }
 
-
-        // This function dims the lighting at night, with a transition period as the sun rises or sets
         static float Day2Night(float startNightTrans, float finishNightTrans, float minDarknessCoeff, float sunDirectionY)
         {
             int vIn = Program.Simulator.Settings.DayAmbientLight;
             float dayAmbientLight = (float)vIn / 20.0f;
 
-            // The following two are used to interpoate between day and night lighting (y = mx + b)
-            var slope = (dayAmbientLight - minDarknessCoeff) / (startNightTrans - finishNightTrans); // "m"
-            var incpt = dayAmbientLight - slope * startNightTrans; // "b"
-            // This is the return value used to darken scenery
+            var slope = (dayAmbientLight - minDarknessCoeff) / (startNightTrans - finishNightTrans);
+            var incpt = dayAmbientLight - slope * startNightTrans;
             float adjustment;
 
             if (sunDirectionY < finishNightTrans)
                 adjustment = minDarknessCoeff;
             else if (sunDirectionY > startNightTrans)
-                adjustment = dayAmbientLight; // Scenery is fully lit during the day
+                adjustment = dayAmbientLight;
             else
                 adjustment = slope * sunDirectionY + incpt;
 
@@ -839,7 +971,7 @@ namespace Orts.Viewer3D
             set
             {
                 if (Program.Simulator.FullBrightness < 0.8f)
-                {                    
+                {
                     float diff = 0.8f - Program.Simulator.FullBrightness;
                     double expFalloff = (Math.Pow(10f, diff * 2f) - 1f) * 0.1f;
                     value.Y -= (float)expFalloff;
@@ -931,7 +1063,7 @@ namespace Orts.Viewer3D
             groundLevel.SetValue(Program.Simulator.GroundLevel);
             heightFalloff.SetValue(Program.Simulator.HeightFalloff);
             globalDensity.SetValue(Program.Simulator.GlobalDensity);
-        }        
+        }
     }
 
     [CallOnThread("Render")]
@@ -995,7 +1127,6 @@ namespace Orts.Viewer3D
             glassColor = Parameters["GlassColor"];
             screenSize = Parameters["ScreenSize"];
             screenTexture = Parameters["ScreenTexture"];
-            // TODO: This should happen on the loader thread.
             Parameters["WindowTexture"].SetValue(SharedTextureManager.Get(graphicsDevice, System.IO.Path.Combine(viewer.ContentPath, "Window.png")));
         }
     }
@@ -1027,6 +1158,8 @@ namespace Orts.Viewer3D
             light2Pos.SetValue(light2Position);
         }
 
+        double lastCabUpdateClockTime = -1;
+
         float CabnightColorModifier;
         float CabnightColorModifierValue;
         float CabnightColorModifierValueFinal;
@@ -1037,59 +1170,90 @@ namespace Orts.Viewer3D
         float WorldThunderTime;
         float LastStateCabnightColorModifierValue;
         bool WorldThunderRun;
+
+        bool wasInTunnel = false;
+        float tunnelExitCooldown = 0f;
+        float undergroundEnterTimer = 0f;
+
         public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem, string TextureName)
-        {            
+        {
             IsNightTexture = false;
             if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
             {
-                // Noční textury se aktivují jen pokud jsou k dispozici v NIGHT složce
                 if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory)
                     IsNightTexture = true;
-            }            
+            }
 
             if (!IsNightTexture || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.9f - overcast, 0, 1)) * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
-            
+
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
-            lightOn.SetValue(isDashLight);                        
+            lightOn.SetValue(isDashLight);
+
+            float dtReal = (float)Program.Simulator.RealTimeDifference;
+            if (dtReal > 0.1f) dtReal = 0.1f;
+            if (dtReal < 0.0f) dtReal = 0.0f;
+
+            // Ochranný cooldown po opuštění označeného tunelu pro kabinu
+            if (wasInTunnel && !Program.Simulator.PlayerCarIsInTunnel)
+            {
+                tunnelExitCooldown = 3.5f;
+            }
+            wasInTunnel = Program.Simulator.PlayerCarIsInTunnel;
+
+            if (tunnelExitCooldown > 0f)
+            {
+                tunnelExitCooldown -= dtReal;
+                if (tunnelExitCooldown < 0f) tunnelExitCooldown = 0f;
+            }
+
+            // Vstupní timer pro podzemí
+            if (Program.Viewer.Camera.IsUnderground && !Program.Simulator.PlayerCarIsInTunnel && tunnelExitCooldown <= 0f)
+            {
+                undergroundEnterTimer += dtReal;
+            }
+            else
+            {
+                undergroundEnterTimer = 0f;
+            }
 
             // Zařídí tmu v kabině v tunelu
-            Program.Simulator.CabInDarkTunnel = false;                        
-            bool IsUnderground = Program.Viewer.Camera.IsUnderground || (Program.Simulator.TunnelLengthM > 100 && Program.Simulator.PlayerCarIsInTunnelBeginM > 0);
+            Program.Simulator.CabInDarkTunnel = false;
+            float InTunnelBreakConstant = 25f;
+            float normalCabBrightness = CabnightColorModifierValue;
 
-            if (Program.Simulator.PlayerCarIsInTunnel && IsUnderground)                
+            if (Program.Simulator.PlayerCarIsInTunnel)
             {
-                float InTunnelBreakConstant = 10f;
-                CabnightColorModifier = CabnightColorModifierValue;
-                if (Program.Viewer.Camera.IsUnderground || IsUnderground)
+                if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < InTunnelBreakConstant)
+                {
+                    float factor = Program.Simulator.PlayerCarIsInTunnelBeginM / InTunnelBreakConstant;
+                    CabnightColorModifierValue = MathHelper.Lerp(normalCabBrightness, 0.075f, factor);
+                    Program.Simulator.CabInDarkTunnel = false;
+                }
+                else if (Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < InTunnelBreakConstant)
+                {
+                    float factor = Program.Simulator.PlayerCarIsInTunnelEndM / InTunnelBreakConstant;
+                    CabnightColorModifierValue = MathHelper.Lerp(normalCabBrightness, 0.075f, factor);
+                    Program.Simulator.CabInDarkTunnel = false;
+                }
+                else if (Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant && Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant)
                 {
                     CabnightColorModifierValue = 0.075f;
                     Program.Simulator.CabInDarkTunnel = true;
                 }
                 else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelBeginM > 0 && Program.Simulator.PlayerCarIsInTunnelBeginM < InTunnelBreakConstant)
                 {
-                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelBeginM * 0.05f * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
-                    CabnightColorModifierValue = (MathHelper.Clamp(CabnightColorModifier, 0.075f, CabnightColorModifierValue));
                     Program.Simulator.CabInDarkTunnel = false;
                 }
-                else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelEndM > 0 && Program.Simulator.PlayerCarIsInTunnelEndM < InTunnelBreakConstant)
-                {
-                    CabnightColorModifier = CabnightColorModifier - (Program.Simulator.PlayerCarIsInTunnelEndM * 0.05f * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
-                    CabnightColorModifierValue = (MathHelper.Clamp(CabnightColorModifier, 0.075f, CabnightColorModifierValue));
-                    Program.Simulator.CabInDarkTunnel = false;
-                }
-                else
-                if (!Program.Viewer.Camera.IsUnderground && Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant && Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant)
-                {
-                    CabnightColorModifierValue = 0.075f;
-                    Program.Simulator.CabInDarkTunnel = true;                    
-                }                                               
             }
-            
-            LastStateCabnightColorModifierValue = CabnightColorModifierValue;            
+            else if (undergroundEnterTimer > 2.0f)
+            {
+                CabnightColorModifierValue = 0.075f;
+                Program.Simulator.CabInDarkTunnel = true;
+            }
+
+            LastStateCabnightColorModifierValue = CabnightColorModifierValue;
 
             if (IsNightTexture && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierValue = 0.9f;
@@ -1099,20 +1263,20 @@ namespace Orts.Viewer3D
                 if (Program.Simulator.CabFloodLightActivate)
                     CabnightColorModifierValue = (Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
                 else
-                if (Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                    CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
-                else
-                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                    CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0));
-                else
-                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                    CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
-                else
-                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                    CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
-                else
-                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                    CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));                                
+                    if (Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
+                        CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
+                    else
+                        if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                            CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0));
+                        else
+                            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                                CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
+                            else
+                                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                                    CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
+                                else
+                                    if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                                        CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
             }
 
             // Záblesk od blesku
@@ -1136,7 +1300,7 @@ namespace Orts.Viewer3D
 
             Program.Simulator.DashLightCanActivate = false;
             float CabnightColorModifierNightReference = 0.45f;
-            
+
             if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 CabnightColorModifierNightReference = 0.60f;
 
@@ -1147,7 +1311,7 @@ namespace Orts.Viewer3D
                     Program.Simulator.DashLightCanActivate = true;
                 }
             }
-            
+
             // Kabinová světla na baterie
             if (LightItem && Program.Simulator.CabItemBatterieOn)
             {
@@ -1156,50 +1320,58 @@ namespace Orts.Viewer3D
                     CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness : CabnightColorModifierValue;
                 }
                 else
-                if (TextureName.Contains("LIGHTITEM"))
+                    if (TextureName.Contains("LIGHTITEM"))
+                    {
+                        CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                    }
+                    else
+                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
+                        {
+                            CabnightColorModifierValue = 1.0f;
+                        }
+            }
+
+            if (Program.Simulator.ClockTime != lastCabUpdateClockTime)
+            {
+                if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
                 {
-                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;                    
+                    CabnightColorModifierValueFinal = CabnightColorModifierValue;
+                }
+                else if (Program.Simulator.WorldThunder)
+                {
+                    WorldThunderRun = true;
+                    CabnightColorModifierValueFinal = CabnightColorModifierValue;
+                }
+                else if (!Program.Simulator.WorldThunder && WorldThunderRun)
+                {
+                    WorldThunderRun = false;
+                    CabnightColorModifierValueFinal = CabnightColorModifierValue;
                 }
                 else
-                if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
                 {
-                    CabnightColorModifierValue = 1.0f;
+                    float fadeSpeed = (CabnightColorModifierValueFinal < CabnightColorModifierValue) ? 2.5f : 1.0f;
+
+                    if (CabnightColorModifierValueFinal < CabnightColorModifierValue)
+                    {
+                        CabnightColorModifierValueFinal += fadeSpeed * dtReal;
+                        if (CabnightColorModifierValueFinal > CabnightColorModifierValue)
+                            CabnightColorModifierValueFinal = CabnightColorModifierValue;
+                    }
+                    else if (CabnightColorModifierValueFinal > CabnightColorModifierValue)
+                    {
+                        CabnightColorModifierValueFinal -= fadeSpeed * dtReal;
+                        if (CabnightColorModifierValueFinal < CabnightColorModifierValue)
+                            CabnightColorModifierValueFinal = CabnightColorModifierValue;
+                    }
                 }
+
+                lastCabUpdateClockTime = Program.Simulator.ClockTime;
             }
 
-            float CabnightColorModifierValueFinalCoef = 0.15f * (52f / Program.Simulator.CabViewControlCount);
-            if (!LightItem && !Program.Simulator.CabFloodLightActivate)
-            {
-                if (CabnightColorModifierValueFinal < CabnightColorModifierValue)
-                    CabnightColorModifierValueFinal += CabnightColorModifierValueFinalCoef * Program.Simulator.OneSecondLoop;
-                else
-                    if (CabnightColorModifierValueFinal > CabnightColorModifierValue)
-                        CabnightColorModifierValueFinal -= CabnightColorModifierValueFinalCoef * Program.Simulator.OneSecondLoop;
-            }
-
-            if (Program.Simulator.Paused || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
-            {                
-                CabnightColorModifierValueFinal = CabnightColorModifierValue;
-            }
-
-            if (Program.Simulator.WorldThunder)
-            {
-                WorldThunderRun = true;
-                CabnightColorModifierValueFinal = CabnightColorModifierValue;
-            }
-
-            if (!Program.Simulator.WorldThunder && WorldThunderRun)
-            {
-                WorldThunderRun = false;
-                CabnightColorModifierValueFinal = CabnightColorModifierValue;
-            }
-
-            if (LightItem || Program.Simulator.CabFloodLightActivate)            
-                nightColorModifier.SetValue(CabnightColorModifierValue);            
+            if (LightItem || Program.Simulator.CabFloodLightActivate)
+                nightColorModifier.SetValue(CabnightColorModifierValue);
             else
-                nightColorModifier.SetValue(CabnightColorModifierValueFinal);            
-
-            //Program.Simulator.Confirmer.MSG("nightColorModifier" + nightColorModifier.GetValueSingle());            
+                nightColorModifier.SetValue(CabnightColorModifierValueFinal);
         }
 
         public CabShader(GraphicsDevice graphicsDevice, Vector4 light1Position, Vector4 light2Position, Vector3 light1Color, Vector3 light2Color)

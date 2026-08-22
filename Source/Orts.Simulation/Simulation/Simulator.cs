@@ -353,6 +353,8 @@ namespace Orts.Simulation
         public float PlayerHeading;
         public float PlayerAbsSpeedMpS;
         public bool WeatherResetEmitter;
+        public double RealTimeDifference;
+        
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;
@@ -932,6 +934,9 @@ namespace Orts.Simulation
         [CallOnThread("Updater")]
         public void Update(float elapsedClockSeconds)
         {
+            // Výpočet delta času simulace v sekundách (nezávislý na pauze a skocích)
+            RealTimeDifference = elapsedClockSeconds;
+
             // Advance the times.
             GameTime += elapsedClockSeconds;
             ClockTime += elapsedClockSeconds;
