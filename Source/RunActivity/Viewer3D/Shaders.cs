@@ -347,16 +347,7 @@ namespace Orts.Viewer3D
             {
                 tunnelExitCooldown -= dtReal;
                 if (tunnelExitCooldown < 0f) tunnelExitCooldown = 0f;
-            }
-
-
-
-            //Program.Simulator.TunnelLengthM = 0;
-            //if (Program.Simulator.TunnelLengthM == 0)
-            //{
-            //    Program.Simulator.PlayerCarIsInTunnel = false;
-            //}
-           
+            }                       
 
             if (Program.Viewer.Camera.IsUnderground && !Program.Simulator.PlayerCarIsInTunnel && tunnelExitCooldown <= 0f)
             {
@@ -368,16 +359,15 @@ namespace Orts.Viewer3D
             }            
                         
             Program.Simulator.TunnelActivateM = 0;
-            const float InTunnelBreakConstant = 10f;
+            const float InTunnelBreakConstant = 15f;
 
             if (Program.Simulator.PlayerCarIsInTunnel)
             {
-                Program.Simulator.CarInDarkTunnel = (Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant &&
-                                                     Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant);
+                Program.Simulator.CarInDarkTunnel = Program.Simulator.PlayerCarIsInTunnelBeginM >= InTunnelBreakConstant && Program.Simulator.PlayerCarIsInTunnelEndM >= InTunnelBreakConstant;
             }
             else
             {
-                Program.Simulator.CarInDarkTunnel = (undergroundEnterTimer > 2.0f);
+                Program.Simulator.CarInDarkTunnel = undergroundEnterTimer > 2.0f;
             }
 
             // Záblesk od blesku
@@ -401,9 +391,8 @@ namespace Orts.Viewer3D
             }
             
             float FullBrightness = SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
-            Program.Simulator.FullBrightness = FullBrightness;
-            NightBrightness = NightBrightnessValue;
-            NightBrightness = NightBrightness * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
+            Program.Simulator.FullBrightness = FullBrightness;            
+            NightBrightness = NightBrightnessValue * SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef;
 
             if (Program.Simulator.ClockTime != lastSceneryUpdateClockTime)
             {
@@ -504,81 +493,8 @@ namespace Orts.Viewer3D
         }
 
         public void SetFog(float depth, ref Color color)
-        {
-            Vector3 baseFogRgb = new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
-            Vector3 targetFogRgb = baseFogRgb;
-            float targetDepth = depth;
-
-            if (!fogInitialized)
-            {
-                currentTunnelFogRgb = baseFogRgb;
-                currentTunnelFogDepth = depth;
-                fogInitialized = true;
-            }
-
-            bool isDay = Program.Viewer.MaterialManager.sunDirection.Y > -0.05f;
-            float dt = (float)Program.Simulator.RealTimeDifference;
-            if (dt > 0.1f) dt = 0.1f;
-            if (dt < 0.0f) dt = 0.0f;
-
-            if (isDay && Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelCarCameraCanActivated != null)
-            {
-                const float GlareVisibleDistance = 0f;
-
-                if (Program.Simulator.PlayerCarIsInTunnelEndM > 30f)
-                {
-                    float distToEnd = Program.Simulator.PlayerCarIsInTunnelEndM;
-
-                    if (distToEnd < GlareVisibleDistance)
-                    {
-                        if (distToEnd > 30f)
-                        {
-                            float t = (distToEnd - 30f) / (GlareVisibleDistance - 30f);
-                            float glareCurve = (float)Math.Pow(1.0f - t, 1.3f);
-
-                            float glareIntensity = MathHelper.Lerp(0.0f, 4.0f, glareCurve);
-                            targetFogRgb = new Vector3(glareIntensity, glareIntensity, glareIntensity);
-                            targetDepth = MathHelper.Lerp(160f, 90f, glareCurve);
-                        }
-                        else
-                        {
-                            float t = distToEnd / 30f;
-                            targetFogRgb = Vector3.Lerp(baseFogRgb, new Vector3(1.6f, 1.6f, 1.6f), t);
-                            targetDepth = MathHelper.Lerp(Math.Min(depth, 500f), 90f, t);
-                        }
-                    }
-                    else
-                    {
-                        //targetFogRgb = Vector3.Zero;
-                        //targetDepth = 50f;
-                    }
-                }
-            }
-            else if (tunnelExitCooldown > 0f && isDay)
-            {
-                float exitProgress = 1.0f - (tunnelExitCooldown / 3.5f);
-                targetFogRgb = Vector3.Lerp(new Vector3(1.2f, 1.2f, 1.2f), baseFogRgb, exitProgress);
-                targetDepth = MathHelper.Lerp(250f, depth, exitProgress);
-            }
-            else
-            {
-                targetFogRgb = baseFogRgb;
-                targetDepth = depth;
-            }
-
-            if (dt > 0.0001f)
-            {
-                float blendSpeed = 3.5f;
-                currentTunnelFogRgb = Vector3.Lerp(currentTunnelFogRgb, targetFogRgb, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
-                currentTunnelFogDepth = MathHelper.Lerp(currentTunnelFogDepth, targetDepth, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
-            }
-            else
-            {
-                currentTunnelFogRgb = targetFogRgb;
-                currentTunnelFogDepth = targetDepth;
-            }
-
-            fog.SetValue(new Vector4(currentTunnelFogRgb.X, currentTunnelFogRgb.Y, currentTunnelFogRgb.Z, 1f / currentTunnelFogDepth));
+        {            
+            fog.SetValue(new Vector4(color.R / 255f, color.G / 255f, color.B / 255f, 1f / depth));
             groundLevel.SetValue(Program.Simulator.GroundLevel);
             heightFalloff.SetValue(Program.Simulator.HeightFalloff);
             globalDensity.SetValue(Program.Simulator.GlobalDensity);
@@ -764,75 +680,8 @@ namespace Orts.Viewer3D
 
         public void SetFog(float depth, ref Color color)
         {
-            Vector3 baseFogRgb = new Vector3(color.R / 255f, color.G / 255f, color.B / 255f);
-            Vector3 targetFogRgb = baseFogRgb;
-            float targetDepth = depth;
-
-            if (!fogInitialized)
-            {
-                currentTunnelFogRgb = baseFogRgb;
-                currentTunnelFogDepth = depth;
-                fogInitialized = true;
-            }
-
-            bool isDay = Program.Viewer.MaterialManager.sunDirection.Y > -0.05f;
-            float dt = (float)Program.Simulator.RealTimeDifference;
-            if (dt > 0.1f) dt = 0.1f;
-            if (dt < 0.0f) dt = 0.0f;
-
-            if (isDay && Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelCarCameraCanActivated != null)
-            {
-                const float GlareVisibleDistance = 1000f;
-
-                if (Program.Simulator.PlayerCarIsInTunnelEndM > 100f)
-                {
-                    float distToEnd = Program.Simulator.PlayerCarIsInTunnelEndM;
-
-                    if (distToEnd < GlareVisibleDistance)
-                    {
-                        if (distToEnd > 100f)
-                        {
-                            float t = (distToEnd - 100f) / (GlareVisibleDistance - 100f);
-                            float glareCurve = (float)Math.Pow(1.0f - t, 1.3f);
-
-                            float glareIntensity = MathHelper.Lerp(0.0f, 4.0f, glareCurve);
-                            targetFogRgb = new Vector3(glareIntensity, glareIntensity, glareIntensity);
-                            targetDepth = MathHelper.Lerp(160f, 90f, glareCurve);
-                        }
-                        else
-                        {
-                            float t = distToEnd / 100f;
-                            targetFogRgb = Vector3.Lerp(baseFogRgb, new Vector3(1.6f, 1.6f, 1.6f), t);
-                            targetDepth = MathHelper.Lerp(Math.Min(depth, 500f), 90f, t);
-                        }
-                    }
-                    else
-                    {
-                        //targetFogRgb = Vector3.Zero;
-                        //targetDepth = 50f;
-                    }
-                }
-            }
-            else
-            {
-                targetFogRgb = baseFogRgb;
-                targetDepth = depth;
-            }
-
-            if (dt > 0.0001f)
-            {
-                float blendSpeed = 3.5f;
-                currentTunnelFogRgb = Vector3.Lerp(currentTunnelFogRgb, targetFogRgb, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
-                currentTunnelFogDepth = MathHelper.Lerp(currentTunnelFogDepth, targetDepth, MathHelper.Clamp(blendSpeed * dt, 0f, 1f));
-            }
-            else
-            {
-                currentTunnelFogRgb = targetFogRgb;
-                currentTunnelFogDepth = targetDepth;
-            }
-
-            fogColor.SetValue(currentTunnelFogRgb);
-            fog.SetValue(new Vector4(5000f / currentTunnelFogDepth, 0.015f * MathHelper.Clamp(currentTunnelFogDepth / 5000f, 0, 1), MathHelper.Clamp(currentTunnelFogDepth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(currentTunnelFogDepth / 10000f, 0, 1)));
+            fogColor.SetValue(new Vector3(color.R / 255f, color.G / 255f, color.B / 255f));
+            fog.SetValue(new Vector4(5000f / depth, 0.015f * MathHelper.Clamp(depth / 5000f, 0, 1), MathHelper.Clamp(depth / 10000f, 0, 1), 0.05f * MathHelper.Clamp(depth / 10000f, 0, 1)));            
             heightFalloff.SetValue(Program.Simulator.HeightFalloff);
         }
 
@@ -1213,14 +1062,6 @@ namespace Orts.Viewer3D
             if (dtReal > 0.1f) dtReal = 0.1f;
             if (dtReal < 0.0f) dtReal = 0.0f;
 
-
-            //Program.Simulator.TunnelLengthM = 0;
-            //if (Program.Simulator.TunnelLengthM == 0)
-            //{
-            //    Program.Simulator.PlayerCarIsInTunnel = false;
-            //}
-
-
             // Ochranný cooldown po opuštění označeného tunelu pro kabinu
             if (wasInTunnel && !Program.Simulator.PlayerCarIsInTunnel)
             {
@@ -1249,7 +1090,6 @@ namespace Orts.Viewer3D
             const float InTunnelBreakConstant = 15f;
             const float TunnelDarkness = 0.05f; // Stejná tma jako v tunelovém shaderu (TUNNEL_AMBIENT)
             float normalCabBrightness = CabnightColorModifierValue;
-
             bool isTransitioningTunnel = false;
 
             if (Program.Simulator.PlayerCarIsInTunnel)

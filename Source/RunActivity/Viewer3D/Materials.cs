@@ -29,6 +29,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using TwoMGFX;
 
 namespace Orts.Viewer3D
 {
@@ -589,38 +590,46 @@ namespace Orts.Viewer3D
 
                 LightGlowShader.SetFog(Viewer.Simulator.Weather.FogDistance, ref SharedMaterialManager.FogColor);
                 LightGlowShader.ViewerPos = Viewer.Camera.XnaLocation(Viewer.Camera.CameraWorldLocation);
-            }
+            }            
 
             // Tunel
-            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.PlayerLocomotive != null)
+            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.TunnelCarCameraCanActivated != null)
             {
-                // 1. Pozice vlaku a jeho dopředný směrový vektor (Forward vector z XNAMatrix)
-                Matrix locoMatrix = Program.Simulator.PlayerLocomotive.WorldPosition.XNAMatrix;
+                // 1. Známe přesné portály tunelu
+                Matrix locoMatrix = Program.Simulator.TunnelCarCameraCanActivated.WorldPosition.XNAMatrix;
                 Vector3 trainPos = locoMatrix.Translation;
-
-                // Vektor orientace vlaku dopředu (normalizovaný)
                 Vector3 forwardDir = Vector3.Normalize(new Vector3(-locoMatrix.M31, -locoMatrix.M32, -locoMatrix.M33));
 
-                // 2. Vzdálenosti k portálům z OR simulace
-                float distBegin = Program.Simulator.PlayerCarIsInTunnelBeginM; // vzdálenost za námi k vjezdu
-                float distEnd = Program.Simulator.PlayerCarIsInTunnelEndM;     // vzdálenost před námi k výjezdu
+                float distBegin = Program.Simulator.PlayerCarIsInTunnelBeginM;
+                float distEnd = Program.Simulator.PlayerCarIsInTunnelEndM;
 
-                // 3. Přesné souřadnice začátku (vjezd) a konce (výjezd)
                 Vector3 startPortal = trainPos - forwardDir * distBegin;
                 Vector3 endPortal = trainPos + forwardDir * distEnd;
 
-                // 4. Nastavení parametrů:
-                // tunnelRadius = 12m (obsáhne dvoukolejný tubus, ale nezasáhne povrch nad tunelem)
-                // fadeLength = 15m (plynulé stmívání při vjezdu z portálu do tmy)
                 float tunnelRadius = 12.0f;
                 float fadeLength = 15.0f;
 
                 SceneryShader.SetTunnelSegment(startPortal, endPortal, tunnelRadius, fadeLength, true);
+                SceneryShader.SetTunnelZone(Vector3.Zero, Vector3.Zero, 0f, false);
+            }
+            else if (Viewer.Camera.IsUnderground)
+            {
+                Vector3 camPos = Viewer.Camera.XnaLocation(Viewer.Camera.CameraWorldLocation);
+
+                // TunnelMin: Pozice kamery (střed zóny)
+                // TunnelMax: X = horizontální rádius (120m), Y = výška stropu nad kamerou (5m), Z = rezerva
+                Vector3 zoneCenter = camPos;
+                Vector3 zoneLimits = new Vector3(120.0f, 5.0f, 0.0f);
+                float fadeDistance = 20.0f;
+
+                //SceneryShader.SetTunnelSegment(Vector3.Zero, Vector3.Zero, 0f, 0f, false);
+                //SceneryShader.SetTunnelZone(zoneCenter, zoneLimits, fadeDistance, true);
             }
             else
             {
-                // Mimo tunel deaktivujeme
+                // 3. Mimo tunel i podzemí vše vypneme
                 SceneryShader.SetTunnelSegment(Vector3.Zero, Vector3.Zero, 0f, 0f, false);
+                SceneryShader.SetTunnelZone(Vector3.Zero, Vector3.Zero, 0f, false);
             }
         }
     }
@@ -996,7 +1005,7 @@ namespace Orts.Viewer3D
             if (TexturePath != null && TexturePath.ToLower().Contains("acleantrack"))
             {
                 shader.LightingSpecular = 0;
-            }
+            }            
 
             graphicsDevice.SamplerStates[0] = GetShadowTextureAddressMode();
 
@@ -1009,6 +1018,16 @@ namespace Orts.Viewer3D
             else
             {
                 shader.ImageTexture = Texture;
+                shader.ImageTextureIsNight = false;
+            }
+
+            // Tunely
+            if ((Options & SceneryMaterialOptions.UndergroundTexture) != 0)
+            {
+                shader.ImageTextureIsNight = true; // Informuje pixel shader o interním tunelovém objektu
+            }
+            else
+            {
                 shader.ImageTextureIsNight = false;
             }
         }
