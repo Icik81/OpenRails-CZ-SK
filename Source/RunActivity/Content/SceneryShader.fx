@@ -61,6 +61,15 @@ float	 GroundLevel;
 float 	 HeightFalloff;
 float	 GlobalDensity;
 
+// --- TUNNEL DARKENING ZONE ---
+float4 TunnelMin; // xyz = Min bounding box (world pos), w = Active (1.0 = aktivní, 0.0 = vypnuto)
+float4 TunnelMax; // xyz = Max bounding box (world pos), w = Fade transition distance (m)
+
+// --- PŘESNÉ VYMEZENÍ TUNELU (Portál A -> Portál B) ---
+float4 TunnelStart; // xyz = Souřadnice začátku tunelu (Vjezd), w = aktivní (1 = ano, 0 = ne)
+float4 TunnelEnd;   // xyz = Souřadnice konce tunelu (Výjezd), w = poloměr tunelové roury (m)
+float  TunnelFade;  // Délka přechodu světla u portálů (m)
+
 #define MAX_HEADLIGHTS 16
 
 // Globální proměnné pro více světel 
@@ -338,6 +347,48 @@ VERTEX_OUTPUT VSSignalLightGlow(in VERTEX_INPUT_SIGNAL In)
 
 ////////////////////    P I X E L   S H A D E R S    ///////////////////////////
 
+// Vrací: 0.0 = uvnitř tunelové roury (tma), 1.0 = venku z tunelu (denní světlo)
+float _PSGetTunnelFactor(in float3 worldPos)
+{
+    if (TunnelStart.w <= 0.0)
+        return 1.0;
+
+    float3 pA = TunnelStart.xyz;
+    float3 pB = TunnelEnd.xyz;
+    float tunnelRadius = max(TunnelEnd.w, 4.0);
+    float fadeDist = max(TunnelFade, 1.0);
+
+    float3 ab = pB - pA;
+    float lenAB = length(ab);
+    if (lenAB < 0.001)
+        return 1.0;
+
+    float3 dir = ab / lenAB;
+    float3 ap = worldPos - pA;
+
+    // Podélná pozice od začátku tunelu
+    float longitudinalDist = dot(ap, dir);
+
+    // Pokud je bod kompletně mimo tunel (před vjezdem nebo za výjezdem), je tam okamžitě 100% denní světlo
+    if (longitudinalDist <= 0.0 || longitudinalDist >= lenAB)
+        return 1.0;
+
+    // Vzdálenost k nejbližšímu portálu zevnitř tunelu
+    float distFromStart = longitudinalDist;
+    float distFromEnd = lenAB - longitudinalDist;
+    float insideDist = min(distFromStart, distFromEnd);
+
+    // Plynulý náběh tmy od portálu směrem dovnitř
+    float longFactor = saturate(1.0 - (insideDist / fadeDist));
+
+    // Příčná vzdálenost od osy koleje
+    float3 projPoint = pA + dir * longitudinalDist;
+    float radialDist = length(worldPos - projPoint);
+    float radialFactor = saturate((radialDist - tunnelRadius) / 3.0);
+
+    return max(longFactor, radialFactor);
+}
+
 // Gets the ambient light effect.
 float _PSGetAmbientEffect(in VERTEX_OUTPUT In)
 {
@@ -436,18 +487,19 @@ float3 _PSGetOvercastColor(in float4 Color, in VERTEX_OUTPUT In)
 
 // Applies the lighting effect of the train's headlights, including
 // fade-in/fade-out animations.
-void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In)
+// Přidán parametr localLighting
+void _PSApplyHeadlights(inout float3 Color, in float4 OriginalColor, in VERTEX_OUTPUT In, in float localLighting)
 {
-    // Pokud není aktivní žádné světlo, výpočet se zcela přeskočí
     if (ActiveHeadlightCount <= 0)
         return;
 
-    float nightFactor = saturate(1.0 - NightColorModifier);
-    nightFactor = pow(nightFactor, 2.0);
+    // Lokální faktor tmy (v noci = 1.0, v tunelu = 1.0, ve dne venku = 0.0)
+    float darknessFactor = saturate(1.0 - localLighting);
+    darknessFactor = pow(darknessFactor, 2.0);
 
     const float DAY_INTENSITY = 0.05;   
     const float NIGHT_INTENSITY = 3.5; 
-    float intensityBoost = lerp(DAY_INTENSITY, NIGHT_INTENSITY, nightFactor);
+    float intensityBoost = lerp(DAY_INTENSITY, NIGHT_INTENSITY, darknessFactor);
     
     [loop]
     for (int i = 0; i < ActiveHeadlightCount; i++)
@@ -543,7 +595,19 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 
 	// Night-time darkens everything, except night-time textures.	
 	
-	litColor *= NightColorModifier;
+	// 1. tunnelFactor: 0.0 = uvnitř tunelu, 1.0 = venku
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+
+	// 2. Maximální tma v tunelu (cca 0.05 až 0.08)
+	const float TUNNEL_AMBIENT = 0.05;
+
+	// 3. Spočítáme lokální jas:
+	// - Venku (tunnelFactor = 1.0) -> zůstává plný globální jas NightColorModifier (ve dne 1.0, v noci 0.05)
+	// - V tunelu (tunnelFactor = 0.0) -> jas klesne na TUNNEL_AMBIENT i během dne			
+	float tunnelTarget = min(NightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
+
+	litColor *= localLighting;
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
@@ -566,7 +630,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.85;
 	
 	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
@@ -612,8 +676,21 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
-	// Night-time darkens everything, except night-time textures.	
-	litColor *= NightColorModifier;
+	// Night-time darkens everything, except night-time textures.
+	
+	// 1. tunnelFactor: 0.0 = uvnitř tunelu, 1.0 = venku
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+
+	// 2. Maximální tma v tunelu (cca 0.05 až 0.08)
+	const float TUNNEL_AMBIENT = 0.05;
+
+	// 3. Spočítáme lokální jas:
+	// - Venku (tunnelFactor = 1.0) -> zůstává plný globální jas NightColorModifier (ve dne 1.0, v noci 0.05)
+	// - V tunelu (tunnelFactor = 0.0) -> jas klesne na TUNNEL_AMBIENT i během dne
+	float tunnelTarget = min(NightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
+
+	litColor *= localLighting;
 	
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
@@ -636,7 +713,7 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.70;	
 
 	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
@@ -667,9 +744,21 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
-	// Night-time darkens everything, except night-time textures.
+	// Night-time darkens everything, except night-time textures.	
 	
-	litColor *= NightColorModifier;
+	// 1. tunnelFactor: 0.0 = uvnitř tunelu, 1.0 = venku
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+
+	// 2. Maximální tma v tunelu (cca 0.05 až 0.08)
+	const float TUNNEL_AMBIENT = 0.05;
+
+	// 3. Spočítáme lokální jas:
+	// - Venku (tunnelFactor = 1.0) -> zůstává plný globální jas NightColorModifier (ve dne 1.0, v noci 0.05)
+	// - V tunelu (tunnelFactor = 0.0) -> jas klesne na TUNNEL_AMBIENT i během dne
+	float tunnelTarget = min(NightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
+
+	litColor *= localLighting;
 
 	//Ubere světlo, pokud je mlha 
 	float MaxDim1 = 0;
@@ -692,7 +781,7 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	litColor.rgb *= (float3)tex2D(Overlay, In.TexCoords.xy * OverlayScale) * (3.0 - MaxDim3) * AmbientLightCoef * 1.0;
 
 	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
@@ -722,12 +811,24 @@ float4 PSDarkShade(in VERTEX_OUTPUT In) : COLOR0
 
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
-	// Night-time darkens everything, except night-time textures.
+	// Night-time darkens everything, except night-time textures.	
 	
-	litColor *= NightColorModifier;
+	// 1. tunnelFactor: 0.0 = uvnitř tunelu, 1.0 = venku
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+
+	// 2. Maximální tma v tunelu (cca 0.05 až 0.08)
+	const float TUNNEL_AMBIENT = 0.05;
+
+	// 3. Spočítáme lokální jas:
+	// - Venku (tunnelFactor = 1.0) -> zůstává plný globální jas NightColorModifier (ve dne 1.0, v noci 0.05)
+	// - V tunelu (tunnelFactor = 0.0) -> jas klesne na TUNNEL_AMBIENT i během dne
+	float tunnelTarget = min(NightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
+
+	litColor *= localLighting;
 
 	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
@@ -756,10 +857,15 @@ float4 PSHalfBright(in VERTEX_OUTPUT In) : COLOR0
 	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);
 
 	// Night-time darkens everything, except night-time textures.
-	litColor *= HalfNightColorModifier;
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+	const float TUNNEL_AMBIENT = 0.05;
+	float tunnelTarget = min(HalfNightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, HalfNightColorModifier, tunnelFactor);
 
-	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	litColor *= localLighting;
+
+	// Headlights effect
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);
@@ -781,8 +887,14 @@ float4 PSFullBright(in VERTEX_OUTPUT In) : COLOR0
 	// No overcast effect for full-bright.
 	// No night-time effect for full-bright.
 
-	// Headlights effect use original Color.
-	_PSApplyHeadlights(litColor, Color, In);
+	// Výpočet lokálního osvětlení pro správnou sílu reflektoru v tunelu
+	float tunnelFactor = _PSGetTunnelFactor(In.Shadow.xyz);
+	const float TUNNEL_AMBIENT = 0.05;
+	float tunnelTarget = min(NightColorModifier, TUNNEL_AMBIENT);
+	float localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
+
+	// Headlights effect
+	_PSApplyHeadlights(litColor, Color, In, localLighting);
 
 	// And fogging is last.
 	_PSApplyFog(litColor, In);

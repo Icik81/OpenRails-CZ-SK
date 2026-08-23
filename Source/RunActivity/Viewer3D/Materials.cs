@@ -561,6 +561,7 @@ namespace Orts.Viewer3D
 
             SceneryShader.SetLightVector_ZFar(sunDirection, Viewer.Settings.ViewingDistance);
 
+            // Světla vozů
             SceneryShader.SetMultiHeadlights(
                 Viewer.HeadlightPositions,
                 Viewer.HeadlightDirections,
@@ -588,6 +589,38 @@ namespace Orts.Viewer3D
 
                 LightGlowShader.SetFog(Viewer.Simulator.Weather.FogDistance, ref SharedMaterialManager.FogColor);
                 LightGlowShader.ViewerPos = Viewer.Camera.XnaLocation(Viewer.Camera.CameraWorldLocation);
+            }
+
+            // Tunel
+            if (Program.Simulator.PlayerCarIsInTunnel && Program.Simulator.PlayerLocomotive != null)
+            {
+                // 1. Pozice vlaku a jeho dopředný směrový vektor (Forward vector z XNAMatrix)
+                Matrix locoMatrix = Program.Simulator.PlayerLocomotive.WorldPosition.XNAMatrix;
+                Vector3 trainPos = locoMatrix.Translation;
+
+                // Vektor orientace vlaku dopředu (normalizovaný)
+                Vector3 forwardDir = Vector3.Normalize(new Vector3(-locoMatrix.M31, -locoMatrix.M32, -locoMatrix.M33));
+
+                // 2. Vzdálenosti k portálům z OR simulace
+                float distBegin = Program.Simulator.PlayerCarIsInTunnelBeginM; // vzdálenost za námi k vjezdu
+                float distEnd = Program.Simulator.PlayerCarIsInTunnelEndM;     // vzdálenost před námi k výjezdu
+
+                // 3. Přesné souřadnice začátku (vjezd) a konce (výjezd)
+                Vector3 startPortal = trainPos - forwardDir * distBegin;
+                Vector3 endPortal = trainPos + forwardDir * distEnd;
+
+                // 4. Nastavení parametrů:
+                // tunnelRadius = 12m (obsáhne dvoukolejný tubus, ale nezasáhne povrch nad tunelem)
+                // fadeLength = 15m (plynulé stmívání při vjezdu z portálu do tmy)
+                float tunnelRadius = 12.0f;
+                float fadeLength = 15.0f;
+
+                SceneryShader.SetTunnelSegment(startPortal, endPortal, tunnelRadius, fadeLength, true);
+            }
+            else
+            {
+                // Mimo tunel deaktivujeme
+                SceneryShader.SetTunnelSegment(Vector3.Zero, Vector3.Zero, 0f, 0f, false);
             }
         }
     }

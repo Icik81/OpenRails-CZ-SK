@@ -13524,7 +13524,7 @@ namespace Orts.Simulation.RollingStocks
             if (this.CarFrameUpdateState > 100)
                 this.CarFrameUpdateState = 100;
 
-            if (AllCabItemReaded)
+            if (AllCabItemReaded || LocoSetUpTimer > 1.0f)
                 InitLocoShaders = true;
         }
 
