@@ -115,6 +115,7 @@ namespace Orts.Viewer3D
         readonly EffectParameter overcast;
         readonly EffectParameter viewerPos;
         readonly EffectParameter imageTextureIsNight;
+        readonly EffectParameter imageTextureIsTunnel;
         readonly EffectParameter nightColorModifier;
         readonly EffectParameter halfNightColorModifier;
         readonly EffectParameter vegetationAmbientModifier;
@@ -138,11 +139,12 @@ namespace Orts.Viewer3D
         readonly EffectParameter tunnelMax;
         readonly EffectParameter tunnelStart;
         readonly EffectParameter tunnelEnd;
-        readonly EffectParameter tunnelFade;
+        readonly EffectParameter tunnelFade;        
         Vector3 _eyeVector;
         Vector4 _zBias_Lighting;
         Vector3 _sunDirection;
         bool _imageTextureIsNight;
+        bool _imageTextureIsTunnel;
 
         public void SetViewMatrix(ref Matrix v)
         {
@@ -151,8 +153,7 @@ namespace Orts.Viewer3D
             eyeVector.SetValue(new Vector4(_eyeVector, Vector3.Dot(_eyeVector, _sunDirection) * 0.5f + 0.5f));
             sideVector.SetValue(Vector3.Normalize(Vector3.Cross(_eyeVector, Vector3.Down)));
         }
-
-        float vIn = Program.Simulator.Settings.DayAmbientLight;
+        
         float NightBrightness = Program.Simulator.Settings.NightBrightness;
         bool NightBrightnessSet;
         float NightBrightnessValue;
@@ -175,11 +176,7 @@ namespace Orts.Viewer3D
 
         bool wasInTunnel = false;
         float tunnelExitCooldown = 0f;
-        float undergroundEnterTimer = 0f;
-
-        bool fogInitialized = false;
-        Vector3 currentTunnelFogRgb = Vector3.One;
-        float currentTunnelFogDepth = 5000f;        
+        float undergroundEnterTimer = 0f;  
                 
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
@@ -523,6 +520,8 @@ namespace Orts.Viewer3D
 
         public bool ImageTextureIsNight { set { _imageTextureIsNight = value; imageTextureIsNight.SetValue(value ? 1f : 0f); } }
 
+        public bool ImageTextureIsTunnel { set { _imageTextureIsTunnel = value; imageTextureIsTunnel.SetValue(value ? 1f : 0f); } }
+
         public Texture2D ImageTexture { set { imageTexture.SetValue(value); } }
 
         public Texture2D OverlayTexture { set { overlayTexture.SetValue(value); } }
@@ -555,6 +554,7 @@ namespace Orts.Viewer3D
             overcast = Parameters["Overcast"];
             viewerPos = Parameters["ViewerPos"];
             imageTextureIsNight = Parameters["ImageTextureIsNight"];
+            imageTextureIsTunnel = Parameters["ImageTextureIsTunnel"];
             nightColorModifier = Parameters["NightColorModifier"];
             halfNightColorModifier = Parameters["HalfNightColorModifier"];
             vegetationAmbientModifier = Parameters["VegetationAmbientModifier"];

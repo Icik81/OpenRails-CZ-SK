@@ -2423,7 +2423,7 @@ namespace Orts.Viewer3D
                     // Detekce tunelového objektu podle názvu shape nebo textury
                     if (sharedShape.FilePath.ToLower().Contains("tun") || (sFile.shape.images.Count > 0 && sFile.shape.images[0].ToLower().Contains("tun")))
                     {
-                        options |= SceneryMaterialOptions.UndergroundTexture;
+                        options |= SceneryMaterialOptions.TunnelTexture;
                     }
 
                     Material material;

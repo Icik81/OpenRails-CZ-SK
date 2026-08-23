@@ -803,6 +803,8 @@ namespace Orts.Viewer3D
         NightTexture = 0x800,
         // Texture to be shown in tunnels and underground (used for 3D cab night textures)
         UndergroundTexture = 0x40000000,
+        // Tunnel texture
+        TunnelTexture = 0x8000000,
     }
 
     public class SceneryMaterial : Material
@@ -1022,13 +1024,13 @@ namespace Orts.Viewer3D
             }
 
             // Tunely
-            if ((Options & SceneryMaterialOptions.UndergroundTexture) != 0)
+            if ((Options & SceneryMaterialOptions.TunnelTexture) != 0)
             {
-                shader.ImageTextureIsNight = true; // Informuje pixel shader o interním tunelovém objektu
+                shader.ImageTextureIsTunnel = true; // Informuje pixel shader o interním tunelovém objektu
             }
             else
             {
-                shader.ImageTextureIsNight = false;
+                shader.ImageTextureIsTunnel = false; 
             }
         }
 

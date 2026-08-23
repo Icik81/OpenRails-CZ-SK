@@ -46,6 +46,7 @@ float4   HeadlightColor;        // rgba = color
 float2   Overcast;      // Lower saturation & brightness when overcast. x = FullBrightness, y = HalfBrightness
 float3   ViewerPos;     // Viewer's world coordinates.
 float    ImageTextureIsNight;
+float    ImageTextureIsTunnel;
 float    NightColorModifier;
 float    HalfNightColorModifier;
 float    VegetationAmbientModifier;
@@ -607,7 +608,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	float3 litColor;
 	float localLighting;
 
-	if (ImageTextureIsNight > 0.5)
+	if (ImageTextureIsTunnel > 0.5)
 	{
 		// Tunelový / noční objekt: stálá tma a ignorování slunce a venkovních stínů
 		localLighting = TUNNEL_AMBIENT;
@@ -653,7 +654,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.85;
 	
 	// Tunelové zatmavení
-	if (ImageTextureIsNight <= 0.5)
+	if (ImageTextureIsTunnel <= 0.5)
 	{
 		litColor *= localLighting;
 	}
