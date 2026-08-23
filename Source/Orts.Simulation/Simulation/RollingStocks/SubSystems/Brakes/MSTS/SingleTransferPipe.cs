@@ -100,7 +100,28 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
                 return s;
             }
-
+        }
+        public override string GetFullStatusTDW(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
+        {
+            // display differently depending upon whether vacuum or air braked system
+            if (Car.CarBrakeSystemType == "vacuum_piped")
+            {
+                var s = $" {Simulator.Catalog.GetString("V")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.InHg, PressureUnit.InHg, true)}";
+                if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
+                    s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
+                if (HandbrakePercent > 0)
+                    s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
+                return s;
+            }
+            else // air braked by default
+            {
+                var s = $"{Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], false)}";
+                if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
+                    s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
+                if (HandbrakePercent > 0)
+                    s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
+                return s;
+            }
         }
 
         // This overides the information for each individual wagon in the extended HUD  

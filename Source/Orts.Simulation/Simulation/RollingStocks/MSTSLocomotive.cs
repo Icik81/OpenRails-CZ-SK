@@ -11439,6 +11439,42 @@ namespace Orts.Simulation.RollingStocks
             s += BrakeSystem.GetFullStatus(lastCar.BrakeSystem, BrakeSystemPressureUnits);
             return s;
         }
+        public override string GetTrainBrakeStatusTDW()
+        {
+            var train = Simulator.PlayerLocomotive.Train;//Debrief Eval
+            string s = TrainBrakeController.GetStatus();
+
+            // Icik
+            // Vyjímka pro BS2 ovladač
+            if (TrainBrakeController.BS2ControllerOnStation)
+            {
+                if (s == Simulator.Catalog.GetString("Driving position"))
+                {
+                    s = Simulator.Catalog.GetString("Lap");
+                }
+                else
+                    if (s == Simulator.Catalog.GetString("Release position"))
+                    {
+                        s = Simulator.Catalog.GetString("Driving position");
+                    }
+            }
+
+            if (s == "Emergency" && train.LeadLocomotive != null && !ldbfevalfulltrainbrakeunder8kmh && train.LeadLocomotive.IsPlayerTrain && Math.Abs(train.SpeedMpS) < 2.22222)
+            {
+
+                DbfEvalFullTrainBrakeUnder8kmh++;
+                ldbfevalfulltrainbrakeunder8kmh = true;
+                train.DbfEvalValueChanged = true;//Debrief eval
+            }
+            if (s != "Emergency" && ldbfevalfulltrainbrakeunder8kmh)
+                ldbfevalfulltrainbrakeunder8kmh = false;
+
+            TrainCar lastCar = Train.Cars[Train.Cars.Count - 1];
+            if (lastCar == this)
+                lastCar = Train.Cars[0];
+            s += BrakeSystem.GetFullStatusTDW(lastCar.BrakeSystem, BrakeSystemPressureUnits);
+            return s;
+        }
         // Icik
         public string GetTrainBrakeStatusSimple()
         {

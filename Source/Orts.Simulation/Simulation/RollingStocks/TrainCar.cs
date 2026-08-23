@@ -2269,6 +2269,7 @@ namespace Orts.Simulation.RollingStocks
                 ControlUnit ? "" : String.Format("{0}{1}", FormatStrings.FormatForce(MotiveForceN, IsMetric), WheelSlip ? "!!!" : WheelSlipWarning ? "???" : ""));
         }
         public virtual string GetTrainBrakeStatus() { return null; }
+        public virtual string GetTrainBrakeStatusTDW() { return null; }
         public virtual string GetEngineBrakeStatus() { return null; }
         public virtual string GetBrakemanBrakeStatus() { return null; }
         public virtual string GetDynamicBrakeStatus() { return null; }

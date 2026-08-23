@@ -464,7 +464,7 @@ namespace Orts.Viewer3D.Popups
             var smallDiamond = '\u25C6'; // ●
 
             var PlayerTrain = Owner.Viewer.PlayerLocomotive.Train;
-            var BrakeStatus = Owner.Viewer.PlayerLocomotive.GetTrainBrakeStatus();
+            var BrakeStatus = Owner.Viewer.PlayerLocomotive.GetTrainBrakeStatusTDW();
             var DynamicBrakePercent = Owner.Viewer.PlayerLocomotive.DynamicBrakePercent;
             var DynamicBrakeStatus = Owner.Viewer.PlayerLocomotive.GetDynamicBrakeStatus();
             var EngineBrakeStatus = Owner.Viewer.PlayerLocomotive.GetEngineBrakeStatus();

@@ -474,6 +474,7 @@ namespace Orts.Viewer3D.Popups
             TableAddLabelValue(table, Viewer.PlayerLocomotive is MSTSSteamLocomotive ? Viewer.Catalog.GetString("Regulator") : Viewer.Catalog.GetString("Throttle"), "{0:F0}%", Viewer.PlayerLocomotive.ThrottlePercent);
             if ((Viewer.PlayerLocomotive as MSTSLocomotive).TrainBrakeFitted)
                 TableAddLabelValue(table, Viewer.Catalog.GetString("Train brake"), "{0}", Viewer.PlayerLocomotive.GetTrainBrakeStatus());
+            TableAddLine(table);
             if (showRetainers)
                 TableAddLabelValue(table, Viewer.Catalog.GetString("Retainers"), "{0}% {1}", playerTrain.RetainerPercent, Viewer.Catalog.GetString(GetStringAttribute.GetPrettyName(playerTrain.RetainerSetting)));
             if ((Viewer.PlayerLocomotive as MSTSLocomotive).EngineBrakeFitted) // ideally this test should be using "engineBrakeStatus != null", but this currently does not work, as a controller is defined by default

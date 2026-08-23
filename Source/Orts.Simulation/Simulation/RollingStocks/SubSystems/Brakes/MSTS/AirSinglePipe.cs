@@ -226,12 +226,24 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
             if (HandbrakePercent > 0)
                 s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";
-
-            s += string.Format("  " + Simulator.Catalog.GetString("Pipe pressure change") + " {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
+            s += "\n"; 
+            s += string.Format(Simulator.Catalog.GetString("Pipe pressure change") + " {0:F5} bar/s", BrakePipeChangeRate / 14.50377f);
             s += string.Format("  " + Simulator.Catalog.GetString("Leakage") + " {0:F5} bar/s", Car.Train.TotalTrainTrainPipeLeakRate / 14.50377f);
             //s += string.Format("  Objem potrubí {0:F0} L", Car.Train.TotalTrainBrakePipeVolumeM3 * 1000);
             s += string.Format("  " + Simulator.Catalog.GetString("Volume mainres and pipes") + " {0:F0} L", Car.Train.TotalCapacityMainResBrakePipe * 1000 / 14.50377f);
 
+            return s;
+        }
+        public override string GetFullStatusTDW(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
+        {
+            var s = $" {Simulator.Catalog.GetString("EQ")} {FormatStrings.FormatPressure(Car.Train.EqualReservoirPressurePSIorInHg, PressureUnit.PSI, units[BrakeSystemComponent.EqualizingReservoir], true)}"
+                //+ $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(Car.Train.HUDWagonBrakeCylinderPSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BC")} {FormatStrings.FormatPressure(AutoCylPressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakeCylinder], true)}"
+                + $" {Simulator.Catalog.GetString("BP")} {FormatStrings.FormatPressure(BrakeLine1PressurePSI, PressureUnit.PSI, units[BrakeSystemComponent.BrakePipe], true)}";
+            if (lastCarBrakeSystem != null && lastCarBrakeSystem != this)
+                s += $" {Simulator.Catalog.GetString("EOT")} {lastCarBrakeSystem.GetStatus(units)}";
+            if (HandbrakePercent > 0)
+                s += $" {Simulator.Catalog.GetString("Handbrake")} {HandbrakePercent:F0}%";            
             return s;
         }
         public override string GetSimpleStatus(BrakeSystem lastCarBrakeSystem, Dictionary<BrakeSystemComponent, PressureUnit> units)
