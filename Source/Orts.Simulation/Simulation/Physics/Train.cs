@@ -3197,122 +3197,110 @@ namespace Orts.Simulation.Physics
         public bool inTunnel;
         public void ProcessTunnels()
         {
-            // start at front of train
+            if (ValidRoute[0] == null || PresentPosition[0].RouteListIndex < 0)
+                return;
+
+            int currentRouteIndex = PresentPosition[0].RouteListIndex;
             int thisSectionIndex = PresentPosition[0].TCSectionIndex;
             float thisSectionOffset = PresentPosition[0].TCOffset;
-            int thisSectionDirection = PresentPosition[0].TCDirection;            
+            int thisSectionDirection = PresentPosition[0].TCDirection;
 
-            for (int icar = 0; icar <= Cars.Count - 1; icar++)
+            for (int icar = 0; icar < Cars.Count; icar++)
             {
                 var car = Cars[icar];
+                float carRemainingLength = car.CarLengthM;
+                float processedCarLength = 0f;
 
-                float usedCarLength = car.CarLengthM;
-                float processedCarLength = 0;
-                bool validSections = true;
+                float? frontCarPositionInTunnel = null;
+                float? frontCarLengthAhead = null;
+                float? rearCarLengthBehind = null;
+                int numTunnelPaths = 0;
+                bool foundTunnel = false;
 
-                float? FrontCarPositionInTunnel = null;
-                float? FrontCarLengthOfTunnelAhead = null;
-                float? RearCarLengthOfTunnelBehind = null;
-                int numTunnelPaths = 0;                
-
-                while (validSections)
+                while (carRemainingLength > 0 && currentRouteIndex >= 0)
                 {
                     TrackCircuitSection thisSection = signalRef.TrackCircuitList[thisSectionIndex];
-                    inTunnel = false;                    
+                    float lengthInThisSection = Math.Min(carRemainingLength, thisSectionOffset);
 
-                    // car spans sections
-                    if ((car.CarLengthM - processedCarLength) > thisSectionOffset)
+                    if (thisSection.TunnelInfo != null && !foundTunnel)
                     {
-                        usedCarLength = thisSectionOffset - processedCarLength;
-                    }
-
-                    // section has tunnels
-                    if (thisSection.TunnelInfo != null)
-                    {                                                
                         foreach (TrackCircuitSection.tunnelInfoData[] thisTunnel in thisSection.TunnelInfo)
                         {
                             float tunnelStartOffset = thisTunnel[thisSectionDirection].TunnelStart;
-                            float tunnelEndOffset = thisTunnel[thisSectionDirection].TunnelEnd;
+                            float tunnelEndOffset = thisTunnel[thisTunnel.Length > thisSectionDirection ? thisSectionDirection : 0].TunnelEnd;
+                            float totalLength = thisTunnel[thisSectionDirection].TotalLength;
 
-                            if (tunnelStartOffset > 0 && tunnelStartOffset > thisSectionOffset)      // start of tunnel is in section beyond present position - cannot be in this tunnel nor any following
+                            // Kontrola, zda se část vozu nachází v tunelu
+                            if ((tunnelStartOffset <= 0 || tunnelStartOffset < thisSectionOffset) &&
+                                (tunnelEndOffset <= 0 || tunnelEndOffset > (thisSectionOffset - lengthInThisSection)))
                             {
-                                //break;  // Icik - Pokud se nezakáže, blbne detekce tunelů
-                            }
-
-                            if (tunnelEndOffset > 0 && tunnelEndOffset < (thisSectionOffset - usedCarLength)) // beyond end of tunnel, test next
-                            {
-                                continue;
-                            }
-
-                            if (tunnelStartOffset <= 0 || tunnelStartOffset < (thisSectionOffset - usedCarLength)) // start of tunnel is behind
-                            {
-                                if (tunnelEndOffset < 0) // end of tunnel is out of this section
-                                {
-                                    if (processedCarLength != 0)
-                                    {
-                                        Trace.TraceInformation("Train : " + Name + " ; found tunnel in section " + thisSectionIndex + " with End < 0 while processed length : " + processedCarLength + "\n");
-                                    }
-                                }
-
-                                inTunnel = true;
-
+                                foundTunnel = true;
                                 numTunnelPaths = thisTunnel[thisSectionDirection].numTunnelPaths;
 
-                                // get position in tunnel
+                                float posFromStart;
                                 if (tunnelStartOffset < 0)
-                                {
-                                    FrontCarPositionInTunnel = thisSectionOffset + thisTunnel[thisSectionDirection].TCSStartOffset;
-                                    FrontCarLengthOfTunnelAhead = thisTunnel[thisSectionDirection].TotalLength - FrontCarPositionInTunnel;
-                                    RearCarLengthOfTunnelBehind = thisTunnel[thisSectionDirection].TotalLength - (FrontCarLengthOfTunnelAhead + car.CarLengthM);
-                                }
+                                    posFromStart = thisSectionOffset + thisTunnel[thisSectionDirection].TCSStartOffset - processedCarLength;
                                 else
-                                {
-                                    FrontCarPositionInTunnel = thisSectionOffset - tunnelStartOffset;
-                                    FrontCarLengthOfTunnelAhead = thisTunnel[thisSectionDirection].TotalLength - FrontCarPositionInTunnel - processedCarLength;
-                                    RearCarLengthOfTunnelBehind = thisTunnel[thisSectionDirection].TotalLength - (FrontCarLengthOfTunnelAhead + car.CarLengthM);
-                                }
+                                    posFromStart = thisSectionOffset - tunnelStartOffset - processedCarLength;
 
-                                break;  // only test one tunnel
+                                frontCarPositionInTunnel = posFromStart;
+                                frontCarLengthAhead = totalLength - posFromStart;
+                                rearCarLengthBehind = totalLength - (frontCarLengthAhead.Value + car.CarLengthM);
+                                break;
                             }
                         }
                     }
-                    // tested this section, any need to go beyond?
 
-                    processedCarLength += usedCarLength;
-                    if (inTunnel || processedCarLength >= car.CarLengthM)
-                    {
-                        validSections = false;  // end of while loop through sections
-                        thisSectionOffset = thisSectionOffset - usedCarLength;   // position of next car in this section
+                    processedCarLength += lengthInThisSection;
+                    carRemainingLength -= lengthInThisSection;
+                    thisSectionOffset -= lengthInThisSection;
 
-                        car.CarTunnelData.FrontPositionBeyondStartOfTunnel = FrontCarPositionInTunnel.HasValue ? FrontCarPositionInTunnel : null;
-                        car.CarTunnelData.LengthMOfTunnelAheadFront = FrontCarLengthOfTunnelAhead.HasValue ? FrontCarLengthOfTunnelAhead : null;
-                        car.CarTunnelData.LengthMOfTunnelBehindRear = RearCarLengthOfTunnelBehind.HasValue ? RearCarLengthOfTunnelBehind : null;
-                        car.CarTunnelData.numTunnelPaths = numTunnelPaths;
-                    }
-                    else
+                    // Pokud vůz přesahuje do předchozí sekce trati, posuneme se o sekci vzad
+                    if (thisSectionOffset <= 0.001f && carRemainingLength > 0)
                     {
-                        // go back one section
-                        int thisSectionRouteIndex = ValidRoute[0].GetRouteIndexBackward(thisSectionIndex, PresentPosition[0].RouteListIndex);
-                        if (thisSectionRouteIndex >= 0)
+                        currentRouteIndex--;
+                        if (currentRouteIndex >= 0)
                         {
-                            thisSectionIndex = thisSectionRouteIndex;
+                            thisSectionIndex = ValidRoute[0][currentRouteIndex].TCSectionIndex;
                             thisSection = signalRef.TrackCircuitList[thisSectionIndex];
-                            thisSectionOffset = thisSection.Length;  // always at end of next section
-                            thisSectionDirection = ValidRoute[0][thisSectionRouteIndex].Direction;
+                            thisSectionOffset = thisSection.Length;
+                            thisSectionDirection = ValidRoute[0][currentRouteIndex].Direction;
                         }
-                        else // ran out of train
-                        {
-                            validSections = false;
+                    }
+                }
 
-                            car.CarTunnelData.FrontPositionBeyondStartOfTunnel = FrontCarPositionInTunnel.HasValue ? FrontCarPositionInTunnel : null;
-                            car.CarTunnelData.LengthMOfTunnelAheadFront = FrontCarLengthOfTunnelAhead.HasValue ? FrontCarLengthOfTunnelAhead : null;
-                            car.CarTunnelData.LengthMOfTunnelBehindRear = RearCarLengthOfTunnelBehind.HasValue ? RearCarLengthOfTunnelBehind : null;
-                            car.CarTunnelData.numTunnelPaths = numTunnelPaths;
+                // Zápis výsledku do vozu
+                car.CarTunnelData.FrontPositionBeyondStartOfTunnel = frontCarPositionInTunnel;
+                car.CarTunnelData.LengthMOfTunnelAheadFront = frontCarLengthAhead;
+                car.CarTunnelData.LengthMOfTunnelBehindRear = rearCarLengthBehind;
+                car.CarTunnelData.numTunnelPaths = numTunnelPaths;
+
+                // Pokud je mezi vozy mezera ve spřáhlech, odečteme ji z offsetu pro další vůz
+                if (icar < Cars.Count - 1)
+                {
+                    float slack = car.CouplerSlackM + car.GetCouplerZeroLengthM();
+                    while (slack > 0 && currentRouteIndex >= 0)
+                    {
+                        if (thisSectionOffset >= slack)
+                        {
+                            thisSectionOffset -= slack;
+                            slack = 0;
+                        }
+                        else
+                        {
+                            slack -= thisSectionOffset;
+                            currentRouteIndex--;
+                            if (currentRouteIndex >= 0)
+                            {
+                                thisSectionIndex = ValidRoute[0][currentRouteIndex].TCSectionIndex;
+                                thisSectionOffset = signalRef.TrackCircuitList[thisSectionIndex].Length;
+                                thisSectionDirection = ValidRoute[0][currentRouteIndex].Direction;
+                            }
                         }
                     }
                 }
             }
-        }
+        }        
 
         //================================================================================================//
         /// <summary>

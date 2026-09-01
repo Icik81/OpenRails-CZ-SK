@@ -610,9 +610,8 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 
 	if (ImageTextureIsTunnel > 0.5)
 	{
-		// Tunelový / noční objekt: stálá tma a ignorování slunce a venkovních stínů
-		localLighting = TUNNEL_AMBIENT;
-		litColor = Color.rgb * TUNNEL_AMBIENT;
+		// Tunelový / noční objekt: stálá tma a ignorování slunce a venkovních stínů		
+		litColor = Color.rgb * 0.3;
 	}
 	else
 	{
@@ -622,42 +621,39 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 		localLighting = lerp(tunnelTarget, NightColorModifier, tunnelFactor);
 
 		litColor = Color.rgb * lerp(MaxShadowBrightness, FullBrightness, saturate(ambientVal * shadowVal));		
-	}
-
-	// Specular effect next.
-	litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
 	
-	// Overcast blanks out ambient, shadow and specular effects (so use original Color).
-	if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;	
-	MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
+		// Specular effect next.
+		litColor += _PSGetSpecularEffect(In) * _PSGetShadowEffect(true, In);
+	
+		// Overcast blanks out ambient, shadow and specular effects (so use original Color).
+		if (Overcast.x != 0) MaxShadowBrightness = Overcast.x * 1.5;	
+		MaxShadowBrightness = clamp(MaxShadowBrightness, 0.30, 1.0);
 		
-	litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);		
+		litColor = lerp(litColor, _PSGetOvercastColor(Color, In), MaxShadowBrightness);		
 		
-	//Ubere světlo, pokud je mlha 
-	float MaxDim1 = 0;
-	if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 0.1;
-	if (MaxDim1 > 1.0) MaxDim1 = 1.0;
+		//Ubere světlo, pokud je mlha 
+		float MaxDim1 = 0;
+		if (Fog.a > 0) MaxDim1 = Fog.a * 1000 * 0.1;
+		if (MaxDim1 > 1.0) MaxDim1 = 1.0;
 	
-	float MaxDim2 = 0;
-	if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.0;
-	if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
+		float MaxDim2 = 0;
+		if (Overcast.x > 0.0) MaxDim2 = Overcast.x * 1.0;
+		if (MaxDim2 > 1.2) MaxDim2 = 1.2;	
 
-	float MaxDim3;
-	MaxDim3 = MaxDim1 + MaxDim2;
-	if (MaxDim3 > 2.6) MaxDim3 = 2.6;
+		float MaxDim3;
+		MaxDim3 = MaxDim1 + MaxDim2;
+		if (MaxDim3 > 2.6) MaxDim3 = 2.6;
 
-	float AmbientLightCoef = 1.0;
-	if (_PSGetAmbientEffect(In) > 0.6) AmbientLightCoef = 0.6 / _PSGetAmbientEffect(In);
-	if (AmbientLightCoef < 0.7) AmbientLightCoef = 0.7;
+		float AmbientLightCoef = 1.0;
+		if (_PSGetAmbientEffect(In) > 0.6) AmbientLightCoef = 0.6 / _PSGetAmbientEffect(In);
+		if (AmbientLightCoef < 0.7) AmbientLightCoef = 0.7;
 
-	//Přidá světlo, pokud není mlha
-	litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.85;
-	
-	// Tunelové zatmavení
-	if (ImageTextureIsTunnel <= 0.5)
-	{
-		litColor *= localLighting;
-	}
+		//Přidá světlo, pokud není mlha
+		litColor.rgb *= 0.7 * (3.0 - MaxDim3) * AmbientLightCoef * 0.85;		
+
+		// Tunelové zatmavení
+		litColor *= localLighting;	
+	}		
 
 	// Headlights effect use original Color.
 	_PSApplyHeadlights(litColor, Color, In, localLighting);
