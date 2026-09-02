@@ -207,7 +207,7 @@ namespace Orts.Viewer3D
             }
             else
             {
-                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.2f && l.States[0].Position.Z < 0 && l.States[0].Azimuth.Z == 180f);                
+                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.2f && l.States[0].Position.Z < 0 && Math.Abs(l.States[0].Azimuth.Z) == 180f);                
                 if (rearGlow != null)
                 {
                     rearZ = rearGlow.States[0].Position.Z;                                        
@@ -568,7 +568,10 @@ namespace Orts.Viewer3D
                 // Vozy
                 if (!(Car is MSTSLocomotive))
                 {
-                    newTrainHeadlight = 7;
+                    if (newTrainHeadlight == 0 || newTrainHeadlight == 7)
+                    {
+                        newTrainHeadlight = 1;
+                    }
                     if (newCarIsFirst)
                     {
                         if (!newCarIsReversed)
@@ -1262,40 +1265,69 @@ namespace Orts.Viewer3D
             shader.LightGlowTexture2 = BulbTexture;
             shader.TextureBlend = 0.0f;
 
+            // Získání směru slunce podle použitého modelu oblohy
+            Vector3 sunDir = Viewer.Settings.UseMSTSEnv == false
+                ? Viewer.World.Sky.solarDirection
+                : Viewer.World.MSTSSky.mstsskysolarDirection;
+
+            // Plynulý denní faktor: 
+            // -0.08f (střední šero/noc) až +0.08f (střední svítání/den)
+            // Hodnota 0.0f odpovídá plné noci, 1.0f plnému dni
+            float dayFactor = MathHelper.Clamp((sunDir.Y + 0.08f) / 0.16f, 0f, 1f);
+
             foreach (var pass in shader.CurrentTechnique.Passes)
             {
                 foreach (var item in renderItems)
                 {
+                    var lightPrimitive = item.RenderPrimitive as LightPrimitive;
+                    var light = lightPrimitive?.Light;
+
                     Matrix wvp = item.XNAMatrix * XNAViewMatrix * Viewer.Camera.XnaProjection;
                     shader.SetMatrix(ref wvp);
-                    shader.SetFade(((LightPrimitive)item.RenderPrimitive).Fade);
+                    shader.SetFade(lightPrimitive.Fade);
 
-                    // Matice transformující objekt přímo do prostoru kamery (View Space)
-                    Matrix worldView = item.XNAMatrix * XNAViewMatrix;
+                    // Zjištění, zda jde o poziční/exteriérové světlo
+                    bool isPositionalLight = light != null && (
+                        light.UnitSide != LightHandleCondition.Ignore ||
+                        light.Headlight == LightHeadlightCondition.DLight ||
+                        light.Unit != LightUnitCondition.Ignore
+                    );
 
-                    // Kamera je ve View Space v bodě (0,0,0), takže délka vektoru pozice = reálná vzdálenost od kamery
-                    float distance = worldView.Translation.Length();
+                    if (isPositionalLight)
+                    {
+                        // Matice transformující objekt přímo do prostoru kamery (View Space)
+                        Matrix worldView = item.XNAMatrix * XNAViewMatrix;
 
-                    // 2. Definovat násobič velikosti rádiusu (např. základ 1.0 + nárůst se vzdáleností)
-                    // Lze nastavit min/max limity pomocí MathHelper.Clamp
-                    float minDistance = 40f;
-                    float maxDistance = 100f;
-                    float factor = MathHelper.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
+                        // Vzdálenost od kamery
+                        float distance = worldView.Translation.Length();
 
-                    // Plynulý přechod textur
-                    float fadeStart = 40f;
-                    float fadeEnd = 60f;
-                    float blendFactor = MathHelper.Clamp((distance - fadeStart) / (fadeEnd - fadeStart), 0f, 1f);
-                    shader.TextureBlend = blendFactor;                    
+                        // Faktor nárůstu se vzdáleností
+                        float minDistance = 40f;
+                        float maxDistance = 100f;
+                        float factor = MathHelper.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
 
-                    // Rádius vzroste např. až na 3-násobek původní velikosti
-                    float glowScale = MathHelper.Lerp(1.0f, 2.0f, factor);
+                        // Plynulý přechod textur (slévání/hvězdice)
+                        float fadeStart = 40f;
+                        float fadeEnd = 60f;
+                        float blendFactor = MathHelper.Clamp((distance - fadeStart) / (fadeEnd - fadeStart), 0f, 1f);
+                        shader.TextureBlend = blendFactor;
 
-                    if (Program.Viewer.IsDay)
-                        glowScale = MathHelper.Lerp(1.0f, 1.25f, factor);
+                        // Škála pro noc (1.0 -> 2.0) a pro den (1.0 -> 1.25)
+                        float nightGlowScale = MathHelper.Lerp(1.0f, 2.0f, factor);
+                        float dayGlowScale = MathHelper.Lerp(1.0f, 1.25f, factor);
 
-                    // 3. Předat hodnotu do shaderu
-                    shader.SetGlowScale(glowScale * (1f + blendFactor));
+                        // Plynulá interpolace mezi nocí a dnem při západu/východu slunce
+                        float glowScale = MathHelper.Lerp(nightGlowScale, dayGlowScale, dayFactor);
+
+                        // Předat hodnotu do shaderu
+                        shader.SetGlowScale(glowScale * (1f + blendFactor));
+                    }
+                    else
+                    {
+                        // Stropní vnitřní světla: konstantní velikost
+                        shader.TextureBlend = 0.0f;
+                        shader.SetGlowScale(1.0f);
+                    }
 
                     pass.Apply();
                     item.RenderPrimitive.Draw(graphicsDevice);
