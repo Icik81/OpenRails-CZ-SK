@@ -2380,7 +2380,7 @@ namespace Orts.Viewer3D
             // Icik
             Simulator.ChangeCabActivated = true;
             Simulator.LocoStationChange = true;
-            Simulator.PlayerLocomotiveChange = false;
+            Simulator.PlayerLocomotiveChange = false;            
         }
 
         /// <summary>

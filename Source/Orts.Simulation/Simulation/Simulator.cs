@@ -255,7 +255,7 @@ namespace Orts.Simulation
         public bool CouplingAction;
         public bool AICouplingAction;
         public bool SanderIsOn;
-        public bool PlayerLocomotiveChange;
+        public bool PlayerLocomotiveChange;        
         public int LeadLocomotiveIndex;
         public Direction Direction;
         public Direction DirectionOneCabOneConsole;

@@ -612,6 +612,7 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	{
 		// Tunelový / noční objekt: stálá tma a ignorování slunce a venkovních stínů		
 		litColor = Color.rgb * 0.3;
+		localLighting = 0.0;
 	}
 	else
 	{

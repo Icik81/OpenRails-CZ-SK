@@ -180,7 +180,7 @@ namespace Orts.Viewer3D
             }
 
             // Pokusíme se zpřesnit pozici Z a Y podle předních a zadních Glow světel
-            var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);
+            var frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.FrontLW && l.States.Count > 0 && l.States[0].Position.Y < 2.2f);
             if (frontGlow != null)
             {
                 frontZ = frontGlow.States[0].Position.Z;
@@ -189,7 +189,7 @@ namespace Orts.Viewer3D
             }
             else
             {
-                frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z > 0 && l.States[0].Azimuth.Z == 0f);
+                frontGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.2f && l.States[0].Position.Z > 0 && l.States[0].Azimuth.Z == 0f);
                 if (frontGlow != null)
                 {
                     frontZ = frontGlow.States[0].Position.Z;
@@ -200,14 +200,14 @@ namespace Orts.Viewer3D
             }
             frontZ = Math.Max(frontZ, frontZBase);
 
-            var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.0f);            
+            var rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.UnitSide == LightHandleCondition.RearLR && l.States.Count > 0 && l.States[0].Position.Y < 2.2f);            
             if (rearGlow != null)
             {
                 rearZ = rearGlow.States[0].Position.Z;                
             }
             else
             {
-                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.0f && l.States[0].Position.Z < 0 && l.States[0].Azimuth.Z == 180f);                
+                rearGlow = Car.Lights.Lights.FirstOrDefault(l => l.Type == LightType.Glow && l.States.Count > 0 && l.States[0].Position.Y < 2.2f && l.States[0].Position.Z < 0 && l.States[0].Azimuth.Z == 180f);                
                 if (rearGlow != null)
                 {
                     rearZ = rearGlow.States[0].Position.Z;                                        

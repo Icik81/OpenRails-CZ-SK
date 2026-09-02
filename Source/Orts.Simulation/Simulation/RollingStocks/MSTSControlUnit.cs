@@ -274,17 +274,25 @@ namespace Orts.Simulation.RollingStocks
                                 SelectingPowerSystem = PU.SelectingPowerSystem;
                                 SelectedPowerSystem = PU.SelectedPowerSystem;
                                 SystemAnnunciator = PU.SystemAnnunciator;
-                                Switch5LightPosition[LocoStation] = PU.Switch5LightPosition[PU.LocoStation];
-                                Switch6LightPosition[LocoStation] = PU.Switch6LightPosition[PU.LocoStation];                                                               
+
+                                Switch51LightEnable = PU.Switch51LightEnable;
+                                Switch52LightEnable = PU.Switch52LightEnable;
+                                Switch5LightPosition[1] = PU.Switch5LightPosition[1];
+                                Switch6LightPosition[1] = PU.Switch6LightPosition[1];
+                                Switch5LightPosition[2] = PU.Switch5LightPosition[2];
+                                Switch6LightPosition[2] = PU.Switch6LightPosition[2];
                             }
                             
                             // Řídící jednotka je obsazená - přijímá signály z PU a posílá signály do PU
                             if (IsLeadLocomotive())
                             {
                                 PU.Switch51LightEnable = Switch51LightEnable;
-                                PU.Switch5LightPosition[PU.LocoStation] = Switch5LightPosition[LocoStation];
-                                PU.Switch52LightEnable = Switch52LightEnable;
-                                PU.Switch6LightPosition[PU.LocoStation] = Switch6LightPosition[LocoStation];                                
+                                PU.Switch52LightEnable = Switch52LightEnable;                                
+                                PU.Switch5LightPosition[1] = Switch5LightPosition[1];                                
+                                PU.Switch6LightPosition[1] = Switch6LightPosition[1];
+                                PU.Switch5LightPosition[2] = Switch5LightPosition[2];
+                                PU.Switch6LightPosition[2] = Switch6LightPosition[2];                                
+
                                 SystemAnnunciator = PU.SystemAnnunciator;
                                 if (PU.LocoReadyToGo)
                                 {
@@ -304,20 +312,7 @@ namespace Orts.Simulation.RollingStocks
                                 PU.PantoCommandDown = PantoCommandDown;
                                 PU.PantoMode = PantoMode;                                
                             }
-                        }
-
-                        // Světla
-                        if (IsLeadLocomotive())
-                        {                            
-                            PU.LightFrontLR = LightFrontLR;
-                            PU.LightFrontRR = LightFrontRR;
-                            PU.LightFrontLW = LightFrontLW;
-                            PU.LightFrontRW = LightFrontRW;
-                            PU.LightRearLR = LightRearLR;
-                            PU.LightRearRR = LightRearRR;
-                            PU.LightRearLW = LightRearLW;
-                            PU.LightRearRW = LightRearRW;
-                        }
+                        }                        
 
                         // Řídící jednotka je obsazená
                         if (IsLeadLocomotive() && !PU.LocoReadyToGo)
@@ -330,7 +325,8 @@ namespace Orts.Simulation.RollingStocks
                             if (DynamicBrakeIntervention > 0 && DynamicBrakeController != null)
                                 DynamicBrakeIntervention = MathHelper.Max(PU.DynamicBrakeIntervention, DynamicBrakeController.CurrentValue);
 
-                            PU.StationIsActivated[PU.LocoStation] = StationIsActivated[LocoStation];
+                            PU.StationIsActivated[1] = StationIsActivated[1];
+                            PU.StationIsActivated[2] = StationIsActivated[2];
                             PU.PowerKey = PowerKey;
                             PU.UpdateTimeEnable = UpdateTimeEnable;
                             PU.Sander = Sander;
@@ -398,19 +394,6 @@ namespace Orts.Simulation.RollingStocks
                         if (LocomotiveFaultyActivated)
                         {
                             PU.Battery = false;
-                        }
-
-                        // Světla
-                        if (IsLeadLocomotive())
-                        {
-                            PU.LightFrontLR = LightFrontLR;
-                            PU.LightFrontRR = LightFrontRR;
-                            PU.LightFrontLW = LightFrontLW;
-                            PU.LightFrontRW = LightFrontRW;
-                            PU.LightRearLR = LightRearLR;
-                            PU.LightRearRR = LightRearRR;
-                            PU.LightRearLW = LightRearLW;
-                            PU.LightRearRW = LightRearRW;
                         }
 
                         // Řídící jednotka je obsazená - inicializace

@@ -18646,6 +18646,105 @@ namespace Orts.Simulation.RollingStocks
                         case 4: LightFrontLW = true; LightFrontRW = true; break;
                     }
                 }
+
+                #region Řidičák a hnací lokomotiva typu Vectron
+                if (PowerUnitWithControl || ControlUnit)
+                {
+                    if (LightsFrameUpdate == 2 && LocoReadyToGo)
+                    {
+                        Switch5LightPosition[LocoStation] = 1;
+                        Switch6LightPosition[LocoStation] = 2;
+                    }
+                    // Obsazená lokomotiva
+                    if (IsLeadLocomotive())
+                    {
+                        // Řidičák
+                        if (ControlUnit)
+                        {
+                            if (this == Train.FirstCar)
+                            {
+                                //LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                            }
+                            else
+                                if (this == Train.LastCar)
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    //LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                                else
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                        }
+                        // Hnací lokomotiva
+                        else
+                        {
+                            if (this == Train.FirstCar)
+                            {
+                                //LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                            }
+                            else
+                                if (this == Train.LastCar)
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    //LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                                else
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                        }
+                    }
+                    else
+                    // Není obsazená lokomotiva
+                    {
+                        // Řidičák
+                        if (ControlUnit)
+                        {
+                            if (this == Train.FirstCar)
+                            {
+                                //LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                            }
+                            else
+                                if (this == Train.LastCar)
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    //LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                                else
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                        }
+                        // Hnací lokomotiva
+                        else
+                        {
+                            if (this == Train.FirstCar)
+                            {
+                                //LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                            }
+                            else
+                                if (this == Train.LastCar)
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    //LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                                else
+                                {
+                                    LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
+                                    LightRearLW = false; LightRearRW = false; LightRearLR = false; LightRearRR = false;
+                                }
+                        }
+                    }                                                             
+                }
+                #endregion
             }
             else
             if (Switch5LightEnable && Switch6LightEnable) // 361

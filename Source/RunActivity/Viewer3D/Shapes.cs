@@ -426,6 +426,7 @@ namespace Orts.Viewer3D
         float TimeTest;
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
+            var Loco = (Viewer.Simulator.MSTSWagon as MSTSLocomotive);
             var ELoco = (Viewer.Simulator.MSTSWagon as MSTSElectricLocomotive);
             var DLoco = (Viewer.Simulator.MSTSWagon as MSTSDieselLocomotive);
 
@@ -808,6 +809,28 @@ namespace Orts.Viewer3D
                                                         }
                                                         AnimateMatrix(matrix, AnimationKey[8]);
                                                     }
+                                                    else
+                                                        // 9
+                                                        if (SharedShape.Animations[0].anim_nodes[matrix].Name.Contains("MIRROR")) // fíra
+                                                        {
+                                                            if (Loco.UsingRearCab)
+                                                            {                                                                
+                                                                if (AnimationKey[9] < SharedShape.Animations[0].FrameCount)
+                                                                {
+                                                                    TCoef = 0.0075f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount * SharedShape.Animations[0].FrameCount) * TimeAction[9] == 0 ? 0.005f : TimeAction[9]);
+                                                                    AnimationKey[9] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                                                }
+                                                            }                                                            
+                                                            else
+                                                            {                                                                
+                                                                if (AnimationKey[9] > 0)
+                                                                {
+                                                                    TCoef = 0.0075f / (8.0f / (3300f / SharedShape.Animations[0].FrameCount * SharedShape.Animations[0].FrameCount) * TimeAction[9] == 0 ? 0.005f : TimeAction[9]);
+                                                                    AnimationKey[9] -= SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier * TCoef;
+                                                                }
+                                                            }
+                                                            AnimateMatrix(matrix, AnimationKey[9]);
+                                                        }
                 }
             }
 
@@ -822,6 +845,7 @@ namespace Orts.Viewer3D
                     if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("3")) goto AnimationSkip;
                     if (SharedShape.MatrixNames[i].ToLower().Contains("pantograph") && SharedShape.MatrixNames[i].ToLower().Contains("4")) goto AnimationSkip;
                     if (SharedShape.MatrixNames[i].ToLower().Contains("trasa")) goto AnimationSkipUserSelectShadow;
+                    if (SharedShape.MatrixNames[i].Contains("MIRROR")) goto AnimationSkip;
                 }
 
                 AnimationKey[20] += SharedShape.Animations[0].FrameRate * elapsedTime.ClockSeconds * FrameRateMultiplier;
