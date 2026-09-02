@@ -422,77 +422,98 @@ float _PSGetSpecularEffect(in VERTEX_OUTPUT In)
 	return In.Normal_Light.w * ZBias_Lighting.w * pow(saturate(dot(In.Normal_Light.xyz, normalize(halfVector))), ZBias_Lighting.z);
 }
 
-// Gets the shadow effect.
-float3 _PSGetShadowEffect(in VERTEX_OUTPUT In)
+// Pomocná funkce pro vyhodnocení jedné VSM kaskády
+float _EvaluateVSM(in float3 moments)
 {
-	float depth = In.RelPosition.w;
-	float3 rv = { 0, 0, 0 };
-	if (depth < ShadowMapLimit.x) {
-		float3 pos0 = mul(In.Shadow, LightViewProjectionShadowProjection0).xyz;
-		rv = float3(tex2D(ShadowMap0, pos0.xy).xy, pos0.z);
-	}
-	else {
-		if (depth < ShadowMapLimit.y) {
-			float3 pos1 = mul(In.Shadow, LightViewProjectionShadowProjection1).xyz;
-			rv = float3(tex2D(ShadowMap1, pos1.xy).xy, pos1.z);
-		}
-		else {
-			if (depth < ShadowMapLimit.z) {
-				float3 pos2 = mul(In.Shadow, LightViewProjectionShadowProjection2).xyz;
-				rv = float3(tex2D(ShadowMap2, pos2.xy).xy, pos2.z);
-			}
-			else {
-				if (depth < ShadowMapLimit.w) {
-					float3 pos3 = mul(In.Shadow, LightViewProjectionShadowProjection3).xyz;
-					rv = float3(tex2D(ShadowMap3, pos3.xy).xy, pos3.z);
-				}
-			}
-		}
-	}
-	return rv;
-}
-
-void _PSApplyShadowColor(inout float3 Color, in VERTEX_OUTPUT In)
-{
-	float depth = In.RelPosition.w;
-	if (depth < ShadowMapLimit.x) {
-		Color.rgb *= 0.9;
-		Color.r += 0.1;
-	}
-	else {
-		if (depth < ShadowMapLimit.y) {
-			Color.rgb *= 0.9;
-			Color.g += 0.1;
-		}
-		else {
-			if (depth < ShadowMapLimit.z) {
-				Color.rgb *= 0.9;
-				Color.b += 0.1;
-			}
-			else {
-				if (depth < ShadowMapLimit.w) {
-					Color.rgb *= 0.9;
-					Color.rg += 0.1;
-				}
-			}
-		}
-	}
-}
-
-float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
-{
-	float3 moments;
-	moments = _PSGetShadowEffect(In);
-
-	bool not_shadowed = moments.z - moments.x < 0.000001;
+	bool not_shadowed = (moments.z - moments.x) < 0.000001;
 	float E_x2 = moments.y;
 	float Ex_2 = moments.x * moments.x;
 	float variance = clamp(E_x2 - Ex_2, 0.0001, 1.0);
 	float m_d = moments.z - moments.x;
 	float p = pow(variance / (variance + m_d * m_d), 3000);
-	if (NormalLighting)
-		return saturate(not_shadowed + p) * saturate(In.Normal_Light.w * 5 - 2 );
 	return saturate(not_shadowed + p);
+}
+
+// Gets the shadow effect s plynulým prolnutím mezi kaskádami a měkkým fade-outem na konci
+float _PSGetShadowEffect(uniform bool NormalLighting, in VERTEX_OUTPUT In)
+{
+	float depth = In.RelPosition.w;
+	float shadow = 1.0;
+
+	// Šířka přechodové zóny (v metrech) mezi jednotlivými kaskádami
+	const float BLEND_RANGE = 8.0;
+
+	if (depth < ShadowMapLimit.x)
+	{
+		float3 pos0 = mul(In.Shadow, LightViewProjectionShadowProjection0).xyz;
+		float3 m0 = float3(tex2D(ShadowMap0, pos0.xy).xy, pos0.z);
+		shadow = _EvaluateVSM(m0);
+
+		// Prolnutí mezi kaskádou 0 a 1
+		if (depth > ShadowMapLimit.x - BLEND_RANGE)
+		{
+			float3 pos1 = mul(In.Shadow, LightViewProjectionShadowProjection1).xyz;
+			float3 m1 = float3(tex2D(ShadowMap1, pos1.xy).xy, pos1.z);
+			float s1 = _EvaluateVSM(m1);
+			float factor = (depth - (ShadowMapLimit.x - BLEND_RANGE)) / BLEND_RANGE;
+			shadow = lerp(shadow, s1, factor);
+		}
+	}
+	else if (depth < ShadowMapLimit.y)
+	{
+		float3 pos1 = mul(In.Shadow, LightViewProjectionShadowProjection1).xyz;
+		float3 m1 = float3(tex2D(ShadowMap1, pos1.xy).xy, pos1.z);
+		shadow = _EvaluateVSM(m1);
+
+		// Prolnutí mezi kaskádou 1 a 2
+		if (depth > ShadowMapLimit.y - BLEND_RANGE)
+		{
+			float3 pos2 = mul(In.Shadow, LightViewProjectionShadowProjection2).xyz;
+			float3 m2 = float3(tex2D(ShadowMap2, pos2.xy).xy, pos2.z);
+			float s2 = _EvaluateVSM(m2);
+			float factor = (depth - (ShadowMapLimit.y - BLEND_RANGE)) / BLEND_RANGE;
+			shadow = lerp(shadow, s2, factor);
+		}
+	}
+	else if (depth < ShadowMapLimit.z)
+	{
+		float3 pos2 = mul(In.Shadow, LightViewProjectionShadowProjection2).xyz;
+		float3 m2 = float3(tex2D(ShadowMap2, pos2.xy).xy, pos2.z);
+		shadow = _EvaluateVSM(m2);
+
+		// Prolnutí mezi kaskádou 2 a 3
+		if (depth > ShadowMapLimit.z - BLEND_RANGE)
+		{
+			float3 pos3 = mul(In.Shadow, LightViewProjectionShadowProjection3).xyz;
+			float3 m3 = float3(tex2D(ShadowMap3, pos3.xy).xy, pos3.z);
+			float s3 = _EvaluateVSM(m3);
+			float factor = (depth - (ShadowMapLimit.z - BLEND_RANGE)) / BLEND_RANGE;
+			shadow = lerp(shadow, s3, factor);
+		}
+	}
+	else if (depth < ShadowMapLimit.w)
+	{
+		float3 pos3 = mul(In.Shadow, LightViewProjectionShadowProjection3).xyz;
+		float3 m3 = float3(tex2D(ShadowMap3, pos3.xy).xy, pos3.z);
+		shadow = _EvaluateVSM(m3);
+
+		// Plynulý fade-out stínu na maximálním dosahu (místo useknutí hranou)
+		const float FADE_OUT = 15.0;
+		if (depth > ShadowMapLimit.w - FADE_OUT)
+		{
+			float factor = (depth - (ShadowMapLimit.w - FADE_OUT)) / FADE_OUT;
+			shadow = lerp(shadow, 1.0, factor);
+		}
+	}
+	else
+	{
+		shadow = 1.0;
+	}
+
+	if (NormalLighting)
+		return shadow * saturate(In.Normal_Light.w * 5 - 2);
+
+	return shadow;
 }
 
 // Gets the overcast color.
@@ -663,11 +684,8 @@ float4 PSImageTransfer(uniform bool ClampTexCoords, in VERTEX_OUTPUT In) : COLOR
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
 
-	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
-
-
 
 float4 PSImage(in VERTEX_OUTPUT In) : COLOR0
 {
@@ -739,7 +757,6 @@ float4 PSVegetation(in VERTEX_OUTPUT In) : COLOR0
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
 
-	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
 
@@ -800,7 +817,6 @@ float4 PSTerrain(in VERTEX_OUTPUT In) : COLOR0
 	_PSApplyFog(litColor, In);
 	_PSSceneryFade(Color, In);
 
-	//_PSApplyShadowColor(litColor, In);
 	return float4(litColor, Color.a);
 }
 
@@ -932,19 +948,12 @@ float4 PSSignalLight(in VERTEX_OUTPUT In) : COLOR0
 
 ////////////////////    T E C H N I Q U E S    /////////////////////////////////
 
-////////////////////////////////////////////////////////////////////////////////
-// IMPORTANT: ATI graphics cards/drivers do NOT like mixing shader model      //
-//            versions within a technique/pass. Always use the same vertex    //
-//            and pixel shader versions within each technique/pass.           //
-////////////////////////////////////////////////////////////////////////////////
-
 technique ImagePS {
 	pass Pass_0 {
 		VertexShader = compile vs_5_0 VSGeneral();
 		PixelShader = compile ps_5_0 PSImage();
 	}
 }
-
 
 technique TransferPS {
 	pass Pass_0 {

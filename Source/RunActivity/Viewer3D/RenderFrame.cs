@@ -628,44 +628,43 @@ namespace Orts.Viewer3D
                 }
             }
         }
-
-        bool IsInShadowMap(int shadowMapIndex, Vector3 mstsLocation, float objectRadius, float objectViewingDistance)
+        
+        public bool IsInShadowMap(int shadowMapIndex, Vector3 mstsLocation, float objectRadius, float objectViewingDistance)
         {
             if (ShadowMapRenderTarget == null)
                 return false;
 
-            if (Program.Simulator.Settings.ShadowSettings == 4)
-            {
-                // Optimalizace objektového rádiusu            
-                if (objectRadius < 100)
-                    objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem
-                else
-                    objectRadius *= 2;
-            }
+            // 1. Lokální souřadnice vůči středu stínové kaskády
+            var center = ShadowMapCenter[shadowMapIndex];
+            float lx = mstsLocation.X - center.X;
+            float ly = mstsLocation.Y - center.Y;
+            float lz = -mstsLocation.Z - center.Z; // mstsLocation.Z *= -1
 
-            mstsLocation.Z *= -1;
-            mstsLocation.X -= ShadowMapCenter[shadowMapIndex].X;
-            mstsLocation.Y -= ShadowMapCenter[shadowMapIndex].Y;
-            mstsLocation.Z -= ShadowMapCenter[shadowMapIndex].Z;
-            objectRadius += RenderProcess.ShadowMapDiameter[shadowMapIndex] / 2;
+            // 2. Výpočet poloměru s rezervou pro výhybky a kolejnice
+            float effectiveRadius = (Program.Simulator.Settings.ShadowSettings == 4)
+                ? (objectRadius < 80.0f ? 200.0f : objectRadius * 2.0f)
+                : objectRadius;
 
-            // Check if object is inside the sphere.
-            var length = mstsLocation.LengthSquared();
-            if (length <= objectRadius * objectRadius)
+            effectiveRadius += RenderProcess.ShadowMapDiameter[shadowMapIndex] * 0.5f;
+
+            // 3. Test bounding sphere – pokud je uvnitř, MUSÍ se okamžitě vykreslit!
+            // Toto vrátí všechny stíny v dosahu kaskády zpět.
+            float lenSq = lx * lx + ly * ly + lz * lz;
+            if (lenSq <= effectiveRadius * effectiveRadius)
                 return true;
 
-            // Check if object is inside cylinder.
-            var dotX = Math.Abs(Vector3.Dot(mstsLocation, ShadowMapX));
-            if (dotX > objectRadius)
+            // 4. Test ohraničujícího válce ve směru os X a Y světla
+            float dotX = lx * ShadowMapX.X + ly * ShadowMapX.Y + lz * ShadowMapX.Z;
+            if (dotX > effectiveRadius || dotX < -effectiveRadius)
                 return false;
 
-            var dotY = Math.Abs(Vector3.Dot(mstsLocation, ShadowMapY));
-            if (dotY > objectRadius)
+            float dotY = lx * ShadowMapY.X + ly * ShadowMapY.Y + lz * ShadowMapY.Z;
+            if (dotY > effectiveRadius || dotY < -effectiveRadius)
                 return false;
 
-            // Check if object is on correct side of center.
-            var dotZ = Vector3.Dot(mstsLocation, SteppedSolarDirection);
-            if (dotZ < 0)
+            // 5. Test strany světla (s rezervou na poloměr objektu)
+            float dotZ = lx * SteppedSolarDirection.X + ly * SteppedSolarDirection.Y + lz * SteppedSolarDirection.Z;
+            if (dotZ < -effectiveRadius)
                 return false;
 
             return true;

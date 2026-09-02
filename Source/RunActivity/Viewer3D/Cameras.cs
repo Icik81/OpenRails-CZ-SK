@@ -262,21 +262,20 @@ namespace Orts.Viewer3D
         // Cull for fov
         public bool InFov(Vector3 mstsObjectCenter, float objectRadius)
         {
-            mstsObjectCenter.X -= cameraLocation.Location.X;
-            mstsObjectCenter.Y -= cameraLocation.Location.Y;
-            mstsObjectCenter.Z -= cameraLocation.Location.Z;
-            // TODO: This *2 is a complete fiddle because some objects don't currently pass in a correct radius and e.g. track sections vanish.
-            
-            // Optimalizace objektového rádiusu
-            if (objectRadius < 100)            
-                objectRadius *= 200 / objectRadius; // Aby se zobrazily správně i objekty s dlouhým pivotem                           
-            else
-                objectRadius *= 2;            
+            float dx = mstsObjectCenter.X - cameraLocation.Location.X;
+            float dy = mstsObjectCenter.Y - cameraLocation.Location.Y;
+            float dz = mstsObjectCenter.Z - cameraLocation.Location.Z;
 
-            if (frustumLeft.X * mstsObjectCenter.X + frustumLeft.Y * mstsObjectCenter.Y - frustumLeft.Z * mstsObjectCenter.Z > objectRadius)
+            // Minimální poloměr pro kolejnice a výhybky s pivotem na kraji dílu
+            float effectiveRadius = objectRadius < 40.0f ? 200.0f : objectRadius * 2.0f;
+
+            // Pokud je objekt za rovinou kteréhokoliv ořezu o více než poloměr, zahodit
+            if ((frustumLeft.X * dx + frustumLeft.Y * dy - frustumLeft.Z * dz) > effectiveRadius)
                 return false;
-            if (frustumRight.X * mstsObjectCenter.X + frustumRight.Y * mstsObjectCenter.Y - frustumRight.Z * mstsObjectCenter.Z > objectRadius)
+
+            if ((frustumRight.X * dx + frustumRight.Y * dy - frustumRight.Z * dz) > effectiveRadius)
                 return false;
+
             return true;
         }
 
