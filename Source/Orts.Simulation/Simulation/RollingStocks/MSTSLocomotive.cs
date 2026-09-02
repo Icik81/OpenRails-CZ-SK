@@ -6268,25 +6268,42 @@ namespace Orts.Simulation.RollingStocks
                     CarIsRunning = false;
                 }
 
-                // AI posunuje                
-                float DistanceToReversalPoint = (Train as AITrain).ComputeDistanceToReversalPoint();
-                if ((Train as AITrain) != null && DistanceToReversalPoint > 0 && DistanceToReversalPoint < 1000 
-                    && (Train as AITrain).nextActionInfo != null && (Train as AITrain).nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE && (Train as AITrain).nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.REVERSAL)                
-                    CarIsShunting = true;
-
-                if ((Train as AITrain) != null && (Train as AITrain).AITrainWillAttach)
-                    CarIsShunting = true;
-
-                if ((Train as AITrain) != null && (Train as AITrain).nextActionInfo != null)
-                {
-                    if ((Train as AITrain).nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                // AI posunuje
+                var aiTrain = Train as AITrain;
+                if (aiTrain != null)
+                {                    
+                    if (aiTrain.nextActionInfo != null && aiTrain.nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.REVERSAL && aiTrain.nextActionInfo.NextAction != AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE)
                     {
-                        if ((Train as AITrain).AuxActionsContain[0] != null && ((AIAuxActionsRef)(Train as AITrain).AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        try
                         {
-                            var AIActionPoint0 = ((Train as AITrain).AuxActionsContain.SpecAuxActions[0] as AIActionWPRef);
-                            if (AIActionPoint0 != null)
+                            float distanceToReversalPoint = aiTrain.ComputeDistanceToReversalPoint();
+                            if (distanceToReversalPoint > 0 && distanceToReversalPoint < 1000)
                             {
-                                if (AbsSpeedMpS < 0.01f && ((AIActionPoint0.Delay > 49900 && AIActionPoint0.Delay < 60010) || (AIActionPoint0.Delay > 40100 && AIActionPoint0.Delay < 40200) || (AIActionPoint0.Delay > 50100 && AIActionPoint0.Delay < 50200)))
+                                CarIsShunting = true;
+                            }
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            // Ochrana před chybou v jádru OR, pokud seznam reverzních bodů není dostupný
+                        }
+                    }
+                    
+                    if (aiTrain.AITrainWillAttach)
+                    {
+                        CarIsShunting = true;
+                    }
+                    
+                    if (aiTrain.nextActionInfo != null && aiTrain.nextActionInfo.GetType().IsSubclassOf(typeof(AuxActionItem)))
+                    {
+                        if (aiTrain.AuxActionsContain[0] != null && ((AIAuxActionsRef)aiTrain.AuxActionsContain[0]).NextAction == AuxActionRef.AUX_ACTION.WAITING_POINT)
+                        {
+                            var aiActionPoint0 = aiTrain.AuxActionsContain.SpecAuxActions[0] as AIActionWPRef;
+                            if (aiActionPoint0 != null)
+                            {
+                                if (AbsSpeedMpS < 0.01f &&
+                                   ((aiActionPoint0.Delay > 49900 && aiActionPoint0.Delay < 60010) ||
+                                    (aiActionPoint0.Delay > 40100 && aiActionPoint0.Delay < 40200) ||
+                                    (aiActionPoint0.Delay > 50100 && aiActionPoint0.Delay < 50200)))
                                 {
                                     CarIsShunting = true;
                                     AIStartOn = true;
