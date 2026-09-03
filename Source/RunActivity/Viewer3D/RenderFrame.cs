@@ -568,7 +568,7 @@ namespace Orts.Viewer3D
             AddPrimitive(material, primitive, group, ref xnaMatrix, ShapeFlags.None, null);
         }
 
-        static readonly bool[] PrimitiveBlendedScenery = new bool[] { true };
+        static readonly bool[] PrimitiveBlendedScenery = new bool[] { true, false }; // Search for opaque pixels in alpha blended primitives, thus maintaining correct DepthBuffer
         static readonly bool[] PrimitiveBlended = new bool[] { true };
         static readonly bool[] PrimitiveNotBlended = new bool[] { false };
 
@@ -582,9 +582,7 @@ namespace Orts.Viewer3D
         public void AddPrimitive(Material material, RenderPrimitive primitive, RenderPrimitiveGroup group, ref Matrix xnaMatrix, ShapeFlags flags, object itemData)
         {
             var getBlending = material.GetBlending();
-
-            // Všechny blended materiály posíláme pouze jednou do blended sekvence
-            var blending = getBlending ? PrimitiveBlended : PrimitiveNotBlended;
+            var blending = getBlending && material is SceneryMaterial ? PrimitiveBlendedScenery : getBlending ? PrimitiveBlended : PrimitiveNotBlended;
 
             RenderItemCollection items;
             foreach (var blended in blending)
