@@ -275,6 +275,11 @@ namespace Orts.Simulation.RollingStocks
                                 SelectedPowerSystem = PU.SelectedPowerSystem;
                                 SystemAnnunciator = PU.SystemAnnunciator;
 
+                                StationIsActivated[1] = PU.StationIsActivated[1];
+                                StationIsActivated[2] = PU.StationIsActivated[2];
+                                HeadLightPosition[1] = PU.HeadLightPosition[1];
+                                HeadLightPosition[2] = PU.HeadLightPosition[2];
+
                                 Switch51LightEnable = PU.Switch51LightEnable;
                                 Switch52LightEnable = PU.Switch52LightEnable;
                                 Switch5LightPosition[1] = PU.Switch5LightPosition[1];
@@ -327,6 +332,9 @@ namespace Orts.Simulation.RollingStocks
 
                             PU.StationIsActivated[1] = StationIsActivated[1];
                             PU.StationIsActivated[2] = StationIsActivated[2];
+                            PU.HeadLightPosition[1] = HeadLightPosition[1];
+                            PU.HeadLightPosition[2] = HeadLightPosition[2];
+
                             PU.PowerKey = PowerKey;
                             PU.UpdateTimeEnable = UpdateTimeEnable;
                             PU.Sander = Sander;

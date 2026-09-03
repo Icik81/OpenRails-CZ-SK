@@ -642,7 +642,7 @@ namespace Orts.Viewer3D
 
             // 2. Výpočet poloměru s rezervou pro výhybky a kolejnice
             float effectiveRadius = (Program.Simulator.Settings.ShadowSettings == 4)
-                ? (objectRadius < 80.0f ? 200.0f : objectRadius * 2.0f)
+                ? (objectRadius < 100.0f ? 200.0f : objectRadius * 2.0f)
                 : objectRadius;
 
             effectiveRadius += RenderProcess.ShadowMapDiameter[shadowMapIndex] * 0.5f;

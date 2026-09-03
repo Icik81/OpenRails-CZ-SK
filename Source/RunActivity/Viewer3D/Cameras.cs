@@ -267,7 +267,7 @@ namespace Orts.Viewer3D
             float dz = mstsObjectCenter.Z - cameraLocation.Location.Z;
 
             // Minimální poloměr pro kolejnice a výhybky s pivotem na kraji dílu
-            float effectiveRadius = objectRadius < 40.0f ? 200.0f : objectRadius * 2.0f;
+            float effectiveRadius = objectRadius < 100.0f ? 200.0f : objectRadius * 2.0f;
 
             // Pokud je objekt za rovinou kteréhokoliv ořezu o více než poloměr, zahodit
             if ((frustumLeft.X * dx + frustumLeft.Y * dy - frustumLeft.Z * dz) > effectiveRadius)

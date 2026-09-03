@@ -18663,7 +18663,7 @@ namespace Orts.Simulation.RollingStocks
                         case 4: LightFrontLW = true; LightFrontRW = true; break;
                     }
                 }
-
+                
                 #region Řidičák a hnací lokomotiva typu Vectron
                 if (PowerUnitWithControl || ControlUnit)
                 {
@@ -18722,6 +18722,7 @@ namespace Orts.Simulation.RollingStocks
                         // Řidičák
                         if (ControlUnit)
                         {
+                            RearHeadLight = false;
                             if (this == Train.FirstCar)
                             {
                                 //LightFrontLW = false; LightFrontRW = false; LightFrontLR = false; LightFrontRR = false;
