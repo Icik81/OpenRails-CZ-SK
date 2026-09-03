@@ -1982,6 +1982,7 @@ namespace Orts.Simulation
 
             // Podmínka pro nezobrazení zprávy, pokud je posunovač a rychlost vlaku je menší než 40 km/h
             bool NoRecordDisplayMessage = train.Simulator.ShunterEnable && Math.Abs(train.SpeedMpS) < 40f / 3.6f ? true : false;
+            NoRecordDisplayMessage = false; // Povoleno zobrazení zprávy i při posunu a rychlosti menší než 40 km/h kvůli aktivitám 
 
             // Icik
             if (Simulator.Settings.MSTSCompatibilityMode)
