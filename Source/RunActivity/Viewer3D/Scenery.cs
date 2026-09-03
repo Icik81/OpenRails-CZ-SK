@@ -264,7 +264,7 @@ namespace Orts.Viewer3D
     [CallOnThread("Loader")]
     public class WorldFile
     {
-        const int MinimumInstanceCount = 2; // Optimalizováno z původních 5 pro vyšší zapojení modelů
+        const int MinimumInstanceCount = 5; 
 
         // Statické mezipaměti pro eliminaci redundantních diskových operací
         static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
