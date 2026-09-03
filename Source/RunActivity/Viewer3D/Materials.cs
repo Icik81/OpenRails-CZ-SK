@@ -824,7 +824,7 @@ namespace Orts.Viewer3D
         public static readonly DepthStencilState DepthReadCompareLess = new DepthStencilState
         {
             DepthBufferWriteEnable = false,
-            DepthBufferFunction = CompareFunction.Less,
+            DepthBufferFunction = CompareFunction.LessEqual,
         };
         private static readonly Dictionary<TextureAddressMode, Dictionary<float, SamplerState>> SamplerStates = new Dictionary<TextureAddressMode, Dictionary<float, SamplerState>>();
 
@@ -947,6 +947,8 @@ namespace Orts.Viewer3D
             else
             {
                 graphicsDevice.BlendState = BlendState.Opaque;
+                graphicsDevice.DepthStencilState = DepthStencilState.Default;
+
                 if ((Options & SceneryMaterialOptions.AlphaTest) != 0)
                 {
                     // Transparency testing is enabled

@@ -264,7 +264,7 @@ namespace Orts.Viewer3D
     [CallOnThread("Loader")]
     public class WorldFile
     {
-        const int MinimumInstanceCount = 2; // Optimalizováno z původních 5 pro vyšší zapojení modelů
+        const int MinimumInstanceCount = 2; 
 
         // Statické mezipaměti pro eliminaci redundantních diskových operací
         static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
@@ -288,6 +288,49 @@ namespace Orts.Viewer3D
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
 
         readonly Viewer Viewer;
+
+        static bool HasTransparency(SharedShape sharedShape)
+        {
+            if (sharedShape?.LodControls == null)
+                return false;
+
+            foreach (var lod in sharedShape.LodControls)
+            {
+                if (lod?.DistanceLevels == null)
+                    continue;
+
+                foreach (var dl in lod.DistanceLevels)
+                {
+                    if (dl?.SubObjects == null)
+                        continue;
+
+                    foreach (var subObject in dl.SubObjects)
+                    {
+                        if (subObject?.ShapePrimitives == null)
+                            continue;
+
+                        foreach (var prim in subObject.ShapePrimitives)
+                        {
+                            if (prim?.Material == null)
+                                continue;
+
+                            // 1. Zjistíme, zda materiál vyžaduje blending (sklo, kouř, poloprůhlednost)
+                            if (prim.Material.GetBlending())
+                                return true;
+
+                            // 2. Pro jistotu zachytíme i alfa test (mříže, děrované plechy, hrany skel)
+                            var sceneryMat = prim.Material as SceneryMaterial;
+                            if (sceneryMat != null && (sceneryMat.ToString().Contains(":2:") || sceneryMat.ToString().Contains(":6:")))
+                            {
+                                // Pokud v klíči obsahuje AlphaTest příznak
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+            return false;
+        }
 
         bool VisibleCondition(int staticDetailLevel)
         {
@@ -625,6 +668,7 @@ namespace Orts.Viewer3D
                 }
             }
 
+
             if (Viewer.Settings.ModelInstancing)
             {
                 var instances = new Dictionary<string, List<StaticShape>>(StringComparer.OrdinalIgnoreCase);
@@ -633,7 +677,11 @@ namespace Orts.Viewer3D
                     if (shape.GetType() != typeof(StaticShape) && shape.GetType() != typeof(StaticTrackShape))
                         continue;
 
-                    var path = shape.SharedShape?.FilePath;
+                    // Pokud má model průhledné materiály, NESMÍ se instancovat
+                    if (shape.SharedShape == null || HasTransparency(shape.SharedShape))
+                        continue;
+
+                    var path = shape.SharedShape.FilePath;
                     if (string.IsNullOrEmpty(path))
                         continue;
 
