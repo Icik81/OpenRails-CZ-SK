@@ -17,41 +17,16 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-/* SCENERY
- * 
- * Scenery objects are specified in WFiles located in the WORLD folder of the route.
- * Each WFile describes scenery for a 2048 meter square region of the route.
- * This assembly is responsible for loading and unloading the WFiles as 
- * the camera moves over the route.  
- * 
- * Loaded WFiles are each represented by an instance of the WorldFile class. 
- * 
- * A SceneryDrawer object is created by the Viewer. Each time SceneryDrawer.Update is 
- * called, it disposes of WorldFiles that have gone out of range, and creates new 
- * WorldFile objects for WFiles that have come into range.
- * 
- * Currently the SceneryDrawer. Update is called 10 times a second from a background 
- * thread in the Viewer class.
- * 
- * SceneryDrawer loads the WFile in which the viewer is located, and the 8 WFiles 
- * surrounding the viewer.
- * 
- * When a WorldFile object is created, it creates StaticShape objects for each scenery
- * item.  The StaticShape objects add themselves to the Viewer's content list, sharing
- * mesh files and textures wherever possible.
- * 
- */
-
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation;
 using ORTS.Common;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 
 namespace Orts.Viewer3D
 {
@@ -59,9 +34,6 @@ namespace Orts.Viewer3D
     {
         readonly Viewer Viewer;
 
-        // THREAD SAFETY:
-        //   All accesses must be done in local variables. No modifications to the objects are allowed except by
-        //   assignment of a new instance (possibly cloned and then modified).
         public List<WorldFile> WorldFiles = new List<WorldFile>();
         int TileX;
         int TileZ;
@@ -69,17 +41,17 @@ namespace Orts.Viewer3D
         int VisibleTileZ;
         long CameraTile;
         int CameraTileX;
-        int CameraTileZ;        
+        int CameraTileZ;
 
         public SceneryDrawer(Viewer viewer)
         {
             Viewer = viewer;
         }
         bool FirstRunIsDay = true;
+
         [CallOnThread("Loader")]
         public void Load()
         {
-            // Načte objekty světa, pokud se změní denní doba
             if (Viewer.World.Sky.solarDirection.Y != 0)
             {
                 if (Viewer.World.Sky.solarDirection.Y > 0 && (!Viewer.IsDay || FirstRunIsDay))
@@ -102,40 +74,59 @@ namespace Orts.Viewer3D
             Viewer.DontLoadDayTextures = (Program.Simulator.Settings.ConditionalLoadOfDayOrNightTextures &&
             ((Viewer.MaterialManager.sunDirection.Y < -0.05f && Program.Simulator.ClockTime % 86400 >= 43200) ||
             (Viewer.MaterialManager.sunDirection.Y < -0.15f && Program.Simulator.ClockTime % 86400 < 43200))) ? true : false;
+
             if (TileX != VisibleTileX || TileZ != VisibleTileZ || Viewer.Simulator.RefreshWorld || Viewer.Simulator.RefreshWire)
             {
                 TileX = VisibleTileX;
                 TileZ = VisibleTileZ;
                 var worldFiles = WorldFiles;
+
+                // Rychlý lookup O(1) namísto opakovaného FirstOrDefault v cyklech
+                var tileLookup = new Dictionary<long, WorldFile>(worldFiles.Count);
+                foreach (var wf in worldFiles)
+                {
+                    long key = ((long)wf.TileX << 32) | (uint)wf.TileZ;
+                    tileLookup[key] = wf;
+                }
+
                 var newWorldFiles = new List<WorldFile>();
                 var oldWorldFiles = new List<WorldFile>(worldFiles);
                 var needed = (int)Math.Ceiling((float)Viewer.Settings.ViewingDistance / 2048f);
+
                 for (var x = -needed; x <= needed; x++)
                 {
                     for (var z = -needed; z <= needed; z++)
                     {
                         if (cancellation.IsCancellationRequested)
                             break;
-                        var tile = worldFiles.FirstOrDefault(t => t.TileX == TileX + x && t.TileZ == TileZ + z);
+
+                        int targetTileX = TileX + x;
+                        int targetTileZ = TileZ + z;
+                        long tileKey = ((long)targetTileX << 32) | (uint)targetTileZ;
+
+                        tileLookup.TryGetValue(tileKey, out var tile);
+
                         var cameraTile = CameraTile;
                         CameraTileX = (int)(cameraTile / 100000);
                         CameraTileZ = (int)(Math.Abs(cameraTile) - (long)Math.Abs(CameraTileX) * 100000);
-                        if ((CameraTileX != TileX || CameraTileZ != TileZ) && (Math.Abs(CameraTileX - (TileX + x)) > needed || Math.Abs(CameraTileZ - (TileZ + z)) > needed))
+                        if ((CameraTileX != TileX || CameraTileZ != TileZ) && (Math.Abs(CameraTileX - targetTileX) > needed || Math.Abs(CameraTileZ - targetTileZ) > needed))
                             continue;
+
                         if (tile == null || Viewer.Simulator.RefreshWorld || Viewer.Simulator.RefreshWire)
-                            tile = LoadWorldFile(TileX + x, TileZ + z, x == 0 && z == 0);
+                            tile = LoadWorldFile(targetTileX, targetTileZ, x == 0 && z == 0);
+
                         if (tile != null)
                         {
                             newWorldFiles.Add(tile);
                             oldWorldFiles.Remove(tile);
                         }
                     }
-                }                
+                }
                 foreach (var tile in oldWorldFiles)
-                    tile.Unload();                
+                    tile.Unload();
                 WorldFiles = newWorldFiles;
-                Viewer.tryLoadingNightTextures = true; // when Tiles loaded change you can try
-                Viewer.tryLoadingDayTextures = true; // when Tiles loaded change you can try
+                Viewer.tryLoadingNightTextures = true;
+                Viewer.tryLoadingDayTextures = true;
             }
             else if (Viewer.NightTexturesNotLoaded && Program.Simulator.ClockTime % 86400 >= 43200 && Viewer.tryLoadingNightTextures)
             {
@@ -143,9 +134,8 @@ namespace Orts.Viewer3D
                 if (sunHeight < 0.10f && sunHeight > 0.01)
                 {
                     var remainingMemorySpace = Viewer.LoadMemoryThreshold - Viewer.HUDWindow.GetWorkingSetSize();
-                    if (remainingMemorySpace >= 0) // if not we'll try again
+                    if (remainingMemorySpace >= 0)
                     {
-                        // Night is coming, it's time to load the night textures
                         var success = Viewer.MaterialManager.LoadNightTextures();
                         if (success)
                         {
@@ -155,7 +145,7 @@ namespace Orts.Viewer3D
                     Viewer.tryLoadingNightTextures = false;
                 }
                 else if (sunHeight <= 0.01)
-                    Viewer.NightTexturesNotLoaded = false; // too late to try, we must give up and we don't load the night textures
+                    Viewer.NightTexturesNotLoaded = false;
             }
             else if (Viewer.DayTexturesNotLoaded && Program.Simulator.ClockTime % 86400 < 43200 && Viewer.tryLoadingDayTextures)
             {
@@ -163,9 +153,8 @@ namespace Orts.Viewer3D
                 if (sunHeight > -0.10f && sunHeight < -0.01)
                 {
                     var remainingMemorySpace = Viewer.LoadMemoryThreshold - Viewer.HUDWindow.GetWorkingSetSize();
-                    if (remainingMemorySpace >= 0) // if not we'll try again
+                    if (remainingMemorySpace >= 0)
                     {
-                        // Day is coming, it's time to load the day textures
                         var success = Viewer.MaterialManager.LoadDayTextures();
                         if (success)
                         {
@@ -175,7 +164,7 @@ namespace Orts.Viewer3D
                     Viewer.tryLoadingDayTextures = false;
                 }
                 else if (sunHeight >= -0.01)
-                    Viewer.DayTexturesNotLoaded = false; // too late to try, we must give up and we don't load the day textures. TODO: is this OK?
+                    Viewer.DayTexturesNotLoaded = false;
             }
 
             if (Viewer.Simulator.RefreshWire)
@@ -193,7 +182,6 @@ namespace Orts.Viewer3D
 
             if (Viewer.Simulator.RefreshWorld)
             {
-                //Viewer.Simulator.Confirmer.Information(Viewer.Catalog.GetString("World Object reloaded!"));
                 Viewer.Simulator.RefreshWorld = false;
             }
         }
@@ -215,13 +203,11 @@ namespace Orts.Viewer3D
         [CallOnThread("Updater")]
         public float GetBoundingBoxTop(int tileX, int tileZ, float x, float z, float blockSize)
         {
-            // Normalize the coordinates to the right tile.
             while (x >= 1024) { x -= 2048; tileX++; }
             while (x < -1024) { x += 2048; tileX--; }
             while (z >= 1024) { z -= 2048; tileZ++; }
             while (z < -1024) { z += 2048; tileZ--; }
 
-            // Fetch the tile we're looking up elevation for; if it isn't loaded, no elevation.
             var worldFiles = WorldFiles;
             var worldFile = worldFiles.FirstOrDefault(wf => wf.TileX == tileX && wf.TileZ == tileZ);
             if (worldFile == null)
@@ -250,12 +236,12 @@ namespace Orts.Viewer3D
         {
             CameraTile = cameraTile;
         }
+
         [CallOnThread("Updater")]
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             var worldFiles = WorldFiles;
             foreach (var worldFile in worldFiles)
-                // TODO: This might impair some shadows.
                 if (Viewer.Camera.InFov(new Vector3((worldFile.TileX - Viewer.Camera.TileX) * 2048, 0, (worldFile.TileZ - Viewer.Camera.TileZ) * 2048), 1448))
                     worldFile.PrepareFrame(frame, elapsedTime);
         }
@@ -278,9 +264,12 @@ namespace Orts.Viewer3D
     [CallOnThread("Loader")]
     public class WorldFile
     {
-        const int MinimumInstanceCount = 5;
+        const int MinimumInstanceCount = 2; // Optimalizováno z původních 5 pro vyšší zapojení modelů
 
-        // Dynamic track objects in the world file
+        // Statické mezipaměti pro eliminaci redundantních diskových operací
+        static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        static readonly ConcurrentDictionary<string, ShapeDescriptorFile> SdFileCache = new ConcurrentDictionary<string, ShapeDescriptorFile>(StringComparer.OrdinalIgnoreCase);
+
         public struct DyntrackParams
         {
             public int isCurved;
@@ -299,26 +288,19 @@ namespace Orts.Viewer3D
         public List<BoundingBox> BoundingBoxes = new List<BoundingBox>();
 
         readonly Viewer Viewer;
-        
+
         bool VisibleCondition(int staticDetailLevel)
-        {            
+        {
             switch (staticDetailLevel)
-            {                
-                case 11: return Program.Simulator.Season != SeasonType.Winter; // Nezobrazí objekty v zimě
-                case 12: return Program.Simulator.Season == SeasonType.Winter; // Zobrazí objekty pouze v zimě
-                case 13: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false; // Zobrazí objekty pouze za denního světla
-                case 14: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false; // Zobrazí objekty pouze za tmy
-            }            
+            {
+                case 11: return Program.Simulator.Season != SeasonType.Winter;
+                case 12: return Program.Simulator.Season == SeasonType.Winter;
+                case 13: if (Viewer.World.Sky.solarDirection.Y != 0) return Viewer.IsDay; else return false;
+                case 14: if (Viewer.World.Sky.solarDirection.Y != 0) return !Viewer.IsDay; else return false;
+            }
             return staticDetailLevel <= Viewer.Settings.WorldObjectDensity;
         }
 
-
-        /// <summary>
-        /// Open the specified WFile and load all the scenery objects into the viewer.
-        /// If the file doesn't exist, then return an empty WorldFile object.
-        /// </summary>
-        /// <param name="visible">Tiles adjacent to the current visible tile may not be modelled.
-        /// This flag decides whether a missing file leads to a warning message.</param>                
         public WorldFile(Viewer viewer, int tileX, int tileZ, bool visible)
         {
             Viewer = viewer;
@@ -327,11 +309,9 @@ namespace Orts.Viewer3D
 
             var cancellation = Viewer.LoaderProcess.CancellationToken;
 
-            // determine file path to the WFile at the specified tile coordinates
             var WFileName = WorldFileNameFromTileCoordinates(tileX, tileZ);
             var WFilePath = viewer.Simulator.RoutePath + @"\World\" + WFileName;
 
-            // if there isn't a file, then return with an empty WorldFile object
             if (!File.Exists(WFilePath))
             {
                 if (visible)
@@ -339,21 +319,14 @@ namespace Orts.Viewer3D
                 return;
             }
 
-            // read the world file 
             var WFile = new Orts.Formats.Msts.WorldFile(WFilePath);
-
-            // check for existence of world file in OpenRails subfolder
 
             WFilePath = viewer.Simulator.RoutePath + @"\World\Openrails\" + WFileName;
             if (File.Exists(WFilePath))
             {
-                // We have an OR-specific addition to world file
                 WFile.InsertORSpecificData(WFilePath);
             }
 
-
-
-            // to avoid loop checking for every object this pre-check is performed
             bool containsMovingTable = false;
             if (Program.Simulator.MovingTables != null)
             {
@@ -365,18 +338,14 @@ namespace Orts.Viewer3D
                     }
             }
 
-            // create all the individual scenery objects specified in the WFile
             foreach (var worldObject in WFile.Tr_Worldfile)
-            {                
-                // Přeskočit objekty, které nejsou viditelné pro daný StaticDetailLevel
-                if (!VisibleCondition(worldObject.StaticDetailLevel))                
+            {
+                if (!VisibleCondition(worldObject.StaticDetailLevel))
                     continue;
 
-                // If the loader has been asked to temrinate, bail out early.
                 if (cancellation.IsCancellationRequested)
                     break;
 
-                // Get the position of the scenery object into ORTS coordinate space.
                 WorldPosition worldMatrix;
                 if (worldObject.Matrix3x3 != null && worldObject.Position != null)
                     worldMatrix = WorldPositionFromMSTSLocation(WFile.TileX, WFile.TileZ, worldObject.Position, worldObject.Matrix3x3);
@@ -390,48 +359,58 @@ namespace Orts.Viewer3D
 
                 var shadowCaster = (worldObject.StaticFlags & (uint)StaticFlag.AnyShadow) != 0 || viewer.Settings.ShadowAllShapes;
                 var animated = (worldObject.StaticFlags & (uint)StaticFlag.Animate) != 0;
-                var isAnalogORClock = ShapeIsORClock(worldObject.FileName) == "analog"; //check if worldObject is analog OR-Clock
+                var isAnalogORClock = ShapeIsORClock(worldObject.FileName) == "analog";
                 var global = (worldObject is TrackObj) || (worldObject is HazardObj) || (worldObject.StaticFlags & (uint)StaticFlag.Global) != 0;
-
-                // TransferObj have a FileName but it is not a shape, so we need to avoid sanity-checking it as if it was.
                 var fileNameIsNotShape = (worldObject is TransferObj || worldObject is HazardObj);
 
-                // Determine the file path to the shape file for this scenery object and check it exists as expected.
-                var shapeFilePath = fileNameIsNotShape || String.IsNullOrEmpty(worldObject.FileName) ? null : global ? viewer.Simulator.BasePath + @"\Global\Shapes\" + worldObject.FileName : viewer.Simulator.RoutePath + @"\Shapes\" + worldObject.FileName;
-                if (shapeFilePath != null)
+                // Optimalizované vyhledání tvaru s mezipamětí existence souborů
+                string shapeFilePath = null;
+                if (!fileNameIsNotShape && !string.IsNullOrEmpty(worldObject.FileName))
                 {
-                    shapeFilePath = Path.GetFullPath(shapeFilePath);
-                    if (!File.Exists(shapeFilePath))
+                    string rawKey = (global ? "G:" : "R:") + worldObject.FileName;
+                    if (!ShapePathCache.TryGetValue(rawKey, out shapeFilePath))
                     {
-                        Trace.TraceWarning("{0} scenery object {1} with StaticFlags {3:X8} references non-existent {2}", WFileName, worldObject.UID, shapeFilePath, worldObject.StaticFlags);
+                        var candidate = global ? viewer.Simulator.BasePath + @"\Global\Shapes\" + worldObject.FileName : viewer.Simulator.RoutePath + @"\Shapes\" + worldObject.FileName;
+                        candidate = Path.GetFullPath(candidate);
+                        shapeFilePath = File.Exists(candidate) ? candidate : string.Empty;
+                        ShapePathCache.TryAdd(rawKey, shapeFilePath);
+                    }
+                    if (shapeFilePath.Length == 0)
+                    {
+                        Trace.TraceWarning("{0} scenery object {1} with StaticFlags {3:X8} references non-existent {2}", WFileName, worldObject.UID, worldObject.FileName, worldObject.StaticFlags);
                         shapeFilePath = null;
                     }
                 }
 
-                if (shapeFilePath != null && File.Exists(shapeFilePath + "d"))
+                // Optimalizované cachování a čtení deskriptoru (.sd) pro bounding boxy
+                if (shapeFilePath != null)
                 {
-                    var shape = new ShapeDescriptorFile(shapeFilePath + "d");
-                    if (shape.shape.ESD_Bounding_Box != null)
+                    var sdPath = shapeFilePath + "d";
+                    if (!SdFileCache.TryGetValue(sdPath, out var shapeDesc))
                     {
-                        var min = shape.shape.ESD_Bounding_Box.Min;
-                        var max = shape.shape.ESD_Bounding_Box.Max;
+                        if (File.Exists(sdPath))
+                        {
+                            try { shapeDesc = new ShapeDescriptorFile(sdPath); }
+                            catch { shapeDesc = null; }
+                        }
+                        SdFileCache.TryAdd(sdPath, shapeDesc);
+                    }
+
+                    if (shapeDesc?.shape.ESD_Bounding_Box != null)
+                    {
+                        var min = shapeDesc.shape.ESD_Bounding_Box.Min;
+                        var max = shapeDesc.shape.ESD_Bounding_Box.Max;
                         var transform = Matrix.Invert(worldMatrix.XNAMatrix);
-                        // Not sure if this is needed, but it is to correct for center-of-gravity being not the center of the box.
-                        //transform.M41 += (max.X + min.X) / 2;
-                        //transform.M42 += (max.Y + min.Y) / 2;
-                        //transform.M43 += (max.Z + min.Z) / 2;
                         BoundingBoxes.Add(new BoundingBox(transform, new Vector3((max.X - min.X) / 2, (max.Y - min.Y) / 2, (max.Z - min.Z) / 2), worldMatrix.XNAMatrix.Translation.Y));
                     }
                 }
 
                 try
-                {                        
+                {
                     if (worldObject.GetType() == typeof(TrackObj))
                     {
                         var trackObj = (TrackObj)worldObject;
-                        // Switch tracks need a link to the simulator engine so they can animate the points.
                         var trJunctionNode = trackObj.JNodePosn != null ? viewer.Simulator.TDB.GetTrJunctionNode(TileX, TileZ, (int)trackObj.UID) : null;
-                        // We might not have found the junction node; if so, fall back to the static track shape.
                         if (trJunctionNode != null)
                         {
                             if (viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) SuperElevationManager.DecomposeStaticSuperElevation(viewer, dTrackList, trackObj, worldMatrix, TileX, TileZ, shapeFilePath);
@@ -439,14 +418,10 @@ namespace Orts.Viewer3D
                         }
                         else
                         {
-                            //if want to use super elevation, we will generate tracks using dynamic tracks
                             if ((viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge)
                                 && SuperElevationManager.DecomposeStaticSuperElevation(viewer, dTrackList, trackObj, worldMatrix, TileX, TileZ, shapeFilePath))
                             {
-                                //var success = SuperElevation.DecomposeStaticSuperElevation(viewer, dTrackList, trackObj, worldMatrix, TileX, TileZ, shapeFilePath);
-                                //if (success == 0) sceneryObjects.Add(new StaticTrackShape(viewer, shapeFilePath, worldMatrix));
                             }
-                            //otherwise, use shapes
                             else if (!containsMovingTable) sceneryObjects.Add(new StaticTrackShape(viewer, shapeFilePath, worldMatrix));
                             else
                             {
@@ -476,29 +451,24 @@ namespace Orts.Viewer3D
                             }
                         }
                         if (viewer.Simulator.Settings.Wire == true && viewer.Simulator.TRK.Tr_RouteFile.Electrified == true
-                            && worldObject.StaticDetailLevel != 2   // Make it compatible with routes that use 'HideWire', a workaround for MSTS that 
-                            && worldObject.StaticDetailLevel != 3   // allowed a mix of electrified and non electrified track see http://msts.steam4me.net/tutorials/hidewire.html
-                            )
+                            && worldObject.StaticDetailLevel != 2
+                            && worldObject.StaticDetailLevel != 3)
                         {
                             int success = Wire.DecomposeStaticWire(viewer, dTrackList, trackObj, worldMatrix);
-                            //if cannot draw wire, try to see if it is converted. modified for DynaTrax
                             if (success == 0 && trackObj.FileName.Contains("Dyna")) Wire.DecomposeConvertedDynamicWire(viewer, dTrackList, trackObj, worldMatrix);
                         }
                     }
                     else if (worldObject.GetType() == typeof(DyntrackObj))
                     {
                         if (viewer.Simulator.Settings.Wire == true && viewer.Simulator.TRK.Tr_RouteFile.Electrified == true
-                            // Icik
-                            && worldObject.StaticDetailLevel != 2   // Make it compatible with routes that use 'HideWire', a workaround for MSTS that 
-                            && worldObject.StaticDetailLevel != 3   // allowed a mix of electrified and non electrified track see http://msts.steam4me.net/tutorials/hidewire.html
-                            )
+                            && worldObject.StaticDetailLevel != 2
+                            && worldObject.StaticDetailLevel != 3)
                             Wire.DecomposeDynamicWire(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix);
-                        // Add DyntrackDrawers for individual subsections
+
                         if ((viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) && SuperElevationManager.UseSuperElevationDyn(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix))
                             SuperElevationManager.DecomposeDynamicSuperElevation(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix);
                         else DynamicTrack.Decompose(viewer, dTrackList, (DyntrackObj)worldObject, worldMatrix);
-
-                    } // end else if DyntrackObj
+                    }
                     else if (worldObject.GetType() == typeof(ForestObj))
                     {
                         if (!(worldObject as ForestObj).IsYard)
@@ -545,13 +515,13 @@ namespace Orts.Viewer3D
                     }
                     else if (worldObject.GetType() == typeof(StaticObj))
                     {
-                        if (isAnalogORClock) //worldObject of type StaticObj is analog OR-Clock
+                        if (isAnalogORClock)
                         {
                             sceneryObjects.Add(new AnalogClockShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
                         }
                         else if (animated)
                             sceneryObjects.Add(new AnimatedShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
-                        else                            
+                        else
                             sceneryObjects.Add(new StaticShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
                     }
                     else if (worldObject.GetType() == typeof(PickupObj))
@@ -559,7 +529,7 @@ namespace Orts.Viewer3D
                         sceneryObjects.Add(new FuelPickupItemShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None, (PickupObj)worldObject));
                         PickupList.Add((PickupObj)worldObject);
                     }
-                    else // It's some other type of object - not one of the above.
+                    else
                     {
                         sceneryObjects.Add(new StaticShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None));
                     }
@@ -569,8 +539,6 @@ namespace Orts.Viewer3D
                     Trace.WriteLine(new FileLoadException(String.Format("{0} scenery object {1} failed to load", worldMatrix, worldObject.UID), error));
                 }
             }
-
-            // Check if there are activity restricted speedposts to be loaded
 
             if (Viewer.Simulator.ActivityRun != null && Viewer.Simulator.Activity.Tr_Activity.Tr_Activity_File.ActivityRestrictedSpeedZones != null)
             {
@@ -585,8 +553,6 @@ namespace Orts.Viewer3D
                         }
                         else
                         {
-                            // Icik
-                            // Vybere správnou návěst pro PJ
                             int TempWarningSpeedShapeNamesNr = 0;
                             int TempSpeedShapeNamesNr = 1;
 
@@ -594,101 +560,48 @@ namespace Orts.Viewer3D
                                 tempSpeedItem.RestrictedZoneLocation = "default";
 
                             if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz")
-                            {
                                 TempSpeedShapeNamesNr = 1;
-                            }
                             if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
-                            {
                                 TempSpeedShapeNamesNr = 3;
-                            }
 
                             if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz" || tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
                             {
                                 float ZoneSpeed = (int)(ORTS.Common.MpS.ToKpH(tempSpeedItem.RestrictedZoneSpeed) + 0.1f);
                                 if (tempSpeedItem.IsWarning)
                                 {
-                                    // Nastaví správný směr označníku
                                     tempSpeedItem.WorldPosition.XNAMatrix.M11 *= -1;
                                     tempSpeedItem.WorldPosition.XNAMatrix.M13 *= -1;
                                     tempSpeedItem.WorldPosition.XNAMatrix.M31 *= -1;
                                     tempSpeedItem.WorldPosition.XNAMatrix.M33 *= -1;
 
-                                    // CZ
                                     if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "cz")
                                     {
-                                        switch (ZoneSpeed) // km/h
+                                        switch (ZoneSpeed)
                                         {
-                                            case 5:
-                                            case 10:
-                                            case 15:
-                                                TempWarningSpeedShapeNamesNr = 0;
-                                                break;
-                                            case 20:
-                                            case 25:
-                                                TempWarningSpeedShapeNamesNr = 1;
-                                                break;
-                                            case 30:
-                                            case 35:
-                                                TempWarningSpeedShapeNamesNr = 2;
-                                                break;
-                                            case 40:
-                                            case 45:
-                                                TempWarningSpeedShapeNamesNr = 3;
-                                                break;
-                                            case 50:
-                                                TempWarningSpeedShapeNamesNr = 4;
-                                                break;
-                                            case 60:
-                                                TempWarningSpeedShapeNamesNr = 5;
-                                                break;
-                                            case 70:
-                                                TempWarningSpeedShapeNamesNr = 6;
-                                                break;
-                                            case 80:
-                                                TempWarningSpeedShapeNamesNr = 7;
-                                                break;
-                                            case 90:
-                                                TempWarningSpeedShapeNamesNr = 8;
-                                                break;
+                                            case 5: case 10: case 15: TempWarningSpeedShapeNamesNr = 0; break;
+                                            case 20: case 25: TempWarningSpeedShapeNamesNr = 1; break;
+                                            case 30: case 35: TempWarningSpeedShapeNamesNr = 2; break;
+                                            case 40: case 45: TempWarningSpeedShapeNamesNr = 3; break;
+                                            case 50: TempWarningSpeedShapeNamesNr = 4; break;
+                                            case 60: TempWarningSpeedShapeNamesNr = 5; break;
+                                            case 70: TempWarningSpeedShapeNamesNr = 6; break;
+                                            case 80: TempWarningSpeedShapeNamesNr = 7; break;
+                                            case 90: TempWarningSpeedShapeNamesNr = 8; break;
                                         }
                                     }
-                                    // SK
                                     if (tempSpeedItem.RestrictedZoneLocation.ToLower() == "sk")
                                     {
-                                        switch (ZoneSpeed) // km/h
+                                        switch (ZoneSpeed)
                                         {
-                                            case 5:
-                                            case 10:
-                                            case 15:
-                                                TempWarningSpeedShapeNamesNr = 9;
-                                                break;
-                                            case 20:
-                                            case 25:
-                                                TempWarningSpeedShapeNamesNr = 10;
-                                                break;
-                                            case 30:
-                                            case 35:
-                                                TempWarningSpeedShapeNamesNr = 11;
-                                                break;
-                                            case 40:
-                                            case 45:
-                                                TempWarningSpeedShapeNamesNr = 12;
-                                                break;
-                                            case 50:
-                                                TempWarningSpeedShapeNamesNr = 13;
-                                                break;
-                                            case 60:
-                                                TempWarningSpeedShapeNamesNr = 14;
-                                                break;
-                                            case 70:
-                                                TempWarningSpeedShapeNamesNr = 15;
-                                                break;
-                                            case 80:
-                                                TempWarningSpeedShapeNamesNr = 16;
-                                                break;
-                                            case 90:
-                                                TempWarningSpeedShapeNamesNr = 17;
-                                                break;
+                                            case 5: case 10: case 15: TempWarningSpeedShapeNamesNr = 9; break;
+                                            case 20: case 25: TempWarningSpeedShapeNamesNr = 10; break;
+                                            case 30: case 35: TempWarningSpeedShapeNamesNr = 11; break;
+                                            case 40: case 45: TempWarningSpeedShapeNamesNr = 12; break;
+                                            case 50: TempWarningSpeedShapeNamesNr = 13; break;
+                                            case 60: TempWarningSpeedShapeNamesNr = 14; break;
+                                            case 70: TempWarningSpeedShapeNamesNr = 15; break;
+                                            case 80: TempWarningSpeedShapeNamesNr = 16; break;
+                                            case 90: TempWarningSpeedShapeNamesNr = 17; break;
                                         }
                                     }
                                 }
@@ -714,32 +627,35 @@ namespace Orts.Viewer3D
 
             if (Viewer.Settings.ModelInstancing)
             {
-                // Instancing collapsed multiple copies of the same model in to a single set of data (the normal model
-                // data, plus a list of position information for each copy) and then draws them in a single batch.
-                var instances = new Dictionary<string, List<StaticShape>>();
+                var instances = new Dictionary<string, List<StaticShape>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var shape in sceneryObjects)
                 {
-                    // Only allow StaticShape and StaticTrackShape instances for now.
-                    if (shape.GetType() != typeof(StaticShape) && shape.GetType() != typeof(StaticTrackShape))
+                    // Povolit statické tvary, ale vyloučit animované a interaktivní objekty
+                    if (!(shape is StaticShape) || shape is AnimatedShape)
                         continue;
 
-                    // Must have a file path so we can collapse instances on something.
-                    var path = shape.SharedShape.FilePath;
-                    if (path == null)
+                    // Ochrana před kolapsem návěstidel a specifických objektů se světly/logikou
+                    if (shape is SignalShape || shape is LevelCrossingShape || shape is SpeedPostShape)
                         continue;
 
-                    if (path != null && !instances.ContainsKey(path))
-                        instances.Add(path, new List<StaticShape>());
+                    var path = shape.SharedShape?.FilePath;
+                    if (string.IsNullOrEmpty(path))
+                        continue;
 
-                    if (path != null)
-                        instances[path].Add(shape);
-                }
-                foreach (var path in instances.Keys)
-                {
-                    if (instances[path].Count >= MinimumInstanceCount)
+                    if (!instances.TryGetValue(path, out var list))
                     {
-                        var sharedInstance = new SharedStaticShapeInstance(Viewer, path, instances[path]);
-                        foreach (var model in instances[path])
+                        list = new List<StaticShape>();
+                        instances.Add(path, list);
+                    }
+                    list.Add(shape);
+                }
+
+                foreach (var pair in instances)
+                {
+                    if (pair.Value.Count >= MinimumInstanceCount)
+                    {
+                        var sharedInstance = new SharedStaticShapeInstance(Viewer, pair.Key, pair.Value);
+                        foreach (var model in pair.Value)
                             sceneryObjects.Remove(model);
                         sceneryObjects.Add(sharedInstance);
                     }
@@ -748,31 +664,29 @@ namespace Orts.Viewer3D
 
             if (viewer.Simulator.UseSuperElevation > 0 || viewer.Simulator.TRK.Tr_RouteFile.ChangeTrackGauge) SuperElevationManager.DecomposeStaticSuperElevation(Viewer, dTrackList, TileX, TileZ);
 
-            // Icik
             if (!Viewer.Simulator.RefreshWorld && !Viewer.Simulator.RefreshWire)
             {
                 if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
             }
         }
 
-        //Method to check a shape name is listed in "openrails\clocks.dat"
         public string ShapeIsORClock(string shape)
         {
-            if (Program.Simulator.ClockLists != null && shape != null) //OR-Clocks list given by "openrails\clocks.dat" and given shape are not null
+            if (Program.Simulator.ClockLists != null && shape != null)
             {
-                for (var i = 0; i <= Program.Simulator.ClockLists[0].shapeNames.Count() - 1; i++)                                       //always the first (Default) list is used by now
+                for (var i = 0; i <= Program.Simulator.ClockLists[0].shapeNames.Count() - 1; i++)
                 {
-                    if (shape.ToLowerInvariant() == Path.GetFileName(Program.Simulator.ClockLists[0].shapeNames[i]).ToLowerInvariant()) //shape is an OR-Clock
+                    if (shape.ToLowerInvariant() == Path.GetFileName(Program.Simulator.ClockLists[0].shapeNames[i]).ToLowerInvariant())
                     {
-                        string clockType = Program.Simulator.ClockLists[0].clockType[i].ToLowerInvariant();                             //Type of OR-Clock given by "openrails\clocks.dat"
+                        string clockType = Program.Simulator.ClockLists[0].clockType[i].ToLowerInvariant();
                         if (clockType == "analog" || clockType == "digital")
-                            return clockType; //Return OR-Clock-Type, analog or digital
+                            return clockType;
                         else
-                            return "unknown"; //Return OR-Clock-Type as unknown
+                            return "unknown";
                     }
                 }
             }
-            return "";                        //Return empty string -> shape is not an OR-Clock
+            return "";
         }
 
         [CallOnThread("Loader")]
@@ -781,7 +695,6 @@ namespace Orts.Viewer3D
             foreach (var obj in sceneryObjects)
                 obj.Unload();
 
-            // Icik
             if (!Viewer.Simulator.RefreshWorld && !Viewer.Simulator.RefreshWire)
             {
                 if (Viewer.World.Sounds != null) Viewer.World.Sounds.RemoveByTile(TileX, TileZ);
@@ -833,10 +746,6 @@ namespace Orts.Viewer3D
                 forest.PrepareFrame(frame, elapsedTime);
         }
 
-        /// <summary>
-        /// MSTS WFiles represent some location with a position, quaternion and tile coordinates
-        /// This converts it to the ORTS WorldPosition representation
-        /// </summary>
         static WorldPosition WorldPositionFromMSTSLocation(int tileX, int tileZ, STFPositionItem MSTSPosition, STFQDirectionItem MSTSQuaternion)
         {
             var XNAQuaternion = new Quaternion((float)MSTSQuaternion.A, (float)MSTSQuaternion.B, -(float)MSTSQuaternion.C, (float)MSTSQuaternion.D);
@@ -852,10 +761,6 @@ namespace Orts.Viewer3D
             return worldMatrix;
         }
 
-        /// <summary>
-        /// MSTS WFiles represent some location with a position, 3x3 matrix and tile coordinates
-        /// This converts it to the ORTS WorldPosition representation
-        /// </summary>
         static WorldPosition WorldPositionFromMSTSLocation(int tileX, int tileZ, STFPositionItem MSTSPosition, Matrix3x3 MSTSMatrix)
         {
             var XNAPosition = new Vector3((float)MSTSPosition.X, (float)MSTSPosition.Y, -(float)MSTSPosition.Z);
@@ -886,21 +791,11 @@ namespace Orts.Viewer3D
             return worldMatrix;
         }
 
-        /// <summary>
-        /// Build a w filename from tile X and Z coordinates.
-        /// Returns a string eg "w-011283+014482.w"
-        /// </summary>
         public static string WorldFileNameFromTileCoordinates(int tileX, int tileZ)
         {
-            var filename = "w" + FormatTileCoordinate(tileX) + FormatTileCoordinate(tileZ) + ".w";
-            return filename;
+            return "w" + FormatTileCoordinate(tileX) + FormatTileCoordinate(tileZ) + ".w";
         }
 
-        /// <summary>
-        /// For building a filename from tile X and Z coordinates.
-        /// Returns the string representation of a coordinate
-        /// eg "+014482"
-        /// </summary>
         static string FormatTileCoordinate(int tileCoord)
         {
             var sign = "+";
