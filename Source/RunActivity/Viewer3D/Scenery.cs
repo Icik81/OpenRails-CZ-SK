@@ -630,12 +630,7 @@ namespace Orts.Viewer3D
                 var instances = new Dictionary<string, List<StaticShape>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var shape in sceneryObjects)
                 {
-                    // Povolit statické tvary, ale vyloučit animované a interaktivní objekty
-                    if (!(shape is StaticShape) || shape is AnimatedShape)
-                        continue;
-
-                    // Ochrana před kolapsem návěstidel a specifických objektů se světly/logikou
-                    if (shape is SignalShape || shape is LevelCrossingShape || shape is SpeedPostShape)
+                    if (shape.GetType() != typeof(StaticShape) && shape.GetType() != typeof(StaticTrackShape))
                         continue;
 
                     var path = shape.SharedShape?.FilePath;
