@@ -182,6 +182,7 @@ namespace Orts.Simulation
         public bool SuperUser = false;
 
         // Icik
+        public PassengerDataFile PassengerList;
         public TrainCar OldPlayerLocomotive;
         public TrainCar Locomotive;
         public float VoltageSprung = 1;
@@ -568,7 +569,23 @@ namespace Orts.Simulation
             Log = new CommandLog(this);
 
             // Icik
-            WeatherAdv = Settings.WeatherAdv;            
+            WeatherAdv = Settings.WeatherAdv;
+
+            string passengerPath = RoutePath + @"\openrails\passengers.dat";
+            if (!File.Exists(passengerPath))
+                passengerPath = BasePath + @"\passengers.dat";
+
+            if (File.Exists(passengerPath))
+            {
+                try
+                {
+                    PassengerList = new PassengerDataFile(passengerPath);
+                }
+                catch (Exception error)
+                {
+                    Trace.TraceWarning("Failed to load passengers.dat: {0}", error.Message);
+                }
+            }
         }
 
         public void SetActivity(string activityPath)
