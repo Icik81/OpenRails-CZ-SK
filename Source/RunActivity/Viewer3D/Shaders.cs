@@ -987,7 +987,7 @@ namespace Orts.Viewer3D
             Parameters["WindowTexture"].SetValue(SharedTextureManager.Get(graphicsDevice, System.IO.Path.Combine(viewer.ContentPath, "Window.png")));
         }
     }
-
+    
     [CallOnThread("Render")]
     public class CabShader : Shader
     {
@@ -1000,7 +1000,6 @@ namespace Orts.Viewer3D
         readonly EffectParameter texPos;
         readonly EffectParameter texSize;
         readonly EffectParameter imageTexture;
-
         readonly EffectParameter lightItem;
 
         public void SetTextureData(float x, float y, float width, float height)
@@ -1016,8 +1015,8 @@ namespace Orts.Viewer3D
         }
 
         double lastCabUpdateClockTime = -1;
+        int _lastCabFrameId = -1;
 
-        float CabnightColorModifier;
         float CabnightColorModifierValue;
         float CabnightColorModifierValueFinal;
         bool IsNightTexture;
@@ -1032,17 +1031,25 @@ namespace Orts.Viewer3D
         float tunnelExitCooldown = 0f;
         float undergroundEnterTimer = 0f;
 
-        public void SetData(Vector3 sunDirection, bool isNightTexture, bool isDashLight, float overcast, bool LightItem, string TextureName)
+        /// <summary>
+        /// Aktualizuje globální stav osvětlení kabiny, tunely a časovače.
+        /// Běží maximálně jednou za snímek.
+        /// </summary>
+        public void UpdateFrameLighting(Vector3 sunDirection, float overcast, bool isDashLight)
         {
             IsNightTexture = false;
             if (Program.Simulator.CabInDarkTunnel || (!Program.Simulator.WorldThunder && Program.Viewer.MaterialManager.sunDirection.Y <= -0.085f))
             {
-                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory)
+                if (Program.Viewer.PlayerLocomotive != null && Program.Viewer.PlayerLocomotive.HasCabNightDirectory)
                     IsNightTexture = true;
             }
 
-            if (!IsNightTexture || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1, MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.9f - overcast, 0, 1)) * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
+            if (!IsNightTexture || (Program.Viewer.PlayerLocomotive != null && Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory))
+            {
+                CabnightColorModifierValue = (MathHelper.Lerp(Program.Simulator._NightBrightnessValue, 1,
+                    MathHelper.Clamp((sunDirection.Y + 0.1f) / 0.2f, 0, 1) * MathHelper.Clamp(1.9f - overcast, 0, 1))
+                    * Program.Simulator.SeasonAmbientLightCoef * Program.Simulator.DayTimeAmbientLightCoef * Program.Simulator.OvercastAmbientLightCoef);
+            }
 
             CabnightColorModifierValue = MathHelper.Clamp(CabnightColorModifierValue, 0.05f, 1);
 
@@ -1113,31 +1120,31 @@ namespace Orts.Viewer3D
 
             LastStateCabnightColorModifierValue = CabnightColorModifierValue;
 
-            if (IsNightTexture && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
+            if (IsNightTexture && (Program.Viewer.PlayerLocomotive == null || !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory))
                 CabnightColorModifierValue = 0.9f;
 
             if ((Program.Simulator.CabLightActivate || Program.Simulator.CabFloodLightActivate) && Program.Simulator.CabItemBatterieOn)
             {
                 if (Program.Simulator.CabFloodLightActivate)
-                    CabnightColorModifierValue = (Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0)));
-                else
+                {
+                    CabnightColorModifierValue = Math.Max(CabnightColorModifierValue, 0.5f + (Program.Simulator.CabFloodLightActivate ? 0.3f : 0));
+                }
+                else if (Program.Viewer.PlayerLocomotive != null)
+                {
                     if (Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                        CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
+                        CabnightColorModifierValue += (Program.Simulator.CabLightActivate ? 0.05f : 0);
+                    else if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                        CabnightColorModifierValue = 0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0);
+                    else if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                        CabnightColorModifierValue = 0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0);
+                    else if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
+                        CabnightColorModifierValue = 0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0);
                     else
-                        if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                            CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? -0.75f : 0));
-                        else
-                            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                                CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
-                            else
-                                if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                                    CabnightColorModifierValue = (0.9f + (Program.Simulator.CabLightActivate ? 0.05f : 0));
-                                else
-                                    if (!Program.Viewer.PlayerLocomotive.HasCabNightDirectory && !Program.Viewer.PlayerLocomotive.HasCabLightDirectory)
-                                        CabnightColorModifierValue = (CabnightColorModifierValue + (Program.Simulator.CabLightActivate ? 0.05f : 0));
+                        CabnightColorModifierValue += (Program.Simulator.CabLightActivate ? 0.05f : 0);
+                }
             }
 
-            if (Program.Simulator.WorldThunder && !LightItem)
+            if (Program.Simulator.WorldThunder)
             {
                 if (WorldThunderStartTime > (float)Program.Simulator.ClockTime) WorldThunderTimer = -1;
                 if (WorldThunderTimer == -1)
@@ -1158,33 +1165,18 @@ namespace Orts.Viewer3D
             Program.Simulator.DashLightCanActivate = false;
             float CabnightColorModifierNightReference = 0.45f;
 
-            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
-                CabnightColorModifierNightReference = 0.60f;
-
-            if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory || Program.Viewer.PlayerLocomotive.HasCabLightDirectory || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
+            if (Program.Viewer.PlayerLocomotive != null)
             {
-                if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)
-                {
-                    Program.Simulator.DashLightCanActivate = true;
-                }
-            }
+                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory && Program.Viewer.PlayerLocomotive.HasCabLightDirectory && !Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
+                    CabnightColorModifierNightReference = 0.60f;
 
-            if (LightItem && Program.Simulator.CabItemBatterieOn)
-            {
-                if (TextureName.Contains("LIGHTITEMREGUL"))
+                if (Program.Viewer.PlayerLocomotive.HasCabNightDirectory || Program.Viewer.PlayerLocomotive.HasCabLightDirectory || Program.Viewer.PlayerLocomotive.HasORTSCabLightDirectory)
                 {
-                    CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness : CabnightColorModifierValue;
-                }
-                else
-                    if (TextureName.Contains("LIGHTITEM"))
+                    if (LastStateCabnightColorModifierValue < CabnightColorModifierNightReference || IsNightTexture)
                     {
-                        CabnightColorModifierValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                        Program.Simulator.DashLightCanActivate = true;
                     }
-                    else
-                        if (string.IsNullOrEmpty(TextureName) || TextureName.Contains("LIGHT"))
-                        {
-                            CabnightColorModifierValue = 1.0f;
-                        }
+                }
             }
 
             if (Program.Simulator.ClockTime != lastCabUpdateClockTime)
@@ -1223,11 +1215,47 @@ namespace Orts.Viewer3D
 
                 lastCabUpdateClockTime = Program.Simulator.ClockTime;
             }
+        }
 
-            if (LightItem || Program.Simulator.CabFloodLightActivate)
-                nightColorModifier.SetValue(CabnightColorModifierValue);
-            else
-                nightColorModifier.SetValue(CabnightColorModifierValueFinal);
+        /// <summary>
+        /// Aplikuje data specifická pro konkrétní vykreslovaný prvek / texturu.
+        /// Voláno z CabSpriteBatchMaterial.SetState().
+        /// </summary>
+        public void ApplyMaterialParameters(Vector3 sunDirection, float overcast, bool lightItemValue, string textureName)
+        {
+            // Ochrana: pokud by se náhodou nezavolal frame update z UpdateShaders, zavolá se jednou za snímek zde
+            int currentFrame = (int)(Program.Simulator.GameTime * 100);
+            if (_lastCabFrameId != currentFrame)
+            {
+                _lastCabFrameId = currentFrame;
+                UpdateFrameLighting(sunDirection, overcast, false);
+            }
+
+            float finalValue = CabnightColorModifierValueFinal;
+
+            if (lightItemValue && Program.Simulator.CabItemBatterieOn)
+            {
+                if (!string.IsNullOrEmpty(textureName) && textureName.Contains("LIGHTITEMREGUL"))
+                {
+                    finalValue = Program.Simulator.CabLightItemActivate && Program.Viewer.PlayerLocomotive != null
+                        ? Program.Viewer.PlayerLocomotive.InstrumentsBrightness
+                        : CabnightColorModifierValue;
+                }
+                else if (!string.IsNullOrEmpty(textureName) && textureName.Contains("LIGHTITEM"))
+                {
+                    finalValue = Program.Simulator.CabLightItemActivate ? 1.0f : CabnightColorModifierValue;
+                }
+                else if (string.IsNullOrEmpty(textureName) || textureName.Contains("LIGHT"))
+                {
+                    finalValue = 1.0f;
+                }
+            }
+            else if (Program.Simulator.CabFloodLightActivate)
+            {
+                finalValue = CabnightColorModifierValue;
+            }
+
+            nightColorModifier.SetValue(finalValue);
         }
 
         public CabShader(GraphicsDevice graphicsDevice, Vector4 light1Position, Vector4 light2Position, Vector3 light1Color, Vector3 light2Color)

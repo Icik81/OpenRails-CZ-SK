@@ -752,11 +752,19 @@ namespace Orts.Viewer3D
         {
             if (CabShader != null)
             {
-                CabShader.SetData(Viewer.MaterialManager.sunDirection, false, false, Viewer.Simulator.Weather.OvercastFactor, LightItem, TextureName);
+                // Předávají se pouze parametry specifické pro danou texturu / materiál
+                CabShader.ApplyMaterialParameters(
+                    Viewer.MaterialManager.sunDirection,
+                    Viewer.Simulator.Weather.OvercastFactor,
+                    LightItem,
+                    TextureName
+                );
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, null, DepthStencilState.Default, null, CabShader);
             }
             else
+            {
                 SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            }
         }
 
         public override void ResetState(GraphicsDevice graphicsDevice)
