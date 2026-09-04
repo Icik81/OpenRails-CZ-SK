@@ -182,6 +182,10 @@ namespace Orts.Viewer3D
         float tunnelExitCooldown = 0f;
         float undergroundEnterTimer = 0f;
 
+        float _currentNightColorModifier;
+        float _currentHalfNightColorModifier;
+        float _currentVegetationAmbientModifier;
+
         /// <summary>
         /// Aktualizuje globální konstanty osvětlení, denní doby a počasí.
         /// Spouští se pouze 1× za frame při zahájení kreslení scény.
@@ -401,6 +405,15 @@ namespace Orts.Viewer3D
             }
 
             // Konstanty se do registrů shaderu musí nahrát vždy při UpdateFrameLighting
+            const float startNightTrans = 0.1f;
+            const float finishNightTrans = -0.1f;
+
+            var nightEffect = MathHelper.Clamp((_sunDirection.Y - finishNightTrans) / (startNightTrans - finishNightTrans), 0, 1);
+
+            _currentNightColorModifier = MathHelper.Lerp(NightBrightness, FullBrightnessFinal, nightEffect);
+            _currentHalfNightColorModifier = MathHelper.Lerp(HalfNightBrightness, FullBrightnessFinal, nightEffect);
+            _currentVegetationAmbientModifier = MathHelper.Lerp(ShadowBrightness, FullBrightnessFinal, _zBias_Lighting.Y);
+
             if (_imageTextureIsNight)
             {
                 nightColorModifier.SetValue(1.2f);
@@ -409,14 +422,9 @@ namespace Orts.Viewer3D
             }
             else
             {
-                const float startNightTrans = 0.1f;
-                const float finishNightTrans = -0.1f;
-
-                var nightEffect = MathHelper.Clamp((_sunDirection.Y - finishNightTrans) / (startNightTrans - finishNightTrans), 0, 1);
-
-                nightColorModifier.SetValue(MathHelper.Lerp(NightBrightness, FullBrightnessFinal, nightEffect));
-                halfNightColorModifier.SetValue(MathHelper.Lerp(HalfNightBrightness, FullBrightnessFinal, nightEffect));
-                vegetationAmbientModifier.SetValue(MathHelper.Lerp(ShadowBrightness, FullBrightnessFinal, _zBias_Lighting.Y));
+                nightColorModifier.SetValue(_currentNightColorModifier);
+                halfNightColorModifier.SetValue(_currentHalfNightColorModifier);
+                vegetationAmbientModifier.SetValue(_currentVegetationAmbientModifier);
             }
         }
 
@@ -504,8 +512,27 @@ namespace Orts.Viewer3D
 
         public Vector3 ViewerPos { set { viewerPos.SetValue(value); } }
 
-        public bool ImageTextureIsNight { set { _imageTextureIsNight = value; imageTextureIsNight.SetValue(value ? 1f : 0f); } }
+        public bool ImageTextureIsNight
+        {
+            set
+            {
+                _imageTextureIsNight = value;
+                imageTextureIsNight.SetValue(value ? 1f : 0f);
 
+                if (value)
+                {
+                    nightColorModifier.SetValue(1.2f);
+                    halfNightColorModifier.SetValue(1.2f);
+                    vegetationAmbientModifier.SetValue(1.2f);
+                }
+                else
+                {
+                    nightColorModifier.SetValue(_currentNightColorModifier);
+                    halfNightColorModifier.SetValue(_currentHalfNightColorModifier);
+                    vegetationAmbientModifier.SetValue(_currentVegetationAmbientModifier);
+                }
+            }
+        }
         public bool ImageTextureIsTunnel { set { _imageTextureIsTunnel = value; imageTextureIsTunnel.SetValue(value ? 1f : 0f); } }
 
         public Texture2D ImageTexture { set { imageTexture.SetValue(value); } }
@@ -1027,6 +1054,10 @@ namespace Orts.Viewer3D
         float tunnelExitCooldown = 0f;
         float undergroundEnterTimer = 0f;
 
+        bool _previousIsNightTexture = false;
+        bool _previousCabLightActivate = false;
+        bool _previousCabFloodLightActivate = false;
+
         /// <summary>
         /// Aktualizuje globální stav osvětlení kabiny, tunely a časovače.
         /// Běží maximálně jednou za snímek.
@@ -1175,12 +1206,16 @@ namespace Orts.Viewer3D
                 }
             }
 
+            bool lightStateChanged = (_previousCabLightActivate != Program.Simulator.CabLightActivate) ||
+                         (_previousCabFloodLightActivate != Program.Simulator.CabFloodLightActivate) ||
+                         (_previousIsNightTexture != IsNightTexture);
+
             if (Program.Simulator.ClockTime != lastCabUpdateClockTime)
             {
-                if (Program.Simulator.Paused || isTransitioningTunnel || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
+                if (Program.Simulator.Paused || isTransitioningTunnel || lightStateChanged || (Program.Simulator.PlayerLocomotive != null && !(Program.Simulator.PlayerLocomotive as MSTSLocomotive).InitLocoShaders))
                 {
                     CabnightColorModifierValueFinal = CabnightColorModifierValue;
-                }
+                }                
                 else if (Program.Simulator.WorldThunder)
                 {
                     WorldThunderRun = true;
@@ -1211,6 +1246,17 @@ namespace Orts.Viewer3D
 
                 lastCabUpdateClockTime = Program.Simulator.ClockTime;
             }
+            else if (lightStateChanged)
+            {
+                // Pojistka pro okamžitou odezvu v rámci stejné herní sekundy:
+                // Pokud hráč stiskne klávesu uprostřed sekundy, jas skočí ihned
+                CabnightColorModifierValueFinal = CabnightColorModifierValue;
+            }
+
+            // Uložení stavů pro detekci v dalším snímku
+            _previousCabLightActivate = Program.Simulator.CabLightActivate;
+            _previousCabFloodLightActivate = Program.Simulator.CabFloodLightActivate;
+            _previousIsNightTexture = IsNightTexture;            
         }
 
         /// <summary>
