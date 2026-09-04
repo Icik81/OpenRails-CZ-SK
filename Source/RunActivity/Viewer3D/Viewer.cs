@@ -141,6 +141,8 @@ namespace Orts.Viewer3D
         public List<FreeRoamCamera> FreeRoamCameraList = new List<FreeRoamCamera>();
         public FreeRoamCamera FreeRoamCamera { get { return FreeRoamCameraList[0]; } } // Camera 8
 
+        public int FrameCounter { get; private set; }
+
         /// <summary>
         /// Activate the 2D or 3D cab camera depending on the current player preference.
         /// </summary>
@@ -2618,6 +2620,8 @@ namespace Orts.Viewer3D
 
         internal void BeginRender(RenderFrame frame)
         {
+            FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
+
             if (frame.IsScreenChanged)
             {
                 WindowManager.ScreenChanged();

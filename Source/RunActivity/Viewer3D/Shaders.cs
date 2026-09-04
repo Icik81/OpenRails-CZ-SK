@@ -188,11 +188,6 @@ namespace Orts.Viewer3D
         /// </summary>
         public void UpdateFrameLighting(ref Matrix v, ref Matrix p)
         {
-            view.SetValue(v);
-            projection.SetValue(p);
-            _lastView = v;
-            _lastProj = p;
-
             const float HalfNightBrightness = 0.6f;
             const float ShadowBrightness = 0.5f;
 
@@ -428,10 +423,11 @@ namespace Orts.Viewer3D
         public void SetMatrix(Matrix w, ref Matrix v, ref Matrix p)
         {
             world.SetValue(w);
+            view.SetValue(v);
+            projection.SetValue(p);
 
-            // Detekce nového snímku: pokud se změnila kamera nebo herní tick, aktualizuje se frame osvětlení
-            int currentFrame = (int)(Program.Simulator.GameTime * 100);
-            if (_lastFrameId != currentFrame || _lastView != v || _lastProj != p)
+            int currentFrame = Program.Viewer.FrameCounter;
+            if (_lastFrameId != currentFrame)
             {
                 _lastFrameId = currentFrame;
                 UpdateFrameLighting(ref v, ref p);
@@ -1224,7 +1220,7 @@ namespace Orts.Viewer3D
         public void ApplyMaterialParameters(Vector3 sunDirection, float overcast, bool lightItemValue, string textureName)
         {
             // Ochrana: pokud by se náhodou nezavolal frame update z UpdateShaders, zavolá se jednou za snímek zde
-            int currentFrame = (int)(Program.Simulator.GameTime * 100);
+            int currentFrame = Program.Viewer.FrameCounter;
             if (_lastCabFrameId != currentFrame)
             {
                 _lastCabFrameId = currentFrame;
