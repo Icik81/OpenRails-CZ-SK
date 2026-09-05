@@ -741,7 +741,6 @@ namespace Orts.Viewer3D
             if (playerTrain == null)
                 return;
 
-            // Ověření, zda má hráč naplánovanou alespoň jednu zastávku
             if (playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
                 return;
 
@@ -749,7 +748,6 @@ namespace Orts.Viewer3D
             if (currentStop?.PlatformItem == null)
                 return;
 
-            // 1. Zjištění přesné sekce trati (TCSectionIndex), na které toto nástupiště leží
             var startLoc = new WorldLocation(pItem1.TileX, pItem1.TileZ, pItem1.X, pItem1.Y, pItem1.Z);
             var trackNodes = Viewer.Simulator.TDB.TrackDB.TrackNodes;
             var tsection = Viewer.Simulator.TSectionDat;
@@ -759,7 +757,6 @@ namespace Orts.Viewer3D
             tcPos.SetTCPosition(traveller.TN.TCCrossReference, traveller.TrackNodeOffset, (int)traveller.Direction);
             int tcSectionIdx = tcPos.TCSectionIndex;
 
-            // Porovnání POUZE s aktuální stanicí na indexu 0
             string currentStopName = currentStop.PlatformItem.Name;
             if (string.IsNullOrEmpty(currentStopName) ||
                 !platformStationName.Equals(currentStopName, StringComparison.OrdinalIgnoreCase) ||
@@ -768,12 +765,10 @@ namespace Orts.Viewer3D
                 return;
             }
 
-            // Počet cestujících přímo z ActualPassengerCountAtStation
             int passengerCount = playerTrain.ActualPassengerCountAtStation;
             if (passengerCount <= 0)
                 return;
 
-            // Výpočet délky perónu
             var endLoc = pItem2 != null
                 ? new WorldLocation(pItem2.TileX, pItem2.TileZ, pItem2.X, pItem2.Y, pItem2.Z)
                 : startLoc;
@@ -787,19 +782,16 @@ namespace Orts.Viewer3D
             if (length <= 1.0f)
                 length = 40.0f;
 
-            // Střed platformy
-            float midDist = length * 0.5f;
+            // Začátek přesně ve středu perónu, konec s 1m rezervou od konce
+            float midPoint = length * 0.5f;
+            float maxAlong = Math.Max(midPoint + 1.0f, length - 1.0f);
+            float secondHalfLength = maxAlong - midPoint;
 
-            // Celkový rozsah, do kterého se cestující kolem středu rozmístí (např. 50 % délky platformy)
-            // Cestující tak budou rozmístěni od (střed - spreadRange/2) do (střed + spreadRange/2)
-            float spreadRange = length * 0.5f;
-            float halfSpread = spreadRange * 0.5f;
-
-            // Zjištění strany perónu z aktuální zastávky
             bool platformSide = false;
             if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length > 0)
             {
-                platformSide = currentStop.PlatformItem.PlatformSide[0];
+                var frontIsFront = currentStop.PlatformReference == currentStop.PlatformItem.PlatformFrontUiD;
+                platformSide = frontIsFront ? currentStop.PlatformItem.PlatformSide[0] : !currentStop.PlatformItem.PlatformSide[0];
             }
 
             float sideSign = platformSide ? -1.0f : 1.0f;
@@ -807,6 +799,9 @@ namespace Orts.Viewer3D
             float platformHeightOffset = 0.50f;
 
             var rand = Simulator.Random;
+            var placedPoints = new List<Vector2>(passengerCount);
+            const float minDistance = 0.85f;
+            const float minDistanceSq = minDistance * minDistance;
 
             for (int i = 0; i < passengerCount; i++)
             {
@@ -821,35 +816,69 @@ namespace Orts.Viewer3D
                 if (!File.Exists(shapePath))
                     continue;
 
-                // Odchylka od středu: rand.NextDouble() * 2 - 1 dává rozsah <-1.0; +1.0>
-                // Výsledná pozice distAlong je symetricky kolem středu do obou směrů
-                float offsetFromMid = (float)((rand.NextDouble() * 2.0 - 1.0) * halfSpread);
-                float distAlong = midDist + offsetFromMid;
+                Vector3 candidatePos = Vector3.Zero;
+                Traveller selectedTraveller = null;
+                bool validPosFound = false;
 
-                // Bezpečnostní ořez, aby postava nikdy nevypadla mimo platný perón
-                distAlong = MathHelper.Clamp(distAlong, 1.0f, length - 1.0f);
+                // Dynamický dosah: první cestující se koncentrují těsně u středu,
+                // s rostoucím počtem se pásmo přirozeně otevírá dál ke konci perónu.
+                float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
+                float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
 
-                var pTraveller = new Traveller(traveller);
-                pTraveller.Move(distAlong);
+                for (int attempt = 0; attempt < 25; attempt++)
+                {
+                    float attemptExpansion = (float)attempt / 24f;
+                    float currentRangeFraction = Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
+                    float currentAllowedLength = secondHalfLength * currentRangeFraction;
 
-                float rotY = -pTraveller.RotY;
-                Vector3 forward = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
-                Vector3 right = new Vector3(forward.Z, 0, -forward.X);
+                    double r = rand.NextDouble();
+                    float distFromMid = (float)(r * r) * currentAllowedLength;
+                    float distAlong = midPoint + distFromMid;
 
-                float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
-                Vector3 pos = new Vector3(pTraveller.X, pTraveller.Y + platformHeightOffset, pTraveller.Z) + (right * lateralOffset);
+                    var pTrav = new Traveller(traveller);
+                    pTrav.Move(distAlong);
+
+                    float rotY = -pTrav.RotY;
+                    Vector3 forward = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
+                    Vector3 right = new Vector3(forward.Z, 0, -forward.X);
+
+                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
+                    Vector3 testPos = new Vector3(pTrav.X, pTrav.Y + platformHeightOffset, pTrav.Z) + (right * lateralOffset);
+
+                    Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
+                    bool overlaps = false;
+                    for (int p = 0; p < placedPoints.Count; p++)
+                    {
+                        if (Vector2.DistanceSquared(placedPoints[p], testPoint) < minDistanceSq)
+                        {
+                            overlaps = true;
+                            break;
+                        }
+                    }
+
+                    if (!overlaps)
+                    {
+                        candidatePos = testPos;
+                        selectedTraveller = pTrav;
+                        placedPoints.Add(testPoint);
+                        validPosFound = true;
+                        break;
+                    }
+                }
+
+                if (!validPosFound || selectedTraveller == null)
+                    continue;
 
                 float passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
-
                 var rot = Matrix.CreateRotationY(passengerYaw);
-                rot.M41 = pos.X;
-                rot.M42 = pos.Y;
-                rot.M43 = -pos.Z;
+                rot.M41 = candidatePos.X;
+                rot.M42 = candidatePos.Y;
+                rot.M43 = -candidatePos.Z;
 
                 var worldPos = new WorldPosition
                 {
-                    TileX = pTraveller.TileX,
-                    TileZ = pTraveller.TileZ,
+                    TileX = selectedTraveller.TileX,
+                    TileZ = selectedTraveller.TileZ,
                     XNAMatrix = rot
                 };
 
