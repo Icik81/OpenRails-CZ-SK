@@ -782,19 +782,54 @@ namespace Orts.Viewer3D
             if (length <= 1.0f)
                 length = 40.0f;
 
-            // Začátek přesně ve středu perónu, konec s 1m rezervou od konce
             float midPoint = length * 0.5f;
-            float maxAlong = Math.Max(midPoint + 1.0f, length - 1.0f);
-            float secondHalfLength = maxAlong - midPoint;
 
-            bool platformSide = false;
-            if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length > 0)
+            // Začátek v 2/3 první poloviny (1/3 celkové délky perónu)
+            float spawnStart = midPoint * (2.0f / 3.0f);
+
+            // Konec v 1/3 druhé poloviny (2/3 celkové délky perónu)
+            float spawnEnd = midPoint + (midPoint * (1.0f / 3.0f));
+
+            // Celková šířka vymezeného pásma
+            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
+
+            bool rightSide = false;
+
+            if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
             {
+                bool right = currentStop.PlatformItem.PlatformSide[0];
+                bool left = currentStop.PlatformItem.PlatformSide[1];
                 var frontIsFront = currentStop.PlatformReference == currentStop.PlatformItem.PlatformFrontUiD;
-                platformSide = frontIsFront ? currentStop.PlatformItem.PlatformSide[0] : !currentStop.PlatformItem.PlatformSide[0];
+
+                if (!frontIsFront)
+                {
+                    right = !right;
+                    left = !left;
+                }
+
+                rightSide = right;
             }
 
-            float sideSign = platformSide ? -1.0f : 1.0f;
+            // Relativní otočení vůči vektoru vlaku
+            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
+            if (leadCar != null)
+            {
+                // Dopředný vektor vozu z jeho transformační matice (vodorovná rovina X-Z)
+                Vector3 trainForward = new Vector3(leadCar.WorldPosition.XNAMatrix.M31, 0, -leadCar.WorldPosition.XNAMatrix.M33);
+                if (trainForward.LengthSquared() > 0.001f)
+                    trainForward.Normalize();
+
+                // Směr travelleru
+                float baseRotY = -traveller.RotY;
+                Vector3 travForward = new Vector3((float)Math.Sin(baseRotY), 0, (float)Math.Cos(baseRotY));
+
+                if (Vector3.Dot(trainForward, travForward) < 0)
+                {
+                    rightSide = !rightSide;
+                }
+            }
+
+            float sideSign = rightSide ? -1.0f : 1.0f;
             float baseLateralOffset = 3.0f;
             float platformHeightOffset = 0.50f;
 
@@ -829,11 +864,11 @@ namespace Orts.Viewer3D
                 {
                     float attemptExpansion = (float)attempt / 24f;
                     float currentRangeFraction = Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
-                    float currentAllowedLength = secondHalfLength * currentRangeFraction;
+                    float currentAllowedLength = availableLength * currentRangeFraction;
 
                     double r = rand.NextDouble();
-                    float distFromMid = (float)(r * r) * currentAllowedLength;
-                    float distAlong = midPoint + distFromMid;
+                    float distFromStart = (float)(r * r) * currentAllowedLength;
+                    float distAlong = spawnStart + distFromStart;
 
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
