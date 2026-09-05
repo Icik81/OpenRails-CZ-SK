@@ -7289,6 +7289,7 @@ namespace Orts.Simulation.AIs
                         DisplayMessage = "";
                         ReverseAtStation = false;
                         ActualStationNumber++;
+                        Simulator.RefreshWorld = true;
                     }
                     else
                     {
@@ -7455,6 +7456,7 @@ namespace Orts.Simulation.AIs
                                 StationTasks[ActualStationNumber].ActualArrival = -2;
                                 StationTasks[ActualStationNumber].ActualDepart = -2;                                
                                 ActualStationNumber++;
+                                Simulator.RefreshWorld = true;
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);                                
                             }                            

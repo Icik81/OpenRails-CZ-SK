@@ -263,18 +263,39 @@ namespace Orts.Viewer3D
         }
     }
 
+    public class PlatformPassengerShape : StaticShape
+    {
+        // Přidána chybějící vlastnost Visible
+        public bool Visible { get; set; } = true;
+
+        public PlatformPassengerShape(Viewer viewer, string path, WorldPosition position)
+            : base(viewer, path, position, ShapeFlags.None)
+        {
+        }
+
+        public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
+        {
+            // Pokud postava není viditelná (nastoupila), neposílá se do renderovací fronty
+            if (!Visible)
+                return;
+
+            base.PrepareFrame(frame, elapsedTime);
+        }
+    }
+
     [CallOnThread("Loader")]
     public class WorldFile
     {
-        const int MinimumInstanceCount = 5; 
+        const int MinimumInstanceCount = 5;
 
-        // Statické mezipaměti pro eliminaci redundantních diskových operací
         static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         static readonly ConcurrentDictionary<string, ShapeDescriptorFile> SdFileCache = new ConcurrentDictionary<string, ShapeDescriptorFile>(StringComparer.OrdinalIgnoreCase);
 
-        // Evidence stanic, kde již byli vytvořeni cestující
         public static readonly HashSet<string> SpawnedStationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
+        // >>> PŘIDAT SEZNAM CESTUJÍCÍCH <<<
+        public readonly List<PlatformPassengerShape> PlatformPassengers = new List<PlatformPassengerShape>();
+        
         public struct DyntrackParams
         {
             public int isCurved;
@@ -637,6 +658,10 @@ namespace Orts.Viewer3D
                 var instances = new Dictionary<string, List<StaticShape>>(StringComparer.OrdinalIgnoreCase);
                 foreach (var shape in sceneryObjects)
                 {
+                    // Postavy nástupiště nesmí být instancovány, jinak nelze řídit jejich individuální mizení
+                    if (shape is PlatformPassengerShape)
+                        continue;
+
                     if (shape.GetType() != typeof(StaticShape) && shape.GetType() != typeof(StaticTrackShape))
                         continue;
 
@@ -691,7 +716,7 @@ namespace Orts.Viewer3D
             return "";
         }
 
-        // Osazení cestujících na nástupištích, pokud je to relevantní pro aktuální vlak hráče                
+        // Osazení cestujících na nástupištích, pouze pro aktuální stanici StationStops[0]
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
             if (Viewer.Simulator.PassengerList == null || Viewer.Simulator.PassengerList.Models.Count == 0)
@@ -716,6 +741,14 @@ namespace Orts.Viewer3D
             if (playerTrain == null)
                 return;
 
+            // Ověření, zda má hráč naplánovanou alespoň jednu zastávku
+            if (playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
+                return;
+
+            var currentStop = playerTrain.StationStops[0];
+            if (currentStop?.PlatformItem == null)
+                return;
+
             // 1. Zjištění přesné sekce trati (TCSectionIndex), na které toto nástupiště leží
             var startLoc = new WorldLocation(pItem1.TileX, pItem1.TileZ, pItem1.X, pItem1.Y, pItem1.Z);
             var trackNodes = Viewer.Simulator.TDB.TrackDB.TrackNodes;
@@ -726,39 +759,19 @@ namespace Orts.Viewer3D
             tcPos.SetTCPosition(traveller.TN.TCCrossReference, traveller.TrackNodeOffset, (int)traveller.Direction);
             int tcSectionIdx = tcPos.TCSectionIndex;
 
-            // Unikátní klíč perónu na dané dlaždici (TileX, TileZ, UID)
-            long platformKey = ((long)TileX << 48) ^ ((long)TileZ << 32) ^ (uint)platformObj.UID;
-
-            // Ověříme, zda aktuální kolej nástupiště (tcSectionIdx) odpovídá přímo
-            // plánované sekci zastavení v jízdním řádu hráče
-            bool isPlayerStoppingTrack = false;
-
-            var stops = playerTrain.StationTasks?.Count > 0 ? playerTrain.StationTasks : playerTrain.StationStops;
-            if (stops != null)
+            // Porovnání POUZE s aktuální stanicí na indexu 0
+            string currentStopName = currentStop.PlatformItem.Name;
+            if (string.IsNullOrEmpty(currentStopName) ||
+                !platformStationName.Equals(currentStopName, StringComparison.OrdinalIgnoreCase) ||
+                currentStop.TCSectionIndex != tcSectionIdx)
             {
-                foreach (var stop in stops)
-                {
-                    if (stop?.PlatformItem == null)
-                        continue;
-
-                    string stopStationName = stop.PlatformItem.Name;
-                    if (!string.IsNullOrEmpty(stopStationName) && platformStationName.Equals(stopStationName, StringComparison.OrdinalIgnoreCase))
-                    {
-                        // Přísná shoda: jedná se přesně o sekci trati, kde je plánovaný stop
-                        if (stop.TCSectionIndex == tcSectionIdx)
-                        {
-                            isPlayerStoppingTrack = true;
-                            break;
-                        }
-                    }
-                }
+                return;
             }
 
-            if (!isPlayerStoppingTrack)
-                return;            
-
-            // Počet cestujících
-            int passengerCount = (int)pItem1.PlatformNumPassengersWaiting;            
+            // Počet cestujících přímo z ActualPassengerCountAtStation
+            int passengerCount = playerTrain.ActualPassengerCountAtStation;
+            if (passengerCount <= 0)
+                return;
 
             // Výpočet délky perónu
             var endLoc = pItem2 != null
@@ -774,16 +787,24 @@ namespace Orts.Viewer3D
             if (length <= 1.0f)
                 length = 40.0f;
 
-            // Zjištění strany perónu (vlevo vs vpravo)
-            float baseRotY = -traveller.RotY;
-            Vector3 baseForward = new Vector3((float)Math.Sin(baseRotY), 0, (float)Math.Cos(baseRotY));
-            Vector3 baseRight = new Vector3(baseForward.Z, 0, -baseForward.X);
+            // Střed platformy
+            float midDist = length * 0.5f;
 
-            Vector3 toPlatform = new Vector3(platformWorldPos.Location.X - startLoc.Location.X, 0, platformWorldPos.Location.Z - startLoc.Location.Z);
-            float sideSign = Vector3.Dot(toPlatform, baseRight) >= 0 ? 1.0f : -1.0f;
+            // Celkový rozsah, do kterého se cestující kolem středu rozmístí (např. 50 % délky platformy)
+            // Cestující tak budou rozmístěni od (střed - spreadRange/2) do (střed + spreadRange/2)
+            float spreadRange = length * 0.5f;
+            float halfSpread = spreadRange * 0.5f;
 
-            float baseLateralOffset = 2.4f; // Odstup od osy koleje na perón
-            float platformHeightOffset = 0.50f; // Výška podlahy nástupiště nad temenem kolejnice
+            // Zjištění strany perónu z aktuální zastávky
+            bool platformSide = false;
+            if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length > 0)
+            {
+                platformSide = currentStop.PlatformItem.PlatformSide[0];
+            }
+
+            float sideSign = platformSide ? -1.0f : 1.0f;
+            float baseLateralOffset = 3.0f;
+            float platformHeightOffset = 0.50f;
 
             var rand = Simulator.Random;
 
@@ -800,8 +821,13 @@ namespace Orts.Viewer3D
                 if (!File.Exists(shapePath))
                     continue;
 
-                // Pozice podél perónu
-                float distAlong = (float)(rand.NextDouble() * (length * 0.80f) + (length * 0.10f));
+                // Odchylka od středu: rand.NextDouble() * 2 - 1 dává rozsah <-1.0; +1.0>
+                // Výsledná pozice distAlong je symetricky kolem středu do obou směrů
+                float offsetFromMid = (float)((rand.NextDouble() * 2.0 - 1.0) * halfSpread);
+                float distAlong = midDist + offsetFromMid;
+
+                // Bezpečnostní ořez, aby postava nikdy nevypadla mimo platný perón
+                distAlong = MathHelper.Clamp(distAlong, 1.0f, length - 1.0f);
 
                 var pTraveller = new Traveller(traveller);
                 pTraveller.Move(distAlong);
@@ -810,14 +836,11 @@ namespace Orts.Viewer3D
                 Vector3 forward = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
                 Vector3 right = new Vector3(forward.Z, 0, -forward.X);
 
-                // Rozptyl po šířce nástupiště
-                float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 1.5f) * sideSign;
+                float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
                 Vector3 pos = new Vector3(pTraveller.X, pTraveller.Y + platformHeightOffset, pTraveller.Z) + (right * lateralOffset);
 
-                // Náhodný úhel natočení postavy (0 až 360°)
                 float passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
 
-                // Korektní matice v MSTS / XNA konvenci (rotace + translace na dlaždici)
                 var rot = Matrix.CreateRotationY(passengerYaw);
                 rot.M41 = pos.X;
                 rot.M42 = pos.Y;
@@ -830,13 +853,19 @@ namespace Orts.Viewer3D
                     XNAMatrix = rot
                 };
 
-                sceneryObjects.Add(new StaticShape(Viewer, shapePath, worldPos, ShapeFlags.None));
+                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);
+                sceneryObjects.Add(passengerShape);
+                PlatformPassengers.Add(passengerShape);
             }
         }
 
         [CallOnThread("Loader")]
         public void Unload()
         {
+            foreach (var pax in PlatformPassengers)
+                pax.Unload();
+            PlatformPassengers.Clear();
+
             foreach (var obj in sceneryObjects)
                 obj.Unload();
 
@@ -855,6 +884,8 @@ namespace Orts.Viewer3D
                 dTrack.Mark();
             foreach (var forest in forestList)
                 forest.Mark();
+            foreach (var pax in PlatformPassengers)
+                pax.Mark();
         }
 
         [CallOnThread("Updater")]
@@ -878,6 +909,22 @@ namespace Orts.Viewer3D
         {
             foreach (var spawner in carSpawners)
                 spawner.Update(elapsedTime);
+
+            // Postupné skrývání postav podle ubývajícího počtu
+            if (PlatformPassengers.Count > 0)
+            {
+                var playerTrain = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
+                if (playerTrain != null)
+                {
+                    int targetCount = playerTrain.ActualPassengerCountAtStation;
+                    if (targetCount < 0) targetCount = 0;
+
+                    for (int i = 0; i < PlatformPassengers.Count; i++)
+                    {
+                        PlatformPassengers[i].Visible = (i < targetCount);
+                    }
+                }
+            }
         }
 
         [CallOnThread("Updater")]
@@ -889,6 +936,10 @@ namespace Orts.Viewer3D
                 dTrack.PrepareFrame(frame, elapsedTime);
             foreach (var forest in forestList)
                 forest.PrepareFrame(frame, elapsedTime);
+
+            // >>> PŘIDAT VYKRESLENÍ CESTUJÍCÍCH <<<
+            for (int i = 0; i < PlatformPassengers.Count; i++)
+                PlatformPassengers[i].PrepareFrame(frame, elapsedTime);
         }
 
         static WorldPosition WorldPositionFromMSTSLocation(int tileX, int tileZ, STFPositionItem MSTSPosition, STFQDirectionItem MSTSQuaternion)

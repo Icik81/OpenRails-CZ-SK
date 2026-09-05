@@ -10570,7 +10570,8 @@ namespace Orts.Simulation.Timetables
                             {
                                 StationTasks[ActualStationNumber].ActualArrival = -2;
                                 StationTasks[ActualStationNumber].ActualDepart = -2;
-                                ActualStationNumber++;                                
+                                ActualStationNumber++;
+                                Simulator.RefreshWorld = true;
                                 PreviousStop = StationStops[0].CreateCopy();
                                 if (TrainType != TRAINTYPE.AI_PLAYERHOSTING) StationStops.RemoveAt(0);
                             }
@@ -10606,6 +10607,7 @@ namespace Orts.Simulation.Timetables
                     StationStops.RemoveAt(0);
                     ReverseAtStation = false;
                     ActualStationNumber++;
+                    Simulator.RefreshWorld = true;
                 }
                 else
                 {

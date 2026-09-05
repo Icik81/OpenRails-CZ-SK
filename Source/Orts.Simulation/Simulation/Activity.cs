@@ -1083,6 +1083,8 @@ namespace Orts.Simulation
                     ActDepart = new DateTime().Add(TimeSpan.FromSeconds(Simulator.ClockTime));
                     CompletedAt = ActDepart.Value;
                     IsCompleted = maydepart;
+                    Simulator.RefreshWorld = true;
+
                     if (LogStationStops)
                     {
                         StringBuilder stringBuild = new StringBuilder();
@@ -1327,6 +1329,7 @@ namespace Orts.Simulation
                                 MyPlayerTrain.ClearStation(PlatformEnd1.LinkedPlatformItemId, PlatformEnd2.LinkedPlatformItemId, true);
                                 IsCompleted = false;
                                 MyPlayerTrain.ActualStationNumber++;
+                                Simulator.RefreshWorld = true;
 
                                 if (LogStationStops)
                                 {
