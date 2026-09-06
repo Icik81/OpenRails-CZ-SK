@@ -20,6 +20,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation;
+using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Concurrent;
@@ -794,7 +795,7 @@ namespace Orts.Viewer3D
             float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
 
             bool rightSide = false;
-
+            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
             if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
             {
                 bool right = currentStop.PlatformItem.PlatformSide[0];
@@ -807,11 +808,18 @@ namespace Orts.Viewer3D
                     left = !left;
                 }
 
+                var loco = leadCar as MSTSLocomotive;
+                var wagon = leadCar as MSTSWagon;
+                if (loco != null && wagon != null && (loco.UsingRearCab ^ wagon.Flipped))
+                {
+                    right = !right;
+                    left = !left;
+                }
+
                 rightSide = right;
             }
 
-            // Relativní otočení vůči vektoru vlaku
-            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
+            // Relativní otočení vůči vektoru vlaku            
             if (leadCar != null)
             {
                 // Dopředný vektor vozu z jeho transformační matice (vodorovná rovina X-Z)
