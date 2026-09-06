@@ -812,8 +812,7 @@ namespace Orts.Viewer3D
             }
 
             float sideSign = rightSide ? 1.0f : -1.0f;
-            float baseLateralOffset = 2.2f;
-            float platformHeightOffset = 0.50f;
+            float baseLateralOffset = 2.2f;                        
 
             var rand = Simulator.Random;
             var placedPoints = new List<Vector2>(passengerCount);
@@ -858,11 +857,34 @@ namespace Orts.Viewer3D
                     Matrix trackRot = Matrix.CreateRotationY(trackYaw);
                     Vector3 rgt = trackRot.Right;
 
-                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 1.0f) * sideSign;
+                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 1.0f) * sideSign;                    
 
+                    // MSTS souřadnice bodu pro správný dotaz do GetBoundingBoxTop
+                    float mstsQueryX = pTrav.X + rgt.X * lateralOffset;
+                    float mstsQueryZ = pTrav.Z + rgt.Z * lateralOffset; // v MSTS prostoru bez obráceného znaménka
+
+                    // Dotaz na absolutní výšku horní hrany boxu (s tolerancí okolí perónu 1.5 m)
+                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
+
+                    // Výchozí výška nástupiště
+                    const float defaultPlatformOffset = 0.75f;
+                    float finalPlatformY = pTrav.Y + defaultPlatformOffset;
+
+                    if (topY > float.MinValue + 1000f)
+                    {
+                        float measuredOffset = topY - pTrav.Y;
+
+                        // Realistické převýšení perónu nad osou koleje: 0.35 m (sypané) až 1.05 m (vysoké)
+                        if (measuredOffset >= 0.35f && measuredOffset <= 1.05f)
+                        {
+                            finalPlatformY = topY;
+                        }
+                    }
+
+                    // Pozice postavy v XNA prostoru
                     Vector3 testPos = new Vector3(
-                        pTrav.X + rgt.X * lateralOffset,
-                        pTrav.Y + platformHeightOffset,
+                        mstsQueryX,
+                        finalPlatformY,
                         pTrav.Z - rgt.Z * lateralOffset
                     );
 
@@ -918,9 +940,9 @@ namespace Orts.Viewer3D
                     XNAMatrix = rot
                 };
 
-                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);                
-                PlatformPassengers.Add(passengerShape);
-                PlatformPassengers[i].Visible = true;
+                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);
+                passengerShape.Visible = (i < playerTrain.ActualPassengerCountAtStation);
+                PlatformPassengers.Add(passengerShape);                
             }
         }
 
