@@ -20,6 +20,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation;
+using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Concurrent;
@@ -723,7 +724,6 @@ namespace Orts.Viewer3D
                 return;
 
             var trId1 = platformObj.getTrItemID(0);
-            var trId2 = platformObj.getTrItemID(1);
             if (trId1 < 0) return;
 
             var trItemTable = Viewer.Simulator.TDB.TrackDB.TrItemTable;
@@ -731,36 +731,21 @@ namespace Orts.Viewer3D
                 return;
 
             var pItem1 = (PlatformItem)trItemTable[trId1];
-            var pItem2 = (trId2 >= 0 && trId2 < trItemTable.Length) ? trItemTable[trId2] as PlatformItem : null;
-
             string platformStationName = !string.IsNullOrEmpty(pItem1.Station) ? pItem1.Station : pItem1.ItemName;
             if (string.IsNullOrEmpty(platformStationName))
                 return;
 
             var playerTrain = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
-            if (playerTrain == null)
-                return;
-
-            if (playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
+            if (playerTrain == null || playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
                 return;
 
             var currentStop = playerTrain.StationStops[0];
             if (currentStop?.PlatformItem == null)
                 return;
 
-            var startLoc = new WorldLocation(pItem1.TileX, pItem1.TileZ, pItem1.X, pItem1.Y, pItem1.Z);
-            var trackNodes = Viewer.Simulator.TDB.TrackDB.TrackNodes;
-            var tsection = Viewer.Simulator.TSectionDat;
-
-            var traveller = new Traveller(tsection, trackNodes, startLoc.TileX, startLoc.TileZ, startLoc.Location.X, startLoc.Location.Z);
-            var tcPos = new TCPosition();
-            tcPos.SetTCPosition(traveller.TN.TCCrossReference, traveller.TrackNodeOffset, (int)traveller.Direction);
-            int tcSectionIdx = tcPos.TCSectionIndex;
-
             string currentStopName = currentStop.PlatformItem.Name;
             if (string.IsNullOrEmpty(currentStopName) ||
-                !platformStationName.Equals(currentStopName, StringComparison.OrdinalIgnoreCase) ||
-                currentStop.TCSectionIndex != tcSectionIdx)
+                !platformStationName.Equals(currentStopName, StringComparison.OrdinalIgnoreCase))
             {
                 return;
             }
@@ -769,32 +754,12 @@ namespace Orts.Viewer3D
             if (passengerCount <= 0)
                 return;
 
-            var endLoc = pItem2 != null
-                ? new WorldLocation(pItem2.TileX, pItem2.TileZ, pItem2.X, pItem2.Y, pItem2.Z)
-                : startLoc;
+            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
+            if (leadCar == null)
+                return;
 
-            float length = traveller.DistanceTo(endLoc.TileX, endLoc.TileZ, endLoc.Location.X, endLoc.Location.Y, endLoc.Location.Z);
-            if (length <= 0)
-            {
-                traveller.ReverseDirection();
-                length = traveller.DistanceTo(endLoc.TileX, endLoc.TileZ, endLoc.Location.X, endLoc.Location.Y, endLoc.Location.Z);
-            }
-            if (length <= 1.0f)
-                length = 40.0f;
-
-            float midPoint = length * 0.5f;
-
-            // Začátek v 2/3 první poloviny (1/3 celkové délky perónu)
-            float spawnStart = midPoint * (2.0f / 3.0f);
-
-            // Konec v 1/3 druhé poloviny (2/3 celkové délky perónu)
-            float spawnEnd = midPoint + (midPoint * (1.0f / 3.0f));
-
-            // Celková šířka vymezeného pásma
-            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
-
+            // 1. Vyhodnocení strany nástupiště (vpravo / vlevo vůči orientaci vozu)
             bool rightSide = false;
-
             if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
             {
                 bool right = currentStop.PlatformItem.PlatformSide[0];
@@ -807,31 +772,42 @@ namespace Orts.Viewer3D
                     left = !left;
                 }
 
+                var loco = leadCar as MSTSLocomotive;
+                var wagon = leadCar as MSTSWagon;
+                if (loco != null && wagon != null && (loco.UsingRearCab ^ wagon.Flipped))
+                {
+                    right = !right;
+                    left = !left;
+                }
+
                 rightSide = right;
             }
 
-            // Relativní otočení vůči vektoru vlaku
-            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
-            if (leadCar != null)
-            {
-                // Dopředný vektor vozu z jeho transformační matice (vodorovná rovina X-Z)
-                Vector3 trainForward = new Vector3(leadCar.WorldPosition.XNAMatrix.M31, 0, -leadCar.WorldPosition.XNAMatrix.M33);
-                if (trainForward.LengthSquared() > 0.001f)
-                    trainForward.Normalize();
+            // 2. Vektory a pozice v nativním XNA prostoru vozu
+            Matrix carMatrix = leadCar.WorldPosition.XNAMatrix;
 
-                // Směr travelleru
-                float baseRotY = -traveller.RotY;
-                Vector3 travForward = new Vector3((float)Math.Sin(baseRotY), 0, (float)Math.Cos(baseRotY));
+            // Vektor doprava v rovině X-Z
+            Vector3 carRight = new Vector3(carMatrix.M11, 0, carMatrix.M13);
+            if (carRight.LengthSquared() > 0.0001f)
+                carRight.Normalize();
+            else
+                carRight = Vector3.Right;
 
-                if (Vector3.Dot(trainForward, travForward) < 0)
-                {
-                    rightSide = !rightSide;
-                }
-            }
+            // Dopředný vektor vozu v rovině X-Z
+            Vector3 carForward = new Vector3(carMatrix.M31, 0, carMatrix.M33);
+            if (carForward.LengthSquared() > 0.0001f)
+                carForward.Normalize();
+            else
+                carForward = Vector3.Forward;
 
-            float sideSign = rightSide ? -1.0f : 1.0f;
+            float sideSign = rightSide ? 1.0f : -1.0f;
+
+            // Odstup od osy koleje: 3.0 m až 4.2 m umístí postavu bezpečně na nástupiště za žlutou čáru
             float baseLateralOffset = 3.0f;
             float platformHeightOffset = 0.50f;
+
+            float trainLength = Math.Max(12.0f, playerTrain.Length);
+            float availableLength = trainLength * 0.85f;
 
             var rand = Simulator.Random;
             var placedPoints = new List<Vector2>(passengerCount);
@@ -852,33 +828,27 @@ namespace Orts.Viewer3D
                     continue;
 
                 Vector3 candidatePos = Vector3.Zero;
-                Traveller selectedTraveller = null;
                 bool validPosFound = false;
 
-                // Dynamický dosah: první cestující se koncentrují těsně u středu,
-                // s rostoucím počtem se pásmo přirozeně otevírá dál ke konci perónu.
                 float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
-                float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
+                float baseRangeFraction = MathHelper.Clamp(0.3f + progress * 0.7f, 0.3f, 1.0f);
 
                 for (int attempt = 0; attempt < 25; attempt++)
                 {
                     float attemptExpansion = (float)attempt / 24f;
-                    float currentRangeFraction = Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
-                    float currentAllowedLength = availableLength * currentRangeFraction;
+                    float currentAllowedLength = availableLength * Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
 
                     double r = rand.NextDouble();
-                    float distFromStart = (float)(r * r) * currentAllowedLength;
-                    float distAlong = spawnStart + distFromStart;
+                    float distAlongTrain = (float)(r * r) * currentAllowedLength;
 
-                    var pTrav = new Traveller(traveller);
-                    pTrav.Move(distAlong);
+                    // Boční posun přesně v metrech od středu vozu
+                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 1.2f) * sideSign;
 
-                    float rotY = -pTrav.RotY;
-                    Vector3 forward = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
-                    Vector3 right = new Vector3(forward.Z, 0, -forward.X);
-
-                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
-                    Vector3 testPos = new Vector3(pTrav.X, pTrav.Y + platformHeightOffset, pTrav.Z) + (right * lateralOffset);
+                    // Pozice přímo v XNA prostoru (couváme od čela vozu dozadu)
+                    Vector3 testPos = carMatrix.Translation
+                        + (carRight * lateralOffset)
+                        - (carForward * distAlongTrain);
+                    testPos.Y += platformHeightOffset;
 
                     Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
                     bool overlaps = false;
@@ -894,26 +864,27 @@ namespace Orts.Viewer3D
                     if (!overlaps)
                     {
                         candidatePos = testPos;
-                        selectedTraveller = pTrav;
                         placedPoints.Add(testPoint);
                         validPosFound = true;
                         break;
                     }
                 }
 
-                if (!validPosFound || selectedTraveller == null)
+                if (!validPosFound)
                     continue;
 
                 float passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
                 var rot = Matrix.CreateRotationY(passengerYaw);
+
+                // Zápis do matice přímo v XNA souřadnicích (M43 zůstává beze změny znaménka)
                 rot.M41 = candidatePos.X;
                 rot.M42 = candidatePos.Y;
-                rot.M43 = -candidatePos.Z;
+                rot.M43 = candidatePos.Z;
 
                 var worldPos = new WorldPosition
                 {
-                    TileX = selectedTraveller.TileX,
-                    TileZ = selectedTraveller.TileZ,
+                    TileX = leadCar.WorldPosition.TileX,
+                    TileZ = leadCar.WorldPosition.TileZ,
                     XNAMatrix = rot
                 };
 
