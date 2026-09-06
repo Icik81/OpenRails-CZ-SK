@@ -718,6 +718,7 @@ namespace Orts.Viewer3D
         }
 
         // Osazení cestujících na nástupištích, pouze pro aktuální stanici StationStops[0]
+        // Osazení cestujících na nástupištích, pouze pro aktuální stanici StationStops[0]
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
             if (Viewer.Simulator.PassengerList == null || Viewer.Simulator.PassengerList.Models.Count == 0)
@@ -785,11 +786,11 @@ namespace Orts.Viewer3D
 
             float midPoint = length * 0.5f;
 
-            // Začátek v 2/3 první poloviny (1/3 celkové délky perónu)
-            float spawnStart = midPoint * (2.0f / 3.0f);
+            // Začátek v 1/3 první poloviny 
+            float spawnStart = midPoint * (1.0f / 3.0f);
 
-            // Konec v 1/3 druhé poloviny (2/3 celkové délky perónu)
-            float spawnEnd = midPoint + (midPoint * (1.0f / 3.0f));
+            // Konec v 2/3 druhé poloviny 
+            float spawnEnd = midPoint + (midPoint * (2.0f / 3.0f));
 
             // Celková šířka vymezeného pásma
             float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
@@ -822,12 +823,10 @@ namespace Orts.Viewer3D
             // Relativní otočení vůči vektoru vlaku            
             if (leadCar != null)
             {
-                // Dopředný vektor vozu z jeho transformační matice (vodorovná rovina X-Z)
                 Vector3 trainForward = new Vector3(leadCar.WorldPosition.XNAMatrix.M31, 0, -leadCar.WorldPosition.XNAMatrix.M33);
                 if (trainForward.LengthSquared() > 0.001f)
                     trainForward.Normalize();
 
-                // Směr travelleru
                 float baseRotY = -traveller.RotY;
                 Vector3 travForward = new Vector3((float)Math.Sin(baseRotY), 0, (float)Math.Cos(baseRotY));
 
@@ -837,7 +836,7 @@ namespace Orts.Viewer3D
                 }
             }
 
-            float sideSign = rightSide ? -1.0f : 1.0f;
+            float sideSign = rightSide ? 1.0f : -1.0f;
             float baseLateralOffset = 3.0f;
             float platformHeightOffset = 0.50f;
 
@@ -861,18 +860,16 @@ namespace Orts.Viewer3D
 
                 Vector3 candidatePos = Vector3.Zero;
                 Traveller selectedTraveller = null;
+                Vector3 platformRight = Vector3.Zero;
                 bool validPosFound = false;
 
-                // Dynamický dosah: první cestující se koncentrují těsně u středu,
-                // s rostoucím počtem se pásmo přirozeně otevírá dál ke konci perónu.
                 float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
                 float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
 
                 for (int attempt = 0; attempt < 25; attempt++)
                 {
                     float attemptExpansion = (float)attempt / 24f;
-                    float currentRangeFraction = Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
-                    float currentAllowedLength = availableLength * currentRangeFraction;
+                    float currentAllowedLength = availableLength * Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
 
                     double r = rand.NextDouble();
                     float distFromStart = (float)(r * r) * currentAllowedLength;
@@ -881,12 +878,19 @@ namespace Orts.Viewer3D
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
 
-                    float rotY = -pTrav.RotY;
-                    Vector3 forward = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
-                    Vector3 right = new Vector3(forward.Z, 0, -forward.X);
+                    // Čistý výpočet kolmice k ose koleje v rovině X-Z
+                    float trackYaw = -pTrav.RotY;
+                    Matrix trackRot = Matrix.CreateRotationY(trackYaw);
+                    Vector3 rgt = trackRot.Right; // Přesný kolmý vektor doprava
 
                     float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
-                    Vector3 testPos = new Vector3(pTrav.X, pTrav.Y + platformHeightOffset, pTrav.Z) + (right * lateralOffset);
+
+                    // Posun probíhá přímo v metrickém prostoru bez deformace Z souřadnice
+                    Vector3 testPos = new Vector3(
+                        pTrav.X + rgt.X * lateralOffset,
+                        pTrav.Y + platformHeightOffset,
+                        pTrav.Z - rgt.Z * lateralOffset // minus koriguje negaci osy Z při vkládání do rot.M43
+                    );
 
                     Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
                     bool overlaps = false;
@@ -903,6 +907,7 @@ namespace Orts.Viewer3D
                     {
                         candidatePos = testPos;
                         selectedTraveller = pTrav;
+                        platformRight = rgt;
                         placedPoints.Add(testPoint);
                         validPosFound = true;
                         break;
@@ -912,7 +917,21 @@ namespace Orts.Viewer3D
                 if (!validPosFound || selectedTraveller == null)
                     continue;
 
-                float passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
+                // Pohled čelem ke koleji perónu
+                Vector3 lookToTrack = platformRight * sideSign;
+                float baseAngle = (float)Math.Atan2(lookToTrack.X, lookToTrack.Z);
+
+                float passengerYaw;
+                if (rand.NextDouble() < 0.6)
+                {
+                    float variation = ((float)rand.NextDouble() - 0.5f) * 0.8f;
+                    passengerYaw = baseAngle + variation;
+                }
+                else
+                {
+                    passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
+                }
+
                 var rot = Matrix.CreateRotationY(passengerYaw);
                 rot.M41 = candidatePos.X;
                 rot.M42 = candidatePos.Y;
