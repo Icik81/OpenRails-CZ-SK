@@ -718,7 +718,6 @@ namespace Orts.Viewer3D
         }
 
         // Osazení cestujících na nástupištích, pouze pro aktuální stanici StationStops[0]
-        // Osazení cestujících na nástupištích, pouze pro aktuální stanici StationStops[0]
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
             if (Viewer.Simulator.PassengerList == null || Viewer.Simulator.PassengerList.Models.Count == 0)
@@ -775,10 +774,12 @@ namespace Orts.Viewer3D
                 ? new WorldLocation(pItem2.TileX, pItem2.TileZ, pItem2.X, pItem2.Y, pItem2.Z)
                 : startLoc;
 
+            bool travellerReversed = false;
             float length = traveller.DistanceTo(endLoc.TileX, endLoc.TileZ, endLoc.Location.X, endLoc.Location.Y, endLoc.Location.Z);
             if (length <= 0)
             {
                 traveller.ReverseDirection();
+                travellerReversed = true;
                 length = traveller.DistanceTo(endLoc.TileX, endLoc.TileZ, endLoc.Location.X, endLoc.Location.Y, endLoc.Location.Z);
             }
             if (length <= 1.0f)
@@ -786,58 +787,30 @@ namespace Orts.Viewer3D
 
             float midPoint = length * 0.5f;
 
-            // Začátek v 1/3 první poloviny 
-            float spawnStart = midPoint * (1.0f / 3.0f);
+            // Začátek v 1/10 první poloviny 
+            float spawnStart = midPoint * (1.0f / 10.0f);
 
-            // Konec v 2/3 druhé poloviny 
-            float spawnEnd = midPoint + (midPoint * (2.0f / 3.0f));
+            // Konec v 9/10 druhé poloviny 
+            float spawnEnd = midPoint + (midPoint * (9.0f / 10.0f));
 
             // Celková šířka vymezeného pásma
             float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
 
-            bool rightSide = false;
-            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
+            // Strana nástupiště přímo z definice koleje perónu (bez závislosti na orientaci vlaku a stanoviště)
+            bool rightSide = true;
             if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
             {
-                bool right = currentStop.PlatformItem.PlatformSide[0];
-                bool left = currentStop.PlatformItem.PlatformSide[1];
-                var frontIsFront = currentStop.PlatformReference == currentStop.PlatformItem.PlatformFrontUiD;
-
-                if (!frontIsFront)
-                {
-                    right = !right;
-                    left = !left;
-                }
-
-                var loco = leadCar as MSTSLocomotive;
-                var wagon = leadCar as MSTSWagon;
-                if (loco != null && wagon != null && (loco.UsingRearCab ^ wagon.Flipped))
-                {
-                    right = !right;
-                    left = !left;
-                }
-
-                rightSide = right;
+                rightSide = currentStop.PlatformItem.PlatformSide[0];
             }
 
-            // Relativní otočení vůči vektoru vlaku            
-            if (leadCar != null)
+            // Pokud musel traveller otočit směr, zrcadlí se i lokální vektor vpravo
+            if (travellerReversed)
             {
-                Vector3 trainForward = new Vector3(leadCar.WorldPosition.XNAMatrix.M31, 0, -leadCar.WorldPosition.XNAMatrix.M33);
-                if (trainForward.LengthSquared() > 0.001f)
-                    trainForward.Normalize();
-
-                float baseRotY = -traveller.RotY;
-                Vector3 travForward = new Vector3((float)Math.Sin(baseRotY), 0, (float)Math.Cos(baseRotY));
-
-                if (Vector3.Dot(trainForward, travForward) < 0)
-                {
-                    rightSide = !rightSide;
-                }
+                rightSide = !rightSide;
             }
 
             float sideSign = rightSide ? 1.0f : -1.0f;
-            float baseLateralOffset = 3.0f;
+            float baseLateralOffset = 2.2f;
             float platformHeightOffset = 0.50f;
 
             var rand = Simulator.Random;
@@ -881,15 +854,14 @@ namespace Orts.Viewer3D
                     // Čistý výpočet kolmice k ose koleje v rovině X-Z
                     float trackYaw = -pTrav.RotY;
                     Matrix trackRot = Matrix.CreateRotationY(trackYaw);
-                    Vector3 rgt = trackRot.Right; // Přesný kolmý vektor doprava
+                    Vector3 rgt = trackRot.Right;
 
-                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 2.0f) * sideSign;
+                    float lateralOffset = (baseLateralOffset + (float)rand.NextDouble() * 1.0f) * sideSign;
 
-                    // Posun probíhá přímo v metrickém prostoru bez deformace Z souřadnice
                     Vector3 testPos = new Vector3(
                         pTrav.X + rgt.X * lateralOffset,
                         pTrav.Y + platformHeightOffset,
-                        pTrav.Z - rgt.Z * lateralOffset // minus koriguje negaci osy Z při vkládání do rot.M43
+                        pTrav.Z - rgt.Z * lateralOffset
                     );
 
                     Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
