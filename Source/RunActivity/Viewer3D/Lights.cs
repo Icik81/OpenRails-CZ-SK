@@ -640,13 +640,13 @@ namespace Orts.Viewer3D
                             {
                                 if (newCarCoupledFront)
                                 {
-                                    Car.LightRearLR = true;
-                                    Car.LightRearRR = true;
+                                    Car.LightFrontLR = true;
+                                    Car.LightFrontRR = true;
                                 }
                                 if (newCarCoupledRear)
                                 {
-                                    Car.LightFrontLR = true;
-                                    Car.LightFrontRR = true;                                    
+                                    Car.LightRearLR = true;
+                                    Car.LightRearRR = true;
                                 }
                             }
                         }                        
