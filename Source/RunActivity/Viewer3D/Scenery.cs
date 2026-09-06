@@ -79,7 +79,7 @@ namespace Orts.Viewer3D
             (Viewer.MaterialManager.sunDirection.Y < -0.15f && Program.Simulator.ClockTime % 86400 < 43200))) ? true : false;
 
             if (TileX != VisibleTileX || TileZ != VisibleTileZ || Viewer.Simulator.RefreshWorld || Viewer.Simulator.RefreshWire)
-            {
+            {                
                 TileX = VisibleTileX;
                 TileZ = VisibleTileZ;
                 var worldFiles = WorldFiles;
@@ -266,8 +266,7 @@ namespace Orts.Viewer3D
 
     public class PlatformPassengerShape : StaticShape
     {
-        // Přidána chybějící vlastnost Visible
-        public bool Visible { get; set; } = true;
+        public bool Visible { get; set; } = false;
 
         public PlatformPassengerShape(Viewer viewer, string path, WorldPosition position)
             : base(viewer, path, position, ShapeFlags.None)
@@ -276,8 +275,11 @@ namespace Orts.Viewer3D
 
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            // Pokud postava není viditelná (nastoupila), neposílá se do renderovací fronty
             if (!Visible)
+                return;
+
+            var train = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
+            if (train != null && (train.MayDepart || Math.Abs(train.SpeedMpS) > 0.5f))
                 return;
 
             base.PrepareFrame(frame, elapsedTime);
@@ -916,9 +918,9 @@ namespace Orts.Viewer3D
                     XNAMatrix = rot
                 };
 
-                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);
-                sceneryObjects.Add(passengerShape);
+                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);                
                 PlatformPassengers.Add(passengerShape);
+                PlatformPassengers[i].Visible = true;
             }
         }
 
@@ -926,7 +928,10 @@ namespace Orts.Viewer3D
         public void Unload()
         {
             foreach (var pax in PlatformPassengers)
+            {
+                pax.Visible = false;
                 pax.Unload();
+            }
             PlatformPassengers.Clear();
 
             foreach (var obj in sceneryObjects)
