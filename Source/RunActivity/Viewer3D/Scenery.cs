@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using static Orts.Simulation.Physics.Train;
 
 namespace Orts.Viewer3D
@@ -276,11 +277,7 @@ namespace Orts.Viewer3D
         public override void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
             if (!Visible)
-                return;
-
-            var train = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
-            if (train != null && (train.MayDepart || Math.Abs(train.SpeedMpS) > 0.5f))
-                return;
+                return;            
 
             base.PrepareFrame(frame, elapsedTime);
         }
@@ -1026,6 +1023,25 @@ namespace Orts.Viewer3D
                 dTrack.PrepareFrame(frame, elapsedTime);
             foreach (var forest in forestList)
                 forest.PrepareFrame(frame, elapsedTime);
+
+
+            var train = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
+
+            if (train != null && Viewer.Simulator.RefreshWorld)
+                train.WasMayDepart = true;
+
+            if (train != null && train.WasMayDepart && train.SpeedMpS > 0.5f)
+            {
+                train.WasMayDepartTimer += elapsedTime.RealSeconds;
+                if (train.WasMayDepartTimer > 5.0f)
+                {
+                    train.WasMayDepart = false;
+                    train.WasMayDepartTimer = 0.0f;
+                }
+                return;
+            }
+            else
+                train.WasMayDepart = false;
 
             // >>> PŘIDAT VYKRESLENÍ CESTUJÍCÍCH <<<
             for (int i = 0; i < PlatformPassengers.Count; i++)

@@ -409,6 +409,8 @@ namespace Orts.Simulation.Physics
         public StationStop PreviousStop = null;                           //last stop passed
         public bool AtStation = false;                                    //set if train is in station
         public bool MayDepart = false;                                    //set if train is ready to depart
+        public bool WasMayDepart = false;                                 
+        public float WasMayDepartTimer;                                 
         public string DisplayMessage = "";                                //string to be displayed in station information window
         public Color DisplayColor = Color.LightGreen;                     //color for DisplayMessage
         public bool CheckStations = false;                                //used when in timetable mode to check on stations
