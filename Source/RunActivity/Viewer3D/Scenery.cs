@@ -802,6 +802,11 @@ namespace Orts.Viewer3D
                 rightSide = currentStop.PlatformItem.PlatformSide[0];
             }
 
+            if (playerTrain is Orts.Simulation.Timetables.TTTrain)
+            {
+                travellerReversed = !travellerReversed;
+            }
+
             // Pokud musel traveller otočit směr, zrcadlí se i lokální vektor vpravo
             if (travellerReversed)
             {

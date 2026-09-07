@@ -50,6 +50,8 @@ namespace Orts.Simulation.Timetables
 {
     public class TTTrain : AITrain
     {
+        public bool FirstRunPaxInitTTTrain = false;
+
         public float DefMaxDecelMpSSP = 1.0f;               // maximum decelleration
         public float DefMaxAccelMpSSP = 1.0f;               // maximum accelleration
         public float DefMaxDecelMpSSF = 0.8f;               // maximum decelleration
@@ -10583,6 +10585,13 @@ namespace Orts.Simulation.Timetables
         
         public override void CheckStationTask()
         {
+            // První inicializace kvůli zobrazení cestujících na nástupišti
+            if (StationStops.Count > 0 && !FirstRunPaxInitTTTrain)
+            {
+                Simulator.RefreshWorld = true;
+                FirstRunPaxInitTTTrain = true;
+            }
+
             // if at station            
             if (AtStation)
             {                
