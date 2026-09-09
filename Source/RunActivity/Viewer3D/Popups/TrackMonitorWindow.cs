@@ -384,6 +384,7 @@ namespace Orts.Viewer3D.Popups
                 if (thisInfo == null)
                 {
                     TMCdrawTrack("", offset, 0f, 1f);
+                    DataUpdating = false;
                     return;
                 }
                 TMCdrawTrack("", offset, thisInfo.speedMpS, thisInfo.allowedSpeedMpS);
@@ -397,7 +398,12 @@ namespace Orts.Viewer3D.Popups
                 {
                     TMCdrawAutoInfo("", offset);
                 }
-                else if (thisInfo.ControlMode == Train.TRAIN_CONTROL.TURNTABLE) return;
+                else if (thisInfo.ControlMode == Train.TRAIN_CONTROL.TURNTABLE)
+                {
+                    DataUpdating = false;
+                    return;
+                }
+
                 else
                 {
                     TMCdrawManualInfo("", offset);
@@ -2396,7 +2402,7 @@ namespace Orts.Viewer3D.Popups
                 displayItem = forward ? oppositeTrainForwardSprite : oppositeTrainBackwardSprite;
                 offsetArray = otherTrainPosition;
                 displayRequired = true;
-            }            
+            }
 
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor) && displayRequired)
             {
@@ -2410,7 +2416,7 @@ namespace Orts.Viewer3D.Popups
                     var distanceString = FormatStrings.FormatDistanceDisplay(thisItem.DistanceToTrainM, metric);
                     Font.Draw(spriteBatch, labelPoint, distanceString, Color.White);
                     firstLabelShown = true;
-                }                
+                }
             }
             Viewer.Simulator.DistanceToTrainMFreeRide = thisItem.DistanceToTrainM;
         }
@@ -2576,7 +2582,7 @@ namespace Orts.Viewer3D.Popups
         int drawReversal(SpriteBatch spriteBatch, Point offset, int startObjectArea, int endObjectArea, int zeroPoint, float maxDistance, float distanceFactor, float firstLabelDistance, bool forward, int lastLabelPosition, Train.TrainObjectItem thisItem, ref bool firstLabelShown)
         {
             var displayItem = thisItem.Valid ? reversalSprite : invalidReversalSprite;
-            var newLabelPosition = lastLabelPosition;            
+            var newLabelPosition = lastLabelPosition;
 
             if (thisItem.DistanceToTrainM < (maxDistance - textSpacing / distanceFactor))
             {
