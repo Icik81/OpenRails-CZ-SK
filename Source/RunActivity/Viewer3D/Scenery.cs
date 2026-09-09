@@ -739,9 +739,6 @@ namespace Orts.Viewer3D
             if (playerTrain == null || playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
                 return;
 
-            if (playerTrain.MayDepart || Math.Abs(playerTrain.SpeedMpS) > 0.5f)
-                return;
-
             if (playerTrain.PreviousStop?.PlatformItem != null)
             {
                 string prevName = playerTrain.PreviousStop.PlatformItem.Name;
@@ -1035,6 +1032,24 @@ namespace Orts.Viewer3D
                 dTrack.PrepareFrame(frame, elapsedTime);
             foreach (var forest in forestList)
                 forest.PrepareFrame(frame, elapsedTime);
+
+            var train = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
+
+            if (train != null && Viewer.Simulator.RefreshWorld)
+                train.WasMayDepart = true;
+
+            if (train != null && train.WasMayDepart && train.SpeedMpS > 0.5f)
+            {
+                train.WasMayDepartTimer += elapsedTime.RealSeconds;
+                if (train.WasMayDepartTimer > 5.0f)
+                {
+                    train.WasMayDepart = false;
+                    train.WasMayDepartTimer = 0.0f;
+                }
+                return;
+            }
+            else
+                train.WasMayDepart = false;
 
             for (int i = 0; i < PlatformPassengers.Count; i++)
                 PlatformPassengers[i].PrepareFrame(frame, elapsedTime);
