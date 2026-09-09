@@ -290,10 +290,8 @@ namespace Orts.Viewer3D
 
         static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         static readonly ConcurrentDictionary<string, ShapeDescriptorFile> SdFileCache = new ConcurrentDictionary<string, ShapeDescriptorFile>(StringComparer.OrdinalIgnoreCase);
-
         public static readonly HashSet<string> SpawnedStationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-
-        public readonly List<PlatformPassengerShape> PlatformPassengers = new List<PlatformPassengerShape>();
+        public readonly List<PlatformPassengerShape> PlatformPassengers = new List<PlatformPassengerShape>();        
 
         public struct DyntrackParams
         {
@@ -362,6 +360,8 @@ namespace Orts.Viewer3D
                         break;
                     }
             }
+
+            var pendingPlatforms = new List<Tuple<PlatformObj, WorldPosition>>();
 
             foreach (var worldObject in WFile.Tr_Worldfile)
             {
@@ -537,7 +537,7 @@ namespace Orts.Viewer3D
                     else if (worldObject.GetType() == typeof(PlatformObj))
                     {
                         platforms.Add(new TrItemLabel(viewer, worldMatrix, (PlatformObj)worldObject));
-                        SpawnPlatformPassengers((PlatformObj)worldObject, worldMatrix);
+                        pendingPlatforms.Add(Tuple.Create((PlatformObj)worldObject, worldMatrix));
                     }
                     else if (worldObject.GetType() == typeof(StaticObj))
                     {
@@ -693,6 +693,12 @@ namespace Orts.Viewer3D
             {
                 if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
             }
+
+            // Teprve teď je sceneryObjects a BoundingBoxes kompletně naplněné!
+            foreach (var p in pendingPlatforms)
+            {
+                SpawnPlatformPassengers(p.Item1, p.Item2);
+            }
         }
 
         public string ShapeIsORClock(string shape)
@@ -712,6 +718,65 @@ namespace Orts.Viewer3D
                 }
             }
             return "";
+        }
+
+        [CallOnThread("Loader")]
+        public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, float searchRadius = 12.0f)
+        {
+            float searchRadiusSq = searchRadius * searchRadius;
+            float bestHeight = float.MinValue;
+            float closestDistSq = float.MaxValue;
+
+            Vector2 queryPoint = new Vector2(queryX, queryZ);
+
+            foreach (var shape in sceneryObjects)
+            {
+                if (shape == null || shape.SharedShape == null)
+                    continue;
+
+                // Nepočítat koleje, návěstidla, stromy ani samotné postavy
+                if (shape is StaticTrackShape || shape is PlatformPassengerShape || shape is SignalShape)
+                    continue;
+
+                string shapeName = shape.SharedShape.FilePath?.ToLowerInvariant() ?? "";
+
+                // Volitelný filtr: pokud název neobsahuje typické názvy perónu, ověřit alespoň blízkost
+                bool isLikelyPlatform = shapeName.Contains("peron") || shapeName.Contains("plat") ||
+                                        shapeName.Contains("nastup") || shapeName.Contains("stanic");
+
+                // Pozice středu modelu na dlaždici (převod z XNA do MSTS Z souřadnic)
+                Vector3 shapeTrans = shape.Location.XNAMatrix.Translation;
+                Vector2 shapePoint = new Vector2(shapeTrans.X, -shapeTrans.Z);
+
+                float distSq = Vector2.DistanceSquared(queryPoint, shapePoint);
+
+                if (distSq < searchRadiusSq)
+                {
+                    // Zjistíme maximální Y z přirozené matice tvaru
+                    float modelMaxY = 0f;
+                    if (shape.SharedShape.Matrices.Length > 0)
+                    {
+                        modelMaxY = shape.SharedShape.Matrices[0].Translation.Y;
+                    }
+
+                    float candidateSurfaceY = shapeTrans.Y + modelMaxY;
+                    float heightAboveTrack = candidateSurfaceY - trackY;
+
+                    // Kontrola, zda je hodnota v realistickém rozmezí nástupiště (0.35 m až 1.15 m nad temenem/osou)
+                    if (heightAboveTrack >= 0.35f && heightAboveTrack <= 1.15f)
+                    {
+                        if (isLikelyPlatform || distSq < closestDistSq)
+                        {
+                            closestDistSq = distSq;
+                            bestHeight = candidateSurfaceY;
+                            if (isLikelyPlatform)
+                                break; // Máme jistý zásah modelu perónu
+                        }
+                    }
+                }
+            }
+
+            return bestHeight;
         }
 
         // Osazení cestujících na nástupištích
@@ -834,7 +899,101 @@ namespace Orts.Viewer3D
             var placedPoints = new List<Vector2>(passengerCount);
             const float minDistance = 0.85f;
             const float minDistanceSq = minDistance * minDistance;
+            const float defaultPlatformOffset = 0.750f;
+            float lastKnownPlatformHeightOffset = defaultPlatformOffset;
 
+# region Výpočet výšky nástupiště
+            // Najdeme výšku nástupiště
+            for (int i = 0; i < passengerCount; i++)
+            {                
+                Vector3 candidatePos = Vector3.Zero;
+                Traveller selectedTraveller = null;
+                bool validPosFound = false;
+
+                float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
+                float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
+
+                for (int attempt = 0; attempt < 50; attempt++)
+                {
+                    float attemptExpansion = (float)attempt / 24f;
+                    float currentAllowedLength = availableLength * Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
+
+                    double r = rand.NextDouble();
+                    float distFromStart = (float)(r * r) * currentAllowedLength;
+                    float distAlong = spawnStart + distFromStart;
+
+                    var pTrav = new Traveller(traveller);
+                    pTrav.Move(distAlong);
+
+                    // Boční odstup od osy koleje přímo ve směru perónu
+                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 1.0f;
+
+                    // MSTS souřadnice bodu na perónu od osy kolejnice
+                    float mstsQueryX = pTrav.X + vectorToPlatform.X * lateralDist;
+                    float mstsQueryZ = pTrav.Z + vectorToPlatform.Z * lateralDist;
+
+                    // 1. Primárně zkusit Bounding Box (pokud existuje v .sd)
+                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
+                    
+                    // 2. Pokud Bounding Box není k dispozici, odvodit výšku přímo z modelu v sceneryObjects
+                    if (topY <= float.MinValue + 1000f)
+                    {
+                        topY = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, 15.0f);
+                    }
+                    
+                    float finalPlatformY;
+                    if (topY > float.MinValue + 1000f)
+                    {
+                        float measuredOffset = topY - pTrav.Y;
+                        if (measuredOffset >= 0.35f && measuredOffset <= 1.15f)
+                        {
+                            finalPlatformY = topY;
+                            lastKnownPlatformHeightOffset = measuredOffset; // Uložíme zjištěnou výšku pro ostatní díly perónu
+                        }
+                        else
+                        {
+                            finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
+                        }
+                    }
+                    else
+                    {
+                        // Použije se výška zjištěná z předchozího úspěšného segmentu perónu
+                        finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
+                    }
+
+                    Vector3 testPos = new Vector3(
+                        mstsQueryX,
+                        finalPlatformY,
+                        -mstsQueryZ // korekce do XNA prostoru
+                    );
+
+                    Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
+                    bool overlaps = false;
+                    for (int p = 0; p < placedPoints.Count; p++)
+                    {
+                        if (Vector2.DistanceSquared(placedPoints[p], testPoint) < minDistanceSq)
+                        {
+                            overlaps = true;
+                            break;
+                        }
+                    }
+
+                    if (!overlaps)
+                    {
+                        candidatePos = testPos;
+                        selectedTraveller = pTrav;
+                        placedPoints.Add(testPoint);
+                        validPosFound = true;
+                        break;
+                    }
+                }
+
+                if (!validPosFound || selectedTraveller == null)
+                    continue;
+            }
+#endregion Výpočet výšky nástupiště
+
+            placedPoints = new List<Vector2>(passengerCount);
             for (int i = 0; i < passengerCount; i++)
             {
                 string shapeName = Viewer.Simulator.PassengerList.GetRandomShape(rand);
@@ -873,22 +1032,8 @@ namespace Orts.Viewer3D
                     // MSTS souřadnice bodu na perónu od osy kolejnice
                     float mstsQueryX = pTrav.X + vectorToPlatform.X * lateralDist;
                     float mstsQueryZ = pTrav.Z + vectorToPlatform.Z * lateralDist;
-
-                    // Zjištění výšky z Bounding Boxu
-                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
-
-                    // Výchozí koridorová výška
-                    const float defaultPlatformOffset = 0.75f;
-                    float finalPlatformY = pTrav.Y + defaultPlatformOffset;
-
-                    if (topY > float.MinValue + 1000f)
-                    {
-                        float measuredOffset = topY - pTrav.Y;
-                        if (measuredOffset >= 0.35f && measuredOffset <= 1.15f)
-                        {
-                            finalPlatformY = topY;
-                        }
-                    }
+                    
+                    var finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;                    
 
                     Vector3 testPos = new Vector3(
                         mstsQueryX,
@@ -925,9 +1070,9 @@ namespace Orts.Viewer3D
                 float baseAngle = (float)Math.Atan2(lookToTrain.X, -lookToTrain.Z);
 
                 float passengerYaw;
-                if (rand.NextDouble() < 0.9)
+                if (rand.NextDouble() < 0.8)
                 {
-                    float variation = ((float)rand.NextDouble() - 0.5f) * 0.8f;
+                    float variation = ((float)rand.NextDouble() - 0.5f) * 0.75f;
                     passengerYaw = baseAngle + variation;
                 }
                 else
