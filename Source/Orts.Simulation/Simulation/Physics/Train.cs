@@ -99,7 +99,8 @@ namespace Orts.Simulation.Physics
             }
         }
 
-        // Icik        
+        // Icik
+        public string LastStationName = "";
         public bool MasterSlaveTestOK;
         public float MasterSlaveTestTimer;
         public float MasterTestTimer;

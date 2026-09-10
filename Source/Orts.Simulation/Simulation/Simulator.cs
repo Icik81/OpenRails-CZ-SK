@@ -211,7 +211,7 @@ namespace Orts.Simulation
         public bool CabInDarkTunnel;
         public bool CarInDarkTunnel;
         public float _NightBrightnessValue;
-        public bool RefreshWorld;
+        public bool RefreshWorld;        
         public bool RefreshWire;
         public bool PlayerUsingRearCab;
         public float StepControllerValue;

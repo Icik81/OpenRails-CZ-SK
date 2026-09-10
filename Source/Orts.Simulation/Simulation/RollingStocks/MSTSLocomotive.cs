@@ -812,7 +812,7 @@ namespace Orts.Simulation.RollingStocks
         public bool ControllerAtNeutralDrivePosition;
         public Shunter Shunter;
         public bool InitLocoShaders;
-        
+        public bool LastFlippedState;
 
         // Jindrich
         public bool IsActive = false;
@@ -7512,7 +7512,7 @@ namespace Orts.Simulation.RollingStocks
         protected float SplashScreenRandomTime = 0;
         public bool SplashScreenWillBeDisplayed = false;
         protected float HvPantoTimer = 0;
-        protected bool firstFrame = true;        
+        protected bool firstFrame = true;
         public override void Update(float elapsedClockSeconds)
         {
             if (IsPlayerTrain && PlayerLocoSetUp)
@@ -7524,8 +7524,8 @@ namespace Orts.Simulation.RollingStocks
                 {
                     PowerKey = true;
                     if (!DieselDirectionController && !DieselDirectionController2 && !DieselDirectionController3 && !DieselDirectionController4)
-                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;                    
-                }                                    
+                        ActiveStation = UsingRearCab ? DriverStation.Station2 : DriverStation.Station1;
+                }
 
                 // Mirel                   
                 if (Mirel != null)
@@ -7537,20 +7537,20 @@ namespace Orts.Simulation.RollingStocks
                     // LS90
                     Mirel.ls90tested = true;
                     Mirel.Ls90power[LocoStation] = LS90power.On;
-                }                
+                }
 
-                LocoSetUpTimer = 0;                
+                LocoSetUpTimer = 0;
                 RDSTBreaker[LocoStation] = true;
 
-                if (Battery)                
-                    LocoReadyToGo = true;                                    
-                                                
+                if (Battery)
+                    LocoReadyToGo = true;
+
                 if (IsLeadLocomotive())
                 {
                     if (AllCabItemReaded && LightsFrameUpdate == 3)
-                        PlayerLocoSetUp = false;                    
+                        PlayerLocoSetUp = false;
 
-                    if (AILocoSetUp) 
+                    if (AILocoSetUp)
                     {
                         if (Battery)
                         {
@@ -7582,14 +7582,14 @@ namespace Orts.Simulation.RollingStocks
                                 else
                                     TrainBrakeValue[LocoStation] = TrainBrakeController.DefaultBrakeValue;
                                 SetTrainBrakePercent(TrainBrakeValue[LocoStation] * 100f);
-                            }                            
-                            SetTrainHandbrake(true);                            
+                            }
+                            SetTrainHandbrake(true);
                         }
-                    }                   
+                    }
                 }
                 else
                     if (LightsFrameUpdate == 3)
-                        PlayerLocoSetUp = false;                           
+                        PlayerLocoSetUp = false;
             }
             else
                 AILocoSetUp = false;
@@ -7617,7 +7617,7 @@ namespace Orts.Simulation.RollingStocks
                 VentilationSwitchPosition[1] = VentilationSwitchPosition[2] = 1;
                 PantoActivationSwitch[1] = PantoActivationSwitch[2] = 1;
                 VoltageSelectionSwitch[1] = VoltageSelectionSwitch[2] = 1;
-                HV3NASwitch[1] = HV3NASwitch[2] = 1;                
+                HV3NASwitch[1] = HV3NASwitch[2] = 1;
                 CompressorSwitch[1] = CompressorSwitch[2] = 1;
 
                 if (CruiseControl != null)
@@ -7627,7 +7627,7 @@ namespace Orts.Simulation.RollingStocks
 
                 firstFrame = false;
                 if (Simulator.Settings.AirEmpty)
-                {                    
+                {
                     if (CruiseControl != null)
                     {
                         badNumber:
@@ -7663,7 +7663,7 @@ namespace Orts.Simulation.RollingStocks
                             PowerKeyPosition[LocoStation] = 2;
                             PowerKey = true;
                             HeatingPosition[LocoStation] = 1;
-                            StationIsActivated[LocoStation] = true;                            
+                            StationIsActivated[LocoStation] = true;
 
                             if (TrainBrakeController.TrainBrakeControllerState == ControllerState.Lap
                                 || TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral
@@ -7768,7 +7768,7 @@ namespace Orts.Simulation.RollingStocks
                                                         break;
                                                     }
                                                 }
-                                            }                                            
+                                            }
                                             Action:
                                             HvPantoTimer = 0;
                                             if (!motorDisabled)
@@ -7927,7 +7927,7 @@ namespace Orts.Simulation.RollingStocks
                                 if (ForceHandleValue > 0)
                                 {
                                     SelectedMaxAccelerationStep[LocoStation] = ForceHandleValue;
-                                }                                
+                                }
                                 if (ForceHandleValue < 0)
                                 {
                                     if (!EngineBrakeEngageEDB && !BrakeSystem.OL3active && !BreakEDBButton_Activated)
@@ -7939,7 +7939,7 @@ namespace Orts.Simulation.RollingStocks
                                     }
                                 }
                             }
-                        }                        
+                        }
                         ControllerVolts = ForceHandleValue / 10;
                     }
 
@@ -8132,7 +8132,7 @@ namespace Orts.Simulation.RollingStocks
             {
                 CarIsPlayerLoco = true;
                 Simulator.CabLightItemActivate = CabLightOn[LocoStation] ? true : false;
-                Simulator.CabItemBatterieOn = Battery ? true : false;                
+                Simulator.CabItemBatterieOn = Battery ? true : false;
             }
             else
                 CarIsPlayerLoco = false;
@@ -8155,7 +8155,7 @@ namespace Orts.Simulation.RollingStocks
                     HeatingPosition[LocoStation] = 1;
                     StationIsActivated[LocoStation] = true;
                     if (!RDSTBreaker[LocoStation])
-                    {                        
+                    {
                         RDSTBreaker[LocoStation] = true;
                     }
                     foreach (TrainCar car in Train.Cars)
@@ -8201,8 +8201,8 @@ namespace Orts.Simulation.RollingStocks
                             (car as MSTSControlUnit).PowerOn = false;
                     }
                 }
-            }            
-            
+            }
+
             if (!IsPlayerTrain && !Simulator.Paused && CarLengthM > 1f && !WagonIsServis)
             {
                 SetAIAction(elapsedClockSeconds);
@@ -8214,13 +8214,13 @@ namespace Orts.Simulation.RollingStocks
                 {
                     if (AbsSpeedMpS > 0.1f)
                     {
-                        AILocoRun = true;                        
+                        AILocoRun = true;
                     }
                     else
                     {
-                        AILocoRun = false;                        
-                    }                    
-                    PlayerLocoSetUp = true;                    
+                        AILocoRun = false;
+                    }
+                    PlayerLocoSetUp = true;
                     BrakeSystem.IsAirFull = true;
                     PowerKeyPosition[LocoStation] = 2;
                     HeatingPosition[LocoStation] = 1;
@@ -8291,24 +8291,24 @@ namespace Orts.Simulation.RollingStocks
 
             float Coef_Power_I = Math.Abs(PowerCurrent1 / MaxCurrentPower * CouplerForceU / 100000);
             float Coef_Brake_I = Math.Abs(BrakeCurrent1 / MaxCurrentBrake * CouplerForceU / 100000);
-                                   
+
             if (LoadSound_VolumeCoef_SM < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
                 LoadSound_VolumeCoef_SM += 0.5f * elapsedClockSeconds;
             else
-            if (LoadSound_VolumeCoef_SM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
-                LoadSound_VolumeCoef_SM -= 0.1f * elapsedClockSeconds;
+                if (LoadSound_VolumeCoef_SM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
+                    LoadSound_VolumeCoef_SM -= 0.1f * elapsedClockSeconds;
 
             if (LoadSound_VolumeCoef_TM < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 2f), 1.0f, 1.5f))
                 LoadSound_VolumeCoef_TM += 0.5f * elapsedClockSeconds;
             else
-            if (LoadSound_VolumeCoef_TM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 2f), 1.0f, 1.5f))
-                LoadSound_VolumeCoef_TM -= 0.1f * elapsedClockSeconds;
+                if (LoadSound_VolumeCoef_TM > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 2f), 1.0f, 1.5f))
+                    LoadSound_VolumeCoef_TM -= 0.1f * elapsedClockSeconds;
 
             if (LoadSound_FrequencyCoef < MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
                 LoadSound_FrequencyCoef += 0.5f * elapsedClockSeconds;
             else
-            if (LoadSound_FrequencyCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
-                LoadSound_FrequencyCoef -= 0.1f * elapsedClockSeconds;
+                if (LoadSound_FrequencyCoef > MathHelper.Clamp(1.0f + (Math.Max(Coef_Power_I, Coef_Brake_I) / 5f), 1.0f, 1.25f))
+                    LoadSound_FrequencyCoef -= 0.1f * elapsedClockSeconds;
 
             if (this is MSTSElectricLocomotive) LoadSound_FrequencyCoef = 1;
 
@@ -8319,9 +8319,20 @@ namespace Orts.Simulation.RollingStocks
                 //Simulator.Confirmer.MSG4("LoadSound_FrequencyCoef " + LoadSound_FrequencyCoef);                
             }
 
-            Simulator.Locomotive = this;            
+            // Generování cestujících na perónu při vzdálenosti menší než 1 km od stanice
+            if ((IsPlayerTrain || Train.Simulator.PlayerTrainInAutopilotMode) && Train.StationStops.Count > 0 && (Train.LastStationName != Train.StationStops[0].PlatformItem.Name || (IsLeadAILocomotive() && LastFlippedState != Flipped)))
+            {
+                float distToStation = Train.ComputeDistanceToStation(Train.StationStops[0]);
+                if (distToStation < 1000.0f)
+                {
+                    Simulator.RefreshWorld = true;
+                    Train.LastStationName = Train.StationStops[0].PlatformItem.Name;                    
+                }
+            }
+            
+            Simulator.Locomotive = this;
             if (IsPlayerTrain && !Simulator.Paused)
-            {                
+            {                       
                 if (IsLeadLocomotive())
                 {                    
                     Simulator.CabRadioOn = CabRadio[LocoStation];

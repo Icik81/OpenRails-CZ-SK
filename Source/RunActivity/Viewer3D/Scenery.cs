@@ -334,6 +334,8 @@ namespace Orts.Viewer3D
 
             var WFileName = WorldFileNameFromTileCoordinates(tileX, tileZ);
             var WFilePath = viewer.Simulator.RoutePath + @"\World\" + WFileName;
+            
+            var pendingPlatforms = new List<Tuple<PlatformObj, WorldPosition>>();                        
 
             if (!File.Exists(WFilePath))
             {
@@ -359,9 +361,7 @@ namespace Orts.Viewer3D
                         containsMovingTable = true;
                         break;
                     }
-            }
-
-            var pendingPlatforms = new List<Tuple<PlatformObj, WorldPosition>>();
+            }            
 
             foreach (var worldObject in WFile.Tr_Worldfile)
             {
@@ -694,11 +694,11 @@ namespace Orts.Viewer3D
                 if (Viewer.World.Sounds != null) Viewer.World.Sounds.AddByTile(TileX, TileZ);
             }
 
-            // Teprve teď je sceneryObjects a BoundingBoxes kompletně naplněné!
+            // Generování cestujících na nástupištích
             foreach (var p in pendingPlatforms)
             {
                 SpawnPlatformPassengers(p.Item1, p.Item2);
-            }
+            }            
         }
 
         public string ShapeIsORClock(string shape)
@@ -724,35 +724,25 @@ namespace Orts.Viewer3D
         public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, float searchRadius = 12.0f)
         {
             float searchRadiusSq = searchRadius * searchRadius;
-            float bestHeight = float.MinValue;
-            float closestDistSq = float.MaxValue;
-
             Vector2 queryPoint = new Vector2(queryX, queryZ);
+
+            Dictionary<float, int> heightCounts = new Dictionary<float, int>();
 
             foreach (var shape in sceneryObjects)
             {
                 if (shape == null || shape.SharedShape == null)
                     continue;
 
-                // Nepočítat koleje, návěstidla, stromy ani samotné postavy
                 if (shape is StaticTrackShape || shape is PlatformPassengerShape || shape is SignalShape)
                     continue;
 
-                string shapeName = shape.SharedShape.FilePath?.ToLowerInvariant() ?? "";
-
-                // Volitelný filtr: pokud název neobsahuje typické názvy perónu, ověřit alespoň blízkost
-                bool isLikelyPlatform = shapeName.Contains("peron") || shapeName.Contains("plat") ||
-                                        shapeName.Contains("nastup") || shapeName.Contains("stanic");
-
-                // Pozice středu modelu na dlaždici (převod z XNA do MSTS Z souřadnic)
                 Vector3 shapeTrans = shape.Location.XNAMatrix.Translation;
-                Vector2 shapePoint = new Vector2(shapeTrans.X, -shapeTrans.Z);
+                Vector2 shapePoint = new Vector2(shapeTrans.X, shapeTrans.Z);
 
                 float distSq = Vector2.DistanceSquared(queryPoint, shapePoint);
 
                 if (distSq < searchRadiusSq)
                 {
-                    // Zjistíme maximální Y z přirozené matice tvaru
                     float modelMaxY = 0f;
                     if (shape.SharedShape.Matrices.Length > 0)
                     {
@@ -762,21 +752,32 @@ namespace Orts.Viewer3D
                     float candidateSurfaceY = shapeTrans.Y + modelMaxY;
                     float heightAboveTrack = candidateSurfaceY - trackY;
 
-                    // Kontrola, zda je hodnota v realistickém rozmezí nástupiště (0.35 m až 1.15 m nad temenem/osou)
                     if (heightAboveTrack >= 0.35f && heightAboveTrack <= 1.15f)
                     {
-                        if (isLikelyPlatform || distSq < closestDistSq)
-                        {
-                            closestDistSq = distSq;
-                            bestHeight = candidateSurfaceY;
-                            if (isLikelyPlatform)
-                                break; // Máme jistý zásah modelu perónu
-                        }
+                        if (heightCounts.TryGetValue(candidateSurfaceY, out int count))
+                            heightCounts[candidateSurfaceY] = count + 1;
+                        else
+                            heightCounts[candidateSurfaceY] = 1;
                     }
                 }
             }
 
-            return bestHeight;
+            if (heightCounts.Count == 0)
+                return float.MinValue;
+
+            float bestHeight = float.MinValue;
+            int maxOccurrences = 0;
+
+            foreach (var kvp in heightCounts)
+            {
+                if (kvp.Value > maxOccurrences)
+                {
+                    maxOccurrences = kvp.Value;
+                    bestHeight = kvp.Key; // Přesná hodnota candidateSurfaceY bez jakékoliv úpravy
+                }
+            }
+
+            return bestHeight + 0.1f;
         }
 
         // Osazení cestujících na nástupištích
@@ -831,7 +832,7 @@ namespace Orts.Viewer3D
                 currentStop.TCSectionIndex != tcSectionIdx)
             {
                 return;
-            }
+            }            
 
             int passengerCount = playerTrain.ActualPassengerCountAtStation;
             if (passengerCount <= 0)
@@ -866,7 +867,9 @@ namespace Orts.Viewer3D
 
             if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
             {
-                if ((leadCar as MSTSLocomotive).UsingRearCab ^ (leadCar as MSTSLocomotive).Flipped)
+                (leadCar as MSTSLocomotive).LastFlippedState = (leadCar as MSTSLocomotive).Flipped;
+
+                if ((leadCar as MSTSLocomotive).Flipped)
                 {
                     frontIsFront = !frontIsFront;
                 }
@@ -893,7 +896,7 @@ namespace Orts.Viewer3D
             // Vektor ukazující z osy koleje přímo do perónu (vlevo nebo vpravo od vlaku)
             Vector3 vectorToPlatform = platformOnLeftOfTrain ? -trainRight : trainRight;
 
-            float baseLateralOffset = 2.2f;
+            float baseLateralOffset = 2.4f;
 
             var rand = Simulator.Random;
             var placedPoints = new List<Vector2>(passengerCount);
@@ -913,7 +916,7 @@ namespace Orts.Viewer3D
                 float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
                 float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
 
-                for (int attempt = 0; attempt < 50; attempt++)
+                for (int attempt = 0; attempt < 25; attempt++)
                 {
                     float attemptExpansion = (float)attempt / 24f;
                     float currentAllowedLength = availableLength * Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
