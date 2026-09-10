@@ -5982,7 +5982,23 @@ namespace Orts.Simulation.RollingStocks
                     }
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
                 }
-                
+
+                // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
+                if ((Train as AITrain).Name.ToLower().Contains("aire"))
+                {
+                    foreach (TrainCar car in (Train as AITrain).Cars.Where(car => (car is MSTSElectricLocomotive)))
+                    {
+                        (car as MSTSElectricLocomotive).AIPantoDownStop = true;
+                        car.BrakeSystem.PowerForWagon = false;                    
+                    }
+                    foreach (TrainCar car in (Train as AITrain).Cars.Where(car => (car is MSTSDieselLocomotive)))
+                    {
+                        (car as MSTSDieselLocomotive).AIMotorStop = true;
+                        car.BrakeSystem.PowerForWagon = false;                        
+                    }
+                    return;
+                }
+
                 CarIsWaiting = false;
                 if (this.LocoSetUpTimer > 1.0f)
                 {                    
@@ -6040,7 +6056,7 @@ namespace Orts.Simulation.RollingStocks
                             (car as MSTSLocomotive).Battery = false;
                         }
                     }
-                }
+                }                
 
                 // Parní lokomotivy nevypínají motor :)
                 if (this as MSTSSteamLocomotive != null && !(this as MSTSLocomotive).LocoIsStatic)

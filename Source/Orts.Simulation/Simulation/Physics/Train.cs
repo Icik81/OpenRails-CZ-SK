@@ -4963,7 +4963,7 @@ namespace Orts.Simulation.Physics
         /// <\summary>
 
         public void PropagateBrakePressure(float elapsedClockSeconds)
-        {
+        {            
             if (IsActualPlayerTrain && LeadLocomotiveIndex >= 0)
             {
                 if (LeadLocomotiveIndex >= Cars.Count)
@@ -4987,7 +4987,7 @@ namespace Orts.Simulation.Physics
                 if (lead.TrainBrakeController != null)
                     lead.TrainBrakeController.UpdatePressure(ref EqualReservoirPressurePSIorInHg, elapsedClockSeconds, ref BrakeLine4);
                 if (lead.EngineBrakeController != null)
-                    lead.EngineBrakeController.UpdateEngineBrakePressure(ref BrakeLine3PressurePSI, elapsedClockSeconds);
+                    lead.EngineBrakeController.UpdateEngineBrakePressure(ref BrakeLine3PressurePSI, elapsedClockSeconds);                
                 lead.BrakeSystem.PropagateBrakePressure(elapsedClockSeconds);
             }
             else if (TrainType == TRAINTYPE.STATIC)
@@ -5072,7 +5072,7 @@ namespace Orts.Simulation.Physics
         /// that is propagated promptly to each car directly.
         /// </summary>
         private void AISetUniformBrakePressures()
-        {
+        {            
             foreach (TrainCar car in Cars)
             {
                 car.BrakeSystem.BrakeLine1PressurePSI = car.BrakeSystem.InternalPressure(EqualReservoirPressurePSIorInHg);

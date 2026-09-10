@@ -611,7 +611,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     if (Car.Train.Simulator.conFileName != null)
                     {
                         if (Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;                        
-                    }
+                    }                                        
+
                     if (!Car.Train.Simulator.Settings.AirEmpty)
                         PowerForWagon = true;
                     else
@@ -622,7 +623,23 @@ namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     (Car as MSTSLocomotive).SetAIAction(Car.Train.Simulator.OneSecondLoop);
                 
                 TrainBrakePositionSet();
-            }            
+            }
+
+            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("aire"))
+            {
+                Car.Train.Simulator.Settings.AirEmpty = true;
+                AutoCylPressurePSI0 = 0;
+                AuxResPressurePSI = 0;
+                MainResPressurePSI = 0;
+                BrakeLine1PressurePSI = 0;
+                BrakeLine2PressurePSI = 0;
+                MSTSLocomotive locoAI = Car as MSTSLocomotive;
+                if (locoAI != null)
+                {
+                    locoAI.MainResPressurePSI = 0;
+                }
+                return;
+            }
 
             BrakeLine1PressurePSI = maxPressurePSI0;
             BrakeLine2PressurePSI = Car.Train.BrakeLine2PressurePSI;
