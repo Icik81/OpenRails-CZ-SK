@@ -721,7 +721,7 @@ namespace Orts.Viewer3D
         }
 
         [CallOnThread("Loader")]
-        public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, float searchRadius = 12.0f)
+        public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, bool usePositiveZ, float searchRadius = 12.0f)
         {
             float searchRadiusSq = searchRadius * searchRadius;
             Vector2 queryPoint = new Vector2(queryX, queryZ);
@@ -737,7 +737,7 @@ namespace Orts.Viewer3D
                     continue;
 
                 Vector3 shapeTrans = shape.Location.XNAMatrix.Translation;
-                Vector2 shapePoint = new Vector2(shapeTrans.X, shapeTrans.Z);
+                Vector2 shapePoint = new Vector2(shapeTrans.X, usePositiveZ ? shapeTrans.Z : -shapeTrans.Z);
 
                 float distSq = Vector2.DistanceSquared(queryPoint, shapePoint);
 
@@ -777,9 +777,9 @@ namespace Orts.Viewer3D
                 }
             }
 
-            return bestHeight + 0.1f;
+            return bestHeight;
         }
-
+        
         // Osazení cestujících na nástupištích
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
@@ -905,8 +905,9 @@ namespace Orts.Viewer3D
             const float defaultPlatformOffset = 0.750f;
             float lastKnownPlatformHeightOffset = defaultPlatformOffset;
 
-# region Výpočet výšky nástupiště
+            #region Výpočet výšky nástupiště
             // Najdeme výšku nástupiště
+            float topY0 = 0;
             for (int i = 0; i < passengerCount; i++)
             {                
                 Vector3 candidatePos = Vector3.Zero;
@@ -936,14 +937,22 @@ namespace Orts.Viewer3D
                     float mstsQueryZ = pTrav.Z + vectorToPlatform.Z * lateralDist;
 
                     // 1. Primárně zkusit Bounding Box (pokud existuje v .sd)
-                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
-                    
+                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);                    
+                    float topY1 = float.MinValue;
+                    float topY2 = float.MinValue;
                     // 2. Pokud Bounding Box není k dispozici, odvodit výšku přímo z modelu v sceneryObjects
                     if (topY <= float.MinValue + 1000f)
                     {
-                        topY = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, 15.0f);
+                        topY1 = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, false, 15.0f);
                     }
-                    
+                    if (topY <= float.MinValue + 1000f)
+                    {
+                        topY2 = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, true, 15.0f);
+                    }
+
+                    topY0 = Math.Max(topY0, Math.Max(topY1, topY2));
+                    topY = topY0;
+
                     float finalPlatformY;
                     if (topY > float.MinValue + 1000f)
                     {
