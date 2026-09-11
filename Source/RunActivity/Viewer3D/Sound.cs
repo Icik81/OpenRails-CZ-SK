@@ -1265,6 +1265,7 @@ namespace Orts.Viewer3D
         /// Helper object for determining if initial trigger is to be audible
         /// </summary>
         IEnumerable<ORTSTrigger> TriggersList;
+        public bool IsHornStream = false;
 
         public SoundStream(Orts.Formats.Msts.SMSStream mstsStream, Events.Source eventSource, SoundSource soundSource, UserSettings settings)
         {
@@ -1282,6 +1283,7 @@ namespace Orts.Viewer3D
                         && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 8)
                     {
                         rolloffFactor = SoundSource.HornRolloffFactor;
+                        IsHornStream = true;
                         break;
                     }
 
@@ -1290,6 +1292,7 @@ namespace Orts.Viewer3D
                         && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 10)
                     {
                         rolloffFactor = SoundSource.HornRolloffFactor * 1.5f;
+                        //IsHornStream = true;
                         break;
                     }
                 }
@@ -1400,6 +1403,10 @@ namespace Orts.Viewer3D
             {
                 return;
             }
+
+            // Při pauze netestovat triggery ani neposouvat zvukový buffer
+            if (SoundSource.Viewer.Simulator.Paused)
+                return;
 
             foreach (ORTSTrigger trigger in Triggers)
                 trigger.TryTrigger();
@@ -1686,6 +1693,42 @@ namespace Orts.Viewer3D
                 }                
             }            
             ALSoundSource.Volume = volume;
+
+            // Efekty
+            if (ALSoundSource != null && ALSoundSource.SoundSourceID != 0)
+            {
+                bool isInTunnel = false;
+
+                // Kontrola, zda vůz jede v tunelovém úseku          
+                if (SoundSource.Car != null)
+                {                    
+                    if (SoundSource.Car.Simulator.PlayerCarIsInTunnel)
+                    {
+                        isInTunnel = true;
+                    }
+                }
+
+                int targetSlot = OpenAL.AL_EFFECTSLOT_NULL;
+
+                if (isInTunnel && OpenAL.TunnelEffectSlotID != 0)
+                {
+                    // V tunelu posíláme do tunelového reverbu jak houkačku, tak zvuky motoru a kolejí
+                    targetSlot = OpenAL.TunnelEffectSlotID;
+                }
+                else if (IsHornStream && OpenAL.HornEffectSlotID != 0 && SoundSource.IsExternal && SoundSource.Viewer.Camera.Style == Camera.Styles.External)
+                {
+                    // Mimo tunel používá houkačka venku své otevřené echo/reverb
+                    targetSlot = OpenAL.HornEffectSlotID;
+                }
+
+                OpenAL.alSource3i(
+                    ALSoundSource.SoundSourceID,
+                    OpenAL.AL_AUXILIARY_SEND_FILTER,
+                    targetSlot,
+                    0,
+                    OpenAL.AL_FILTER_NULL
+                );
+            }
         }
 
         /// <summary>

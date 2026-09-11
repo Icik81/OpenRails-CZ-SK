@@ -2200,9 +2200,12 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                         break;
                 }
             }
-
+            
             if (wagon.WagonType == WagonTypes.Passenger && wagon.MassKG >= 37000)
             {
+                if (wagon.IsPlayerTrain && wagon.Simulator.LeadLocomotive is MSTSSteamLocomotive) return;
+                if (!wagon.IsPlayerTrain && wagon.Simulator.AILeadLocomotive is MSTSSteamLocomotive) return;
+
                 switch (wagon.WagonNumAxles)
                 {
                     case int n when n < 4:

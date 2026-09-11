@@ -2516,11 +2516,13 @@ namespace Orts.Simulation.RollingStocks
 
         public bool IsLeadLocomotive()
         {
+            Simulator.LeadLocomotive = this;
             return Train.LeadLocomotive == this;
         }
 
         public bool IsLeadAILocomotive()
         {
+            Simulator.AILeadLocomotive = this;
             return Train.AILeadLocomotive == this;
         }
 
@@ -8337,7 +8339,7 @@ namespace Orts.Simulation.RollingStocks
                 {                    
                     Simulator.CabRadioOn = CabRadio[LocoStation];
                     // Pro 3D kabiny je vysílačka zapnutá vždy
-                    if (HasFront3DCab || HasRear3DCab)
+                    if (HasFront3DCab || HasRear3DCab || this is MSTSSteamLocomotive)
                     {
                         Simulator.CabRadioOn = true;
                     }
@@ -14183,7 +14185,7 @@ namespace Orts.Simulation.RollingStocks
 
                 // Páry mají jen jedno stanoviště
                 if (this is MSTSSteamLocomotive || OneCabOneConsole)
-                {
+                {                    
                     if (LocoStation == 1)
                         TrainBrakeValue[2] = TrainBrakeValue[1];
                     else

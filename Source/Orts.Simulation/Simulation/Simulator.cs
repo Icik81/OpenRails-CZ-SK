@@ -355,7 +355,8 @@ namespace Orts.Simulation
         public float PlayerAbsSpeedMpS;
         public bool WeatherResetEmitter;
         public double RealTimeDifference;
-        
+        public TrainCar LeadLocomotive;
+        public TrainCar AILeadLocomotive;
 
         public List<PowerSupplyStation> powerSupplyStations;
         public List<VoltageChangeMarker> voltageChangeMarkers;

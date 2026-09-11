@@ -150,6 +150,9 @@ namespace Orts.Viewer3D
         public const int AL_EAXREVERB_ROOM_ROLLOFF_FACTOR = 0x0016;
         public const int AL_EAXREVERB_DECAY_HFLIMIT = 0x0017;
 
+        public const int AL_PAUSED = 0x1013;
+        public const int AL_STOPPED = 0x1014;
+
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr alcOpenDevice(string deviceName);
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -199,6 +202,8 @@ namespace Orts.Viewer3D
         public static extern void alGetListener3f(int attribute, out float value1, out float value2, out float value3);
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void alSourcePlay(int source);
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]        
+        public static extern void alSourcePause(int source);
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void alSourceRewind(int source);
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -304,6 +309,45 @@ namespace Orts.Viewer3D
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_QUARRY = new EFXEAXREVERBPROPERTIES(1.0000f, 1.0000f, 0.3162f, 0.3162f, 1.0000f, 1.4900f, 0.8300f, 1.0000f, 0.0000f, 0.0610f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 1.7783f, 0.0250f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 0.1250f, 0.7000f, 0.2500f, 0.0000f, 0.9943f, 5000.0000f, 250.0000f, 0.0000f, 0x1);
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_OUTDOORS_VALLEY = new EFXEAXREVERBPROPERTIES(1.0000f, 0.2800f, 0.3162f, 0.0282f, 0.1585f, 2.8800f, 0.2600f, 0.3500f, 0.1413f, 0.2630f, new float[] { 0.0000f, 0.0000f, -0.0000f }, 0.3981f, 0.1000f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 0.2500f, 0.3400f, 0.2500f, 0.0000f, 0.9943f, 2854.3999f, 107.5000f, 0.0000f, 0x0);
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_OUTDOORS_DEEPCANYON = new EFXEAXREVERBPROPERTIES(1.0000f, 0.7400f, 0.3162f, 0.1778f, 0.6310f, 3.8900f, 0.2100f, 0.4600f, 0.3162f, 0.2230f, new float[] { 0.0000f, 0.0000f, -0.0000f }, 0.3548f, 0.0190f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 0.2500f, 1.0000f, 0.2500f, 0.0000f, 0.9943f, 4399.1001f, 242.9000f, 0.0000f, 0x0);
+
+        public static int TunnelEffectSlotID;
+        public static int TunnelEffectID;
+
+        // Preset pro tunel (uzavřený, odrazivý prostor s vyšším dozvukem)
+        public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_TUNNEL = new EFXEAXREVERBPROPERTIES(
+            1.0f,     // flDensity
+            0.8f,     // flDiffusion
+            0.45f,    // flGain
+            0.75f,    // flGainHF
+            0.9f,     // flGainLF
+            3.2f,     // flDecayTime (délka dozvuku v sekundách)
+            0.65f,    // flDecayHFRatio
+            0.25f,    // flDecayLFRatio
+            0.25f,    // flReflectionsGain (časné odrazy od stěn tunelu)
+            0.020f,   // flReflectionsDelay
+            new float[] { 0.0f, 0.0f, 0.0f },
+            0.85f,    // flLateReverbGain
+            0.035f,   // flLateReverbDelay
+            new float[] { 0.0f, 0.0f, 0.0f },
+            0.25f,    // flEchoTime
+            0.0f,     // flEchoDepth
+            0.25f,    // flModulationTime
+            0.0f,     // flModulationDepth
+            0.994f,   // flAirAbsorptionGainHF
+            5000.0f,  // flHFReference
+            250.0f,   // flLFReference
+            0.0f,     // flRoomRolloffFactor
+            0x1       // iDecayHFLimit
+        );
+
+        public static void CreateTunnelEffect()
+        {
+            alGenEffects(1, out TunnelEffectID);
+            LoadReverbEffect(ref EFX_REVERB_PRESET_TUNNEL, TunnelEffectID);
+
+            alGenAuxiliaryEffectSlots(1, out TunnelEffectSlotID);
+            alAuxiliaryEffectSloti(TunnelEffectSlotID, AL_EFFECTSLOT_EFFECT, TunnelEffectID);
+        }
 
         public static void CreateHornEffect()
         {
@@ -421,6 +465,13 @@ namespace Orts.Viewer3D
             IntPtr device = alcOpenDevice(null);
             IntPtr context = alcCreateContext(device, attribs);
             alcMakeContextCurrent(context);
+
+            // Inicializace efektu (pokud je podporován EFX)
+            if (alIsExtensionPresent("ALC_EXT_EFX") == AL_TRUE || alcIsExtensionPresent(device, "ALC_EXT_EFX") == AL_TRUE)
+            {
+                CreateHornEffect();
+                CreateTunnelEffect(); 
+            }
 
             // Note: Must use custom marshalling here because the returned strings must NOT be automatically deallocated by runtime.
             Trace.TraceInformation("Initialized OpenAL {0}; device '{1}' by '{2}'", Marshal.PtrToStringAnsi(alGetString(AL_VERSION)), Marshal.PtrToStringAnsi(alGetString(AL_RENDERER)), Marshal.PtrToStringAnsi(alGetString(AL_VENDOR)));

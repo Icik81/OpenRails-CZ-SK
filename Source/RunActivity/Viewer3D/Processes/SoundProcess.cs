@@ -38,6 +38,8 @@ namespace Orts.Viewer3D.Processes
         readonly Thread Thread;
         readonly WatchdogToken WatchdogToken;
 
+        private bool wasPaused = false;
+
         // THREAD SAFETY:
         //   All accesses must be done in local variables. No modifications to the objects are allowed except by
         //   assignment of a new instance (possibly cloned and then modified).
@@ -126,6 +128,59 @@ namespace Orts.Viewer3D.Processes
             return true;
         }
 
+        private void PauseAllSources()
+        {
+            lock (SoundSources)
+            {
+                foreach (var list in SoundSources.Values)
+                {
+                    foreach (var soundSource in list)
+                    {
+                        if (soundSource is SoundSource src && src.SoundStreams != null)
+                        {
+                            foreach (var stream in src.SoundStreams)
+                            {
+                                if (stream.ALSoundSource != null && stream.ALSoundSource.isPlaying)
+                                {
+                                    // Pozastaví OpenAL zdroj na aktuálním samplu
+                                    OpenAL.alSourcePause(stream.ALSoundSource.SoundSourceID);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private void ResumeAllSources()
+        {
+            lock (SoundSources)
+            {
+                foreach (var list in SoundSources.Values)
+                {
+                    foreach (var soundSource in list)
+                    {
+                        if (soundSource is SoundSource src && src.SoundStreams != null)
+                        {
+                            foreach (var stream in src.SoundStreams)
+                            {
+                                if (stream.ALSoundSource != null)
+                                {
+                                    int state;
+                                    OpenAL.alGetSourcei(stream.ALSoundSource.SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
+                                    // Pokud byl zdroj pozastaven (AL_PAUSED = 0x1013)
+                                    if (state == OpenAL.AL_PAUSED)
+                                    {
+                                        OpenAL.alSourcePlay(stream.ALSoundSource.SoundSourceID);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         [CallOnThread("Sound")]
         void Sound()
         {
@@ -139,6 +194,18 @@ namespace Orts.Viewer3D.Processes
                     return;
 
                 OpenAL.alListenerf(OpenAL.AL_GAIN, Program.Simulator.Paused ? 0 : (float)Game.Settings.SoundVolumePercent / 100f);
+
+                // --- PAUZA / POKRAČOVÁNÍ ZVUKŮ ---
+                if (Program.Simulator.Paused && !wasPaused)
+                {
+                    wasPaused = true;
+                    PauseAllSources();
+                }
+                else if (!Program.Simulator.Paused && wasPaused)
+                {
+                    wasPaused = false;
+                    ResumeAllSources();
+                }
 
                 // Update activity sounds
                 if (viewer.Simulator.SoundNotify != Event.None)
