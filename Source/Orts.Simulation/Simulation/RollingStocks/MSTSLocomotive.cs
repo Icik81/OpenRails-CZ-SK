@@ -8320,7 +8320,7 @@ namespace Orts.Simulation.RollingStocks
             }
 
             // Generování cestujících na perónu při vzdálenosti menší než 1 km od stanice
-            if ((IsPlayerTrain || Train.Simulator.PlayerTrainInAutopilotMode) && Train.StationStops.Count > 0 && Train.LastStationName != Train.StationStops[0].PlatformItem.Name)
+            if (Train.StationStops.Count > 0 && Train.LastStationName != Train.StationStops[0].PlatformItem.Name)
             {
                 float distToStation = Train.ComputeDistanceToStation(Train.StationStops[0]);
                 if (distToStation < 1000.0f)

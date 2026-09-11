@@ -3609,7 +3609,8 @@ namespace Orts.Simulation.Timetables
         /// Update for train in Station state (train is at station)
         /// Override for AITrain class
         /// <\summary>
-
+        float BoardTime;
+        float BoardTimer;
         public override void UpdateStationState(float elapsedClockSeconds, int presentTime)
         {
             StationStop thisStation = StationStops[0];
@@ -3692,6 +3693,23 @@ namespace Orts.Simulation.Timetables
                 {
                     if ((!IsFreight || AITrainIsMixed) && Simulator.OpenDoorsInAITrains)
                     {
+                        if (ActualPassengerCountAtStation > 0)
+                        {
+                            thisStation.ActualArrival = presentTime;
+                            var stopTime = thisStation.CalculateDepartTime(presentTime, this);
+                            if (BoardTime == 0)
+                                BoardTime = stopTime / ActualPassengerCountAtStation;
+
+                            BoardTimer += elapsedClockSeconds;
+                            if (BoardTimer > BoardTime * 0.75f)
+                            {
+                                ActualPassengerCountAtStation--;
+                                BoardTimer = 0;
+                            }
+                        }
+                        else
+                            BoardTime = 0;
+
                         var frontIsFront = thisStation.Direction == 0;
                         if (doorOpenDelay > 0)
                         {

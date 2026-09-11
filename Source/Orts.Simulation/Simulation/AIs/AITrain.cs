@@ -2144,6 +2144,8 @@ namespace Orts.Simulation.AIs
         /// Train is at station
         /// </summary>
 
+        float BoardTime;
+        float BoardTimer;
         public virtual void UpdateStationState(float elapsedClockSeconds, int presentTime)
         {
             StationStop thisStation = StationStops[0];
@@ -2171,8 +2173,7 @@ namespace Orts.Simulation.AIs
                     {
                         doorOpenDelay = 0;
                         doorCloseAdvance = stopTime - 3;
-                    }
-
+                    }                    
 #if DEBUG_REPORTS
                     DateTime baseDT = new DateTime();
                     DateTime arrTime = baseDT.AddSeconds(presentTime);
@@ -2200,6 +2201,23 @@ namespace Orts.Simulation.AIs
                 {
                     if ((!IsFreight || AITrainIsMixed) && Simulator.OpenDoorsInAITrains)
                     {
+                        if (ActualPassengerCountAtStation > 0)
+                        {
+                            thisStation.ActualArrival = presentTime;
+                            var stopTime = thisStation.CalculateDepartTime(presentTime, this);
+                            if (BoardTime == 0)
+                                BoardTime = stopTime / ActualPassengerCountAtStation;
+
+                            BoardTimer += elapsedClockSeconds;
+                            if (BoardTimer > BoardTime * 0.75f)
+                            {
+                                ActualPassengerCountAtStation--;
+                                BoardTimer = 0;
+                            }
+                        }
+                        else
+                            BoardTime = 0;
+
                         var frontIsFront = thisStation.PlatformReference == thisStation.PlatformItem.PlatformFrontUiD;
                         if (doorOpenDelay > 0)
                         {

@@ -20,6 +20,7 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation;
+using Orts.Simulation.Physics;
 using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
@@ -268,6 +269,8 @@ namespace Orts.Viewer3D
     public class PlatformPassengerShape : StaticShape
     {
         public bool Visible { get; set; } = false;
+        public string StationName { get; set; } = string.Empty;
+        public int TCSectionIndex { get; set; } = -1;
 
         public PlatformPassengerShape(Viewer viewer, string path, WorldPosition position)
             : base(viewer, path, position, ShapeFlags.None)
@@ -291,7 +294,7 @@ namespace Orts.Viewer3D
         static readonly ConcurrentDictionary<string, string> ShapePathCache = new ConcurrentDictionary<string, string>(StringComparer.OrdinalIgnoreCase);
         static readonly ConcurrentDictionary<string, ShapeDescriptorFile> SdFileCache = new ConcurrentDictionary<string, ShapeDescriptorFile>(StringComparer.OrdinalIgnoreCase);
         public static readonly HashSet<string> SpawnedStationNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-        public readonly List<PlatformPassengerShape> PlatformPassengers = new List<PlatformPassengerShape>();        
+        public readonly List<PlatformPassengerShape> PlatformPassengers = new List<PlatformPassengerShape>();
 
         public struct DyntrackParams
         {
@@ -334,8 +337,8 @@ namespace Orts.Viewer3D
 
             var WFileName = WorldFileNameFromTileCoordinates(tileX, tileZ);
             var WFilePath = viewer.Simulator.RoutePath + @"\World\" + WFileName;
-            
-            var pendingPlatforms = new List<Tuple<PlatformObj, WorldPosition>>();                        
+
+            var pendingPlatforms = new List<Tuple<PlatformObj, WorldPosition>>();
 
             if (!File.Exists(WFilePath))
             {
@@ -361,7 +364,7 @@ namespace Orts.Viewer3D
                         containsMovingTable = true;
                         break;
                     }
-            }            
+            }
 
             foreach (var worldObject in WFile.Tr_Worldfile)
             {
@@ -651,7 +654,6 @@ namespace Orts.Viewer3D
                 }
             }
 
-
             if (Viewer.Settings.ModelInstancing)
             {
                 var instances = new Dictionary<string, List<StaticShape>>(StringComparer.OrdinalIgnoreCase);
@@ -698,7 +700,7 @@ namespace Orts.Viewer3D
             foreach (var p in pendingPlatforms)
             {
                 SpawnPlatformPassengers(p.Item1, p.Item2);
-            }            
+            }
         }
 
         public string ShapeIsORClock(string shape)
@@ -781,7 +783,8 @@ namespace Orts.Viewer3D
         }
 
         Vector3 localVectorToPlatform;
-        // Osazení cestujících na nástupištích
+
+        // Osazení cestujících na nástupištích pro jakýkoliv vlak (hráč i AI)
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
             if (Viewer.Simulator.PassengerList == null || Viewer.Simulator.PassengerList.Models.Count == 0)
@@ -802,22 +805,6 @@ namespace Orts.Viewer3D
             if (string.IsNullOrEmpty(platformStationName))
                 return;
 
-            var playerTrain = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
-            if (playerTrain == null || playerTrain.StationStops == null || playerTrain.StationStops.Count == 0)
-                return;
-
-            if (playerTrain.PreviousStop?.PlatformItem != null)
-            {
-                string prevName = playerTrain.PreviousStop.PlatformItem.Name;
-
-                if (!string.IsNullOrEmpty(prevName) && prevName.Equals(platformStationName, StringComparison.OrdinalIgnoreCase))
-                    return;
-            }
-
-            var currentStop = playerTrain.StationStops[0];
-            if (currentStop?.PlatformItem == null)
-                return;
-
             var startLoc = new WorldLocation(pItem1.TileX, pItem1.TileZ, pItem1.X, pItem1.Y, pItem1.Z);
             var trackNodes = Viewer.Simulator.TDB.TrackDB.TrackNodes;
             var tsection = Viewer.Simulator.TSectionDat;
@@ -827,15 +814,61 @@ namespace Orts.Viewer3D
             tcPos.SetTCPosition(traveller.TN.TCCrossReference, traveller.TrackNodeOffset, (int)traveller.Direction);
             int tcSectionIdx = tcPos.TCSectionIndex;
 
-            string currentStopName = currentStop.PlatformItem.Name;
-            if (string.IsNullOrEmpty(currentStopName) ||
-                !platformStationName.Equals(currentStopName, StringComparison.OrdinalIgnoreCase) ||
-                currentStop.TCSectionIndex != tcSectionIdx)
+            // Získání všech vlaků (hráč i AI) v simulátoru
+            var allTrains = new List<Train>();
+            if (Viewer.Simulator.Trains != null)
+                allTrains.AddRange(Viewer.Simulator.Trains);
+            if (Viewer.Simulator.AI?.AITrains != null)
             {
-                return;
-            }            
+                foreach (var ai in Viewer.Simulator.AI.AITrains)
+                {
+                    if (!allTrains.Contains(ai))
+                        allTrains.Add(ai);
+                }
+            }
 
-            int passengerCount = playerTrain.ActualPassengerCountAtStation;
+            Train targetTrain = null;
+            StationStop currentStop = null;
+
+            // Najdeme vlak (hráčův nebo AI), který na tomto nástupišti zastavuje
+            foreach (var t in allTrains)
+            {
+                if (t == null || t.StationStops == null || t.StationStops.Count == 0)
+                    continue;
+
+                // Vyloučit vlaky, pro které to byla minulá zastávka
+                if (t.PreviousStop?.PlatformItem != null)
+                {
+                    string prevName = t.PreviousStop.PlatformItem.Name;
+                    if (!string.IsNullOrEmpty(prevName) && prevName.Equals(platformStationName, StringComparison.OrdinalIgnoreCase))
+                        continue;
+                }
+
+                var stop = t.StationStops[0];
+                if (stop?.PlatformItem == null)
+                    continue;
+
+                string stopName = stop.PlatformItem.Name;
+                if (!string.IsNullOrEmpty(stopName) &&
+                    platformStationName.Equals(stopName, StringComparison.OrdinalIgnoreCase) &&
+                    stop.TCSectionIndex == tcSectionIdx)
+                {
+                    targetTrain = t;
+                    currentStop = stop;
+                    break;
+                }
+            }
+
+            if (targetTrain == null || currentStop == null)
+                return;
+
+            // AI vlaky nemají aktuální počet cestujících, takže použijeme počet čekajících na nástupišti
+            if (!targetTrain.IsActualPlayerTrain)
+            {
+                targetTrain.ActualPassengerCountAtStation = targetTrain.StationStops[0].PlatformItem.NumPassengersWaiting;
+            }
+
+            int passengerCount = targetTrain.ActualPassengerCountAtStation;
             if (passengerCount <= 0)
                 return;
 
@@ -855,8 +888,8 @@ namespace Orts.Viewer3D
             float midPoint = length * 0.5f;
             float spawnStart = midPoint * (1.0f / 10.0f);
             float spawnEnd = midPoint + (midPoint * (9.0f / 10.0f));
-            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);            
-            float baseLateralOffset = 2.4f;
+            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
+            float baseLateralOffset = 2.5f;
             var rand = Simulator.Random;
             var placedPoints = new List<Vector2>(passengerCount);
             const float minDistance = 0.85f;
@@ -865,10 +898,9 @@ namespace Orts.Viewer3D
             float lastKnownPlatformHeightOffset = defaultPlatformOffset;
 
             #region Výpočet výšky nástupiště
-            // Najdeme výšku nástupiště
             float topY0 = 0;
             for (int i = 0; i < passengerCount; i++)
-            {                
+            {
                 Vector3 candidatePos = Vector3.Zero;
                 Traveller selectedTraveller = null;
                 bool validPosFound = false;
@@ -888,28 +920,28 @@ namespace Orts.Viewer3D
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
 
-                    // 1. Tečný vektor koleje v místě cestujícího odvozený z rotace trati (MSTS X-Z rovina)
+                    // 1. Tečný vektor koleje v místě cestujícího odvozený z rotace trati
                     float rotY = pTrav.RotY;
                     Vector3 trackTangent = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
 
-                    // 2. Kolmý vektor k ose koleje doprava (otočení o 90° v MSTS X-Z rovině)
+                    // 2. Kolmý vektor k ose koleje doprava
                     Vector3 localTrackRight = new Vector3(trackTangent.Z, 0, -trackTangent.X);
 
                     // 3. Vektor směřující do nástupiště
                     localVectorToPlatform = currentStop.PlatformItem.PlatformSide[0] ? localTrackRight : -localTrackRight;
 
                     // Boční odstup od osy koleje přímo ve směru perónu
-                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 1.0f;
+                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 0.7f;
 
                     // MSTS souřadnice bodu na perónu od osy kolejnice
                     float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
                     float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
 
-                    // 1. Primárně zkusit Bounding Box (pokud existuje v .sd)
-                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);                    
+                    // Primárně zkusit Bounding Box
+                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
                     float topY1 = float.MinValue;
                     float topY2 = float.MinValue;
-                    // 2. Pokud Bounding Box není k dispozici, odvodit výšku přímo z modelu v sceneryObjects
+
                     if (topY <= float.MinValue + 1000f)
                     {
                         topY1 = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, false, 15.0f);
@@ -929,7 +961,7 @@ namespace Orts.Viewer3D
                         if (measuredOffset >= 0.35f && measuredOffset <= 1.15f)
                         {
                             finalPlatformY = topY;
-                            lastKnownPlatformHeightOffset = measuredOffset; // Uložíme zjištěnou výšku pro ostatní díly perónu
+                            lastKnownPlatformHeightOffset = measuredOffset;
                         }
                         else
                         {
@@ -938,7 +970,6 @@ namespace Orts.Viewer3D
                     }
                     else
                     {
-                        // Použije se výška zjištěná z předchozího úspěšného segmentu perónu
                         finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
                     }
 
@@ -972,7 +1003,7 @@ namespace Orts.Viewer3D
                 if (!validPosFound || selectedTraveller == null)
                     continue;
             }
-#endregion Výpočet výšky nástupiště
+            #endregion
 
             placedPoints = new List<Vector2>(passengerCount);
             for (int i = 0; i < passengerCount; i++)
@@ -1007,23 +1038,16 @@ namespace Orts.Viewer3D
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
 
-                    // 1. Tečný vektor koleje v místě cestujícího odvozený z rotace trati (MSTS X-Z rovina)
                     float rotY = pTrav.RotY;
                     Vector3 trackTangent = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
-
-                    // 2. Kolmý vektor k ose koleje doprava (otočení o 90° v MSTS X-Z rovině)
                     Vector3 localTrackRight = new Vector3(trackTangent.Z, 0, -trackTangent.X);
-
-                    // 3. Vektor směřující do nástupiště
                     localVectorToPlatform = currentStop.PlatformItem.PlatformSide[0] ? localTrackRight : -localTrackRight;
 
-                    // Boční odstup od osy koleje přesně kolmo k oblouku v daném bodě
-                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 1.0f;
-
+                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 0.7f;
                     float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
                     float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
 
-                    var finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;                    
+                    var finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
 
                     Vector3 testPos = new Vector3(
                         mstsQueryX,
@@ -1082,8 +1106,12 @@ namespace Orts.Viewer3D
                     XNAMatrix = rot
                 };
 
-                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos);
-                passengerShape.Visible = (i < playerTrain.ActualPassengerCountAtStation);
+                var passengerShape = new PlatformPassengerShape(Viewer, shapePath, worldPos)
+                {
+                    StationName = platformStationName,
+                    TCSectionIndex = tcSectionIdx,
+                    Visible = (i < targetTrain.ActualPassengerCountAtStation)
+                };
                 PlatformPassengers.Add(passengerShape);
             }
         }
@@ -1144,15 +1172,64 @@ namespace Orts.Viewer3D
 
             if (PlatformPassengers.Count > 0)
             {
-                var playerTrain = Viewer.Simulator.OriginalPlayerTrain ?? Viewer.Simulator.PlayerLocomotive?.Train;
-                if (playerTrain != null)
+                // Sestavení seznamu všech vlaků
+                var allTrains = new List<Train>();
+                if (Viewer.Simulator.Trains != null)
+                    allTrains.AddRange(Viewer.Simulator.Trains);
+                if (Viewer.Simulator.AI?.AITrains != null)
                 {
-                    int targetCount = playerTrain.ActualPassengerCountAtStation;
-                    if (targetCount < 0) targetCount = 0;
-
-                    for (int i = 0; i < PlatformPassengers.Count; i++)
+                    foreach (var ai in Viewer.Simulator.AI.AITrains)
                     {
-                        PlatformPassengers[i].Visible = (i < targetCount);
+                        if (!allTrains.Contains(ai))
+                            allTrains.Add(ai);
+                    }
+                }
+
+                // Seskupení cestujících podle konkrétního nástupiště
+                var groups = PlatformPassengers.GroupBy(p => new { p.StationName, p.TCSectionIndex });
+
+                foreach (var group in groups)
+                {
+                    Train relevantTrain = null;
+
+                    foreach (var t in allTrains)
+                    {
+                        if (t == null || t.StationStops == null || t.StationStops.Count == 0)
+                            continue;
+
+                        // Pokud minulá zastávka odpovídá tomuto perónu, ignorujeme
+                        if (t.PreviousStop?.PlatformItem != null)
+                        {
+                            string prevName = t.PreviousStop.PlatformItem.Name;
+                            if (!string.IsNullOrEmpty(prevName) && prevName.Equals(group.Key.StationName, StringComparison.OrdinalIgnoreCase))
+                                continue;
+                        }
+
+                        var stop = t.StationStops[0];
+                        if (stop?.PlatformItem == null)
+                            continue;
+
+                        string stopName = stop.PlatformItem.Name;
+                        if (!string.IsNullOrEmpty(stopName) &&
+                            group.Key.StationName.Equals(stopName, StringComparison.OrdinalIgnoreCase) &&
+                            stop.TCSectionIndex == group.Key.TCSectionIndex)
+                        {
+                            relevantTrain = t;
+                            break;
+                        }
+                    }
+
+                    int targetCount = 0;
+                    if (relevantTrain != null)
+                    {
+                        targetCount = Math.Max(0, relevantTrain.ActualPassengerCountAtStation);
+                    }
+
+                    int idx = 0;
+                    foreach (var pax in group)
+                    {
+                        pax.Visible = (idx < targetCount);
+                        idx++;
                     }
                 }
             }
