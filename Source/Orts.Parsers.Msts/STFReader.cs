@@ -821,6 +821,12 @@ namespace Orts.Parsers.Msts
             /// </summary>    
             PressureRateDefaultPascal = 1 << 29,
 
+            /// <summary>
+            /// Valid Units: gal, l
+            /// <para>Scaled to cubic metres.</para>
+            /// </summary>
+            VolumeDefaultCubicMetres = 1 << 30,
+
             // "Any" is used where units cannot easily be specified, such as generic routines for interpolating continuous data from point values.
             // or interpreting locomotive cab attributes from the ORTSExtendedCVF experimental mechanism.
             // "Any" should not be used where the dimensions of a unit are predictable.
@@ -934,6 +940,26 @@ namespace Orts.Parsers.Msts
                     case "gal": return 3.78541f;  // US gallons
                     case "gals": return 3.78541f; // US gallons
                 }
+            
+            if ((validUnits & UNITS.VolumeDefaultCubicMetres) > 0)
+            {
+                switch(suffix)
+                {
+                    case "":
+                    case "*(m^3)":
+                    case "m^3": return 1;
+                    case "*(ft^3)":
+                    case "ft^3": return 0.0283168;
+                    case "*(in^3)":
+                    case "in^3": return 0.0000163871;
+                    case "l": return 1e-3;
+                    case "g-uk": return 0.00454609;
+                    case "g-us":
+                    case "gal": // US gallons
+                    case "gals": return 0.00378541; // US gallons
+                }
+            }
+            
             if ((validUnits & UNITS.VolumeDefaultFT3) > 0)
                 switch (suffix)
                 {
