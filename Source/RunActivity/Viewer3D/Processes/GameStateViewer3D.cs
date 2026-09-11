@@ -17,9 +17,9 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using Orts.MultiPlayer;
 using Orts.Viewer3D.Debugging;
 using System;
+using Orts.Simulation.MultiPlayer;
 
 namespace Orts.Viewer3D.Processes
 {

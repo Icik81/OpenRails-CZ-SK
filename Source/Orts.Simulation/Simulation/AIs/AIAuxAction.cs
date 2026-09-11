@@ -22,23 +22,20 @@
  * 
  */
 
-using Newtonsoft.Json;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.Signalling;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using static Orts.Simulation.Physics.Train;
-using static System.Collections.Specialized.BitVector32;
+using Newtonsoft.Json;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.Signalling;
 
-namespace Orts.Simulation.AIs
+namespace Orts.Simulation.Simulation.AIs
 {
     #region AuxActionsContainer
 

@@ -25,6 +25,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Orts.Simulation.Simulation;
 
 namespace Orts.Viewer3D
 {

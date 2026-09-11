@@ -16,9 +16,9 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.Xna.Framework;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System.Diagnostics;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D.RollingStock
 {

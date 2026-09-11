@@ -1,8 +1,8 @@
-using LibAE.Formats;
 using System;
 using System.Windows.Forms;
+using LibAE.Formats;
 
-namespace AEWizard
+namespace ActivityEditor.Wizard
 {
     /// <summary>
     /// Represents a single page within a wizard dialog.

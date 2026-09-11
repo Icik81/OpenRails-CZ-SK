@@ -21,12 +21,13 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Signalling;
 using ORTS.Common;
 using System;
 using System.Diagnostics;
 using System.Linq;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.Signalling;
 
 namespace Orts.Viewer3D.Popups
 {

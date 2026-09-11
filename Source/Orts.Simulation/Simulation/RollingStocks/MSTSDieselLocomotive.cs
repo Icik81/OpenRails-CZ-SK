@@ -30,25 +30,24 @@
 
 //#define ALLOW_ORTS_SPECIFIC_ENG_PARAMETERS
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
-using ORTS.Common;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Parsers.Msts;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.CruiseControl;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
     ///////////////////////////////////////////////////
     ///   SIMULATION BEHAVIOUR

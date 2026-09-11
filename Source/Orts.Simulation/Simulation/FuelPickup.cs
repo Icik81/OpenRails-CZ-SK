@@ -17,13 +17,13 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Orts.Formats.Msts;
-using Orts.Simulation.RollingStocks;
-using ORTS.Common;
 using System.Collections.Generic;
 using System.Linq;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     public class FuelManager
     {

@@ -16,10 +16,10 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using GNU.Gettext;
-using MSTS;
 using Orts.Formats.Msts;
 using System.Collections.Generic;
 using System.IO;
+using ORTS.Content;
 
 namespace ORTS.Menu
 {

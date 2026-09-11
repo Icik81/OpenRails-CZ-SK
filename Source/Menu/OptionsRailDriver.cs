@@ -1,5 +1,4 @@
 ﻿using Orts.ExternalDevices;
-using Orts.Menu;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Settings;

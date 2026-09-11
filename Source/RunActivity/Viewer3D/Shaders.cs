@@ -25,12 +25,12 @@ using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json.Linq;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D
 {

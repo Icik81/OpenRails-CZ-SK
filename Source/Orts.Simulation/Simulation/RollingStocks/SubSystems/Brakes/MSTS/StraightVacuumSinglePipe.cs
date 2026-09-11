@@ -16,15 +16,15 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.MultiPlayer;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.MultiPlayer;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
     class StraightVacuumSinglePipe : VacuumSinglePipe
     {

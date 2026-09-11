@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
+using Orts.Simulation.Simulation;
 
 namespace Orts.Viewer3D.Common
 {

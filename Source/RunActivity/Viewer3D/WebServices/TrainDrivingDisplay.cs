@@ -15,15 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using ORTS.Common.Input;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
 
 namespace Orts.Viewer3D.WebServices
 {
@@ -186,7 +187,7 @@ namespace Orts.Viewer3D.WebServices
             AddLabel(new ListLabel
             {
                 FirstCol = Viewer.Catalog.GetString("Time"),
-                LastCol = FormatStrings.FormatTime(viewer.Simulator.ClockTime + (MultiPlayer.MPManager.IsClient() ? MultiPlayer.MPManager.Instance().serverTimeDifference : 0)),
+                LastCol = FormatStrings.FormatTime(viewer.Simulator.ClockTime + (MPManager.IsClient() ? MPManager.Instance().serverTimeDifference : 0)),
             });
             if (viewer.Simulator.IsReplaying)
             {

@@ -17,11 +17,11 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Orts.Common;
 using Orts.Viewer3D.Popups;
 using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using System;
+using Orts.Simulation.Common;
 
 namespace Orts.Viewer3D
 {

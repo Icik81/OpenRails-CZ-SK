@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Win32;
 using System.IO;
+using Microsoft.Win32;
 
-namespace MSTS
+namespace ORTS.Content
 {
     // TODO: Replace this with a full-on ORTS.Content.ContentManager.
     /// <summary>

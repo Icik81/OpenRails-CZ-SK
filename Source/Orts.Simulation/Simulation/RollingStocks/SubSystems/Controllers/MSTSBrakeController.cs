@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using ORTS.Scripting.Api;
+using Orts.Simulation.Common.Scripting;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
 {
     /**
      * This is the a Controller used to control brakes.

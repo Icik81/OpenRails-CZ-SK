@@ -15,17 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Parsers.Msts;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using static Orts.Formats.Msts.TrackTypesFile;
-using Event = Orts.Common.Event;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
 {
     public class Pantographs
     {

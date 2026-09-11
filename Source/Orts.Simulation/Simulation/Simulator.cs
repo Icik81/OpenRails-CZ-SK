@@ -15,38 +15,31 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using GNU.Gettext;
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Common.Scripting;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Simulation.AIs;
-using Orts.Simulation.cz.aspfree.lkpr;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Properties;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.Signalling;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
-using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Forms;
-using static Orts.Simulation.Physics.Train;
-using static Orts.Simulation.RollingStocks.MSTSLocomotive;
-using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
-using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Event = Orts.Common.Event;
+using GNU.Gettext;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using ORTS.Content;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using ORTS.Settings;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.cz.aspfree.lkpr;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
+using Orts.Simulation.Simulation.Timetables;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.Mirel;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     /// <summary>
     /// This contains all the essential code to operate trains along paths as defined
@@ -485,7 +478,7 @@ namespace Orts.Simulation
             Trace.Write("Loading ");
 
             Trace.Write(" TRK");
-            TRK = new RouteFile(MSTS.MSTSPath.GetTRKFileName(RoutePath));
+            TRK = new RouteFile(MSTSPath.GetTRKFileName(RoutePath));
             RouteName = TRK.Tr_RouteFile.Name;
             MilepostUnitsMetric = TRK.Tr_RouteFile.MilepostUnitsMetric;
             OpenDoorsInAITrains = TRK.Tr_RouteFile.OpenDoorsInAITrains == null ? Settings.OpenDoorsInAITrains : (bool)TRK.Tr_RouteFile.OpenDoorsInAITrains;
@@ -805,7 +798,7 @@ namespace Orts.Simulation
                 foreach (var movingTable in MovingTables) movingTable.Restore(inf, this);
             }
 
-            ActivityRun = Orts.Simulation.Activity.Restore(inf, this, ActivityRun);
+            ActivityRun = Simulation.Activity.Restore(inf, this, ActivityRun);
             Signals.RestoreTrains(Trains);  // restore links to trains
             Signals.Update(true);           // update all signals once to set proper stat
             MPManager.Instance().RememberOriginalSwitchState(); // this prepares a string that must then be passed to clients
@@ -857,7 +850,7 @@ namespace Orts.Simulation
             if (MovingTables != null && MovingTables.Count >= 0)
                 foreach (var movingtable in MovingTables) movingtable.Save(outf);
 
-            Orts.Simulation.Activity.Save(outf, ActivityRun);
+            Simulation.Activity.Save(outf, ActivityRun);
         }
 
         Train InitializeTrains(CancellationToken cancellation)
@@ -2780,7 +2773,7 @@ namespace Orts.Simulation
             //car.CreateEvent(63);
             if (MPManager.IsMultiPlayer())
             {
-                MPManager.Notify((new Orts.MultiPlayer.MSGUncouple(train, train2, Orts.MultiPlayer.MPManager.GetUserName(), car.CarID, PlayerLocomotive)).ToString());
+                MPManager.Notify((new MSGUncouple(train, train2, MPManager.GetUserName(), car.CarID, PlayerLocomotive)).ToString());
             }
             if (Confirmer != null && IsReplaying) Confirmer.Confirm(CabControl.Uncouple, train.LastCar.CarID);
             if (AI != null) AI.aiListChanged = true;

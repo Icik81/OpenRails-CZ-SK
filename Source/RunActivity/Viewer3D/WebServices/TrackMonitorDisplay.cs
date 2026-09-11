@@ -16,13 +16,14 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Microsoft.Xna.Framework;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Orts.Simulation.Physics.Train.TrainObjectItem;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using static Orts.Simulation.Simulation.Physics.Train.TrainObjectItem;
 
 namespace Orts.Viewer3D.WebServices
 {
@@ -258,7 +259,7 @@ namespace Orts.Viewer3D.WebServices
             { Train.OUTOFCONTROL.UNDEFINED, "Undefined" },
         };
 
-        private static int RowOffset { get => MultiPlayer.MPManager.IsMultiPlayer() ? 1 : 2; }
+        private static int RowOffset { get => MPManager.IsMultiPlayer() ? 1 : 2; }
 
         /// <summary>
         /// Retrieve a formatted list ListLabels to be displayed as an in-browser Track Monitor.
@@ -367,7 +368,7 @@ namespace Orts.Viewer3D.WebServices
             var trackLabels = new List<ListLabel>(MakeTracks(trackColor));
             if (thisInfo != null)
             {
-                if (MultiPlayer.MPManager.IsMultiPlayer())
+                if (MPManager.IsMultiPlayer())
                 {
                     DrawMPModeInfo(trackLabels, thisInfo, useMetric);
                 }
@@ -1085,7 +1086,7 @@ namespace Orts.Viewer3D.WebServices
                 case 108: // Manual mode upper zone
                     return (int)MathHelper.Clamp(itemLocation * (6f / 93f), 0, 6);
                 case 132:// lower zone
-                    return Orts.MultiPlayer.MPManager.IsMultiPlayer() ? Round(MathHelper.Clamp(itemLocation * (16.0f / 266.0f), 9, 16))// MultiPlayer mode
+                    return MPManager.IsMultiPlayer() ? Round(MathHelper.Clamp(itemLocation * (16.0f / 266.0f), 9, 16))// MultiPlayer mode
                         : Round(MathHelper.Clamp(itemLocation * (16f / 232f), 10, 16));// Manual mode
                 default:
                     return 0;

@@ -28,21 +28,16 @@
  */
 
 
-using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Serialization;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml;
-using static Orts.Simulation.RollingStocks.MSTSLocomotive;
+using ORTS.Common;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using static Orts.Simulation.Simulation.RollingStocks.MSTSLocomotive;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
 
     ///////////////////////////////////////////////////

@@ -20,8 +20,6 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Settings;
@@ -30,6 +28,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.Simulation.Timetables;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -687,7 +690,7 @@ namespace Orts.Viewer3D.Popups
                             if (actualStatusVisible)
                             {
                                 DbfEvalValues.Add("Train Overturned", TrainCar.DbfEvalTrainOverturned);
-                                DbfEvalValues.Add("Alerter applications above 10MPH/16KMH", Simulation.RollingStocks.SubSystems.ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh);
+                                DbfEvalValues.Add("Alerter applications above 10MPH/16KMH", ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh);
                                 DbfEvalValues.Add("Auto pilot (Time)", Viewer.DbfEvalAutoPilotTimeS);
                                 DbfEvalValues.Add(lbreakcouplers ? "Coupler breaks" : "Coupler overloaded", Train.NumOfCouplerBreaks);
                                 DbfEvalValues.Add("Coupling speed limits", Simulator.DbfEvalOverSpeedCoupling);
@@ -1085,7 +1088,7 @@ namespace Orts.Viewer3D.Popups
                             outmesssagecolor(labeltext, colWidth, Color.Yellow, true, 6, 0);
 
                             //Full Brake applications under 5MPH / 8KMH. 2.
-                            int nfullbrakeappunder8kmh = Simulation.RollingStocks.MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh;
+                            int nfullbrakeappunder8kmh = MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh;
                             labeltext = "  Full Train Brake applications under 5MPH/8KMH=" + nfullbrakeappunder8kmh;
                             outmesssage(labeltext, colWidth * 8, true, 5);
                             nfullbrakeappunder8kmh = 2 * nfullbrakeappunder8kmh;
@@ -1103,7 +1106,7 @@ namespace Orts.Viewer3D.Popups
                             nebpbstopped = 5 * nebpbstopped;
 
                             //Alerter Penalty applications above 16KMH ~ 10MPH. 35.                            
-                            int nfullbrakeabove16kmh = Simulation.RollingStocks.SubSystems.ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh;
+                            int nfullbrakeabove16kmh = ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh;
                             labeltext = "  Alerter applications above 10MPH/16KMH=" + nfullbrakeabove16kmh;
                             outmesssage(labeltext, colWidth * 8, true, 5);
                             nfullbrakeabove16kmh = 35 * nfullbrakeabove16kmh;
@@ -1184,7 +1187,7 @@ namespace Orts.Viewer3D.Popups
             {
                 Tabs.Add(new TabData(Tab.TimetableBriefing, Viewer.Catalog.GetString("Briefing"), (cl) =>
                 {
-                    var tTTrain = owner.Viewer.SelectedTrain as Orts.Simulation.Timetables.TTTrain;
+                    var tTTrain = owner.Viewer.SelectedTrain as TTTrain;
                     var scrollbox = cl.AddLayoutScrollboxVertical(cl.RemainingWidth);
                     var briefing = tTTrain?.Briefing ?? "";
                     var textFlow = new TextFlow(scrollbox.RemainingWidth, briefing);

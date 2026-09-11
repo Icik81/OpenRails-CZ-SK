@@ -16,7 +16,7 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
     public class AirTwinPipe : AirSinglePipe
     {

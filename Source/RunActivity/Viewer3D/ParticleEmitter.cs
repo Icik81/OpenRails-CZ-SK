@@ -22,10 +22,10 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D
 {

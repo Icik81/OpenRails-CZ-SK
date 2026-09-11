@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ORTS.Content;
 
 namespace ORTS.TrackViewer.Drawing
 {
@@ -56,7 +57,7 @@ namespace ORTS.TrackViewer.Drawing
             this.storedRoutePath = routePath;
 
             messageDelegate(TrackViewer.catalog.GetString("Loading trackfile .trk ..."));
-            RouteFile TRK = new RouteFile(MSTS.MSTSPath.GetTRKFileName(routePath));
+            RouteFile TRK = new RouteFile(MSTSPath.GetTRKFileName(routePath));
             RouteName = TRK.Tr_RouteFile.Name;
 
             messageDelegate(TrackViewer.catalog.GetString("Loading track database .tdb ..."));

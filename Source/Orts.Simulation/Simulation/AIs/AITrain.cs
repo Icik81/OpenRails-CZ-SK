@@ -28,25 +28,22 @@
 // #define DEBUG_TRACEINFO
 // DEBUG flag for debug prints
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.AIs
+namespace Orts.Simulation.Simulation.AIs
 {
     public class AITrain : Train
     {

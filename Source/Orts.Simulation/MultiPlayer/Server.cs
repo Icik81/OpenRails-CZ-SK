@@ -21,7 +21,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class Server
     {

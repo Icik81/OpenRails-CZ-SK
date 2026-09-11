@@ -17,7 +17,7 @@
 
 using System.IO;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
 {
     public enum ControllerTypes
     {

@@ -17,12 +17,13 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using Orts.Common;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Common.Input;
 using System;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -45,7 +46,7 @@ namespace Orts.Viewer3D.RollingStock
                 Event evt;
                 foreach (var panto in ElectricLocomotive.Pantographs.List)
                 {
-                    if (panto.State == ORTS.Scripting.Api.PantographState.Up)
+                    if (panto.State == PantographState.Up)
                     {
                         switch (iPanto)
                         {

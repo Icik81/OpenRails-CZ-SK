@@ -36,25 +36,26 @@
 // Debug for Freight Animation Variable Mass
 //#define DEBUG_VARIABLE_MASS
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
+using Event = Orts.Simulation.Common.Event;
+using EventHandler = Orts.Simulation.Common.EventHandler;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
 
     ///////////////////////////////////////////////////
@@ -4533,7 +4534,7 @@ namespace Orts.Simulation.RollingStocks
         }
 
         // sound sources and viewers can register themselves to get direct notification of an event
-        public List<Orts.Common.EventHandler> EventHandlers = new List<Orts.Common.EventHandler>();
+        public List<EventHandler> EventHandlers = new List<EventHandler>();
 
         public MSTSCoupling Coupler
         {

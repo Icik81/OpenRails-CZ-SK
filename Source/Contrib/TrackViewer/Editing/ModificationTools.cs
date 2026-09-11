@@ -16,6 +16,7 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Orts.Simulation;
+using Orts.Simulation.Simulation;
 
 namespace ORTS.TrackViewer.Editing
 {

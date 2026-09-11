@@ -16,9 +16,8 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework;
-using Orts.Viewer3D.RollingStock.Subsystems.ETCS;
-using ORTS.Scripting.Api.ETCS;
 using System.Collections.Generic;
+using Orts.Simulation.Common.Scripting;
 
 namespace Orts.Viewer3D.RollingStock.SubSystems.ETCS
 {

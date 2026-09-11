@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.RollingStocks;
 using System;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting.PowerSupply
 {
     /// <summary>
     /// Power supply for electric locomotives

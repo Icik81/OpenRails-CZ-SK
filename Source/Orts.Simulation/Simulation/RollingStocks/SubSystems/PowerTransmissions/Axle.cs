@@ -15,12 +15,11 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.cz.aspfree.lkpr;
-using ORTS.Common;
 using System;
 using System.IO;
+using ORTS.Common;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
 {
     /// <summary>
     /// Axle drive type to determine an input and solving method for axles

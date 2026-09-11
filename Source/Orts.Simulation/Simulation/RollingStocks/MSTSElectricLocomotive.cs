@@ -27,28 +27,25 @@
  * 
  */
 
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.cz.aspfree.lkpr;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
     ///////////////////////////////////////////////////
     ///   SIMULATION BEHAVIOUR

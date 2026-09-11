@@ -23,16 +23,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Formats.Msts;
-using Orts.Simulation.Signalling;
 using Orts.Viewer3D.Common;
 using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Event = Orts.Common.Event;
-using Events = Orts.Common.Events;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
+using Events = Orts.Simulation.Common.Events;
 
 namespace Orts.Viewer3D
 {

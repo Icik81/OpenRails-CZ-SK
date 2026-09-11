@@ -19,6 +19,7 @@ using Orts.Formats.Msts;
 using Orts.Simulation;
 using ORTS.Common;
 using System;
+using Orts.Simulation.Simulation;
 
 namespace ORTS.TrackViewer.Drawing
 {

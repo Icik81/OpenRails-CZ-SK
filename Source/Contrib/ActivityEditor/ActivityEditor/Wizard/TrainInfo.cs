@@ -1,8 +1,8 @@
-﻿using LibAE.Formats;
-using System.Linq;
+﻿using System.Linq;
 using System.Windows.Forms;
+using LibAE.Formats;
 
-namespace AEWizard
+namespace ActivityEditor.Wizard
 {
     public partial class TrainInfo : SinglePage
     {

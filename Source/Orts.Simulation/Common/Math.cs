@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 
-namespace Orts.Common
+namespace Orts.Simulation.Common
 {
     public static class ORTSMath
     {

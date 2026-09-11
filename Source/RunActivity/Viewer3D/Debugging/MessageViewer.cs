@@ -18,6 +18,7 @@
 using System;
 using System.Linq;
 using System.Windows.Forms;
+using Orts.Simulation.MultiPlayer;
 
 namespace Orts.Viewer3D.Debugging
 {
@@ -36,7 +37,7 @@ namespace Orts.Viewer3D.Debugging
         private void ComposeClick(object sender, EventArgs e)
         {
             MSG.Enabled = true;
-            MultiPlayer.MPManager.Instance().ComposingText = true;
+            MPManager.Instance().ComposingText = true;
         }
 
         private void ReplySelectedClick(object sender, EventArgs e)
@@ -53,12 +54,12 @@ namespace Orts.Viewer3D.Debugging
                     .Distinct()
                     .Select((string u) => $"{u.Substring(0, u.IndexOf(':'))}\r");
                 string user = string.Join("", users) + "0END";
-                string msgText = new MultiPlayer.MSGText(MultiPlayer.MPManager.GetUserName(), user, msg).ToString();
+                string msgText = new MSGText(MPManager.GetUserName(), user, msg).ToString();
                 foreach (int _ in Enumerable.Range(0, 3))
                 {
                     try
                     {
-                        MultiPlayer.MPManager.Notify(msgText);
+                        MPManager.Notify(msgText);
                     }
                     catch
                     {
@@ -68,7 +69,7 @@ namespace Orts.Viewer3D.Debugging
                 }
                 MSG.Text = "";
                 //MSG.Enabled = false;
-                MultiPlayer.MPManager.Instance().ComposingText = false;
+                MPManager.Instance().ComposingText = false;
             }
         }
 

@@ -17,7 +17,6 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using Orts.Common;
 using ORTS.Common;
 using ORTS.Settings;
 using System;
@@ -27,6 +26,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using Orts.Simulation.Common;
 
 namespace Orts.Viewer3D.Processes
 {

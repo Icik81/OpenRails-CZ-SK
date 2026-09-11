@@ -40,13 +40,8 @@
 //#define DEBUGSCR
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
 using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using ORTS.Settings;
@@ -57,8 +52,15 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.ComTypes;
-using Event = Orts.Common.Event;
-using Events = Orts.Common.Events;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
+using EventHandler = Orts.Simulation.Common.EventHandler;
+using Events = Orts.Simulation.Common.Events;
 
 namespace Orts.Viewer3D
 {
@@ -1954,7 +1956,7 @@ namespace Orts.Viewer3D
     /// <summary>
     /// Play this sound when a discrete TrainCar event occurs in the simulator
     /// </summary>
-    public class ORTSDiscreteTrigger : ORTSTrigger, Orts.Common.EventHandler
+    public class ORTSDiscreteTrigger : ORTSTrigger, EventHandler
     {
         /// <summary>
         /// Event this trigger listens to

@@ -1,8 +1,9 @@
 ﻿using System.Windows.Forms;
+
 //using LibAE;
 
 
-namespace AEWizard
+namespace ActivityEditor.Wizard
 {
     public class SinglePage : UserControl
     {

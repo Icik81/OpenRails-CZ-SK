@@ -18,10 +18,10 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using ORTS.Common.Input;
 using System;
 using System.Windows.Forms;
+using Orts.Simulation.Common;
 
 namespace Orts.Viewer3D.Popups
 {

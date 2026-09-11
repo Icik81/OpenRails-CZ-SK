@@ -49,34 +49,27 @@
 // Debug for calculation of Advanced coupler forces
 // #define DEBUG_COUPLER_FORCES
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.MultiPlayer;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Properties;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.Signalling;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
-using ORTS.Scripting.Api;
-using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
-using System.Windows.Forms;
-using static System.Collections.Specialized.BitVector32;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using ORTS.Settings;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.Simulation.Signalling;
+using Orts.Simulation.Simulation.Timetables;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.Physics
+namespace Orts.Simulation.Simulation.Physics
 {
     public class Train
     {

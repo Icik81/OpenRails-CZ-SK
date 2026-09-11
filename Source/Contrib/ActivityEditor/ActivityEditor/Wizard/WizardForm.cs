@@ -5,14 +5,14 @@
 // All rights reserved.
 //
 
-using LibAE.Formats;
-using Orts.Formats.OR;
 using System;
 using System.Collections;
 using System.Drawing;
 using System.Windows.Forms;
+using LibAE;
+using LibAE.Formats;
 
-namespace AEWizard
+namespace ActivityEditor.Wizard
 {
     /// <summary>
     /// Used to identify the various buttons that may appear within a wizard

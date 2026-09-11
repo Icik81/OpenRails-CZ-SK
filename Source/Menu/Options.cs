@@ -17,7 +17,6 @@
 
 using GNU.Gettext;
 using GNU.Gettext.WinForms;
-using MSTS;
 using ORTS.Common.Input;
 
 using ORTS.Settings;
@@ -31,6 +30,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ORTS.Content;
 
 namespace ORTS
 {

@@ -18,7 +18,7 @@
 
 using Orts.Parsers.Msts;
 
-namespace Orts.Common
+namespace Orts.Simulation.Common
 {
     static class SteamTable
     {

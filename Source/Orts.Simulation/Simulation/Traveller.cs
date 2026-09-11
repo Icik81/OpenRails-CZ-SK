@@ -15,17 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.Simulation.AIs;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.Simulation.AIs;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     /// <summary>
     /// A traveller that represents a specific location and direction on a track node databse. Think of it like a virtual truck or bogie that can travel along the track or a virtual car that can travel along the road.

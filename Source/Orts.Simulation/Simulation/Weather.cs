@@ -17,7 +17,7 @@
 
 using Microsoft.Xna.Framework;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     public class Weather
     {

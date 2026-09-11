@@ -15,14 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Common;
-using Orts.Simulation.RollingStocks;
-using ORTS.Common;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.IO;
+using ORTS.Common;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting
 {
     public abstract class TrainControlSystem : AbstractTrainScriptClass
     {

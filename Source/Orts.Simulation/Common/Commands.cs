@@ -17,15 +17,18 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
-using System.Diagnostics;   // Used by Trace.Warnings
+using System.Diagnostics;
+using ORTS.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.Common
+// Used by Trace.Warnings
+
+namespace Orts.Simulation.Common
 {
     /// <summary>
     /// This Command Pattern allows requests to be encapsulated as objects (http://sourcemaking.com/design_patterns/command).

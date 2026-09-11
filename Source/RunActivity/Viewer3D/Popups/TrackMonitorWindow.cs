@@ -20,13 +20,16 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Timetables;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -390,7 +393,7 @@ namespace Orts.Viewer3D.Popups
                 TMCdrawTrack("", offset, thisInfo.speedMpS, thisInfo.allowedSpeedMpS);
 
                 // Simulator mode
-                if (Orts.MultiPlayer.MPManager.IsMultiPlayer())
+                if (MPManager.IsMultiPlayer())
                 {
                     TMCdrawMPInfo("", offset);
                 }
@@ -410,7 +413,7 @@ namespace Orts.Viewer3D.Popups
                 }
 
                 // OwnTrain row position
-                rowOffset = (Orts.MultiPlayer.MPManager.IsMultiPlayer() ? 1 : 2);
+                rowOffset = (MPManager.IsMultiPlayer() ? 1 : 2);
 
                 //Milepost Limit Dist
                 InfoToLabel(Viewer.Catalog.GetString("Milepost"), "", "", "", Viewer.Catalog.GetString("Limit"), "", Viewer.Catalog.GetString("Dist"));
@@ -775,7 +778,7 @@ namespace Orts.Viewer3D.Popups
                 if (trackColor == "!!!" && !istrackColorRed)//Debrief Eval
                 {
                     istrackColorRed = true;
-                    DbfEvalIniOverSpeedTimeS = Orts.MultiPlayer.MPManager.Simulator.ClockTime;
+                    DbfEvalIniOverSpeedTimeS = MPManager.Simulator.ClockTime;
                 }
 
                 if (istrackColorRed && trackColor != "!!!")//Debrief Eval
@@ -784,11 +787,11 @@ namespace Orts.Viewer3D.Popups
                     DbfEvalOverSpeed++;
                 }
 
-                if (istrackColorRed && (Orts.MultiPlayer.MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS) > 1.0000)//Debrief Eval
+                if (istrackColorRed && (MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS) > 1.0000)//Debrief Eval
                 {
-                    DbfEvalOverSpeedTimeS = DbfEvalOverSpeedTimeS + (Orts.MultiPlayer.MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS);
+                    DbfEvalOverSpeedTimeS = DbfEvalOverSpeedTimeS + (MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS);
                     train.DbfEvalValueChanged = true;
-                    DbfEvalIniOverSpeedTimeS = Orts.MultiPlayer.MPManager.Simulator.ClockTime;
+                    DbfEvalIniOverSpeedTimeS = MPManager.Simulator.ClockTime;
                 }
 
                 // Reset TrackControlList
@@ -1465,9 +1468,9 @@ namespace Orts.Viewer3D.Popups
             var MessageColor = Color.White;
 
             Train playerTrain = Owner.Viewer.Simulator.PlayerLocomotive.Train;
-            Simulation.ActivityTaskPassengerStopAt atask = null;
+            ActivityTaskPassengerStopAt atask = null;
 
-            Simulation.Timetables.TTTrain playerTimetableTrain = playerTrain as Simulation.Timetables.TTTrain;
+            TTTrain playerTimetableTrain = playerTrain as TTTrain;
             if (playerTimetableTrain != null && playerTimetableTrain.TrainType == Train.TRAINTYPE.PLAYER && playerTimetableTrain.StationStops[0].ActualStopType == Train.StationStop.STOPTYPE.STATION_STOP)
             {
                 StationPlatform = playerTimetableTrain.StationStops[0].PlatformItem.Name;
@@ -1477,12 +1480,12 @@ namespace Orts.Viewer3D.Popups
             }
             else
             {
-                Simulation.Activity act = Owner.Viewer.Simulator.ActivityRun;
-                Simulation.ActivityTaskPassengerStopAt Current = null;
+                Activity act = Owner.Viewer.Simulator.ActivityRun;
+                ActivityTaskPassengerStopAt Current = null;
                 if (act != null && playerTrain == Owner.Viewer.Simulator.OriginalPlayerTrain)
                 {
-                    Current = act.Current == null ? act.Last as Simulation.ActivityTaskPassengerStopAt : act.Current as Simulation.ActivityTaskPassengerStopAt;
-                    atask = Current != null ? Current.PrevTask as Simulation.ActivityTaskPassengerStopAt : null;
+                    Current = act.Current == null ? act.Last as ActivityTaskPassengerStopAt : act.Current as ActivityTaskPassengerStopAt;
+                    atask = Current != null ? Current.PrevTask as ActivityTaskPassengerStopAt : null;
                 }
                 atask = Current;
                 if (atask != null)
@@ -2028,7 +2031,7 @@ namespace Orts.Viewer3D.Popups
 
             drawTrack(spriteBatch, offset, validInfo.speedMpS, validInfo.allowedSpeedMpS);
 
-            if (Orts.MultiPlayer.MPManager.IsMultiPlayer())
+            if (MPManager.IsMultiPlayer())
             {
                 drawMPInfo(spriteBatch, offset);
             }
@@ -2063,7 +2066,7 @@ namespace Orts.Viewer3D.Popups
             if (trackColor == Color.Red && !istrackColorRed)//Debrief Eval
             {
                 istrackColorRed = true;
-                DbfEvalIniOverSpeedTimeS = Orts.MultiPlayer.MPManager.Simulator.ClockTime;
+                DbfEvalIniOverSpeedTimeS = MPManager.Simulator.ClockTime;
             }
 
             if (istrackColorRed && trackColor != Color.Red)//Debrief Eval
@@ -2072,11 +2075,11 @@ namespace Orts.Viewer3D.Popups
                 DbfEvalOverSpeed++;
             }
 
-            if (istrackColorRed && (Orts.MultiPlayer.MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS) > 1.0000)//Debrief Eval
+            if (istrackColorRed && (MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS) > 1.0000)//Debrief Eval
             {
-                DbfEvalOverSpeedTimeS = DbfEvalOverSpeedTimeS + (Orts.MultiPlayer.MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS);
+                DbfEvalOverSpeedTimeS = DbfEvalOverSpeedTimeS + (MPManager.Simulator.ClockTime - DbfEvalIniOverSpeedTimeS);
                 train.DbfEvalValueChanged = true;
-                DbfEvalIniOverSpeedTimeS = Orts.MultiPlayer.MPManager.Simulator.ClockTime;
+                DbfEvalIniOverSpeedTimeS = MPManager.Simulator.ClockTime;
             }
         }
 

@@ -15,15 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using System;
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class OnlinePlayer
     {

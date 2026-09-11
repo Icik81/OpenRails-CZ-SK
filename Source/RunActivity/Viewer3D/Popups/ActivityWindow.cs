@@ -22,6 +22,7 @@ using Orts.Simulation;
 using ORTS.Common;
 using System;
 using System.Linq;
+using Orts.Simulation.Simulation;
 
 namespace Orts.Viewer3D.Popups
 {

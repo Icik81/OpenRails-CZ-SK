@@ -18,12 +18,8 @@
 // This file is the responsibility of the 3D & Environment Team.
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Settings;
@@ -32,6 +28,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
 
 namespace Orts.Viewer3D
 {

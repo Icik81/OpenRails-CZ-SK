@@ -29,24 +29,23 @@
 // #define DEBUG_TTANALYSIS
 // DEBUG flag for debug prints
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.MultiPlayer;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.Timetables
+namespace Orts.Simulation.Simulation.Timetables
 {
     public class TTTrain : AITrain
     {

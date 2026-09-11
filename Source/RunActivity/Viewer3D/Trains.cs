@@ -18,7 +18,6 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Orts.Simulation;
-using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using System;
@@ -26,6 +25,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D
 {

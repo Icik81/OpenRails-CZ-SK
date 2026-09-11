@@ -15,18 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Formats.Msts;
-using Orts.Simulation;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class OnlineTrains
     {

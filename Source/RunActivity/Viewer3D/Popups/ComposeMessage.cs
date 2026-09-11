@@ -18,9 +18,9 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework.Input;
-using Orts.MultiPlayer;
 using ORTS.Common;
 using System.Linq;
+using Orts.Simulation.MultiPlayer;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -38,7 +38,7 @@ namespace Orts.Viewer3D.Popups
         public bool InitMessage()
         {
             this.Visible = true; UserInput.ComposingMessage = true;
-            if (Orts.MultiPlayer.MPManager.Instance().lastSender != "") Message.Text = Orts.MultiPlayer.MPManager.Instance().lastSender + ":";
+            if (MPManager.Instance().lastSender != "") Message.Text = MPManager.Instance().lastSender + ":";
             return true;
         }
         public void AppendMessage(Keys[] newKeys, Keys[] oldKeys)
