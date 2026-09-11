@@ -15,16 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Common;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using ORTS.Scripting.Api;
 using System;
 using System.IO;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.PowerSupplies
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
 {
 
     public class ScriptedCircuitBreaker

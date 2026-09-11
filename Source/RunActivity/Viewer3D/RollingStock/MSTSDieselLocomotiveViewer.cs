@@ -18,15 +18,15 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.MultiPlayer;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Common.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -82,7 +82,7 @@ namespace Orts.Viewer3D.RollingStock
 
             if (car.Train != null && (car.Train.TrainType == Train.TRAINTYPE.AI ||
                 ((car.Train.TrainType == Train.TRAINTYPE.PLAYER || car.Train.TrainType == Train.TRAINTYPE.AI_PLAYERDRIVEN || car.Train.TrainType == Train.TRAINTYPE.AI_PLAYERHOSTING) &&
-                (car.Train.MUDirection != Direction.N && (car as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running))))
+                (car.Train.MUDirection != Direction.N && (car as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running))))
             {
                 (car as MSTSDieselLocomotive).SignalEvent(Event.ReverserToForwardBackward);
                 (car as MSTSDieselLocomotive).SignalEvent(Event.ReverserChange);

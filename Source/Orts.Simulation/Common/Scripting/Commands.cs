@@ -17,11 +17,10 @@
 
 // This file is the responsibility of the 3D & Environment Team.
 
-using Orts.Common;
-using Orts.Simulation.RollingStocks.SubSystems;
 using System;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting
 {
     /// <summary>
     /// This is the list of commands available for TCS scripts; they are generic commands, whose action will specified by the active script

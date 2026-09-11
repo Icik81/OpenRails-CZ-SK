@@ -15,10 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using ORTS.Common;
 using System;
+using ORTS.Common;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting.PowerSupply
 {
     /// <summary>
     /// Circuit breaker for electric locomotives

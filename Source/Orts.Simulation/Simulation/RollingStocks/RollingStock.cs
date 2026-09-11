@@ -15,18 +15,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Reflection;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation.Physics;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
     public static class RollingStock
     {

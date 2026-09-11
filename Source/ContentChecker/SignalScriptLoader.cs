@@ -16,10 +16,10 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 using Orts.Formats.Msts;
-using Orts.Simulation.Signalling;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Orts.Simulation.Simulation.Signalling;
 
 namespace ContentChecker
 {

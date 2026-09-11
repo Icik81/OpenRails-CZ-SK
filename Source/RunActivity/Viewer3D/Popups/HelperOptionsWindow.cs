@@ -18,13 +18,11 @@
 // This file is the responsibility of the 3D & Environment Team. 
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using Orts.Simulation;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using ORTS.Common;
 using System;
 using System.Windows.Forms;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D.Popups
 {

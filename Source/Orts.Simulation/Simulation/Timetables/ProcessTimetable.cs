@@ -25,22 +25,22 @@
 
 //
 
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.Parsers.OR;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using Event = Orts.Common.Event;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Parsers.OR;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.Timetables
+namespace Orts.Simulation.Simulation.Timetables
 {
     public class TimetableInfo
     {

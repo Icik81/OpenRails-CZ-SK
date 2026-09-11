@@ -20,11 +20,10 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Viewer3D.Popups;
-using Orts.Viewer3D.RollingStock.Subsystems.ETCS;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orts.Simulation.Common.Scripting;
 
 namespace Orts.Viewer3D.RollingStock.SubSystems.ETCS
 {

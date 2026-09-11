@@ -13,17 +13,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
+using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
 using Orts.Formats.OR;
 /// This module ...
 /// 
 /// Author: Stéfan Paitoni
 /// Updates : 
 /// 
-using System;
-using System.Collections.Generic;
-using System.Windows.Forms;
 
-namespace ActivityEditor.Engine
+namespace ActivityEditor.Route_Metadata
 {
     public partial class StationInterface : Form
     {

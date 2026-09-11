@@ -16,7 +16,7 @@
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
 
-namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
 {
     public class SeriesMotor : ElectricMotor
     {

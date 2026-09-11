@@ -22,16 +22,17 @@
  * Could this be used for player trains also?
  * 
  */
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using ORTS.Common;
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
 
-namespace Orts.Simulation.AIs
+namespace Orts.Simulation.Simulation.AIs
 {
     public enum AIPathNodeType { Other, Stop, SidingStart, SidingEnd, Uncouple, Reverse, Invalid };
 

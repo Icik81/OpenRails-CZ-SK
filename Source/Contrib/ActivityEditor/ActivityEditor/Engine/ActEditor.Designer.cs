@@ -1,9 +1,9 @@
 ﻿using System;
-
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
+using ActivityEditor.Wizard;
 
-namespace ActivityEditor
+namespace ActivityEditor.Engine
 {
     partial class ActEditor
     {
@@ -80,8 +80,8 @@ namespace ActivityEditor
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton7 = new System.Windows.Forms.ToolStripButton();
             this.tagActivity = new System.Windows.Forms.ToolStripButton();
-            this.wizardPageSR = new AEWizard.SelectRoute();
-            this.wizardPageAD = new AEWizard.ActivityDescr();
+            this.wizardPageSR = new SelectRoute();
+            this.wizardPageAD = new ActivityDescr();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             this.informationPanel.SuspendLayout();
@@ -589,7 +589,7 @@ namespace ActivityEditor
         private System.Windows.Forms.FolderBrowserDialog NewActivity;
         private System.Windows.Forms.SaveFileDialog SaveActivity;
         private System.Windows.Forms.FolderBrowserDialog UpdateRouteConfig;
-        private AEWizard.ActivityDescr wizardPageAD;
+        private ActivityDescr wizardPageAD;
         public System.Windows.Forms.Panel informationPanel;
         private System.Windows.Forms.ToolStripMenuItem activityToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem trafficToolStripMenuItem;
@@ -618,7 +618,7 @@ namespace ActivityEditor
         private ToolStrip routeCFG;
         private ToolStripButton AddArea;
         private ToolStripButton ConfigStation;
-        private AEWizard.SelectRoute wizardPageSR;
+        private SelectRoute wizardPageSR;
         private ToolStripButton tagActivity;
         private ToolStripButton tagRoute;
         private ToolStripButton stationRoute;

@@ -15,11 +15,10 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Common;
-using Orts.Simulation;
 using System;
+using Orts.Simulation.Simulation;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting
 {
     /// <summary>
     /// Base class for all scripts. Contains information about the simulation.

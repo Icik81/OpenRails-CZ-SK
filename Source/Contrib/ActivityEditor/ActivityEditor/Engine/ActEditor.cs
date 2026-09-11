@@ -14,10 +14,14 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using ActivityEditor.Engine;
-using AEWizard;
+using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
+using System.Windows.Forms;
+using ActivityEditor.Wizard;
+using LibAE;
 using LibAE.Formats;
-using Orts.Formats.OR;
 using ORTS.Common;
 /// This module ...
 /// 
@@ -25,13 +29,7 @@ using ORTS.Common;
 /// Updates : 
 /// 
 
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Windows.Forms;
-
-namespace ActivityEditor
+namespace ActivityEditor.Engine
 {
     public enum ToolClicks // Changed from ToolClicked as led to compiler warnings
     {

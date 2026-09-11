@@ -18,18 +18,6 @@
 // #define DEBUG_MULTIPLAYER
 // DEBUG flag for debug prints
 
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Formats.Msts;
-using Orts.Simulation;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -37,9 +25,17 @@ using System.Globalization;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using Event = Orts.Common.Event;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class Message
     {

@@ -1,12 +1,12 @@
-﻿using Orts.Common;
-using Orts.Parsers.Msts;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using ORTS.Common;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
 {
     public class MSTSGearBoxParams
     {

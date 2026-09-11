@@ -15,9 +15,9 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using ORTS.Common;
 using System;
+using Orts.Simulation.Common;
 
 namespace ORTS.TrackViewer.Drawing
 {

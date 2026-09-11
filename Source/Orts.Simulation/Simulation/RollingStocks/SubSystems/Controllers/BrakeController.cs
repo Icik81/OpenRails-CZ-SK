@@ -15,15 +15,15 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Simulation.AIs;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
 {
     public class ScriptedBrakeController : IController
     {

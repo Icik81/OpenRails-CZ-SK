@@ -24,7 +24,6 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
-using Orts.MultiPlayer;
 using Orts.Simulation;
 using ORTS.Common;
 using ORTS.Common.Input;
@@ -32,7 +31,10 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using Events = Orts.Common.Events;
+using Orts.Simulation.Common;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation;
+using Events = Orts.Simulation.Common.Events;
 
 namespace Orts.Viewer3D
 {
@@ -95,7 +97,7 @@ namespace Orts.Viewer3D
             //    new SoundSource(viewer, Events.Source.MSTSInGame, ORTSPaths.GetFileFromFolders(pathArray, "snow_ex.sms"), false),
             //};
 
-            // Výbìr ambientních zvukù dle sezóny
+            // Vï¿½bï¿½r ambientnï¿½ch zvukï¿½ dle sezï¿½ny
             switch ((int)Viewer.Simulator.Season)
             {
                 case 0:  // Jaro
@@ -118,7 +120,7 @@ namespace Orts.Viewer3D
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\Snow_ex.sms"), false),
                     };
                     break;
-                case 1:  // Léto
+                case 1:  // Lï¿½to
                     ClearSound = new List<SoundSourceBase>() {
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_in.sms"), false),
                     new SoundSource(viewer, Events.Source.MSTSInGame, System.IO.Path.Combine(Viewer.ContentPath, "..\\Content\\AmbientSound\\clear_ex.sms"), false),
@@ -260,7 +262,7 @@ namespace Orts.Viewer3D
             {
                 RandomizedWeather = false;
                 weatherChangeOn = false;
-                // Profily poèasí jsou nadøazené uloženým hodnotám
+                // Profily poï¿½asï¿½ jsou nadï¿½azenï¿½ uloï¿½enï¿½m hodnotï¿½m
                 SetInitialWeatherParameters();
             }
             if (Viewer.Simulator.WeatherAdv == 7 && !Program.Simulator.WeatherChangesPresent)
@@ -277,7 +279,7 @@ namespace Orts.Viewer3D
 
         public void SetInitialWeatherParameters()
         {
-            // Profily poèasí
+            // Profily poï¿½asï¿½
             switch (Viewer.Simulator.WeatherAdv)
             {
                 case 0: // Clear                                        
@@ -290,7 +292,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Clear;
                             Weather.OvercastFactor = 0.1f;
                             Weather.FogDistance = 12000f;
@@ -323,7 +325,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Clear;
                             Weather.OvercastFactor = 0.0f;
                             Weather.FogDistance = 12000f;
@@ -356,7 +358,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Clear;
                             Weather.OvercastFactor = 0.5f;
                             Weather.FogDistance = 9000f;
@@ -389,7 +391,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.0f;                            
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.0f;
                             Weather.FogDistance = 1000f;
@@ -422,7 +424,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 0.55f;
                             Weather.PricipitationIntensityPPSPM2 = 0.01f;
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.85f;
                             Weather.FogDistance = 2550f;
@@ -456,7 +458,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.3f;
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.2f;
                             Weather.FogDistance = 1500f;
@@ -490,7 +492,7 @@ namespace Orts.Viewer3D
                             Weather.PrecipitationLiquidity = 1.0f;
                             Weather.PricipitationIntensityPPSPM2 = 0.75f;
                             break;
-                        case 1:  // Léto
+                        case 1:  // Lï¿½to
                             Viewer.Simulator.WeatherType = WeatherType.Rain;
                             Weather.OvercastFactor = 0.90f;
                             Weather.FogDistance = 500f;
@@ -514,7 +516,7 @@ namespace Orts.Viewer3D
                             break;
                     }
                     break;
-                case 7: // Náhodné
+                case 7: // Nï¿½hodnï¿½
                     Viewer.Simulator.Settings.ActWeatherRandomizationLevel = 1;                    
                     break;
             }
@@ -544,7 +546,7 @@ namespace Orts.Viewer3D
                             Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
                         else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                         break;
-                    case 1:  // Léto
+                    case 1:  // Lï¿½to
                         if (NightTime)
                             Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
                         else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
@@ -583,7 +585,7 @@ namespace Orts.Viewer3D
                             Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
                         else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
                         break;
-                    case 1:  // Léto
+                    case 1:  // Lï¿½to
                         if (NightTime)
                             Viewer.SoundProcess.AddSoundSources(this, ClearSoundNight);
                         else Viewer.SoundProcess.AddSoundSources(this, ClearSound);
@@ -620,7 +622,7 @@ namespace Orts.Viewer3D
             switch ((int)Viewer.Simulator.Season)
             {
                 case 0:  // Jaro
-                    H = 19; // Zaèátek noci
+                    H = 19; // Zaï¿½ï¿½tek noci
                     L = 6; // Konec noci
                     if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
                     {
@@ -634,8 +636,8 @@ namespace Orts.Viewer3D
                         NightTime = false;
                     }
                     break;
-                case 1:  // Léto
-                    H = 21; // Zaèátek noci
+                case 1:  // Lï¿½to
+                    H = 21; // Zaï¿½ï¿½tek noci
                     L = 5; // Konec noci
                     if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
                     {
@@ -650,7 +652,7 @@ namespace Orts.Viewer3D
                     }
                     break;
                 case 2:  // Podzim
-                    H = 19; // Zaèátek noci
+                    H = 19; // Zaï¿½ï¿½tek noci
                     L = 7; // Konec noci
                     if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
                     {
@@ -665,7 +667,7 @@ namespace Orts.Viewer3D
                     }
                     break;
                 case 3:  // Zima
-                    H = 17; // Zaèátek noci
+                    H = 17; // Zaï¿½ï¿½tek noci
                     L = 8; // Konec noci
                     if ((DayTime / 3600f > H || DayTime / 3600f < L) && !NightTime)
                     {
@@ -868,7 +870,7 @@ namespace Orts.Viewer3D
             double latitude = 0;
             double longitude = 0;
             var location = Viewer.PlayerLocomotive.Train.FrontTDBTraveller;
-            new Orts.Common.WorldLatLon().ConvertWTC(location.TileX, location.TileZ, location.Location, ref latitude, ref longitude);
+            new WorldLatLon().ConvertWTC(location.TileX, location.TileZ, location.Location, ref latitude, ref longitude);
             float LatitudeDeg = MathHelper.ToDegrees((float)latitude);
             float LongitudeDeg = MathHelper.ToDegrees((float)longitude);
 
@@ -925,7 +927,7 @@ namespace Orts.Viewer3D
             Time += elapsedTime.ClockSeconds;
             var manager = MPManager.Instance();
 
-            // Iniciace srážek kvùli odstranìní záseku pøi jejich spuštìní za jízdy
+            // Iniciace srï¿½ek kvï¿½li odstranï¿½nï¿½ zï¿½seku pï¿½i jejich spuï¿½tï¿½nï¿½ za jï¿½zdy
             if (Viewer.Simulator.GameTime == 0)
             {
                 if (PrePricipitationIntensityPPSPM2 == -1f)
@@ -1159,7 +1161,7 @@ namespace Orts.Viewer3D
                 UpdateWind(elapsedTime);
             }
 
-            if (!Orts.MultiPlayer.MPManager.IsMultiPlayer())
+            if (!MPManager.IsMultiPlayer())
             {
                 // Shift the clock forwards or backwards at 1h-per-second.
                 Viewer.Simulator.TimeSpeedCoef = 1.0f;
@@ -1664,7 +1666,7 @@ namespace Orts.Viewer3D
                         }
                     }
 
-                    // Pøidá mlhu pøi dešti
+                    // Pï¿½idï¿½ mlhu pï¿½i deï¿½ti
                     if (Program.Simulator.GameTime != 0)
                     {
                         float SeasonCoef = 0;

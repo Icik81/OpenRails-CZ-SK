@@ -43,6 +43,7 @@ using ORTS.Common;
 using ORTS.TrackViewer.Drawing;
 using System;
 using System.Linq;
+using Orts.Simulation.Simulation;
 
 namespace ORTS.TrackViewer.Editing
 {

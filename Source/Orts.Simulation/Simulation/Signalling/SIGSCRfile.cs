@@ -34,17 +34,17 @@
 // prints processing details of all enabled signals
 //
 
-using Orts.Formats.Msts;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Orts.Formats.Msts;
 #if DEBUG_PRINT_PROCESS
 using System.Linq;
 using System.IO;
 using System.Text;
 #endif
 
-namespace Orts.Simulation.Signalling
+namespace Orts.Simulation.Simulation.Signalling
 {
 
     //================================================================================================//

@@ -31,6 +31,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Xml;
 using System.Xml.Schema;
+using Orts.Simulation.Simulation;
 
 namespace Orts.Viewer3D
 {

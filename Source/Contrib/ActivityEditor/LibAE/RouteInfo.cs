@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Orts.Formats.OR
+namespace LibAE
 {
     public class RouteInfo
     {

@@ -18,6 +18,7 @@
 using Orts.Formats.Msts;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Orts.Simulation.Common;
 using Path = System.IO.Path;
 
 namespace ContentChecker
@@ -78,7 +79,7 @@ namespace ContentChecker
 
                             //The file can be in multiple places
                             //Assume .wav file for now
-                            var fullPath = Orts.Common.ORTSPaths.GetFileFromFolders(possiblePaths.ToArray(), file);
+                            var fullPath = ORTSPaths.GetFileFromFolders(possiblePaths.ToArray(), file);
                             if (fullPath == null)
                             {
                                 //apparently the file does not exist, but we want to make that known to the user, so we make a path anyway

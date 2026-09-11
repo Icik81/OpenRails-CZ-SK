@@ -22,6 +22,7 @@ using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orts.Simulation.Simulation;
 
 namespace ORTS.TrackViewer.Editing.Charts
 {

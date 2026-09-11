@@ -18,8 +18,7 @@
 using System.Diagnostics;
 using System.IO;
 
-
-namespace Orts.Common
+namespace Orts.Simulation.Common
 {
     public static class ORTSPaths
     {

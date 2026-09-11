@@ -18,12 +18,11 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Viewer3D.Popups;
-using Orts.Viewer3D.RollingStock.Subsystems.ETCS;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Orts.Viewer3D.RollingStock.Subsystems.ETCS.DriverMachineInterface;
+using Orts.Simulation.Common.Scripting;
+using static Orts.Viewer3D.RollingStock.SubSystems.ETCS.DriverMachineInterface;
 
 namespace Orts.Viewer3D.RollingStock.SubSystems.ETCS
 {

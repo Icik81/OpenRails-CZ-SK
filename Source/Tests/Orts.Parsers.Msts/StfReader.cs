@@ -15,19 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Parsers.Msts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework;
+using Orts.Parsers.Msts;
 using Xunit;
 
-#region Integration tests (all tests from original reader)
-namespace Tests.Orts.Parsers.Msts
-{
+namespace Tests.Orts.Parsers.Msts {
+    #region Integration tests (all tests from original reader)
     public static class StfReaderIntegration
     {
         /* All conversion factors have been sourced from:
@@ -708,26 +707,23 @@ namespace Tests.Orts.Parsers.Msts
             }
         }
     }
-}
-#endregion
+    #endregion
 
-#region Unit tests
-namespace Tests.Orts.Parsers.Msts.StfException
-{
+    #region Unit tests
     #region StfExceptionTests
     /// <summary>
     /// Test the exceptions for Stf itself
     /// </summary>
-    public class Should
+    public partial class Should
     {
         [Fact]
         public static void BeConstructableFromStfReader()
         {
-            var reader = Tests.Orts.Parsers.Msts.StfReader.Create.Reader("sometoken");
+            var reader = Create.Reader("sometoken");
             new STFException(reader, "some message");
         }
 
-#if NEW_READER
+        #if NEW_READER
         /// <summary>
         /// Test constructors of the exception class
         /// </summary>
@@ -748,13 +744,10 @@ namespace Tests.Orts.Parsers.Msts.StfException
             string message = "some message";
             Tests.Msts.Parsers.StfReader.AssertStfException.Throws(() => { throw new STFException(filename, lineNumber, message); }, message);
         }
-#endif
+        #endif
     }
     #endregion
 
-}
-namespace Tests.Orts.Parsers.Msts.StfReader
-{   
     // NEW_READER compilation flag is set for those tests that can be performed (compiled) only for the new STFReader, 
     // but not on the old reader. The new reader should also pass all tests that compile on the old reader.
     // This means in this file NEW_READER flag adds a number of tests, but it should also work if the flag is not set.
@@ -775,7 +768,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
     // Since most unit tests do not actually open a file, this is no big issue.
 
     #region General
-    public class Should
+    public partial class Should
     {
         /// <summary>
         /// Test constructor
@@ -821,7 +814,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             Assert.Null(reader.SimisSignature);
         }
 
-#if NEW_READER
+        #if NEW_READER
         [Fact]
         public static void BeConstructableFromFilename()
         {
@@ -876,7 +869,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             Assert.Equal(2, reader.LineNumber);
             Assert.Equal(signature, reader.SimisSignature);
         }
-#endif
+        #endif
     }
     #endregion
 
@@ -1546,7 +1539,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
     #endregion
 
     #region Include
-#if NEW_READER
+    #if NEW_READER
     public class OnIncludeShould
     {
         [Fact]
@@ -1646,7 +1639,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
         }
 
     }
-#endif
+    #endif
     #endregion
     #endregion
 
@@ -1870,7 +1863,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             AssertWarnings.NotExpected();
             string[] tokenValues = inputValues.Select(
                 value => String.Format(System.Globalization.CultureInfo.InvariantCulture, "({0} dummy_token(nested_token))", value)
-                ).ToArray();
+            ).ToArray();
             string inputString = String.Join(" ", tokenValues);
             var reader = Create.Reader(inputString);
 
@@ -2304,7 +2297,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
         public static void OnEmptyBlockReturnGivenDefault()
         {
             StfTokenReaderCommon.OnEmptyBlockEndReturnGivenDefault<bool, bool>
-               (SOMEDEFAULT, SOMEDEFAULT, (reader, x) => reader.ReadBoolBlock(x));
+                (SOMEDEFAULT, SOMEDEFAULT, (reader, x) => reader.ReadBoolBlock(x));
         }
 
         [Fact]
@@ -2661,9 +2654,9 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             int called1 = 0;
             int called2 = 0;
             reader.ParseBlock(new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
-                    new STFReader.TokenProcessor("block2", () => { called2++; })
-                });
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block2", () => { called2++; })
+            });
             Assert.Equal(2, called1);
             Assert.Equal(1, called2);
         }
@@ -2676,9 +2669,9 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             int called1 = 0;
             int called2 = 0;
             reader.ParseBlock(() => called2 == 1, new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
-                    new STFReader.TokenProcessor("block2", () => { called2++; })
-                });
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block2", () => { called2++; })
+            });
             Assert.Equal(1, called1);
             Assert.Equal(1, called2);
         }
@@ -2691,7 +2684,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             var reader = Create.Reader(source);
             int called1 = 0;
             reader.ParseBlock(new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
             });
             Assert.Equal(followingtoken, reader.ReadItem());
         }
@@ -2704,9 +2697,9 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             int called1 = 0;
             int called2 = 0;
             reader.ParseFile(new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
-                    new STFReader.TokenProcessor("block2", () => { called2++; })
-                });
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block2", () => { called2++; })
+            });
             Assert.Equal(2, called1);
             Assert.Equal(1, called2);
         }
@@ -2719,9 +2712,9 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             int called1 = 0;
             int called2 = 0;
             reader.ParseFile(() => called2 == 1, new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
-                    new STFReader.TokenProcessor("block2", () => { called2++; })
-                });
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block2", () => { called2++; })
+            });
             Assert.Equal(1, called1);
             Assert.Equal(1, called2);
         }
@@ -2735,8 +2728,8 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             int called1 = 0;
             int called2 = 0;
             reader.ParseFile(new[] {
-                    new STFReader.TokenProcessor("block1", () => { called1++; }),
-                    new STFReader.TokenProcessor("block2", () => { called2++; })
+                new STFReader.TokenProcessor("block1", () => { called1++; }),
+                new STFReader.TokenProcessor("block2", () => { called2++; })
             });
             Assert.Equal(1, called2);
             Assert.True(reader.Eof);
@@ -2787,7 +2780,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             return new STFReader(memoryStream, fileName, Encoding.ASCII, useTree);
         }
 
-#if NEW_READER
+        #if NEW_READER
         public static STFReader Reader(string source, MSTS.Parsers.IStreamReaderFactory factory)
         {
             return Reader(source, "some.stf", factory);
@@ -2798,7 +2791,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
             STFReader.NextStreamReaderFactory = factory;
             return Create.Reader(source, fileName, false);
         }
-#endif
+        #endif
     }
 
     struct TokenTester
@@ -2841,7 +2834,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
         }
     }
 
-#if NEW_READER
+    #if NEW_READER
     class StreamReaderStore : IStreamReaderFactory
     {
         public StreamReaderStore()
@@ -2871,9 +2864,7 @@ namespace Tests.Orts.Parsers.Msts.StfReader
 
         public bool ShouldReadSimisSignature { get; set; }
     }
-#endif
+    #endif
     #endregion
     #endregion
-
 }
-

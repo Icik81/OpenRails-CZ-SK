@@ -27,6 +27,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Orts.Simulation.Simulation;
 
 namespace Orts.Viewer3D
 {
@@ -67,7 +68,7 @@ namespace Orts.Viewer3D
 
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
         {
-            // Nebudou ör·ûky v tunelu
+            // Nebudou ÔøΩrÔøΩky v tunelu
             if (Program.Simulator.PlayerCarIsInTunnelBeginM > 0f && Program.Simulator.PlayerCarIsInTunnelEndM > 0f && Program.Simulator.PlayerCarIsInTunnel)
             {
                 return;
@@ -202,7 +203,7 @@ namespace Orts.Viewer3D
             // Setting the precipitaton box size based on GraphicsDeviceCapabilities.                      
 
             // Icik
-            float VRAMGPU = viewer.AdapterMemory / 1024 / 1024; // Grafick· pamÏù v MB
+            float VRAMGPU = viewer.AdapterMemory / 1024 / 1024; // GrafickÔøΩ pamÔøΩ v MB
             if (VRAMGPU < 2048) MaxIntensityKoef = 10;
 
             if (graphicsDevice.GraphicsProfile == GraphicsProfile.HiDef)
@@ -395,21 +396,21 @@ namespace Orts.Viewer3D
 
             if (!viewer.Simulator.Paused)
             {
-                // Aktu·lnÌ pozice kamery v absolutnÌch sou¯adnicÌch 
+                // AktuÔøΩlnÔøΩ pozice kamery v absolutnÔøΩch souÔøΩadnicÔøΩch 
                 Matrix invView = Matrix.Invert(viewer.Camera.XnaView);
                 Vector3 currentCameraPosition = invView.Translation;
 
                 float deltaTime = elapsedTime.ClockSeconds;
                 if (deltaTime <= 0) deltaTime = 0.016f;
 
-                // V˝poËet rychlosti kamery (smÏr a velikost v m/s)
+                // VÔøΩpoÔøΩet rychlosti kamery (smÔøΩr a velikost v m/s)
                 Vector3 cameraVelocity = (currentCameraPosition - lastCameraPosition) / deltaTime;                
                 lastCameraPosition = currentCameraPosition;
 
-                // ZÌsk·me smÏr, kam se kamera pr·vÏ dÌv· 
+                // ZÔøΩskÔøΩme smÔøΩr, kam se kamera prÔøΩvÔøΩ dÔøΩvÔøΩ 
                 Matrix cameraRotation = Matrix.Invert(viewer.Camera.XnaView);
 
-                // Koeficient pro ˙pravu v˝öky boxu podle rychlosti kamery
+                // Koeficient pro ÔøΩpravu vÔøΩÔøΩky boxu podle rychlosti kamery
                 float CameraVelocityCoef = MathHelper.Clamp(cameraVelocity.Length() / 15, 1, 4);
 
                 float ParticleBoxHeightMDynamicFinal = ParticleBoxHeightM / CameraVelocityCoef;
@@ -424,14 +425,14 @@ namespace Orts.Viewer3D
                     var temp = new WorldLocation(worldLocation.TileX, worldLocation.TileZ, worldLocation.Location.X + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxWidthM), 0, worldLocation.Location.Z + (float)((Viewer.Random.NextDouble() - 0.5) * ParticleBoxLengthM));
 
                     //temp.Location.Y = Heights.GetHeight(temp, tiles, scenery);
-                    temp.Location.Y = worldLocation.Location.Y - Math.Abs(Math.Abs(worldLocation.Location.Y) - Math.Abs(tiles.GetElevation(worldLocation) <= 0 ? worldLocation.Location.Y + 5 : tiles.GetElevation(worldLocation) + 5)); // »·stice budou vûdy padat na pozici kamery v r·mci boxu                    
+                    temp.Location.Y = worldLocation.Location.Y - Math.Abs(Math.Abs(worldLocation.Location.Y) - Math.Abs(tiles.GetElevation(worldLocation) <= 0 ? worldLocation.Location.Y + 5 : tiles.GetElevation(worldLocation) + 5)); // ÔøΩÔøΩstice budou vÔøΩdy padat na pozici kamery v rÔøΩmci boxu                    
                     var position = new WorldPosition(temp);                    
 
                     var time = MathHelper.Lerp(TimeParticlesLastEmitted, currentTime, (float)i / numToEmit);
                     var particle = (FirstFreeParticle + 1) % MaxParticles;
                     var vertex = particle * VerticiesPerParticle;
 
-                    // windEffect t·hne vloËky opaËn˝m smÏrem, neû kam letÌ kamera                   
+                    // windEffect tÔøΩhne vloÔøΩky opaÔøΩnÔøΩm smÔøΩrem, neÔøΩ kam letÔøΩ kamera                   
                     Vector3 windEffect = Program.Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Rain ? - cameraVelocity * ParticleDuration : -cameraVelocity * ParticleDuration / CameraVelocityCoef;
 
                     for (var j = 0; j < VerticiesPerParticle; j++)
@@ -649,7 +650,7 @@ namespace Orts.Viewer3D
                 int itemStream = 0;
                 foreach (var item in renderItems)
                 {
-                    // ZmÏna textury podle typu poËasÌ pro 2 streamy  
+                    // ZmÔøΩna textury podle typu poÔøΩasÔøΩ pro 2 streamy  
                     if (Viewer.Simulator.Weather.PrecipitationLiquidity == 0 || Viewer.Simulator.Weather.PrecipitationLiquidity == 1)
                     {
                         if (Viewer.Simulator.WeatherType == Orts.Formats.Msts.WeatherType.Snow || Viewer.Simulator.Weather.PrecipitationLiquidity == 0)

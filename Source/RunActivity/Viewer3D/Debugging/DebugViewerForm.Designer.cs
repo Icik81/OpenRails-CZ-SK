@@ -1,5 +1,4 @@
 ﻿using GNU.Gettext;
-using Orts.MultiPlayer;
 
 namespace Orts.Viewer3D.Debugging
 {

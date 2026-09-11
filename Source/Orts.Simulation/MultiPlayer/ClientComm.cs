@@ -18,8 +18,6 @@
 // #define DEBUG_MULTIPLAYER
 // DEBUG flag for debug prints
 
-using Microsoft.Xna.Framework.Input;
-using Orts.Simulation.Physics;
 using System;
 using System.Diagnostics;
 using System.Linq;
@@ -28,8 +26,9 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Orts.Simulation.Simulation.Physics;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class ClientComm
     {

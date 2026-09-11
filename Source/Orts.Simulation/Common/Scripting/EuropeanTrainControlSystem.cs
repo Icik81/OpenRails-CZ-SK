@@ -18,7 +18,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace ORTS.Scripting.Api.ETCS
+namespace Orts.Simulation.Common.Scripting
 {
     /// <summary>
     /// Current status of ETCS, to be shown in DMI

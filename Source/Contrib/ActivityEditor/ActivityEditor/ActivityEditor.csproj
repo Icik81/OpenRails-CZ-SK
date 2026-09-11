@@ -124,6 +124,7 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Settings.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -194,7 +195,6 @@
     <Compile Include="Route Metadata\TrackSegmentInterface.Designer.cs">
       <DependentUpon>TrackSegmentInterface.cs</DependentUpon>
     </Compile>
-    <Compile Include="Settings.cs" />
     <Compile Include="Wizard\ActivityDescr.cs">
       <SubType>UserControl</SubType>
     </Compile>

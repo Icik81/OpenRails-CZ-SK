@@ -15,15 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Net;
 using System.Xml;
-using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
+using ORTS.Common;
 
-namespace Orts.Simulation.RollingStocks.SubSystems
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 {
     public class Mirel
     {

@@ -19,12 +19,14 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Signalling;
-using Orts.Simulation.Timetables;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.Signalling;
+using Orts.Simulation.Simulation.Timetables;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -154,7 +156,7 @@ namespace Orts.Viewer3D.Popups
                     // train name
                     StationPlatform.Text = String.Concat(playerTimetableTrain.Name.Substring(0, Math.Min(playerTimetableTrain.Name.Length, 20)));
 
-                    if (playerTimetableTrain.ControlMode == Train.TRAIN_CONTROL.INACTIVE || playerTimetableTrain.MovementState == Simulation.AIs.AITrain.AI_MOVEMENT_STATE.AI_STATIC)
+                    if (playerTimetableTrain.ControlMode == Train.TRAIN_CONTROL.INACTIVE || playerTimetableTrain.MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC)
                     {
                         // no info available
                         StationPreviousName.Text = "";
@@ -229,7 +231,7 @@ namespace Orts.Viewer3D.Popups
                                 {
                                     Message.Text = Viewer.Catalog.GetString("Train inactive.");
                                 }
-                                else if (playerTimetableTrain.MovementState == Simulation.AIs.AITrain.AI_MOVEMENT_STATE.AI_STATIC)
+                                else if (playerTimetableTrain.MovementState == AITrain.AI_MOVEMENT_STATE.AI_STATIC)
                                 {
                                     Message.Text = Viewer.Catalog.GetString("Train static.");
                                 }

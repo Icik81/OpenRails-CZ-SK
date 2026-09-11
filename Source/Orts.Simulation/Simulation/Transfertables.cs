@@ -15,17 +15,17 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Signalling;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     /// <summary>
     /// Reads file ORTSTurntables.dat and creates the instances of the turntables

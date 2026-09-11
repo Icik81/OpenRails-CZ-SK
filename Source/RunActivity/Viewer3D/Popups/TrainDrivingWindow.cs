@@ -18,9 +18,6 @@
 // This file is the responsibility of the 3D & Environment Team.
 
 using Microsoft.Xna.Framework;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
 using ORTS.Common;
 using ORTS.Common.Input;
 using System;
@@ -28,6 +25,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -504,8 +505,8 @@ namespace Orts.Viewer3D.Popups
             // First Block
             // Client and server may have a time difference.
             keyPressed = "";
-            if (Orts.MultiPlayer.MPManager.IsClient())
-                InfoToLabel(keyPressed, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Owner.Viewer.Simulator.ClockTime + Orts.MultiPlayer.MPManager.Instance().serverTimeDifference), "", false, keyPressed);
+            if (MPManager.IsClient())
+                InfoToLabel(keyPressed, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Owner.Viewer.Simulator.ClockTime + MPManager.Instance().serverTimeDifference), "", false, keyPressed);
             else
             {
                 InfoToLabel(keyPressed, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Owner.Viewer.Simulator.ClockTime), "", false, keyPressed);

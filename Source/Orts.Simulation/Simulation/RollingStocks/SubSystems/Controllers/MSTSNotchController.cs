@@ -15,13 +15,13 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Parsers.Msts;
-using ORTS.Scripting.Api;
 using System.Collections.Generic;
 using System.IO;
+using Microsoft.Xna.Framework;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common.Scripting;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Controllers
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
 {
     public class MSTSNotch
     {

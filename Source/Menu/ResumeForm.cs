@@ -50,7 +50,6 @@ Some problems remain (see comments in the code):
 
 using GNU.Gettext;
 using GNU.Gettext.WinForms;
-using MSTS;
 using ORTS.Common;
 using ORTS.Menu;
 using ORTS.Settings;
@@ -60,6 +59,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using ORTS.Content;
 using Path = System.IO.Path;
 
 namespace ORTS

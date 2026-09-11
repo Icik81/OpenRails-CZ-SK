@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using GNU.Gettext;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
 using System;
 using System.Collections.Generic;
+using GNU.Gettext;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
 
-namespace ORTS.Scripting.Api
+namespace Orts.Simulation.Common.Scripting
 {
     public abstract class BrakeController : AbstractTrainScriptClass
     {

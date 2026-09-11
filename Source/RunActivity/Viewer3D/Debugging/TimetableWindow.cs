@@ -17,15 +17,18 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
-using Orts.MultiPlayer;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Timetables;
 using Color = System.Drawing.Color;
 
 namespace Orts.Viewer3D.Debugging
@@ -600,8 +603,8 @@ namespace Orts.Viewer3D.Debugging
             if (F.simulator.TimetableMode)
             {
                 // Add the player's train
-                if (F.simulator.PlayerLocomotive.Train is Orts.Simulation.AIs.AITrain)
-                    F.selectedTrainList.Add(F.simulator.PlayerLocomotive.Train as Orts.Simulation.AIs.AITrain);
+                if (F.simulator.PlayerLocomotive.Train is AITrain)
+                    F.selectedTrainList.Add(F.simulator.PlayerLocomotive.Train as AITrain);
 
                 // and all the other trains
                 foreach (var train in F.simulator.AI.AITrains)
@@ -758,7 +761,7 @@ namespace Orts.Viewer3D.Debugging
             // inactive loco: RGB 153,128,0
             // active car: RGB 0,204,0
             // inactive car: RGB 0,153,0
-            if (IsActiveTrain(t as Simulation.AIs.AITrain))
+            if (IsActiveTrain(t as AITrain))
                 if (car is MSTSLocomotive)
                     F.trainPen.Color = (car == locoCar) ? Color.FromArgb(204, 170, 0) : Color.FromArgb(153, 128, 0);
                 else
@@ -801,7 +804,7 @@ namespace Orts.Viewer3D.Debugging
             scaledTrain.Y = -25 + F.pbCanvas.Height - (worldPos.TileZ * 2048 - F.subY + worldPos.Location.Z) * F.yScale;
             if (F.rbShowActiveTrainLabels.Checked)
             {
-                if (t is Simulation.AIs.AITrain && IsActiveTrain(t as Simulation.AIs.AITrain))
+                if (t is AITrain && IsActiveTrain(t as AITrain))
                     ShowTrainNameAndState(g, scaledTrain, t, trainName);
             }
             else
@@ -810,11 +813,11 @@ namespace Orts.Viewer3D.Debugging
             }
         }
 
-        private bool IsActiveTrain(Simulation.AIs.AITrain t)
+        private bool IsActiveTrain(AITrain t)
         {
             if (t == null)
                 return false;
-            return (t.MovementState != Simulation.AIs.AITrain.AI_MOVEMENT_STATE.AI_STATIC
+            return (t.MovementState != AITrain.AI_MOVEMENT_STATE.AI_STATIC
                         && !(t.TrainType == Train.TRAINTYPE.AI_INCORPORATED && !t.IncorporatingTrain.IsPathless)
                     )
                     || t.TrainType == Train.TRAINTYPE.PLAYER;
@@ -824,7 +827,7 @@ namespace Orts.Viewer3D.Debugging
         {
             if (F.simulator.TimetableMode)
             {
-                var tTTrain = t as Orts.Simulation.Timetables.TTTrain;
+                var tTTrain = t as TTTrain;
                 if (tTTrain != null)
                 {
                     // Remove name of timetable, e.g.: ":SCE"

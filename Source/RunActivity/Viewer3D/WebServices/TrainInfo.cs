@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Orts.Simulation.Physics.Train;
+using Orts.Simulation.Simulation.RollingStocks;
+using static Orts.Simulation.Simulation.Physics.Train;
 
 namespace Orts.Viewer3D.WebServices
 {

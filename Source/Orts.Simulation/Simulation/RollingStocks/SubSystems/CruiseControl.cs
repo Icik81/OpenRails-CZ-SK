@@ -15,18 +15,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using static Orts.Simulation.RollingStocks.MSTSLocomotive;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common.Scripting;
+using static Orts.Simulation.Simulation.RollingStocks.MSTSLocomotive;
 
-namespace Orts.Simulation.RollingStocks.SubSystems
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 {
     public class CruiseControl
 
@@ -862,9 +862,9 @@ namespace Orts.Simulation.RollingStocks.SubSystems
         {            
             if (Locomotive.RequiredDecelerationPercent > 0)
                 return;
-            if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Apply || Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Emergency)
+            if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.Apply || Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.Emergency)
                 noBrakeIntervention = true;
-            else if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Neutral)
+            else if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ControllerState.Neutral)
                 noBrakeIntervention = false;
             if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron)
             {
@@ -880,7 +880,7 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                     OverridenMaximalForce = 0;
                 float requestedMaxAcceleration = Locomotive.ForceHandleValue / 100;
                 bool testConditions = true;
-                if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ORTS.Scripting.Api.ControllerState.Release || Locomotive.SystemAnnunciator != 0)
+                if (Locomotive.TrainBrakeController.TrainBrakeControllerState != ControllerState.Release || Locomotive.SystemAnnunciator != 0)
                     testConditions = false;
 
                 if (Locomotive.AccelerationMpSS < requestedMaxAcceleration && testConditions)
@@ -966,11 +966,11 @@ namespace Orts.Simulation.RollingStocks.SubSystems
 
                 foreach (Controllers.MSTSNotch notch in Locomotive.TrainBrakeController.Notches)
                 {
-                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Apply)
+                    if (notch.Type == ControllerState.Apply)
                         brakingNotchValue = notch.Value;
-                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Neutral)
+                    if (notch.Type == ControllerState.Neutral)
                         neutralNotchValue = notch.Value;
-                    if (notch.Type == ORTS.Scripting.Api.ControllerState.Release)
+                    if (notch.Type == ControllerState.Release)
                         releaseNotchValue = notch.Value;
                 }
             }
@@ -1009,8 +1009,8 @@ namespace Orts.Simulation.RollingStocks.SubSystems
                 newThrotte = percentComplete;
             }
 
-            if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Release ||
-                Locomotive.TrainBrakeController.TrainBrakeControllerState == ORTS.Scripting.Api.ControllerState.Neutral || arrIsBraking)
+            if (Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.Release ||
+                Locomotive.TrainBrakeController.TrainBrakeControllerState == ControllerState.Neutral || arrIsBraking)
                 TrainBrakePriority = false;
 
             if (DynamicBrakePriority && Locomotive.ControllerVolts > 0)

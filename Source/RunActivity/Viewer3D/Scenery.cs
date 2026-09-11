@@ -20,8 +20,6 @@
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Concurrent;
@@ -30,7 +28,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using static Orts.Simulation.Physics.Train;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using static Orts.Simulation.Simulation.Physics.Train;
 
 namespace Orts.Viewer3D
 {
@@ -459,16 +459,16 @@ namespace Orts.Viewer3D
                                     if (worldObject.UID == movingTable.UID && WFileName == movingTable.WFile)
                                     {
                                         found = true;
-                                        if (movingTable is Simulation.Turntable)
+                                        if (movingTable is Turntable)
                                         {
-                                            var turntable = movingTable as Simulation.Turntable;
+                                            var turntable = movingTable as Turntable;
                                             turntable.ComputeCenter(worldMatrix);
                                             var startingY = Math.Asin(-2 * (worldObject.QDirection.A * worldObject.QDirection.C - worldObject.QDirection.B * worldObject.QDirection.D));
                                             sceneryObjects.Add(new TurntableShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None, turntable, startingY));
                                         }
                                         else
                                         {
-                                            var transfertable = movingTable as Simulation.Transfertable;
+                                            var transfertable = movingTable as Transfertable;
                                             transfertable.ComputeCenter(worldMatrix);
                                             sceneryObjects.Add(new TransfertableShape(viewer, shapeFilePath, worldMatrix, shadowCaster ? ShapeFlags.ShadowCaster : ShapeFlags.None, transfertable));
                                         }

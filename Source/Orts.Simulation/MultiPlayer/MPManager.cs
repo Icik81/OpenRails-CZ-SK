@@ -24,13 +24,6 @@
  * 
  */
 
-using GNU.Gettext;
-using Orts.Common;
-using Orts.Parsers.Msts;
-using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,8 +31,15 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using GNU.Gettext;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     //a singleton class handles communication, update and stop etc.
     public class MPManager

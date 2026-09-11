@@ -21,19 +21,13 @@ using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Orts.Common;
 using Orts.Formats.Msts;
-using Orts.MultiPlayer;
 using Orts.Simulation;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
 using Orts.Viewer3D.Popups;
 using Orts.Viewer3D.Processes;
 using Orts.Viewer3D.RollingStock;
 using ORTS.Common;
 using ORTS.Common.Input;
-using ORTS.Scripting.Api;
 using ORTS.Settings;
 using System;
 using System.Collections.Generic;
@@ -43,7 +37,14 @@ using System.Linq;
 using System.Management;
 using System.Threading;
 using System.Windows.Forms;
-using Event = Orts.Common.Event;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Event = Orts.Simulation.Common.Event;
 
 namespace Orts.Viewer3D
 {

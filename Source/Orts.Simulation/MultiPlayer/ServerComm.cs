@@ -20,7 +20,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 
-namespace Orts.MultiPlayer
+namespace Orts.Simulation.MultiPlayer
 {
     public class ServerComm
     {

@@ -33,28 +33,28 @@
 // Debug Brake Slide Calculations
 //#define DEBUG_BRAKE_SLIDE
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.Signalling;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
+using Orts.Simulation.Simulation.Signalling;
+using Orts.Simulation.Simulation.Timetables;
+using Event = Orts.Simulation.Common.Event;
 
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
     public class ViewPoint
     {
@@ -1460,7 +1460,7 @@ namespace Orts.Simulation.RollingStocks
             double latitude = 0;
             double longitude = 0;
 
-            new Orts.Common.WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.Location, ref latitude, ref longitude);
+            new WorldLatLon().ConvertWTC(WorldPosition.TileX, WorldPosition.TileZ, WorldPosition.Location, ref latitude, ref longitude);
 
             float LatitudeDeg = MathHelper.ToDegrees((float)latitude);
 

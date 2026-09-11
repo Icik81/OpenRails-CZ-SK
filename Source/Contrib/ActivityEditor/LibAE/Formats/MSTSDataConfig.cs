@@ -20,11 +20,11 @@
 /// Updates : 
 /// 
 
-using Orts.Formats.OR;
-using ORTS.Common;
 using System.IO;
+using ORTS.Common;
+using Orts.Formats.OR;
 
-namespace LibAE
+namespace LibAE.Formats
 {
     public class MSTSDataConfig : MSTSData
     {

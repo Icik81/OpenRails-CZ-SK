@@ -63,21 +63,22 @@
  *  LocomotiveViewer - provides basic animation for running gear, wipers, etc
  * 
  */
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Formats.Msts;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using ORTS.Common;
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
     ///////////////////////////////////////////////////
     ///   SIMULATION BEHAVIOUR
@@ -2106,7 +2107,7 @@ namespace Orts.Simulation.RollingStocks
 
             // Compressor Steam Effects
             // Only show compressor steam effects if it is not a vacuum controlled steam engine
-            if (!(BrakeSystem is Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS.VacuumSinglePipe))
+            if (!(BrakeSystem is VacuumSinglePipe))
             {
                 CompressorSteamVelocityMpS = 10.0f;
                 CompressorSteamVolumeM3pS = (CompressorIsOn ? (1.5f * SteamEffectsFactor) : 0);
@@ -5094,7 +5095,7 @@ namespace Orts.Simulation.RollingStocks
         private void UpdateAuxiliaries(float elapsedClockSeconds, float absSpeedMpS)
         {
             // Only calculate compressor consumption if it is not a vacuum controlled steam engine
-            if (!(BrakeSystem is Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS.VacuumSinglePipe))
+            if (!(BrakeSystem is VacuumSinglePipe))
             {
                 // Air brake system
                 // Calculate Air Compressor steam Usage if turned on
@@ -6032,7 +6033,7 @@ namespace Orts.Simulation.RollingStocks
                 FormatStrings.FormatMass(pS.TopH(Kg.FromLb(PreviousTotalSteamUsageLBpS)), IsMetric),
                 FormatStrings.h);
 
-            if (!(BrakeSystem is Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS.VacuumSinglePipe))
+            if (!(BrakeSystem is VacuumSinglePipe))
             {
                 // Display air compressor information
                 status.AppendFormat("{0}\t{1}\t{2}/{21}\t{3}\t{4}/{21}\t{5}\t{6}/{21}\t{7}\t{8}/{21}\t{9}\t{10}/{21}\t{11}\t{12}/{21}\t{13}\t{14}/{21}\t{15}\t{16}/{21}\t{17}\t{18}/{21} ({19}x{20:N1}\")\n",

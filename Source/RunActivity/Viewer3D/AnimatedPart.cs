@@ -17,11 +17,11 @@
 
 using Microsoft.Xna.Framework;
 using Orts.Formats.Msts;
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D
 {

@@ -32,6 +32,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
+using ORTS.Content;
 using Color = Microsoft.Xna.Framework.Color;
 using MessageBox = System.Windows.Forms.MessageBox;
 
@@ -209,7 +210,7 @@ namespace ORTS.TrackViewer
             {
                 try
                 {
-                    Properties.Settings.Default.installDirectory = MSTS.MSTSPath.Base();
+                    Properties.Settings.Default.installDirectory = MSTSPath.Base();
                 }
                 catch { }
             }

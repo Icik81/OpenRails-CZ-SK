@@ -17,17 +17,17 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Orts.Viewer3D.Popups;
-using ORTS.Common;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Orts.Viewer3D.RollingStock.Subsystems.ETCS.DriverMachineInterface;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ORTS.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Viewer3D.Popups;
+using static Orts.Viewer3D.RollingStock.SubSystems.ETCS.DriverMachineInterface;
 
-namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
+namespace Orts.Viewer3D.RollingStock.SubSystems.ETCS
 {
     // Compliant with ERA_ERTMS_015560 version 3.6.0 (ETCS DRIVER MACHINE INTERFACE)
     public class PlanningWindow : DMIWindow

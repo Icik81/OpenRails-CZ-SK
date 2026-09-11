@@ -17,20 +17,19 @@
 
 // This file is the responsibility of the 3D & Environment Team. 
 
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Orts.Formats.Msts;
-using Orts.Simulation.RollingStocks;
-using Orts.Viewer3D.Popups;
-using Orts.Viewer3D.RollingStock.SubSystems.ETCS;
-using ORTS.Common;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using static Orts.Viewer3D.RollingStock.Subsystems.ETCS.DriverMachineInterface;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Viewer3D.Popups;
+using static Orts.Viewer3D.RollingStock.SubSystems.ETCS.DriverMachineInterface;
 
-namespace Orts.Viewer3D.RollingStock.Subsystems.ETCS
+namespace Orts.Viewer3D.RollingStock.SubSystems.ETCS
 {
     public class DriverMachineInterface
     {

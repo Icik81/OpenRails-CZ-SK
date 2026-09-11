@@ -30,18 +30,18 @@
 // #define DEBUG_TRACEINFO
 //
 
-using Orts.Formats.Msts;
-using Orts.MultiPlayer;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.Timetables;
 
-namespace Orts.Simulation.AIs
+namespace Orts.Simulation.Simulation.AIs
 {
     public class AI
     {

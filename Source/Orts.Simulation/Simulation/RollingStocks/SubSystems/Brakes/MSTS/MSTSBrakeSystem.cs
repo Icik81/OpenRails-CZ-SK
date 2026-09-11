@@ -17,7 +17,7 @@
 
 using Orts.Parsers.Msts;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
     public abstract class MSTSBrakeSystem : BrakeSystem
     {

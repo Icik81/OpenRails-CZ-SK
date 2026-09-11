@@ -20,12 +20,6 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Orts.MultiPlayer;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Viewer3D.Processes;
 using ORTS.Common;
 using System;
@@ -37,6 +31,12 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 
 namespace Orts.Viewer3D.Popups
 {
@@ -460,8 +460,8 @@ namespace Orts.Viewer3D.Popups
             TableAddLabelValue(table, Viewer.Catalog.GetString("Version"), VersionInfo.VersionOrBuild);
 
             // Client and server may have a time difference.
-            if (Orts.MultiPlayer.MPManager.IsClient())
-                TableAddLabelValue(table, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Viewer.Simulator.ClockTime + Orts.MultiPlayer.MPManager.Instance().serverTimeDifference));
+            if (MPManager.IsClient())
+                TableAddLabelValue(table, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Viewer.Simulator.ClockTime + MPManager.Instance().serverTimeDifference));
             else
                 TableAddLabelValue(table, Viewer.Catalog.GetString("Time"), FormatStrings.FormatTime(Viewer.Simulator.ClockTime));
 
@@ -531,13 +531,13 @@ namespace Orts.Viewer3D.Popups
 
                 TableAddLabelValue(table, Viewer.Catalog.GetString("Doors open") + color, status);
             }
-            if (Orts.MultiPlayer.MPManager.IsMultiPlayer())
+            if (MPManager.IsMultiPlayer())
             {
-                var text = Orts.MultiPlayer.MPManager.Instance().GetOnlineUsersInfo();
+                var text = MPManager.Instance().GetOnlineUsersInfo();
 
-                TableAddLabelValue(table, Viewer.Catalog.GetString("MultiPlayerStatus: "), "{0}", Orts.MultiPlayer.MPManager.IsServer()
-                    ? Viewer.Catalog.GetString("Dispatcher") : Orts.MultiPlayer.MPManager.Instance().AmAider
-                    ? Viewer.Catalog.GetString("Push") : Orts.MultiPlayer.MPManager.IsClient()
+                TableAddLabelValue(table, Viewer.Catalog.GetString("MultiPlayerStatus: "), "{0}", MPManager.IsServer()
+                    ? Viewer.Catalog.GetString("Dispatcher") : MPManager.Instance().AmAider
+                    ? Viewer.Catalog.GetString("Push") : MPManager.IsClient()
                     ? Viewer.Catalog.GetString("Client") : "");
                 TableAddLine(table);
                 foreach (var t in text.Split('\t'))
@@ -1701,7 +1701,7 @@ namespace Orts.Viewer3D.Popups
             // first is player train
             foreach (var thisTrain in Viewer.Simulator.Trains)
             {
-                if (thisTrain.TrainType == Train.TRAINTYPE.PLAYER || (thisTrain.TrainType == Train.TRAINTYPE.REMOTE && Orts.MultiPlayer.MPManager.IsServer())
+                if (thisTrain.TrainType == Train.TRAINTYPE.PLAYER || (thisTrain.TrainType == Train.TRAINTYPE.REMOTE && MPManager.IsServer())
                     || thisTrain.IsActualPlayerTrain)
                 {
                     var status = thisTrain.GetStatus(Viewer.MilepostUnitsMetric);

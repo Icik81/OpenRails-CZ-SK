@@ -17,19 +17,17 @@
 //
 // This file is the responsibility of the 3D & Environment Team.
 
-using Microsoft.Xna.Framework;
-using Orts.Formats.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
 
-namespace Orts.Simulation
+namespace Orts.Simulation.Simulation
 {
     public class LevelCrossings
     {

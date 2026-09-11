@@ -21,18 +21,18 @@
 /// 
 
 
-using ActivityEditor.Engine;
-using LibAE;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using ORTS.Common;
-using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
+using LibAE;
+using LibAE.Formats;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using ORTS.Settings;
 
-namespace ActivityEditor
+namespace ActivityEditor.Engine
 {
     public class PseudoSim
     {

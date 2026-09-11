@@ -18,19 +18,17 @@
 // Debug for Vacuum operation - Train Pipe Leak
 //#define DEBUG_TRAIN_PIPE_LEAK
 
-using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Diagnostics;
-using Orts.MultiPlayer;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.MultiPlayer;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
     public class VacuumSinglePipe : MSTSBrakeSystem
     {

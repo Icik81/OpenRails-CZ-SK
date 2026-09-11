@@ -18,20 +18,20 @@
 // Define this to log the wheel configurations on cars as they are loaded.
 //#define DEBUG_WHEELS
 
-using Orts.Common;
-using Orts.Parsers.Msts;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using ORTS.Common;
-using ORTS.Scripting.Api;
-using ORTS.Scripting.Api.ETCS;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
 
-namespace Orts.Simulation.RollingStocks.SubSystems
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 {
     public class ScriptedTrainControlSystem
     {

@@ -44,45 +44,36 @@
 // Debug for Advanced Adhesion Model
 //#define DEBUG_ADHESION
 
-using GNU.Gettext;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Orts.Common;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Properties;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using Orts.Simulation.RollingStocks.SubSystems.PowerTransmissions;
-using Orts.Simulation.Timetables;
-using ORTS.Common;
-using ORTS.Common.Input;
-using ORTS.Scripting.Api;
-using ORTS.Settings;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Windows.Forms;
 using System.Xml;
-using static Orts.Simulation.RollingStocks.MSTSControlUnit;
-using static Orts.Simulation.RollingStocks.MSTSLocomotive;
-using static Orts.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
-using static Orts.Simulation.RollingStocks.SubSystems.CruiseControl;
-using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TrackBar;
-using Event = Orts.Common.Event;
-using static Orts.Simulation.RollingStocks.SubSystems.Shunter;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Formats.Msts;
+using Orts.Formats.OR;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Common.Scripting.PowerSupply;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions;
+using static Orts.Simulation.Simulation.RollingStocks.MSTSControlUnit;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.CruiseControl;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.Mirel;
+using Event = Orts.Simulation.Common.Event;
 
-namespace Orts.Simulation.RollingStocks
+namespace Orts.Simulation.Simulation.RollingStocks
 {
 
     ///////////////////////////////////////////////////

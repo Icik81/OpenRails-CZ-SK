@@ -29,7 +29,6 @@
 // Analyse the data using a spreadsheet and graph with an XY chart.
 
 
-using Orts.Simulation.RollingStocks;
 using ORTS.Common;
 using ORTS.Common.Input;
 using ORTS.Settings;
@@ -38,6 +37,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using Orts.Simulation.Simulation.RollingStocks;
 
 namespace Orts.Viewer3D
 {

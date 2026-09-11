@@ -19,11 +19,11 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Orts.Common;
 using ORTS.Common;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Orts.Simulation.Common;
 
 namespace Orts.Viewer3D
 {

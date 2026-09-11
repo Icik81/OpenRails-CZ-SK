@@ -29,10 +29,10 @@
 //    Rick Grout
 //   
 
-using Microsoft.Xna.Framework;
 using System;
+using Microsoft.Xna.Framework;
 
-namespace Orts.Common
+namespace Orts.Simulation.Common
 {
     public class WorldLatLon
     {

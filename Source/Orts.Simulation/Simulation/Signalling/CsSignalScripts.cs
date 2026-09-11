@@ -1,7 +1,7 @@
 ﻿using System.IO;
 using System.Reflection;
 
-namespace Orts.Simulation.Signalling
+namespace Orts.Simulation.Simulation.Signalling
 {
     public class CsSignalScripts
     {

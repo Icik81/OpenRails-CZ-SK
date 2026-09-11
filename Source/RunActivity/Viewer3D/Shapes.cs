@@ -31,11 +31,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Viewer3D.Common;
 using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -43,9 +40,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Threading;
-using static Orts.Simulation.RollingStocks.SubSystems.FreightAnimationStatic;
-using Event = Orts.Common.Event;
-using Events = Orts.Common.Events;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.RollingStocks;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.FreightAnimationStatic;
+using Event = Orts.Simulation.Common.Event;
+using Events = Orts.Simulation.Common.Events;
 
 namespace Orts.Viewer3D
 {

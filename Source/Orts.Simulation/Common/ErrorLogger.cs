@@ -20,7 +20,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Text;
 
-namespace Orts.Common
+namespace Orts.Simulation.Common
 {
     public class NullLogger : TextWriter
     {

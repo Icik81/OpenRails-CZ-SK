@@ -21,22 +21,13 @@ using EmbedIO;
 using EmbedIO.Sessions;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Viewer3D.Common;
 using Orts.Viewer3D.Popups;
-using Orts.Viewer3D.RollingStock.Subsystems.ETCS;
 using Orts.Viewer3D.RollingStock.SubSystems;
 using ORTS.Common;
 using ORTS.Common.Input;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -44,11 +35,20 @@ using System.Diagnostics.Eventing.Reader;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using static Orts.Simulation.RollingStocks.MSTSControlUnit;
-using static Orts.Simulation.RollingStocks.MSTSLocomotive;
-using static Orts.Simulation.RollingStocks.SubSystems.Mirel;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
+using Orts.Viewer3D.RollingStock.SubSystems.ETCS;
+using static Orts.Simulation.Simulation.RollingStocks.MSTSControlUnit;
+using static Orts.Simulation.Simulation.RollingStocks.MSTSLocomotive;
+using static Orts.Simulation.Simulation.RollingStocks.SubSystems.Mirel;
 using static Orts.Viewer3D.SkyViewer;
-using Event = Orts.Common.Event;
+using Event = Orts.Simulation.Common.Event;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -1122,28 +1122,28 @@ namespace Orts.Viewer3D.RollingStock
                     if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
                     {
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
                             && !Locomotive.StopButtonPressed)
                             Locomotive.StartButtonPressed = true;
 
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running
+                            || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
                             && !Locomotive.StartButtonPressed)
                             Locomotive.StopButtonPressed = true;
                     }
                     if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
                     {
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped
+                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping)
                         && !Locomotive.StopButtonPressed2)
                             Locomotive.StartButtonPressed2 = true;
 
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                            || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Running
+                            || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Starting)
                             && !Locomotive.StartButtonPressed2)
                             Locomotive.StopButtonPressed2 = true;
                     }
@@ -1153,28 +1153,28 @@ namespace Orts.Viewer3D.RollingStock
                     if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 0)
                     {
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
                             && !Locomotive.StopButtonPressed)
                             Locomotive.StartButtonPressed = true;
 
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
                             && !Locomotive.StartButtonPressed)
                             Locomotive.StopButtonPressed = true;
                     }
                     if (Locomotive.SwitchEnginePosition[Locomotive.LocoStation] == 1)
                     {
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping)
                         && !Locomotive.StopButtonPressed2)
                             Locomotive.StartButtonPressed2 = true;
 
                         if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                            && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Running
+                            || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Starting)
                             && !Locomotive.StartButtonPressed2)
                             Locomotive.StopButtonPressed2 = true;
                     }
@@ -1194,28 +1194,28 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     var PU = (Locomotive as MSTSControlUnit).PowerControlUnit;
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
                         && !Locomotive.StopButtonPressed)
                         Locomotive.StartButtonPressed = true;
 
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running
+                        || (PU as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
                         && !Locomotive.StartButtonPressed)
                         Locomotive.StopButtonPressed = true;
                 }
                 else
                 {
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Stopping)
                         && !Locomotive.StopButtonPressed)
                         Locomotive.StartButtonPressed = true;
 
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer)
-                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Running
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[0].EngineStatus == DieselEngine.Status.Starting)
                         && !Locomotive.StartButtonPressed)
                         Locomotive.StopButtonPressed = true;
                 }
@@ -1233,28 +1233,28 @@ namespace Orts.Viewer3D.RollingStock
                 {
                     var PU = (Locomotive as MSTSControlUnit).PowerControlUnit;
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
-                    && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                    || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                    && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped
+                    || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping)
                     && !Locomotive.StopButtonPressed2)
                         Locomotive.StartButtonPressed2 = true;
 
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
-                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && ((PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Running
+                        || (PU as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Starting)
                         && !Locomotive.StartButtonPressed2)
                         Locomotive.StopButtonPressed2 = true;
                 }
                 else
                 {
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
-                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped
-                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopping)
+                    && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped
+                    || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Stopping)
                     && !Locomotive.StopButtonPressed2)
                         Locomotive.StartButtonPressed2 = true;
 
                     if (UserInput.IsDown(UserCommand.ControlDieselPlayer2)
-                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running
-                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Starting)
+                        && ((Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Running
+                        || (Locomotive as MSTSDieselLocomotive).DieselEngines[1].EngineStatus == DieselEngine.Status.Starting)
                         && !Locomotive.StartButtonPressed2)
                         Locomotive.StopButtonPressed2 = true;
                 }
@@ -3278,11 +3278,11 @@ namespace Orts.Viewer3D.RollingStock
                 }
             }
 
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
-                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual && Control.ControlType == CABViewControlTypes.ORTS_SELECTED_SPEED)
+                if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
                     display = Locomotive.DisplaySelectedSpeed;
 
-            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+            if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
             {
                 TimeSpan ts = DateTime.Now - Locomotive.SelectedSpeedChangedAt;
                 if (ts.TotalSeconds < 5)
@@ -3825,7 +3825,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }
@@ -3856,7 +3856,7 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (Locomotive.CruiseControl != null)
                             {
-                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
+                                if (((Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.AVV) && !Locomotive.CruiseControl.DynamicBrakePriority) || Locomotive.DynamicBrakeIntervention > 0)
                                 {
                                     index = 0;
                                 }
@@ -3931,7 +3931,7 @@ namespace Orts.Viewer3D.RollingStock
                             else
                                 index = 0;
                         }
-                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual
+                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual
                             && Locomotive.DisableRestrictedSpeedWhenManualDriving)
                         {
                             if (Locomotive.IsActive)
@@ -4657,8 +4657,8 @@ namespace Orts.Viewer3D.RollingStock
                 //                
                 case CABViewControlTypes.ORTS_PLAYER_DIESEL_ENGINE:
                     var dieselLoco = Locomotive as MSTSDieselLocomotive;
-                    if ((dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running ||
-                                dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped) &&
+                    if ((dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Running ||
+                                dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped) &&
                                 ChangedValue(1) == 0) new TogglePlayerEngineCommand(Viewer.Log); break;
                 case CABViewControlTypes.ORTS_HELPERS_DIESEL_ENGINES:
                     foreach (var car in Locomotive.Train.Cars)
@@ -4668,15 +4668,15 @@ namespace Orts.Viewer3D.RollingStock
                         {
                             if (car == Viewer.Simulator.PlayerLocomotive && dieselLoco.DieselEngines.Count > 1)
                             {
-                                if ((dieselLoco.DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running ||
-                                            dieselLoco.DieselEngines[1].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped) &&
+                                if ((dieselLoco.DieselEngines[1].EngineStatus == DieselEngine.Status.Running ||
+                                            dieselLoco.DieselEngines[1].EngineStatus == DieselEngine.Status.Stopped) &&
                                             ChangedValue(1) == 0) new ToggleHelpersEngineCommand(Viewer.Log);
                                 break;
                             }
                             else if (car != Viewer.Simulator.PlayerLocomotive)
                             {
-                                if ((dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Running ||
-                                            dieselLoco.DieselEngines[0].EngineStatus == Orts.Simulation.RollingStocks.SubSystems.PowerSupplies.DieselEngine.Status.Stopped) &&
+                                if ((dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Running ||
+                                            dieselLoco.DieselEngines[0].EngineStatus == DieselEngine.Status.Stopped) &&
                                             ChangedValue(1) == 0) new ToggleHelpersEngineCommand(Viewer.Log);
                                 break;
                             }
@@ -6316,7 +6316,7 @@ namespace Orts.Viewer3D.RollingStock
                         Locomotive.CruiseControl.SpeedSelectorModeStartIncrease();
                         IsChanged = true;
                     }
-                    else if (Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.Start)
+                    else if (Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] == CruiseControl.SpeedSelectorMode.Start)
                     {
                         if (UserInput.IsMouseLeftButtonReleased)
                         {
@@ -6398,7 +6398,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     if (Locomotive.CruiseControl != null)
                     {
-                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                        if (Locomotive.DisableRestrictedSpeedWhenManualDriving && Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
                         {
                             if (ChangedValue(0) == 1 && !Locomotive.IsActive)
                                 Locomotive.IsActive = true;
@@ -6496,8 +6496,8 @@ namespace Orts.Viewer3D.RollingStock
                                 {
                                     if (mpc.controllerBinding == MultiPositionController.ControllerBinding.SelectedSpeed && Locomotive.CruiseControl.ForceRegulatorAutoWhenNonZeroSpeedSelected)
                                     {
-                                        Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                                        Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedSelectorMode.On;
+                                        Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = CruiseControl.SpeedRegulatorMode.Auto;
+                                        Locomotive.CruiseControl.SpeedSelMode[Locomotive.LocoStation] = CruiseControl.SpeedSelectorMode.On;
                                     }
                                     mpc.DoMovement(MultiPositionController.Movement.Forward);                                                                          
                                 }
@@ -6824,11 +6824,11 @@ namespace Orts.Viewer3D.RollingStock
                                         if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Vectron && Locomotive.ForceHandleValue > 0)
                                             break;
                                         Locomotive.SignalEvent(Event.AFB);
-                                        if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto)
-                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual;
-                                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Manual)
+                                        if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Auto)
+                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = CruiseControl.SpeedRegulatorMode.Manual;
+                                        else if (Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] == CruiseControl.SpeedRegulatorMode.Manual)
                                         {
-                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = Simulation.RollingStocks.SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
+                                            Locomotive.CruiseControl.SpeedRegMode[Locomotive.LocoStation] = CruiseControl.SpeedRegulatorMode.Auto;
                                             Locomotive.CruiseControl.SelectedSpeedMpS = Locomotive.CruiseControl.CurrentSelectedSpeedMpS = Locomotive.CruiseControl.NextSelectedSpeedMps;
                                         }
                                         break;

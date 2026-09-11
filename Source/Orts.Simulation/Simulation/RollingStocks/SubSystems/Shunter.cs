@@ -1,36 +1,18 @@
-﻿using Microsoft.Xna.Framework;
-using Orts.Common;
-using Orts.Formats.Msts;
-using Orts.Formats.OR;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes;
-using Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using Orts.Simulation.RollingStocks.SubSystems.PowerSupplies;
-using Orts.Simulation.Signalling;
-using ORTS.Common;
-using ORTS.Scripting.Api;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using static Orts.Simulation.Physics.Train;
-using static Orts.Simulation.RollingStocks.TrainCar;
-using Event = Orts.Common.Event;
+using Microsoft.Xna.Framework;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.Signalling;
+using static Orts.Simulation.Simulation.RollingStocks.TrainCar;
+using Event = Orts.Simulation.Common.Event;
 
 
 // Řídící jednotka pro dálkové řízení lokomotivy
 
-namespace Orts.Simulation.RollingStocks.SubSystems
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 {
     public class Shunter
     {

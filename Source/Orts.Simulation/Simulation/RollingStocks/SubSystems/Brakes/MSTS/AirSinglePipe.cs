@@ -18,26 +18,18 @@
 // Debug for Airbrake operation - Train Pipe Leak
 //#define DEBUG_TRAIN_PIPE_LEAK
 
-using Microsoft.Xna.Framework;
-using Newtonsoft.Json.Linq;
-using Orts.Common;
-using Orts.MultiPlayer;
-using Orts.Parsers.Msts;
-using Orts.Simulation.AIs;
-using Orts.Simulation.Physics;
-using Orts.Simulation.Properties;
-using Orts.Simulation.RollingStocks.SubSystems.Controllers;
-using ORTS.Common;
-using ORTS.Scripting.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Threading;
-using System.Windows.Forms;
-using static Orts.Simulation.RollingStocks.TrainCar;
+using Microsoft.Xna.Framework;
+using ORTS.Common;
+using Orts.Parsers.Msts;
+using Orts.Simulation.Common;
+using Orts.Simulation.Common.Scripting;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
 
-namespace Orts.Simulation.RollingStocks.SubSystems.Brakes.MSTS
+namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
     public class AirSinglePipe : MSTSBrakeSystem
     {

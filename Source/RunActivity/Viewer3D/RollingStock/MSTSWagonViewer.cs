@@ -21,11 +21,8 @@
 //#define DEBUG_WHEEL_ANIMATION 
 
 using Microsoft.Xna.Framework;
-using Orts.Common;
 using Orts.Formats.Msts;
 using Orts.Simulation;
-using Orts.Simulation.RollingStocks;
-using Orts.Simulation.RollingStocks.SubSystems;
 using Orts.Viewer3D.RollingStock.SubSystems;
 using ORTS.Common;
 using ORTS.Common.Input;
@@ -34,6 +31,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using Orts.Simulation.Common;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
 
 namespace Orts.Viewer3D.RollingStock
 {
@@ -728,7 +728,7 @@ namespace Orts.Viewer3D.RollingStock
                 //                                distanceTravelledM = MSTSWagon.WheelSpeedMpS * elapsedTime.ClockSeconds;
 
                 distanceTravelledM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * MSTSWagon.WheelSpeedMpS * elapsedTime.ClockSeconds;
-                if (Car.EngineType == Orts.Simulation.RollingStocks.TrainCar.EngineTypes.Steam) // Steam locomotive so set up different speeds for different driver and non-driver wheels
+                if (Car.EngineType == TrainCar.EngineTypes.Steam) // Steam locomotive so set up different speeds for different driver and non-driver wheels
                 {
                     //distanceTravelledM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * MSTSWagon.WheelSpeedMpS * elapsedTime.ClockSeconds;
                     distanceTravelledDrivenM = ((MSTSWagon.Train != null && MSTSWagon.Train.IsPlayerDriven && ((MSTSLocomotive)MSTSWagon).UsingRearCab) ? -1 : 1) * MSTSWagon.WheelSpeedSlipMpS * elapsedTime.ClockSeconds;

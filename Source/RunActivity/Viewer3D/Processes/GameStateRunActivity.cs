@@ -21,9 +21,7 @@
 using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Orts.Common;
 using Orts.Formats.Msts;
-using Orts.MultiPlayer;
 using Orts.Simulation;
 using Orts.Viewer3D.Debugging;
 using ORTS.Common;
@@ -39,6 +37,13 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using ORTS.Content;
+using Orts.Simulation.Common;
+using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation;
+using Orts.Simulation.Simulation.Physics;
+using Orts.Simulation.Simulation.RollingStocks;
+using Orts.Simulation.Simulation.RollingStocks.SubSystems;
 
 namespace Orts.Viewer3D.Processes
 {
@@ -395,12 +400,12 @@ namespace Orts.Viewer3D.Processes
                     outf.Write(Popups.TrackMonitor.DbfEvalIniOverSpeedTimeS);
                     outf.Write(RollingStock.MSTSLocomotiveViewer.DbfEvalEBPBmoving);
                     outf.Write(RollingStock.MSTSLocomotiveViewer.DbfEvalEBPBstopped);
-                    outf.Write(Simulation.Physics.Train.NumOfCouplerBreaks);
-                    outf.Write(Simulation.RollingStocks.MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh);
-                    outf.Write(Simulation.RollingStocks.SubSystems.ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh);
-                    outf.Write(Simulation.RollingStocks.TrainCar.DbfEvalTrainOverturned);
-                    outf.Write(Simulation.RollingStocks.TrainCar.DbfEvalTravellingTooFast);
-                    outf.Write(Simulation.RollingStocks.TrainCar.DbfEvalTravellingTooFastSnappedBrakeHose);
+                    outf.Write(Train.NumOfCouplerBreaks);
+                    outf.Write(MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh);
+                    outf.Write(ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh);
+                    outf.Write(TrainCar.DbfEvalTrainOverturned);
+                    outf.Write(TrainCar.DbfEvalTravellingTooFast);
+                    outf.Write(TrainCar.DbfEvalTravellingTooFastSnappedBrakeHose);
                     outf.Write(Simulator.DbfEvalOverSpeedCoupling);
                     outf.Write(Viewer.DbfEvalAutoPilotTimeS);
                     outf.Write(Viewer.DbfEvalIniAutoPilotTimeS);
@@ -472,12 +477,12 @@ namespace Orts.Viewer3D.Processes
                             Popups.TrackMonitor.DbfEvalIniOverSpeedTimeS = infDbfEval.ReadDouble();
                             RollingStock.MSTSLocomotiveViewer.DbfEvalEBPBmoving = infDbfEval.ReadInt32();
                             RollingStock.MSTSLocomotiveViewer.DbfEvalEBPBstopped = infDbfEval.ReadInt32();
-                            Simulation.Physics.Train.NumOfCouplerBreaks = infDbfEval.ReadInt32();
-                            Simulation.RollingStocks.MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh = infDbfEval.ReadInt32();
-                            Simulation.RollingStocks.SubSystems.ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh = infDbfEval.ReadInt32();
-                            Simulation.RollingStocks.TrainCar.DbfEvalTrainOverturned = infDbfEval.ReadInt32();
-                            Simulation.RollingStocks.TrainCar.DbfEvalTravellingTooFast = infDbfEval.ReadInt32();
-                            Simulation.RollingStocks.TrainCar.DbfEvalTravellingTooFastSnappedBrakeHose = infDbfEval.ReadInt32();
+                            Train.NumOfCouplerBreaks = infDbfEval.ReadInt32();
+                            MSTSLocomotive.DbfEvalFullTrainBrakeUnder8kmh = infDbfEval.ReadInt32();
+                            ScriptedTrainControlSystem.DbfevalFullBrakeAbove16kmh = infDbfEval.ReadInt32();
+                            TrainCar.DbfEvalTrainOverturned = infDbfEval.ReadInt32();
+                            TrainCar.DbfEvalTravellingTooFast = infDbfEval.ReadInt32();
+                            TrainCar.DbfEvalTravellingTooFastSnappedBrakeHose = infDbfEval.ReadInt32();
                             Simulator.DbfEvalOverSpeedCoupling = infDbfEval.ReadInt32();
                             Viewer.DbfEvalAutoPilotTimeS = infDbfEval.ReadDouble();
                             Viewer.DbfEvalIniAutoPilotTimeS = infDbfEval.ReadDouble();
@@ -1098,7 +1103,7 @@ namespace Orts.Viewer3D.Processes
             RouteFile trk = null;
             try
             {
-                trk = new RouteFile(MSTS.MSTSPath.GetTRKFileName(Path.GetDirectoryName(Path.GetDirectoryName(path))));
+                trk = new RouteFile(MSTSPath.GetTRKFileName(Path.GetDirectoryName(Path.GetDirectoryName(path))));
             }
             catch { }
             return trk?.Tr_RouteFile?.Name;

@@ -15,12 +15,12 @@
 // You should have received a copy of the GNU General Public License
 // along with Open Rails.  If not, see <http://www.gnu.org/licenses/>.
 
-using Orts.ExternalDevices;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Orts.ExternalDevices;
 
-namespace Orts.Menu
+namespace ORTS
 {
     /// <summary>
     /// A control for viewing and altering keyboard input settings, in combination with <see cref="KeyInputEditControl"/>.

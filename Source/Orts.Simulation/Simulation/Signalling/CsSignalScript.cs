@@ -1,9 +1,9 @@
-﻿using Orts.Formats.Msts;
-using ORTS.Scripting.Api;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Orts.Formats.Msts;
+using Orts.Simulation.Common.Scripting;
 
-namespace Orts.Simulation.Signalling
+namespace Orts.Simulation.Simulation.Signalling
 {
     // The exchange of information is done through the TextSignalAspect property.
     // The MSTS signal aspect is only used for TCS scripts that do not support TextSignalAspect.
