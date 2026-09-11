@@ -779,7 +779,8 @@ namespace Orts.Viewer3D
 
             return bestHeight;
         }
-        
+
+        Vector3 localVectorToPlatform;
         // Osazení cestujících na nástupištích
         void SpawnPlatformPassengers(PlatformObj platformObj, WorldPosition platformWorldPos)
         {
@@ -854,50 +855,8 @@ namespace Orts.Viewer3D
             float midPoint = length * 0.5f;
             float spawnStart = midPoint * (1.0f / 10.0f);
             float spawnEnd = midPoint + (midPoint * (9.0f / 10.0f));
-            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);
-            
-            var frontIsFront = currentStop.PlatformReference == currentStop.PlatformItem.PlatformFrontUiD;
-            if (playerTrain is Orts.Simulation.Timetables.TTTrain)
-            {
-                frontIsFront = currentStop.Direction == 0;
-            }
-
-            bool platformOnLeftOfTrain = false;
-            var leadCar = playerTrain.LeadLocomotive ?? playerTrain.Cars.FirstOrDefault();
-
-            if (currentStop.PlatformItem.PlatformSide != null && currentStop.PlatformItem.PlatformSide.Length >= 2)
-            {
-                (leadCar as MSTSLocomotive).LastFlippedState = (leadCar as MSTSLocomotive).Flipped;
-
-                if ((leadCar as MSTSLocomotive).Flipped)
-                {
-                    frontIsFront = !frontIsFront;
-                }
-
-                if (currentStop.PlatformItem.PlatformSide[0] && frontIsFront)
-                    platformOnLeftOfTrain = true;
-                else if (currentStop.PlatformItem.PlatformSide[1] && !frontIsFront)
-                    platformOnLeftOfTrain = true;                
-            }
-
-            // Dopředný vektor vlaku v prostoru X-Z           
-            Vector3 trainForward = Vector3.Forward;
-            if (leadCar != null)
-            {
-                trainForward = new Vector3(leadCar.WorldPosition.XNAMatrix.M31, 0, -leadCar.WorldPosition.XNAMatrix.M33);
-                if (trainForward.LengthSquared() > 0.001f)
-                    trainForward.Normalize();
-                
-            }
-
-            // Vektor kolmo doprava od vlaku v MSTS rovině X-Z
-            Vector3 trainRight = new Vector3(trainForward.Z, 0, -trainForward.X);
-
-            // Vektor ukazující z osy koleje přímo do perónu (vlevo nebo vpravo od vlaku)
-            Vector3 vectorToPlatform = platformOnLeftOfTrain ? -trainRight : trainRight;
-
+            float availableLength = Math.Max(1.0f, spawnEnd - spawnStart);            
             float baseLateralOffset = 2.4f;
-
             var rand = Simulator.Random;
             var placedPoints = new List<Vector2>(passengerCount);
             const float minDistance = 0.85f;
@@ -929,12 +888,22 @@ namespace Orts.Viewer3D
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
 
+                    // 1. Tečný vektor koleje v místě cestujícího odvozený z rotace trati (MSTS X-Z rovina)
+                    float rotY = pTrav.RotY;
+                    Vector3 trackTangent = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
+
+                    // 2. Kolmý vektor k ose koleje doprava (otočení o 90° v MSTS X-Z rovině)
+                    Vector3 localTrackRight = new Vector3(trackTangent.Z, 0, -trackTangent.X);
+
+                    // 3. Vektor směřující do nástupiště
+                    localVectorToPlatform = currentStop.PlatformItem.PlatformSide[0] ? localTrackRight : -localTrackRight;
+
                     // Boční odstup od osy koleje přímo ve směru perónu
                     float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 1.0f;
 
                     // MSTS souřadnice bodu na perónu od osy kolejnice
-                    float mstsQueryX = pTrav.X + vectorToPlatform.X * lateralDist;
-                    float mstsQueryZ = pTrav.Z + vectorToPlatform.Z * lateralDist;
+                    float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
+                    float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
 
                     // 1. Primárně zkusit Bounding Box (pokud existuje v .sd)
                     float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);                    
@@ -1038,13 +1007,22 @@ namespace Orts.Viewer3D
                     var pTrav = new Traveller(traveller);
                     pTrav.Move(distAlong);
 
-                    // Boční odstup od osy koleje přímo ve směru perónu
+                    // 1. Tečný vektor koleje v místě cestujícího odvozený z rotace trati (MSTS X-Z rovina)
+                    float rotY = pTrav.RotY;
+                    Vector3 trackTangent = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
+
+                    // 2. Kolmý vektor k ose koleje doprava (otočení o 90° v MSTS X-Z rovině)
+                    Vector3 localTrackRight = new Vector3(trackTangent.Z, 0, -trackTangent.X);
+
+                    // 3. Vektor směřující do nástupiště
+                    localVectorToPlatform = currentStop.PlatformItem.PlatformSide[0] ? localTrackRight : -localTrackRight;
+
+                    // Boční odstup od osy koleje přesně kolmo k oblouku v daném bodě
                     float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 1.0f;
 
-                    // MSTS souřadnice bodu na perónu od osy kolejnice
-                    float mstsQueryX = pTrav.X + vectorToPlatform.X * lateralDist;
-                    float mstsQueryZ = pTrav.Z + vectorToPlatform.Z * lateralDist;
-                    
+                    float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
+                    float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
+
                     var finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;                    
 
                     Vector3 testPos = new Vector3(
@@ -1078,7 +1056,7 @@ namespace Orts.Viewer3D
                     continue;
 
                 // Pohled čelem k vlaku (opačný směr k vektoru perónu)
-                Vector3 lookToTrain = vectorToPlatform;
+                Vector3 lookToTrain = localVectorToPlatform;
                 float baseAngle = (float)Math.Atan2(lookToTrain.X, -lookToTrain.Z);
 
                 float passengerYaw;
