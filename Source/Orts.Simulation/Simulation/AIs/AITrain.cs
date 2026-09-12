@@ -2200,13 +2200,14 @@ namespace Orts.Simulation.Simulation.AIs
                     {
                         if (ActualPassengerCountAtStation > 0)
                         {
-                            thisStation.ActualArrival = presentTime;
-                            var stopTime = thisStation.CalculateDepartTime(presentTime, this);
                             if (BoardTime == 0)
+                            {
+                                var stopTime = thisStation.CalculateDepartTime(presentTime, this);
                                 BoardTime = stopTime / ActualPassengerCountAtStation;
+                            }
 
                             BoardTimer += elapsedClockSeconds;
-                            if (BoardTimer > BoardTime * 0.75f)
+                            if (BoardTimer > BoardTime * 0.5f)
                             {
                                 ActualPassengerCountAtStation--;
                                 BoardTimer = 0;
