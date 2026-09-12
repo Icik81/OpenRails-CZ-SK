@@ -1463,22 +1463,22 @@ namespace Orts.Viewer3D
                         y *= 2;
 
                     // Úprava frekvence zvuku motorů dle zatížení
-                    if (car != null && MSTSStream != null)
-                    {
-                        foreach (var trigger in Triggers)
-                        {
-                            if (trigger.SoundCommand is ORTSSoundPlayCommand)
-                                foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
-                                    if (name != null)
-                                    {
-                                        if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
-                                        {
-                                            y /= car.LoadSound_FrequencyCoef;
-                                            goto founIt_f;
-                                        }
-                                    }
-                        }                                                                                                
-                    }
+                    //if (car != null && MSTSStream != null)
+                    //{
+                    //    foreach (var trigger in Triggers)
+                    //    {
+                    //        if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                    //            foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                    //                if (name != null)
+                    //                {
+                    //                    if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
+                    //                    {
+                    //                        y /= car.LoadSound_FrequencyCoef;
+                    //                        goto founIt_f;
+                    //                    }
+                    //                }
+                    //    }                                                                                                
+                    //}
                     founIt_f:
                     ALSoundSource.PlaybackSpeed = y / ALSoundSource.SampleRate;
                     NeedsFrequentUpdate = x != 0;
@@ -1524,28 +1524,28 @@ namespace Orts.Viewer3D
             }
 
             // Úprava hlasitosti zvuku motorů dle zatížení            
-            if (car != null && MSTSStream != null)
-            {
-                foreach (var trigger in Triggers)
-                {
-                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
-                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
-                            if (name != null)
-                            {
-                                if (name.ToLower().Contains("motor"))
-                                {
-                                    volume *= car.LoadSound_VolumeCoef_SM;
-                                    goto founIt_v;                                    
-                                }
-                                if (name.Contains("TE") || name.Contains("TM"))
-                                {
-                                    volume *= car.LoadSound_VolumeCoef_TM;
-                                    goto founIt_v;
-                                }
-                            }
-                }                                
-            }
-            founIt_v:
+            //if (car != null && MSTSStream != null)
+            //{
+            //    foreach (var trigger in Triggers)
+            //    {
+            //        if (trigger.SoundCommand is ORTSSoundPlayCommand)
+            //            foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+            //                if (name != null)
+            //                {
+            //                    if (name.ToLower().Contains("motor"))
+            //                    {
+            //                        volume *= car.LoadSound_VolumeCoef_SM;
+            //                        goto founIt_v;                                    
+            //                    }
+            //                    if (name.Contains("TE") || name.Contains("TM"))
+            //                    {
+            //                        volume *= car.LoadSound_VolumeCoef_TM;
+            //                        goto founIt_v;
+            //                    }
+            //                }
+            //    }                                
+            //}
+            //founIt_v:
 
             if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
             {
