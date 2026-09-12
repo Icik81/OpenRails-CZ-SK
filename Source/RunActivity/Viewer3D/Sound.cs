@@ -1282,21 +1282,12 @@ namespace Orts.Viewer3D
                 foreach (Orts.Formats.Msts.Trigger trigger in mstsStream.Triggers)
                 {
                     if (trigger.GetType() == typeof(Orts.Formats.Msts.Discrete_Trigger)
-                        && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 8)
+                        && soundSource.Car != null && (((trigger as Discrete_Trigger).TriggerID == 8) || ((trigger as Discrete_Trigger).TriggerID == 10) || ((trigger as Discrete_Trigger).TriggerID == 20127)))
                     {
                         rolloffFactor = SoundSource.HornRolloffFactor;
                         IsHornStream = true;
                         break;
-                    }
-
-                    // Icik
-                    if (trigger.GetType() == typeof(Orts.Formats.Msts.Discrete_Trigger)
-                        && soundSource.Car != null && (trigger as Discrete_Trigger).TriggerID == 10)
-                    {
-                        rolloffFactor = SoundSource.HornRolloffFactor * 1.5f;
-                        //IsHornStream = true;
-                        break;
-                    }
+                    }                    
                 }
             }
 

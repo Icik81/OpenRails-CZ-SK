@@ -8330,10 +8330,23 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 {                    
                     Simulator.CabRadioOn = CabRadio[LocoStation];
                     // Pro 3D kabiny je vysílačka zapnutá vždy
-                    if (HasFront3DCab || HasRear3DCab || this is MSTSSteamLocomotive)
+                    if (HasFront3DCab || HasRear3DCab)
                     {
                         Simulator.CabRadioOn = true;
                     }
+                    // Pro jedno-kabinové lokomotivy stačí zapnout vysílačku odkudkoliv, protože je jen jedna kabina
+                    if (OneCab || this is MSTSSteamLocomotive)
+                    {
+                        for (int i = 1; i < 3; i++)
+                        {
+                            if (CabRadio[i])
+                            {
+                                Simulator.CabRadioOn = true;
+                                break;
+                            }
+                        }
+                    }
+
                     // Odometer
                     Train.TrainDistanceTravelledM += OdometerCountingUp ? Math.Abs(Train.SpeedMpS) * elapsedTime : -Math.Abs(Train.SpeedMpS) * elapsedTime;                    
                 }
