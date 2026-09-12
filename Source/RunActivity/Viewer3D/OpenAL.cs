@@ -153,6 +153,22 @@ namespace Orts.Viewer3D
         public const int AL_PAUSED = 0x1013;
         public const int AL_STOPPED = 0x1014;
 
+        public const int AL_FILTER_TYPE = 0x8001;
+        public const int AL_FILTER_LOWPASS = 0x0001;
+        public const int AL_LOWPASS_GAIN = 0x0001;
+        public const int AL_LOWPASS_GAINHF = 0x0002;
+        
+        public static int TunnelEffectSlotID;
+        public static int TunnelEffectID;
+        public static int TunnelFilterID; 
+        
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void alGenFilters(int number, out int filter);
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void alFilteri(int filter, int attribute, int val);
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void alFilterf(int filter, int attribute, float val);
+
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern IntPtr alcOpenDevice(string deviceName);
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
@@ -247,6 +263,16 @@ namespace Orts.Viewer3D
         [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
         public static extern void alEffectfv(int effect, int attribute, [In] float[] values);
 
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void alcDevicePauseEXT(IntPtr device);
+
+        [SuppressUnmanagedCodeSecurity, DllImport("OpenAL32.dll", CallingConvention = CallingConvention.Cdecl)]
+        public static extern void alcDeviceResumeEXT(IntPtr device);
+
+        // Uložte si instanci zařízení vytvořenou v alcOpenDevice
+        public static IntPtr ALCDevice = IntPtr.Zero;
+        public static bool SupportsDevicePause = false;
+
         public struct EFXEAXREVERBPROPERTIES
         {
             public float flDensity;
@@ -310,14 +336,11 @@ namespace Orts.Viewer3D
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_OUTDOORS_VALLEY = new EFXEAXREVERBPROPERTIES(1.0000f, 0.2800f, 0.3162f, 0.0282f, 0.1585f, 2.8800f, 0.2600f, 0.3500f, 0.1413f, 0.2630f, new float[] { 0.0000f, 0.0000f, -0.0000f }, 0.3981f, 0.1000f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 0.2500f, 0.3400f, 0.2500f, 0.0000f, 0.9943f, 2854.3999f, 107.5000f, 0.0000f, 0x0);
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_OUTDOORS_DEEPCANYON = new EFXEAXREVERBPROPERTIES(1.0000f, 0.7400f, 0.3162f, 0.1778f, 0.6310f, 3.8900f, 0.2100f, 0.4600f, 0.3162f, 0.2230f, new float[] { 0.0000f, 0.0000f, -0.0000f }, 0.3548f, 0.0190f, new float[] { 0.0000f, 0.0000f, 0.0000f }, 0.2500f, 1.0000f, 0.2500f, 0.0000f, 0.9943f, 4399.1001f, 242.9000f, 0.0000f, 0x0);
 
-        public static int TunnelEffectSlotID;
-        public static int TunnelEffectID;
-
         // Preset pro tunel (uzavřený, odrazivý prostor s vyšším dozvukem)
         public static EFXEAXREVERBPROPERTIES EFX_REVERB_PRESET_TUNNEL = new EFXEAXREVERBPROPERTIES(
             1.0f,     // flDensity
             0.8f,     // flDiffusion
-            0.45f,    // flGain
+            0.0f,    // flGain
             0.75f,    // flGainHF
             0.9f,     // flGainLF
             3.2f,     // flDecayTime (délka dozvuku v sekundách)
@@ -326,7 +349,7 @@ namespace Orts.Viewer3D
             0.25f,    // flReflectionsGain (časné odrazy od stěn tunelu)
             0.020f,   // flReflectionsDelay
             new float[] { 0.0f, 0.0f, 0.0f },
-            0.85f,    // flLateReverbGain
+            0.5f,    // flLateReverbGain
             0.035f,   // flLateReverbDelay
             new float[] { 0.0f, 0.0f, 0.0f },
             0.25f,    // flEchoTime
@@ -340,6 +363,21 @@ namespace Orts.Viewer3D
             0x1       // iDecayHFLimit
         );
 
+        public static void ResetTunnelEffect()
+        {
+            if (TunnelEffectSlotID != 0)
+            {
+                // 1. Odpojí efekt ze slotu – to okamžitě v ovladači smaže (vyflushuje) veškerou nahromaděnou energii a odrazy
+                alAuxiliaryEffectSloti(TunnelEffectSlotID, AL_EFFECTSLOT_EFFECT, AL_EFFECTSLOT_NULL);
+
+                // 2. Znovu přiřadí efekt zpět – reverb začíná s čistými, nulovými paměťovými registry
+                if (TunnelEffectID != 0)
+                {
+                    alAuxiliaryEffectSloti(TunnelEffectSlotID, AL_EFFECTSLOT_EFFECT, TunnelEffectID);
+                }
+            }
+        }
+
         public static void CreateTunnelEffect()
         {
             alGenEffects(1, out TunnelEffectID);
@@ -347,6 +385,35 @@ namespace Orts.Viewer3D
 
             alGenAuxiliaryEffectSlots(1, out TunnelEffectSlotID);
             alAuxiliaryEffectSloti(TunnelEffectSlotID, AL_EFFECTSLOT_EFFECT, TunnelEffectID);
+
+            // Vytvoření filtru pro plynulý zisk
+            alGenFilters(1, out TunnelFilterID);
+            alFilteri(TunnelFilterID, AL_FILTER_TYPE, AL_FILTER_LOWPASS);
+            alFilterf(TunnelFilterID, AL_LOWPASS_GAIN, 0.0f);
+            alFilterf(TunnelFilterID, AL_LOWPASS_GAINHF, 1.0f);
+
+            // --- EFX WARM-UP (odstraní první zásek a prasknutí DSP jádra) ---
+            int dummySource = 0;
+            int dummyBuffer = 0;
+            alGenSources(1, out dummySource);
+            alGenBuffers(1, out dummyBuffer);
+
+            // 100 ms ticha pro protočení DSP jednotky
+            byte[] silentData = new byte[8820];
+            alBufferData(dummyBuffer, AL_FORMAT_MONO16, silentData, silentData.Length, 44100);
+            alSourcei(dummySource, AL_BUFFER, dummyBuffer);
+            alSourcef(dummySource, AL_GAIN, 0.0f); // nulová hlasitost
+
+            // Připojíme na tunelový slot a na 20 ms protočíme
+            alSource3i(dummySource, AL_AUXILIARY_SEND_FILTER, TunnelEffectSlotID, 0, AL_FILTER_NULL);
+            alSourcePlay(dummySource);
+            System.Threading.Thread.Sleep(20);
+            alSourceStop(dummySource);
+
+            // Úklid dummy prostředků
+            alSource3i(dummySource, AL_AUXILIARY_SEND_FILTER, AL_EFFECTSLOT_NULL, 0, AL_FILTER_NULL);
+            alDeleteSources(1, ref dummySource);
+            alDeleteBuffers(1, ref dummyBuffer);
         }
 
         public static void CreateHornEffect()
@@ -463,8 +530,11 @@ namespace Orts.Viewer3D
             //}
             int[] attribs = new int[0];
             IntPtr device = alcOpenDevice(null);
-            IntPtr context = alcCreateContext(device, attribs);
+            ALCDevice = alcOpenDevice(null);
+            IntPtr context = alcCreateContext(ALCDevice, attribs);
             alcMakeContextCurrent(context);
+
+            SupportsDevicePause = alcIsExtensionPresent(ALCDevice, "ALC_EXT_device_pause") == AL_TRUE;
 
             // Inicializace efektu (pokud je podporován EFX)
             if (alIsExtensionPresent("ALC_EXT_EFX") == AL_TRUE || alcIsExtensionPresent(device, "ALC_EXT_EFX") == AL_TRUE)

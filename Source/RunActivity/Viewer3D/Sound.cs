@@ -700,6 +700,46 @@ namespace Orts.Viewer3D
         /// </summary>
         public List<SoundStream> SoundStreams = new List<SoundStream>();
 
+        public void PreloadToCache()
+        {
+            var ignore3D = WorldLocation == WorldLocation.None | Ignore3D | !IsExternal;
+
+            foreach (var stream in SoundStreams)
+            {
+                // Alokuje ID a připraví stream v OpenAL
+                stream.HardActivate(ignore3D);
+
+                foreach (var trigger in stream.Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand cmd && cmd.Files != null)
+                    {
+                        foreach (var file in cmd.Files)
+                        {
+                            if (!string.IsNullOrEmpty(file))
+                            {
+                                string[] pathArray = {
+                            SMSFolder,
+                            Program.Simulator.RoutePath + @"\SOUND",
+                            Program.Simulator.BasePath + @"\SOUND",
+                            Program.Simulator.RoutePath + @"\TRAINS\TRAINSET\COMMON.SND\"
+                        };
+                                var fullPath = ORTSPaths.GetFileFromFolders(pathArray, file);
+                                if (fullPath != null)
+                                {
+                                    // Načte hlavičky, alokuje buffery a uloží je do statické SoundItem cache
+                                    string key = SoundItem.GetKey(fullPath, IsExternal, stream.IsReleasedWithJump);
+                                    if (!SoundItem.AllPieces.ContainsKey(key))
+                                    {
+                                        SoundItem.AllPieces.Add(key, new SoundPiece(fullPath, IsExternal, stream.IsReleasedWithJump));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         /// <summary>
         /// Set properties of this SoundSource based on parsing the sms file, and generate SoundStreams
         /// </summary>
@@ -897,6 +937,12 @@ namespace Orts.Viewer3D
             if (Car != null)
             {
                 WorldLocation = Car.WorldPosition.WorldLocation;
+            }
+
+            // Přednačíst zvuky do mezipaměti hned při prvním spuštění vozu
+            if (WasOutOfDistance)
+            {
+                PreloadToCache();
             }
 
             if (isOutOfDistance())
@@ -1213,7 +1259,8 @@ namespace Orts.Viewer3D
         bool MSTSStreamSoundInit = true;
         bool MSTSStreamSoundStartStop;
         bool MSTSStreamSoundOffInit = true;
-
+        private float currentTunnelGain = 0.0f;
+        private int lastAttachedSlot = OpenAL.AL_EFFECTSLOT_NULL;
         /// <summary>
         /// Owner SoundSource
         /// </summary>
@@ -1461,26 +1508,20 @@ namespace Orts.Viewer3D
                     float y = Interpolate(x, MSTSStream.FrequencyCurve);
                     if (SoundSource.MstsMonoTreatment && ALSoundSource.MstsMonoTreatment)
                         y *= 2;
-
-                    // Úprava frekvence zvuku motorů dle zatížení
-                    //if (car != null && MSTSStream != null)
-                    //{
-                    //    foreach (var trigger in Triggers)
-                    //    {
-                    //        if (trigger.SoundCommand is ORTSSoundPlayCommand)
-                    //            foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
-                    //                if (name != null)
-                    //                {
-                    //                    if (name.ToLower().Contains("motor") || name.Contains("TE") || name.Contains("TM"))
-                    //                    {
-                    //                        y /= car.LoadSound_FrequencyCoef;
-                    //                        goto founIt_f;
-                    //                    }
-                    //                }
-                    //    }                                                                                                
-                    //}
-                    founIt_f:
-                    ALSoundSource.PlaybackSpeed = y / ALSoundSource.SampleRate;
+                    
+                    if (ALSoundSource.SampleRate > 0 && !float.IsNaN(y) && !float.IsInfinity(y) && y > 0.0001f)
+                    {
+                        float newSpeed = y / ALSoundSource.SampleRate;
+                        // OpenAL striktně vyžaduje pitch v kladném rozsahu (např. 0.05f až 4.0f)
+                        if (newSpeed < 0.05f) newSpeed = 0.05f;
+                        if (newSpeed > 4.0f) newSpeed = 4.0f;
+                        ALSoundSource.PlaybackSpeed = newSpeed;
+                    }
+                    else
+                    {
+                        // Pokud je vzorkovací frekvence ještě neznámá nebo y neplatné, držet bezpečný pitch 1.0f
+                        ALSoundSource.PlaybackSpeed = 1.0f;
+                    }
                     NeedsFrequentUpdate = x != 0;
                 }
             }            
@@ -1521,31 +1562,7 @@ namespace Orts.Viewer3D
                                 }                                
                             }
                 }
-            }
-
-            // Úprava hlasitosti zvuku motorů dle zatížení            
-            //if (car != null && MSTSStream != null)
-            //{
-            //    foreach (var trigger in Triggers)
-            //    {
-            //        if (trigger.SoundCommand is ORTSSoundPlayCommand)
-            //            foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
-            //                if (name != null)
-            //                {
-            //                    if (name.ToLower().Contains("motor"))
-            //                    {
-            //                        volume *= car.LoadSound_VolumeCoef_SM;
-            //                        goto founIt_v;                                    
-            //                    }
-            //                    if (name.Contains("TE") || name.Contains("TM"))
-            //                    {
-            //                        volume *= car.LoadSound_VolumeCoef_TM;
-            //                        goto founIt_v;
-            //                    }
-            //                }
-            //    }                                
-            //}
-            //founIt_v:
+            }            
 
             if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
             {
@@ -1687,40 +1704,70 @@ namespace Orts.Viewer3D
             }            
             ALSoundSource.Volume = volume;
 
-            // Efekty
+            // Efekty 
             if (ALSoundSource != null && ALSoundSource.SoundSourceID != 0)
             {
                 bool isInTunnel = false;
 
-                // Kontrola, zda vůz jede v tunelovém úseku          
-                if (SoundSource.Car != null)
-                {                    
+                if (SoundSource.Car != null && SoundSource.Car.Simulator != null)
+                {
                     if (SoundSource.Car.Simulator.PlayerCarIsInTunnel)
                     {
                         isInTunnel = true;
                     }
                 }
 
-                int targetSlot = OpenAL.AL_EFFECTSLOT_NULL;
-
-                if (isInTunnel && OpenAL.TunnelEffectSlotID != 0)
+                // Při pauze držíme zisk na nule, aby po odpauzování nebouchla plná amplituda
+                if (SoundSource.Viewer.Simulator.Paused)
                 {
-                    // V tunelu posíláme do tunelového reverbu jak houkačku, tak zvuky motoru a kolejí
-                    targetSlot = OpenAL.TunnelEffectSlotID;
+                    currentTunnelGain = 0.0f;
+                    lastAttachedSlot = OpenAL.AL_EFFECTSLOT_NULL;
                 }
-                else if (IsHornStream && OpenAL.HornEffectSlotID != 0 && SoundSource.IsExternal && SoundSource.Viewer.Camera.Style == Camera.Styles.External)
+                else
                 {
-                    // Mimo tunel používá houkačka venku své otevřené echo/reverb
-                    targetSlot = OpenAL.HornEffectSlotID;
-                }
+                    float dt = (float)SoundSource.Viewer.Simulator.OneSecondLoop;
+                    if (dt <= 0f || dt > 0.1f) dt = 0.05f;
 
-                OpenAL.alSource3i(
-                    ALSoundSource.SoundSourceID,
-                    OpenAL.AL_AUXILIARY_SEND_FILTER,
-                    targetSlot,
-                    0,
-                    OpenAL.AL_FILTER_NULL
-                );
+                    float targetGain = isInTunnel ? 1.0f : 0.0f;
+                    const float rampSpeed = 4.0f;
+
+                    if (currentTunnelGain < targetGain)
+                    {
+                        currentTunnelGain += dt * rampSpeed;
+                        if (currentTunnelGain > targetGain) currentTunnelGain = targetGain;
+                        NeedsFrequentUpdate = true;
+                    }
+                    else if (currentTunnelGain > targetGain)
+                    {
+                        currentTunnelGain -= dt * rampSpeed;
+                        if (currentTunnelGain < targetGain) currentTunnelGain = targetGain;
+                        NeedsFrequentUpdate = true;
+                    }
+
+                    int targetSlot = OpenAL.AL_EFFECTSLOT_NULL;
+
+                    if (currentTunnelGain > 0.05f && OpenAL.TunnelEffectSlotID != 0)
+                    {
+                        targetSlot = OpenAL.TunnelEffectSlotID;
+                    }
+                    else if (IsHornStream && OpenAL.HornEffectSlotID != 0 && SoundSource.IsExternal && SoundSource.Viewer.Camera.Style == Camera.Styles.External)
+                    {
+                        targetSlot = OpenAL.HornEffectSlotID;
+                    }
+
+                    // Slot připojíme/odpojíme pouze při reálné změně stavu, bez přepisování sdíleného filtru
+                    if (targetSlot != lastAttachedSlot)
+                    {
+                        OpenAL.alSource3i(
+                            ALSoundSource.SoundSourceID,
+                            OpenAL.AL_AUXILIARY_SEND_FILTER,
+                            targetSlot,
+                            0,
+                            OpenAL.AL_FILTER_NULL
+                        );
+                        lastAttachedSlot = targetSlot;
+                    }
+                }
             }
         }
 
@@ -2036,7 +2083,7 @@ namespace Orts.Viewer3D
             }
             // If the SoundSource is not active, should deactivate the SoundStream also
             //   preventing the hearing when not should be audible
-            if (!SoundStream.SoundSource.Active)
+            if (!SoundStream.SoundSource.Active && !SoundStream.SoundSource.Viewer.Simulator.Paused)
                 SoundStream.Deactivate();
         }
 

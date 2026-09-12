@@ -40,6 +40,9 @@ namespace Orts.Viewer3D.Processes
 
         private bool wasPaused = false;
 
+        private float currentListenerGain = 1.0f;
+        private const float LISTENER_RAMP_SPEED = 15.0f; // náběh z 0 na 1 za cca 70 ms
+
         // THREAD SAFETY:
         //   All accesses must be done in local variables. No modifications to the objects are allowed except by
         //   assignment of a new instance (possibly cloned and then modified).
@@ -130,6 +133,14 @@ namespace Orts.Viewer3D.Processes
 
         private void PauseAllSources()
         {
+            // Pokud ovladač podporuje zmrazení celého mixeru, použijeme ho
+            // Tím se naráz zmrazí výstup i veškeré EFX buffery bez jediného lupnutí
+            if (OpenAL.SupportsDevicePause && OpenAL.ALCDevice != IntPtr.Zero)
+            {
+                OpenAL.alcDevicePauseEXT(OpenAL.ALCDevice);
+                return;
+            }
+
             lock (SoundSources)
             {
                 foreach (var list in SoundSources.Values)
@@ -140,10 +151,16 @@ namespace Orts.Viewer3D.Processes
                         {
                             foreach (var stream in src.SoundStreams)
                             {
-                                if (stream.ALSoundSource != null && stream.ALSoundSource.isPlaying)
+                                if (stream.ALSoundSource != null && stream.ALSoundSource.SoundSourceID != -1)
                                 {
-                                    // Pozastaví OpenAL zdroj na aktuálním samplu
-                                    OpenAL.alSourcePause(stream.ALSoundSource.SoundSourceID);
+                                    int state;
+                                    OpenAL.alGetSourcei(stream.ALSoundSource.SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
+                                    if (state == OpenAL.AL_PLAYING)
+                                    {
+                                        // Odpojíme aux send (reverb), aby do něj v pauze nevlétla špička
+                                        OpenAL.alSource3i(stream.ALSoundSource.SoundSourceID, OpenAL.AL_AUXILIARY_SEND_FILTER, OpenAL.AL_EFFECTSLOT_NULL, 0, OpenAL.AL_FILTER_NULL);
+                                        OpenAL.alSourcePause(stream.ALSoundSource.SoundSourceID);
+                                    }
                                 }
                             }
                         }
@@ -154,6 +171,12 @@ namespace Orts.Viewer3D.Processes
 
         private void ResumeAllSources()
         {
+            if (OpenAL.SupportsDevicePause && OpenAL.ALCDevice != IntPtr.Zero)
+            {
+                OpenAL.alcDeviceResumeEXT(OpenAL.ALCDevice);
+                return;
+            }
+
             lock (SoundSources)
             {
                 foreach (var list in SoundSources.Values)
@@ -164,11 +187,10 @@ namespace Orts.Viewer3D.Processes
                         {
                             foreach (var stream in src.SoundStreams)
                             {
-                                if (stream.ALSoundSource != null)
+                                if (stream.ALSoundSource != null && stream.ALSoundSource.SoundSourceID != -1)
                                 {
                                     int state;
                                     OpenAL.alGetSourcei(stream.ALSoundSource.SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
-                                    // Pokud byl zdroj pozastaven (AL_PAUSED = 0x1013)
                                     if (state == OpenAL.AL_PAUSED)
                                     {
                                         OpenAL.alSourcePlay(stream.ALSoundSource.SoundSourceID);
@@ -193,19 +215,38 @@ namespace Orts.Viewer3D.Processes
                 if (viewer == null)
                     return;
 
-                OpenAL.alListenerf(OpenAL.AL_GAIN, Program.Simulator.Paused ? 0 : (float)Game.Settings.SoundVolumePercent / 100f);
-
-                // --- PAUZA / POKRAČOVÁNÍ ZVUKŮ ---
-                if (Program.Simulator.Paused && !wasPaused)
+                // --- PŘECHOD DO PAUZY ---
+                if (Program.Simulator.Paused)
                 {
-                    wasPaused = true;
-                    PauseAllSources();
+                    if (!wasPaused)
+                    {
+                        wasPaused = true;
+                        OpenAL.alListenerf(OpenAL.AL_GAIN, 0.0f);
+
+                        // Vynuluje EFX linku tunelu hned při stisku pauzy
+                        OpenAL.ResetTunnelEffect();
+
+                        PauseAllSources();
+                    }
+                    return;
                 }
-                else if (!Program.Simulator.Paused && wasPaused)
+
+                // --- PŘECHOD Z PAUZY (ODPAUZOVÁNÍ) ---
+                if (wasPaused)
                 {
                     wasPaused = false;
+
+                    // Vynuluje EFX linku tunelu znovu těsně před startem, aby v ní nezůstal žádný DC zbytek
+                    OpenAL.ResetTunnelEffect();
+
                     ResumeAllSources();
+
+                    OpenAL.alListenerf(OpenAL.AL_GAIN, (float)Game.Settings.SoundVolumePercent / 100f);
+                    return;
                 }
+
+                // Standardní nastavení hlasitosti za běhu
+                OpenAL.alListenerf(OpenAL.AL_GAIN, (float)Game.Settings.SoundVolumePercent / 100f);
 
                 // Update activity sounds
                 if (viewer.Simulator.SoundNotify != Event.None)

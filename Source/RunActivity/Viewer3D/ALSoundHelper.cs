@@ -729,13 +729,25 @@ namespace Orts.Viewer3D
         {
             set
             {
-                if (_PlaybackSpeed != value)
+                // Ochrana před zápornými hodnotami, nulou a extrémy
+                float safeValue = value;
+                if (float.IsNaN(safeValue) || float.IsInfinity(safeValue) || safeValue <= 0.001f)
+                    safeValue = 1.0f;
+                else if (safeValue < 0.05f)
+                    safeValue = 0.05f;
+
+                if (_PlaybackSpeed != safeValue)
                 {
-                    if (!float.IsNaN(value) && value != 0 && !float.IsInfinity(value))
+                    _PlaybackSpeed = safeValue;
+                    if (SoundSourceID != -1)
                     {
-                        _PlaybackSpeed = value;
-                        if (SoundSourceID != -1)
+                        // Pokud je zdroj pozastaven, pitch neměníme teď, ale až při rozběhu
+                        int state;
+                        OpenAL.alGetSourcei(SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
+                        if (state != OpenAL.AL_PAUSED)
+                        {
                             OpenAL.alSourcef(SoundSourceID, OpenAL.AL_PITCH, _PlaybackSpeed);
+                        }
                     }
                 }
             }
@@ -771,12 +783,19 @@ namespace Orts.Viewer3D
 
                 if (SoundSourceID != -1)
                 {
-                    int p;
-                    OpenAL.alGetSourcei(SoundSourceID, OpenAL.AL_BUFFERS_PROCESSED, out p);
-                    while (p > 0)
+                    int state;
+                    OpenAL.alGetSourcei(SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
+
+                    // Pokud je zdroj v pauze (AL_PAUSED), NESMÍME sahat na buffery!
+                    if (state != OpenAL.AL_PAUSED)
                     {
-                        OpenAL.alSourceUnqueueBuffer(SoundSourceID);
-                        p--;
+                        int p;
+                        OpenAL.alGetSourcei(SoundSourceID, OpenAL.AL_BUFFERS_PROCESSED, out p);
+                        while (p > 0)
+                        {
+                            OpenAL.alSourceUnqueueBuffer(SoundSourceID);
+                            p--;
+                        }
                     }
                 }
 
@@ -885,10 +904,12 @@ namespace Orts.Viewer3D
                             else if (!isPlaying || !SoundQueue[QueueTail % QUEUELENGHT].SoundPiece.isMine(bufferID))
                             {
                                 NeedsFrequentUpdate = SoundQueue[QueueTail % QUEUELENGHT].InitItemPlay(SoundSourceID);
-                                var sampleRate = SampleRate;
+                                var sampleRate = SampleRate;                                
                                 SampleRate = SoundQueue[QueueTail % QUEUELENGHT].SoundPiece.Frequency;
-                                if (sampleRate != SampleRate && SampleRate != 0)
-                                    PlaybackSpeed *= sampleRate / SampleRate;
+                                if (sampleRate > 0 && SampleRate > 0 && sampleRate != SampleRate)
+                                {
+                                    PlaybackSpeed *= (float)sampleRate / (float)SampleRate;
+                                }
 
                                 Start();
                                 NeedsFrequentUpdate |= SoundQueue[QueueTail % QUEUELENGHT].SoundPiece.IsReleasedWithJump;
@@ -943,7 +964,8 @@ namespace Orts.Viewer3D
             {
                 int state;
                 OpenAL.alGetSourcei(SoundSourceID, OpenAL.AL_SOURCE_STATE, out state);
-                if (state != OpenAL.AL_PLAYING)
+                
+                if (state != OpenAL.AL_PLAYING && state != OpenAL.AL_PAUSED)
                 {
                     if (StoppedAt > Program.Simulator.ClockTime)
                         StoppedAt = Program.Simulator.GameTime;
