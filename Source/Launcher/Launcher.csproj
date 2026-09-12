@@ -19,7 +19,6 @@
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -129,13 +128,6 @@
     <Content Include="OpenRailsCZSK.ico" />
     <Content Include="openrails_czsk_icon.ico" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

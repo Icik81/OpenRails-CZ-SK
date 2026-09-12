@@ -17,7 +17,6 @@
     <AssemblyName>ORTS.Common</AssemblyName>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -86,13 +85,6 @@
     <Compile Include="Input\UserCommand.cs" />
     <Compile Include="VersionInfo.cs" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

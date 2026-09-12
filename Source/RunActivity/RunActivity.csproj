@@ -9,7 +9,10 @@
     <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
+    <PackageReference Include="EmbedIO" Version="3.4.3" />
     <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="Unosquare.Swan.Lite" Version="3.0.0" />
   </ItemGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -22,7 +25,6 @@
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -70,9 +72,6 @@
     <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EmbedIO, Version=3.4.3.0, Culture=neutral, PublicKeyToken=5e5f048b6e04267e, processorArchitecture=MSIL">
-      <HintPath>..\packages\EmbedIO.3.4.3\lib\netstandard2.0\EmbedIO.dll</HintPath>
-    </Reference>
     <Reference Include="GNU.Gettext, Version=1.1.5151.39896, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\3rdPartyLibs\GNU.Gettext.dll</HintPath>
@@ -93,16 +92,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\3rdPartyLibs\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="Swan.Lite, Version=3.0.0.0, Culture=neutral, PublicKeyToken=30c707c872729fff, processorArchitecture=MSIL">
-      <HintPath>..\packages\Unosquare.Swan.Lite.3.0.0\lib\net461\Swan.Lite.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Management" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -1260,40 +1253,22 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Orts.ExternalDevices\Orts.ExternalDevices.csproj">
-      <Project>{0da86c52-ffb5-4cd6-a2c0-08f1610e6399}</Project>
-      <Name>Orts.ExternalDevices</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">
-      <Project>{570709FA-0C8A-4B1D-BA2D-D9455AFD9B5C}</Project>
-      <Name>Orts.Formats.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Formats.OR\Orts.Formats.OR.csproj">
-      <Project>{0d8d312b-2c02-4b77-a795-566394a9db95}</Project>
-      <Name>Orts.Formats.OR</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Parsers.Msts\Orts.Parsers.Msts.csproj">
-      <Project>{8A84696C-3559-49B8-B27F-BB6932D8A1C6}</Project>
-      <Name>Orts.Parsers.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Common\ORTS.Common.csproj">
-      <Project>{DA94D876-7D35-46C3-AECE-AFACE72C686C}</Project>
-      <Name>ORTS.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Content\ORTS.Content.csproj">
-      <Project>{812685A7-2683-4102-A3CA-2A5CED2E61EE}</Project>
-      <Name>ORTS.Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Parsers.OR\Orts.Parsers.OR.csproj">
-      <Project>{1cc3bd5c-06c5-4784-b067-f93945a7ca2c}</Project>
-      <Name>Orts.Parsers.OR</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Settings\ORTS.Settings.csproj">
-      <Project>{67F84996-8769-4FD8-819B-464AF269037B}</Project>
-      <Name>ORTS.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Simulation\Orts.Simulation.csproj">
-      <Project>{333c4378-d82e-4b47-b561-6ba923b8fdfd}</Project>
-      <Name>Orts.Simulation</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -1357,14 +1332,6 @@
     <None Include="Content\SignalLight\SignalLight64M.ace" />
     <None Include="Content\SignalLight\SignalLight64V.ace" />
   </ItemGroup>
-  <ItemGroup />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>

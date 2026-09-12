@@ -17,7 +17,6 @@
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
@@ -60,8 +59,6 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">
-      <Project>{570709FA-0C8A-4B1D-BA2D-D9455AFD9B5C}</Project>
-      <Name>Orts.Formats.Msts</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -71,11 +68,4 @@
     <Content Include="OpenRailsCZSK.ico" />
     <Content Include="openrails_czsk_icon.ico" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

@@ -16,7 +16,6 @@
     <AssemblyName>Contrib.DataCollector</AssemblyName>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
@@ -66,12 +65,8 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">
-      <Project>{570709fa-0c8a-4b1d-ba2d-d9455afd9b5c}</Project>
-      <Name>Orts.Formats.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ORTS.Common\ORTS.Common.csproj">
-      <Project>{da94d876-7d35-46c3-aece-aface72c686c}</Project>
-      <Name>ORTS.Common</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -81,11 +76,4 @@
     <Content Include="OpenRailsCZSK.ico" />
     <Content Include="openrails_czsk_icon.ico" />
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

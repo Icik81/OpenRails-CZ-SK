@@ -16,7 +16,6 @@
     <AssemblyName>Orts.ExternalDevices</AssemblyName>
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
@@ -68,25 +67,12 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ORTS.Common\ORTS.Common.csproj">
-      <Project>{da94d876-7d35-46c3-aece-aface72c686c}</Project>
-      <Name>ORTS.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Parsers.Msts\Orts.Parsers.Msts.csproj">
-      <Project>{8a84696c-3559-49b8-b27f-bb6932d8a1c6}</Project>
-      <Name>Orts.Parsers.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Simulation\Orts.Simulation.csproj">
-      <Project>{333c4378-d82e-4b47-b561-6ba923b8fdfd}</Project>
-      <Name>Orts.Simulation</Name>
     </ProjectReference>
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
   <PropertyGroup>
     <PostBuildEvent>
     </PostBuildEvent>

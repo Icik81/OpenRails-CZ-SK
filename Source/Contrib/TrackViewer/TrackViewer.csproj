@@ -19,9 +19,7 @@
     <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
-    <TargetFrameworkProfile />
   </PropertyGroup>
-  <PropertyGroup />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>..\..\..\Program\</OutputPath>
@@ -262,43 +260,20 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">
-      <Project>{570709FA-0C8A-4B1D-BA2D-D9455AFD9B5C}</Project>
-      <Name>Orts.Formats.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ORTS.Common\ORTS.Common.csproj">
-      <Project>{DA94D876-7D35-46C3-AECE-AFACE72C686C}</Project>
-      <Name>ORTS.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ORTS.Content\ORTS.Content.csproj">
-      <Project>{812685A7-2683-4102-A3CA-2A5CED2E61EE}</Project>
-      <Name>ORTS.Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ORTS.Menu\ORTS.Menu.csproj">
-      <Project>{1C5B0B41-2FE9-41C9-8B21-CCDCBEB3DDA5}</Project>
-      <Name>ORTS.Menu</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Orts.Parsers.Msts\Orts.Parsers.Msts.csproj">
-      <Project>{8a84696c-3559-49b8-b27f-bb6932d8a1c6}</Project>
-      <Name>Orts.Parsers.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\ORTS.Settings\ORTS.Settings.csproj">
-      <Project>{67F84996-8769-4FD8-819B-464AF269037B}</Project>
-      <Name>ORTS.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Orts.Simulation\Orts.Simulation.csproj">
-      <Project>{333c4378-d82e-4b47-b561-6ba923b8fdfd}</Project>
-      <Name>Orts.Simulation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\RunActivity\RunActivity.csproj">
-      <Project>{9BE44F64-417D-4AA6-AF4D-2A6A0CBC814D}</Project>
-      <Name>RunActivity</Name>
     </ProjectReference>
   </ItemGroup>
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>
