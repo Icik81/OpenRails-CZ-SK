@@ -1012,9 +1012,9 @@ namespace Orts.Viewer3D
                 if (string.IsNullOrEmpty(shapeName))
                     continue;
 
-                string shapePath = Viewer.Simulator.RoutePath + @"\Shapes\" + shapeName;
+                string shapePath = Viewer.Simulator.RoutePath + @"\Shapes\OpenRailsCZSK\" + shapeName;
                 if (!File.Exists(shapePath))
-                    shapePath = Viewer.Simulator.BasePath + @"\Global\Shapes\" + shapeName;
+                    shapePath = Viewer.Simulator.BasePath + @"\Global\Shapes\OpenRailsCZSK\" + shapeName;
 
                 if (!File.Exists(shapePath))
                     continue;
@@ -1084,14 +1084,14 @@ namespace Orts.Viewer3D
                 float baseAngle = (float)Math.Atan2(lookToTrain.X, -lookToTrain.Z);
 
                 float passengerYaw;
-                if (rand.NextDouble() < 0.8)
+                if (rand.NextDouble() < 0.7f)
                 {
-                    float variation = ((float)rand.NextDouble() - 0.5f) * 0.75f;
+                    float variation = ((float)rand.NextDouble() - 0.5f) * 0.5f;
                     passengerYaw = baseAngle + variation;
                 }
                 else
                 {
-                    passengerYaw = (float)(rand.NextDouble() * Math.PI * 2);
+                    passengerYaw = (float)(rand.NextDouble() * Math.PI * (2 - rand.NextDouble()));
                 }
 
                 var rot = Matrix.CreateRotationY(passengerYaw);
