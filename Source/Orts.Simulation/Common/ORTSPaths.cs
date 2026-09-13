@@ -55,6 +55,8 @@ namespace Orts.Simulation.Common
         {
             if (branch == null) return null;
 
+            branch = branch.Trim().Replace("\r", "").Replace("\n", "");
+
             foreach (var path in pathArray)
             {
                 if (path != null)
