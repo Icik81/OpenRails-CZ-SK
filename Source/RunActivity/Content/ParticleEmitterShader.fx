@@ -24,7 +24,7 @@
 ////////////////////    G L O B A L   V A L U E S    ///////////////////////////
 
 float4x4 worldViewProjection;  // model -> world -> view -> projection
-float4x4 invView;				// inverse view
+float4x4 invView;              // inverse view
 
 float3 LightVector; // Direction vector to sun, used for day-night darkening
 
@@ -106,8 +106,8 @@ VERTEX_OUTPUT VSParticles(in VERTEX_INPUT In)
 	In.StartPosition_StartTime.xyz += In.InitialVelocity_EndTime.xyz * velocityAge;
 	In.StartPosition_StartTime.xyz += (In.TargetVelocity_TargetTime.xyz - In.InitialVelocity_EndTime.xyz) / In.TargetVelocity_TargetTime.w * velocityAge * velocityAge / 2;
 	In.StartPosition_StartTime.xyz += In.TargetVelocity_TargetTime.xyz * clamp(age - In.TargetVelocity_TargetTime.w, 0, age);
-	
-	float particleSize = (emitSize * 2) * (1 + age * 4);  // Start off at emitSize and increases in size.
+		
+	float particleSize = (emitSize * 2.2f) * (1.0f + age * 4.5f);
 	
 	int vertIdx = (int)In.TileXY_Vertex_ID.z;
 	
@@ -124,9 +124,9 @@ VERTEX_OUTPUT VSParticles(in VERTEX_INPUT In)
 
 	Out.TexCoord = texCoords[vertIdx];
 	float texAtlasPosition = In.TileXY_Vertex_ID.w;
-    float atlasY = (int) (texAtlasPosition / 4.0f);
-    float atlasX = (int) (texAtlasPosition - (atlasY * 4.0f));
-    Out.TexCoord += float2(0.25f * atlasX, 0.25f * atlasY);
+	float atlasY = (int) (texAtlasPosition / 4.0f);
+	float atlasX = (int) (texAtlasPosition - (atlasY * 4.0f));
+	Out.TexCoord += float2(0.25f * atlasX, 0.25f * atlasY);
 
 	Out.Color_Age.rgb = In.Color_Random.rgb;
 
@@ -135,32 +135,26 @@ VERTEX_OUTPUT VSParticles(in VERTEX_INPUT In)
 
 ////////////////////    P I X E L   S H A D E R S    ///////////////////////////
 
-// This function dims the lighting at night, with a transition period as the sun rises/sets.
 void _PSApplyDay2Night(inout float3 Color)
 {
-	// The following constants define the beginning and the end conditions of the day-night transition
-	const float startNightTrans = 0.1; // The "NightTrans" values refer to the Y postion of LightVector
+	const float startNightTrans = 0.1;
 	const float finishNightTrans = -0.1;
 	const float minDarknessCoeff = 0.15;
 	
-	// Internal variables
-	// The following two are used to interpoate between day and night lighting (y = mx + b)
-	// Can't use lerp() here, as overall dimming action is too complex
-	float slope = (1.0 - minDarknessCoeff) / (startNightTrans - finishNightTrans); // "m"
-	float incpt = 1.0 - slope * startNightTrans; // "b"
-	// This is the return value used to darken scenery
+	float slope = (1.0 - minDarknessCoeff) / (startNightTrans - finishNightTrans);
+	float incpt = 1.0 - slope * startNightTrans;
 	float adjustment;
-	
-	Color.rgb = lerp(Color.rgb, Fog.rgb, Fog.a);
 	
 	if (LightVector.y < finishNightTrans)
 		adjustment = minDarknessCoeff;
 	else if (LightVector.y > startNightTrans)
-		adjustment = 1.0; // Scenery is fully lit during the day
+		adjustment = 1.0;
 	else
 		adjustment = slope * LightVector.y + incpt;
-	
+		
 	Color.rgb *= adjustment;
+		
+	Color.rgb = lerp(Color.rgb, max(Color.rgb * adjustment, Fog.rgb), Fog.a * 0.5f);
 }
 
 float4 PSParticles(in VERTEX_OUTPUT In) : COLOR0
