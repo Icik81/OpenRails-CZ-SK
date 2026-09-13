@@ -4744,7 +4744,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             if (TMTemperature < CarOutsideTempC0)
             {
-                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
+                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty || Train.AirEmpty)
                     TMTemperature = CarOutsideTempC0;
                 else
                     TMTemperature = IdleTMTemperatureDegC;
@@ -4826,7 +4826,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             if (DRTemperature < CarOutsideTempC0)
             {
-                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty)
+                if (Simulator.Settings.AirEmpty || BrakeSystem.IsAirEmpty || Train.AirEmpty)
                     DRTemperature = CarOutsideTempC0;
                 else
                     DRTemperature = IdleDRTemperatureDegC;
@@ -5014,7 +5014,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             foreach (TrainCar car in Train.Cars)
             {
-                if (Train.TrainHeatingStartOn && !Simulator.Settings.AirEmpty)
+                if (Train.TrainHeatingStartOn && !Simulator.Settings.AirEmpty && !Train.AirEmpty)
                 {
                     car.CarHasHeatingReady = true;
                 }
@@ -5977,7 +5977,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 }
 
                 // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
-                if ((Train as AITrain).Name.ToLower().Contains("aire"))
+                if ((Train as AITrain).Name.ToLower().Contains("aire") && !(Train as AITrain).PassengerViewTrain)
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars.Where(car => (car is MSTSElectricLocomotive)))
                     {
@@ -7619,7 +7619,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 }
 
                 firstFrame = false;
-                if (Simulator.Settings.AirEmpty)
+                if (Simulator.Settings.AirEmpty || Train.AirEmpty)
                 {
                     if (CruiseControl != null)
                     {
@@ -8169,14 +8169,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                             if (car is MSTSControlUnit)
                                 (car as MSTSControlUnit).PowerOn = true;
                         }
-                    }
-                    /*if (CruiseControl != null && CruiseControl.Equipped)
-                    {
-                        CruiseControl.SpeedRegMode[LocoStation] = SubSystems.CruiseControl.SpeedRegulatorMode.Auto;
-                        CruiseControl.SelectedSpeedMpS = MpS.FromKpH(40);
-                        CruiseControl.SpeedSelMode[LocoStation] = SubSystems.CruiseControl.SpeedSelectorMode.Parking;
-                        AripotControllerValue[LocoStation] = CruiseControl.SelectedSpeedMpS / MaxSpeedMpS;
-                    }*/
+                    }                    
                 }
                 else
                 {
@@ -8280,11 +8273,11 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 }
             }            
 
-            // Generování cestujících na perónu při vzdálenosti menší než 1 km od stanice
+            // Generování cestujících na perónu 
             if (Train.StationStops.Count > 0 && Train.LastStationName != Train.StationStops[0].PlatformItem.Name)
             {
-                float distToStation = Train.ComputeDistanceToStation(Train.StationStops[0]);
-                if (distToStation < 1000.0f)
+                //float distToStation = Train.ComputeDistanceToStation(Train.StationStops[0]);
+                //if (distToStation < 1000.0f)
                 {
                     Simulator.RefreshWorld = true;
                     Train.LastStationName = Train.StationStops[0].PlatformItem.Name;                    

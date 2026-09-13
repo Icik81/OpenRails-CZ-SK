@@ -977,7 +977,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
                 float k = (DieselMaxOilPressurePSI - DieselMinOilPressurePSI) / (MaxRPM - IdleRPM);
                 float q = DieselMaxOilPressurePSI - k * MaxRPM;
 
-                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty && !locomotive.Train.AirEmpty)
                 {
                     RealRPM0 = IdleRPM;
                 }
@@ -1005,7 +1005,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
 
                 //locomotive.Simulator.Confirmer.Information("res: " + res);
 
-                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+                if (locomotive.IsPlayerTrain && !locomotive.LocoIsStatic && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty && !locomotive.Train.AirEmpty)
                 {
                     res = resCoef;
                 }
@@ -1372,7 +1372,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
                 EngineStatus = Status.Running;
             }
             // Inicializace hráče            
-            if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty)
+            if (locomotive.IsPlayerTrain && locomotive.BrakeSystem.StartOn && !locomotive.Simulator.Settings.AirEmpty && !locomotive.Train.AirEmpty)
             {
                 RealRPM = IdleRPM;                
                 if (locomotive.DieselEngines.DieselEngine1)
@@ -2352,7 +2352,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies
                     DieselMotorOilInitTemp = locomotive.CarOutsideTempC0;
                 }
 
-                if (!locomotive.Simulator.Settings.AirEmpty)
+                if (!locomotive.Simulator.Settings.AirEmpty && !locomotive.Train.AirEmpty)
                 {
                     if (DieselIdleWaterTemperatureDegC != 0)
                         DieselIdleTemperatureDegC = DieselIdleWaterTemperatureDegC;

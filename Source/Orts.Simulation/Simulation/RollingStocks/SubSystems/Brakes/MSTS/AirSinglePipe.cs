@@ -602,10 +602,11 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 {
                     if (Car.Train.Simulator.conFileName != null)
                     {
-                        if (Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) Car.Train.Simulator.Settings.AirEmpty = true;                        
-                    }                                        
+                        if ((Car.Train.Simulator.conFileName.ToLower().Contains("airempty") || Car.Train.Simulator.conFileName.ToLower().Contains("aire")) && !Car.Train.PassengerViewTrain)
+                            Car.Train.Simulator.Settings.AirEmpty = true;
+                    }
 
-                    if (!Car.Train.Simulator.Settings.AirEmpty)
+                    if (!Car.Train.Simulator.Settings.AirEmpty && !Car.Train.AirEmpty)
                         PowerForWagon = true;
                     else
                         PowerForWagon = false;
@@ -617,9 +618,9 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 TrainBrakePositionSet();
             }
 
-            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("aire"))
+            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("aire") && !Car.Train.PassengerViewTrain)
             {
-                Car.Train.Simulator.Settings.AirEmpty = true;
+                Car.Train.AirEmpty = true;
                 AutoCylPressurePSI0 = 0;
                 AuxResPressurePSI = 0;
                 MainResPressurePSI = 0;
@@ -4805,7 +4806,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     train.Cars[i].BrakeSystem.HandBrakeActive = false;
                 }
 
-                if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty)
+                if (train.LocoIsAirEmpty || trainCar.Simulator.Settings.AirEmpty || train.AirEmpty)
                 {
                     lead.BrakeSystem.IsAirEmpty = true;
                     int LeadPosition = 0;
@@ -4874,7 +4875,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                     //}                    
                 }
                 else
-                if (!train.LocoIsAirEmpty && !trainCar.Simulator.Settings.AirEmpty)
+                if (!train.LocoIsAirEmpty && !trainCar.Simulator.Settings.AirEmpty && !train.AirEmpty)
                 {
                     lead.BrakeSystem.IsAirEmpty = false;
                     lead.BrakeSystem.IsAirFull = true;

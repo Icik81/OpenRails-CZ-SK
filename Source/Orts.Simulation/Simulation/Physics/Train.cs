@@ -93,6 +93,7 @@ namespace Orts.Simulation.Simulation.Physics
         }
 
         // Icik
+        public bool AirEmpty;
         public string LastStationName = "";
         public bool MasterSlaveTestOK;
         public float MasterSlaveTestTimer;
