@@ -8279,7 +8279,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 //float distToStation = Train.ComputeDistanceToStation(Train.StationStops[0]);
                 //if (distToStation < 1000.0f)
                 {
-                    Simulator.RefreshWorld = true;
+                    Simulator.RefreshWorld = true;                    
                     Train.LastStationName = Train.StationStops[0].PlatformItem.Name;                    
                 }
             }
