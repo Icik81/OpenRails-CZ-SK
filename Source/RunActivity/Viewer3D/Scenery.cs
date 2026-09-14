@@ -895,7 +895,7 @@ namespace Orts.Viewer3D
                 {
                     int visibleCount;
                     // Respektujeme rozpracovaný nástup (pokud už vlak nabírá, nepřepisujeme ho plným počtem)
-                    if (targetTrain.ActualPassengerCountAtStation > 0 && targetTrain.ActualPassengerCountAtStation < existingEntry.RemainingPassengers)
+                    if (targetTrain.ActualPassengerCountAtStation >= 0 && targetTrain.ActualPassengerCountAtStation <= existingEntry.RemainingPassengers)
                     {
                         visibleCount = targetTrain.ActualPassengerCountAtStation;
                         existingEntry.RemainingPassengers = visibleCount;
