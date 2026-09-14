@@ -444,11 +444,11 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterFullTestBrakePhase1 && !ShunterFullTestBrakePhase2 && !ShunterFullTestBrakePhase3 && !ShunterFullTestBrakePhase4 && !ShunterFullTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterFullTestBrakeEnable = false;
 
-                        if (Locomotive.AbsSpeedMpS > 0.1f)
+                        if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train speed must be zero to perform the test brake!"));
 
                         if (Locomotive.Train.Cars.Count < 2)
@@ -959,7 +959,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     }
                 }                
 
-                if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
+                if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
                 {
                     ShunterSimpleTestBrakePhase1 = false;
                     ShunterSimpleTestBrakePhase2 = false;
@@ -985,7 +985,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     {
                         Locomotive.Simulator.ShunterSimpleTestBrakeEnable = false;
 
-                        if (Locomotive.AbsSpeedMpS > 0.1f)
+                        if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f)
                             Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Train speed must be zero to perform the test brake!"));
 
                         if (Locomotive.Train.Cars.Count < 2)
@@ -1580,7 +1580,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 // Konec tratě
                 float DistanceToEOA = 1000;
                 if ((Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_TRACK || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_PATH || Locomotive.Train.EndAuthorityType[0] == Train.END_AUTHORITY.END_OF_AUTHORITY)
-                    && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 175)
+                    && Locomotive.Train.DistanceToEndNodeAuthorityM[0] < 10)
                 {
                     DistanceToEOA = Locomotive.Train.DistanceToEndNodeAuthorityM[0];
                 }

@@ -165,8 +165,8 @@ namespace Orts.Viewer3D
             float frontZ = 0;
             float rearZ = 0;
             float posY = 0.5f;
-            uint whiteColor = ConvertMstsColor(0xAAE0FFFF);
-            uint redColor = ConvertMstsColor(0x88E00000);
+            uint whiteColor = ConvertMstsColor(0x35E0FFFF);
+            uint redColor = ConvertMstsColor(0x35E00000);
 
             foreach (var light in Car.Lights.Lights)
             {
@@ -240,8 +240,11 @@ namespace Orts.Viewer3D
         }
 
         private void AddConeLightW(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
-        {
-            var state = new LightState(color, position, azimuth, angle: 150f, radius: 25f);
+        {            
+            Color c = new Color() { PackedValue = color };
+            c.A = (byte)(c.A * 0.5f); 
+
+            var state = new LightState(c.PackedValue, position, azimuth, angle: 150f, radius: 20f);
             var light = new Light(
                 Car.Lights.Lights.Count,
                 LightType.Cone,
@@ -252,9 +255,13 @@ namespace Orts.Viewer3D
 
             Car.Lights.Lights.Add(light);
         }
+
         private void AddConeLightR(LightHandleCondition unitSide, Vector3 position, Vector3 azimuth, uint color)
-        {
-            var state = new LightState(color, position, azimuth, angle: 150f, radius: 15f);
+        {         
+            Color c = new Color() { PackedValue = color };
+            c.A = (byte)(c.A * 0.5f); 
+
+            var state = new LightState(c.PackedValue, position, azimuth, angle: 150f, radius: 20f);
             var light = new Light(
                 Car.Lights.Lights.Count,
                 LightType.Cone,
