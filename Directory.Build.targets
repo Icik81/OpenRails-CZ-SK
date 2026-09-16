@@ -1,7 +1,0 @@
-﻿<Project>
-    <Target Name="RemoveCompleteBuildDirectories" AfterTargets="Clean">
-        <RemoveDir
-            Directories="$(BaseIntermediateOutputPath);$(BaseOutputPath)"
-            Condition="'$(BaseIntermediateOutputPath)' != ''" />
-    </Target>
-</Project>

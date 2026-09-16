@@ -1,17 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project Sdk="Microsoft.NET.Sdk">
-  <PropertyGroup>
-    <EnableDefaultItems>false</EnableDefaultItems>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-    <Deterministic>false</Deterministic>
-    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-    <GenerateResourceUsePreserializedResources>true</GenerateResourceUsePreserializedResources>
-    <UseWindowsForms>true</UseWindowsForms>
-  </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="Ionic.Zip" Version="1.9.1.8" />
-    <PackageReference Include="System.Resources.Extensions" Version="4.6.0" />
-  </ItemGroup>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
@@ -20,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ORTS</RootNamespace>
     <AssemblyName>Menu</AssemblyName>
-    <TargetFramework>net48</TargetFramework>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ApplicationIcon>OpenRailsCZSK.ico</ApplicationIcon>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationManifest>..\Launcher\app.manifest</ApplicationManifest>
@@ -66,6 +56,9 @@
     <Reference Include="GNU.Gettext.WinForms, Version=1.0.5151.39911, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\3rdPartyLibs\GNU.Gettext.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Ionic.Zip, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Ionic.Zip.1.9.1.8\lib\Ionic.Zip.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="MonoGame.Framework, Version=3.6.0.1625, Culture=neutral, processorArchitecture=MSIL">
@@ -204,6 +197,7 @@
     <None Include="Expander-closed.png" />
     <None Include="Expander-closed-disabled.png" />
     <None Include="Expander-open.png" />
+    <None Include="packages.config" />
     <None Include="Properties\DataSources\OptionsForm.ContentFolder.datasource" />
     <None Include="Properties\DataSources\ResumeForm.Save.datasource" />
     <None Include="Properties\Settings.settings">
@@ -221,20 +215,36 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Orts.ExternalDevices\Orts.ExternalDevices.csproj">
+      <Project>{0da86c52-ffb5-4cd6-a2c0-08f1610e6399}</Project>
+      <Name>Orts.ExternalDevices</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Formats.Msts\Orts.Formats.Msts.csproj">
+      <Project>{570709FA-0C8A-4B1D-BA2D-D9455AFD9B5C}</Project>
+      <Name>Orts.Formats.Msts</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Common\ORTS.Common.csproj">
+      <Project>{DA94D876-7D35-46C3-AECE-AFACE72C686C}</Project>
+      <Name>ORTS.Common</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Content\ORTS.Content.csproj">
+      <Project>{812685A7-2683-4102-A3CA-2A5CED2E61EE}</Project>
+      <Name>ORTS.Content</Name>
     </ProjectReference>
     <ProjectReference Include="..\Orts.Formats.OR\Orts.Formats.OR.csproj">
+      <Project>{0d8d312b-2c02-4b77-a795-566394a9db95}</Project>
+      <Name>Orts.Formats.OR</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Menu\ORTS.Menu.csproj">
+      <Project>{1C5B0B41-2FE9-41C9-8B21-CCDCBEB3DDA5}</Project>
+      <Name>ORTS.Menu</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Settings\ORTS.Settings.csproj">
+      <Project>{67F84996-8769-4FD8-819B-464AF269037B}</Project>
+      <Name>ORTS.Settings</Name>
     </ProjectReference>
     <ProjectReference Include="..\ORTS.Updater\ORTS.Updater.csproj">
+      <Project>{88108A94-0389-43FF-A75C-C55BD202FC8D}</Project>
+      <Name>ORTS.Updater</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -266,6 +276,14 @@
       <CachedSettingsPropName>Menu_cz_aspfree_lkpr_WebService</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
