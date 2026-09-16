@@ -421,7 +421,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     }
                 }             
 
-                if (Locomotive.AbsSpeedMpS > 0.01f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
+                if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
                 {
                     ShunterFullTestBrakePhase1 = false;
                     ShunterFullTestBrakePhase2 = false;
@@ -981,7 +981,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 
                 if (!ShunterSimpleTestBrakePhase1 && !ShunterSimpleTestBrakePhase2 && !ShunterSimpleTestBrakePhase3 && !ShunterSimpleTestBrakePhase4 && !ShunterSimpleTestBrakePhase5)
                 {
-                    if (Locomotive.AbsSpeedMpS > 0.1f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
+                    if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f || Locomotive.Train.Cars.Count < 2 || Locomotive.BrakeSystem.BrakeLine1PressurePSI < 4.9f * 14.50377f)
                     {
                         Locomotive.Simulator.ShunterSimpleTestBrakeEnable = false;
 

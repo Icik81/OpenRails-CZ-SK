@@ -2620,11 +2620,10 @@ namespace Orts.Viewer3D
         }
 
         internal void BeginRender(RenderFrame frame)
-        {
-            FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
-
+        {            
             if (frame.IsScreenChanged)
             {
+                FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
                 WindowManager.ScreenChanged();
                 AdjustCabHeight(RenderProcess.GraphicsDeviceManager.PreferredBackBufferWidth, RenderProcess.GraphicsDeviceManager.PreferredBackBufferHeight);
             }

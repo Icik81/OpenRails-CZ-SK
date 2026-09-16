@@ -720,8 +720,7 @@ namespace Orts.Viewer3D
                                 string[] pathArray = {
                             SMSFolder,
                             Program.Simulator.RoutePath + @"\SOUND",
-                            Program.Simulator.BasePath + @"\SOUND",
-                            Program.Simulator.RoutePath + @"\TRAINS\TRAINSET\COMMON.SND\"
+                            Program.Simulator.BasePath + @"\SOUND",                            
                         };
                                 var fullPath = ORTSPaths.GetFileFromFolders(pathArray, file);
                                 if (fullPath != null)
