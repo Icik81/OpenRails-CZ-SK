@@ -2620,8 +2620,7 @@ namespace Orts.Viewer3D
         }
 
         internal void BeginRender(RenderFrame frame)
-        {
-            FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
+        {            
             if (frame.IsScreenChanged)
             {                
                 WindowManager.ScreenChanged();
@@ -2633,6 +2632,8 @@ namespace Orts.Viewer3D
 
         internal void EndRender(RenderFrame frame)
         {
+            FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
+
             // VisibilityState is used to delay calling SaveScreenshot() by one render cycle.
             // We want the hiding of the MessageWindow to take effect on the screen before the screen content is saved.
             if (Visibility == VisibilityState.Hidden)  // Test for Hidden state must come before setting Hidden state.
