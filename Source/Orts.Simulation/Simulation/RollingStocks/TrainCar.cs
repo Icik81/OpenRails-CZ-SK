@@ -1119,7 +1119,22 @@ namespace Orts.Simulation.Simulation.RollingStocks
         public virtual void Update(float elapsedClockSeconds)
         {
             // Icik
-            if (float.IsNaN(MassKG))
+            // Ochrana proti numerické explozi při propadu FPS nebo záseku
+            elapsedClockSeconds = MathHelper.Clamp(elapsedClockSeconds, 0.0001f, 0.1f);
+
+            if (float.IsNaN(_SpeedMpS) || float.IsInfinity(_SpeedMpS))
+                _SpeedMpS = _PrevSpeedMpS = 0.0f;
+
+            if (float.IsNaN(FrictionForceN) || float.IsInfinity(FrictionForceN))
+                FrictionForceN = 0.0f;
+
+            if (float.IsNaN(MotiveForceN) || float.IsInfinity(MotiveForceN))
+                MotiveForceN = 0.0f;
+
+            if (float.IsNaN(GravityForceN) || float.IsInfinity(GravityForceN))
+                GravityForceN = 0.0f;
+
+            if (float.IsNaN(MassKG) || float.IsInfinity(MassKG))
                 MassKG = InitialMassKG;
 
             BrakeCarStatus();
@@ -2964,6 +2979,9 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
         public void ComputePosition(Traveller traveler, bool backToFront, float elapsedTimeS, float distance, float speed)
         {
+            // Ochrana proti numerické nestabilitě a zásekům při nízkých FPS
+            elapsedTimeS = MathHelper.Clamp(elapsedTimeS, 0.0001f, 0.1f);
+
             for (var j = 0; j < Parts.Count; j++)
                 Parts[j].InitLineFit();
             var tileX = traveler.TileX;
@@ -3010,15 +3028,22 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     p0.AddPartLocation(1, p);
             }
             p0.FindCenterLine();
+
+            // Robustní konstrukce orientačních vektorů
             Vector3 fwd = new Vector3(p0.B[0], p0.B[1], -p0.B[2]);
-            // Check if null vector - The Length() is fine also, but may be more time consuming - By GeorgeS
-            if (fwd.X != 0 && fwd.Y != 0 && fwd.Z != 0)
+            if (fwd.LengthSquared() > 1e-6f)
                 fwd.Normalize();
+            else
+                fwd = Vector3.Forward;
+
             Vector3 side = Vector3.Cross(Vector3.Up, fwd);
-            // Check if null vector - The Length() is fine also, but may be more time consuming - By GeorgeS
-            if (side.X != 0 && side.Y != 0 && side.Z != 0)
+            if (side.LengthSquared() > 1e-6f)
                 side.Normalize();
+            else
+                side = Vector3.Right;
+
             Vector3 up = Vector3.Cross(fwd, side);
+
             Matrix m = Matrix.Identity;
             m.M11 = side.X;
             m.M12 = side.Y;
@@ -3045,60 +3070,51 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (p.SumWgt < .5)
                     continue;
                 if (p.SumWgt < 1.5)
-                {   // single axle pony trunk
+                {   // single axle pony truck
                     double d = p.OffsetM - p.SumOffset / p.SumWgt;
                     if (-.2 < d && d < .2)
                         continue;
                     p.AddWheelSetLocation(1, p.OffsetM, p0.A[0] + p.OffsetM * p0.B[0], p0.A[1] + p.OffsetM * p0.B[1], p0.A[2] + p.OffsetM * p0.B[2], 0, null);
                     p.FindCenterLine();
                 }
+
                 Vector3 fwd1 = new Vector3(p.B[0], p.B[1], -p.B[2]);
-                if (fwd1.X == 0 && fwd1.Y == 0 && fwd1.Z == 0)
+                if (fwd1.LengthSquared() <= 1e-6f)
                 {
-                    p.Cos = 1;
+                    p.Cos = 1.0f;
                 }
                 else
                 {
                     fwd1.Normalize();
-                    p.Cos = Vector3.Dot(fwd, fwd1);
+                    p.Cos = MathHelper.Clamp(Vector3.Dot(fwd, fwd1), -1.0f, 1.0f);
                 }
 
-                float SinSpeedCoef = 1.0f + (AbsSpeedMpS / 10f);
+                // Výpočet skutečného geometrického sinu natočení vůči skříni
+                float oneMinusCosSq = Math.Max(0.0f, 1.0f - p.Cos * p.Cos);
+                float sinTarget = (float)Math.Sqrt(oneMinusCosSq);
 
-                // Icik
-                if (p.Cos >= .9999f)
-                {
-                    if (p.Sin > 0.0001)
-                    {
-                        p.Sin -= SinSpeedCoef * elapsedTimeS * 0.01f;
-                    }
-                    else
-                    if (p.Sin < -0.0001)
-                    {
-                        p.Sin += SinSpeedCoef * elapsedTimeS * 0.01f;
-                    }
-                    else
-                        p.Sin = 0;
-                }
-                else
-                {
-                    float SinFinal = (float)Math.Sqrt(1 - p.Cos * p.Cos);
+                // Znaménko podle orientace v horizontální rovině (vektorový součin v ose Y)
+                if (fwd.X * fwd1.Z < fwd.Z * fwd1.X)
+                    sinTarget = -sinTarget;
 
-                    if (fwd.X * fwd1.Z < fwd.Z * fwd1.X)
-                        SinFinal = -SinFinal;
+                // Pokud je podvozek téměř v ose, cílíme přesně na 0
+                if (p.Cos >= 0.99995f)
+                    sinTarget = 0.0f;
 
-                    if (p.Sin < 0.9999f * SinFinal)
-                    {
-                        p.Sin += SinSpeedCoef * elapsedTimeS * 0.01f;
-                    }
-                    else
-                    if (p.Sin > 1.0001f * SinFinal)
-                    {
-                        p.Sin -= SinSpeedCoef * elapsedTimeS * 0.01f;
-                    }                                        
-                    else
-                        p.Sin = SinFinal;                    
-                }
+                // --- DYNAMICKÉ A VÝRAZNÉ NATOČENÍ PODVOZKU ---
+                // Rychlost přizpůsobení:
+                // Na místě/při nízké rychlosti reaguje pružně (base 8.0f),
+                // s rostoucí rychlostí se reakce ještě zrychluje, aby podvozek nekopíroval oblouk opožděně.
+                float responseRate = 8.0f + (AbsSpeedMpS * 0.5f);
+
+                // Exponenciální filtrace (frame-rate independent):
+                // Eliminuje trhání, ale okamžitě kopíruje skutečný úhel kolejí
+                float t = 1.0f - (float)Math.Exp(-responseRate * elapsedTimeS);
+                p.Sin = MathHelper.Lerp(p.Sin, sinTarget, t);
+
+                // Začištění mikroskopického driftu kolem nuly
+                if (Math.Abs(p.Sin) < 0.00005f)
+                    p.Sin = 0.0f;
             }
         }
 
@@ -3227,6 +3243,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (VibrationTrackNode == 0)
                     VibrationTrackNode = traveler.TrackNodeIndex;
 
+                float dt = Math.Min(elapsedTimeS, 0.033f); // Max 30 FPS krok pro integraci pružin
+
                 // Apply suspension/spring and damping.
                 // https://en.wikipedia.org/wiki/Simple_harmonic_motion
                 //   Let F be the force in N
@@ -3247,11 +3265,19 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 //   Let v be the velocity in m/s
                 //   Then F = -c * v
                 // We apply the acceleration (let t be time in s, then dv/dt = a * t) and damping (-c * v) to the velocities:
-                VibrationRotationVelocityRadpS += rotationAccelerationRadpSpS * elapsedTimeS - VibratioDampingCoefficient * VibrationRotationVelocityRadpS;
-                VibrationTranslationVelocityMpS += translationAccelerationMpSpS * elapsedTimeS - VibratioDampingCoefficient * VibrationTranslationVelocityMpS;
+                VibrationRotationVelocityRadpS += rotationAccelerationRadpSpS * dt - VibratioDampingCoefficient * VibrationRotationVelocityRadpS;
+                VibrationTranslationVelocityMpS += translationAccelerationMpSpS * dt - VibratioDampingCoefficient * VibrationTranslationVelocityMpS;
                 // Now apply the velocities (dx/dt = v * t):
-                VibrationRotationRad += VibrationRotationVelocityRadpS * elapsedTimeS;
-                VibrationTranslationM += VibrationTranslationVelocityMpS * elapsedTimeS;
+                VibrationRotationRad += VibrationRotationVelocityRadpS * dt;
+                VibrationTranslationM += VibrationTranslationVelocityMpS * dt;
+
+                if (float.IsNaN(VibrationRotationRad.X) || float.IsInfinity(VibrationRotationRad.X))
+                {
+                    VibrationRotationRad = Vector3.Zero;
+                    VibrationRotationVelocityRadpS = Vector3.Zero;
+                    VibrationTranslationM = Vector2.Zero;
+                    VibrationTranslationVelocityMpS = Vector2.Zero;
+                }
 
                 // Add new vibrations every CarLengthM in either direction.
                 if (Math.Round((VibrationOffsetM.X + DistanceM) / CarLengthM) != Math.Round((VibrationOffsetM.X + DistanceM + distanceM) / CarLengthM))
