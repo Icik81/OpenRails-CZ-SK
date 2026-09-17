@@ -142,7 +142,7 @@ namespace Orts.Viewer3D
         public List<FreeRoamCamera> FreeRoamCameraList = new List<FreeRoamCamera>();
         public FreeRoamCamera FreeRoamCamera { get { return FreeRoamCameraList[0]; } } // Camera 8
 
-        public int FrameCounter { get; private set; }
+        public int FrameCounter { get; set; }
 
         /// <summary>
         /// Activate the 2D or 3D cab camera depending on the current player preference.
@@ -1065,13 +1065,11 @@ namespace Orts.Viewer3D
             World.Load();
             WindowManager.Load();
         }
-        
+                
         [CallOnThread("Updater")]
         public void Update(RenderFrame frame, float elapsedRealTime)
         {
-            // Icik
-            this.BeginFrame(); // Vynuluje ActiveHeadlightCount = 0
-
+            // Icik                                                
             if (Try3DCabSetOn)
             {
                 Try3DCabSetOn = false;
@@ -2619,6 +2617,7 @@ namespace Orts.Viewer3D
             CameraActivate();
         }
 
+        int _lastFrameId = -1;
         internal void BeginRender(RenderFrame frame)
         {            
             if (frame.IsScreenChanged)
@@ -2627,13 +2626,16 @@ namespace Orts.Viewer3D
                 AdjustCabHeight(RenderProcess.GraphicsDeviceManager.PreferredBackBufferWidth, RenderProcess.GraphicsDeviceManager.PreferredBackBufferHeight);
             }
 
-            MaterialManager.UpdateShaders();
+            int currentFrame = Program.Viewer.FrameCounter;
+            if (_lastFrameId != currentFrame)
+            {
+                _lastFrameId = currentFrame;
+                MaterialManager.UpdateShaders();
+            }            
         }
 
         internal void EndRender(RenderFrame frame)
-        {
-            FrameCounter++; // Zvýší se přesně 1x za každý renderovaný snímek
-
+        {            
             // VisibilityState is used to delay calling SaveScreenshot() by one render cycle.
             // We want the hiding of the MessageWindow to take effect on the screen before the screen content is saved.
             if (Visibility == VisibilityState.Hidden)  // Test for Hidden state must come before setting Hidden state.

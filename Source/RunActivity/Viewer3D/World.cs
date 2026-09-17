@@ -119,7 +119,7 @@ namespace Orts.Viewer3D
 
         [CallOnThread("Updater")]
         public void Update(ElapsedTime elapsedTime)
-        {
+        {            
             if (PerformanceTune && Viewer.RenderProcess.IsActive)
             {
                 // Work out how far we need to change the actual FPS to get to the target.
@@ -186,7 +186,7 @@ namespace Orts.Viewer3D
 
         [CallOnThread("Updater")]
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
-        {
+        {                                    
             if (Viewer.Settings.UseMSTSEnv)
                 MSTSSky.PrepareFrame(frame, elapsedTime);
             else

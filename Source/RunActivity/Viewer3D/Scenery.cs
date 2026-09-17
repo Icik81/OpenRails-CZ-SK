@@ -1372,7 +1372,10 @@ namespace Orts.Viewer3D
 
         [CallOnThread("Updater")]
         public void PrepareFrame(RenderFrame frame, ElapsedTime elapsedTime)
-        {
+        {                        
+            Viewer.BeginFrame(); // Vynuluje ActiveHeadlightCount = 0               
+            Viewer.FrameCounter++;
+
             foreach (var shape in sceneryObjects)
                 shape.PrepareFrame(frame, elapsedTime);
             foreach (var dTrack in dTrackList)
