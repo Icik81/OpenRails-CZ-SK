@@ -915,7 +915,6 @@ namespace Orts.Simulation.Simulation.RollingStocks
             LocomotiveAxle.DampingNs = MassKG / 1000.0f;
             LocomotiveAxle.FrictionN = MassKG / 100.0f;
             LocomotiveAxle.StabilityCorrection = true;
-            LocomotiveAxle.FilterMovingAverage.Size = Simulator.Settings.AdhesionMovingAverageFilterSize;
             CurrentFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.5f), 0.001f);
             AdhesionFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(1f), 0.001f);
 
@@ -3338,7 +3337,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             AverageForceN = MaxForceN * Train.MUThrottlePercent / 100;
             float maxPowerW = MaxPowerW * Train.MUThrottlePercent * Train.MUThrottlePercent / 10000;
             if (AverageForceN * SpeedMpS > maxPowerW) AverageForceN = maxPowerW / SpeedMpS;
-            LocomotiveAxle.FilterMovingAverage.Initialize(AverageForceN);
+
             if (Train.IsActualPlayerTrain)
             {
                 TrainControlSystem.InitializeMoving();
