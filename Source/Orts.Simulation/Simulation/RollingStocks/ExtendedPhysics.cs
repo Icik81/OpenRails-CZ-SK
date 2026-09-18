@@ -911,7 +911,6 @@ namespace Orts.Simulation.Simulation.RollingStocks
             Locomotive = loco;
             LocomotiveAxle = new SubSystems.PowerTransmissions.Axle();
             LocomotiveAxle.DriveType = SubSystems.PowerTransmissions.AxleDriveType.ForceDriven;
-            LocomotiveAxle.StabilityCorrection = true;
         }
         int i = 0;
 
