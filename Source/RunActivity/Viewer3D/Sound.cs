@@ -1511,9 +1511,8 @@ namespace Orts.Viewer3D
                     if (ALSoundSource.SampleRate > 0 && !float.IsNaN(y) && !float.IsInfinity(y) && y > 0.0001f)
                     {
                         float newSpeed = y / ALSoundSource.SampleRate;
-                        // OpenAL striktně vyžaduje pitch v kladném rozsahu (např. 0.05f až 4.0f)
-                        if (newSpeed < 0.05f) newSpeed = 0.05f;
-                        if (newSpeed > 4.0f) newSpeed = 4.0f;
+                        // OpenAL striktně vyžaduje pitch v kladném rozsahu 
+                        if (newSpeed < 0.05f) newSpeed = 0.05f;                        
                         ALSoundSource.PlaybackSpeed = newSpeed;
                     }
                     else
