@@ -1728,7 +1728,7 @@ namespace Orts.Viewer3D
                     if (dt <= 0f || dt > 0.1f) dt = 0.05f;
 
                     float targetGain = isInTunnel ? 1.0f : 0.0f;
-                    const float rampSpeed = 4.0f;
+                    const float rampSpeed = 100.0f;
 
                     if (currentTunnelGain < targetGain)
                     {
@@ -1755,7 +1755,7 @@ namespace Orts.Viewer3D
                     }
 
                     // Slot připojíme/odpojíme pouze při reálné změně stavu, bez přepisování sdíleného filtru
-                    if (targetSlot != lastAttachedSlot)
+                    if (targetSlot == OpenAL.HornEffectSlotID)
                     {
                         OpenAL.alSource3i(
                             ALSoundSource.SoundSourceID,
