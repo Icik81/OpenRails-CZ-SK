@@ -2143,6 +2143,7 @@ namespace Orts.Simulation.Simulation.AIs
 
         float BoardTime;
         float BoardTimer;
+        int BoardPassengerFirstTimeCoefficient;
         public virtual void UpdateStationState(float elapsedClockSeconds, int presentTime)
         {
             StationStop thisStation = StationStops[0];
@@ -2204,13 +2205,15 @@ namespace Orts.Simulation.Simulation.AIs
                             {
                                 var stopTime = thisStation.CalculateDepartTime(presentTime, this);
                                 BoardTime = stopTime / ActualPassengerCountAtStation;
+                                BoardPassengerFirstTimeCoefficient = 8;
                             }
 
                             BoardTimer += elapsedClockSeconds;
-                            if (BoardTimer > BoardTime * 0.5f)
+                            if (BoardTimer > BoardTime * 0.5f + BoardPassengerFirstTimeCoefficient)
                             {
                                 ActualPassengerCountAtStation--;
                                 BoardTimer = 0;
+                                BoardPassengerFirstTimeCoefficient = 0;
                             }
                         }
                         else

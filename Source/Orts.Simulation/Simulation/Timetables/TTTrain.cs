@@ -3610,6 +3610,7 @@ namespace Orts.Simulation.Simulation.Timetables
         /// <\summary>
         float BoardTime;
         float BoardTimer;
+        int BoardPassengerFirstTimeCoefficient;
         public override void UpdateStationState(float elapsedClockSeconds, int presentTime)
         {
             StationStop thisStation = StationStops[0];
@@ -3698,13 +3699,15 @@ namespace Orts.Simulation.Simulation.Timetables
                             {
                                 var stopTime = thisStation.CalculateDepartTime(presentTime, this);
                                 BoardTime = stopTime / ActualPassengerCountAtStation;
+                                BoardPassengerFirstTimeCoefficient = 8;
                             }
 
                             BoardTimer += elapsedClockSeconds;
-                            if (BoardTimer > BoardTime * 0.5f)
+                            if (BoardTimer > BoardTime * 0.5f + BoardPassengerFirstTimeCoefficient)
                             {
                                 ActualPassengerCountAtStation--;
                                 BoardTimer = 0;
+                                BoardPassengerFirstTimeCoefficient = 0;
                             }
                         }
                         else
