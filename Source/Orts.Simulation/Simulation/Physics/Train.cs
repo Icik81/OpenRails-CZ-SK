@@ -17372,8 +17372,11 @@ namespace Orts.Simulation.Simulation.Physics
 
                     if (this is Timetables.TTTrain)
                     {
-                        RightPlatformSide = !RightPlatformSide;
-                        LeftPlatformSide = !LeftPlatformSide;
+                        if (thisStation.Direction == 1)
+                        {
+                            RightPlatformSide = !RightPlatformSide;
+                            LeftPlatformSide = !LeftPlatformSide;
+                        }
                     }
 
                     if (!frontIsFront)
@@ -17428,8 +17431,11 @@ namespace Orts.Simulation.Simulation.Physics
 
             if (this is Timetables.TTTrain)
             {
-                RightPlatformSide = !RightPlatformSide;
-                LeftPlatformSide = !LeftPlatformSide;
+                if (thisStation.Direction == 1)
+                {
+                    RightPlatformSide = !RightPlatformSide;
+                    LeftPlatformSide = !LeftPlatformSide;
+                }
             }
 
             if (!frontIsFront)
@@ -17973,7 +17979,8 @@ namespace Orts.Simulation.Simulation.Physics
                 }
             }
         }
-        
+                
+
         public void UpdatePassengerCountAndWeight(Train train, int numOfPaxOnPlatform, double gameClock)
         { 
             if (train.Simulator.Paused)
@@ -17988,8 +17995,11 @@ namespace Orts.Simulation.Simulation.Physics
 
             if (this is Timetables.TTTrain)
             {
-                RightPlatformSide = !RightPlatformSide;
-                LeftPlatformSide = !LeftPlatformSide;
+                if (thisStation.Direction == 1)
+                {
+                    RightPlatformSide = !RightPlatformSide;
+                    LeftPlatformSide = !LeftPlatformSide;
+                }
             }
 
             if (!frontIsFront)
