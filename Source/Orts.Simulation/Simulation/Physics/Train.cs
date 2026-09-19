@@ -17511,8 +17511,7 @@ namespace Orts.Simulation.Simulation.Physics
         private double nextTimeExitDoors2 = 0;
         private int numUsableWagons = 0;        
         public int numCars = 0;
-        public float MaxPaxCapacity = 0;
-        public float CurrentPaxCapacity = 0;
+        public float MaxPaxCapacity = 0;        
         protected bool wasCarsChanged = false;
         // Icik
         public bool EndStation { get; set; }
@@ -17592,7 +17591,7 @@ namespace Orts.Simulation.Simulation.Physics
 
             if (!Simulator.Settings.GenerateRandomPaxCount)
                 return;
-            if (Simulator.Activity != null && !Simulator.Settings.OverrideActivityPassengerCount)
+            if (!Simulator.Settings.OverrideActivityPassengerCount)
                 return;
 
             if (statCount != StationStops.Count)
@@ -17785,18 +17784,16 @@ namespace Orts.Simulation.Simulation.Physics
                     }
 
                     float trainOccupancyPercent = paxRand.Next(Simulator.Settings.PaxCountMinimumPercent, Simulator.Settings.PaxCountMaximumPercent);
-                    CurrentPaxCapacity = MaxPaxCapacity * (trainOccupancyPercent / 100.0f);
-                    CurrentPaxCapacity = (float)Math.Round(CurrentPaxCapacity, 0);
-
+                    
                     int index = ActualStationNumber;
                     foreach (StationStop ss in train.StationStops)
                     {
                         float remainingPax = 0;                        
+                        
+                        remainingPax = MaxPaxCapacity * (trainOccupancyPercent / 100) * ((MaxStationCountFromStart - index) / (float)MaxStationCountFromStart);
+                        if (remainingPax < 0)
+                            remainingPax = 0;
 
-                        if (index == 0)
-                            remainingPax = MaxPaxCapacity * (trainOccupancyPercent / 100);
-                        else
-                            remainingPax = (((int)MaxPaxCapacity - (int)CurrentPaxCapacity) / train.StationStops.Count);
                         float byPlatform = ss.PlatformItem.Length / 50.0f;
                         if (index > 0 && MaxPaxCapacity != 0)
                             remainingPax += (int)Math.Round(byPlatform * 10, 0);
@@ -17831,12 +17828,12 @@ namespace Orts.Simulation.Simulation.Physics
                         }
 
                         if (!wasRestoredPax)
-                            ss.PlatformItem.NumPassengersWaiting = (int)remainingPax / 2;
+                            ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
                         else
                         {
                             wasRestoredPax = false;
                             if (!AtStation)
-                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax / 2;
+                                ss.PlatformItem.NumPassengersWaiting = (int)remainingPax;
                         }
 
                         if (StationsBoardingRestOfPaxes[index] == 0) 

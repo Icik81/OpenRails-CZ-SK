@@ -406,7 +406,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                         LastCarConnected = car;                                                
                     }                 
                 }
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                 {
                     CheckWagonListIndex++;
                     CheckWagonList[CheckWagonListIndex] = car;
@@ -555,7 +555,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 {
                     float ShunterFullTestBrakePhase2Time = 5.0f;
                     int CarTimeNumber = 0;
-                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                     {
                         CarTimeNumber++;
                         float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
@@ -707,7 +707,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 {
                     float ShunterFullTestBrakePhase4Time = 5.0f;
                     int CarTimeNumber = 0;
-                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                     {
                         CarTimeNumber++;
                         float CarBrakeCheckTime = (((car.BrakesStuck || car.BrakeSystem.CarHasProblemWithBrake) && !car.BrakeSystem.BrakeCarDeactivate) || car.BrakeSystem.HandBrakeActive) ? Simulator.Random.Next(6, 12) : Simulator.Random.Next(2, 6) + (car.CarLengthM / 2.0f);
@@ -852,7 +852,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                         bool BrakeProblemFound = false;
                         bool ConnectProblemFound = false;
                         CarNumber = 0;
-                        foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                        foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                         {
                             CarNumber++;
                             car.BrakeCarStatus();
@@ -948,7 +948,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     }                    
                 }
 
-                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                 {
                     CheckWagonListIndex = 1;
                     CheckWagonList[1] = car;
@@ -1037,7 +1037,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 {
                     float ShunterSimpleTestBrakePhase2Time = 5.0f;
                     int CarTimeNumber = 0;
-                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                     {
                         if (CarTimeNumber == 1) break;
                         CarTimeNumber++;
@@ -1251,7 +1251,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 {
                     float ShunterSimpleTestBrakePhase4Time = 5.0f;
                     int CarTimeNumber = 0;
-                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                     {
                         if (CarTimeNumber == 1) break;
                         CarTimeNumber++;
@@ -1396,7 +1396,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 if (ShunterSimpleTestBrakePhase5)
                 {
                     ShunterSimpleTestBrakeHandBrakeActivated = false;
-                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive())))
+                    foreach (TrainCar car in Locomotive.Train.Cars.Where(car => !(car is MSTSLocomotive) || (car is MSTSLocomotive && !(car as MSTSLocomotive).IsLeadLocomotive() && !car.AcceptCableSignals && !car.AcceptHelperSignals)))
                     {
                         if (car.BrakeSystem.HandBrakeActive)
                         {
