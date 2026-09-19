@@ -39,11 +39,39 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         /// <summary>
         /// We are saving the game.  Save anything that we'll need to restore the 
         /// status later.
-        /// </summary>
+        /// </summary>        
         public void Save(BinaryWriter outf)
-        {
-            //outf.Write();
+        {            
+            outf.Write(ShunterTimeWithOutRadio);
+            outf.Write(ShunterSoundStartPlayed);
+            outf.Write(ShunterSoundDonePlayed);
+            outf.Write(ShunterTimer);
+            outf.Write(ShunterSoundOff);
+            outf.Write(LastDistanceToOtherTrain);
+            outf.Write(LastDistanceToSTPTrain);
+            outf.Write(ShunterProcessTimer);
+            outf.Write(DistanceToOtherTrain_0);
+            outf.Write(ShunterDecideProcessTimer);
+            outf.Write(ShunterDecideProcess);
+            outf.Write(ShunterDecideMarker ?? string.Empty);
+            outf.Write(ShunterTimerRandom);
+            outf.Write(CheckDistance);
+            outf.Write(LastShunterDecideMarker ?? string.Empty);
+            outf.Write(TouchingDistanceTimer);
 
+            outf.Write(ShunterFullTestBrakePhase1); outf.Write(ShunterFullTestBrakePhase2);
+            outf.Write(ShunterFullTestBrakePhase3); outf.Write(ShunterFullTestBrakePhase4); outf.Write(ShunterFullTestBrakePhase5);
+            outf.Write(ShunterFullTestBrakePhase1Timer); outf.Write(ShunterFullTestBrakePhase2Timer); outf.Write(ShunterFullTestBrakePhase3Timer);
+            outf.Write(ShunterFullTestBrakePhase4Timer); outf.Write(ShunterFullTestBrakePhase5Timer);
+            outf.Write(ShunterFullTestBrakePhase2CarCheckTimer); outf.Write(ShunterFullTestBrakePhase4CarCheckTimer);
+            outf.Write(ShunterSimpleTestBrakePhase1); outf.Write(ShunterSimpleTestBrakePhase2);
+            outf.Write(ShunterSimpleTestBrakePhase3); outf.Write(ShunterSimpleTestBrakePhase4); outf.Write(ShunterSimpleTestBrakePhase5);
+            outf.Write(ShunterSimpleTestBrakePhase1Timer); outf.Write(ShunterSimpleTestBrakePhase2Timer); outf.Write(ShunterSimpleTestBrakePhase3Timer);
+            outf.Write(ShunterSimpleTestBrakePhase4Timer); outf.Write(ShunterSimpleTestBrakePhase5Timer);
+            outf.Write(ShunterSimpleTestBrakePhase2CarCheckTimer); outf.Write(ShunterSimpleTestBrakePhase4CarCheckTimer);
+            outf.Write(ShunterSimpleTestBrakeHandBrakeActivated); outf.Write(ShunterSimpleTestBrakeHandBrakeTimer);
+            outf.Write(CarNumber); outf.Write(FirstBoggie); outf.Write(SecondBoggie);
+            outf.Write(ShunterCheckAirPressureTimer); outf.Write(CheckAuxResBrakeLine); outf.Write(ShunterFullTestBrakePhase1TimeOffset);            
         }
 
         /// <summary>
@@ -52,8 +80,36 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         /// </summary>
         public void Restore(BinaryReader inf)
         {
-            // = inf.ReadBoolean();
+            ShunterTimeWithOutRadio = inf.ReadSingle();
+            ShunterSoundStartPlayed = inf.ReadBoolean();
+            ShunterSoundDonePlayed = inf.ReadBoolean();
+            ShunterTimer = inf.ReadSingle();
+            ShunterSoundOff = inf.ReadBoolean();
+            LastDistanceToOtherTrain = inf.ReadSingle();
+            LastDistanceToSTPTrain = inf.ReadSingle();
+            ShunterProcessTimer = inf.ReadSingle();
+            DistanceToOtherTrain_0 = inf.ReadSingle();
+            ShunterDecideProcessTimer = inf.ReadSingle();
+            ShunterDecideProcess = inf.ReadBoolean();
+            ShunterDecideMarker = inf.ReadString();
+            ShunterTimerRandom = inf.ReadSingle();
+            CheckDistance = inf.ReadSingle();
+            LastShunterDecideMarker = inf.ReadString();
+            TouchingDistanceTimer = inf.ReadSingle();
 
+            ShunterFullTestBrakePhase1 = inf.ReadBoolean(); ShunterFullTestBrakePhase2 = inf.ReadBoolean();
+            ShunterFullTestBrakePhase3 = inf.ReadBoolean(); ShunterFullTestBrakePhase4 = inf.ReadBoolean(); ShunterFullTestBrakePhase5 = inf.ReadBoolean();
+            ShunterFullTestBrakePhase1Timer = inf.ReadSingle(); ShunterFullTestBrakePhase2Timer = inf.ReadSingle(); ShunterFullTestBrakePhase3Timer = inf.ReadSingle();
+            ShunterFullTestBrakePhase4Timer = inf.ReadSingle(); ShunterFullTestBrakePhase5Timer = inf.ReadSingle();
+            ShunterFullTestBrakePhase2CarCheckTimer = inf.ReadSingle(); ShunterFullTestBrakePhase4CarCheckTimer = inf.ReadSingle();
+            ShunterSimpleTestBrakePhase1 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase2 = inf.ReadBoolean();
+            ShunterSimpleTestBrakePhase3 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase4 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase5 = inf.ReadBoolean();
+            ShunterSimpleTestBrakePhase1Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase2Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase3Timer = inf.ReadSingle();
+            ShunterSimpleTestBrakePhase4Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase5Timer = inf.ReadSingle();
+            ShunterSimpleTestBrakePhase2CarCheckTimer = inf.ReadSingle(); ShunterSimpleTestBrakePhase4CarCheckTimer = inf.ReadSingle();
+            ShunterSimpleTestBrakeHandBrakeActivated = inf.ReadBoolean(); ShunterSimpleTestBrakeHandBrakeTimer = inf.ReadSingle();
+            CarNumber = inf.ReadInt32(); FirstBoggie = inf.ReadBoolean(); SecondBoggie = inf.ReadBoolean();
+            ShunterCheckAirPressureTimer = inf.ReadSingle(); CheckAuxResBrakeLine = inf.ReadBoolean(); ShunterFullTestBrakePhase1TimeOffset = inf.ReadSingle();            
         }
 
         float ShunterTimeWithOutRadio;
