@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
@@ -11,34 +10,12 @@ using static Orts.Simulation.Simulation.RollingStocks.TrainCar;
 using Event = Orts.Simulation.Common.Event;
 
 
+// Řídící jednotka pro dálkové řízení lokomotivy
+
 namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
 {
-    /// <summary>
-    /// One-based, auto-growing storage for the brake-test workflow.  A train can
-    /// contain more than one hundred vehicles, so fixed buffers are unsafe here.
-    /// </summary>
-    sealed class AutoExpandingList<T>
-    {
-        readonly List<T> items = new List<T>();
-
-        public T this[int index]
-        {
-            get { return index >= 0 && index < items.Count ? items[index] : default(T); }
-            set
-            {
-                while (items.Count <= index)
-                    items.Add(default(T));
-                items[index] = value;
-            }
-        }
-
-        public void Clear() => items.Clear();
-    }
-
     public class Shunter
     {
-        const int SaveMagic = 0x53484E54; // "SHNT"
-
         public Shunter(MSTSLocomotive locomotive)
         {
             Locomotive = locomotive;
@@ -65,38 +42,8 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         /// </summary>
         public void Save(BinaryWriter outf)
         {
-            outf.Write(SaveMagic);
-            outf.Write(ShunterTimeWithOutRadio);
-            outf.Write(ShunterSoundStartPlayed);
-            outf.Write(ShunterSoundDonePlayed);
-            outf.Write(ShunterTimer);
-            outf.Write(ShunterSoundOff);
-            outf.Write(LastDistanceToOtherTrain);
-            outf.Write(LastDistanceToSTPTrain);
-            outf.Write(ShunterProcessTimer);
-            outf.Write(DistanceToOtherTrain_0);
-            outf.Write(ShunterDecideProcessTimer);
-            outf.Write(ShunterDecideProcess);
-            outf.Write(ShunterDecideMarker ?? string.Empty);
-            outf.Write(ShunterTimerRandom);
-            outf.Write(CheckDistance);
-            outf.Write(LastShunterDecideMarker ?? string.Empty);
-            outf.Write(TouchingDistanceTimer);
+            //outf.Write();
 
-            outf.Write(ShunterFullTestBrakePhase1); outf.Write(ShunterFullTestBrakePhase2);
-            outf.Write(ShunterFullTestBrakePhase3); outf.Write(ShunterFullTestBrakePhase4); outf.Write(ShunterFullTestBrakePhase5);
-            outf.Write(ShunterFullTestBrakePhase1Timer); outf.Write(ShunterFullTestBrakePhase2Timer); outf.Write(ShunterFullTestBrakePhase3Timer);
-            outf.Write(ShunterFullTestBrakePhase4Timer); outf.Write(ShunterFullTestBrakePhase5Timer);
-            outf.Write(ShunterFullTestBrakePhase2CarCheckTimer); outf.Write(ShunterFullTestBrakePhase4CarCheckTimer);
-            outf.Write(ShunterSimpleTestBrakePhase1); outf.Write(ShunterSimpleTestBrakePhase2);
-            outf.Write(ShunterSimpleTestBrakePhase3); outf.Write(ShunterSimpleTestBrakePhase4); outf.Write(ShunterSimpleTestBrakePhase5);
-            outf.Write(ShunterSimpleTestBrakePhase1Timer); outf.Write(ShunterSimpleTestBrakePhase2Timer); outf.Write(ShunterSimpleTestBrakePhase3Timer);
-            outf.Write(ShunterSimpleTestBrakePhase4Timer); outf.Write(ShunterSimpleTestBrakePhase5Timer);
-            outf.Write(ShunterSimpleTestBrakePhase2CarCheckTimer); outf.Write(ShunterSimpleTestBrakePhase4CarCheckTimer);
-            outf.Write(ShunterSimpleTestBrakeHandBrakeActivated); outf.Write(ShunterSimpleTestBrakeHandBrakeTimer);
-            outf.Write(CarNumber); outf.Write(FirstBoggie); outf.Write(SecondBoggie);
-            outf.Write(ShunterCheckAirPressureTimer); outf.Write(CheckAuxResBrakeLine); outf.Write(ShunterFullTestBrakePhase1TimeOffset);
-            outf.Write(LastConsumedActivityEventId);
         }
 
         /// <summary>
@@ -105,47 +52,8 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         /// </summary>
         public void Restore(BinaryReader inf)
         {
-            // Shunter previously wrote no data at all.  Leave the stream intact
-            // when opening an older save, so the following locomotive state is
-            // still restored correctly.
-            long position = inf.BaseStream.Position;
-            if (inf.ReadInt32() != SaveMagic)
-            {
-                inf.BaseStream.Position = position;
-                return;
-            }
+            // = inf.ReadBoolean();
 
-            ShunterTimeWithOutRadio = inf.ReadSingle();
-            ShunterSoundStartPlayed = inf.ReadBoolean();
-            ShunterSoundDonePlayed = inf.ReadBoolean();
-            ShunterTimer = inf.ReadSingle();
-            ShunterSoundOff = inf.ReadBoolean();
-            LastDistanceToOtherTrain = inf.ReadSingle();
-            LastDistanceToSTPTrain = inf.ReadSingle();
-            ShunterProcessTimer = inf.ReadSingle();
-            DistanceToOtherTrain_0 = inf.ReadSingle();
-            ShunterDecideProcessTimer = inf.ReadSingle();
-            ShunterDecideProcess = inf.ReadBoolean();
-            ShunterDecideMarker = inf.ReadString();
-            ShunterTimerRandom = inf.ReadSingle();
-            CheckDistance = inf.ReadSingle();
-            LastShunterDecideMarker = inf.ReadString();
-            TouchingDistanceTimer = inf.ReadSingle();
-
-            ShunterFullTestBrakePhase1 = inf.ReadBoolean(); ShunterFullTestBrakePhase2 = inf.ReadBoolean();
-            ShunterFullTestBrakePhase3 = inf.ReadBoolean(); ShunterFullTestBrakePhase4 = inf.ReadBoolean(); ShunterFullTestBrakePhase5 = inf.ReadBoolean();
-            ShunterFullTestBrakePhase1Timer = inf.ReadSingle(); ShunterFullTestBrakePhase2Timer = inf.ReadSingle(); ShunterFullTestBrakePhase3Timer = inf.ReadSingle();
-            ShunterFullTestBrakePhase4Timer = inf.ReadSingle(); ShunterFullTestBrakePhase5Timer = inf.ReadSingle();
-            ShunterFullTestBrakePhase2CarCheckTimer = inf.ReadSingle(); ShunterFullTestBrakePhase4CarCheckTimer = inf.ReadSingle();
-            ShunterSimpleTestBrakePhase1 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase2 = inf.ReadBoolean();
-            ShunterSimpleTestBrakePhase3 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase4 = inf.ReadBoolean(); ShunterSimpleTestBrakePhase5 = inf.ReadBoolean();
-            ShunterSimpleTestBrakePhase1Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase2Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase3Timer = inf.ReadSingle();
-            ShunterSimpleTestBrakePhase4Timer = inf.ReadSingle(); ShunterSimpleTestBrakePhase5Timer = inf.ReadSingle();
-            ShunterSimpleTestBrakePhase2CarCheckTimer = inf.ReadSingle(); ShunterSimpleTestBrakePhase4CarCheckTimer = inf.ReadSingle();
-            ShunterSimpleTestBrakeHandBrakeActivated = inf.ReadBoolean(); ShunterSimpleTestBrakeHandBrakeTimer = inf.ReadSingle();
-            CarNumber = inf.ReadInt32(); FirstBoggie = inf.ReadBoolean(); SecondBoggie = inf.ReadBoolean();
-            ShunterCheckAirPressureTimer = inf.ReadSingle(); CheckAuxResBrakeLine = inf.ReadBoolean(); ShunterFullTestBrakePhase1TimeOffset = inf.ReadSingle();
-            LastConsumedActivityEventId = inf.ReadInt32();
         }
 
         float ShunterTimeWithOutRadio;
@@ -220,20 +128,19 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         float ShunterSimpleTestBrakePhase4CarCheckTimer;
         bool ShunterSimpleTestBrakeHandBrakeActivated;
         float ShunterSimpleTestBrakeHandBrakeTimer;
-        readonly AutoExpandingList<float> ShunterTestBrakeCarCheckTime = new AutoExpandingList<float>();
+        float[] ShunterTestBrakeCarCheckTime = new float[100];        
         int CarNumber = 1;
         int LastCarConnectedNumber;
         TrainCar LastCarConnected;        
-        readonly AutoExpandingList<TrainCar> CheckWagonList = new AutoExpandingList<TrainCar>();
+        TrainCar[] CheckWagonList = new TrainCar[100];        
         bool FirstBoggie;
         bool SecondBoggie;        
-        readonly AutoExpandingList<bool> CheckCarBrakeFault = new AutoExpandingList<bool>();
+        bool[] CheckCarBrakeFault = new bool[100];
         TrainCar CheckCar = null;
         int CheckCarNumber = 0;                
         float ShunterCheckAirPressureTimer;
         bool CheckAuxResBrakeLine;
         float ShunterFullTestBrakePhase1TimeOffset;
-        int LastConsumedActivityEventId = int.MinValue;
 
         #region ShunterCheckAirPressureInCar
         public void ShunterCheckAirPressureInCar(float elapsedClockSeconds, TrainCar testCar)
@@ -425,60 +332,40 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
         }
         #endregion ShunterCheckAirPressureInCar
 
-        /// <summary>
-        /// Consumes only activity events owned by the shunter.  Other consumers
-        /// (weather and activity sound, for example) must retain their event.
-        /// </summary>
-        void ConsumeActivityTrigger()
-        {
-            if (Locomotive.Simulator.ActivityRun == null || Locomotive.Simulator.ActivityRun.triggeredEventWrapper == null)
-                return;
-
-            var trigger = Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject;
-            if (trigger.ID == LastConsumedActivityEventId)
-                return;
-
-            bool consumed = false;
-            if (trigger.ShunterFullTestBrake)
-            {
-                Locomotive.Simulator.ShunterFullTestBrakeEnable = true;
-                consumed = true;
-            }
-            if (trigger.ShunterSimpleTestBrake)
-            {
-                Locomotive.Simulator.ShunterSimpleTestBrakeEnable = true;
-                consumed = true;
-            }
-            if (trigger.Shunter)
-            {
-                Locomotive.Simulator.ShunterEnable = !Locomotive.Simulator.ShunterEnable;
-                consumed = true;
-            }
-            if (trigger.AutomaticShunter)
-            {
-                Locomotive.Simulator.AutomaticShunterEnable = !Locomotive.Simulator.AutomaticShunterEnable;
-                consumed = true;
-            }
-
-            bool hasOtherConsumer = trigger.ORTSActSoundFile != null || trigger.ORTSWeatherChange != null ||
-                (trigger.Outcomes != null && (trigger.Outcomes.ActivitySound != null || trigger.Outcomes.ORTSWeatherChange != null));
-            if (consumed)
-                LastConsumedActivityEventId = trigger.ID;
-            if (consumed && !hasOtherConsumer)
-                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
-        }
-
         public void Update(float elapsedClockSeconds)
         {
             if (!Locomotive.IsLeadLocomotive()) return;
 
-            ConsumeActivityTrigger();
+            // Plánované spuštění v aktivitě
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ShunterFullTestBrake)            
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterFullTestBrakeEnable = true;
+            }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.ShunterSimpleTestBrake)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterSimpleTestBrakeEnable = true;
+            }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.Shunter)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.ShunterEnable = !Locomotive.Simulator.ShunterEnable;
+            }
+            if (Locomotive.Simulator.ActivityRun != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper != null && Locomotive.Simulator.ActivityRun.triggeredEventWrapper.ParsedObject.AutomaticShunter)
+            {
+                Locomotive.Simulator.ActivityRun.triggeredEventWrapper = null;
+                Locomotive.Simulator.AutomaticShunterEnable = !Locomotive.Simulator.AutomaticShunterEnable;
+            }
 
             if (!Locomotive.Simulator.ShunterFullTestBrakeEnable && !Locomotive.Simulator.ShunterSimpleTestBrakeEnable)
             {                                
                 CheckAuxResBrakeLine = false;
                 TestCarReset();
-                CheckCarBrakeFault.Clear();
+                for (int i = 0; i < Locomotive.Train.Cars.Count; i++)
+                {
+                    CheckCarBrakeFault[i] = false;
+                }
             }
 
             #region ShunterFullTestBrake
@@ -497,9 +384,11 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 else
                     ShunterTimeWithOutRadio = 0;
 
-                ShunterTestBrakeCarCheckTime.Clear();
-                CheckWagonList.Clear();
-                CheckCarBrakeFault.Clear();
+                for (int i = 0; i < 100; i++)
+                {
+                    ShunterTestBrakeCarCheckTime[i] = 0;                    
+                    CheckWagonList[i] = null;
+                }
 
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
@@ -1040,9 +929,11 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 else
                     ShunterTimeWithOutRadio = 0;
 
-                ShunterTestBrakeCarCheckTime.Clear();
-                CheckWagonList.Clear();
-                CheckCarBrakeFault.Clear();
+                for (int i = 0; i < 100; i++)
+                {
+                    ShunterTestBrakeCarCheckTime[i] = 0;                    
+                    CheckWagonList[i] = null;                    
+                }
 
                 LastCarConnectedNumber = 0;
                 LastCarConnected = null;
@@ -1062,9 +953,10 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     CheckWagonListIndex = 1;
                     CheckWagonList[1] = car;
                     
-                    // The simple test examines the last eligible vehicle only;
-                    // keep its connection status in sync when the list is rebuilt.
-                    CheckCarBrakeFault[1] = !car.CarHasBrakePipeConnected;
+                    if (!car.CarHasBrakePipeConnected)
+                    {
+                        CheckCarBrakeFault[1] = true;
+                    }
                 }                
 
                 if (Locomotive.AbsSpeedMpS > 1.0f / 3.6f || Locomotive.Train.Cars.Count == 1 || LastCarConnected == null)
@@ -1625,7 +1517,18 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                         ShunterTimeWithOutRadio = 0;
                         Locomotive.Simulator.Confirmer.MSG(Simulator.Catalog.GetString("Shunter: Cab radio should be on!"));
                     }
-                    ResetGuidanceState(true);
+                    ShunterSoundToTrainReset();
+                    ShunterSoundSTPReset();                    
+                    Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessSTPActive_End = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_End = false;
+                    ShunterProcessTimer = 0;
+                    Locomotive.Simulator.DistanceToOtherTrain = -1000;
+                    DistanceToOtherTrain_0 = -1000;
+                    Locomotive.Simulator.OtherTrainPositionTest = false;
+                    ShunterSoundDonePlayed = false;                    
+                    Locomotive.Simulator.ShunterDecideMarker = "";
                     return;
                 }
                 else
@@ -1755,12 +1658,33 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 if (LastShunterDecideMarker != Locomotive.Simulator.ShunterDecideMarker && Locomotive.AbsSpeedMpS < 0.1f)
                 {
                     LastShunterDecideMarker = Locomotive.Simulator.ShunterDecideMarker;
-                    ResetGuidanceState(false);
+                    Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessSTPActive_End = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_End = false;
+                    ShunterSoundToTrainReset();
+                    ShunterSoundSTPReset();                                        
+                    ShunterProcessTimer = 0;
+                    Locomotive.Simulator.DistanceToOtherTrain = -1000;
+                    DistanceToOtherTrain_0 = -1000;
+                    Locomotive.Simulator.OtherTrainPositionTest = false;
+                    ShunterSoundDonePlayed = false;                    
                 }
 
                 if (DistanceToSTP == 1000 && !TRAINAHEAD_Mode)
                 {
-                    ResetGuidanceState(true);
+                    Locomotive.Simulator.ShunterDecideMarker = "";
+                    Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessSTPActive_End = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
+                    Locomotive.Simulator.ShunterProcessTrainActive_End = false;
+                    ShunterSoundToTrainReset();
+                    ShunterSoundSTPReset();
+                    ShunterProcessTimer = 0;
+                    Locomotive.Simulator.DistanceToOtherTrain = -1000;
+                    DistanceToOtherTrain_0 = -1000;
+                    Locomotive.Simulator.OtherTrainPositionTest = false;
+                    ShunterSoundDonePlayed = false;
                 }
 
                 if (Locomotive.Simulator.ShunterProcessSTPActive_Start && TRAINAHEAD_Mode)
@@ -1930,13 +1854,14 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                         if (!Locomotive.Simulator.ShunterProcessSTPActive_Start) ShunterTimer = 0;
                         Locomotive.Simulator.ShunterProcessSTPActive_Start = true;
 
-                        float previousDistanceToSTP = LastDistanceToSTPTrain;
-                        if (previousDistanceToSTP < DistanceToSTP) // Pokud se vzdálenost od stopu zvětšuje, hlášky se resetují
+                        if (LastDistanceToSTPTrain < DistanceToSTP) // Pokud se vzdálenost od stopu zvětšuje, hlášky se resetují 
                         {
                             LastDistanceToSTPTrain = DistanceToSTP;
                             ShunterSoundSTPReset();
                             return;
                         }
+                        LastDistanceToSTPTrain = DistanceToSTP;
+
                         // Hláška "Posunuj" obecná
                         if (Locomotive.AbsSpeedMpS > 15f / 3.6f)
                         {
@@ -1963,27 +1888,26 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                         else
                             ShunterSoundOff = false;
                         
-                        if (CrossedApproachThreshold(previousDistanceToSTP, DistanceToSTP, 150 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM))
+                        if (DistanceToSTP > 149 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 150 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slow);
                             ShunterSoundSlowToSTPPlayed = true;
                         }
-                        if (CrossedApproachThreshold(previousDistanceToSTP, DistanceToSTP, 50 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM))
+                        if (DistanceToSTP > 49 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 50 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_NearSTP);
                             ShunterSoundNearToSTPPlayed = true;
                         }
-                        if (CrossedApproachThreshold(previousDistanceToSTP, DistanceToSTP, 20 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM))
+                        if (DistanceToSTP > 19 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 20 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundSlowNearToSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_SlowNearSTP);
                             ShunterSoundSlowNearToSTPPlayed = true;
                         }
-                        if (CrossedApproachThreshold(previousDistanceToSTP, DistanceToSTP, 2 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM))
+                        if (DistanceToSTP > 1 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM && DistanceToSTP < 2 + DistanceSpeedCorrectionM + DistanceSTPCorrectionM)
                         {
                             if (!ShunterSoundStopSTPPlayed) Locomotive.SignalEvent(Event.ShunterSound_StopSTP);
                             ShunterSoundStopSTPPlayed = true;
                         }
-                        LastDistanceToSTPTrain = DistanceToSTP;
                     }
                 }
 
@@ -1994,8 +1918,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                     {
                         Locomotive.Simulator.ShunterProcessTrainActive_Start = true;
 
-                        float previousDistanceToOtherTrain = LastDistanceToOtherTrain;
-                        if (previousDistanceToOtherTrain < Locomotive.Simulator.DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují
+                        if (LastDistanceToOtherTrain < Locomotive.Simulator.DistanceToOtherTrain) // Pokud se vzdálenost od jiného vlaku zvětšuje, hlášky se resetují 
                         {
                             LastDistanceToOtherTrain = Locomotive.Simulator.DistanceToOtherTrain;
                             ShunterSoundToTrainReset();
@@ -2009,8 +1932,10 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                             return;
                         }                        
 
-                        if (previousDistanceToOtherTrain == Locomotive.Simulator.DistanceToOtherTrain)
+                        if (LastDistanceToOtherTrain == Locomotive.Simulator.DistanceToOtherTrain)
                             return;
+
+                        LastDistanceToOtherTrain = Locomotive.Simulator.DistanceToOtherTrain;
 
                         // Hláška "Posunuj" obecná
                         if (Locomotive.AbsSpeedMpS > 5f / 3.6f)
@@ -2046,80 +1971,80 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                                 case float n when (n > 1000):
                                     ShunterSoundToTrainReset();
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 250 + DistanceSpeedCorrectionM):
+                                case float n when (n < 250 + DistanceSpeedCorrectionM && n > 225 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound250Played) Locomotive.SignalEvent(Event.ShunterSound_250);
                                     ShunterSound250Played = true;
                                     ShunterSound200Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 200 + DistanceSpeedCorrectionM):
+                                case float n when (n < 200 + DistanceSpeedCorrectionM && n > 175 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound200Played) Locomotive.SignalEvent(Event.ShunterSound_200);
                                     ShunterSound200Played = true;
                                     ShunterSound150Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 150 + DistanceSpeedCorrectionM):
+                                case float n when (n < 150 + DistanceSpeedCorrectionM && n > 125 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound150Played) Locomotive.SignalEvent(Event.ShunterSound_150);
                                     ShunterSound150Played = true;
                                     ShunterSound100Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 100 + DistanceSpeedCorrectionM):
+                                case float n when (n < 100 + DistanceSpeedCorrectionM && n > 90 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound100Played) Locomotive.SignalEvent(Event.ShunterSound_100);
                                     ShunterSound100Played = true;
                                     ShunterSound80Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 80 + DistanceSpeedCorrectionM):
+                                case float n when (n < 80 + DistanceSpeedCorrectionM && n > 65 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound80Played) Locomotive.SignalEvent(Event.ShunterSound_80);
                                     ShunterSound80Played = true;
                                     ShunterSound50Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 50 + DistanceSpeedCorrectionM):
+                                case float n when (n < 50 + DistanceSpeedCorrectionM && n > 40 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound50Played) Locomotive.SignalEvent(Event.ShunterSound_50);
                                     ShunterSound50Played = true;
                                     ShunterSound30Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 30 + DistanceSpeedCorrectionM):
+                                case float n when (n < 30 + DistanceSpeedCorrectionM && n > 25 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound30Played) Locomotive.SignalEvent(Event.ShunterSound_30);
                                     ShunterSound30Played = true;
                                     ShunterSound20Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 20 + DistanceSpeedCorrectionM):
+                                case float n when (n < 20 + DistanceSpeedCorrectionM && n > 17.5f + DistanceSpeedCorrectionM):
                                     if (!ShunterSound20Played) Locomotive.SignalEvent(Event.ShunterSound_20);
                                     ShunterSound20Played = true;
                                     ShunterSound15Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 15 + DistanceSpeedCorrectionM):
+                                case float n when (n < 15 + DistanceSpeedCorrectionM && n > 12.5 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound15Played) Locomotive.SignalEvent(Event.ShunterSound_15);
                                     ShunterSound15Played = true;
                                     ShunterSound10Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 10 + DistanceSpeedCorrectionM):
+                                case float n when (n < 10 + DistanceSpeedCorrectionM && n > 9 + DistanceSpeedCorrectionM):
                                     if (!ShunterSound10Played) Locomotive.SignalEvent(Event.ShunterSound_10);
                                     ShunterSound10Played = true;
                                     ShunterSoundSlowPlayed = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 8 + DistanceSpeedCorrectionM):
+                                case float n when (n < 8 + DistanceSpeedCorrectionM && n > 6.5f + DistanceSpeedCorrectionM):
                                     if (!ShunterSoundSlowPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slow);
                                     ShunterSoundSlowPlayed = true;
                                     ShunterSound5Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 5 + DistanceSpeedCorrectionM):
+                                case float n when (n < 5 + DistanceSpeedCorrectionM && n > 4.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound5Played) Locomotive.SignalEvent(Event.ShunterSound_5);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 4 + DistanceSpeedCorrectionM):
+                                case float n when (n < 4 + DistanceSpeedCorrectionM && n > 3.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSound4Played) Locomotive.SignalEvent(Event.ShunterSound_4);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = true;
                                     ShunterSound3Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 3 + DistanceSpeedCorrectionM):
+                                case float n when (n < 3 + DistanceSpeedCorrectionM && n > 2.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound3Played) Locomotive.SignalEvent(Event.ShunterSound_3);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = true;
                                     ShunterSound3Played = true;
                                     ShunterSound2Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 2 + DistanceSpeedCorrectionM):
+                                case float n when (n < 2 + DistanceSpeedCorrectionM && n > 1.5f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSound2Played) Locomotive.SignalEvent(Event.ShunterSound_2);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = true;
@@ -2127,7 +2052,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                                     ShunterSound2Played = true;
                                     ShunterSound1Played = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 1 + DistanceSpeedCorrectionM):
+                                case float n when (n < 1 + DistanceSpeedCorrectionM && n > 0.75f + DistanceSpeedCorrectionM && TouchingDistanceTimer == 0.0f):
                                     if (!ShunterSound1Played) Locomotive.SignalEvent(Event.ShunterSound_1);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = true;
@@ -2136,7 +2061,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                                     ShunterSound1Played = true;
                                     ShunterSoundSlowlyPlayed = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, 0.5f + DistanceSpeedCorrectionM):
+                                case float n when (n < 0.5f + DistanceSpeedCorrectionM && n > 0.25f + DistanceSpeedCorrectionM && TouchingDistanceTimer > 0.9f):
                                     if (!ShunterSoundSlowlyPlayed) Locomotive.SignalEvent(Event.ShunterSound_Slowly);
                                     ShunterSound5Played = true;
                                     ShunterSound4Played = true;
@@ -2146,20 +2071,31 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                                     ShunterSoundSlowlyPlayed = true;
                                     ShunterSoundDonePlayed = false;
                                     break;
-                                case float n when CrossedApproachThreshold(previousDistanceToOtherTrain, n, DistanceSpeedCorrectionM):
+                                case float n when (n < 0.0 + DistanceSpeedCorrectionM && n > -0.10f + DistanceSpeedCorrectionM):
                                     if (!ShunterSoundDonePlayed) Locomotive.SignalEvent(Event.ShunterSound_Done);
                                     ShunterSoundDonePlayed = true;
                                     break;
                             }
                         }
-                        LastDistanceToOtherTrain = Locomotive.Simulator.DistanceToOtherTrain;
                     }
                 }
                 #endregion ShunterSound
             }
             else
             {
-                ResetGuidanceState(true, true);
+                ShunterSoundToTrainReset();
+                ShunterSoundSTPReset();
+                ShunterSoundStartPlayed = false;
+                Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
+                Locomotive.Simulator.ShunterProcessSTPActive_End = false;
+                Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
+                Locomotive.Simulator.ShunterProcessTrainActive_End = false;
+                ShunterProcessTimer = 0;
+                Locomotive.Simulator.DistanceToOtherTrain = -1000;
+                DistanceToOtherTrain_0 = -1000;
+                Locomotive.Simulator.OtherTrainPositionTest = false;
+                ShunterSoundDonePlayed = false;                
+                Locomotive.Simulator.ShunterDecideMarker = "";
             }
         }
         #endregion Shunter        
@@ -2194,32 +2130,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
             ShunterSoundSlowNearToSTPPlayed = false;
             ShunterSoundStopSTPPlayed = false;
         }        
-
-        /// <summary>Returns the shunting guidance to a single, known idle state.</summary>
-        void ResetGuidanceState(bool clearMarker, bool resetStartAnnouncement = false)
-        {
-            ShunterSoundToTrainReset();
-            ShunterSoundSTPReset();
-            Locomotive.Simulator.ShunterProcessSTPActive_Start = false;
-            Locomotive.Simulator.ShunterProcessSTPActive_End = false;
-            Locomotive.Simulator.ShunterProcessTrainActive_Start = false;
-            Locomotive.Simulator.ShunterProcessTrainActive_End = false;
-            ShunterProcessTimer = 0;
-            Locomotive.Simulator.DistanceToOtherTrain = -1000;
-            DistanceToOtherTrain_0 = -1000;
-            Locomotive.Simulator.OtherTrainPositionTest = false;
-            ShunterSoundDonePlayed = false;
-            if (clearMarker)
-                Locomotive.Simulator.ShunterDecideMarker = "";
-            if (resetStartAnnouncement)
-                ShunterSoundStartPlayed = false;
-        }
-
-        static bool CrossedApproachThreshold(float previousDistance, float currentDistance, float threshold)
-        {
-            return currentDistance <= threshold &&
-                (previousDistance > threshold || previousDistance <= 0 || previousDistance >= 1000);
-        }
 
         public void TestCarReset()
         {

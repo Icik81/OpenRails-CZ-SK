@@ -742,9 +742,7 @@ namespace Orts.Simulation.Simulation
 
         public void Restore(BinaryReader inf, string pathName, float initialTileX, float initialTileZ, CancellationToken cancellation)
         {
-            // Icik
-            ShunterFullTestBrakeEnable = inf.ReadBoolean();
-            ShunterSimpleTestBrakeEnable = inf.ReadBoolean();            
+            // Icik            
             PlayerTrainInAutopilotMode = inf.ReadBoolean();
             LastNameFreeViewTrain = inf.ReadString();
             OtherTrainPositionTest = inf.ReadBoolean();
@@ -809,8 +807,6 @@ namespace Orts.Simulation.Simulation
         public void Save(BinaryWriter outf)
         {
             // Icik            
-            outf.Write(ShunterFullTestBrakeEnable);
-            outf.Write(ShunterSimpleTestBrakeEnable);
             outf.Write(PlayerTrainInAutopilotMode);
             outf.Write(LastNameFreeViewTrain);
             outf.Write(OtherTrainPositionTest);
