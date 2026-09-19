@@ -1469,7 +1469,7 @@ namespace Orts.Viewer3D.Popups
                         FormatStrings.FormatPower(mstsLocomotive.LocomotiveAxle.DriveForceN * mstsLocomotive.AbsTractionSpeedMpS, mstsLocomotive.IsMetric, false, false));
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Axle brake force"), "{0}", FormatStrings.FormatForce(mstsLocomotive.LocomotiveAxle.BrakeRetardForceN, mstsLocomotive.IsMetric));
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Number of substeps"), "{0:F0}", mstsLocomotive.LocomotiveAxle.Steps);
-                        TableAddLabelValue(table, Viewer.Catalog.GetString("Stability correction"), "{0:F0}", mstsLocomotive.LocomotiveAxle.AdhesionK);
+                        TableAddLabelValue(table, Viewer.Catalog.GetString("Stability correction"), "{0:F1}", mstsLocomotive.LocomotiveAxle.AdhesionK);
                         TableAddLabelValue(table, Viewer.Catalog.GetString("Axle out force"), "{0} ({1})",
                             FormatStrings.FormatForce(mstsLocomotive.AxleForceN, mstsLocomotive.IsMetric),
                             FormatStrings.FormatPower(mstsLocomotive.AxleForceN * mstsLocomotive.AbsTractionSpeedMpS, mstsLocomotive.IsMetric, false, false));

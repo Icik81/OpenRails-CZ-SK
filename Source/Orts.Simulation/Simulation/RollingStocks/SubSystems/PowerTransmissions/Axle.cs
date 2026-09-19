@@ -186,7 +186,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             }
         }
         
-        private float rotationalMassCoef = 0.1f;
+        private float rotationalMassCoef;
 
         /// <summary>
         /// Transmission ratio on gearbox covered by TransmissionRatio interface
@@ -259,7 +259,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// - Set 1.0 for dry weather (standard)
         /// - Set 0.7 for wet, rainy weather
         /// </summary>
-        public float AdhesionConditions {set; get;} = 1;
+        public float AdhesionConditions {get; set;} = 1;
 
         /// <summary>
         /// Curtius-Kniffler equation A parameter
@@ -281,20 +281,14 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
         public float AdhesionK
         {
             get => adhesionK;
-            set => adhesionK_orig = adhesionK = (value <= 0 ? 0.7f : value);
+            set => adhesionK = (value <= 0 ? 0.7f : value);
         }
         private float adhesionK = 0.7f;
-        private float adhesionK_orig = 0.7f;
 
-        /// <summary>
-        /// Read/Write Adhesion2 parameter from the ENG/WAG file, used to correct the adhesion
-        /// Should not be zero
-        /// </summary>
-        public float Adhesion2 {set; get;}
         /// <summary>
         /// Axle speed value, covered by AxleSpeedMpS interface, in metric meters per second
         /// </summary>
-        float axleSpeedMpS;
+        private float axleSpeedMpS;
         /// <summary>
         /// Read only axle speed value, in metric meters per second
         /// </summary>
@@ -432,24 +426,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
         {
             transmissionEfficiency = 0.99f;
             driveType = AxleDriveType.ForceDriven;
-            //Adhesion2 = 0.331455f;
-
-            //CurtiusKnifflerA = 7.5f;
-            //CurtiusKnifflerB = 44.0f;
-            //CurtiusKnifflerC = 0.161f;
-
-            switch(driveType)
-            {
-                case AxleDriveType.NotDriven:
-                    break;
-                case AxleDriveType.MotorDriven:
-                    totalInertiaKgm2 = inertiaKgm2 + transmissionRatio * transmissionRatio * motor.InertiaKgm2;
-                    break;
-                case AxleDriveType.ForceDriven:
-                default:
-                    totalInertiaKgm2 = inertiaKgm2;
-                    break;
-            }
+            totalInertiaKgm2 = inertiaKgm2;
             rotationalMassCoef = AxleDiameterM * AxleDiameterM / (4f * totalInertiaKgm2);
         }
 
@@ -467,25 +444,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             motor.AxleConnected = this;
             transmissionEfficiency = 0.99f;
             driveType = AxleDriveType.MotorDriven;
-            //Adhesion2 = 0.331455f;
-
-            //CurtiusKnifflerA = 7.5f;
-            //CurtiusKnifflerB = 44.0f;
-            //CurtiusKnifflerC = 0.161f;
-
-            switch(driveType)
-            {
-                case AxleDriveType.NotDriven:
-                    totalInertiaKgm2 = inertiaKgm2;
-                    break;
-                case AxleDriveType.MotorDriven:
-                    totalInertiaKgm2 = inertiaKgm2 + transmissionRatio * transmissionRatio * motor.InertiaKgm2;
-                    break;
-                case AxleDriveType.ForceDriven:
-                default:
-                    totalInertiaKgm2 = inertiaKgm2;
-                    break;
-            }
+            totalInertiaKgm2 = inertiaKgm2 + transmissionRatio * transmissionRatio * motor.InertiaKgm2;
             rotationalMassCoef = AxleDiameterM * AxleDiameterM / (4f * totalInertiaKgm2); 
         }
 
@@ -504,7 +463,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             CurtiusKnifflerC = inf.ReadSingle();
             AdhesionK = inf.ReadSingle();
             AdhesionConditions = inf.ReadSingle();
-            Adhesion2 = inf.ReadSingle();
             SlipWarningTresholdPercent = inf.ReadSingle();
             AxleSpeedMpS = inf.ReadSingle();
             TrainSpeedMpS = inf.ReadSingle();
@@ -526,7 +484,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             outf.Write(CurtiusKnifflerC);
             outf.Write(AdhesionK);
             outf.Write(AdhesionConditions);
-            outf.Write(Adhesion2);
             outf.Write(SlipWarningTresholdPercent);
             outf.Write(AxleSpeedMpS);
             outf.Write(TrainSpeedMpS);
@@ -549,7 +506,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             CurtiusKnifflerC = inf.ReadSingle();
             AdhesionK = inf.ReadSingle();
             AdhesionConditions = inf.ReadSingle();
-            Adhesion2 = inf.ReadSingle();
             SlipWarningTresholdPercent = inf.ReadSingle();
             AxleSpeedMpS = inf.ReadSingle();
             TrainSpeedMpS = inf.ReadSingle();
@@ -617,7 +573,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 {
                     /*
                      * Check if motive forces would overpower retardation forces at standstill.
-                     * If not stop the axle otherwise let it roll in other direction.
+                     * If not stop the axle otherwise let it roll in opposite direction.
                      */
                     var (standstillAccel, _) = CalcAxleDynamics(0f, driveForce);
 
@@ -625,7 +581,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 }
 
                 axleSpeedMpS = newAxleSpeed;
-                axleForceSum += (k1.railForce + 2 * k2.railForce + 2 * k3.railForce + k4.railForce) / 6f;//todo check if it would be better to just take the result from last step
+                axleForceSum += (k1.railForce + 2 * k2.railForce + 2 * k3.railForce + k4.railForce) / 6f;
             }
             axleForceN = axleForceSum / steps;
 
@@ -679,7 +635,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// </summary>
         public void Reset()
         {
-            adhesionK = adhesionK_orig;
             motor?.Reset();
         }
 
@@ -725,7 +680,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
         /// <param name="inclinationCoef">Slip speed correction.</param>
         /// <param name="conditions">Relative weather conditions, usually from 0.2 to 1.0</param>
         /// <returns>Relative force transmitted to the rail</returns>
-        public float SlipCharacteristics(float slipSpeed, float speed, float inclinationCoef, float conditions)
+        private float SlipCharacteristics(float slipSpeed, float speed, float inclinationCoef, float conditions)
         {
             var adhesionCoef = GetAdhesionCoef(Math.Abs(speed), conditions);
 
@@ -736,28 +691,6 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             var inclinationCoefSq = inclinationCoef * inclinationCoef;
 
             return 2f * inclinationCoef * adhesionCoefSq * slipSpeed / (adhesionCoefSq * slipSpeedSq + inclinationCoefSq);
-        }
-
-        /// <summary>
-        /// Optional Friction computation function
-        /// - Computes Davis formula for given parameters:
-        ///     Fo = Weight / 9810 * (A + B * V + C * V^2)
-        /// </summary>
-        /// <param name="A">Static friction parameter [N/kN]</param>
-        /// <param name="B">Rolling friction parameter [N/kN]</param>
-        /// <param name="C">Air friction parameter [N/kN]</param>
-        /// <param name="speedMpS">Speed in MpS</param>
-        /// <param name="weight">Weight in kg</param>
-        /// <returns>Friction force in Newtons, Returns zero for zero speed, Returns negative for negative speed</returns>
-        public static float Friction(float A, float B, float C, float speedMpS, float weight)
-        {
-            speedMpS *= 3.6f;
-            if(speedMpS == 0.0f)
-                return 0.0f;
-            if(speedMpS > 0.0f)
-                return weight / 1000.0f * 9.81f * (A + B * speedMpS + C * speedMpS * speedMpS);
-            else
-                return -weight / 1000.0f * 9.81f * (A + B * -1.0f * speedMpS + C * speedMpS * speedMpS);
         }
     }
 }
