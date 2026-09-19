@@ -742,12 +742,12 @@ namespace Orts.Viewer3D
         }
 
         [CallOnThread("Loader")]
-        public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, bool usePositiveZ, float searchRadius = 12.0f)
+        public float GetPlatformHeightFromScenery(float queryX, float queryZ, float trackY, float searchRadius = 12.0f)
         {
             float searchRadiusSq = searchRadius * searchRadius;
             Vector2 queryPoint = new Vector2(queryX, queryZ);
-
-            Dictionary<float, int> heightCounts = new Dictionary<float, int>();
+            float bestHeight = float.MinValue;
+            float bestDistanceSq = float.MaxValue;
 
             foreach (var shape in sceneryObjects)
             {
@@ -758,7 +758,9 @@ namespace Orts.Viewer3D
                     continue;
 
                 Vector3 shapeTrans = shape.Location.XNAMatrix.Translation;
-                Vector2 shapePoint = new Vector2(shapeTrans.X, usePositiveZ ? shapeTrans.Z : -shapeTrans.Z);
+                // WorldPosition uses XNA's reversed Z axis; the track query is
+                // in MSTS coordinates.  Do not also probe the mirrored point.
+                Vector2 shapePoint = new Vector2(shapeTrans.X, -shapeTrans.Z);
 
                 float distSq = Vector2.DistanceSquared(queryPoint, shapePoint);
 
@@ -775,26 +777,15 @@ namespace Orts.Viewer3D
 
                     if (heightAboveTrack >= 0.35f && heightAboveTrack <= 1.15f)
                     {
-                        if (heightCounts.TryGetValue(candidateSurfaceY, out int count))
-                            heightCounts[candidateSurfaceY] = count + 1;
-                        else
-                            heightCounts[candidateSurfaceY] = 1;
+                        // Heights of independent shapes are almost never bitwise
+                        // identical.  The nearest plausible surface is stable,
+                        // unlike a histogram keyed by float values.
+                        if (distSq < bestDistanceSq)
+                        {
+                            bestDistanceSq = distSq;
+                            bestHeight = candidateSurfaceY;
+                        }
                     }
-                }
-            }
-
-            if (heightCounts.Count == 0)
-                return float.MinValue;
-
-            float bestHeight = float.MinValue;
-            int maxOccurrences = 0;
-
-            foreach (var kvp in heightCounts)
-            {
-                if (kvp.Value > maxOccurrences)
-                {
-                    maxOccurrences = kvp.Value;
-                    bestHeight = kvp.Key;
                 }
             }
 
@@ -958,106 +949,6 @@ namespace Orts.Viewer3D
             const float minDistance = 0.85f;
             const float minDistanceSq = minDistance * minDistance;
             const float defaultPlatformOffset = 0.750f;
-            float lastKnownPlatformHeightOffset = defaultPlatformOffset;
-
-            #region Výpočet výšky nástupiště
-            float topY0 = 0;
-            for (int i = 0; i < passengerCount; i++)
-            {
-                Vector3 candidatePos = Vector3.Zero;
-                Traveller selectedTraveller = null;
-                bool validPosFound = false;
-
-                float progress = passengerCount > 1 ? (float)i / (passengerCount - 1) : 0f;
-                float baseRangeFraction = MathHelper.Clamp(0.25f + progress * 0.75f, 0.25f, 1.0f);
-
-                for (int attempt = 0; attempt < 25; attempt++)
-                {
-                    float attemptExpansion = (float)attempt / 24f;
-                    float currentAllowedLength = availableLength * Math.Min(1.0f, baseRangeFraction + attemptExpansion * (1.0f - baseRangeFraction));
-
-                    double r = rand.NextDouble();
-                    float distFromStart = (float)(r * r) * currentAllowedLength;
-                    float distAlong = spawnStart + distFromStart;
-
-                    var pTrav = new Traveller(traveller);
-                    pTrav.Move(distAlong);
-
-                    float rotY = pTrav.RotY;
-                    Vector3 trackTangent = new Vector3((float)Math.Sin(rotY), 0, (float)Math.Cos(rotY));
-                    Vector3 localTrackRight = new Vector3(trackTangent.Z, 0, -trackTangent.X);
-                    localVectorToPlatform = currentStop.PlatformItem.PlatformSide[0] ? localTrackRight : -localTrackRight;
-
-                    float lateralDist = baseLateralOffset + (float)rand.NextDouble() * 0.7f;
-                    float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
-                    float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
-
-                    float topY = GetBoundingBoxTop(mstsQueryX, mstsQueryZ, 1.5f);
-                    float topY1 = float.MinValue;
-                    float topY2 = float.MinValue;
-
-                    if (topY <= float.MinValue + 1000f)
-                    {
-                        topY1 = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, false, 15.0f);
-                    }
-                    if (topY <= float.MinValue + 1000f)
-                    {
-                        topY2 = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, true, 15.0f);
-                    }
-
-                    topY0 = Math.Max(topY0, Math.Max(topY1, topY2));
-                    topY = topY0;
-
-                    float finalPlatformY;
-                    if (topY > float.MinValue + 1000f)
-                    {
-                        float measuredOffset = topY - pTrav.Y;
-                        if (measuredOffset >= 0.35f && measuredOffset <= 1.15f)
-                        {
-                            finalPlatformY = topY;
-                            lastKnownPlatformHeightOffset = measuredOffset;
-                        }
-                        else
-                        {
-                            finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
-                        }
-                    }
-                    else
-                    {
-                        finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
-                    }
-
-                    Vector3 testPos = new Vector3(
-                        mstsQueryX,
-                        finalPlatformY,
-                        -mstsQueryZ
-                    );
-
-                    Vector2 testPoint = new Vector2(testPos.X, testPos.Z);
-                    bool overlaps = false;
-                    for (int p = 0; p < placedPoints.Count; p++)
-                    {
-                        if (Vector2.DistanceSquared(placedPoints[p], testPoint) < minDistanceSq)
-                        {
-                            overlaps = true;
-                            break;
-                        }
-                    }
-
-                    if (!overlaps)
-                    {
-                        candidatePos = testPos;
-                        selectedTraveller = pTrav;
-                        placedPoints.Add(testPoint);
-                        validPosFound = true;
-                        break;
-                    }
-                }
-
-                if (!validPosFound || selectedTraveller == null)
-                    continue;
-            }
-            #endregion
 
             var newPlatformDataList = new List<PlatformPassengerData>(passengerCount);
             placedPoints = new List<Vector2>(passengerCount);
@@ -1103,7 +994,14 @@ namespace Orts.Viewer3D
                     float mstsQueryX = pTrav.X + localVectorToPlatform.X * lateralDist;
                     float mstsQueryZ = pTrav.Z + localVectorToPlatform.Z * lateralDist;
 
-                    var finalPlatformY = pTrav.Y + lastKnownPlatformHeightOffset;
+                    // Resolve the surface at this exact passenger location.  A
+                    // previous passenger can be on a different, sloped section
+                    // of the platform and must not determine this one's height.
+                    float measuredPlatformY = GetPlatformHeightFromScenery(mstsQueryX, mstsQueryZ, pTrav.Y, 15.0f);
+                    float measuredOffset = measuredPlatformY - pTrav.Y;
+                    float finalPlatformY = measuredOffset >= 0.35f && measuredOffset <= 1.15f
+                        ? measuredPlatformY
+                        : pTrav.Y + defaultPlatformOffset;
 
                     Vector3 testPos = new Vector3(
                         mstsQueryX,
