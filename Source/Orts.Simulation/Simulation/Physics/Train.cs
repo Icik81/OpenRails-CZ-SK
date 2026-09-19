@@ -17781,15 +17781,14 @@ namespace Orts.Simulation.Simulation.Physics
                     if (MaxPaxCapacity > train.Cars.Count * 80f)
                     {
                         MaxPaxCapacity = paxRand.Next((int)(train.Cars.Count * Simulator.Settings.PaxCountMinimumPercent), (int)(train.Cars.Count * Simulator.Settings.PaxCountMaximumPercent));
-                    }
-
-                    float trainOccupancyPercent = paxRand.Next(Simulator.Settings.PaxCountMinimumPercent, Simulator.Settings.PaxCountMaximumPercent);
+                    }                    
                     
                     int index = ActualStationNumber;
                     foreach (StationStop ss in train.StationStops)
                     {
-                        float remainingPax = 0;                        
-                        
+                        float remainingPax = 0;
+                        float trainOccupancyPercent = paxRand.Next(Simulator.Settings.PaxCountMinimumPercent, Simulator.Settings.PaxCountMaximumPercent);
+
                         remainingPax = MaxPaxCapacity * (trainOccupancyPercent / 100) * ((MaxStationCountFromStart - index) / (float)MaxStationCountFromStart);
                         if (remainingPax < 0)
                             remainingPax = 0;
