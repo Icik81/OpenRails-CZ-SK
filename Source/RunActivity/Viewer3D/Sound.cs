@@ -941,7 +941,7 @@ namespace Orts.Viewer3D
             // Přednačíst zvuky do mezipaměti hned při prvním spuštění vozu
             if (WasOutOfDistance)
             {
-                PreloadToCache();
+                //PreloadToCache();
             }
 
             if (isOutOfDistance())
@@ -1257,8 +1257,7 @@ namespace Orts.Viewer3D
         bool MSTSStreamSoundOff;
         bool MSTSStreamSoundInit = true;
         bool MSTSStreamSoundStartStop;
-        bool MSTSStreamSoundOffInit = true;
-        private float currentTunnelGain = 0.0f;
+        bool MSTSStreamSoundOffInit = true;        
         private int lastAttachedSlot = OpenAL.AL_EFFECTSLOT_NULL;
         /// <summary>
         /// Owner SoundSource
@@ -1706,7 +1705,6 @@ namespace Orts.Viewer3D
             if (ALSoundSource != null && ALSoundSource.SoundSourceID != 0)
             {
                 bool isInTunnel = false;
-
                 if (SoundSource.Car != null && SoundSource.Car.Simulator != null)
                 {
                     if (SoundSource.Car.Simulator.PlayerCarIsInTunnel)
@@ -1715,56 +1713,27 @@ namespace Orts.Viewer3D
                     }
                 }
 
-                // Při pauze držíme zisk na nule, aby po odpauzování nebouchla plná amplituda
-                if (SoundSource.Viewer.Simulator.Paused)
+                int targetSlot = OpenAL.AL_EFFECTSLOT_NULL;
+                if (isInTunnel && OpenAL.TunnelEffectSlotID != 0)
                 {
-                    currentTunnelGain = 0.0f;
-                    lastAttachedSlot = OpenAL.AL_EFFECTSLOT_NULL;
+                    targetSlot = OpenAL.TunnelEffectSlotID;
                 }
-                else
+                else if (IsHornStream && OpenAL.HornEffectSlotID != 0 && SoundSource.IsExternal && SoundSource.Viewer.Camera.Style == Camera.Styles.External)
                 {
-                    float dt = (float)SoundSource.Viewer.Simulator.OneSecondLoop;
-                    if (dt <= 0f || dt > 0.1f) dt = 0.05f;
+                    targetSlot = OpenAL.HornEffectSlotID;
+                }
 
-                    float targetGain = isInTunnel ? 1.0f : 0.0f;
-                    const float rampSpeed = 100.0f;
-
-                    if (currentTunnelGain < targetGain)
-                    {
-                        currentTunnelGain += dt * rampSpeed;
-                        if (currentTunnelGain > targetGain) currentTunnelGain = targetGain;
-                        NeedsFrequentUpdate = true;
-                    }
-                    else if (currentTunnelGain > targetGain)
-                    {
-                        currentTunnelGain -= dt * rampSpeed;
-                        if (currentTunnelGain < targetGain) currentTunnelGain = targetGain;
-                        NeedsFrequentUpdate = true;
-                    }
-
-                    int targetSlot = OpenAL.AL_EFFECTSLOT_NULL;
-
-                    if (currentTunnelGain > 0.05f && OpenAL.TunnelEffectSlotID != 0)
-                    {
-                        targetSlot = OpenAL.TunnelEffectSlotID;
-                    }
-                    else if (IsHornStream && OpenAL.HornEffectSlotID != 0 && SoundSource.IsExternal && SoundSource.Viewer.Camera.Style == Camera.Styles.External)
-                    {
-                        targetSlot = OpenAL.HornEffectSlotID;
-                    }
-
-                    // Slot připojíme/odpojíme pouze při reálné změně stavu, bez přepisování sdíleného filtru
-                    if (targetSlot == OpenAL.HornEffectSlotID)
-                    {
-                        OpenAL.alSource3i(
-                            ALSoundSource.SoundSourceID,
-                            OpenAL.AL_AUXILIARY_SEND_FILTER,
-                            targetSlot,
-                            0,
-                            OpenAL.AL_FILTER_NULL
-                        );
-                        lastAttachedSlot = targetSlot;
-                    }
+                // Slot připojíme/odpojíme pouze při reálné změně stavu, bez přepisování sdíleného filtru
+                if (targetSlot == OpenAL.HornEffectSlotID)
+                {
+                    OpenAL.alSource3i(
+                        ALSoundSource.SoundSourceID,
+                        OpenAL.AL_AUXILIARY_SEND_FILTER,
+                        targetSlot,
+                        0,
+                        OpenAL.AL_FILTER_NULL
+                    );
+                    lastAttachedSlot = targetSlot;
                 }
             }
         }
