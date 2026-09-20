@@ -556,13 +556,14 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                             float step = 100 / Locomotive.ThrottleFullRangeDecreaseTimeSeconds;
                             step *= elapsedClockSeconds;
                             Locomotive.SetThrottlePercent(Locomotive.ThrottlePercent - step);
-                        }
+                        }                        
                     }
                     if (Locomotive.ThrottlePercent > 100 && (controllerBinding == ControllerBinding.Throttle || controllerBinding == ControllerBinding.Combined))
                     {
                         Locomotive.ThrottlePercent = 100;
                     }
-
+                    if (Locomotive.ThrottlePercent < 0)
+                        Locomotive.SetThrottlePercent(0);
                 }
                 if (controllerPosition == ControllerPosition.DynamicBrakeIncrease)
                 {
