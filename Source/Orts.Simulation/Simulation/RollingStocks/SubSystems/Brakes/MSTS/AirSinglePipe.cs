@@ -18,16 +18,18 @@
 // Debug for Airbrake operation - Train Pipe Leak
 //#define DEBUG_TRAIN_PIPE_LEAK
 
-using System;
-using System.Collections.Generic;
-using System.IO;
 using Microsoft.Xna.Framework;
-using ORTS.Common;
 using Orts.Parsers.Msts;
 using Orts.Simulation.Common;
 using Orts.Simulation.Common.Scripting;
 using Orts.Simulation.MultiPlayer;
+using Orts.Simulation.Simulation.AIs;
+using Orts.Simulation.Simulation.Physics;
 using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
+using ORTS.Common;
+using System;
+using System.Collections.Generic;
+using System.IO;
 
 namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
 {
@@ -618,7 +620,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 TrainBrakePositionSet();
             }
 
-            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("ai_aire") && !Car.Train.PassengerViewTrain)
+            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("aire") && !Car.Train.TrainWasAlived && !Car.Train.PassengerViewTrain)
             {
                 Car.Train.AirEmpty = true;
                 AutoCylPressurePSI0 = 0;

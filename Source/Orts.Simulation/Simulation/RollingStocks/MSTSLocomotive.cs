@@ -5974,8 +5974,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
                 }
 
-                // AI vlak s názvem "AI_AIRE" vypíná pantografy a motor, aby zůstal neoživený
-                if ((Train as AITrain).Name.ToLower().Contains("ai_aire") && !(Train as AITrain).PassengerViewTrain)
+                // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
+                if ((Train as AITrain).Name.ToLower().Contains("aire") && !(Train as AITrain).TrainWasAlived && !(Train as AITrain).PassengerViewTrain)
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars.Where(car => (car is MSTSElectricLocomotive)))
                     {
@@ -8405,7 +8405,11 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (IsLeadLocomotive())
                 {                    
                     Simulator.PlayerLocomotiveChange = false;
-                }
+                    if (Battery)
+                        (Train as AITrain).TrainWasAlived = true;
+                    else
+                        (Train as AITrain).TrainWasAlived = false;
+                }                
             }
 
             // Hodnoty pro výpočet zvukových proměnných
@@ -8421,7 +8425,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             UpdateControllers(elapsedClockSeconds);
 
             if (Battery)
-            {
+            {                
                 if (SplashScreenWillBeDisplayed && SplashScreen)
                 {
                     if (SplashScreenRandomTime == 0)
@@ -8434,7 +8438,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 }
             }
             else
-            {
+            {                
                 SplashScreen = SplashScreenWillBeDisplayed;
                 SplashScreenRandomTime = 0;
                 SplashScreenDisplayed = 0;

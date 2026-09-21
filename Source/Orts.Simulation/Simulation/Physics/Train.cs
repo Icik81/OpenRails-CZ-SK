@@ -183,6 +183,7 @@ namespace Orts.Simulation.Simulation.Physics
         public float NotFatalIncidentDistanceTravelled;
         public bool NotFatalIncident;
         public bool PassengerViewTrain;
+        public bool TrainWasAlived;
         public bool TriggerTrain;
         public bool TriggerTrainIsSolid;
         public bool FreeViewTrain;
@@ -828,6 +829,7 @@ namespace Orts.Simulation.Simulation.Physics
         public Train(Simulator simulator, BinaryReader inf)
         {
             // Icik
+            TrainWasAlived = inf.ReadBoolean();
             AIMaxTrainSpeedCalculatedFromConFile = inf.ReadSingle();
             AITrainOutOfPower = inf.ReadBoolean();
             AITrainSpeedZone = inf.ReadBoolean();
@@ -1235,6 +1237,7 @@ namespace Orts.Simulation.Simulation.Physics
         public virtual void Save(BinaryWriter outf)
         {
             // Icik
+            outf.Write(TrainWasAlived);
             outf.Write(AIMaxTrainSpeedCalculatedFromConFile);
             outf.Write(AITrainOutOfPower);
             outf.Write(AITrainSpeedZone);
