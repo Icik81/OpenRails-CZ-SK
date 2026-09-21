@@ -515,9 +515,12 @@ namespace Orts.Viewer3D.Popups
                                 // Icik
                                 StationPreviousArriveActual.Color = GetArrivalColor(playerTrain.PreviousStop.arrivalDT, actArrDT);
                                 //StationPreviousArriveActual.Color = actArrDT < playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
-                                DateTime actDepDT = new DateTime((long)(Math.Pow(10, 7) * playerTrain.PreviousStop.ActualDepart));
-                                StationPreviousDepartActual.Text = actDepDT.ToString("HH:mm:ss");
-                                StationPreviousDepartActual.Color = actDepDT > playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
+                                if (playerTrain.PreviousStop.ActualDepart >= 0)
+                                {
+                                    DateTime actDepDT = new DateTime((long)(Math.Pow(10, 7) * playerTrain.PreviousStop.ActualDepart));
+                                    StationPreviousDepartActual.Text = actDepDT.ToString("HH:mm:ss");
+                                    StationPreviousDepartActual.Color = actDepDT > playerTrain.PreviousStop.arrivalDT ? Color.LightGreen : Color.LightSalmon;
+                                }
                             }
                             else
                             {

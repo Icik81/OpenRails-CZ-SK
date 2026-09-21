@@ -3697,9 +3697,10 @@ namespace Orts.Simulation.Simulation.Timetables
                         {
                             if (BoardTime == 0)
                             {
-                                var stopTime = thisStation.CalculateDepartTime(presentTime, this);
+                                var stopTime = thisStation.CalculateDepartTime(presentTime, this) - 14.0f;
+                                if (stopTime < 0) stopTime = 0;
                                 BoardTime = stopTime / ActualPassengerCountAtStation;
-                                BoardPassengerFirstTimeCoefficient = 8;
+                                BoardPassengerFirstTimeCoefficient = 6;
                             }
 
                             BoardTimer += elapsedClockSeconds;

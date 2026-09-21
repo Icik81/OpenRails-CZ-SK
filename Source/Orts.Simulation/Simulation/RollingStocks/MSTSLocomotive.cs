@@ -5974,8 +5974,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
                 }
 
-                // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
-                if ((Train as AITrain).Name.ToLower().Contains("aire") && !(Train as AITrain).PassengerViewTrain)
+                // AI vlak s názvem "AI_AIRE" vypíná pantografy a motor, aby zůstal neoživený
+                if ((Train as AITrain).Name.ToLower().Contains("ai_aire") && !(Train as AITrain).PassengerViewTrain)
                 {
                     foreach (TrainCar car in (Train as AITrain).Cars.Where(car => (car is MSTSElectricLocomotive)))
                     {

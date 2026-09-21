@@ -758,7 +758,12 @@ namespace Orts.Simulation.Simulation.AIs
             // Tento kamerový vlak se nesmí pohybovat
             if (FreeViewTrain || TriggerTrain)
             {
-                if (TriggerTrain && !TriggerTrainIsSolid && TriggerTrainWasActivated) RemoveTrain();                                                    
+                if (TriggerTrain && !TriggerTrainIsSolid && TriggerTrainWasActivated)
+                {
+                    RemoveFromTrack();
+                    ClearDeadlocks();
+                    AI.TrainsToRemove.Add(this);
+                }
                 AITrainBrakePercent = 100;
                 AITrainThrottlePercent = 0;
                 if (TrainInitiate)
@@ -2203,9 +2208,10 @@ namespace Orts.Simulation.Simulation.AIs
                         {
                             if (BoardTime == 0)
                             {
-                                var stopTime = thisStation.CalculateDepartTime(presentTime, this);
+                                var stopTime = thisStation.CalculateDepartTime(presentTime, this) - 14.0f;
+                                if (stopTime < 0) stopTime = 0;
                                 BoardTime = stopTime / ActualPassengerCountAtStation;
-                                BoardPassengerFirstTimeCoefficient = 8;
+                                BoardPassengerFirstTimeCoefficient = 6;
                             }
 
                             BoardTimer += elapsedClockSeconds;
@@ -4982,7 +4988,7 @@ namespace Orts.Simulation.Simulation.AIs
                 }
             }            
 
-            if (removeIt && !FreeViewTrain && !TriggerTrain)
+            if (removeIt)
             {
                 if (IncorporatedTrainNo >= 0 && Simulator.TrainDictionary.Count > IncorporatedTrainNo &&
                    Simulator.TrainDictionary[IncorporatedTrainNo] != null) Simulator.TrainDictionary[IncorporatedTrainNo].RemoveTrain();
@@ -5724,6 +5730,10 @@ namespace Orts.Simulation.Simulation.AIs
 
         public override void RemoveTrain()
         {
+            // Tyto vlakové objekty se neodstraňují
+            if (FreeViewTrain || TriggerTrain)
+                return;
+
             RemoveFromTrack();
             ClearDeadlocks();
 
@@ -7259,7 +7269,7 @@ namespace Orts.Simulation.Simulation.AIs
         {
             // Icik
             //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
-            if (StationStops.Count == 0 || PassengerViewTrain) return;
+            if (StationStops.Count == 0 || Simulator.PlayerTrainInAutopilotMode) return;
 
             GeneratePaxDynamically();
             FillNames(this);            
@@ -7276,7 +7286,7 @@ namespace Orts.Simulation.Simulation.AIs
             if (StationStops.Count == 1) EndStation = true;
 
             CheckPaxToLeaveCount(this);
-            CheckPaxToEntry(this);
+            CheckPaxToEntry(this);            
 
             var loco = LeadLocomotive as MSTSLocomotive;
             if (loco != null)

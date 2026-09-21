@@ -618,7 +618,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS
                 TrainBrakePositionSet();
             }
 
-            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("aire") && !Car.Train.PassengerViewTrain)
+            if (!Car.Train.IsPlayerDriven && Car.Train.Name.ToLower().Contains("ai_aire") && !Car.Train.PassengerViewTrain)
             {
                 Car.Train.AirEmpty = true;
                 AutoCylPressurePSI0 = 0;
