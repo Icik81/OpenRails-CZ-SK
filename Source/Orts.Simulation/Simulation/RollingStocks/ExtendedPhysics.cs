@@ -341,6 +341,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
             {
                 if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
                 {
+                    if (Locomotive.LocomotiveAxle.AdhesionK == 0.0f)
+                        Locomotive.LocomotiveAxle.AdhesionK = 1.0f;
                     float A = 2.0f * Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
                     float B = Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
                     float C = Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionK;
@@ -355,6 +357,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     {
                         if (car.PowerUnit && car.AcceptCableSignals && (car as MSTSLocomotive).extendedPhysics != null)
                         {
+                            if ((car as MSTSLocomotive).LocomotiveAxle.AdhesionK == 0.0f)
+                                (car as MSTSLocomotive).LocomotiveAxle.AdhesionK = 1.0f;
                             float A = 2.0f * (car as MSTSLocomotive).LocomotiveAxle.AdhesionK * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions;
                             float B = (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions * (car as MSTSLocomotive).LocomotiveAxle.AdhesionConditions;
                             float C = (car as MSTSLocomotive).LocomotiveAxle.AdhesionK * (car as MSTSLocomotive).LocomotiveAxle.AdhesionK;
@@ -911,6 +915,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
             Locomotive = loco;
             LocomotiveAxle = new SubSystems.PowerTransmissions.Axle();
             LocomotiveAxle.DriveType = SubSystems.PowerTransmissions.AxleDriveType.ForceDriven;
+            LocomotiveAxle.StabilityCorrection = true;
+            LocomotiveAxle.FilterMovingAverage.Size = Locomotive.Simulator.Settings.AdhesionMovingAverageFilterSize;
         }
         int i = 0;
 
@@ -1178,6 +1184,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             }            
 
             LocomotiveAxle.InertiaKgm2 = 10000;
+            LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / (Locomotive.MaxPowerW / totalMotors) / 5.0f;
             if (Locomotive.AdhesionEfficiencyKoef == 0) Locomotive.AdhesionEfficiencyKoef = 1.00f;
             LocomotiveAxle.AdhesionEfficiencyKoef = Locomotive.AdhesionEfficiencyKoef;
             LocomotiveAxle.AdhesionConditions = Locomotive.LocomotiveAxle.AdhesionConditions;//Set the train speed of the axle model            

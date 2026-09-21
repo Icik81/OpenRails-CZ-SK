@@ -914,6 +914,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
             LocomotiveAxle.DriveType = AxleDriveType.ForceDriven;
             LocomotiveAxle.DampingNs = MassKG / 1000.0f;
             LocomotiveAxle.FrictionN = MassKG / 100.0f;
+            LocomotiveAxle.StabilityCorrection = true;
+            LocomotiveAxle.FilterMovingAverage.Size = Simulator.Settings.AdhesionMovingAverageFilterSize;
             CurrentFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(0.5f), 0.001f);
             AdhesionFilter = new IIRFilter(IIRFilter.FilterTypes.Butterworth, 1, IIRFilter.HzToRad(1f), 0.001f);
 
@@ -3336,7 +3338,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             AverageForceN = MaxForceN * Train.MUThrottlePercent / 100;
             float maxPowerW = MaxPowerW * Train.MUThrottlePercent * Train.MUThrottlePercent / 10000;
             if (AverageForceN * SpeedMpS > maxPowerW) AverageForceN = maxPowerW / SpeedMpS;
-
+            LocomotiveAxle.FilterMovingAverage.Initialize(AverageForceN);
             if (Train.IsActualPlayerTrain)
             {
                 TrainControlSystem.InitializeMoving();
@@ -8601,10 +8603,22 @@ namespace Orts.Simulation.Simulation.RollingStocks
             // TODO  this is a wild simplification for electric and diesel electric
             float t = ThrottlePercent / 100f;
 
-            if(AdvancedAdhesionModel) AbsTractionSpeedMpS = AbsWheelSpeedMpS;
+            if (!AdvancedAdhesionModel)  // Advanced adhesion model turned off.
+                AbsWheelSpeedMpS = AbsSpeedMpS;
+
+            // For the advanced adhesion model, a rudimentary form of slip control is incorporated by using the wheel speed to calculate tractive effort.
+            // As wheel speed is increased tractive effort is decreased. Hence wheel slip is "controlled" to a certain extent.
+            // This doesn't cover all types of locomotives, for example if DC traction motors and no slip control, then the tractive effort shouldn't be reduced.
+            // This won't eliminate slip, but limits its impact. 
+            // More modern locomotive have a more sophisticated system that eliminates slip in the majority (if not all circumstances).
+            // Simple adhesion control does not have any slip control feature built into it.
+            // TODO - a full review of slip/no slip control.
+            if (WheelSlip && AdvancedAdhesionModel)
+            {
+                AbsTractionSpeedMpS = AbsWheelSpeedMpS;
+            }
             else
             {
-                AbsWheelSpeedMpS = AbsSpeedMpS;
                 AbsTractionSpeedMpS = AbsSpeedMpS;
             }
 
@@ -9761,6 +9775,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 //Limit the inertia to 40000 kgm2
                 LocomotiveAxle.InertiaKgm2 = LocomotiveAxle.InertiaKgm2 > 40000.0f ? 40000.0f : LocomotiveAxle.InertiaKgm2;
 
+                LocomotiveAxle.AxleRevolutionsInt.MinStep = LocomotiveAxle.InertiaKgm2 / MaxPowerW / 5.0f;
+
 
                 //Set axle model parameters
                 // Icik                
@@ -9788,6 +9804,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 LocomotiveAxle.FrictionN = MassKG / 100.0f;
                 if (AdhesionEfficiencyKoef == 0) AdhesionEfficiencyKoef = 1.0f;
                 LocomotiveAxle.AdhesionEfficiencyKoef = AdhesionEfficiencyKoef;
+                LocomotiveAxle.Sander = Sander;
                 LocomotiveAxle.ExtendedPhysics = extendedPhysics != null ? true : false;
                 LocomotiveAxle.GameSpeed = Simulator.GameSpeed;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
