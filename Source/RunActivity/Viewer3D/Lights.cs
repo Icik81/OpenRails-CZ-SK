@@ -165,8 +165,8 @@ namespace Orts.Viewer3D
             float frontZ = 0;
             float rearZ = 0;
             float posY = 0.5f;
-            uint whiteColor = ConvertMstsColor(0x35E0FFFF);
-            uint redColor = ConvertMstsColor(0x35E00000);
+            uint whiteColor = ConvertMstsColor(0xAAAAFFFF);
+            uint redColor = ConvertMstsColor(0xAAAA0000);
 
             foreach (var light in Car.Lights.Lights)
             {
@@ -1308,12 +1308,12 @@ namespace Orts.Viewer3D
 
                         // Faktor nárůstu se vzdáleností
                         float minDistance = 40f;
-                        float maxDistance = 100f;
+                        float maxDistance = 200f;
                         float factor = MathHelper.Clamp((distance - minDistance) / (maxDistance - minDistance), 0f, 1f);
 
                         // Plynulý přechod textur (slévání/hvězdice)
                         float fadeStart = 40f;
-                        float fadeEnd = 60f;
+                        float fadeEnd = 120f;
                         float blendFactor = MathHelper.Clamp((distance - fadeStart) / (fadeEnd - fadeStart), 0f, 1f);
                         shader.TextureBlend = blendFactor;
 
