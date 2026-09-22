@@ -8405,10 +8405,11 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (IsLeadLocomotive())
                 {                    
                     Simulator.PlayerLocomotiveChange = false;
-                    if (Battery)
-                        (Train as AITrain).TrainWasAlived = true;
-                    else
-                        (Train as AITrain).TrainWasAlived = false;
+
+                    if (Train as AITrain != null)
+                    {                     
+                        (Train as AITrain).TrainWasAlived = Battery ? true : false;                     
+                    }
                 }                
             }
 
