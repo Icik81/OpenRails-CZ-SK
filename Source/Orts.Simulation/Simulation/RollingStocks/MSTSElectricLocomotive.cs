@@ -304,7 +304,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 return;
             }
             AICalculatedSteps = 0;
-            MultiSystemEngine = true;
+            //MultiSystemEngine = true;
             if (Simulator.powerSupplyStations.Count == 0)
             {
                 PowerSupplyStation pss = new PowerSupplyStation();
@@ -2168,7 +2168,25 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 return;
             // Vynechá servisy jako například posunovače
             if (CarLengthM < 1f || WagonIsServis) return;
-            
+
+            // AI shodí pantografy a vypíná HV, pokud je napětí na trati jiné než napětí lokomotivy
+            ELocoPantoDown = false;
+            if (!MultiSystemEngine)
+            {                
+                if (LocomotivePowerVoltage != RouteVoltageV)
+                {
+                    ELocoPantoDown = true;
+                    SignalEvent(PowerSupplyEvent.LowerPantograph);
+                    SignalEvent(Event.EnginePowerOff);
+                    SignalEvent(Event.CircuitBreakerOpen);
+                    if (RouteVoltageV == 3000)
+                        SignalEvent(Event.CircuitBreakerOpenDC);
+                    else
+                        SignalEvent(Event.CircuitBreakerOpenAC);
+                    return;
+                }
+            }
+
             foreach (Pantograph p in Pantographs.List)
             {
                 p.PantographsBlocked = false;

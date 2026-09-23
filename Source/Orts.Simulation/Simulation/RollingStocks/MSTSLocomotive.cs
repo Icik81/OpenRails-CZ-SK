@@ -5972,7 +5972,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
-                }
+                }                
 
                 // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
                 if ((Train as AITrain).Name.ToLower().Contains("aire") && !(Train as AITrain).TrainWasAlived && !(Train as AITrain).PassengerViewTrain)
@@ -12376,6 +12376,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             if (this is MSTSElectricLocomotive && LocomotivePowerVoltage == 0 && !MultiSystemEngine)
             {
+                MultiSystemEngine = true;
                 switch (LocomotiveTypeNumber)
                 {
                     case 110: case 111: case 112: case 114:
@@ -12388,6 +12389,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     case 440: case 451: case 452: case 460: case 470: case 471: case 480:
                         LocomotivePowerVoltage = 3000;
                         EnableControlVoltageChange = false;
+                        MultiSystemEngine = false;
                         break;
 
                     case 180: // DB
@@ -12395,6 +12397,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         {
                             LocomotivePowerVoltage = 3000;
                             EnableControlVoltageChange = false;
+                            MultiSystemEngine = false;
                         }
                         else
                         {
@@ -12409,6 +12412,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     case 530: case 550: case 560:
                         LocomotivePowerVoltage = 25000;
                         EnableControlVoltageChange = false;
+                        MultiSystemEngine = false;
                         break;
                     
                     case 371: case 372:
