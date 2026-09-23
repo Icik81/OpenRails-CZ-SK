@@ -7268,7 +7268,8 @@ namespace Orts.Simulation.Simulation.AIs
         public override void CheckStationTask()
         {
             // Icik
-            //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);
+            //Simulator.Confirmer.MSG("Číslo stanice: " + ActualStationNumber);            
+
             if (StationStops.Count == 0 || PassengerViewTrain || Simulator.PlayerTrainInAutopilotMode) return;
 
             GeneratePaxDynamically();

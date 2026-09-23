@@ -559,8 +559,10 @@ namespace Orts.Viewer3D.Popups
 
                             PassengersWaiting.Text = "";
                             if (playerTrain.StationStops.Count > 1)
-                                if (playerTrain.StationStops[1].PlatformItem != null && playerTrain.StationStops[1].PlatformItem.PassengerList.Count != 0)
+                                if (playerTrain.StationStops[1].PlatformItem != null)
                                     PassengersWaiting.Text = playerTrain.ActualPassengerCountAtStation1.ToString();
+                            if (playerTrain.ActualPassengerCountAtStation1 == 0)
+                                PassengersWaiting.Text = "";
 
                             StationCurrentName.Text = playerTrain.StationStops[0].PlatformItem.Name;                            
                             StationCurrentArriveScheduled.Text = playerTrain.StationStops[0].arrivalDT.ToString("HH:mm:ss");

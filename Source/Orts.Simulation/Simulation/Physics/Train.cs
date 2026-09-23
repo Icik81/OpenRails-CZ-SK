@@ -17592,6 +17592,8 @@ namespace Orts.Simulation.Simulation.Physics
                 MaxStationCountFromStart = StationStops.Count;
             }
 
+            if (PassengerViewTrain || Simulator.PlayerTrainInAutopilotMode)
+                return;
             if (!Simulator.Settings.GenerateRandomPaxCount)
                 return;
             if (!Simulator.Settings.OverrideActivityPassengerCount)
