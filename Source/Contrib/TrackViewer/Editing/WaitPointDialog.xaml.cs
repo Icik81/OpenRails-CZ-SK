@@ -47,6 +47,7 @@ namespace ORTS.TrackViewer.Editing
             waitTimeMinutes.Text = "1";
             waitTimeSeconds.Text = "1";
             blowHornSeconds.Text = "1";
+            customNumberValue.Text = currentWaitTimeS > 0 ? currentWaitTimeS.ToString(System.Globalization.CultureInfo.CurrentCulture) : "1";
 
             if (currentWaitTimeS >= 30000 && currentWaitTimeS < 40000)
             {
@@ -85,18 +86,35 @@ namespace ORTS.TrackViewer.Editing
             {
                 int minutes = currentWaitTimeS / 60;
                 int seconds = currentWaitTimeS - 60 * minutes;
+
                 waitTimeMinutes.Text = minutes.ToString(System.Globalization.CultureInfo.CurrentCulture);
                 waitTimeSeconds.Text = seconds.ToString(System.Globalization.CultureInfo.CurrentCulture);
-                selectWait.IsChecked = true;
+                customNumberValue.Text = currentWaitTimeS.ToString(System.Globalization.CultureInfo.CurrentCulture);
+
+                // Typické časy ze základního MSTS (např. násobky 10 sekund a pod 10 minut):
+                bool isStandardWaitTime = (currentWaitTimeS <= 6039);
+
+                if (isStandardWaitTime)
+                {
+                    selectWait.IsChecked = true;
+                }
+                else
+                {
+                    // Všechna ostatní čísla (např. 602, 1234 apod.) se automaticky otevřou v Custom number
+                    selectCustomNumber.IsChecked = true;
+                }
             }
 
             OptionEnabling();
-
         }
 
         ///<summary>Return the selected wait time in seconds</summary>
         public int GetWaitTime()
         {
+            if (selectCustomNumber.IsChecked == true)
+            {
+                return GetIntOrZero(customNumberValue.Text);
+            }
 
             if (selectUntil.IsChecked == true)
             {
@@ -123,13 +141,13 @@ namespace ORTS.TrackViewer.Editing
                 // coding is only one number
                 return 60002;
             }
+
             if (selectBlowHorn.IsChecked == true)
             {
                 // coding is 60011 to 60021; 60021 used for American Horn Sequence
                 int seconds = GetIntOrZero(blowHornSeconds.Text);
                 if (seconds < 0)
                 {
-                    // we need to allow 0 itself (which we get from an empty string) otherwise it is not even possible to go from '1' to '2' or so.
                     seconds = 1;
                     blowHornSeconds.Text = "1";
                 }
@@ -141,11 +159,8 @@ namespace ORTS.TrackViewer.Editing
                 return 60010 + seconds;
             }
 
-            //if (selectWait.IsChecked == true)
-            {
-                // default calculation
-                return 60 * GetIntOrZero(waitTimeMinutes.Text) + GetIntOrZero(waitTimeSeconds.Text);
-            }
+            // default calculation
+            return 60 * GetIntOrZero(waitTimeMinutes.Text) + GetIntOrZero(waitTimeSeconds.Text);
         }
 
         int GetIntOrZero(string inputText)
@@ -202,6 +217,7 @@ namespace ORTS.TrackViewer.Editing
         {
             waitTimeMinutes.IsEnabled = false;
             waitTimeSeconds.IsEnabled = false;
+            customNumberValue.IsEnabled = false;
             untilTimeHours.IsEnabled = false;
             untilTimeMinutes.IsEnabled = false;
             uncoupleCars.IsEnabled = false;
@@ -214,6 +230,13 @@ namespace ORTS.TrackViewer.Editing
                 waitTimeMinutes.IsEnabled = true;
                 waitTimeSeconds.IsEnabled = true;
                 waitTimeMinutes.Focus();
+            }
+
+            if (selectCustomNumber.IsChecked == true)
+            {
+                customNumberValue.IsEnabled = true;
+                customNumberValue.Focus();
+                customNumberValue.SelectAll();
             }
 
             if (selectUntil.IsChecked == true)
@@ -251,6 +274,10 @@ namespace ORTS.TrackViewer.Editing
             catch { }
         }
 
+        private void CustomNumber_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateWaitTime();
+        }
 
         private void TwoDigits_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -262,6 +289,5 @@ namespace ORTS.TrackViewer.Editing
             }
             UpdateWaitTime();
         }
-
     }
 }

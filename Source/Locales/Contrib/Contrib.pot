@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-09-23 08:58:48+0200\n"
-"PO-Revision-Date: 2026-09-23 08:58:49+0200\n"
+"POT-Creation-Date: 2026-09-24 21:02:50+0200\n"
+"PO-Revision-Date: 2026-09-24 21:02:50+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -1067,15 +1067,15 @@ msgstr ""
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:47
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:48
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:49
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:134
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:152
 msgid "1"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:139
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:157
 msgid "11"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:261
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:288
 msgid "99"
 msgstr ""
 
@@ -1386,13 +1386,13 @@ msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/PathMetadataDialog.xaml:24
 #: ../../Contrib/TrackViewer/Editing/UncouplePointDialog.xaml:15
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:57
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:63
 msgid " OK "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/PathMetadataDialog.xaml:25
 #: ../../Contrib/TrackViewer/Editing/UncouplePointDialog.xaml:16
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:58
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:64
 msgid " Cancel "
 msgstr ""
 
@@ -1429,67 +1429,75 @@ msgstr ""
 msgid "minutes"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:15
-msgid "Openrails advanced shunting options:"
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:16
+msgid "Custom number: "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:19
-msgid "Wait until:  "
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:18
+msgid "(raw value / seconds / code)"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:21
-msgid ":"
+msgid "Openrails advanced shunting options:"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:23
-msgid "HH:MM"
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:25
+msgid "Wait until:  "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:27
-msgid "Uncouple: keep "
+msgid ":"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:29
+msgid "HH:MM"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:33
+msgid "Uncouple: keep "
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:35
 msgid " cars, and wait"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:31
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:37
 msgid "seconds. "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:32
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:38
 msgid "Keep rear"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:36
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:42
 msgid "Join and split"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:40
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:46
 msgid "AI train request to pass red signal"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:44
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:50
 msgid "Blow horn for"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:46
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:52
 msgid "seconds.  11 = American horn sequence."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:50
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:56
 msgid "Wait time code as decimal ="
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:51
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:57
 msgid "00000"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:52
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:58
 msgid "hexadecimal ="
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:53
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:59
 msgid "0000"
 msgstr ""
 

@@ -1544,18 +1544,22 @@ namespace Orts.Viewer3D
                 }
 
 
-            // Úprava hlasitosti zvuku hromů            
+            // Úprava hlasitosti zvuků             
             if (car != null && MSTSStream != null)
-            {
+            {                
+                if (SoundSource.SMSFileName.ToLower().Contains("shuntersound.sms") && SoundSource.Viewer.Camera.Style == Camera.Styles.Cab) // Zvuky posunovače
+                {
+                    volume *= 2.0f;
+                }
                 foreach (var trigger in Triggers)
                 {
                     if (trigger.SoundCommand is ORTSSoundPlayCommand)
                         foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
                             if (name != null)
                             {
-                                if (name.ToLower().Contains("thunder"))
+                                if (name.ToLower().Contains("thunder")) // Hrom
                                 {
-                                    volume *= 2;                                   
+                                    volume *= 2.0f;                                   
                                 }                                
                             }
                 }
@@ -1604,7 +1608,7 @@ namespace Orts.Viewer3D
                                         }
                                     }
                         }
-                    }
+                    }                    
                 }
                 MSTSStreamSoundInit = false;
             }            
@@ -1666,6 +1670,27 @@ namespace Orts.Viewer3D
                                 }                                
                             }
                 }                
+            }
+
+            // Lokomotiva se shozenými pantografy nevydává zvuky pohonů
+            if (car != null && MSTSStream != null && car.ELocoPantoDown && !SoundSource.SMSFileName.ToLower().Contains("gensound"))
+            {
+                foreach (var trigger in Triggers)
+                {
+                    if (trigger.SoundCommand is ORTSSoundPlayCommand)
+                        foreach (var name in (trigger.SoundCommand as ORTSSoundPlayCommand).Files)
+                            if (name != null)
+                            {
+                                if (name.ToLower().Contains("throttle") || name.ToLower().Contains("lauf") || name.ToLower().Contains("engine")
+                                    || name.ToLower().Contains("ventilator") || name.ToLower().Contains("klimatizace") || name.ToLower().Contains("kompresor")
+                                    || name.ToLower().Contains("kontroler") || name.ToLower().Contains("chladic") || name.ToLower().Contains("jizda"))
+                                {
+                                    volume *= 0;
+                                    break;
+                                }
+                            }
+                    if (volume == 0) break;
+                }
             }
 
             if (car != null && MSTSStreamSoundOff && (!car.CarHasStartTrigger || (car.JVSetup && car.Simulator.GameTime < 15.0f)))

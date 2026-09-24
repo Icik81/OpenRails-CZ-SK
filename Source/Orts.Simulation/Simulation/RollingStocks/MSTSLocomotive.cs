@@ -44,14 +44,7 @@
 // Debug for Advanced Adhesion Model
 //#define DEBUG_ADHESION
 
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Microsoft.Xna.Framework;
-using ORTS.Common;
 using Orts.Formats.Msts;
 using Orts.Formats.OR;
 using Orts.Parsers.Msts;
@@ -67,6 +60,14 @@ using Orts.Simulation.Simulation.RollingStocks.SubSystems.Brakes.MSTS;
 using Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers;
 using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerSupplies;
 using Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions;
+using ORTS.Common;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Xml;
+using static Orts.Simulation.Simulation.Physics.Train;
 using static Orts.Simulation.Simulation.RollingStocks.MSTSControlUnit;
 using static Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers.MultiPositionController;
 using static Orts.Simulation.Simulation.RollingStocks.SubSystems.CruiseControl;
@@ -5972,7 +5973,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         case SeasonType.Winter: (Train as AITrain).TrainAISeasonWaitTimeOff = Simulator.Random.Next(20, 61); break;
                     }
                     (Train as AITrain).TrainAISeasonWaitTimeOff *= 60f;                    
-                }
+                }                
 
                 // AI vlak s názvem "AIRE" vypíná pantografy a motor, aby zůstal neoživený
                 if ((Train as AITrain).Name.ToLower().Contains("aire") && !(Train as AITrain).TrainWasAlived && !(Train as AITrain).PassengerViewTrain)
@@ -8278,7 +8279,28 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 //if (distToStation < 1000.0f)
                 {
                     Simulator.RefreshWorld = true;                    
-                    Train.LastStationName = Train.StationStops[0].PlatformItem.Name;                    
+                    Train.LastStationName = Train.StationStops[0].PlatformItem.Name;
+                    
+                    // Pro vlaky s pohledem cestujícího nebo pro vlaky v autopilotním režimu se počítá počet cestujících čekajících na nástupišti
+                    if (Train.PassengerViewTrain || Simulator.PlayerTrainInAutopilotMode)
+                    {
+                        Train.ActualPassengerCountAtStation1 = 0;
+                        if (Train.StationStops.Count > 2)
+                        {                            
+                            Train.ActualPassengerCountAtStation = Train.StationStops[0].PlatformItem.NumPassengersWaiting;
+                            Train.ActualPassengerCountAtStation1 = Train.StationStops[1].PlatformItem.NumPassengersWaiting;
+                        }
+                        else
+                            if (Train.StationStops.Count > 1)
+                            {                            
+                                Train.ActualPassengerCountAtStation = Train.StationStops[0].PlatformItem.NumPassengersWaiting;
+                                Train.ActualPassengerCountAtStation = 0;
+                            }
+                            else
+                            {
+                                Train.ActualPassengerCountAtStation = 0;
+                            }                        
+                    }
                 }
             }
             
@@ -12376,6 +12398,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             if (this is MSTSElectricLocomotive && LocomotivePowerVoltage == 0 && !MultiSystemEngine)
             {
+                MultiSystemEngine = true;
                 switch (LocomotiveTypeNumber)
                 {
                     case 110: case 111: case 112: case 114:
@@ -12388,6 +12411,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     case 440: case 451: case 452: case 460: case 470: case 471: case 480:
                         LocomotivePowerVoltage = 3000;
                         EnableControlVoltageChange = false;
+                        MultiSystemEngine = false;
                         break;
 
                     case 180: // DB
@@ -12395,6 +12419,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         {
                             LocomotivePowerVoltage = 3000;
                             EnableControlVoltageChange = false;
+                            MultiSystemEngine = false;
                         }
                         else
                         {
@@ -12409,6 +12434,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     case 530: case 550: case 560:
                         LocomotivePowerVoltage = 25000;
                         EnableControlVoltageChange = false;
+                        MultiSystemEngine = false;
                         break;
                     
                     case 371: case 372:
