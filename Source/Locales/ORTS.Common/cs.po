@@ -65,6 +65,10 @@ msgstr "mil/h"
 msgid "kPa"
 msgstr "kPa"
 
+#: ../../ORTS.Common/Conversions.cs:559
+msgid "Pa"
+msgstr "Pa"
+
 #: ../../ORTS.Common/Conversions.cs:535
 msgid "bar"
 msgstr "barů"

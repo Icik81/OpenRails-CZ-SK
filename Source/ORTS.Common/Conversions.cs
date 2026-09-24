@@ -54,7 +54,9 @@ namespace ORTS.Common
         /// <summary>Inches Mercury</summary>
         InHg,
         /// <summary>Mass-force per square centimetres</summary>
-        KgfpCm2
+        KgfpCm2,
+        /// <summary>Pascal</summary>
+        Pa
     }
 
     /// <summary>
@@ -251,6 +253,21 @@ namespace ORTS.Common
     {
     }
 
+    public static class Pascal
+    {
+        public static float FromPsi(float psi) => 6894.75729f * psi;
+        public static float ToPsi(float pascal) => 1.450377377968587e-4f * pascal;
+        
+        public static float FromBar(float bar) => 1e5f * bar;
+        public static float ToBar(float pascal) => 1e-5f * pascal;
+        
+        public static double FromPsi(double psi) => 6894.75729 * psi;
+        public static double ToPsi(double pascal) => 1.450377377968587e-4 * pascal;
+        
+        public static double FromBar(double bar) => 1e5 * bar;
+        public static double ToBar(double pascal) => 1e-5 * pascal;
+    }
+
     /// <summary>
     /// Pressure conversions from and to kilopascals
     /// </summary>
@@ -273,6 +290,9 @@ namespace ORTS.Common
         /// <summary>Convert from kiloPascal to mass-force per square centimetres</summary>
         public static float ToKgfpCm2(float kiloPascal) { return kiloPascal * (1.0f / 98.068059f); }
 
+        public static float FromPa(float pascal) => 1e-3f * pascal;
+        public static float ToPa(float kiloPascal) => 1e3f * kiloPascal;
+
         /// <summary>
         /// Convert from KPa to any pressure unit
         /// </summary>
@@ -284,6 +304,8 @@ namespace ORTS.Common
             {
                 case PressureUnit.KPa:
                     return pressure;
+                case PressureUnit.Pa:
+                    return ToPa(pressure);
                 case PressureUnit.Bar:
                     return ToBar(pressure);
                 case PressureUnit.InHg:
@@ -308,6 +330,8 @@ namespace ORTS.Common
             {
                 case PressureUnit.KPa:
                     return pressure;
+                case PressureUnit.Pa:
+                    return FromPa(pressure);
                 case PressureUnit.Bar:
                     return FromBar(pressure);
                 case PressureUnit.InHg:
@@ -532,6 +556,7 @@ namespace ORTS.Common
         public static string kmph = Catalog.GetString("km/h");
         public static string mph = Catalog.GetString("mph");
         public static string kpa = Catalog.GetString("kPa");
+        public static string pa = Catalog.GetString("Pa");
         public static string bar = Catalog.GetString("bar");
         public static string psi = Catalog.GetString("psi");
         public static string inhg = Catalog.GetString("inHg");
@@ -760,11 +785,12 @@ namespace ORTS.Common
             if (inputUnit == PressureUnit.None || outputUnit == PressureUnit.None)
                 return string.Empty;
 
-            float pressureKPa = KPa.ToKPa(pressure, inputUnit);
-            float pressureOut = KPa.FromKPa(pressureKPa, outputUnit);
+            var pressureKPa = KPa.ToKPa(pressure, inputUnit);
+            var pressureOut = KPa.FromKPa(pressureKPa, outputUnit);
 
-            string unit = "";
-            string format = "";
+            var unit = "";
+            var format = "";
+
             switch (outputUnit)
             {
                 case PressureUnit.KPa:
@@ -791,14 +817,15 @@ namespace ORTS.Common
                     unit = kgfpcm2;
                     format = "{0:F1}";
                     break;
+                case PressureUnit.Pa:
+                    unit = pa;
+                    format = "{0:F0}";
+                    break;
             }
 
-            if (unitDisplayed)
-            {
-                format += " " + unit;
-            }
+            if (unitDisplayed) format += " " + unit;
 
-            return String.Format(CultureInfo.CurrentCulture, format, pressureOut);
+            return string.Format(CultureInfo.CurrentCulture, format, pressureOut);
         }
 
         /// <summary>
