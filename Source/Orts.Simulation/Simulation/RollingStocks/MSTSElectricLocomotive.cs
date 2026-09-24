@@ -481,7 +481,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     if (LocoHelperOn)
                         PowerSupply.PantographVoltageV = MathHelper.Clamp(PowerSupply.PantographVoltageV, 0, (float)MaxLineVoltage0);
 
-                    if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnit))
+                    if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnit) && LocoType != LocoTypes.Vectron)
                     {
                         // Zákmit na voltmetru            
                         if (PowerSupply.PantographVoltageV < 2)
@@ -842,7 +842,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (RouteVoltageV < 15000)
                     TInduktion = 0;
 
-                if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnitWithControl))
+                if (!UpdateTimeEnable && (IsLeadLocomotive() || PowerUnitWithControl) && LocoType != LocoTypes.Vectron)
                 {
                     // Zákmit na voltmetru            
                     if (PowerSupply.PantographVoltageV < 2)

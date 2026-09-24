@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-07-30 18:49:25+0200\n"
-"PO-Revision-Date: 2026-07-30 18:49:25+0200\n"
+"POT-Creation-Date: 2026-09-24 21:02:51+0200\n"
+"PO-Revision-Date: 2026-09-24 21:02:51+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -634,7 +634,7 @@ msgid ""
 msgstr ""
 
 #: ../../Menu/Options.cs:628
-#: ../../Menu/OptionsRailDriver.cs:262
+#: ../../Menu/OptionsRailDriver.cs:261
 msgid "No errors found."
 msgstr ""
 
@@ -1563,15 +1563,15 @@ msgid ""
 "cancel to close again."
 msgstr ""
 
-#: ../../Menu/OptionsRailDriver.cs:186
+#: ../../Menu/OptionsRailDriver.cs:185
 msgid "Click to change this button"
 msgstr ""
 
-#: ../../Menu/OptionsRailDriver.cs:244
+#: ../../Menu/OptionsRailDriver.cs:243
 msgid "Remove all custom button assignments?"
 msgstr ""
 
-#: ../../Menu/OptionsRailDriver.cs:269
+#: ../../Menu/OptionsRailDriver.cs:268
 msgid ""
 "A listing of all Raildriver button assignments has been placed here:\n"
 "\n"
