@@ -13814,8 +13814,16 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     if (UsingRearCab)
                         LocoStation = 2;
                     if (Simulator.LocoStationChange)
-                    {
-                        SetEngineBrakePercent(EngineBrakeValue[LocoStation] * 100f);
+                    {                        
+                        if (this is MSTSSteamLocomotive || OneCabOneConsole)
+                        {
+                            if (LocoStation == 1)
+                                EngineBrakeValue[1] = EngineBrakeValue[2];
+                            else
+                                EngineBrakeValue[2] = EngineBrakeValue[1];
+                        }
+                        else
+                            SetEngineBrakePercent(EngineBrakeValue[LocoStation] * 100f);
                     }
                     #region EngineBrakeCheckPosition
                     foreach (MSTSNotch notch in EngineBrakeController.Notches)
@@ -13841,25 +13849,28 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         }
                     }
 
-                    if (LocoStation == 1)
+                    if (!(this is MSTSSteamLocomotive) && !OneCabOneConsole)
                     {
-                        if (EngineBrakeValue[2] == EngineBrakeValueR && !LapActive[2])
-                            if (BrakeSystem.AutoCylPressurePSI1 > 0)
-                                BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
+                        if (LocoStation == 1)
+                        {
+                            if (EngineBrakeValue[2] == EngineBrakeValueR && !LapActive[2])
+                                if (BrakeSystem.AutoCylPressurePSI1 > 0)
+                                    BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
 
-                        if (EngineBrakeValue[2] == EngineBrakeValueA && !LapActive[2])
-                            if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
-                                BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
-                    }
-                    if (LocoStation == 2)
-                    {
-                        if (EngineBrakeValue[1] == EngineBrakeValueR && !LapActive[1])
-                            if (BrakeSystem.AutoCylPressurePSI1 > 0)
-                                BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
+                            if (EngineBrakeValue[2] == EngineBrakeValueA && !LapActive[2])
+                                if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
+                                    BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
+                        }
+                        if (LocoStation == 2)
+                        {
+                            if (EngineBrakeValue[1] == EngineBrakeValueR && !LapActive[1])
+                                if (BrakeSystem.AutoCylPressurePSI1 > 0)
+                                    BrakeSystem.AutoCylPressurePSI1 -= 3f * EngineBrakeReleaseRatePSIpS * elapsedClockSeconds;
 
-                        if (EngineBrakeValue[1] == EngineBrakeValueA && !LapActive[1])
-                            if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
-                                BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
+                            if (EngineBrakeValue[1] == EngineBrakeValueA && !LapActive[1])
+                                if (BrakeSystem.AutoCylPressurePSI1 < BrakeSystem.MCP)
+                                    BrakeSystem.AutoCylPressurePSI1 += 3f * EngineBrakeApplyRatePSIpS * elapsedClockSeconds;
+                        }
                     }
 
                     if (EngineBrakeValue[LocoStation] != prevEngineBrakeValue[LocoStation])
