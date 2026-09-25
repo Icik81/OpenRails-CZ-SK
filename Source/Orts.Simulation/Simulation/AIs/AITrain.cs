@@ -3294,7 +3294,7 @@ namespace Orts.Simulation.Simulation.AIs
             // Vylučuje servisy a vlaky bez lokomotiv
             float DistanceToGoM = distanceToGoM + 0.0f;
             if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                                  
-            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? 50 : 30, DistanceToGoM, this.Cars.Count > 3 ? 150 : 50);
+            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? Math.Abs(SpeedMpS * 3.6f) : Math.Abs(SpeedMpS * 3.6f * 0.6f), DistanceToGoM, this.Cars.Count > 3 ? (Math.Abs(SpeedMpS * 3.6f) + 100f) : Math.Abs(SpeedMpS * 3.6f));
         }
 
         /// <summary>
