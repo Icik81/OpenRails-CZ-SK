@@ -3293,8 +3293,14 @@ namespace Orts.Simulation.Simulation.AIs
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
             float DistanceToGoM = distanceToGoM + 0.0f;
-            if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;                                  
-            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? Math.Abs(SpeedMpS * 3.6f) : Math.Abs(SpeedMpS * 3.6f * 0.6f), DistanceToGoM, this.Cars.Count > 3 ? (Math.Abs(SpeedMpS * 3.6f) + 100f) : Math.Abs(SpeedMpS * 3.6f));
+            if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;
+
+            float DistanceToRevers = ComputeDistanceToReversalPoint();            
+            if (DistanceToRevers > -1)
+                DistanceToGoM = Math.Min(DistanceToGoM, DistanceToRevers);
+
+            float ActionSpeedMpS = MathHelper.Clamp(Math.Abs(SpeedMpS * 3.6f) * 2.0f, 50, 1000);
+            SmoothDeceleration(MaxDecelMpSS, elapsedClockSeconds, this.Cars.Count > 3 ? ActionSpeedMpS : (ActionSpeedMpS * 0.6f), DistanceToGoM, this.Cars.Count > 3 ? (ActionSpeedMpS + 100f) : ActionSpeedMpS);
         }
 
         /// <summary>
