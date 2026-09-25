@@ -1997,15 +1997,19 @@ namespace Orts.Simulation.Simulation.Physics
                 if (AITrainSpeedZone)                
                     AllowedMaxSpeedMpS = TriggerTrainSpeedZoneSpeedMpS;
                 else
-                if (AllowedMaxSpeedMpS == TriggerTrainSpeedZoneSpeedMpS)
-                {
-                    var allowedMaxSpeedPathMpS = Math.Min(allowedAbsoluteMaxSpeedSignalMpS, allowedAbsoluteMaxSpeedLimitMpS);
-                    allowedMaxSpeedPathMpS = Math.Min(allowedMaxSpeedPathMpS, allowedAbsoluteMaxTempSpeedLimitMpS);
-                    AllowedMaxSpeedMpS = Math.Min(allowedMaxSpeedPathMpS, TrainMaxSpeedMpS);
-                    allowedMaxSpeedSignalMpS = (Math.Min(allowedAbsoluteMaxSpeedSignalMpS, TrainMaxSpeedMpS));
-                    allowedMaxSpeedLimitMpS = (Math.Min(allowedAbsoluteMaxSpeedLimitMpS, TrainMaxSpeedMpS));
-                    allowedMaxTempSpeedLimitMpS = (Math.Min(allowedAbsoluteMaxTempSpeedLimitMpS, TrainMaxSpeedMpS));
-                }
+                    if (AllowedMaxSpeedMpS == TriggerTrainSpeedZoneSpeedMpS)
+                    {
+                        var allowedMaxSpeedPathMpS = Math.Min(
+                            allowedAbsoluteMaxSpeedSignalMpS > 0.1f ? allowedAbsoluteMaxSpeedSignalMpS : (float)Simulator.TRK.Tr_RouteFile.SpeedLimit,
+                            allowedAbsoluteMaxSpeedLimitMpS > 0.1f ? allowedAbsoluteMaxSpeedLimitMpS : (float)Simulator.TRK.Tr_RouteFile.SpeedLimit
+                        );
+                        allowedMaxSpeedPathMpS = Math.Min(
+                            allowedMaxSpeedPathMpS,
+                            allowedAbsoluteMaxTempSpeedLimitMpS > 0.1f ? allowedAbsoluteMaxTempSpeedLimitMpS : (float)Simulator.TRK.Tr_RouteFile.SpeedLimit
+                        );
+
+                        AllowedMaxSpeedMpS = Math.Max(0.1f, Math.Min(allowedMaxSpeedPathMpS, TrainMaxSpeedMpS));
+                    }
                 //Simulator.Confirmer.Information("EventTriggerTrainDistanceM: " + EventTriggerTrainDistanceM);
                 //Simulator.Confirmer.Information("AITrainSpeedZone: " + AITrainSpeedZone);
             }
@@ -3747,10 +3751,13 @@ namespace Orts.Simulation.Simulation.Physics
             //  set overall speed limits if these do not yet exist
             if (!existingSpeedLimits)
             {
-                if ((TrainMaxSpeedMpS <= 0f) && (this.LeadLocomotive != null))
+                if ((TrainMaxSpeedMpS <= 0.1f) && (this.LeadLocomotive != null))
                     TrainMaxSpeedMpS = (this.LeadLocomotive as MSTSLocomotive).MaxSpeedMpS;
 
                 // Icik
+                if (TrainMaxSpeedMpS <= 0.1f)
+                    TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+
                 if (!(this is Timetables.TTTrain) && IsActualPlayerTrain)
                     TrainMaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;                
 
@@ -4023,6 +4030,13 @@ namespace Orts.Simulation.Simulation.Physics
                         " with speed : " + firstObject.actual_speed.ToString() + "\n");
 #endif
                     var temp1MaxSpeedMpS = IsFreight ? firstObject.speed_freight : firstObject.speed_passenger;
+
+                    // Ochrana před nulou z návěstidla: 0 nebo záporná hodnota mimo -1 nesmí srazit traťový limit
+                    if (temp1MaxSpeedMpS <= 0.1f && temp1MaxSpeedMpS != -1f)
+                    {
+                        temp1MaxSpeedMpS = (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+                    }
+
                     if (firstObject.ObjectDetails.isSignal)
                     {
                         allowedAbsoluteMaxSpeedSignalMpS = temp1MaxSpeedMpS == -1 ? (float)Simulator.TRK.Tr_RouteFile.SpeedLimit : temp1MaxSpeedMpS;
@@ -4482,6 +4496,10 @@ namespace Orts.Simulation.Simulation.Physics
 
             updateSpeedInfo();
 
+            if (AllowedMaxSpeedMpS <= 0.1f)
+            {
+                AllowedMaxSpeedMpS = TrainMaxSpeedMpS > 0.1f ? TrainMaxSpeedMpS : (float)Simulator.TRK.Tr_RouteFile.SpeedLimit;
+            }
         }
 
         //================================================================================================//
