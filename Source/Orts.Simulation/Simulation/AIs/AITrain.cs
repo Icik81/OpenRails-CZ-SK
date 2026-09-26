@@ -3289,6 +3289,11 @@ namespace Orts.Simulation.Simulation.AIs
         /// </summary>        
         public void UpdateSmoothDecelerating(float elapsedClockSeconds, float distanceToTrain)
         {
+            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SPEED_SIGNAL)
+                return;
+            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SPEED_LIMIT)
+                return;
+            
             // Icik
             // Postupné zpomalování při zastavení vlaku
             // Vylučuje servisy a vlaky bez lokomotiv
@@ -3961,22 +3966,22 @@ namespace Orts.Simulation.Simulation.AIs
         /// Train control routines
         /// </summary>
 
-        bool smoothDeceleration;           
+        bool smoothDeceleration;        
         public void SmoothDeceleration(float targetComfortDecelMpSS, float timeS, float speedLimitKpHSlowingDown, float distanceToGoM, float distanceToStartMSlowingDown)
         {
             float currentSpeedMpS = Math.Abs(SpeedMpS);
-
+            
             // Pokud už stojíme nebo jsme minuli cíl
-            if (currentSpeedMpS <= 0.01f || distanceToGoM <= 0.1f)
+            if (distanceToGoM <= 0.0f)
             {
-                if (distanceToGoM <= 0.1f && currentSpeedMpS <= 0.05f)
+                if (distanceToGoM <= -1.0f)
                 {
                     SpeedMpS = 0f;
-                    AITrainBrakePercent = 100f; // zajistit stojící vlak
+                    AITrainBrakePercent = 100f; // zajistit stojící vlak                    
                 }
-                else if (distanceToGoM <= 0f)
+                else if (distanceToGoM <= 0.0f)
                 {
-                    AITrainBrakePercent = 100f;
+                    AITrainBrakePercent = 100f;            
                 }
                 else
                 {
@@ -3988,51 +3993,41 @@ namespace Orts.Simulation.Simulation.AIs
                 return;
             }
 
-            // 1. Teoretická brzdná dráha potřebná pro zastavení s komfortním zpomalením
-            // Přidána malá bezpečnostní rezerva (např. 5 metrů před bodem zastavení)
-            float effectiveDistance = Math.Max(0.1f, distanceToGoM - 2.0f);
+            // Teoretická brzdná dráha potřebná pro zastavení s komfortním zpomalením            
+            float effectiveDistance = Math.Max(0.1f, distanceToGoM - 0.0f);
             float neededBrakingDistance = (currentSpeedMpS * currentSpeedMpS) / (2f * targetComfortDecelMpSS);
 
             // Začít brzdit až ve chvíli, kdy dosáhneme brzdné křivky (nebo jsme v detekční zóně s překročenou rychlostí)
-            bool shouldBrake = (distanceToGoM <= neededBrakingDistance) ||
+            bool shouldBrake = (effectiveDistance <= (IsFreight ? 3.0f : 1.5f) * neededBrakingDistance) ||
                                (distanceToGoM < distanceToStartMSlowingDown && (currentSpeedMpS * 3.6f) > speedLimitKpHSlowingDown);
 
             if (shouldBrake)
             {
                 smoothDeceleration = true;
 
-                // 2. Požadované zpomalení pro přesné zastavení na zbývající dráze
+                // Požadované zpomalení pro přesné zastavení na zbývající dráze
                 float requiredDeceleration = (currentSpeedMpS * currentSpeedMpS) / (2f * effectiveDistance);
+                
+                // Předpokládáme, že plná brzda (100 %) dává např. maxDecel (nebo targetComfortDecelMpSS * 1.35)
+                float maxExpectedDecel = targetComfortDecelMpSS * 1.35f;
+                float targetBrakePercent = (requiredDeceleration / maxExpectedDecel) * 100f;                          
 
-                // 3. Proporcionální nastavení brzdy (místo skokového +-1)
-                // Předpokládáme, že plná brzda (100 %) dává např. maxDecel (nebo targetComfortDecelMpSS * 1.5)
-                float maxExpectedDecel = targetComfortDecelMpSS * 1.3f;
-                float targetBrakePercent = (requiredDeceleration / maxExpectedDecel) * 100f;
-
-                // Plynulý náběh / povolení brzd (omezení rychlosti změny tlaku/procent za sekundu)
-                float brakeChangeRate = 25f * timeS; // max 25 % za sekundu pro hladký náběh
-                if (AITrainBrakePercent < targetBrakePercent)
-                    AITrainBrakePercent = Math.Min(AITrainBrakePercent + brakeChangeRate, targetBrakePercent);
-                else if (AITrainBrakePercent > targetBrakePercent)
-                    AITrainBrakePercent = Math.Max(AITrainBrakePercent - brakeChangeRate, targetBrakePercent);
-
+                AITrainBrakePercent = targetBrakePercent;
                 AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 0f, 100f);
 
-                // 4. Aplikace zpomalení
                 // Skutečné zpomalení úměrné aktuálnímu procentu brzd
                 float currentDecel = maxExpectedDecel * (AITrainBrakePercent / 100f);
                 float deltaV = currentDecel * timeS;
-
+                
                 SpeedMpS = Math.Max(0f, currentSpeedMpS - deltaV);
-
+                
+                AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 88f, 100f);  // Nutné kvůli zvuku skřípání brzd
                 UpdateCarsSpeed();
             }
             else
             {
-                // Ještě není potřeba brzdit - nechat vlak dojet výběhem / traťovou rychlostí
-                smoothDeceleration = false;
-                if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
-                    AITrainBrakePercent = 0f;
+                // Ještě není potřeba brzdit - nechat vlak dojet výběhem / traťovou rychlostí                
+                smoothDeceleration = false;                
             }
         }
 
@@ -4046,9 +4041,12 @@ namespace Orts.Simulation.Simulation.AIs
 
         public void AdjustControlsBrakeMore(float reqDecelMpSS, float timeS, int stepSize)
         {
-            if (distanceToGoM < -1) smoothDeceleration = false;
-            if (smoothDeceleration) return;            
+            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
+                return;
 
+            if (distanceToGoM < -1) smoothDeceleration = false;
+            if (smoothDeceleration) return;
+            
             if (AITrainThrottlePercent > 0)
             {
                 AITrainThrottlePercent -= stepSize * timeS;
@@ -4078,6 +4076,11 @@ namespace Orts.Simulation.Simulation.AIs
 
         public void AdjustControlsBrakeLess(float reqDecelMpSS, float timeS, int stepSize)
         {
+            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
+                return;
+
+            if (smoothDeceleration) return;
+            
             if (AITrainThrottlePercent > 0)
             {
                 AITrainThrottlePercent = 0;
@@ -4108,6 +4111,9 @@ namespace Orts.Simulation.Simulation.AIs
         public void AdjustControlsBrakeOff()
         {
             // Icik
+            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
+                return;
+
             if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
             if (smoothDeceleration) return;
 
@@ -4189,7 +4195,8 @@ namespace Orts.Simulation.Simulation.AIs
         float TrainLocoWeightKg;
         float TrainLocoCount;
         public void AdjustControlsAccelMore(float reqAccelMpSS, float timeS, int stepSize)
-        {            
+        {
+            if (smoothDeceleration) return;
             // Icik
             foreach (TrainCar car in Cars)
             {
@@ -4463,7 +4470,7 @@ namespace Orts.Simulation.Simulation.AIs
 
 
         public void AdjustControlsAccelLess(float reqAccelMpSS, float timeS, int stepSize)
-        {
+        {            
             if (AITrainBrakePercent > 0)
             {
                 AdjustControlsBrakeOff();
