@@ -3998,7 +3998,7 @@ namespace Orts.Simulation.Simulation.AIs
             float neededBrakingDistance = (currentSpeedMpS * currentSpeedMpS) / (2f * targetComfortDecelMpSS);
 
             // Začít brzdit až ve chvíli, kdy dosáhneme brzdné křivky (nebo jsme v detekční zóně s překročenou rychlostí)
-            bool shouldBrake = (effectiveDistance <= (IsFreight ? 3.0f : 1.5f) * neededBrakingDistance) ||
+            bool shouldBrake = (effectiveDistance <= (IsFreight ? 3.0f : 2.0f) * neededBrakingDistance) ||
                                (distanceToGoM < distanceToStartMSlowingDown && (currentSpeedMpS * 3.6f) > speedLimitKpHSlowingDown);
 
             if (shouldBrake)
@@ -4021,7 +4021,7 @@ namespace Orts.Simulation.Simulation.AIs
                 
                 SpeedMpS = Math.Max(0f, currentSpeedMpS - deltaV);
                 
-                AITrainBrakePercent = MathHelper.Clamp(AITrainBrakePercent, 88f, 100f);  // Nutné kvůli zvuku skřípání brzd
+                AITrainBrakePercent = IsFreight ? MathHelper.Clamp(AITrainBrakePercent, 70f, 100f) : MathHelper.Clamp(AITrainBrakePercent, 75f, 100f);  // Nutné kvůli zvuku skřípání brzd
                 UpdateCarsSpeed();
             }
             else
@@ -4111,9 +4111,6 @@ namespace Orts.Simulation.Simulation.AIs
         public void AdjustControlsBrakeOff()
         {
             // Icik
-            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
-                return;
-
             if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
             if (smoothDeceleration) return;
 
