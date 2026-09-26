@@ -4010,7 +4010,7 @@ namespace Orts.Simulation.Simulation.AIs
                 float targetBrakePercent = (requiredDeceleration / maxExpectedDecel) * 100f;
 
                 // Plynulý náběh / povolení brzd (omezení rychlosti změny tlaku/procent za sekundu)
-                float brakeChangeRate = 35f * timeS; // max 35 % za sekundu pro hladký náběh
+                float brakeChangeRate = 25f * timeS; // max 25 % za sekundu pro hladký náběh
                 if (AITrainBrakePercent < targetBrakePercent)
                     AITrainBrakePercent = Math.Min(AITrainBrakePercent + brakeChangeRate, targetBrakePercent);
                 else if (AITrainBrakePercent > targetBrakePercent)
@@ -4031,7 +4031,8 @@ namespace Orts.Simulation.Simulation.AIs
             {
                 // Ještě není potřeba brzdit - nechat vlak dojet výběhem / traťovou rychlostí
                 smoothDeceleration = false;
-                AITrainBrakePercent = 0f;
+                if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.STATION_STOP && StationStops.Count > 0)
+                    AITrainBrakePercent = 0f;
             }
         }
 
