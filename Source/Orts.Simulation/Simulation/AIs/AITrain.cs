@@ -3972,7 +3972,7 @@ namespace Orts.Simulation.Simulation.AIs
             float currentSpeedMpS = Math.Abs(SpeedMpS);
             
             // Pokud už stojíme nebo jsme minuli cíl
-            if (distanceToGoM <= 0.0f)
+            if (smoothDeceleration && distanceToGoM <= 0.0f)
             {
                 if (distanceToGoM <= -1.0f)
                 {
