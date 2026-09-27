@@ -3288,19 +3288,57 @@ namespace Orts.Simulation.Simulation.AIs
         /// Train is smooth decelerating
         /// </summary>        
         public void UpdateSmoothDecelerating(float elapsedClockSeconds, float distanceToTrain)
-        {
-            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SPEED_SIGNAL)
-                return;
-            if (nextActionInfo != null && nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.SPEED_LIMIT)
-                return;
+        {            
+            if (nextActionInfo != null)
+            {
+                switch (nextActionInfo.NextAction)
+                {
+                    case AIActionItem.AI_ACTION_TYPE.SPEED_LIMIT:
+                    case AIActionItem.AI_ACTION_TYPE.SPEED_SIGNAL:
+                    case AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_RESTRICTED:
+                    case AIActionItem.AI_ACTION_TYPE.AUX_ACTION:
+                    case AIActionItem.AI_ACTION_TYPE.APPROACHING_MOVING_TABLE:
+                        {
+                            // Odstraní nechtěné zastavení vlaku po vypršení absolutního WP u návěstidla
+                            if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.AUX_ACTION && distanceToGoM < 0)
+                            {
+                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
+
+                                if (nextActionInfo is AuxActionWPItem wpItem && wpItem.ActionRef is AIActionWPRef wpRef)
+                                {
+                                    // Test na absolutní WP (3xxxx)
+                                    if (wpRef.Delay >= 30000 && wpRef.Delay < 40000)
+                                    {
+                                        // Pokud již vypršel čas odjezdu nebo je návěstidlo na volno
+                                        if (wpItem.ActualDepart <= presentTime ||
+                                            (NextSignalObject[0] != null && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) > MstsSignalAspect.STOP))
+                                        {
+                                            AuxActionsContain.Remove(wpItem);
+                                            ResetActions(true);
+                                            MovementState = AI_MOVEMENT_STATE.RUNNING;
+                                            return;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        return;                                        
+                    case AIActionItem.AI_ACTION_TYPE.END_OF_AUTHORITY:
+                    case AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE:
+                    case AIActionItem.AI_ACTION_TYPE.NONE:
+                    case AIActionItem.AI_ACTION_TYPE.REVERSAL:
+                    case AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP:
+                    case AIActionItem.AI_ACTION_TYPE.STATION_STOP:
+                    case AIActionItem.AI_ACTION_TYPE.TRAIN_AHEAD:                        
+                        break;                        
+                }
+            }
             
-            // Icik
-            // Postupné zpomalování při zastavení vlaku
-            // Vylučuje servisy a vlaky bez lokomotiv
+            // Postupné zpomalování při zastavení vlaku            
             float DistanceToGoM = distanceToGoM + 0.0f;
             if (distanceToTrain != -1000) DistanceToGoM = distanceToTrain;
 
-            float DistanceToRevers = ComputeDistanceToReversalPoint();            
+            float DistanceToRevers = ComputeDistanceToReversalPoint();
             if (DistanceToRevers > -1)
                 DistanceToGoM = Math.Min(DistanceToGoM, DistanceToRevers);
 
