@@ -3296,8 +3296,16 @@ namespace Orts.Simulation.Simulation.AIs
                     case AIActionItem.AI_ACTION_TYPE.SPEED_LIMIT:
                     case AIActionItem.AI_ACTION_TYPE.SPEED_SIGNAL:
                     case AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_RESTRICTED:
-                    case AIActionItem.AI_ACTION_TYPE.AUX_ACTION:
                     case AIActionItem.AI_ACTION_TYPE.APPROACHING_MOVING_TABLE:
+                        return;
+                    case AIActionItem.AI_ACTION_TYPE.END_OF_AUTHORITY:
+                    case AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE:
+                    case AIActionItem.AI_ACTION_TYPE.NONE:
+                    case AIActionItem.AI_ACTION_TYPE.REVERSAL:
+                    case AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP:
+                    case AIActionItem.AI_ACTION_TYPE.STATION_STOP:
+                    case AIActionItem.AI_ACTION_TYPE.TRAIN_AHEAD:                        
+                    case AIActionItem.AI_ACTION_TYPE.AUX_ACTION:
                         {
                             // Odstraní nechtěné zastavení vlaku po vypršení absolutního WP u návěstidla
                             if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.AUX_ACTION && distanceToGoM < 0)
@@ -3322,16 +3330,8 @@ namespace Orts.Simulation.Simulation.AIs
                                 }
                             }
                         }
-                        return;                                        
-                    case AIActionItem.AI_ACTION_TYPE.END_OF_AUTHORITY:
-                    case AIActionItem.AI_ACTION_TYPE.END_OF_ROUTE:
-                    case AIActionItem.AI_ACTION_TYPE.NONE:
-                    case AIActionItem.AI_ACTION_TYPE.REVERSAL:
-                    case AIActionItem.AI_ACTION_TYPE.SIGNAL_ASPECT_STOP:
-                    case AIActionItem.AI_ACTION_TYPE.STATION_STOP:
-                    case AIActionItem.AI_ACTION_TYPE.TRAIN_AHEAD:                        
-                        break;                        
-                }
+                    break;
+                }                
             }
             
             // Postupné zpomalování při zastavení vlaku            
