@@ -919,7 +919,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems
                 int eaIndex = 0;
                 if (Locomotive.extendedPhysics != null)
                 {
-                    if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                    if (Locomotive.PowerUnit)
                     {
                         foreach (Undercarriage uc in Locomotive.extendedPhysics.Undercarriages)
                         {

@@ -7720,7 +7720,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                                         if (Pantographs[j].State == PantographState.Up)
                                         {
                                             bool motorDisabled = false;
-                                            if (PowerUnit && IsLeadLocomotive())
+                                            if (PowerUnit)
                                             {
                                                 foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                                 {
@@ -8417,7 +8417,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
                 // 809-810-M151-M152-811-812
                 MotorIdleHandling();
-
+                
                 BatterySetOn = false;
                 if (LocoReadyToGo && this is MSTSSteamLocomotive)
                     LocoReadyToGo = false;
@@ -13509,13 +13509,20 @@ namespace Orts.Simulation.Simulation.RollingStocks
                             if (this is MSTSElectricLocomotive && !AcceptCableSignals && (this as MSTSElectricLocomotive).AuxResVolumeM3 == Simulator.LeadAuxResVolumeM3)
                             {
                                 AcceptCableSignals = true;
+                                int LocoCount = 1;
                                 foreach (var car in Train.Cars.Where(car => car is MSTSLocomotive))
                                 {
-                                    if (car is MSTSElectricLocomotive && (car as MSTSElectricLocomotive).MUCableCanBeUsed)
+                                    if (car != this && car is MSTSElectricLocomotive && (car as MSTSElectricLocomotive).MUCableCanBeUsed)
+                                    {
                                         car.AcceptCableSignals = true;
+                                        LocoCount++;
+                                    }
                                     else
                                         break;
                                 }
+                                
+                                if (LocoCount == 1)
+                                    AcceptCableSignals = false;
                             }                            
                         }
 
@@ -23597,7 +23604,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     if (CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.Auto || CruiseControl.SpeedRegMode[LocoStation] == CruiseControl.SpeedRegulatorMode.AVV)
                     {
                         maxForce = 0;
-                        if (PowerUnit && IsLeadLocomotive())
+                        if (PowerUnit)
                         {
                             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
@@ -23645,7 +23652,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         if (diff < 0 || TractiveForceN < 0)
                         {
                             maxForce = 0;
-                            if (PowerUnit && IsLeadLocomotive())
+                            if (PowerUnit)
                             {
                                 foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
@@ -23692,7 +23699,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         requestedForce.Clear();
                         maxForce = 0;
 
-                        if (PowerUnit && IsLeadLocomotive())
+                        if (PowerUnit)
                         {
                             foreach (Undercarriage ucc in extendedPhysics.Undercarriages)
                             {
@@ -23741,7 +23748,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 case CABViewControlTypes.REQUESTED_MOTOR_FORCE:
                     preData = 0f;
 
-                    if (PowerUnit && IsLeadLocomotive())
+                    if (PowerUnit)
                     {
                         foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
@@ -23840,7 +23847,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     break;
                 case CABViewControlTypes.TOTAL_FORCE:
                     preData = 0f;
-                    if (PowerUnit && IsLeadLocomotive())
+                    if (PowerUnit)
                     {
                         foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                         {
@@ -23929,7 +23936,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                             direction = ((CVCGauge)cvc).Direction;
                         preData = 0f;
 
-                        if (PowerUnit && IsLeadLocomotive())
+                        if (PowerUnit)
                         {
                             foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                             {
@@ -25282,7 +25289,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                             }
                             else
                             {
-                                if (PowerUnit && IsLeadLocomotive())
+                                if (PowerUnit)
                                 {
                                     foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                     {
@@ -25362,7 +25369,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         }
                         else if (cvc.CurrentSource.ToLower() == "motor")
                         {
-                            if (PowerUnit && IsLeadLocomotive())
+                            if (PowerUnit)
                             {
                                 foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {
@@ -27380,7 +27387,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         {
                             int id = 0;
 
-                            if (PowerUnit && IsLeadLocomotive())
+                            if (PowerUnit)
                             {
                                 foreach (Undercarriage uc in extendedPhysics.Undercarriages)
                                 {

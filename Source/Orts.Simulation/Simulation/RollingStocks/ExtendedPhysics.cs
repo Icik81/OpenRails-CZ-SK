@@ -339,7 +339,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
         {
             get
             {
-                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                if (Locomotive.PowerUnit)
                 {
                     float A = 2.0f * Locomotive.LocomotiveAxle.AdhesionK * Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
                     float B = Locomotive.LocomotiveAxle.AdhesionConditions * Locomotive.LocomotiveAxle.AdhesionConditions;
@@ -373,7 +373,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
         {
             get
             {
-                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                if (Locomotive.PowerUnit)
                 {
                     float SlipSpeedMpS = ((FastestAxleSpeedMpS < Math.Abs(Locomotive.LocomotiveAxle.TrainSpeedMpS) ? Math.Abs(Locomotive.AxleSpeedMpSEP) : FastestAxleSpeedMpS) * Locomotive.WheelSpeedDirectionMarkerEP) - Locomotive.LocomotiveAxle.TrainSpeedMpS;
                     return SlipSpeedMpS;
@@ -603,7 +603,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                     Locomotive.ControllerVolts = -Locomotive.DynamicBrakePercent / 10.0f;
                 Locomotive.SetThrottlePercent(0);
 
-                if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+                if (Locomotive.PowerUnit)
                 {
                     foreach (Undercarriage uc in Undercarriages)
                     {
@@ -645,7 +645,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             TotalForceN = 0;
             TotalMaxForceN = 0;
             AxleForceNSum = 0;
-            if ((Locomotive.PowerUnit && Locomotive.IsLeadLocomotive()) || Locomotive.LocoHelperOn)
+            if (Locomotive.PowerUnit || Locomotive.LocoHelperOn)
             {
                 foreach (Undercarriage uc in Undercarriages)
                 {
@@ -797,7 +797,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
         protected float speedDiff = 0;
         public void DisableMotors()
         {
-            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+            if (Locomotive.PowerUnit)
             {
                 foreach (Undercarriage uc in Undercarriages)
                 {
@@ -833,7 +833,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
         public void EnableMotors()
         {
-            if (Locomotive.PowerUnit && Locomotive.IsLeadLocomotive())
+            if (Locomotive.PowerUnit)
             {
                 foreach (Undercarriage uc in Undercarriages)
                 {
