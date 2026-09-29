@@ -3310,16 +3310,20 @@ namespace Orts.Simulation.Simulation.AIs
                             // Odstraní nechtěné zastavení vlaku po vypršení absolutního WP u návěstidla
                             if (nextActionInfo.NextAction == AIActionItem.AI_ACTION_TYPE.AUX_ACTION && distanceToGoM < 0)
                             {
-                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));
+                                int presentTime = Convert.ToInt32(Math.Floor(Simulator.ClockTime));                                
 
                                 if (nextActionInfo is AuxActionWPItem wpItem && wpItem.ActionRef is AIActionWPRef wpRef)
                                 {
                                     // Test na absolutní WP (3xxxx)
                                     if (wpRef.Delay >= 30000 && wpRef.Delay < 40000)
                                     {
+                                        float GameClock = wpRef.Delay - 30000;
+                                        int GameClockHour = (int)(GameClock / 100);
+                                        int GameClockMinute = (int)(GameClock - (GameClockHour * 100));
+                                        float GameClockToWait = (GameClockHour * 60f * 60f) + (GameClockMinute * 60f);
+
                                         // Pokud již vypršel čas odjezdu nebo je návěstidlo na volno
-                                        if (wpItem.ActualDepart <= presentTime ||
-                                            (NextSignalObject[0] != null && NextSignalObject[0].this_sig_lr(MstsSignalFunction.NORMAL) > MstsSignalAspect.STOP))
+                                        if (GameClockToWait <= presentTime)
                                         {
                                             AuxActionsContain.Remove(wpItem);
                                             ResetActions(true);
@@ -4010,14 +4014,14 @@ namespace Orts.Simulation.Simulation.AIs
             float currentSpeedMpS = Math.Abs(SpeedMpS);
             
             // Pokud už stojíme nebo jsme minuli cíl
-            if (smoothDeceleration && distanceToGoM <= 0.0f)
+            if (smoothDeceleration && distanceToGoM <= -0.5f)
             {
                 if (distanceToGoM <= -1.0f)
                 {
                     SpeedMpS = 0f;
                     AITrainBrakePercent = 100f; // zajistit stojící vlak                    
                 }
-                else if (distanceToGoM <= 0.0f)
+                else if (distanceToGoM <= -0.5f)
                 {
                     AITrainBrakePercent = 100f;            
                 }
@@ -4032,7 +4036,7 @@ namespace Orts.Simulation.Simulation.AIs
             }
 
             // Teoretická brzdná dráha potřebná pro zastavení s komfortním zpomalením            
-            float effectiveDistance = Math.Max(0.1f, distanceToGoM - 0.0f);
+            float effectiveDistance = Math.Max(0.1f, distanceToGoM + 0.5f);
             float neededBrakingDistance = (currentSpeedMpS * currentSpeedMpS) / (2f * targetComfortDecelMpSS);
 
             // Začít brzdit až ve chvíli, kdy dosáhneme brzdné křivky (nebo jsme v detekční zóně s překročenou rychlostí)
