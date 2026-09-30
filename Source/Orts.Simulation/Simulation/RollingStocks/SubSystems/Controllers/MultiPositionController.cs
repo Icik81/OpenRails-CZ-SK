@@ -398,18 +398,17 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                     if (Locomotive.DynamicBrakePercent > -1) Locomotive.SetThrottlePercent(0);                    
 
                     if (Locomotive.AbsSpeedMpS < 1f / 3.6f)
-                    {
-                        float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
-                        step *= Locomotive.elapsedTime;
-                        Locomotive.DynamicBrakePercent -= step * 2;
+                    {                        
+                        float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        step *= elapsedClockSeconds;
+                        Locomotive.DynamicBrakePercent -= step;
                         if (Locomotive.DynamicBrakePercent < -1)
+                        {
                             Locomotive.DynamicBrakePercent = -1;
-                        Locomotive.ControllerVolts -= step * 2;
-                        if (Locomotive.ControllerVolts < 0)
-                            Locomotive.ControllerVolts = 0;
+                            Locomotive.LastStateDynamicBrakePercent = -1;
+                        }
+                        Locomotive.RequiredDecelerationPercent = 0;                        
                         Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
-                        Locomotive.RequiredDecelerationPercent = 0;
-                        Locomotive.LastStateDynamicBrakePercent = -1;
                     }
                 }
                 else
@@ -419,7 +418,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
             if (!haveCruiseControl || !ccAutoMode)
             {
                 if (controllerPosition == ControllerPosition.ThrottleIncrease /*&& Locomotive.Direction != ORTS.Common.Direction.N*/)
-                {
+                {                    
                     if (Locomotive.extendedPhysics != null)
                     {
                         float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeIncreaseTimeSeconds;
@@ -455,7 +454,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                                 Locomotive.SetThrottlePercent(Locomotive.ThrottlePercent + step);
                             }
                         }
-                    }
+                    }                      
                 }
                 if (controllerPosition == ControllerPosition.ThrottleIncreaseFast /*&& Locomotive.Direction != ORTS.Common.Direction.N*/)
                 {
@@ -508,7 +507,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.extendedPhysics != null)
                     {
-                        float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSeconds * 2;
+                        float step = Locomotive.MaxControllerVolts / Locomotive.ThrottleFullRangeDecreaseTimeSecondsFast;
                         step *= elapsedClockSeconds;
                         Locomotive.ControllerVolts -= step;
                         if (Locomotive.ControllerVolts < 0)
@@ -605,11 +604,14 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                         }
                         if (Locomotive.DynamicBrakePercent == -1) Locomotive.SetDynamicBrakePercent(0);
                         if (Locomotive.ThrottlePercent < 1 && Locomotive.DynamicBrakePercent < 100)
-                        {
-                            if (Locomotive.DynamicBrakePercent + 0.5f > 100)
-                                Locomotive.SetDynamicBrakePercent(100);
-                            else
-                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent + 0.5f);
+                        {                            
+                            if (Locomotive.DynamicBrakePercent < 100)
+                            {
+                                float step = 100 / Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds;
+                                step *= elapsedClockSeconds;
+                                Locomotive.DynamicBrakePercent += step;                                
+                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                            }
                         }
                         if (Locomotive.LocoType == MSTSLocomotive.LocoTypes.Katr7507)
                         {
@@ -659,10 +661,13 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                         if (Locomotive.DynamicBrakePercent == -1) Locomotive.SetDynamicBrakePercent(0);
                         if (Locomotive.ThrottlePercent < 1 && Locomotive.DynamicBrakePercent < 100)
                         {
-                            if (Locomotive.DynamicBrakePercent + 2f > 100)
-                                Locomotive.SetDynamicBrakePercent(100);
-                            else
-                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent + 2f);
+                            if (Locomotive.DynamicBrakePercent < 100)
+                            {
+                                float step = 100 / (Locomotive.DynamicBrakeFullRangeIncreaseTimeSeconds / 2f);
+                                step *= elapsedClockSeconds;
+                                Locomotive.DynamicBrakePercent += step;                                
+                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                            }
                         }
                     }
                 }
@@ -670,7 +675,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                 {
                     if (Locomotive.DynamicBrakePercent > 0)
                     {
-                        float step = Locomotive.MaxControllerVolts / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                        float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
                         step *= elapsedClockSeconds;
                         Locomotive.DynamicBrakePercent -= step;
                         if (Locomotive.DynamicBrakePercent < 1)
@@ -686,12 +691,15 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                     {
                         Locomotive.SetDynamicBrakePercent(-1);
                     }
-                    if (Locomotive.DynamicBrakePercent > 1)
+                    if (controllerBinding != ControllerBinding.Combined && controllerBinding != ControllerBinding.Throttle)
                     {
-                        float step = Locomotive.MaxControllerVolts / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
-                        step *= elapsedClockSeconds;
-                        Locomotive.DynamicBrakePercent -= step;
-                        Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                        if (Locomotive.DynamicBrakePercent > 1)
+                        {
+                            float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                            step *= elapsedClockSeconds;
+                            Locomotive.DynamicBrakePercent -= step;
+                            Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                        }
                     }
                 }
                 if (controllerPosition == ControllerPosition.TrainBrakeIncrease)
@@ -726,7 +734,13 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.Controllers
                         if (Locomotive.DynamicBrakePercent > 0)
                         {
                             Locomotive.DynamicBrakeIntervention = -1;
-                            Locomotive.DynamicBrakeController.StartDecrease(0);
+                            if (Locomotive.DynamicBrakePercent > 1)
+                            {
+                                float step = 100 / Locomotive.DynamicBrakeFullRangeDecreaseTimeSeconds;
+                                step *= elapsedClockSeconds;
+                                Locomotive.DynamicBrakePercent -= step;
+                                Locomotive.SetDynamicBrakePercent(Locomotive.DynamicBrakePercent);
+                            }
                         }
                     }                    
                     if (Locomotive.RequiredDecelerationPercent > 0)
