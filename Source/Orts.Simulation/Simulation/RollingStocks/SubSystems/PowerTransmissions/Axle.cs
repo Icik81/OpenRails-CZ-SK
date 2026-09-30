@@ -618,7 +618,9 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             // Sum of all forces on axle
             var totalForce = 0f;
 
-            if(axleSpeed == 0)
+            if (driveForce == 0) return (0, 0);
+
+            if (axleSpeed == 0)
             {
                 if(Math.Abs(motiveForce) <= retardationForce) return (0f, railForce);
                 totalForce = motiveForce - Math.Sign(motiveForce) * retardationForce;
