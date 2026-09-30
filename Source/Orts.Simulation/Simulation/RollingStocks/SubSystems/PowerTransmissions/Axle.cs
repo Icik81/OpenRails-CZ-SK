@@ -616,9 +616,7 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
             // Sum of force developed by motor and force from rails
             var motiveForce = driveForce - railForce;
             // Sum of all forces on axle
-            var totalForce = 0f;
-
-            if (driveForce == 0) return (0, 0);
+            var totalForce = 0f;            
 
             if (axleSpeed == 0)
             {

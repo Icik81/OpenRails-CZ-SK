@@ -8691,9 +8691,9 @@ namespace Orts.Simulation.Simulation.RollingStocks
 
             // Icik            
             if (!PowerOn || (!AcceptPowerSignals && AcceptCableSignals) || (LocoType == LocoTypes.Vectron && (TractionBlocked || ControlUnit)))
-                TractiveForceN = 0;
+                TractiveForceN = 0;            
 
-            MotiveForceN = TractiveForceN;
+            MotiveForceN = TractiveForceN;            
 
             if (DynamicBrakePercent > 0 && (DynamicBrakeForceCurves != null || DynamicBrakeForceCurvesAC != null || DynamicBrakeForceCurvesDC != null) && AbsSpeedMpS > 0)
             {
@@ -9190,7 +9190,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
             // An alternative method in the steam locomotive will override this and input force and power info for it.
 
             if (ControlUnit)
-                return;
+                return;            
 
             if (ThrottleOverriden != 0)
                 t = ThrottleOverriden;
@@ -9325,7 +9325,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 }
             }
             else if (TractiveForceN > 0)
-                TractiveForceN = 0f;
+                TractiveForceN = 0f;            
 
             /*if (MaxForceN > 0 && MaxContinuousForceN > 0 && PowerReduction < 1)
             {
@@ -9792,8 +9792,8 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 //Set axle model parameters
                 // Icik                
                 if (PowerUnit)
-                {
-                    DriveForceN = LocomotiveAxle.DriveForceN;
+                {                    
+                    DriveForceN = LocomotiveAxle.DriveForceN;                    
                     LocomotiveAxle.DriveForceN = MotiveForceN;  //Total force applied to wheels                    
                 }
 
@@ -9819,7 +9819,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 LocomotiveAxle.GameSpeed = Simulator.GameSpeed;
                 LocomotiveAxle.BrakeRetardForceN = BrakeRetardForceN / (MassKG / DrvWheelWeightKg); // Upravuje chybu v adhezi pokud vůz brzdí (brzdí plnou vahou tzn. všemi koly)
                 LocomotiveAxle.AxleWeightN = 9.81f * DrvWheelWeightKg;   //will be computed each time considering the tilting                
-                LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model                                                            
+                LocomotiveAxle.TrainSpeedMpS = SpeedMpS;            //Set the train speed of the axle model                                                                            
 
                 if (extendedPhysics == null)
                 {
@@ -9856,6 +9856,12 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 if (Simulator.GameSpeed > 1)
                 {
                     WheelSpeedMpS = SpeedMpS;
+                }
+
+                // Ošetření případu, kdy je hnací síla nulová a brzdná síla nulová, aby se zabránilo oscilaci síly nápravy
+                if (DriveForceN == 0 && DynamicBrakeForceN == 0)
+                {
+                    MotiveForceN = 0;
                 }
             }
         }
