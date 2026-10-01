@@ -2282,7 +2282,7 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 String.Format("{0}", FormatStrings.FormatSpeedDisplay(SpeedMpS, IsMetric)),
                 // For Locomotive HUD display shows "forward" motive power (& force) as a positive value, braking power (& force) will be shown as negative values.                
                 ControlUnit ? Simulator.Catalog.GetString("Control") : FormatStrings.FormatPower((MotiveForceN) * SpeedMpS, IsMetric, false, false),
-                ControlUnit ? "" : String.Format("{0}{1}", FormatStrings.FormatForce(MotiveForceN, IsMetric), WheelSlip ? "!!!" : WheelSlipWarning ? "???" : ""));
+                ControlUnit ? "" : String.Format("{0}{1}", FormatStrings.FormatForce(TractiveForceN, IsMetric), WheelSlip ? "!!!" : WheelSlipWarning ? "???" : ""));
         }
         public virtual string GetTrainBrakeStatus() { return null; }
         public virtual string GetTrainBrakeStatusTDW() { return null; }
