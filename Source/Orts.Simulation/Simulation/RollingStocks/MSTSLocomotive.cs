@@ -9857,12 +9857,6 @@ namespace Orts.Simulation.Simulation.RollingStocks
                 {
                     WheelSpeedMpS = SpeedMpS;
                 }
-
-                // Ošetření případu, kdy je hnací síla nulová a brzdná síla nulová, aby se zabránilo oscilaci síly nápravy
-                if (DriveForceN == 0 && DynamicBrakeForceN == 0)
-                {
-                    MotiveForceN = 0;
-                }
             }
         }
 

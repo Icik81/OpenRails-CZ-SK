@@ -569,7 +569,11 @@ namespace Orts.Simulation.Simulation.RollingStocks.SubSystems.PowerTransmissions
                 var acceleration = (k1.acceleration + 2 * k2.acceleration + 2 * k3.acceleration + k4.acceleration) / 6f;
                 var newAxleSpeed = axleSpeedMpS + acceleration * fixedDeltaTime;
 
-                if(axleSpeedMpS != 0 && Math.Sign(newAxleSpeed) != Math.Sign(axleSpeedMpS))
+                var predictedAxleSpeed = axleSpeedMpS + k1.acceleration * fixedDeltaTime;
+                var hasPredictedDirectionChange =  Math.Sign(predictedAxleSpeed) != Math.Sign(axleSpeedMpS);
+                var hasDirectionChanged = Math.Sign(newAxleSpeed) != Math.Sign(axleSpeedMpS);
+
+                if(axleSpeedMpS != 0 && (hasDirectionChanged || hasPredictedDirectionChange))
                 {
                     /*
                      * Check if motive forces would overpower retardation forces at standstill.
