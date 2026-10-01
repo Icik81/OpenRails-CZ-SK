@@ -1971,6 +1971,7 @@ namespace Orts.Simulation.Simulation
 
         public void CheckTriggerTrain(Train drivenTrain, float elapsedClockSeconds)
         {
+            drivenTrain.EventTriggerTrain = null;
             drivenTrain.EventTriggerTrainDistanceM = 500;
             drivenTrain.TriggerTrainSpeedZoneIsPreActivated = false;
             float EventTriggerTrainDistanceMCoef = Math.Abs(drivenTrain.SpeedMpS * 3.6f) * 2f;

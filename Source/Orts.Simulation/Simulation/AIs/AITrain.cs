@@ -805,6 +805,7 @@ namespace Orts.Simulation.Simulation.AIs
                 if (Math.Abs(SpeedMpS) > TriggerTrainSpeedZoneSpeedMpS)
                 {
                     MovementState = AI_MOVEMENT_STATE.BRAKING;
+                    AdjustControlsThrottleOff();
                     AdjustControlsBrakeMore(MaxDecelMpSS, elapsedClockSeconds, 50);
                 }
                 else
@@ -4155,6 +4156,8 @@ namespace Orts.Simulation.Simulation.AIs
             // Icik
             if (smoothDeceleration && AITrainThrottlePercent > 0) smoothDeceleration = false;
             if (smoothDeceleration) return;
+
+            if (AITrainSpeedZone || TriggerTrainSpeedZoneIsPreActivated) return;
 
             AITrainBrakePercent = 0;
             InitializeBrakes();
