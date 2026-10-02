@@ -35,6 +35,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Resources;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Path = ORTS.Menu.Path;
@@ -147,7 +148,8 @@ namespace ORTS
 
         void MainForm_Shown(object sender, EventArgs e)
         {
-            LauncherUpdate();
+            // Spustí kontrolu na pozadí bez blokování vykreslení formuláře
+            _ = LauncherUpdateAsync();
 
             var options = Environment.GetCommandLineArgs().Where(a => (a.StartsWith("-") || a.StartsWith("/"))).Select(a => a.Substring(1));
             Settings = new UserSettings(options);
@@ -388,52 +390,122 @@ namespace ORTS
         #endregion
 
         #region Launcher Update
-        public void LauncherUpdate()
+
+        // WebClient s krátkým timeoutem, aby aplikace nečekala 100 sekund při chybách serveru
+        private class TimeoutWebClient : WebClient
         {
+            public int Timeout { get; set; } = 4000; // 4 sekundy
+
+            protected override WebRequest GetWebRequest(Uri uri)
+            {
+                WebRequest w = base.GetWebRequest(uri);
+                w.Timeout = Timeout;
+                return w;
+            }
+        }
+
+        public async Task LauncherUpdateAsync()
+        {
+            SplashWindow sw = null;
             try
             {
-                Ping ping = new Ping();
-                PingReply pingReply = ping.Send("msts-rw.cz", 1000);
-                if (pingReply != null)
+                // 1. Rychlý Ping na pozadí
+                bool pingOk = await Task.Run(() =>
                 {
-                    if (pingReply.Status == IPStatus.Success)
+                    try
                     {
-                        SplashWindow sw = new SplashWindow();
-                        sw.Show();
-                        sw.Message = "Kontrola verze updateru.";
-                        sw.UpdateProgress();
-                        if (pingReply.Status == IPStatus.Success)
+                        using (Ping ping = new Ping())
                         {
-                            if (!File.Exists(Application.StartupPath + @"\OpenRails.txt"))
-                                File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", "0");
-                            string version = File.ReadAllText(Application.StartupPath + @"\OpenRails.txt");
-
-                            ServicePointManager.Expect100Continue = true;
-                            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
-
-                            WebClient webClient = new WebClient();
-                            string verRemote = webClient.DownloadString(@"http://msts-rw.cz/ORIC/Updates/OpenRails.txt");
-                            if (verRemote == version)
-                            {
-                                sw.Close();
-                                return;
-                            }
-                            sw.Message = "Stahuji a rozbaluji novou vezi updateru.";
-                            sw.UpdateProgress();
-                            if (File.Exists(Application.StartupPath + @"\OpenRails.zip"))
-                                File.Delete(Application.StartupPath + @"\OpenRails.zip");
-                            webClient.DownloadFile(@"http://msts-rw.cz/ORIC/Updates/OpenRails.zip", Application.StartupPath + @"\OpenRails.zip");
-                            ZipFile zipEntries = new ZipFile(Application.StartupPath + @"\OpenRails.zip");
-                            zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
-                            File.WriteAllText(Application.StartupPath + @"\OpenRails.txt", verRemote);
-                            sw.Close();
-                            MessageBox.Show("Program byl aktualizován a je třeba ho restartovat.", "Aktualizace", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            PingReply reply = ping.Send("msts-rw.cz", 1000);
+                            return reply != null && reply.Status == IPStatus.Success;
                         }
                     }
+                    catch
+                    {
+                        return false;
+                    }
+                });
+
+                if (!pingOk)
+                    return;
+
+                // 2. Zobrazení Splash okna na UI vlákně
+                sw = new SplashWindow();
+                sw.Show(this);
+                sw.Message = "Kontrola verze updateru.";
+                sw.UpdateProgress();
+
+                // 3. Zajištění existence lokálního souboru
+                string versionFilePath = Application.StartupPath + @"\OpenRails.txt";
+                if (!File.Exists(versionFilePath))
+                    File.WriteAllText(versionFilePath, "0");
+
+                string currentVersion = File.ReadAllText(versionFilePath);
+
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
+                // 4. Stažení verze a aktualizace na pozadí
+                string remoteVersion = null;
+                bool updateAvailable = false;
+                string zipPath = Application.StartupPath + @"\OpenRails.zip";
+
+                await Task.Run(() =>
+                {
+                    using (var webClient = new TimeoutWebClient())
+                    {
+                        remoteVersion = webClient.DownloadString("http://msts-rw.cz/ORIC/Updates/OpenRails.txt").Trim();
+                        if (remoteVersion != currentVersion)
+                        {
+                            updateAvailable = true;
+                        }
+                    }
+                });
+
+                if (!updateAvailable)
+                {
+                    sw.Close();
+                    return;
+                }
+
+                // 5. Pokud je dostupná aktualizace, stáhnout a rozbalit
+                sw.Message = "Stahuji a rozbaluji novou verzi updateru.";
+                sw.UpdateProgress();
+
+                await Task.Run(() =>
+                {
+                    using (var webClient = new TimeoutWebClient { Timeout = 15000 })
+                    {
+                        if (File.Exists(zipPath))
+                            File.Delete(zipPath);
+
+                        webClient.DownloadFile("http://msts-rw.cz/ORIC/Updates/OpenRails.zip", zipPath);
+
+                        using (ZipFile zipEntries = new ZipFile(zipPath))
+                        {
+                            zipEntries.ExtractAll(Application.StartupPath, ExtractExistingFileAction.OverwriteSilently);
+                        }
+
+                        File.WriteAllText(versionFilePath, remoteVersion);
+                    }
+                });
+
+                sw.Close();
+                MessageBox.Show(this, "Program byl aktualizován a je třeba ho restartovat.", "Aktualizace", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception)
+            {
+                // Zachytí WebException (např. 503 Nedostupný server, vypršení timeoutu) i chyby I/O
+            }
+            finally
+            {
+                if (sw != null && !sw.IsDisposed)
+                {
+                    sw.Close();
+                    sw.Dispose();
                 }
             }
-            catch (PingException) { }
         }
         #endregion
 
