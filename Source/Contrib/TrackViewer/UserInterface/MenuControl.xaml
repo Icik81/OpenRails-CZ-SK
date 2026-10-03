@@ -106,6 +106,8 @@
                 <Separator/>
                 <MenuItem Header="Show Mirel points" Name="menuShowMirelPoints" IsCheckable="True" Click="UpdateMenuSettings"/>
                 <MenuItem Header="Save Mirel points" Name="menuSaveMirelPoints" Click="MenuSaveMirelPoints_Click"/>
+                <Separator/>
+                <MenuItem Header="Set Pantograph Signs..." Name="menuSetPantoSigns" Click="MenuSetPantoSigns_Click"/>
             </MenuItem>
             <MenuItem Header="_Statusbar" Name="menuStatusbar">
                 <MenuItem Header="Show vector section info" Name="menuStatusShowVectorSection" IsCheckable="True" IsChecked="False"

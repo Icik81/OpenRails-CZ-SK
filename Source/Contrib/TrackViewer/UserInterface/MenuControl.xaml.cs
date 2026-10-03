@@ -373,6 +373,17 @@ namespace ORTS.TrackViewer.UserInterface
             }
         }
 
+        private void MenuSetPantoSigns_Click(object sender, RoutedEventArgs e)
+        {
+            if (trackViewer.CurrentRoute == null)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No route loaded!"), "TrackViewer");
+                return;
+            }
+
+            trackViewer.PromptAndFindPantoSigns();
+        }
+
         /// <summary>
         /// Update the menu to show the available routes
         /// </summary>

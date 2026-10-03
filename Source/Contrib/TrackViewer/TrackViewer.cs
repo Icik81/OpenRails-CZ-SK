@@ -19,6 +19,8 @@
 using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Formats.Msts;
+using Orts.Parsers.Msts;
 using Orts.Simulation.Common;
 using ORTS.Common;
 using ORTS.Content;
@@ -116,6 +118,15 @@ namespace ORTS.TrackViewer
             public double Longitude { get; set; }
             public WorldLocation WorldLocation { get; set; }
         }
+
+        public class SceneryShapeMarker
+        {
+            public string ShapeName { get; set; }
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        public List<SceneryShapeMarker> PantoDownMarkers = new List<SceneryShapeMarker>();
+        public List<SceneryShapeMarker> PantoUpMarkers = new List<SceneryShapeMarker>();
 
         public List<RouteVoltagePoint> VoltagePoints = new List<RouteVoltagePoint>();
         private RouteVoltagePoint draggedVoltagePoint = null;
@@ -250,6 +261,58 @@ namespace ORTS.TrackViewer
             EndDraw();
         }
         #endregion
+
+        public string PantoDownShapeName { get; set; } = "EP1.s";
+        public string PantoUpShapeName { get; set; } = "EP2.s";
+
+        public void PromptAndFindPantoSigns()
+        {
+            if (CurrentRoute == null) return;
+
+            using (var form = new System.Windows.Forms.Form())
+            {
+                form.Text = catalog.GetString("Pantograph sign shape names");
+                form.Width = 380;
+                form.Height = 210;
+                form.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+                form.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+                form.MaximizeBox = false;
+                form.MinimizeBox = false;
+
+                var lblDown = new System.Windows.Forms.Label() { Left = 20, Top = 20, Width = 320, Text = catalog.GetString("Pantograph down shape:") };
+                var txtDown = new System.Windows.Forms.TextBox() { Left = 20, Top = 45, Width = 320, Text = PantoDownShapeName };
+
+                var lblUp = new System.Windows.Forms.Label() { Left = 20, Top = 80, Width = 320, Text = catalog.GetString("Pantograph up shape:") };
+                var txtUp = new System.Windows.Forms.TextBox() { Left = 20, Top = 105, Width = 320, Text = PantoUpShapeName };
+
+                var btnOk = new System.Windows.Forms.Button() { Text = catalog.GetString("Search"), Left = 160, Width = 90, Top = 135, DialogResult = System.Windows.Forms.DialogResult.OK };
+                var btnCancel = new System.Windows.Forms.Button() { Text = catalog.GetString("Cancel"), Left = 260, Width = 80, Top = 135, DialogResult = System.Windows.Forms.DialogResult.Cancel };
+
+                form.Controls.AddRange(new System.Windows.Forms.Control[] { lblDown, txtDown, lblUp, txtUp, btnOk, btnCancel });
+                form.AcceptButton = btnOk;
+                form.CancelButton = btnCancel;
+
+                if (form.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    PantoDownShapeName = txtDown.Text.Trim();
+                    PantoUpShapeName = txtUp.Text.Trim();
+
+                    ReloadPantoSigns();
+                }
+            }
+        }
+
+        public void ReloadPantoSigns()
+        {
+            if (CurrentRoute == null) return;
+
+            DrawLoadingMessage(catalog.GetString("Searching pantograph sign shapes in route files..."));
+
+            // Vyhledá oba shape objekty v jednom průchodu
+            FindSceneryShapes(CurrentRoute.Path, PantoDownShapeName, PantoUpShapeName);
+
+            skipDrawAmount = 0;
+        }
 
         #region Context Menu & Creation of Route Markers
         private void ShowRouteMarkersContextMenu(int screenX, int screenY)
@@ -953,6 +1016,32 @@ namespace ORTS.TrackViewer
                 }
             }
 
+            if (Properties.Settings.Default.showVoltageMarkers && PantoDownMarkers.Count > 0)
+            {
+                foreach (var marker in PantoDownMarkers)
+                {
+                    // 1. Vykreslení ikony/symbolu
+                    // Lze použít "disc", "circle", "hazard" nebo vlastní texturu
+                    DrawArea.DrawTexture(marker.WorldLocation, "hazard", 8f, 10, 20, Color.Yellow);
+
+                    // 2. Vykreslení popisku
+                    DrawArea.DrawExpandingString(marker.WorldLocation, catalog.GetString("Lower pantograph"));
+                }
+            }
+
+            if (Properties.Settings.Default.showVoltageMarkers && PantoUpMarkers.Count > 0)
+            {
+                foreach (var marker in PantoUpMarkers)
+                {
+                    // 1. Vykreslení ikony/symbolu
+                    // Lze použít "disc", "circle", "hazard" nebo vlastní texturu
+                    DrawArea.DrawTexture(marker.WorldLocation, "hazard", 8f, 10, 20, Color.Yellow);
+
+                    // 2. Vykreslení popisku
+                    DrawArea.DrawExpandingString(marker.WorldLocation, catalog.GetString("Raise pantograph"));
+                }
+            }
+
             CalculateFPS(gameTime);
             statusBarControl.Update(this, DrawArea.MouseLocation);
 
@@ -1175,6 +1264,9 @@ namespace ORTS.TrackViewer
                 LoadVoltageMarkers(newRoute.Path);
                 LoadPowerSupplyStations(newRoute.Path);
                 LoadMirelPoints(newRoute.Path);
+
+                // Načtení návěstí sběrače podle nastavených názvů modelů
+                ReloadPantoSigns();
 
                 Properties.Settings.Default.defaultRoute = CurrentRoute.Path.Split('\\').Last();
                 if (Properties.Settings.Default.zoomRoutePath != CurrentRoute.Path)
@@ -1629,6 +1721,96 @@ namespace ORTS.TrackViewer
             }
             return "";
         }
+
+        public void FindSceneryShapes(string routePath, string targetDownShapeName, string targetUpShapeName)
+        {
+            PantoDownMarkers.Clear();
+            PantoUpMarkers.Clear();
+
+            string worldDir = System.IO.Path.Combine(routePath, "WORLD");
+            if (!System.IO.Directory.Exists(worldDir)) return;
+
+            string[] wFiles;
+            try
+            {
+                wFiles = System.IO.Directory.GetFiles(worldDir, "*.w");
+            }
+            catch
+            {
+                return;
+            }
+
+            string downTarget = targetDownShapeName?.Trim().ToLower() ?? "";
+            string upTarget = targetUpShapeName?.Trim().ToLower() ?? "";
+
+            bool searchDown = !string.IsNullOrEmpty(downTarget);
+            bool searchUp = !string.IsNullOrEmpty(upTarget);
+
+            if (!searchDown && !searchUp) return;
+
+            var tokens = new List<TokenID> { TokenID.Static };
+
+            int processed = 0;
+            foreach (var file in wFiles)
+            {
+                processed++;
+                if (processed % 100 == 0)
+                {
+                    DrawLoadingMessage(string.Format(catalog.GetString("Searching route files ({0}/{1})..."), processed, wFiles.Length));
+                }
+
+                WorldFile wFile;
+                try
+                {
+                    wFile = new WorldFile(file, tokens);
+                }
+                catch
+                {
+                    continue;
+                }
+
+                if (wFile.Tr_Worldfile == null) continue;
+
+                int tileX = wFile.TileX;
+                int tileZ = wFile.TileZ;
+
+                foreach (var obj in wFile.Tr_Worldfile)
+                {
+                    if (obj is StaticObj staticObj && !string.IsNullOrEmpty(staticObj.FileName))
+                    {
+                        string objName = staticObj.FileName.ToLower();
+
+                        bool isDown = searchDown && objName == downTarget;
+                        bool isUp = searchUp && objName == upTarget;
+
+                        if (isDown || isUp)
+                        {
+                            var loc = new WorldLocation(tileX, tileZ, staticObj.Position.X, staticObj.Position.Y, staticObj.Position.Z);
+                            loc.Normalize();
+
+                            if (isDown)
+                            {
+                                PantoDownMarkers.Add(new SceneryShapeMarker
+                                {
+                                    ShapeName = staticObj.FileName,
+                                    WorldLocation = loc
+                                });
+                            }
+
+                            if (isUp)
+                            {
+                                PantoUpMarkers.Add(new SceneryShapeMarker
+                                {
+                                    ShapeName = staticObj.FileName,
+                                    WorldLocation = loc
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         #endregion
 
         #region Path methods

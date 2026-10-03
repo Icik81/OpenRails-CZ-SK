@@ -583,17 +583,17 @@ namespace ORTS
                             DataTable dt = ws.GetMirelSignals(comboBoxRoute.Text, "0");                            
                             int currentRow = 0;
                             
-                            WebClient webClient = new WebClient();                            
-                            try
-                            {
-                                File.Delete(SelectedRoute.Path + "\\MirelDb.xml");
-                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
-                            }
-                            catch
-                            {
-                                sw.Close();
-                                return;
-                            }
+                            //WebClient webClient = new WebClient();                            
+                            //try
+                            //{
+                            //    File.Delete(SelectedRoute.Path + "\\MirelDb.xml");
+                            //    webClient.DownloadFile("http://lkpr.aspfree.cz/or/MirelDb.xml", SelectedRoute.Path + "\\MirelDb.xml");
+                            //}
+                            //catch
+                            //{
+                            //    sw.Close();
+                            //    return;
+                            //}
 
                             XmlDocument doc = new XmlDocument();
                             doc.Load(SelectedRoute.Path + "\\MirelDb.xml");
@@ -678,17 +678,17 @@ namespace ORTS
                             }
                             int currentRow = 0;
                             
-                            WebClient webClient = new WebClient();
-                            try
-                            {
-                                File.Delete(SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
-                            }
-                            catch
-                            {
-                                sw.Close();
-                                return;
-                            }                           
+                            //WebClient webClient = new WebClient();
+                            //try
+                            //{
+                            //    File.Delete(SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                            //    webClient.DownloadFile("http://lkpr.aspfree.cz/or/PowerSupplyStations.xml", SelectedRoute.Path + "\\PowerSupplyStations.xml");
+                            //}
+                            //catch
+                            //{
+                            //    sw.Close();
+                            //    return;
+                            //}                           
                            
                             XmlDocument doc = new XmlDocument();
                             doc.Load(SelectedRoute.Path + "\\PowerSupplyStations.xml");
@@ -773,17 +773,17 @@ namespace ORTS
                             DataTable dt = ws.GetPowerSupplyMarkers(comboBoxRoute.Text, "0");
                             int currentRow = 0;
 
-                            WebClient webClient = new WebClient();
-                            try
-                            {
-                                File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                                webClient.DownloadFile("http://lkpr.aspfree.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
-                            }
-                            catch
-                            {
-                                sw.Close();
-                                return;
-                            }                            
+                            //WebClient webClient = new WebClient();
+                            //try
+                            //{
+                            //    File.Delete(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                            //    webClient.DownloadFile("http://lkpr.aspfree.cz/or/VoltageChangeMarkers.xml", SelectedRoute.Path + "\\VoltageChangeMarkers.xml");
+                            //}
+                            //catch
+                            //{
+                            //    sw.Close();
+                            //    return;
+                            //}                            
 
                             XmlDocument doc = new XmlDocument();
                             doc.Load(SelectedRoute.Path + "\\VoltageChangeMarkers.xml");

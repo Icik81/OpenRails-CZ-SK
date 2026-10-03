@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Contrib\n"
-"POT-Creation-Date: 2026-10-03 13:12:38+0200\n"
-"PO-Revision-Date: 2026-10-03 13:14+0200\n"
+"POT-Creation-Date: 2026-10-03 20:13:31+0200\n"
+"PO-Revision-Date: 2026-10-03 20:14+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -637,6 +637,7 @@ msgstr "&Další >"
 
 #: ../../Contrib/ActivityEditor/ActivityEditor/Wizard/WizardForm.cs:207
 #: ../../Contrib/ActivityEditor/AEWizard/WizardForm.cs:207
+#: ../../Contrib/TrackViewer/TrackViewer.cs:289
 #: ../../Contrib/TrackViewer/Drawing/Labels/EditLabel.xaml:12
 #: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:12
 msgid "Cancel"
@@ -671,15 +672,45 @@ msgstr "Nahrávám..."
 msgid "Open Rails Content Manager"
 msgstr "Správce obsahu Open Rails"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:984
+#: ../../Contrib/TrackViewer/TrackViewer.cs:274
+msgid "Pantograph sign shape names"
+msgstr "Názvy shape pro návěsti sběrače"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:282
+msgid "Pantograph down shape:"
+msgstr "Shape pro stažení sběrače:"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:285
+msgid "Pantograph up shape:"
+msgstr "Shape pro zvednutí sběrače:"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:288
+#: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:4
+#: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:13
+msgid "Search"
+msgstr "Hledat"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:309
+msgid "Searching pantograph sign shapes in route files..."
+msgstr "Vyhledávání shape návěstí sběrače v souborech trati..."
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1028
+msgid "Lower pantograph"
+msgstr "Stáhni sběrač"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1041
+msgid "Raise pantograph"
+msgstr "Zvedni sběrač"
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1073
 msgid "The path you are working on has un-saved changes.\n"
 msgstr "Cesta, na které pracujete má neuložené změny.\n"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:986
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1075
 msgid "Do you really want to Quit?"
 msgstr "Opravdu chcete odejít?"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1052
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1141
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -688,7 +719,7 @@ msgstr ""
 "Trať nelze načíst.\n"
 "Přípona {0} není podporována"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1058
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1147
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -697,7 +728,7 @@ msgstr ""
 "Trať nelze načíst.\n"
 "{0} neexistuje"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1065
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1154
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -708,7 +739,7 @@ msgstr ""
 "Při pokusu o otevření {0} byla složka {1} vyhodnocena jako instalační složka "
 "(MSTS nebo podobná), ale neobsahuje očekávané soubory"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1087
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1176
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -717,7 +748,7 @@ msgstr ""
 "Trať nelze načíst.\n"
 "{0} se nepodařilo převést na načitatelnou trať"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1113
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1202
 msgid ""
 "Directory is not a valid install directory.\n"
 "The install directory needs to contain ROUTES, GLOBAL, ..."
@@ -725,46 +756,51 @@ msgstr ""
 "Adresář není platným instalačním adresářem.\n"
 "Je třeba, aby obsahoval podadresáře ROUTES, GLOBAL..."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1163
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1252
 msgid "Loading route..."
 msgstr "Nahrávám trať..."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1191
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1283
 msgid "Route cannot be loaded. Sorry"
 msgstr "Trať nelze načíst, je nám líto"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1250
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1283
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1320
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1342
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1375
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1412
 msgid "Saved"
 msgstr "Uloženo"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1656
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1759
+#, csharp-format
+msgid "Searching route files ({0}/{1})..."
+msgstr "Prohledávání souborů trati ({0}/{1})..."
+
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1838
 msgid "Loading .pat file ..."
 msgstr "Nahrávám soubor .pat..."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1659
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1841
 msgid "Processing .pat file ..."
 msgstr "Zpracovávám soubor .pat..."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1683
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1865
 msgid "Path has been modified. Loading a new path will discard changes."
 msgstr "Cesta byla změněna. Načtení nové cesty zruší změny."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1684
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1738
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1866
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1920
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:98
 msgid "Do you want to continue?"
 msgstr "Chcete pokračovat?"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1685
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1739
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1867
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1921
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:84
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:101
 msgid "Trackviewer Path Editor"
 msgstr "Trackviewer editor cest"
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1735
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1917
 msgid ""
 "This will open every single .pat file for this route, (try to) fix all "
 "broken nodes, and save the modified path. "
@@ -772,11 +808,11 @@ msgstr ""
 "Tato akce otevře každý jednotlivý soubor .pat pro tuto trať, (pokusí se) "
 "opravit všechny vadné uzly a upravenou cestu uloží. "
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1736
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1918
 msgid "Potentially it will therefore change all .pat files on disc."
 msgstr "Může tím dojít ke změně všech souborů .pat na disku."
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1737
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1919
 msgid ""
 "This can be useful when a route has been changed and you want all paths to "
 "be corrected."
@@ -1126,238 +1162,239 @@ msgstr "899"
 msgid "Please restart TrackViewer in order to load the new language."
 msgstr "Pro změnu jazyka prosím restartujte TrackViewer."
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:430
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:458
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:486
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:380
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:441
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:469
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:497
 msgid "No route loaded!"
 msgstr "Nebyla vybrána žádná trať!"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:436
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:447
 msgid "No voltage markers found to save!"
 msgstr "Žádné napěťové body k uložení!"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:445
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:456
 msgid "Save Voltage Change Markers"
 msgstr "Uložit změny napěťových bodů"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:464
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:475
 msgid "No power supply stations found to save!"
 msgstr "Žádné napájecí stanice k uložení!"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:473
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:484
 msgid "Save Power Supply Stations"
 msgstr "Uložit napájecí stanice"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:492
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:503
 msgid "No Mirel points found to save!"
 msgstr "Žádné Mirel body k uložení!"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:501
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:512
 msgid "Save Mirel Points"
 msgstr "Uložit Mirel body"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:521
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:532
 msgid "<Select path>"
 msgstr "<Vybrat cestu>"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:537
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:548
 msgid "<Select station>"
 msgstr "<Vybrat stanici>"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:550
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:561
 msgid "<Select platform>"
 msgstr "<Vybrat nástupiště>"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:563
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:574
 msgid "<Select siding>"
 msgstr "<Vybrat vedlejší kolej>"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:676
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:687
 msgid "ctrl-R\tReload the route\n"
 msgstr "ctrl-R\tZnovu načíst trať\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:677
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:688
 msgid "Q\tQuit\n"
 msgstr "Q\tUkončit\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:679
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:690
 msgid "=\tZoom-in (and keep zooming)\n"
 msgstr "=\tPřiblížit (a pokračovat v přibližování)\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:680
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:691
 msgid "shift-=\tZoom-in\n"
 msgstr "shift-=\tPřiblížit\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:681
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:692
 msgid "-\tZoom-out (and keep zooming)\n"
 msgstr "-\tOddálit (a pokračovat v oddalování)\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:682
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:693
 msgid "shift--\tZoom-out\n"
 msgstr "shift--\tOddálit\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:683
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:694
 msgid "Z\tZoom to tile\n"
 msgstr "Z\tZoom na dlaždici\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:684
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:695
 msgid "M\tToggle zoom center\n"
 msgstr "M\tPřepnout střed přiblížení\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:685
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:696
 msgid "R\tZoom reset\n"
 msgstr "R\tResetovat zoom\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:686
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:697
 msgid "L\tAdd label\n"
 msgstr "L\tPřidat popisek\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:688
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:699
 msgid "shift-C\t\tShift center to current mouse location\n"
 msgstr "shift-C\t\tPosunout střed na aktuální pozici myši\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:689
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:700
 msgid "left arrow\tShift left\n"
 msgstr "šipka vlevo\tPosunout doleva\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:690
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:701
 msgid "down arrow\tShift down\n"
 msgstr "šipka dolů\tPosunout dolů\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:691
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:702
 msgid "right arrow\tShift right\n"
 msgstr "šipka vpravo\tPosunout doprava\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:692
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:703
 msgid "up arrow\t\tShift up\n"
 msgstr "šipka nahoru\t\tPosunout nahoru\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:694
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:705
 msgid "F5\tShow speed-limits\n"
 msgstr "F5\tZobrazit rychlostní limity\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:695
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:706
 msgid "shift-F5\tShow mileposts\n"
 msgstr "shift-F5\tZobrazit milníky\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:696
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:707
 msgid "F6\tShow terrain\n"
 msgstr "F6\tZobrazit terén\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:697
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:708
 msgid "ctrl-F6\tShow DM terrain\n"
 msgstr "ctrl-F6\tZobrazit DM terén\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:698
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:709
 msgid "shift-F6\tShow terrain patch lines\n"
 msgstr "shift-F6\tZobrazit čáry dílců terénu\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:699
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:710
 msgid "F7\tshow signals\n"
 msgstr "F7\tZobrazit návěstidla\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:700
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:711
 msgid "F8\tShow platforms\n"
 msgstr "F8\tZobrazit nástupiště\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:701
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:712
 msgid "shift-F8\tShow platform-names\n"
 msgstr "shift-F8\tZobrazit názvy nástupišť\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:702
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:713
 msgid "F9\tShow sidings\n"
 msgstr "F9\tZobrazit vedlejší koleje\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:703
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:714
 msgid "shift-F9\tShow siding-names\n"
 msgstr "shift-F9\tZobrazit názvy vedlejších kolejí\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:704
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:715
 msgid "F10\tHighlight tracks\n"
 msgstr "F10\tZvýraznit tratě\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:705
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:716
 msgid "shift-F10\tHighlight items\n"
 msgstr "shift-F10\tZvýraznit položky\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:706
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:717
 msgid "F11\tShow path\n"
 msgstr "F11\tZobrazit cestu\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:707
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:718
 msgid "shift-F11\tShow raw path\n"
 msgstr "shift-F11\tZobrazit nezpracovanou cestu\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:709
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:720
 msgid "C\t\tShift to center of current path node\n"
 msgstr "C\t\tPosunout střed na aktuální uzel cesty\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:710
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:721
 msgid "PgUp\t\tShow more of the path\n"
 msgstr "PgUp\t\tZobrazit více z cesty\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:711
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:722
 msgid "PgDn\t\tShow less of the path\n"
 msgstr "PgDn\t\tZobrazit méně z cesty\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:712
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:723
 msgid "shift-PgUp\tShow the full path\n"
 msgstr "shift-PgUp\tZobrazit celou cestu\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:713
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:724
 msgid "shift-PgDn\tShow only start point of path\n"
 msgstr "shift-PgDn\tZobrazit pouze výchozí bod cesty\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:714
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:725
 msgid "E\t\tPlace end-point\n"
 msgstr "E\t\tUmístit koncový bod\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:715
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:726
 msgid "W\t\tPlace a wait-point\n"
 msgstr "W\t\tUmístit bod čekání\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:716
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:727
 msgid "ctrl-Z\t\tUndo in path editor\n"
 msgstr "ctrl-Z\t\tZpět v editoru cest\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:717
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:728
 msgid "ctrl-Y\t\tRedo in path editor\n"
 msgstr "ctrl-Y\t\tZnovu v editoru cest\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:719
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:730
 msgid "alt-?\t\tVarious keys to open submenus\n"
 msgstr "alt-?\t\tRůzné klávesy pro otevření podnabídek\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:720
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:731
 msgid "Keyboard shortcuts"
 msgstr "Klávesové zkratky"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:726
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:737
 msgid "This is ORTS TrackViewer, version "
 msgstr "Toto je ORTS TrackViewer, verze "
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:729
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:740
 msgid "It is a 'Contribution' to ORTS, and as such\n"
 msgstr "Toto je 'příspěvek' do ORTS a jako takový\n"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:730
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:741
 msgid "not an integral part of ORTS."
 msgstr "není integrální součástí ORTS."
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:738
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:749
 msgid "Documentation is available"
 msgstr "Dokumentace je dostupná"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:742
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:753
 msgid "Right column → Open Rails Trackviewer"
 msgstr "Pravý sloupec → Open Rails Trackviewer"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:744
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:755
 msgid "Do you want to go to the website?"
 msgstr "Chcete přejít na webové stránky?"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:746
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:184
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml.cs:757
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:186
 msgid "Documentation"
 msgstr "Dokumentace"
 
@@ -1891,174 +1928,178 @@ msgid "Save Mirel points"
 msgstr "Uložit Mirel body"
 
 #: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:110
+msgid "Set Pantograph Signs..."
+msgstr "Nastavit návěsti sběrače..."
+
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:112
 msgid "_Statusbar"
 msgstr "_Stavový řádek"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:111
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:113
 msgid "Show vector section info"
 msgstr "Zobrazit informace o vektorovém úseku"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:113
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:115
 msgid "Show PAT file info"
 msgstr "Zobrazit informace o souboru PAT"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:115
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:117
 msgid "Show Path info"
 msgstr "Zobrazit informace o trase"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:117
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:119
 msgid "Show terrain info"
 msgstr "Zobrazit informace o terénu"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:119
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:121
 msgid "Show signal info"
 msgstr "Zobrazit informace o návěstidlech"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:121
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:123
 msgid "Show platform/station names"
 msgstr "Zobrazit názvy nástupišť/stanic"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:124
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:126
 msgid "_Preferences"
 msgstr "_Předvolby"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:125
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:127
 msgid "Zooming is centered on mouse (M)"
 msgstr "Přibližování se centruje na kurzor myši (M)"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:127
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:129
 msgid "Use miles i.s.o. meters"
 msgstr "Použít míle namísto metrů"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:128
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:130
 msgid "Select language"
 msgstr "Vybrat jazyk"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:133
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:160
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:135
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:162
 msgid "Highlight last-drawn section"
 msgstr "Zvýraznit naposledy vykreslený úsek"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:134
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:161
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:136
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:163
 msgid "Enable editing"
 msgstr "Povolit úpravy"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:135
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:162
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:137
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:164
 msgid "Show current mouse action"
 msgstr "Zobrazovat aktuální akci myši"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:136
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:163
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:138
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:165
 msgid "Shift-PgUp also extends path"
 msgstr "Shift-PgUp také prodlužuje trasu"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:139
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:141
 msgid "Path-_Editor"
 msgstr "_Editor tras"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:140
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:142
 msgid "==Supporting MSTS paths only=="
 msgstr "==Podporovány jsou pouze trasy MSTS=="
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:141
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:143
 msgid "Load path"
 msgstr "Načíst trasu"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:145
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:147
 msgid "Show other paths"
 msgstr "Zobrazit ostatní trasy"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:147
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:149
 msgid "Save path"
 msgstr "Uložit trasu"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:148
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:150
 msgid "Save visited stations"
 msgstr "Uložit projeté stanice"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:149
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:151
 msgid "Show chart"
 msgstr "Zobrazit graf/profil"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:151
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:153
 msgid "New path"
 msgstr "Nová trasa"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:153
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:155
 msgid "Extend with other path"
 msgstr "Prodloužit jinou trasou"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:157
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:159
 msgid "Edit path metadata"
 msgstr "Upravit metadata trasy"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:158
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:160
 msgid "Reverse path"
 msgstr "Obrátit směr trasy"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:165
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:167
 msgid "Auto-fix all broken nodes"
 msgstr "Automaticky opravit všechny vadné uzly"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:166
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:168
 msgid "Auto-fix all broken paths"
 msgstr "Automaticky opravit všechny vadné trasy"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:168
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:170
 msgid "_Terrain"
 msgstr "_Terén"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:169
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:171
 msgid "Show terrain textures (F6)"
 msgstr "Zobrazit textury terénu (F6)"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:170
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:172
 msgid "Show DM terrain textures (ctrl-F6)"
 msgstr "Zobrazit DM textury terénu (ctrl-F6)"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:171
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:173
 msgid "Show patch lines (shift-F6)"
 msgstr "Zobrazit linie dílců terénu (shift-F6)"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:173
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:175
 msgid "Memory reduction options"
 msgstr "Možnosti snížení paměťových nároků"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:174
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:176
 msgid "No reduction"
 msgstr "Bez redukce"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:175
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:177
 msgid "Automatic reduction"
 msgstr "Automatická redukce"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:176
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:178
 msgid "Reduce by linear factor 2"
 msgstr "Zmenšit lineárním faktorem 2"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:177
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:179
 msgid "Reduce by linear factor 4"
 msgstr "Zmenšit lineárním faktorem 4"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:178
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:180
 msgid "Reduce by linear factor 8"
 msgstr "Zmenšit lineárním faktorem 8"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:179
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:181
 msgid "Reduce by linear factor 16"
 msgstr "Zmenšit lineárním faktorem 16"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:182
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:184
 msgid "_Help"
 msgstr "_Nápověda"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:183
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:185
 msgid "Shortcuts"
 msgstr "Klávesové zkratky"
 
-#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:185
+#: ../../Contrib/TrackViewer/UserInterface/MenuControl.xaml:187
 msgid "About"
 msgstr "O aplikaci"
 
@@ -2069,11 +2110,6 @@ msgstr "Vybrat cesty k vykreslení"
 #: ../../Contrib/TrackViewer/UserInterface/OtherPathsWindow.xaml:12
 msgid "Clear all"
 msgstr "Vyčistit vše"
-
-#: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:4
-#: ../../Contrib/TrackViewer/UserInterface/SearchControl.xaml:13
-msgid "Search"
-msgstr "Hledat"
 
 #: ../../Contrib/TrackViewer/UserInterface/StatusBarControl.xaml:33
 msgid "Shows tileX and tileZ of the world location at the mouse pointer"
