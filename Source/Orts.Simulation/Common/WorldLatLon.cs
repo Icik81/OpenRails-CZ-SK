@@ -264,6 +264,116 @@ namespace Orts.Simulation.Common
         }
 
         /// <summary>
+        /// Převod zeměpisných souřadnic (v radiánech) zpět na MSTS dlaždici a lokální souřadnice (X, Z).
+        /// </summary>
+        public int ConvertCTW(double latitude, double longitude, out int tileX, out int tileZ, out float locX, out float locZ)
+        {
+            GoodeInit();
+            double GX = 0, GY = 0;
+            int result = Goode_Forward(latitude, longitude, ref GX, ref GY);
+
+            // Inverzní výpočet k:
+            // X = ul_x + (Gsamp - 1) * tileSize + loc.X
+            // Y = ul_y - (Gline - 1) * tileSize + loc.Z
+            // kde loc.X a loc.Z jsou v rozsahu [-tileSize / 2, +tileSize / 2] (tj. -1024 až +1024)
+
+            double dGsamp = (GX - ul_x) / tileSize + 1.0;
+            double dGline = (ul_y - GY) / tileSize + 1.0;
+
+            int Gsamp = (int)Math.Round(dGsamp);
+            int Gline = (int)Math.Round(dGline);
+
+            tileX = Gsamp + wt_ew_offset;
+            tileZ = wt_ns_offset - Gline;
+
+            locX = (float)(GX - (ul_x + (Gsamp - 1.0) * tileSize));
+            locZ = (float)(GY - (ul_y - (Gline - 1.0) * tileSize));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Převod Lat/Lon (v radiánech) na Goode projekční souřadnice GX, GY.
+        /// </summary>
+        private int Goode_Forward(double Latitude, double Longitude, ref double GX, ref double GY)
+        {
+            int region;
+
+            if (Latitude >= 0.710987989993) // >= 40° 44' 11.8" N (Mollweide)
+            {
+                if (Longitude <= -0.698131700798) // <= -40°
+                    region = 0;
+                else
+                    region = 2;
+
+                // Newton-Raphson iterace pro Mollweide projekci: 2*theta + sin(2*theta) = PI * sin(lat)
+                double c = MathHelper.Pi * Math.Sin(Latitude);
+                double theta = Latitude;
+                for (int i = 0; i < 30; i++)
+                {
+                    double delta = (2.0 * theta + Math.Sin(2.0 * theta) - c) / (2.0 + 2.0 * Math.Cos(2.0 * theta));
+                    theta -= delta;
+                    if (Math.Abs(delta) < Epsilon)
+                        break;
+                }
+
+                GX = 0.900316316158 * earthRadius * (Longitude - Lon_Center[region]) * Math.Cos(theta);
+                GY = (1.4142135623731 * earthRadius * Math.Sin(theta)) - (0.0528035274542 * earthRadius * Sign(Latitude));
+            }
+            else if (Latitude >= 0) // 0° až 40° 44' 11.8" N (Sinusoidální)
+            {
+                if (Longitude <= -0.698131700798)
+                    region = 1;
+                else
+                    region = 3;
+
+                GX = earthRadius * (Longitude - Lon_Center[region]) * Math.Cos(Latitude);
+                GY = earthRadius * Latitude;
+            }
+            else if (Latitude >= -0.710987989993) // 0° až 40° 44' 11.8" S (Sinusoidální)
+            {
+                if (Longitude <= -1.74532925199)
+                    region = 4;
+                else if (Longitude <= -0.349065850399)
+                    region = 5;
+                else if (Longitude <= 1.3962634016)
+                    region = 8;
+                else
+                    region = 9;
+
+                GX = earthRadius * (Longitude - Lon_Center[region]) * Math.Cos(Latitude);
+                GY = earthRadius * Latitude;
+            }
+            else // Jižní Mollweide
+            {
+                if (Longitude <= -1.74532925199)
+                    region = 6;
+                else if (Longitude <= -0.349065850399)
+                    region = 7;
+                else if (Longitude <= 1.3962634016)
+                    region = 10;
+                else
+                    region = 11;
+
+                double c = MathHelper.Pi * Math.Sin(Latitude);
+                double theta = Latitude;
+                for (int i = 0; i < 30; i++)
+                {
+                    double delta = (2.0 * theta + Math.Sin(2.0 * theta) - c) / (2.0 + 2.0 * Math.Cos(2.0 * theta));
+                    theta -= delta;
+                    if (Math.Abs(delta) < Epsilon)
+                        break;
+                }
+
+                GX = 0.900316316158 * earthRadius * (Longitude - Lon_Center[region]) * Math.Cos(theta);
+                GY = (1.4142135623731 * earthRadius * Math.Sin(theta)) - (0.0528035274542 * earthRadius * Sign(Latitude));
+            }
+
+            GX += F_East[region];
+            return 1;
+        }
+
+        /// <summary>
         /// Returns the sign of a value
         /// </summary>        
         static int Sign(double value)

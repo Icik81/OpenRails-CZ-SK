@@ -399,8 +399,8 @@ namespace ORTS.TrackViewer
             {
                 Id = maxId + 1,
                 WorldLocation = loc,
-                Latitude = latRad * (180.0 / Math.PI),
-                Longitude = lonRad * (180.0 / Math.PI),
+                Latitude = latRad,
+                Longitude = lonRad,
                 Voltage = voltage
             });
 
@@ -418,8 +418,8 @@ namespace ORTS.TrackViewer
             {
                 Id = maxId + 1,
                 WorldLocation = loc,
-                Latitude = latRad * (180.0 / Math.PI),
-                Longitude = lonRad * (180.0 / Math.PI),
+                Latitude = latRad,
+                Longitude = lonRad,
                 PowerSystem = powerSystem
             });
 
@@ -438,8 +438,8 @@ namespace ORTS.TrackViewer
                 SignalId = maxId + 1,
                 Value = value,
                 WorldLocation = loc,
-                Latitude = latRad * (180.0 / Math.PI),
-                Longitude = lonRad * (180.0 / Math.PI)
+                Latitude = latRad,
+                Longitude = lonRad
             });
 
             skipDrawAmount = 0;
@@ -504,7 +504,6 @@ namespace ORTS.TrackViewer
                 drawAreaInset.ZoomReset(DrawTrackDB);
             }
 
-            // Deklarace souřadnic myši před voláním kontextového menu
             var mouseLocationAbsoluteX = Window.ClientBounds.Left + TVUserInput.MouseLocationX;
             var mouseLocationAbsoluteY = Window.ClientBounds.Top + TVUserInput.MouseLocationY;
 
@@ -674,8 +673,8 @@ namespace ORTS.TrackViewer
                                        draggedVoltagePoint.WorldLocation.Location,
                                        ref latRad, ref lonRad) == 1)
                     {
-                        draggedVoltagePoint.Latitude = latRad * (180.0 / Math.PI);
-                        draggedVoltagePoint.Longitude = lonRad * (180.0 / Math.PI);
+                        draggedVoltagePoint.Latitude = latRad;
+                        draggedVoltagePoint.Longitude = lonRad;
                     }
 
                     skipDrawAmount = 0;
@@ -727,8 +726,8 @@ namespace ORTS.TrackViewer
                                        draggedPowerSupplyStation.WorldLocation.Location,
                                        ref latRad, ref lonRad) == 1)
                     {
-                        draggedPowerSupplyStation.Latitude = latRad * (180.0 / Math.PI);
-                        draggedPowerSupplyStation.Longitude = lonRad * (180.0 / Math.PI);
+                        draggedPowerSupplyStation.Latitude = latRad;
+                        draggedPowerSupplyStation.Longitude = lonRad;
                     }
 
                     skipDrawAmount = 0;
@@ -780,8 +779,8 @@ namespace ORTS.TrackViewer
                                        draggedMirelPoint.WorldLocation.Location,
                                        ref latRad, ref lonRad) == 1)
                     {
-                        draggedMirelPoint.Latitude = latRad * (180.0 / Math.PI);
-                        draggedMirelPoint.Longitude = lonRad * (180.0 / Math.PI);
+                        draggedMirelPoint.Latitude = latRad;
+                        draggedMirelPoint.Longitude = lonRad;
                     }
 
                     skipDrawAmount = 0;
@@ -1238,8 +1237,9 @@ namespace ORTS.TrackViewer
             {
                 sb.AppendLine("  <VoltageChangeMarker>");
                 sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
-                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
-                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
+                // Prohozeno podle MSTS konvence: v tagu Latitude je Longitude a v tagu Longitude je Latitude
+                sb.AppendLine($"    <Latitude>{pt.Longitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Latitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Longitude>");
                 sb.AppendLine($"    <Voltage>{pt.Voltage}</Voltage>");
                 sb.AppendLine("  </VoltageChangeMarker>");
             }
@@ -1268,8 +1268,9 @@ namespace ORTS.TrackViewer
             {
                 sb.AppendLine("  <SupplyStation>");
                 sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
-                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
-                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
+                // Prohozeno: v tagu Latitude je Longitude a naopak
+                sb.AppendLine($"    <Latitude>{pt.Longitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Latitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Longitude>");
                 sb.AppendLine($"    <PowerSystem>{pt.PowerSystem}</PowerSystem>");
                 sb.AppendLine("  </SupplyStation>");
             }
@@ -1304,8 +1305,9 @@ namespace ORTS.TrackViewer
                 sb.AppendLine($"    <Value>{pt.Value}</Value>");
                 if (pt.Latitude != 0 || pt.Longitude != 0)
                 {
-                    sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
-                    sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
+                    // Prohozeno: v tagu Latitude je Longitude a naopak
+                    sb.AppendLine($"    <Latitude>{pt.Longitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Latitude>");
+                    sb.AppendLine($"    <Longitude>{pt.Latitude.ToString("0.000000000", CultureInfo.InvariantCulture)}</Longitude>");
                 }
                 sb.AppendLine("  </Signal>");
             }
@@ -1324,7 +1326,7 @@ namespace ORTS.TrackViewer
         {
             VoltagePoints.Clear();
             string filePath = System.IO.Path.Combine(routePath, "VoltageChangeMarkers.xml");
-            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB?.TrackNodes == null)
+            if (!System.IO.File.Exists(filePath))
                 return;
 
             var lines = System.IO.File.ReadAllLines(filePath);
@@ -1358,21 +1360,21 @@ namespace ORTS.TrackViewer
                 {
                     if (curLat != 0 || curLon != 0)
                     {
-                        double finalLat = curLat;
-                        double finalLon = curLon;
+                        // Prohození: v tagu Latitude je uložen Longitude a v tagu Longitude je Latitude
+                        double finalLat = curLon;
+                        double finalLon = curLat;
 
-                        if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
-                        {
-                            finalLat = curLon * (180.0 / Math.PI);
-                            finalLon = curLat * (180.0 / Math.PI);
-                        }
-                        else
+                        // Zpětná kompatibilita pro staré soubory ve stupních
+                        if (Math.Abs(curLat) > Math.PI || Math.Abs(curLon) > Math.PI)
                         {
                             if (curLat < 30.0 && curLon > 40.0)
                             {
-                                finalLat = curLon;
-                                finalLon = curLat;
+                                double tmp = finalLat;
+                                finalLat = finalLon;
+                                finalLon = tmp;
                             }
+                            finalLat *= (Math.PI / 180.0);
+                            finalLon *= (Math.PI / 180.0);
                         }
 
                         rawMarkers.Add(Tuple.Create(finalLat, finalLon, curVoltage));
@@ -1386,27 +1388,7 @@ namespace ORTS.TrackViewer
             if (rawMarkers.Count == 0) return;
 
             var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
-            var trackPoints = new List<Tuple<WorldLocation, double, double>>();
-
-            foreach (var tn in RouteData.TrackDB.TrackNodes)
-            {
-                if (tn?.TrVectorNode?.TrVectorSections == null) continue;
-
-                for (int i = 0; i < tn.TrVectorNode.TrVectorSections.Length; i++)
-                {
-                    var tvs = tn.TrVectorNode.TrVectorSections[i];
-                    if (tvs == null) continue;
-
-                    var wLoc = DrawTrackDB.TvsLocation(tvs);
-                    double latRad = 0, lonRad = 0;
-                    if (worldLatLon.ConvertWTC(wLoc.TileX, wLoc.TileZ, wLoc.Location, ref latRad, ref lonRad) == 1)
-                    {
-                        trackPoints.Add(Tuple.Create(wLoc, latRad * (180.0 / Math.PI), lonRad * (180.0 / Math.PI)));
-                    }
-                }
-            }
-
-            if (trackPoints.Count == 0) return;
+            int idCounter = 1;
 
             foreach (var marker in rawMarkers)
             {
@@ -1414,44 +1396,20 @@ namespace ORTS.TrackViewer
                 double mLon = marker.Item2;
                 int mVolt = marker.Item3;
 
-                WorldLocation closestLoc = WorldLocation.None;
-                double bestDistSq = double.MaxValue;
+                int tileX = 0, tileZ = 0;
+                float locX = 0, locZ = 0;
 
-                foreach (var tp in trackPoints)
+                // Přímý přesný převod z radiánů zpět na WorldLocation
+                worldLatLon.ConvertCTW(mLat, mLon, out tileX, out tileZ, out locX, out locZ);
+
+                VoltagePoints.Add(new RouteVoltagePoint
                 {
-                    double dLat = tp.Item2 - mLat;
-                    double dLon = (tp.Item3 - mLon) * 0.65;
-                    double distSq = dLat * dLat + dLon * dLon;
-
-                    if (distSq < bestDistSq)
-                    {
-                        bestDistSq = distSq;
-                        closestLoc = tp.Item1;
-                    }
-                }
-
-                if (closestLoc != WorldLocation.None)
-                {
-                    int overlapCount = VoltagePoints.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
-                    if (overlapCount > 0)
-                    {
-                        closestLoc = new WorldLocation(
-                            closestLoc.TileX,
-                            closestLoc.TileZ,
-                            closestLoc.Location.X + (overlapCount * 2f),
-                            closestLoc.Location.Y,
-                            closestLoc.Location.Z + (overlapCount * 2f)
-                        );
-                    }
-
-                    VoltagePoints.Add(new RouteVoltagePoint
-                    {
-                        Latitude = mLat,
-                        Longitude = mLon,
-                        Voltage = mVolt,
-                        WorldLocation = closestLoc
-                    });
-                }
+                    Id = idCounter++,
+                    Latitude = mLat,
+                    Longitude = mLon,
+                    Voltage = mVolt,
+                    WorldLocation = new WorldLocation(tileX, tileZ, locX, 0, locZ)
+                });
             }
         }
 
@@ -1459,7 +1417,7 @@ namespace ORTS.TrackViewer
         {
             PowerSupplyStations.Clear();
             string filePath = System.IO.Path.Combine(routePath, "PowerSupplyStations.xml");
-            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB?.TrackNodes == null)
+            if (!System.IO.File.Exists(filePath))
                 return;
 
             var lines = System.IO.File.ReadAllLines(filePath);
@@ -1496,18 +1454,20 @@ namespace ORTS.TrackViewer
                 {
                     if (curLat != 0 || curLon != 0)
                     {
-                        double finalLat = curLat;
-                        double finalLon = curLon;
+                        // Prohození: v tagu Latitude je uložen Longitude a v tagu Longitude je Latitude
+                        double finalLat = curLon;
+                        double finalLon = curLat;
 
-                        if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
+                        if (Math.Abs(curLat) > Math.PI || Math.Abs(curLon) > Math.PI)
                         {
-                            finalLat = curLon * (180.0 / Math.PI);
-                            finalLon = curLat * (180.0 / Math.PI);
-                        }
-                        else if (curLat < 30.0 && curLon > 40.0)
-                        {
-                            finalLat = curLon;
-                            finalLon = curLat;
+                            if (curLat < 30.0 && curLon > 40.0)
+                            {
+                                double tmp = finalLat;
+                                finalLat = finalLon;
+                                finalLon = tmp;
+                            }
+                            finalLat *= (Math.PI / 180.0);
+                            finalLon *= (Math.PI / 180.0);
                         }
 
                         rawStations.Add(Tuple.Create(curId, finalLat, finalLon, curPowerSystem));
@@ -1522,74 +1482,29 @@ namespace ORTS.TrackViewer
             if (rawStations.Count == 0) return;
 
             var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
-            var trackPoints = new List<Tuple<WorldLocation, double, double>>();
-
-            foreach (var tn in RouteData.TrackDB.TrackNodes)
-            {
-                if (tn?.TrVectorNode?.TrVectorSections == null) continue;
-
-                for (int i = 0; i < tn.TrVectorNode.TrVectorSections.Length; i++)
-                {
-                    var tvs = tn.TrVectorNode.TrVectorSections[i];
-                    if (tvs == null) continue;
-
-                    var wLoc = DrawTrackDB.TvsLocation(tvs);
-                    double latRad = 0, lonRad = 0;
-                    if (worldLatLon.ConvertWTC(wLoc.TileX, wLoc.TileZ, wLoc.Location, ref latRad, ref lonRad) == 1)
-                    {
-                        trackPoints.Add(Tuple.Create(wLoc, latRad * (180.0 / Math.PI), lonRad * (180.0 / Math.PI)));
-                    }
-                }
-            }
-
-            if (trackPoints.Count == 0) return;
+            int fallbackId = 1;
 
             foreach (var st in rawStations)
             {
-                int sId = st.Item1;
+                int sId = st.Item1 > 0 ? st.Item1 : fallbackId++;
                 double sLat = st.Item2;
                 double sLon = st.Item3;
                 int sSys = st.Item4;
 
-                WorldLocation closestLoc = WorldLocation.None;
-                double bestDistSq = double.MaxValue;
+                int tileX = 0, tileZ = 0;
+                float locX = 0, locZ = 0;
 
-                foreach (var tp in trackPoints)
+                // Přímý přesný převod z radiánů zpět na WorldLocation
+                worldLatLon.ConvertCTW(sLat, sLon, out tileX, out tileZ, out locX, out locZ);
+
+                PowerSupplyStations.Add(new RoutePowerSupplyStation
                 {
-                    double dLat = tp.Item2 - sLat;
-                    double dLon = (tp.Item3 - sLon) * 0.65;
-                    double distSq = dLat * dLat + dLon * dLon;
-
-                    if (distSq < bestDistSq)
-                    {
-                        bestDistSq = distSq;
-                        closestLoc = tp.Item1;
-                    }
-                }
-
-                if (closestLoc != WorldLocation.None)
-                {
-                    int overlapCount = PowerSupplyStations.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
-                    if (overlapCount > 0)
-                    {
-                        closestLoc = new WorldLocation(
-                            closestLoc.TileX,
-                            closestLoc.TileZ,
-                            closestLoc.Location.X + (overlapCount * 3f),
-                            closestLoc.Location.Y,
-                            closestLoc.Location.Z + (overlapCount * 3f)
-                        );
-                    }
-
-                    PowerSupplyStations.Add(new RoutePowerSupplyStation
-                    {
-                        Id = sId,
-                        Latitude = sLat,
-                        Longitude = sLon,
-                        PowerSystem = sSys,
-                        WorldLocation = closestLoc
-                    });
-                }
+                    Id = sId,
+                    Latitude = sLat,
+                    Longitude = sLon,
+                    PowerSystem = sSys,
+                    WorldLocation = new WorldLocation(tileX, tileZ, locX, 0, locZ)
+                });
             }
         }
 
@@ -1597,7 +1512,7 @@ namespace ORTS.TrackViewer
         {
             MirelPoints.Clear();
             string filePath = System.IO.Path.Combine(routePath, "MirelDb.xml");
-            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB == null)
+            if (!System.IO.File.Exists(filePath))
                 return;
 
             var lines = System.IO.File.ReadAllLines(filePath);
@@ -1651,32 +1566,39 @@ namespace ORTS.TrackViewer
             {
                 int sId = sig.Item1;
                 string sVal = sig.Item2;
-                double sLat = sig.Item3;
-                double sLon = sig.Item4;
+                // V XML byl v Latitude uložen Longitude a v Longitude Latitude:
+                double sLat = sig.Item4;
+                double sLon = sig.Item3;
                 WorldLocation loc = WorldLocation.None;
 
-                // 1. Zkusíme načíst z TrItemTable
-                if (RouteData.TrackDB.TrItemTable != null && sId >= 0 && sId < RouteData.TrackDB.TrItemTable.Length)
+                if (Math.Abs(sLat) > Math.PI || Math.Abs(sLon) > Math.PI)
                 {
-                    var item = RouteData.TrackDB.TrItemTable[sId];
-                    if (item != null)
-                    {
-                        loc = new WorldLocation(item.TileX, item.TileZ, item.X, item.Y, item.Z);
-                    }
+                    sLat *= (Math.PI / 180.0);
+                    sLon *= (Math.PI / 180.0);
                 }
 
-                // 2. Záložní dohledání přes první vektorový uzel
-                if (loc == WorldLocation.None && RouteData.TrackDB.TrackNodes != null)
+                // Pokud máme přesné souřadnice, přímo je zrekonstruujeme
+                if (sLat != 0 || sLon != 0)
                 {
-                    foreach (var tn in RouteData.TrackDB.TrackNodes)
+                    int tileX = 0, tileZ = 0;
+                    float locX = 0, locZ = 0;
+                    worldLatLon.ConvertCTW(sLat, sLon, out tileX, out tileZ, out locX, out locZ);
+                    loc = new WorldLocation(tileX, tileZ, locX, 0, locZ);
+                }
+                else
+                {
+                    // Záložní načtení z TrItemTable jen v případě, že v XML souřadnice zcela chybí
+                    if (RouteData?.TrackDB?.TrItemTable != null && sId >= 0 && sId < RouteData.TrackDB.TrItemTable.Length)
                     {
-                        if (tn?.TrVectorNode?.TrVectorSections != null && tn.TrVectorNode.TrVectorSections.Length > 0)
+                        var item = RouteData.TrackDB.TrItemTable[sId];
+                        if (item != null)
                         {
-                            var tvs = tn.TrVectorNode.TrVectorSections[0];
-                            if (tvs != null)
+                            loc = new WorldLocation(item.TileX, item.TileZ, item.X, item.Y, item.Z);
+                            double latRad = 0, lonRad = 0;
+                            if (worldLatLon.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad) == 1)
                             {
-                                loc = DrawTrackDB.TvsLocation(tvs);
-                                break;
+                                sLat = latRad;
+                                sLon = lonRad;
                             }
                         }
                     }
@@ -1684,28 +1606,6 @@ namespace ORTS.TrackViewer
 
                 if (loc != WorldLocation.None)
                 {
-                    int overlapCount = MirelPoints.Count(p => WorldLocation.Within(p.WorldLocation, loc, 0.5f));
-                    if (overlapCount > 0)
-                    {
-                        loc = new WorldLocation(
-                            loc.TileX,
-                            loc.TileZ,
-                            loc.Location.X + (overlapCount * 2.5f),
-                            loc.Location.Y,
-                            loc.Location.Z + (overlapCount * 2.5f)
-                        );
-                    }
-
-                    if (sLat == 0 && sLon == 0)
-                    {
-                        double latRad = 0, lonRad = 0;
-                        if (worldLatLon.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad) == 1)
-                        {
-                            sLat = latRad * (180.0 / Math.PI);
-                            sLon = lonRad * (180.0 / Math.PI);
-                        }
-                    }
-
                     MirelPoints.Add(new RouteMirelPoint
                     {
                         SignalId = sId,
