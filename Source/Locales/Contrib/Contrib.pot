@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2026-10-03 09:16:53+0200\n"
-"PO-Revision-Date: 2026-10-03 09:16:54+0200\n"
+"POT-Creation-Date: 2026-10-03 13:12:38+0200\n"
+"PO-Revision-Date: 2026-10-03 13:12:38+0200\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -663,30 +663,30 @@ msgstr ""
 msgid "Open Rails Content Manager"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:985
+#: ../../Contrib/TrackViewer/TrackViewer.cs:984
 msgid ""
 "The path you are working on has un-saved changes.\n"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:987
+#: ../../Contrib/TrackViewer/TrackViewer.cs:986
 msgid "Do you really want to Quit?"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1053
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1052
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "Extension {0} is not supported"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1059
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1058
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "{0} does not exist"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1066
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1065
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
@@ -694,69 +694,69 @@ msgid ""
 "install folder but does not contain expected files"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1088
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1087
 #, csharp-format
 msgid ""
 "Route cannot be loaded.\n"
 "{0} somehow could not be translated into a loadable route"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1114
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1113
 msgid ""
 "Directory is not a valid install directory.\n"
 "The install directory needs to contain ROUTES, GLOBAL, ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1164
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1163
 msgid "Loading route..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1192
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1191
 msgid "Route cannot be loaded. Sorry"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/TrackViewer.cs:1250
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1282
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1318
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1283
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1320
 msgid "Saved"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1756
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1656
 msgid "Loading .pat file ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1759
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1659
 msgid "Processing .pat file ..."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1783
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1683
 msgid "Path has been modified. Loading a new path will discard changes."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1784
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1838
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1684
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1738
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:98
 msgid "Do you want to continue?"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1785
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1839
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1685
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1739
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:84
 #: ../../Contrib/TrackViewer/Editing/SavePatFile.cs:101
 msgid "Trackviewer Path Editor"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1835
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1735
 msgid ""
 "This will open every single .pat file for this route, (try to) fix all broken "
 "nodes, and save the modified path. "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1836
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1736
 msgid "Potentially it will therefore change all .pat files on disc."
 msgstr ""
 
-#: ../../Contrib/TrackViewer/TrackViewer.cs:1837
+#: ../../Contrib/TrackViewer/TrackViewer.cs:1737
 msgid ""
 "This can be useful when a route has been changed and you want all paths to be "
 "corrected."
@@ -1071,18 +1071,27 @@ msgstr ""
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:45
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:46
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:47
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:48
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:49
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:152
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:50
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:51
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:203
 msgid "1"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:157
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:48
+msgid "50"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:208
 msgid "11"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:288
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:359
 msgid "99"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:370
+msgid "899"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/UserInterface/Languages.cs:90
@@ -1422,13 +1431,13 @@ msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/PathMetadataDialog.xaml:24
 #: ../../Contrib/TrackViewer/Editing/UncouplePointDialog.xaml:15
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:63
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:85
 msgid " OK "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/PathMetadataDialog.xaml:25
 #: ../../Contrib/TrackViewer/Editing/UncouplePointDialog.xaml:16
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:64
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:86
 msgid " Cancel "
 msgstr ""
 
@@ -1506,34 +1515,66 @@ msgid "Keep rear"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:42
-msgid "Join and split"
+msgid "Leave / take: "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:46
-msgid "AI train request to pass red signal"
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:44
+msgid "cars. "
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:50
-msgid "Blow horn for"
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:45
+msgid "Take cars (599xx)"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:49
+msgid "Station stop offset: "
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:51
+msgid "meters. "
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:52
-msgid "seconds.  11 = American horn sequence."
+msgid "Negative / behind center (59xxx)"
 msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:56
+msgid "AI preference over player (WP 40000)"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:60
+msgid "AI lower pantograph / push by player (WP 40001)"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:64
+msgid "Join and split"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:68
+msgid "AI train request to pass red signal"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:72
+msgid "Blow horn for"
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:74
+msgid "seconds.  11 = American horn sequence."
+msgstr ""
+
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:78
 msgid "Wait time code as decimal ="
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:57
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:79
 msgid "00000"
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:58
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:80
 msgid "hexadecimal ="
 msgstr ""
 
-#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:59
+#: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:81
 msgid "0000"
 msgstr ""
 

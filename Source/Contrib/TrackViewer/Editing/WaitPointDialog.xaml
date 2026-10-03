@@ -1,7 +1,7 @@
 ﻿<Window x:Class="ORTS.TrackViewer.Editing.WaitPointDialog"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    Title="Wait Point" Width="450" Height="345">
+    Title="Wait Point" Width="475" Height="465">
     <StackPanel Orientation="Vertical">
         <StackPanel Orientation="Horizontal">
             <RadioButton GroupName="shuntingOption" Name="selectWait" VerticalAlignment="Center" 
@@ -30,12 +30,34 @@
         </StackPanel>
         <StackPanel Orientation="Horizontal" Height="30">
             <RadioButton GroupName="shuntingOption" Name="selectUncouple" VerticalAlignment="Center" 
-                         Content="Uncouple: keep " Width="105" Checked="Option_CheckChanged" />
+                         Content="Uncouple: keep " Width="120" Checked="Option_CheckChanged" />
             <TextBox Height="23" Name="uncoupleCars" Width="30" PreviewTextInput="NumberValidationTextBox" KeyDown="OnKeyDownHandler" TextChanged="TwoDigits_TextChanged"/>
             <Label Content=" cars, and wait"/>
             <TextBox Height="23" Name="uncoupleWaitSeconds" Width="30" PreviewTextInput="NumberValidationTextBox" KeyDown="OnKeyDownHandler" TextChanged="TwoDigits_TextChanged"/>
             <Label Content="seconds. "/>
             <CheckBox Name="keepRear" VerticalAlignment="Center" Content="Keep rear" Unchecked="Option_CheckChanged" Checked="Option_CheckChanged"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="30">
+            <RadioButton GroupName="shuntingOption" Name="selectLeaveOrStealCars" VerticalAlignment="Center" 
+                         Content="Leave / take: " Width="105" Checked="Option_CheckChanged" />
+            <TextBox Height="23" Name="leaveOrStealCarsCount" Width="30" PreviewTextInput="NumberValidationTextBox" KeyDown="OnKeyDownHandler" TextChanged="TwoDigits_TextChanged"/>
+            <Label Content="cars. "/>
+            <CheckBox Name="leaveOrStealKeepRear" VerticalAlignment="Center" Content="Take cars (599xx)" Unchecked="Option_CheckChanged" Checked="Option_CheckChanged"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="30">
+            <RadioButton GroupName="shuntingOption" Name="selectStationOffset" VerticalAlignment="Center" 
+                         Content="Station stop offset: " Width="160" Checked="Option_CheckChanged" />
+            <TextBox Height="23" Name="stationOffsetMeters" Width="35" PreviewTextInput="NumberValidationTextBox" KeyDown="OnKeyDownHandler" TextChanged="OffsetMeters_TextChanged"/>
+            <Label Content="meters. "/>
+            <CheckBox Name="stationOffsetBehind" VerticalAlignment="Center" Content="Negative / behind center (59xxx)" Unchecked="Option_CheckChanged" Checked="Option_CheckChanged"/>
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="30">
+            <RadioButton GroupName="shuntingOption" Name="selectAiPreference" VerticalAlignment="Center" 
+                         Content="AI preference over player (WP 40000)" Checked="Option_CheckChanged" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Height="30">
+            <RadioButton GroupName="shuntingOption" Name="selectAiOutOfPower" VerticalAlignment="Center" 
+                         Content="AI lower pantograph / push by player (WP 40001)" Checked="Option_CheckChanged" />
         </StackPanel>
         <StackPanel Orientation="Horizontal" Height="30">
             <RadioButton GroupName="shuntingOption" Name="selectJoinSplit" VerticalAlignment="Center" 

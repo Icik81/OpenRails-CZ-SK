@@ -44,6 +44,8 @@ namespace ORTS.TrackViewer.Editing
             untilTimeMinutes.Text = "1";
             uncoupleCars.Text = "1";
             uncoupleWaitSeconds.Text = "1";
+            leaveOrStealCarsCount.Text = "1";
+            stationOffsetMeters.Text = "50";
             waitTimeMinutes.Text = "1";
             waitTimeSeconds.Text = "1";
             blowHornSeconds.Text = "1";
@@ -58,6 +60,29 @@ namespace ORTS.TrackViewer.Editing
                 untilTimeHours.Text = hours.ToString(System.Globalization.CultureInfo.CurrentCulture);
                 untilTimeMinutes.Text = minutes.ToString(System.Globalization.CultureInfo.CurrentCulture);
                 selectUntil.IsChecked = true;
+            }
+            else if (currentWaitTimeS == 40000)
+            {
+                // WP 40000 - Přednost AI před hráčem
+                selectAiPreference.IsChecked = true;
+            }
+            else if ((currentWaitTimeS >= 49900 && currentWaitTimeS <= 49999) || (currentWaitTimeS >= 59900 && currentWaitTimeS <= 59999))
+            {
+                // WP 499xx (přední) nebo 599xx (zadní) - Počet vozů odebrat/zanechat
+                bool isRear = (currentWaitTimeS >= 59900);
+                int cars = isRear ? (currentWaitTimeS - 59900) : (currentWaitTimeS - 49900);
+                leaveOrStealCarsCount.Text = cars.ToString(System.Globalization.CultureInfo.CurrentCulture);
+                leaveOrStealKeepRear.IsChecked = isRear;
+                selectLeaveOrStealCars.IsChecked = true;
+            }
+            else if ((currentWaitTimeS > 49000 && currentWaitTimeS < 49900) || (currentWaitTimeS > 59000 && currentWaitTimeS < 59900))
+            {
+                // WP 49xxx (+offset) nebo WP 59xxx (-offset) - Zastavení ve stanici offset v metrech
+                bool isBehind = (currentWaitTimeS > 59000);
+                int meters = isBehind ? (currentWaitTimeS - 59000) : (currentWaitTimeS - 49000);
+                stationOffsetMeters.Text = meters.ToString(System.Globalization.CultureInfo.CurrentCulture);
+                stationOffsetBehind.IsChecked = isBehind;
+                selectStationOffset.IsChecked = true;
             }
             else if (currentWaitTimeS >= 40000 && currentWaitTimeS < 60000)
             {
@@ -121,6 +146,32 @@ namespace ORTS.TrackViewer.Editing
                 // coding is 3HHMM
                 return 30000 +
                     100 * GetIntOrZero(untilTimeHours.Text) + GetIntOrZero(untilTimeMinutes.Text);
+            }
+
+            if (selectAiPreference.IsChecked == true)
+            {
+                // coding is 40000
+                return 40000;
+            }
+
+            if (selectLeaveOrStealCars.IsChecked == true)
+            {
+                // coding is 499xx (standardně) nebo 599xx (při keep rear), 0-99 vozů
+                int cars = GetIntOrZero(leaveOrStealCarsCount.Text);
+                if (cars < 0) cars = 0;
+                if (cars > 99) cars = 99;
+                int baseValue = (leaveOrStealKeepRear.IsChecked == true) ? 59900 : 49900;
+                return baseValue + cars;
+            }
+
+            if (selectStationOffset.IsChecked == true)
+            {
+                // coding is 49xxx (+offset dopředu) nebo 59xxx (-offset za střed stanice), 1-899 metrů
+                int meters = GetIntOrZero(stationOffsetMeters.Text);
+                if (meters < 1) meters = 1;
+                if (meters > 899) meters = 899;
+                int baseValue = (stationOffsetBehind.IsChecked == true) ? 59000 : 49000;
+                return baseValue + meters;
             }
 
             if (selectUncouple.IsChecked == true)
@@ -222,6 +273,10 @@ namespace ORTS.TrackViewer.Editing
             untilTimeMinutes.IsEnabled = false;
             uncoupleCars.IsEnabled = false;
             uncoupleWaitSeconds.IsEnabled = false;
+            leaveOrStealCarsCount.IsEnabled = false;
+            leaveOrStealKeepRear.IsEnabled = false;
+            stationOffsetMeters.IsEnabled = false;
+            stationOffsetBehind.IsEnabled = false;
             blowHornSeconds.IsEnabled = false;
             keepRear.IsEnabled = false;
 
@@ -252,6 +307,22 @@ namespace ORTS.TrackViewer.Editing
                 uncoupleCars.IsEnabled = true;
                 keepRear.IsEnabled = true;
                 uncoupleWaitSeconds.Focus();
+            }
+
+            if (selectLeaveOrStealCars.IsChecked == true)
+            {
+                leaveOrStealCarsCount.IsEnabled = true;
+                leaveOrStealKeepRear.IsEnabled = true;
+                leaveOrStealCarsCount.Focus();
+                leaveOrStealCarsCount.SelectAll();
+            }
+
+            if (selectStationOffset.IsChecked == true)
+            {
+                stationOffsetMeters.IsEnabled = true;
+                stationOffsetBehind.IsEnabled = true;
+                stationOffsetMeters.Focus();
+                stationOffsetMeters.SelectAll();
             }
 
             if (selectBlowHorn.IsChecked == true)
@@ -286,6 +357,17 @@ namespace ORTS.TrackViewer.Editing
             if (ww > 99)
             {
                 textBox.Text = "99";
+            }
+            UpdateWaitTime();
+        }
+
+        private void OffsetMeters_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var textBox = sender as TextBox;
+            int meters = GetIntOrZero(textBox.Text);
+            if (meters > 899)
+            {
+                textBox.Text = "899";
             }
             UpdateWaitTime();
         }

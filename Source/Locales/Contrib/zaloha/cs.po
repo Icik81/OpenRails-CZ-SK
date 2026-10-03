@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Contrib\n"
-"POT-Creation-Date: 2026-10-03 13:12:38+0200\n"
-"PO-Revision-Date: 2026-10-03 13:14+0200\n"
+"POT-Creation-Date: 2026-10-03 12:56:35+0200\n"
+"PO-Revision-Date: 2026-10-03 12:57+0200\n"
 "Last-Translator: Altmann <altmann@bk.ru>\n"
 "Language-Team: \n"
 "Language: cs\n"
@@ -1108,7 +1108,7 @@ msgstr "1"
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:48
 msgid "50"
-msgstr "50"
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:208
 msgid "11"
@@ -1119,8 +1119,10 @@ msgid "99"
 msgstr "99"
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml.cs:370
+#, fuzzy
+#| msgid "99"
 msgid "899"
-msgstr "899"
+msgstr "99"
 
 #: ../../Contrib/TrackViewer/UserInterface/Languages.cs:90
 msgid "Please restart TrackViewer in order to load the new language."
@@ -1507,36 +1509,38 @@ msgid "Keep rear"
 msgstr "Ponechat zadní"
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:42
-msgid "Leave / take: "
-msgstr "Zanechat / vzít: "
+msgid "Leave / take cars: "
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:44
 msgid "cars. "
-msgstr "vozů. "
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:45
 msgid "Take cars (599xx)"
-msgstr "Vezmi vozy (599xx)"
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:49
+#, fuzzy
+#| msgid "Station :"
 msgid "Station stop offset: "
-msgstr "Posun zastavení ve stanici: "
+msgstr "Stanice:"
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:51
 msgid "meters. "
-msgstr "metrů. "
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:52
 msgid "Negative / behind center (59xxx)"
-msgstr "Záporný / za střed stanice (59xxx)"
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:56
 msgid "AI preference over player (WP 40000)"
-msgstr "Přednost AI před hráčem (WP 40000)"
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:60
 msgid "AI lower pantograph / push by player (WP 40001)"
-msgstr "AI stáhne sběrač / postrk hráčem (WP 40001)"
+msgstr ""
 
 #: ../../Contrib/TrackViewer/Editing/WaitPointDialog.xaml:64
 msgid "Join and split"
