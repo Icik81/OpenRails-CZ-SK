@@ -681,5 +681,29 @@ namespace ORTS.TrackViewer.Properties {
                 this["showVoltageMarkers"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool showPowerSupplyStations {
+            get {
+                return ((bool)(this["showPowerSupplyStations"]));
+            }
+            set {
+                this["showPowerSupplyStations"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool showMirelPoints {
+            get {
+                return ((bool)(this["showMirelPoints"]));
+            }
+            set {
+                this["showMirelPoints"] = value;
+            }
+        }
     }
 }

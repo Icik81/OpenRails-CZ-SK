@@ -86,6 +86,24 @@ namespace ORTS.TrackViewer.UserInterface
         }
 
         /// <summary>
+        /// Toggle whether the power supply stations are shown
+        /// </summary>
+        public void MenuToggleShowPowerSupplyStations()
+        {
+            menuShowPowerSupplyStations.IsChecked = !menuShowPowerSupplyStations.IsChecked;
+            UpdateMenuSettings();
+        }
+
+        /// <summary>
+        /// Toggle whether the Mirel points are shown
+        /// </summary>
+        public void MenuToggleShowMirelPoints()
+        {
+            menuShowMirelPoints.IsChecked = !menuShowMirelPoints.IsChecked;
+            UpdateMenuSettings();
+        }
+
+        /// <summary>
         /// set the size of the menu control (also after rescaling)
         /// </summary>
         /// <param name="width"></param>
@@ -170,6 +188,8 @@ namespace ORTS.TrackViewer.UserInterface
             menuDoAntiAliasing.IsChecked = Properties.Settings.Default.doAntiAliasing;
 
             menuShowVoltageMarkers.IsChecked = Properties.Settings.Default.showVoltageMarkers;
+            menuShowPowerSupplyStations.IsChecked = Properties.Settings.Default.showPowerSupplyStations;
+            menuShowMirelPoints.IsChecked = Properties.Settings.Default.showMirelPoints;
         }
 
         /// <summary>
@@ -251,9 +271,11 @@ namespace ORTS.TrackViewer.UserInterface
             Properties.Settings.Default.showLabels = menuShowLabels.IsChecked;
             Properties.Settings.Default.zoomIsCenteredOnMouse = menuZoomIsCenteredOnMouse.IsChecked;
 
-            Properties.Settings.Default.Save();
-
             Properties.Settings.Default.showVoltageMarkers = menuShowVoltageMarkers.IsChecked;
+            Properties.Settings.Default.showPowerSupplyStations = menuShowPowerSupplyStations.IsChecked;
+            Properties.Settings.Default.showMirelPoints = menuShowMirelPoints.IsChecked;
+
+            Properties.Settings.Default.Save();
 
             DrawColors.SetColoursFromOptions(menuColorTracks.IsChecked, menuShowWorldTiles.IsChecked, menuShowTerrain.IsChecked || menuShowDMTerrain.IsChecked);
 
@@ -425,6 +447,62 @@ namespace ORTS.TrackViewer.UserInterface
                 if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
                 {
                     trackViewer.SaveVoltageMarkers(saveFileDialog.FileName);
+                }
+            }
+        }
+
+        private void MenuSavePowerSupplyStations_Click(object sender, RoutedEventArgs e)
+        {
+            if (trackViewer.CurrentRoute == null)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No route loaded!"), "TrackViewer");
+                return;
+            }
+
+            if (trackViewer.PowerSupplyStations == null || trackViewer.PowerSupplyStations.Count == 0)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No power supply stations found to save!"), "TrackViewer");
+                return;
+            }
+
+            using (var saveFileDialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                saveFileDialog.InitialDirectory = trackViewer.CurrentRoute.Path;
+                saveFileDialog.FileName = "PowerSupplyStations.xml";
+                saveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+                saveFileDialog.Title = TrackViewer.catalog.GetString("Save Power Supply Stations");
+
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    trackViewer.SavePowerSupplyStations(saveFileDialog.FileName);
+                }
+            }
+        }
+
+        private void MenuSaveMirelPoints_Click(object sender, RoutedEventArgs e)
+        {
+            if (trackViewer.CurrentRoute == null)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No route loaded!"), "TrackViewer");
+                return;
+            }
+
+            if (trackViewer.MirelPoints == null || trackViewer.MirelPoints.Count == 0)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No Mirel points found to save!"), "TrackViewer");
+                return;
+            }
+
+            using (var saveFileDialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                saveFileDialog.InitialDirectory = trackViewer.CurrentRoute.Path;
+                saveFileDialog.FileName = "MirelDb.xml";
+                saveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+                saveFileDialog.Title = TrackViewer.catalog.GetString("Save Mirel Points");
+
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    trackViewer.SaveMirelPoints(saveFileDialog.FileName);
                 }
             }
         }

@@ -459,7 +459,7 @@ namespace ORTS.TrackViewer
             bool otherWindowHasMouse = menuControl.HasMouse() || drawPathChart.IsActived;
             if (!TVUserInput.IsDown(TVUserCommands.EditorTakesMouseClickDrag) && !otherWindowHasMouse)
             {
-                if (draggedVoltagePoint == null && TVUserInput.IsMouseMoved() && TVUserInput.IsMouseLeftButtonDown())
+                if (draggedVoltagePoint == null && draggedPowerSupplyStation == null && draggedMirelPoint == null && TVUserInput.IsMouseMoved() && TVUserInput.IsMouseLeftButtonDown())
                 {
                     DrawArea.ShiftArea(TVUserInput.MouseMoveX(), TVUserInput.MouseMoveY());
                 }
@@ -544,6 +544,105 @@ namespace ORTS.TrackViewer
                 if (TVUserInput.IsMouseLeftButtonReleased() && draggedVoltagePoint != null)
                 {
                     draggedVoltagePoint = null;
+                }
+            }
+
+            if (PowerSupplyStations.Count > 0 && !this.menuControl.HasMouse() && draggedVoltagePoint == null)
+            {
+                // 1. Chycení stanice myší
+                if (TVUserInput.IsMouseLeftButtonPressed())
+                {
+                    RoutePowerSupplyStation bestCandidate = null;
+                    float bestDistPixels = 15f;
+
+                    foreach (var pt in PowerSupplyStations)
+                    {
+                        float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, DrawArea.MouseLocation));
+                        float distPixels = (float)(distMeters * DrawArea.Scale);
+
+                        if (distPixels < bestDistPixels)
+                        {
+                            bestDistPixels = distPixels;
+                            bestCandidate = pt;
+                        }
+                    }
+
+                    if (bestCandidate != null)
+                    {
+                        draggedPowerSupplyStation = bestCandidate;
+                        // Přesun na konec pro možnost přepínání při těsném sousedství
+                        PowerSupplyStations.Remove(bestCandidate);
+                        PowerSupplyStations.Add(bestCandidate);
+                    }
+                }
+
+                // 2. Tažení stanice
+                if (draggedPowerSupplyStation != null && TVUserInput.IsMouseLeftButtonDown())
+                {
+                    DrawArea.Update();
+                    draggedPowerSupplyStation.WorldLocation = DrawArea.MouseLocation;
+
+                    double latRad = 0, lonRad = 0;
+                    var wll = new Orts.Simulation.Common.WorldLatLon();
+                    if (wll.ConvertWTC(draggedPowerSupplyStation.WorldLocation.TileX,
+                                       draggedPowerSupplyStation.WorldLocation.TileZ,
+                                       draggedPowerSupplyStation.WorldLocation.Location,
+                                       ref latRad, ref lonRad) == 1)
+                    {
+                        draggedPowerSupplyStation.Latitude = latRad;
+                        draggedPowerSupplyStation.Longitude = lonRad;
+                    }
+
+                    skipDrawAmount = 0;
+                }
+
+                // 3. Uvolnění stanice
+                if (TVUserInput.IsMouseLeftButtonReleased() && draggedPowerSupplyStation != null)
+                {
+                    draggedPowerSupplyStation = null;
+                }
+            }
+
+            if (MirelPoints.Count > 0 && !this.menuControl.HasMouse() && draggedVoltagePoint == null && draggedPowerSupplyStation == null)
+            {
+                // 1. Chycení Mirel bodu myší
+                if (TVUserInput.IsMouseLeftButtonPressed())
+                {
+                    RouteMirelPoint bestCandidate = null;
+                    float bestDistPixels = 15f;
+
+                    foreach (var pt in MirelPoints)
+                    {
+                        float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, DrawArea.MouseLocation));
+                        float distPixels = (float)(distMeters * DrawArea.Scale);
+
+                        if (distPixels < bestDistPixels)
+                        {
+                            bestDistPixels = distPixels;
+                            bestCandidate = pt;
+                        }
+                    }
+
+                    if (bestCandidate != null)
+                    {
+                        draggedMirelPoint = bestCandidate;
+                        MirelPoints.Remove(bestCandidate);
+                        MirelPoints.Add(bestCandidate);
+                    }
+                }
+
+                // 2. Tažení Mirel bodu
+                if (draggedMirelPoint != null && TVUserInput.IsMouseLeftButtonDown())
+                {
+                    DrawArea.Update();
+                    draggedMirelPoint.WorldLocation = DrawArea.MouseLocation;
+                    skipDrawAmount = 0;
+                }
+
+                // 3. Uvolnění bodu
+                if (TVUserInput.IsMouseLeftButtonReleased() && draggedMirelPoint != null)
+                {
+                    draggedMirelPoint = null;
                 }
             }
 
@@ -668,6 +767,54 @@ namespace ORTS.TrackViewer
                     }
 
                     DrawArea.DrawExpandingString(pt.WorldLocation, $"{pt.Voltage} V");
+                }
+            }
+
+            if (Properties.Settings.Default.showPowerSupplyStations && PowerSupplyStations.Count > 0)
+            {
+                foreach (var pt in PowerSupplyStations)
+                {
+                    Color col;
+                    string sysName;
+                    switch (pt.PowerSystem)
+                    {
+                        case 0: col = Color.Yellow; sysName = "3 kV DC"; break;
+                        case 1: col = Color.Red; sysName = "25 kV AC"; break;
+                        case 2: col = Color.Cyan; sysName = "15 kV AC"; break;
+                        default: col = Color.Orange; sysName = $"{pt.PowerSystem} (Unknown)"; break;
+                    }
+
+                    if (pt == draggedPowerSupplyStation)
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 12f, 16, 28, Color.Lime);
+                    }
+                    else
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 8f, 10, 20, col);
+                    }
+
+                    DrawArea.DrawExpandingString(pt.WorldLocation, $"PSS: {sysName}");
+                }
+            }
+
+            if (Properties.Settings.Default.showMirelPoints && MirelPoints.Count > 0)
+            {
+                foreach (var pt in MirelPoints)
+                {
+                    bool isCoded = pt.Value.Equals("b", StringComparison.OrdinalIgnoreCase);
+                    Color col = isCoded ? Color.LightGreen : Color.White;
+                    string statusText = isCoded ? "ON" : "OFF";
+
+                    if (pt == draggedMirelPoint)
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 10f, 14, 24, Color.Lime);
+                    }
+                    else
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 6f, 8, 16, col);
+                    }
+
+                    DrawArea.DrawExpandingString(pt.WorldLocation, $"Mirel #{pt.SignalId}: {statusText}");
                 }
             }
 
@@ -988,8 +1135,10 @@ namespace ORTS.TrackViewer
                 drawLabels = new DrawLabels(fontManager.DefaultFont.Height);
                 CurrentRoute = newRoute;
 
-                // Načtení napěťových bodů tratě
+                // Načtení napěťových/mirel bodů tratě
                 LoadVoltageMarkers(newRoute.Path);
+                LoadPowerSupplyStations(newRoute.Path);
+                LoadMirelPoints(newRoute.Path);
 
                 Properties.Settings.Default.defaultRoute = CurrentRoute.Path.Split('\\').Last();
                 if (Properties.Settings.Default.zoomRoutePath != CurrentRoute.Path)
@@ -1076,6 +1225,71 @@ namespace ORTS.TrackViewer
             System.Windows.Forms.MessageBox.Show(catalog.GetString($"Voltage Markers were successfully saved to:\n{outputFilePath}"), catalog.GetString("Saved"), System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
 
+        public void SavePowerSupplyStations(string outputFilePath = null)
+        {
+            if (CurrentRoute == null || PowerSupplyStations.Count == 0) return;
+
+            if (string.IsNullOrEmpty(outputFilePath))
+            {
+                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "PowerSupplyStations_new.xml");
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            sb.AppendLine("<PowerSupplyStations>");
+
+            int idCounter = 1;
+            foreach (var pt in PowerSupplyStations)
+            {
+                sb.AppendLine("  <PowerSupplyStation>");
+                sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
+                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Longitude>");
+                sb.AppendLine($"    <PowerSystem>{pt.PowerSystem}</PowerSystem>");
+                sb.AppendLine("  </PowerSupplyStation>");
+            }
+
+            sb.AppendLine("</PowerSupplyStations>");
+
+            System.IO.File.WriteAllText(outputFilePath, sb.ToString(), System.Text.Encoding.UTF8);
+            System.Windows.Forms.MessageBox.Show(
+                catalog.GetString($"Power Supply Stations were successfully saved to:\n{outputFilePath}"),
+                catalog.GetString("Saved"),
+                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxIcon.Information);
+        }
+
+        public void SaveMirelPoints(string outputFilePath = null)
+        {
+            if (CurrentRoute == null || MirelPoints.Count == 0) return;
+
+            if (string.IsNullOrEmpty(outputFilePath))
+            {
+                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "MirelDb.xml");
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            sb.AppendLine("<MirelDb>");
+
+            foreach (var pt in MirelPoints)
+            {
+                sb.AppendLine("  <Signal>");
+                sb.AppendLine($"    <Id>{pt.SignalId}</Id>");
+                sb.AppendLine($"    <Value>{pt.Value}</Value>");
+                sb.AppendLine("  </Signal>");
+            }
+
+            sb.AppendLine("</MirelDb>");
+
+            System.IO.File.WriteAllText(outputFilePath, sb.ToString(), System.Text.Encoding.UTF8);
+            System.Windows.Forms.MessageBox.Show(
+                catalog.GetString($"Mirel points were successfully saved to:\n{outputFilePath}"),
+                catalog.GetString("Saved"),
+                System.Windows.Forms.MessageBoxButtons.OK,
+                System.Windows.Forms.MessageBoxIcon.Information);
+        }
+
         public class RouteVoltagePoint
         {
             public int Id { get; set; }
@@ -1084,6 +1298,28 @@ namespace ORTS.TrackViewer
             public int Voltage { get; set; }
             public WorldLocation WorldLocation { get; set; }
         }
+
+        public class RoutePowerSupplyStation
+        {
+            public int Id { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public int PowerSystem { get; set; } // 0 = 3 kV DC, 1 = 25 kV AC, 2 = 15 kV AC
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        public class RouteMirelPoint
+        {
+            public int SignalId { get; set; }
+            public string Value { get; set; } // "b" = kódováno, "a" = nekódováno
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        public List<RouteMirelPoint> MirelPoints = new List<RouteMirelPoint>();
+        private RouteMirelPoint draggedMirelPoint = null;
+
+        public List<RoutePowerSupplyStation> PowerSupplyStations = new List<RoutePowerSupplyStation>();
+        private RoutePowerSupplyStation draggedPowerSupplyStation = null;
 
         private RouteVoltagePoint draggedVoltagePoint = null;
 
@@ -1303,6 +1539,244 @@ namespace ORTS.TrackViewer
                 }
             }
         }
+
+        void LoadPowerSupplyStations(string routePath)
+        {
+            PowerSupplyStations.Clear();
+            string filePath = System.IO.Path.Combine(routePath, "PowerSupplyStations.xml");
+            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB?.TrackNodes == null)
+                return;
+
+            var lines = System.IO.File.ReadAllLines(filePath);
+            var rawStations = new List<Tuple<int, double, double, int>>();
+
+            int curId = 0;
+            double curLat = 0;
+            double curLon = 0;
+            int curPowerSystem = 0;
+
+            foreach (var rawLine in lines)
+            {
+                string line = rawLine.Trim();
+
+                if (line.IndexOf("<Id>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    int.TryParse(ExtractTagValue(line, "Id"), out curId);
+                }
+                else if (line.IndexOf("<Latitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Latitude").Replace(',', '.');
+                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLat);
+                }
+                else if (line.IndexOf("<Longitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Longitude").Replace(',', '.');
+                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLon);
+                }
+                else if (line.IndexOf("<PowerSystem>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    int.TryParse(ExtractTagValue(line, "PowerSystem"), out curPowerSystem);
+                }
+                else if (line.IndexOf("</SupplyStation>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    if (curLat != 0 || curLon != 0)
+                    {
+                        double finalLat = curLat;
+                        double finalLon = curLon;
+
+                        // Kontrola radiánů vs. stupňů a případného prohození Lat/Lon
+                        if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
+                        {
+                            finalLat = curLon * (180.0 / Math.PI);
+                            finalLon = curLat * (180.0 / Math.PI);
+                        }
+                        else if (curLat < 30.0 && curLon > 40.0)
+                        {
+                            finalLat = curLon;
+                            finalLon = curLat;
+                        }
+
+                        rawStations.Add(Tuple.Create(curId, finalLat, finalLon, curPowerSystem));
+                    }
+                    curId = 0;
+                    curLat = 0;
+                    curLon = 0;
+                    curPowerSystem = 0;
+                }
+            }
+
+            if (rawStations.Count == 0) return;
+
+            // Body kolejové sítě pro snapnutí
+            var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
+            var trackPoints = new List<Tuple<WorldLocation, double, double>>();
+
+            foreach (var tn in RouteData.TrackDB.TrackNodes)
+            {
+                if (tn?.TrVectorNode?.TrVectorSections == null) continue;
+
+                for (int i = 0; i < tn.TrVectorNode.TrVectorSections.Length; i++)
+                {
+                    var tvs = tn.TrVectorNode.TrVectorSections[i];
+                    if (tvs == null) continue;
+
+                    var wLoc = DrawTrackDB.TvsLocation(tvs);
+                    double latRad = 0, lonRad = 0;
+                    if (worldLatLon.ConvertWTC(wLoc.TileX, wLoc.TileZ, wLoc.Location, ref latRad, ref lonRad) == 1)
+                    {
+                        trackPoints.Add(Tuple.Create(wLoc, latRad * (180.0 / Math.PI), lonRad * (180.0 / Math.PI)));
+                    }
+                }
+            }
+
+            if (trackPoints.Count == 0) return;
+
+            foreach (var st in rawStations)
+            {
+                int sId = st.Item1;
+                double sLat = st.Item2;
+                double sLon = st.Item3;
+                int sSys = st.Item4;
+
+                WorldLocation closestLoc = WorldLocation.None;
+                double bestDistSq = double.MaxValue;
+
+                foreach (var tp in trackPoints)
+                {
+                    double dLat = tp.Item2 - sLat;
+                    double dLon = (tp.Item3 - sLon) * 0.65;
+                    double distSq = dLat * dLat + dLon * dLon;
+
+                    if (distSq < bestDistSq)
+                    {
+                        bestDistSq = distSq;
+                        closestLoc = tp.Item1;
+                    }
+                }
+
+                if (closestLoc != WorldLocation.None)
+                {
+                    // Ochrana před absolutním překryvem identických souřadnic
+                    int overlapCount = PowerSupplyStations.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
+                    if (overlapCount > 0)
+                    {
+                        closestLoc = new WorldLocation(
+                            closestLoc.TileX,
+                            closestLoc.TileZ,
+                            closestLoc.Location.X + (overlapCount * 3f),
+                            closestLoc.Location.Y,
+                            closestLoc.Location.Z + (overlapCount * 3f)
+                        );
+                    }
+
+                    PowerSupplyStations.Add(new RoutePowerSupplyStation
+                    {
+                        Id = sId,
+                        Latitude = sLat,
+                        Longitude = sLon,
+                        PowerSystem = sSys,
+                        WorldLocation = closestLoc
+                    });
+                }
+            }
+        }
+
+        void LoadMirelPoints(string routePath)
+        {
+            MirelPoints.Clear();
+            string filePath = System.IO.Path.Combine(routePath, "MirelDb.xml");
+            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB == null)
+                return;
+
+            var lines = System.IO.File.ReadAllLines(filePath);
+            var rawSignals = new List<Tuple<int, string>>();
+
+            int curId = 0;
+            string curVal = "";
+
+            foreach (var rawLine in lines)
+            {
+                string line = rawLine.Trim();
+
+                if (line.IndexOf("<Id>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    int.TryParse(ExtractTagValue(line, "Id"), out curId);
+                }
+                else if (line.IndexOf("<Value>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    curVal = ExtractTagValue(line, "Value");
+                }
+                else if (line.IndexOf("</Signal>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    if (curId > 0 && !string.IsNullOrEmpty(curVal))
+                    {
+                        rawSignals.Add(Tuple.Create(curId, curVal));
+                    }
+                    curId = 0;
+                    curVal = "";
+                }
+            }
+
+            if (rawSignals.Count == 0) return;
+
+            foreach (var sig in rawSignals)
+            {
+                int sId = sig.Item1;
+                string sVal = sig.Item2;
+                WorldLocation loc = WorldLocation.None;
+
+                // 1. Nalezení přímo v TrItemTable podle indexu SignalId
+                if (RouteData.TrackDB.TrItemTable != null && sId >= 0 && sId < RouteData.TrackDB.TrItemTable.Length)
+                {
+                    var item = RouteData.TrackDB.TrItemTable[sId];
+                    if (item != null)
+                    {
+                        loc = new WorldLocation(item.TileX, item.TileZ, item.X, item.Y, item.Z);
+                    }
+                }
+
+                // 2. Záložní dohledání přes první vektorový uzel, pokud prvek nebyl nalezen
+                if (loc == WorldLocation.None && RouteData.TrackDB.TrackNodes != null)
+                {
+                    foreach (var tn in RouteData.TrackDB.TrackNodes)
+                    {
+                        if (tn?.TrVectorNode?.TrVectorSections != null && tn.TrVectorNode.TrVectorSections.Length > 0)
+                        {
+                            var tvs = tn.TrVectorNode.TrVectorSections[0];
+                            if (tvs != null)
+                            {
+                                loc = DrawTrackDB.TvsLocation(tvs);
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if (loc != WorldLocation.None)
+                {
+                    // Ochrana před překryvem více bodů na stejné pozici
+                    int overlapCount = MirelPoints.Count(p => WorldLocation.Within(p.WorldLocation, loc, 0.5f));
+                    if (overlapCount > 0)
+                    {
+                        loc = new WorldLocation(
+                            loc.TileX,
+                            loc.TileZ,
+                            loc.Location.X + (overlapCount * 2.5f),
+                            loc.Location.Y,
+                            loc.Location.Z + (overlapCount * 2.5f)
+                        );
+                    }
+
+                    MirelPoints.Add(new RouteMirelPoint
+                    {
+                        SignalId = sId,
+                        Value = sVal,
+                        WorldLocation = loc
+                    });
+                }
+            }
+        }
+
 
         string ExtractTagValue(string source, string tag)
         {

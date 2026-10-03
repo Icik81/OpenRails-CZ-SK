@@ -100,6 +100,12 @@
             <MenuItem Header="_Route Markers" Name="menuRouteMarkers">
                 <MenuItem Header="Show voltage markers" Name="menuShowVoltageMarkers" IsCheckable="True" Click="UpdateMenuSettings"/>
                 <MenuItem Header="Save voltage markers" Name="menuSaveVoltageMarkers" Click="MenuSaveVoltageMarkers_Click"/>
+                <Separator/>
+                <MenuItem Header="Show power supply stations" Name="menuShowPowerSupplyStations" IsCheckable="True" Click="UpdateMenuSettings"/>
+                <MenuItem Header="Save power supply stations" Name="menuSavePowerSupplyStations" Click="MenuSavePowerSupplyStations_Click"/>
+                <Separator/>
+                <MenuItem Header="Show Mirel points" Name="menuShowMirelPoints" IsCheckable="True" Click="UpdateMenuSettings"/>
+                <MenuItem Header="Save Mirel points" Name="menuSaveMirelPoints" Click="MenuSaveMirelPoints_Click"/>
             </MenuItem>
             <MenuItem Header="_Statusbar" Name="menuStatusbar">
                 <MenuItem Header="Show vector section info" Name="menuStatusShowVectorSection" IsCheckable="True" IsChecked="False"
