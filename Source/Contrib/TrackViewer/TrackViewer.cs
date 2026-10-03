@@ -31,6 +31,7 @@ using ORTS.TrackViewer.UserInterface;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
@@ -38,102 +39,95 @@ using Color = Microsoft.Xna.Framework.Color;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ORTS.TrackViewer
-{    
-    /// <summary>
-    /// Delegate that can be called by routines such that we can draw it to the screen
-    /// </summary>
-    /// <param name="message">Message to draw</param>
+{
     public delegate void MessageDelegate(string message);
 
-    /// <summary>
-    /// This is the main type for your game
-    /// </summary>
     public class TrackViewer : Microsoft.Xna.Framework.Game
     {
         #region Public members
-        /// <summary>String showing the date of the program</summary>
         public readonly static string TrackViewerVersion = "2018/01/09";
-        /// <summary>Path where the content (like .png files) is stored</summary>
         public string ContentPath { get; private set; }
-        /// <summary>Folder where MSTS is installed (or at least, where the files needed for tracks, routes and paths are stored)</summary>
         public Folder InstallFolder { get; private set; }
-        /// <summary>List of available routes (in the install directory)</summary>
-        public Collection<Route> Routes { get; private set; } // Collection because of FxCop
-        /// <summary>List of available paths in the current route</summary>
-        public Collection<Path> Paths { get; private set; } // Collection because of FxCop
-        /// <summary>Route, ie with a path c:\program files\microsoft games\train simulator\routes\usa1  - may be different on different pc's</summary>
+        public Collection<Route> Routes { get; private set; }
+        public Collection<Path> Paths { get; private set; }
         public Route CurrentRoute { get; private set; }
-        /// <summary>Route that was used last time</summary>
         private Route DefaultRoute;
-        /// <summary>Width of the drawing screen in pixels</summary>
         public int ScreenW { get; private set; }
-        /// <summary>Height of the drawing screen in pixels</summary>
         public int ScreenH { get; private set; }
-        /// <summary>The information of the route like trackDB, tsectiondat, ..., loaded from MSTS route files.</summary>
         public RouteData RouteData { get; private set; }
-        /// <summary>(Draw)trackDB, that also contains the track data base and the track section data</summary>
         public DrawTrackDB DrawTrackDB { get; private set; }
-        /// <summary>Main draw area</summary>
         public DrawArea DrawArea { get; private set; }
-        /// <summary>The frame rate</summary>
         public SmoothedData FrameRate { get; private set; }
-        /// <summary>The routines to select and draw multiple paths</summary>
         public DrawMultiplePaths DrawMultiplePaths { get; private set; }
-
-        /// <summary>The language manager to deal with various languages.</summary>
         public LanguageManager LanguageManager { get; private set; }
-
-        /// <summary>The Path editor</summary>
         public PathEditor PathEditor { get; private set; }
-        /// <summary>The routines to draw the .pat file</summary>
         public DrawPATfile DrawPATfile { get; private set; }
-
         #endregion
 
         #region Private members
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        /// <summary>Draw area for the inset</summary>
         ShadowDrawArea drawAreaInset;
-        /// <summary>The scale ruler to draw on screen</summary>
         DrawScaleRuler drawScaleRuler;
-        /// <summary>For drawing real world longitude and latitude</summary>
         DrawLongitudeLatitude drawLongitudeLatitude;
-        /// <summary>For drawing the action that the editor might be taking</summary>
         DrawEditorAction drawEditorAction;
-        /// <summary>The routines to draw the world tiles</summary>
         DrawWorldTiles drawWorldTiles;
-        /// <summary>The routines to draw the grade of a path</summary>
         DrawPathChart drawPathChart;
-        /// <summary>The routines to draw the terrain textures</summary>
-        public DrawTerrain drawTerrain; //todo, get it private again: statusbar
+        public DrawTerrain drawTerrain;
 
         DrawLabels drawLabels;
 
-        /// <summary>The menu at the top</summary>
         MenuControl menuControl;
-        /// <summary>The status bar at the bottom</summary>
         StatusBarControl statusBarControl;
 
-        /// <summary>when we have lost focus, we do not want to enable shifting with mouse</summary>
         private bool lostFocus;
-        /// <summary>number of times we want to skip draw because nothing happened</summary>
         private int skipDrawAmount;
-        /// <summary>Maximum number of times we will skipp drawing</summary>
         private const int maxSkipDrawAmount = 10;
 
-        /// <summary>The fontmanager that we use to draw strings</summary>
         private FontManager fontManager;
-        /// <summary>The command-line arguments</summary>
         private string[] commandLineArgs;
         #endregion
 
-        #region Constructor and Initialization methods
+        #region Route Markers Data Classes & Lists
+        public class RouteVoltagePoint
+        {
+            public int Id { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public int Voltage { get; set; }
+            public WorldLocation WorldLocation { get; set; }
+        }
 
-        /// <summary>
-        /// Constructor. This is where it all starts.
-        /// </summary>
+        public class RoutePowerSupplyStation
+        {
+            public int Id { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public int PowerSystem { get; set; } // 0 = 3 kV DC, 1 = 25 kV AC, 2 = 15 kV AC
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        public class RouteMirelPoint
+        {
+            public int SignalId { get; set; }
+            public string Value { get; set; } // "b" = kódováno, "a" = nekódováno
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        public List<RouteVoltagePoint> VoltagePoints = new List<RouteVoltagePoint>();
+        private RouteVoltagePoint draggedVoltagePoint = null;
+
+        public List<RoutePowerSupplyStation> PowerSupplyStations = new List<RoutePowerSupplyStation>();
+        private RoutePowerSupplyStation draggedPowerSupplyStation = null;
+
+        public List<RouteMirelPoint> MirelPoints = new List<RouteMirelPoint>();
+        private RouteMirelPoint draggedMirelPoint = null;
+        #endregion
+
+        #region Constructor and Initialization methods
         public TrackViewer(string[] args)
         {
             if (Properties.Settings.Default.CallUpgrade)
@@ -157,28 +151,19 @@ namespace ORTS.TrackViewer
             Window.AllowUserResizing = true;
             Window.ClientSizeChanged += new System.EventHandler<EventArgs>(Window_ClientSizeChanged);
 
-            //we do not a very fast behaviour, but we do need to get all key presses
             IsFixedTimeStep = true;
             TargetElapsedTime = TimeSpan.FromSeconds(0.05);
             FrameRate = new SmoothedData(0.5f);
             InitLogging();
 
             LanguageManager = new LanguageManager();
-            LanguageManager.LoadLanguage(); // need this before all menus and stuff are initialized.
-
+            LanguageManager.LoadLanguage();
         }
 
-        /// <summary>
-        /// Allows the game to perform any initialization it needs to before starting to run.
-        /// This is where it can query for any required services and load any non-graphic
-        /// relation ontent.  Calling base.Initialize will enumerate through any components
-        /// and initialize them as well.
-        /// </summary>
         protected override void Initialize()
         {
             TVInputSettings.SetDefaults();
 
-            // This control is purely here to capture focus and prevent it slipping out and on to the menu.
             Control.FromHandle(Window.Handle).Controls.Add(new TextBox() { Top = -100 });
 
             statusBarControl = new StatusBarControl(this);
@@ -187,7 +172,6 @@ namespace ORTS.TrackViewer
             TrackViewer.Localize(menuControl);
             menuControl.PopulateLanguages();
             DrawColors.Initialize(menuControl);
-
 
             Localize(statusBarControl);
             Localize(menuControl);
@@ -205,7 +189,6 @@ namespace ORTS.TrackViewer
 
             this.IsMouseVisible = true;
 
-            // install folder
             if (String.IsNullOrEmpty(Properties.Settings.Default.installDirectory))
             {
                 try
@@ -223,84 +206,247 @@ namespace ORTS.TrackViewer
             base.Initialize();
         }
 
-        /// <summary>
-        /// Set the sizes of the various subwindows that they can use to draw upon.
-        /// </summary>
         void SetSubwindowSizes()
         {
             int insetRatio = 10;
-
-            //We need to give enough room for menu and status bar in raw pixels
             float dpiScale = System.Drawing.Graphics.FromHwnd(IntPtr.Zero).DpiY / 96;
             int menuHeight = (int)(menuControl.MenuHeight * dpiScale);
             int statusbarHeight = (int)(statusBarControl.StatusbarHeight * dpiScale);
             menuControl.SetScreenSize(ScreenW, menuHeight);
             statusBarControl.SetScreenSize(ScreenW, statusbarHeight, ScreenH);
 
-            //The rest of the available pixes are for the draw-area's
             DrawArea.SetScreenSize(0, menuHeight, ScreenW, ScreenH - statusbarHeight - menuHeight);
             drawAreaInset.SetScreenSize(ScreenW - ScreenW / insetRatio, menuHeight + 1, ScreenW / insetRatio, ScreenH / insetRatio);
 
-            //Some on-screen features depend on the actual font-height
             int halfHeight = (int)(fontManager.DefaultFont.Height / 2);
             drawScaleRuler.SetLocationAndSize(halfHeight, ScreenH - statusbarHeight - halfHeight, 2 * halfHeight);
             drawLongitudeLatitude = new DrawLongitudeLatitude(halfHeight, menuHeight);
             drawEditorAction = new DrawEditorAction(halfHeight, menuHeight + 2 * halfHeight);
         }
 
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             BasicShapes.LoadContent(GraphicsDevice, spriteBatch, ContentPath);
             drawAreaInset.LoadContent(GraphicsDevice, spriteBatch, 2, 2, 2);
-            //drawTerrain.LoadContent(GraphicsDevice); // can only be done when route is known!
         }
 
-        /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
-        /// </summary>
         protected override void UnloadContent()
         {
-            // Unload any non ContentManager content here
         }
 
-        /// <summary>
-        /// Simplified Draw routine that only shows background and a message.
-        /// </summary>
-        /// <param name="message">The message you want to show</param>
         private void DrawLoadingMessage(string message)
         {
-            // This is not really a game State, because it is not used interactively. In fact, Draw itself is
-            // probably not called because the program is doing other things
             BeginDraw();
             GraphicsDevice.Clear(DrawColors.colorsNormal.ClearWindow);
             spriteBatch.Begin();
-            // it is better to have integer locations, otherwise text is difficult to read
             Vector2 messageLocation = new Vector2((float)Math.Round(ScreenW / 2f), (float)Math.Round(ScreenH / 2f));
             BasicShapes.DrawStringCentered(messageLocation, DrawColors.colorsNormal.Text, message);
 
-            // we have to redo the string drawing, because we now first have to load the characters into textures.
             fontManager.Update(GraphicsDevice);
             BasicShapes.DrawStringCentered(messageLocation, DrawColors.colorsNormal.Text, message);
 
             spriteBatch.End();
             EndDraw();
         }
+        #endregion
 
+        #region Context Menu & Creation of Route Markers
+        private void ShowRouteMarkersContextMenu(int screenX, int screenY)
+        {
+            var contextMenu = new System.Windows.Forms.ContextMenuStrip();
+            WorldLocation clickLoc = DrawArea.MouseLocation;
+
+            const float pickRadiusPx = 15f;
+
+            RouteVoltagePoint hitVoltage = null;
+            if (Properties.Settings.Default.showVoltageMarkers)
+            {
+                foreach (var pt in VoltagePoints)
+                {
+                    float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, clickLoc));
+                    if ((distMeters * DrawArea.Scale) <= pickRadiusPx)
+                    {
+                        hitVoltage = pt;
+                        break;
+                    }
+                }
+            }
+
+            RoutePowerSupplyStation hitPss = null;
+            if (Properties.Settings.Default.showPowerSupplyStations && hitVoltage == null)
+            {
+                foreach (var pt in PowerSupplyStations)
+                {
+                    float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, clickLoc));
+                    if ((distMeters * DrawArea.Scale) <= pickRadiusPx)
+                    {
+                        hitPss = pt;
+                        break;
+                    }
+                }
+            }
+
+            RouteMirelPoint hitMirel = null;
+            if (Properties.Settings.Default.showMirelPoints && hitVoltage == null && hitPss == null)
+            {
+                foreach (var pt in MirelPoints)
+                {
+                    float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, clickLoc));
+                    if ((distMeters * DrawArea.Scale) <= pickRadiusPx)
+                    {
+                        hitMirel = pt;
+                        break;
+                    }
+                }
+            }
+
+            if (hitVoltage != null)
+            {
+                var lbl = new System.Windows.Forms.ToolStripMenuItem($"Napěťový bod ({hitVoltage.Voltage} V)") { Enabled = false };
+                contextMenu.Items.Add(lbl);
+
+                var m3kV = new System.Windows.Forms.ToolStripMenuItem("Změnit na 3 kV DC", null, (s, e) => { hitVoltage.Voltage = 3000; skipDrawAmount = 0; });
+                var m25kV = new System.Windows.Forms.ToolStripMenuItem("Změnit na 25 kV AC", null, (s, e) => { hitVoltage.Voltage = 25000; skipDrawAmount = 0; });
+                var m15kV = new System.Windows.Forms.ToolStripMenuItem("Změnit na 15 kV AC", null, (s, e) => { hitVoltage.Voltage = 15000; skipDrawAmount = 0; });
+                var m0V = new System.Windows.Forms.ToolStripMenuItem("Změnit na 0 V (Bez napětí)", null, (s, e) => { hitVoltage.Voltage = 0; skipDrawAmount = 0; });
+                contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { m3kV, m25kV, m15kV, m0V });
+
+                contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                var delItem = new System.Windows.Forms.ToolStripMenuItem("Smazat napěťový bod", null, (s, e) =>
+                {
+                    VoltagePoints.Remove(hitVoltage);
+                    skipDrawAmount = 0;
+                });
+                contextMenu.Items.Add(delItem);
+            }
+            else if (hitPss != null)
+            {
+                var lbl = new System.Windows.Forms.ToolStripMenuItem($"Napájecí stanice #{hitPss.Id} (Soustava: {hitPss.PowerSystem})") { Enabled = false };
+                contextMenu.Items.Add(lbl);
+
+                var s0 = new System.Windows.Forms.ToolStripMenuItem("Změnit na 3 kV DC (0)", null, (s, e) => { hitPss.PowerSystem = 0; skipDrawAmount = 0; });
+                var s1 = new System.Windows.Forms.ToolStripMenuItem("Změnit na 25 kV AC (1)", null, (s, e) => { hitPss.PowerSystem = 1; skipDrawAmount = 0; });
+                var s2 = new System.Windows.Forms.ToolStripMenuItem("Změnit na 15 kV AC (2)", null, (s, e) => { hitPss.PowerSystem = 2; skipDrawAmount = 0; });
+                contextMenu.Items.AddRange(new System.Windows.Forms.ToolStripItem[] { s0, s1, s2 });
+
+                contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                var delItem = new System.Windows.Forms.ToolStripMenuItem("Smazat napájecí stanici", null, (s, e) =>
+                {
+                    PowerSupplyStations.Remove(hitPss);
+                    skipDrawAmount = 0;
+                });
+                contextMenu.Items.Add(delItem);
+            }
+            else if (hitMirel != null)
+            {
+                var lbl = new System.Windows.Forms.ToolStripMenuItem($"Mirel návěstidlo #{hitMirel.SignalId} (Stav: {hitMirel.Value})") { Enabled = false };
+                contextMenu.Items.Add(lbl);
+
+                var toggleItem = new System.Windows.Forms.ToolStripMenuItem(
+                    hitMirel.Value == "b" ? "Přepnout na nekódované ('a')" : "Přepnout na kódované ('b')",
+                    null,
+                    (s, e) =>
+                    {
+                        hitMirel.Value = hitMirel.Value == "b" ? "a" : "b";
+                        skipDrawAmount = 0;
+                    });
+                contextMenu.Items.Add(toggleItem);
+
+                contextMenu.Items.Add(new System.Windows.Forms.ToolStripSeparator());
+                var delItem = new System.Windows.Forms.ToolStripMenuItem("Smazat Mirel bod", null, (s, e) =>
+                {
+                    MirelPoints.Remove(hitMirel);
+                    skipDrawAmount = 0;
+                });
+                contextMenu.Items.Add(delItem);
+            }
+            else
+            {
+                var addHeader = new System.Windows.Forms.ToolStripMenuItem("Vložit nový bod...") { Enabled = false };
+                contextMenu.Items.Add(addHeader);
+
+                var addVoltSub = new System.Windows.Forms.ToolStripMenuItem("Napěťový bod");
+                addVoltSub.DropDownItems.Add("3000 V (3 kV DC)", null, (s, e) => AddNewVoltagePoint(clickLoc, 3000));
+                addVoltSub.DropDownItems.Add("25000 V (25 kV AC)", null, (s, e) => AddNewVoltagePoint(clickLoc, 25000));
+                addVoltSub.DropDownItems.Add("15000 V (15 kV AC)", null, (s, e) => AddNewVoltagePoint(clickLoc, 15000));
+                addVoltSub.DropDownItems.Add("0 V (Bez napětí)", null, (s, e) => AddNewVoltagePoint(clickLoc, 0));
+                contextMenu.Items.Add(addVoltSub);
+
+                var addPssSub = new System.Windows.Forms.ToolStripMenuItem("Napájecí stanice");
+                addPssSub.DropDownItems.Add("3 kV DC (0)", null, (s, e) => AddNewPowerSupplyStation(clickLoc, 0));
+                addPssSub.DropDownItems.Add("25 kV AC (1)", null, (s, e) => AddNewPowerSupplyStation(clickLoc, 1));
+                addPssSub.DropDownItems.Add("15 kV AC (2)", null, (s, e) => AddNewPowerSupplyStation(clickLoc, 2));
+                contextMenu.Items.Add(addPssSub);
+
+                var addMirelSub = new System.Windows.Forms.ToolStripMenuItem("Mirel bod");
+                addMirelSub.DropDownItems.Add("Kódovaný ('b')", null, (s, e) => AddNewMirelPoint(clickLoc, "b"));
+                addMirelSub.DropDownItems.Add("Nekódovaný ('a')", null, (s, e) => AddNewMirelPoint(clickLoc, "a"));
+                contextMenu.Items.Add(addMirelSub);
+            }
+
+            contextMenu.Show(screenX, screenY);
+        }
+
+        private void AddNewVoltagePoint(WorldLocation loc, int voltage)
+        {
+            double latRad = 0, lonRad = 0;
+            var wll = new Orts.Simulation.Common.WorldLatLon();
+            wll.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad);
+
+            int maxId = VoltagePoints.Count > 0 ? VoltagePoints.Max(p => p.Id) : 0;
+            VoltagePoints.Add(new RouteVoltagePoint
+            {
+                Id = maxId + 1,
+                WorldLocation = loc,
+                Latitude = latRad * (180.0 / Math.PI),
+                Longitude = lonRad * (180.0 / Math.PI),
+                Voltage = voltage
+            });
+
+            skipDrawAmount = 0;
+        }
+
+        private void AddNewPowerSupplyStation(WorldLocation loc, int powerSystem)
+        {
+            double latRad = 0, lonRad = 0;
+            var wll = new Orts.Simulation.Common.WorldLatLon();
+            wll.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad);
+
+            int maxId = PowerSupplyStations.Count > 0 ? PowerSupplyStations.Max(p => p.Id) : 0;
+            PowerSupplyStations.Add(new RoutePowerSupplyStation
+            {
+                Id = maxId + 1,
+                WorldLocation = loc,
+                Latitude = latRad * (180.0 / Math.PI),
+                Longitude = lonRad * (180.0 / Math.PI),
+                PowerSystem = powerSystem
+            });
+
+            skipDrawAmount = 0;
+        }
+
+        private void AddNewMirelPoint(WorldLocation loc, string value)
+        {
+            double latRad = 0, lonRad = 0;
+            var wll = new Orts.Simulation.Common.WorldLatLon();
+            wll.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad);
+
+            int maxId = MirelPoints.Count > 0 ? MirelPoints.Max(p => p.SignalId) : 1000;
+            MirelPoints.Add(new RouteMirelPoint
+            {
+                SignalId = maxId + 1,
+                Value = value,
+                WorldLocation = loc,
+                Latitude = latRad * (180.0 / Math.PI),
+                Longitude = lonRad * (180.0 / Math.PI)
+            });
+
+            skipDrawAmount = 0;
+        }
         #endregion
 
         #region Main game methods
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
             if (!this.IsActive)
@@ -312,20 +458,15 @@ namespace ORTS.TrackViewer
             TVUserInput.Update();
             if (lostFocus)
             {
-                // if the previous call was in inactive mode, we do want TVUserInput to be updated, but we will only
-                // act on it the next round. To make sure moving the mouse to other locations and back is influencing
-                // the location visible in trackviewer.
                 lostFocus = false;
                 return;
             }
 
             fontManager.Update(GraphicsDevice);
             if (DrawTrackDB != null)
-            {   // when update is called, we are not searching via menu
+            {
                 DrawTrackDB.ClearHighlightOverrides();
             }
-
-            // First check all the buttons that can be kept down.
 
             if (this.drawPathChart.IsActived)
             {
@@ -350,7 +491,6 @@ namespace ORTS.TrackViewer
                 skipDrawAmount = 0;
             }
 
-
             if (TVUserInput.IsPressed(TVUserCommands.Quit)) this.Quit();
             if (TVUserInput.IsPressed(TVUserCommands.ReloadRoute)) this.ReloadRoute();
 
@@ -361,7 +501,21 @@ namespace ORTS.TrackViewer
             if (TVUserInput.IsPressed(TVUserCommands.ZoomReset))
             {
                 DrawArea.ZoomReset(DrawTrackDB);
-                drawAreaInset.ZoomReset(DrawTrackDB);  // needed in case window was resized
+                drawAreaInset.ZoomReset(DrawTrackDB);
+            }
+
+            // Deklarace souřadnic myši před voláním kontextového menu
+            var mouseLocationAbsoluteX = Window.ClientBounds.Left + TVUserInput.MouseLocationX;
+            var mouseLocationAbsoluteY = Window.ClientBounds.Top + TVUserInput.MouseLocationY;
+
+            if (TVUserInput.IsMouseRightButtonPressed() && (PathEditor == null || !PathEditor.EditingIsActive))
+            {
+                if (Properties.Settings.Default.showVoltageMarkers ||
+                    Properties.Settings.Default.showPowerSupplyStations ||
+                    Properties.Settings.Default.showMirelPoints)
+                {
+                    ShowRouteMarkersContextMenu(mouseLocationAbsoluteX, mouseLocationAbsoluteY);
+                }
             }
 
             if (DrawPATfile != null && Properties.Settings.Default.showPATfile)
@@ -387,13 +541,11 @@ namespace ORTS.TrackViewer
                 if (TVUserInput.IsMouseXButton2Pressed()) PathEditor.Redo();
             }
 
-            var mouseLocationAbsoluteX = Window.ClientBounds.Left + TVUserInput.MouseLocationX;
-            var mouseLocationAbsoluteY = Window.ClientBounds.Top + TVUserInput.MouseLocationY;
             if (PathEditor != null && PathEditor.EditingIsActive)
             {
                 if (TVUserInput.IsMouseRightButtonPressed())
                 {
-                    PathEditor.OnLeftMouseRelease(); // any action done with left mouse is cancelled now
+                    PathEditor.OnLeftMouseRelease();
                     PathEditor.PopupContextMenu(mouseLocationAbsoluteX, mouseLocationAbsoluteY);
                 }
 
@@ -403,14 +555,13 @@ namespace ORTS.TrackViewer
                 if (TVUserInput.IsPressed(TVUserCommands.PlaceEndPoint)) PathEditor.PlaceEndPoint();
                 if (TVUserInput.IsPressed(TVUserCommands.PlaceWaitPoint)) PathEditor.PlaceWaitPoint();
 
-
                 if (TVUserInput.IsMouseLeftButtonPressed())
                 {
                     PathEditor.OnLeftMouseClick();
                 }
                 if (TVUserInput.IsMouseLeftButtonDown())
                 {
-                    PathEditor.OnLeftMouseMoved(); // to make sure it is reactive enough, don't even care if mouse is really moved
+                    PathEditor.OnLeftMouseMoved();
                 }
                 if (TVUserInput.IsMouseLeftButtonReleased())
                 {
@@ -481,19 +632,15 @@ namespace ORTS.TrackViewer
                 }
             }
 
-
             DrawArea.Update();
 
+            // 1. Obsluha VoltagePoints
             if (VoltagePoints.Count > 0 && !this.menuControl.HasMouse())
             {
-                // Pozice kurzoru myši v okně
-                Vector2 mouseScreen = new Vector2(TVUserInput.MouseLocationX, TVUserInput.MouseLocationY);
-
-                // 1. Chycení bodu myší (kliknutí)
                 if (TVUserInput.IsMouseLeftButtonPressed())
                 {
                     RouteVoltagePoint bestCandidate = null;
-                    float bestDistPixels = 15f; // maximální tolerance v pixelech
+                    float bestDistPixels = 15f;
 
                     foreach (var pt in VoltagePoints)
                     {
@@ -510,22 +657,16 @@ namespace ORTS.TrackViewer
                     if (bestCandidate != null)
                     {
                         draggedVoltagePoint = bestCandidate;
-                        // Přesuneme chycený bod na konec seznamu, aby se při dalším kliknutí na stejné místo chytil druhý bod
                         VoltagePoints.Remove(bestCandidate);
                         VoltagePoints.Add(bestCandidate);
                     }
                 }
 
-                // 2. Tažení bodu
                 if (draggedVoltagePoint != null && TVUserInput.IsMouseLeftButtonDown())
                 {
-                    // Přepočet souřadnic myši na WorldLocation
-                    // Zajistíme aktualizaci MouseLocation
                     DrawArea.Update();
-
                     draggedVoltagePoint.WorldLocation = DrawArea.MouseLocation;
 
-                    // Přepočet zpět na Latitude / Longitude
                     double latRad = 0, lonRad = 0;
                     var wll = new Orts.Simulation.Common.WorldLatLon();
                     if (wll.ConvertWTC(draggedVoltagePoint.WorldLocation.TileX,
@@ -533,23 +674,22 @@ namespace ORTS.TrackViewer
                                        draggedVoltagePoint.WorldLocation.Location,
                                        ref latRad, ref lonRad) == 1)
                     {
-                        draggedVoltagePoint.Latitude = latRad;
-                        draggedVoltagePoint.Longitude = lonRad;
+                        draggedVoltagePoint.Latitude = latRad * (180.0 / Math.PI);
+                        draggedVoltagePoint.Longitude = lonRad * (180.0 / Math.PI);
                     }
 
-                    skipDrawAmount = 0; // Vynutí okamžité překreslení
+                    skipDrawAmount = 0;
                 }
 
-                // 3. Puštění bodu
                 if (TVUserInput.IsMouseLeftButtonReleased() && draggedVoltagePoint != null)
                 {
                     draggedVoltagePoint = null;
                 }
             }
 
+            // 2. Obsluha PowerSupplyStations
             if (PowerSupplyStations.Count > 0 && !this.menuControl.HasMouse() && draggedVoltagePoint == null)
             {
-                // 1. Chycení stanice myší
                 if (TVUserInput.IsMouseLeftButtonPressed())
                 {
                     RoutePowerSupplyStation bestCandidate = null;
@@ -570,13 +710,11 @@ namespace ORTS.TrackViewer
                     if (bestCandidate != null)
                     {
                         draggedPowerSupplyStation = bestCandidate;
-                        // Přesun na konec pro možnost přepínání při těsném sousedství
                         PowerSupplyStations.Remove(bestCandidate);
                         PowerSupplyStations.Add(bestCandidate);
                     }
                 }
 
-                // 2. Tažení stanice
                 if (draggedPowerSupplyStation != null && TVUserInput.IsMouseLeftButtonDown())
                 {
                     DrawArea.Update();
@@ -589,23 +727,22 @@ namespace ORTS.TrackViewer
                                        draggedPowerSupplyStation.WorldLocation.Location,
                                        ref latRad, ref lonRad) == 1)
                     {
-                        draggedPowerSupplyStation.Latitude = latRad;
-                        draggedPowerSupplyStation.Longitude = lonRad;
+                        draggedPowerSupplyStation.Latitude = latRad * (180.0 / Math.PI);
+                        draggedPowerSupplyStation.Longitude = lonRad * (180.0 / Math.PI);
                     }
 
                     skipDrawAmount = 0;
                 }
 
-                // 3. Uvolnění stanice
                 if (TVUserInput.IsMouseLeftButtonReleased() && draggedPowerSupplyStation != null)
                 {
                     draggedPowerSupplyStation = null;
                 }
             }
 
+            // 3. Obsluha MirelPoints
             if (MirelPoints.Count > 0 && !this.menuControl.HasMouse() && draggedVoltagePoint == null && draggedPowerSupplyStation == null)
             {
-                // 1. Chycení Mirel bodu myší
                 if (TVUserInput.IsMouseLeftButtonPressed())
                 {
                     RouteMirelPoint bestCandidate = null;
@@ -631,15 +768,25 @@ namespace ORTS.TrackViewer
                     }
                 }
 
-                // 2. Tažení Mirel bodu
                 if (draggedMirelPoint != null && TVUserInput.IsMouseLeftButtonDown())
                 {
                     DrawArea.Update();
                     draggedMirelPoint.WorldLocation = DrawArea.MouseLocation;
+
+                    double latRad = 0, lonRad = 0;
+                    var wll = new Orts.Simulation.Common.WorldLatLon();
+                    if (wll.ConvertWTC(draggedMirelPoint.WorldLocation.TileX,
+                                       draggedMirelPoint.WorldLocation.TileZ,
+                                       draggedMirelPoint.WorldLocation.Location,
+                                       ref latRad, ref lonRad) == 1)
+                    {
+                        draggedMirelPoint.Latitude = latRad * (180.0 / Math.PI);
+                        draggedMirelPoint.Longitude = lonRad * (180.0 / Math.PI);
+                    }
+
                     skipDrawAmount = 0;
                 }
 
-                // 3. Uvolnění bodu
                 if (TVUserInput.IsMouseLeftButtonReleased() && draggedMirelPoint != null)
                 {
                     draggedMirelPoint = null;
@@ -666,7 +813,6 @@ namespace ORTS.TrackViewer
             if (TVUserInput.IsPressed(TVUserCommands.ToggleHighlightTracks)) menuControl.MenuToggleHighlightTracks();
             if (TVUserInput.IsPressed(TVUserCommands.ToggleHighlightItems)) menuControl.MenuToggleHighlightItems();
 
-            //keyboard shortcuts for menu
             if (TVUserInput.IsPressed(TVUserCommands.MenuFile)) { menuControl.menuFile.Focus(); menuControl.menuFile.IsSubmenuOpen = true; }
             if (TVUserInput.IsPressed(TVUserCommands.MenuView)) { menuControl.menuView.Focus(); menuControl.menuView.IsSubmenuOpen = true; }
             if (TVUserInput.IsPressed(TVUserCommands.MenuTrackItems)) { menuControl.menuTrackItems.Focus(); menuControl.menuTrackItems.IsSubmenuOpen = true; }
@@ -676,28 +822,19 @@ namespace ORTS.TrackViewer
             if (TVUserInput.IsPressed(TVUserCommands.MenuTerrain)) { menuControl.menuTerrain.Focus(); menuControl.menuTerrain.IsSubmenuOpen = true; }
             if (TVUserInput.IsPressed(TVUserCommands.MenuHelp)) { menuControl.menuHelp.Focus(); menuControl.menuHelp.IsSubmenuOpen = true; }
 
-
             if (TVUserInput.IsPressed(TVUserCommands.Debug)) RunDebug();
 
             base.Update(gameTime);
-
             HandleCommandLineArgs();
         }
 
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-
-            // Even if there is nothing new to draw for main window, we might still need to draw for the shadow textures.
             if (DrawTrackDB != null && Properties.Settings.Default.showInset)
             {
                 drawAreaInset.DrawShadowTextures(DrawTrackDB.DrawTracks, DrawColors.colorsNormal.ClearWindowInset);
             }
 
-            // if there is nothing to draw, be done.
             if (--skipDrawAmount > 0)
             {
                 return;
@@ -707,10 +844,7 @@ namespace ORTS.TrackViewer
             if (DrawTrackDB == null) return;
 
             spriteBatch.Begin();
-            //spriteBatch.Begin(SpriteBlendMode.AlphaBlend, SpriteSortMode.Immediate, SaveStateMode.None);
-            //GraphicsDevice.SamplerStates[0].MagFilter = TextureFilter.Point;
-            //GraphicsDevice.SamplerStates[0].MinFilter = TextureFilter.Point;
-            //GraphicsDevice.SamplerStates[0].MipFilter = TextureFilter.Point;
+
             if (drawTerrain != null) { drawTerrain.Draw(DrawArea); }
             drawWorldTiles.Draw(DrawArea);
             DrawArea.DrawTileGrid();
@@ -725,7 +859,6 @@ namespace ORTS.TrackViewer
             if (Properties.Settings.Default.showInset)
             {
                 drawAreaInset.DrawBackground(DrawColors.colorsNormal.ClearWindowInset);
-                //drawTrackDB.DrawTracks(drawAreaInset); //replaced by next line
                 drawAreaInset.DrawShadowedTextures();
                 DrawTrackDB.DrawTrackHighlights(drawAreaInset, false);
                 drawAreaInset.DrawBorder(Color.Red, DrawArea);
@@ -741,6 +874,7 @@ namespace ORTS.TrackViewer
             DrawTrackDB.DrawTrackItems(DrawArea);
             DrawTrackDB.DrawItemHighlights(DrawArea);
 
+            // Vykreslení VoltagePoints
             if (Properties.Settings.Default.showVoltageMarkers && VoltagePoints.Count > 0)
             {
                 for (int i = 0; i < VoltagePoints.Count; i++)
@@ -750,10 +884,10 @@ namespace ORTS.TrackViewer
                     Color col;
                     switch (pt.Voltage)
                     {
-                        case 3000: col = Color.Yellow; break;  // 3 kV DC
-                        case 25000: col = Color.Red; break;    // 25 kV AC
-                        case 15000: col = Color.Cyan; break;   // 15 kV AC
-                        case 0: col = Color.White; break;      // Bez napětí
+                        case 3000: col = Color.Yellow; break;
+                        case 25000: col = Color.Red; break;
+                        case 15000: col = Color.Cyan; break;
+                        case 0: col = Color.White; break;
                         default: col = Color.Orange; break;
                     }
 
@@ -770,6 +904,7 @@ namespace ORTS.TrackViewer
                 }
             }
 
+            // Vykreslení PowerSupplyStations
             if (Properties.Settings.Default.showPowerSupplyStations && PowerSupplyStations.Count > 0)
             {
                 foreach (var pt in PowerSupplyStations)
@@ -797,6 +932,7 @@ namespace ORTS.TrackViewer
                 }
             }
 
+            // Vykreslení MirelPoints
             if (Properties.Settings.Default.showMirelPoints && MirelPoints.Count > 0)
             {
                 foreach (var pt in MirelPoints)
@@ -819,7 +955,6 @@ namespace ORTS.TrackViewer
             }
 
             CalculateFPS(gameTime);
-
             statusBarControl.Update(this, DrawArea.MouseLocation);
 
             drawScaleRuler.Draw();
@@ -827,37 +962,21 @@ namespace ORTS.TrackViewer
             drawLabels.Draw(DrawArea);
 
             DebugWindow.DrawAll();
-
             spriteBatch.End();
 
             base.Draw(gameTime);
             skipDrawAmount = maxSkipDrawAmount;
         }
-
         #endregion
 
-        #region User actions (e.g. from menu)
-        /// <summary>
-        /// Set aliasing depending on the settings (set in the menu)
-        /// </summary>
+        #region User actions
         public void SetAliasing()
         {
-            // Personally, I do not think anti-aliasing looks crisp at all. Poddibly because not enough multi-sampling is used.
-            // If someone knows how to get better/best antisampling depending on available hardware, be my guess.
             graphics.PreferMultiSampling = Properties.Settings.Default.doAntiAliasing;
         }
 
-        /// <summary>
-        /// Show the window with the chart of the path
-        /// </summary>
-        public void ShowPathChart()
-        {
-            this.drawPathChart.Open();
-        }
+        public void ShowPathChart() => this.drawPathChart.Open();
 
-        /// <summary>
-        /// Ask the user if we really want to quit or not, and if yes, well, quit.
-        /// </summary>
         public void Quit()
         {
             string message = String.Empty;
@@ -877,43 +996,20 @@ namespace ORTS.TrackViewer
         {
             ScreenW = Window.ClientBounds.Width;
             ScreenH = Window.ClientBounds.Height;
-            // if something went wrong during fast window switching, let's not continue
-            if (menuControl == null || statusBarControl == null || ScreenW == 0 || ScreenH == 0)
-            {
-                return;
-            }
+            if (menuControl == null || statusBarControl == null || ScreenW == 0 || ScreenH == 0) return;
             SetSubwindowSizes();
         }
 
-        /// <summary>
-        /// Set the visibility of terrain drawing
-        /// </summary>
-        /// <param name="isVisible">Normal terrain textures are visible</param>
-        /// <param name="isVisibleDM">Distant mountain terrain textures are visible</param>
-        /// <returns>true only if there is terrain that can be drawn</returns>
         public bool SetTerrainVisibility(bool isVisible, bool isVisibleDM)
         {
-            if (drawTerrain == null)
-            {
-                return false;
-            }
-
+            if (drawTerrain == null) return false;
             drawTerrain.SetTerrainVisibility(isVisible, isVisibleDM, DrawArea);
             return true;
         }
 
-        /// <summary>
-        /// Set the visibility of the patch lines between terrain
-        /// </summary>
-        /// <param name="showPatchLines">The value to set the visibility to</param>
-        /// <returns>true only if there is terrain that can be drawn</returns>
         public bool SetPatchLineVisibility(bool showPatchLines)
         {
-            if (drawTerrain == null)
-            {
-                return false;
-            }
-
+            if (drawTerrain == null) return false;
             drawTerrain.SetPatchLineVisibility(showPatchLines);
             return true;
         }
@@ -925,36 +1021,22 @@ namespace ORTS.TrackViewer
         internal void SetTerrainReduction() => drawTerrain?.SetTerrainReduction();
         #endregion
 
-        #region Folder and Route methods
+        #region Folder, Route and Marker I/O methods
         void HandleCommandLineArgs()
         {
             if (this.commandLineArgs.Length == 0) return;
             string givenPathOrFile = this.commandLineArgs[0];
-            this.commandLineArgs = new string[0]; // discard the arguments, no longer needed
+            this.commandLineArgs = new string[0];
 
-            // given_path_or_file should be something like
-            // * C:\...\MSTS\Routes\USA2                        , for a directory
-            // * C:\...\MSTS\Routes\USA2\usa2.trk               , for a .trk file
-            // * C:\...\MSTS\Routes\USA2\marias.tdb             , for a .tdb file
-            // * C:\...\MSTS\Routes\USA2\marias.rdb             , for a .rdb file
-            // * C:\...\MSTS\Routes\USA2\PATHS\longhale.pat     , for a .pat file
-
-            //Let's first see if it exists and whether it is a file or directory
             string routeFolder = givenPathOrFile;
             bool givenFileIsPat = false;
-            if (System.IO.Directory.Exists(givenPathOrFile))
-            {
-                // It is a directory
-            }
+            if (System.IO.Directory.Exists(givenPathOrFile)) { }
             else if (System.IO.File.Exists(givenPathOrFile))
             {
-                // It is a file
                 var extension = System.IO.Path.GetExtension(givenPathOrFile).ToLower();
                 switch (extension)
                 {
                     case ".trk":
-                        routeFolder = System.IO.Path.GetDirectoryName(givenPathOrFile);
-                        break;
                     case ".tdb":
                         routeFolder = System.IO.Path.GetDirectoryName(givenPathOrFile);
                         break;
@@ -967,7 +1049,6 @@ namespace ORTS.TrackViewer
                         routeFolder = System.IO.Directory.GetParent(System.IO.Path.GetDirectoryName(givenPathOrFile).ToString()).ToString();
                         givenFileIsPat = true;
                         break;
-
                     default:
                         MessageBox.Show(string.Format(catalog.GetString("Route cannot be loaded.\nExtension {0} is not supported"), extension));
                         return;
@@ -975,7 +1056,6 @@ namespace ORTS.TrackViewer
             }
             else
             {
-                //Obviously, this should only happen when ran on the command line, not when a file is opened using
                 MessageBox.Show(string.Format(catalog.GetString("Route cannot be loaded.\n{0} does not exist"), givenPathOrFile));
                 return;
             }
@@ -989,13 +1069,10 @@ namespace ORTS.TrackViewer
 
             foreach (ORTS.Menu.Route route in this.Routes)
             {
-                //MessageBox.Show(route.Path);
-
                 if (route.Path.ToUpper() == routeFolder.ToUpper())
                 {
                     SetRoute(route);
-
-                    if (!givenFileIsPat) { return; }
+                    if (!givenFileIsPat) return;
                     foreach (Path availablePath in Paths)
                     {
                         if (availablePath.FilePath.ToUpper() == givenPathOrFile.ToUpper())
@@ -1011,33 +1088,18 @@ namespace ORTS.TrackViewer
             MessageBox.Show(string.Format(catalog.GetString("Route cannot be loaded.\n{0} somehow could not be translated into a loadable route"), givenPathOrFile));
         }
 
-        /// <summary>
-        /// Open up a dialog so the user can select the install directory
-        /// (which should contain a sub-directory called ROUTES).
-        /// </summary>
-        /// <returns>True if indeed a new path has been loaded</returns>
         public bool SelectInstallFolder()
         {
             if (!CanDiscardModifiedPath()) return false;
             string folderPath = "";
 
             FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog();
-            if (InstallFolder != null)
-            {
-                folderBrowserDialog.SelectedPath = InstallFolder.Path;
-            }
+            if (InstallFolder != null) folderBrowserDialog.SelectedPath = InstallFolder.Path;
             folderBrowserDialog.ShowNewFolderButton = false;
             DialogResult dialogResult = folderBrowserDialog.ShowDialog();
 
-            if (dialogResult == DialogResult.OK)
-            {
-                folderPath = folderBrowserDialog.SelectedPath;
-            }
-
-            if (String.IsNullOrEmpty(folderPath))
-            {
-                return false;
-            }
+            if (dialogResult == DialogResult.OK) folderPath = folderBrowserDialog.SelectedPath;
+            if (String.IsNullOrEmpty(folderPath)) return false;
 
             return SetSelectedInstallFolder(folderPath);
         }
@@ -1054,8 +1116,6 @@ namespace ORTS.TrackViewer
             }
 
             InstallFolder = newInstallFolder;
-
-            // make sure the current route is disabled,
             CurrentRoute = null;
             DrawTrackDB = null;
             PathEditor = null;
@@ -1063,14 +1123,9 @@ namespace ORTS.TrackViewer
 
             Properties.Settings.Default.installDirectory = folderPath;
             Properties.Settings.Default.Save();
-
             return true;
         }
 
-        /// <summary>
-        /// Find the available routes, and if possible load the first one.
-        /// </summary>
-        /// <returns>True if the route loading was successfull</returns>
         private bool FindRoutes(Folder newInstallFolder)
         {
             if (newInstallFolder == null) return false;
@@ -1078,7 +1133,6 @@ namespace ORTS.TrackViewer
 
             if (newRoutes.Count > 0)
             {
-                // set default route
                 DefaultRoute = newRoutes[0];
                 foreach (Route tryRoute in newRoutes)
                 {
@@ -1093,31 +1147,15 @@ namespace ORTS.TrackViewer
                 menuControl.PopulateRoutes();
                 return true;
             }
-            else
-            {
-                return false;
-            }
+            return false;
         }
 
-        /// <summary>
-        /// Load the default route. This would be either the route used last time, the current route, or else the first available route.
-        /// </summary>
         public void ReloadRoute()
         {
-            if (CurrentRoute != null)
-            {
-                SetRoute(CurrentRoute);
-            }
-            else
-            {
-                SetRoute(DefaultRoute);
-            }
+            if (CurrentRoute != null) SetRoute(CurrentRoute);
+            else SetRoute(DefaultRoute);
         }
 
-        /// <summary>
-        /// Set and load a new route
-        /// </summary>
-        /// <param name="newRoute">The route to load, containing amongst other the directory name of the route</param>
         public void SetRoute(Route newRoute)
         {
             if (newRoute == null) return;
@@ -1135,7 +1173,6 @@ namespace ORTS.TrackViewer
                 drawLabels = new DrawLabels(fontManager.DefaultFont.Height);
                 CurrentRoute = newRoute;
 
-                // Načtení napěťových/mirel bodů tratě
                 LoadVoltageMarkers(newRoute.Path);
                 LoadPowerSupplyStations(newRoute.Path);
                 LoadMirelPoints(newRoute.Path);
@@ -1143,13 +1180,12 @@ namespace ORTS.TrackViewer
                 Properties.Settings.Default.defaultRoute = CurrentRoute.Path.Split('\\').Last();
                 if (Properties.Settings.Default.zoomRoutePath != CurrentRoute.Path)
                 {
-                    Properties.Settings.Default.zoomScale = -1; // To disable the use of zoom reset
+                    Properties.Settings.Default.zoomScale = -1;
                 }
                 Properties.Settings.Default.Save();
                 DrawArea.ZoomReset(DrawTrackDB);
                 drawAreaInset.ZoomReset(DrawTrackDB);
                 SetTitle();
-
             }
             catch
             {
@@ -1160,11 +1196,7 @@ namespace ORTS.TrackViewer
 
             PathEditor = null;
             DrawMultiplePaths = null;
-            try
-            {
-                FindPaths();
-            }
-            catch { }
+            try { FindPaths(); } catch { }
 
             try
             {
@@ -1173,19 +1205,14 @@ namespace ORTS.TrackViewer
                 drawTerrain.LoadContent(GraphicsDevice);
                 menuControl.MenuSetShowTerrain(false);
                 menuControl.MenuSetShowDMTerrain(false);
-
             }
             catch { }
-
 
             menuControl.PopulatePlatforms();
             menuControl.PopulateStations();
             menuControl.PopulateSidings();
         }
 
-        /// <summary>
-        /// Set the title of the window itself
-        /// </summary>
         void SetTitle()
         {
             Assembly assembly = Assembly.GetExecutingAssembly();
@@ -1199,8 +1226,7 @@ namespace ORTS.TrackViewer
 
             if (string.IsNullOrEmpty(outputFilePath))
             {
-                // Výchozí název souboru do složky trati
-                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "VoltageChangeMarkers_new.xml");
+                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "VoltageChangeMarkers.xml");
             }
 
             var sb = new System.Text.StringBuilder();
@@ -1212,9 +1238,8 @@ namespace ORTS.TrackViewer
             {
                 sb.AppendLine("  <VoltageChangeMarker>");
                 sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
-                // Uložení ve formátu s tečkou, jaký očekává MSTSLocomotive.cs
-                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Latitude>");
-                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Longitude>");
+                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
                 sb.AppendLine($"    <Voltage>{pt.Voltage}</Voltage>");
                 sb.AppendLine("  </VoltageChangeMarker>");
             }
@@ -1231,7 +1256,7 @@ namespace ORTS.TrackViewer
 
             if (string.IsNullOrEmpty(outputFilePath))
             {
-                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "PowerSupplyStations_new.xml");
+                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "PowerSupplyStations.xml");
             }
 
             var sb = new System.Text.StringBuilder();
@@ -1241,12 +1266,12 @@ namespace ORTS.TrackViewer
             int idCounter = 1;
             foreach (var pt in PowerSupplyStations)
             {
-                sb.AppendLine("  <PowerSupplyStation>");
+                sb.AppendLine("  <SupplyStation>");
                 sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
-                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Latitude>");
-                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Longitude>");
+                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
                 sb.AppendLine($"    <PowerSystem>{pt.PowerSystem}</PowerSystem>");
-                sb.AppendLine("  </PowerSupplyStation>");
+                sb.AppendLine("  </SupplyStation>");
             }
 
             sb.AppendLine("</PowerSupplyStations>");
@@ -1277,6 +1302,11 @@ namespace ORTS.TrackViewer
                 sb.AppendLine("  <Signal>");
                 sb.AppendLine($"    <Id>{pt.SignalId}</Id>");
                 sb.AppendLine($"    <Value>{pt.Value}</Value>");
+                if (pt.Latitude != 0 || pt.Longitude != 0)
+                {
+                    sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Latitude>");
+                    sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", CultureInfo.InvariantCulture)}</Longitude>");
+                }
                 sb.AppendLine("  </Signal>");
             }
 
@@ -1289,109 +1319,6 @@ namespace ORTS.TrackViewer
                 System.Windows.Forms.MessageBoxButtons.OK,
                 System.Windows.Forms.MessageBoxIcon.Information);
         }
-
-        public class RouteVoltagePoint
-        {
-            public int Id { get; set; }
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
-            public int Voltage { get; set; }
-            public WorldLocation WorldLocation { get; set; }
-        }
-
-        public class RoutePowerSupplyStation
-        {
-            public int Id { get; set; }
-            public double Latitude { get; set; }
-            public double Longitude { get; set; }
-            public int PowerSystem { get; set; } // 0 = 3 kV DC, 1 = 25 kV AC, 2 = 15 kV AC
-            public WorldLocation WorldLocation { get; set; }
-        }
-
-        public class RouteMirelPoint
-        {
-            public int SignalId { get; set; }
-            public string Value { get; set; } // "b" = kódováno, "a" = nekódováno
-            public WorldLocation WorldLocation { get; set; }
-        }
-
-        public List<RouteMirelPoint> MirelPoints = new List<RouteMirelPoint>();
-        private RouteMirelPoint draggedMirelPoint = null;
-
-        public List<RoutePowerSupplyStation> PowerSupplyStations = new List<RoutePowerSupplyStation>();
-        private RoutePowerSupplyStation draggedPowerSupplyStation = null;
-
-        private RouteVoltagePoint draggedVoltagePoint = null;
-
-        WorldLocation LatLonToWorldLocation(double latDeg, double lonDeg)
-        {
-            // Goode homolosine parametry z WorldLatLon.cs
-            const int earthRadius = 6370997;
-            const int tileSize = 2048;
-            const int ul_x = -20015000;
-            const int ul_y = 8673000;
-            const int wt_ew_offset = -16385;
-            const int wt_ns_offset = 16385;
-
-            double lat = MathHelper.ToRadians((float)latDeg);
-            double lon = MathHelper.ToRadians((float)lonDeg);
-
-            // Výběr Goode regionu a centrálního poledníku (pro ČR / Evropu typicky region 3)
-            double lonCenter = 0.523598775598; // 30.0 stupňů
-            double fEast = earthRadius * 0.523598775598;
-
-            if (lat >= 0)
-            {
-                if (lon < -0.698131700798) // < -40 st.
-                {
-                    lonCenter = -1.74532925199; // -100 st.
-                    fEast = earthRadius * -1.74532925199;
-                }
-            }
-
-            double gx, gy;
-            // Standardní rovnice pro Goode (pro lat < 40° 44' 11.8" je to Sinusoidal, pro vyšší šířky Mollweide)
-            if (lat >= 0.710987989993) // >= 40° 44' 11.8" (většina Evropy / ČR)
-            {
-                // Mollweide projekce
-                // Numerické řešení Keplerovy rovnice: 2*theta + sin(2*theta) = PI * sin(lat)
-                double target = Math.PI * Math.Sin(lat);
-                double theta = lat;
-                for (int i = 0; i < 20; i++)
-                {
-                    double diff = 2 * theta + Math.Sin(2 * theta) - target;
-                    if (Math.Abs(diff) < 1e-9) break;
-                    theta -= diff / (2 + 2 * Math.Cos(2 * theta));
-                }
-
-                gy = Math.Sqrt(2) * earthRadius * Math.Sin(theta);
-                gx = (0.900316316158 * earthRadius * (lon - lonCenter) * Math.Cos(theta)) + fEast;
-            }
-            else
-            {
-                // Sinusoidal projekce
-                gy = earthRadius * lat;
-                gx = (earthRadius * (lon - lonCenter) * Math.Cos(lat)) + fEast;
-            }
-
-            // Převod z Goode XY na MSTS World Tile souřadnice
-            double gLine = 1.0 + (ul_y - gy) / tileSize;
-            double gSamp = 1.0 + (gx - ul_x) / tileSize;
-
-            int tileX = (int)Math.Floor(gSamp + wt_ew_offset);
-            int tileZ = (int)Math.Floor(wt_ns_offset - gLine);
-
-            float localX = (float)((gSamp - Math.Floor(gSamp)) * tileSize);
-            float localZ = (float)((gLine - Math.Floor(gLine)) * tileSize);
-
-            // Změna osy a vycentrování v rámci tile (-1024 až +1024)
-            localX -= (tileSize / 2f);
-            localZ = (tileSize / 2f) - localZ;
-
-            return new WorldLocation(tileX, tileZ, localX, 0, localZ);
-        }
-
-        public List<RouteVoltagePoint> VoltagePoints = new List<RouteVoltagePoint>();
 
         void LoadVoltageMarkers(string routePath)
         {
@@ -1414,12 +1341,12 @@ namespace ORTS.TrackViewer
                 if (line.IndexOf("<Latitude>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     string s = ExtractTagValue(line, "Latitude").Replace(',', '.');
-                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLat);
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLat);
                 }
                 else if (line.IndexOf("<Longitude>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     string s = ExtractTagValue(line, "Longitude").Replace(',', '.');
-                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLon);
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLon);
                 }
                 else if (line.IndexOf("<Voltage>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
@@ -1431,27 +1358,18 @@ namespace ORTS.TrackViewer
                 {
                     if (curLat != 0 || curLon != 0)
                     {
-                        // V MSTSLocomotive.cs se načítá:
-                        // psiLat = MathHelper.ToDegrees((float)vcm.Longitude);
-                        // psiLon = MathHelper.ToDegrees((float)vcm.Latitude);
-                        // Pokud jsou hodnoty v XML v radiánech (hodnota < 4.0), převedeme je na stupně:
                         double finalLat = curLat;
                         double finalLon = curLon;
 
                         if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
                         {
-                            // V XML jsou uloženy radiány
-                            // Dle DistanceToVoltageMarkerM je Longitude v XML ve skutečnosti Latitude!
                             finalLat = curLon * (180.0 / Math.PI);
                             finalLon = curLat * (180.0 / Math.PI);
                         }
                         else
                         {
-                            // Pokud jsou hodnoty větší než 4, jsou to již stupně
-                            // V ČR je Lat cca 48-51 a Lon cca 12-19
                             if (curLat < 30.0 && curLon > 40.0)
                             {
-                                // Prohozená Lat a Lon
                                 finalLat = curLon;
                                 finalLon = curLat;
                             }
@@ -1467,7 +1385,6 @@ namespace ORTS.TrackViewer
 
             if (rawMarkers.Count == 0) return;
 
-            // Připravíme body z kolejové sítě
             var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
             var trackPoints = new List<Tuple<WorldLocation, double, double>>();
 
@@ -1491,7 +1408,6 @@ namespace ORTS.TrackViewer
 
             if (trackPoints.Count == 0) return;
 
-            // Spárování každého markeru s nejbližším bodem tratě
             foreach (var marker in rawMarkers)
             {
                 double mLat = marker.Item1;
@@ -1504,7 +1420,7 @@ namespace ORTS.TrackViewer
                 foreach (var tp in trackPoints)
                 {
                     double dLat = tp.Item2 - mLat;
-                    double dLon = (tp.Item3 - mLon) * 0.65; // cosinus pro stř. Evropu
+                    double dLon = (tp.Item3 - mLon) * 0.65;
                     double distSq = dLat * dLat + dLon * dLon;
 
                     if (distSq < bestDistSq)
@@ -1516,7 +1432,6 @@ namespace ORTS.TrackViewer
 
                 if (closestLoc != WorldLocation.None)
                 {
-                    // Pokud na této přesné pozici již jiný bod existuje, mírně jej posuneme
                     int overlapCount = VoltagePoints.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
                     if (overlapCount > 0)
                     {
@@ -1566,12 +1481,12 @@ namespace ORTS.TrackViewer
                 else if (line.IndexOf("<Latitude>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     string s = ExtractTagValue(line, "Latitude").Replace(',', '.');
-                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLat);
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLat);
                 }
                 else if (line.IndexOf("<Longitude>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     string s = ExtractTagValue(line, "Longitude").Replace(',', '.');
-                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLon);
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLon);
                 }
                 else if (line.IndexOf("<PowerSystem>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
@@ -1584,7 +1499,6 @@ namespace ORTS.TrackViewer
                         double finalLat = curLat;
                         double finalLon = curLon;
 
-                        // Kontrola radiánů vs. stupňů a případného prohození Lat/Lon
                         if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
                         {
                             finalLat = curLon * (180.0 / Math.PI);
@@ -1607,7 +1521,6 @@ namespace ORTS.TrackViewer
 
             if (rawStations.Count == 0) return;
 
-            // Body kolejové sítě pro snapnutí
             var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
             var trackPoints = new List<Tuple<WorldLocation, double, double>>();
 
@@ -1656,7 +1569,6 @@ namespace ORTS.TrackViewer
 
                 if (closestLoc != WorldLocation.None)
                 {
-                    // Ochrana před absolutním překryvem identických souřadnic
                     int overlapCount = PowerSupplyStations.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
                     if (overlapCount > 0)
                     {
@@ -1689,10 +1601,12 @@ namespace ORTS.TrackViewer
                 return;
 
             var lines = System.IO.File.ReadAllLines(filePath);
-            var rawSignals = new List<Tuple<int, string>>();
+            var rawSignals = new List<Tuple<int, string, double, double>>();
 
             int curId = 0;
             string curVal = "";
+            double curLat = 0;
+            double curLon = 0;
 
             foreach (var rawLine in lines)
             {
@@ -1706,26 +1620,42 @@ namespace ORTS.TrackViewer
                 {
                     curVal = ExtractTagValue(line, "Value");
                 }
+                else if (line.IndexOf("<Latitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Latitude").Replace(',', '.');
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLat);
+                }
+                else if (line.IndexOf("<Longitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Longitude").Replace(',', '.');
+                    double.TryParse(s, NumberStyles.Any, CultureInfo.InvariantCulture, out curLon);
+                }
                 else if (line.IndexOf("</Signal>", StringComparison.OrdinalIgnoreCase) >= 0)
                 {
                     if (curId > 0 && !string.IsNullOrEmpty(curVal))
                     {
-                        rawSignals.Add(Tuple.Create(curId, curVal));
+                        rawSignals.Add(Tuple.Create(curId, curVal, curLat, curLon));
                     }
                     curId = 0;
                     curVal = "";
+                    curLat = 0;
+                    curLon = 0;
                 }
             }
 
             if (rawSignals.Count == 0) return;
 
+            var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
+
             foreach (var sig in rawSignals)
             {
                 int sId = sig.Item1;
                 string sVal = sig.Item2;
+                double sLat = sig.Item3;
+                double sLon = sig.Item4;
                 WorldLocation loc = WorldLocation.None;
 
-                // 1. Nalezení přímo v TrItemTable podle indexu SignalId
+                // 1. Zkusíme načíst z TrItemTable
                 if (RouteData.TrackDB.TrItemTable != null && sId >= 0 && sId < RouteData.TrackDB.TrItemTable.Length)
                 {
                     var item = RouteData.TrackDB.TrItemTable[sId];
@@ -1735,7 +1665,7 @@ namespace ORTS.TrackViewer
                     }
                 }
 
-                // 2. Záložní dohledání přes první vektorový uzel, pokud prvek nebyl nalezen
+                // 2. Záložní dohledání přes první vektorový uzel
                 if (loc == WorldLocation.None && RouteData.TrackDB.TrackNodes != null)
                 {
                     foreach (var tn in RouteData.TrackDB.TrackNodes)
@@ -1754,7 +1684,6 @@ namespace ORTS.TrackViewer
 
                 if (loc != WorldLocation.None)
                 {
-                    // Ochrana před překryvem více bodů na stejné pozici
                     int overlapCount = MirelPoints.Count(p => WorldLocation.Within(p.WorldLocation, loc, 0.5f));
                     if (overlapCount > 0)
                     {
@@ -1767,16 +1696,27 @@ namespace ORTS.TrackViewer
                         );
                     }
 
+                    if (sLat == 0 && sLon == 0)
+                    {
+                        double latRad = 0, lonRad = 0;
+                        if (worldLatLon.ConvertWTC(loc.TileX, loc.TileZ, loc.Location, ref latRad, ref lonRad) == 1)
+                        {
+                            sLat = latRad * (180.0 / Math.PI);
+                            sLon = lonRad * (180.0 / Math.PI);
+                        }
+                    }
+
                     MirelPoints.Add(new RouteMirelPoint
                     {
                         SignalId = sId,
                         Value = sVal,
-                        WorldLocation = loc
+                        WorldLocation = loc,
+                        Latitude = sLat,
+                        Longitude = sLon
                     });
                 }
             }
         }
-
 
         string ExtractTagValue(string source, string tag)
         {
@@ -1789,13 +1729,9 @@ namespace ORTS.TrackViewer
             }
             return "";
         }
-
         #endregion
 
         #region Path methods
-        /// <summary>
-        /// Find the paths (.pat files) belonging to the current route, and update the menu
-        /// </summary>
         private void FindPaths()
         {
             List<Path> newPaths = Path.GetPaths(CurrentRoute, true).OrderBy(r => r.Name).ToList();
@@ -1805,10 +1741,6 @@ namespace ORTS.TrackViewer
             DrawMultiplePaths = new DrawMultiplePaths(this.RouteData, Paths);
         }
 
-        /// <summary>
-        /// Once a path has been selected, do the necessary loading.
-        /// </summary>
-        /// <param name="path">Path (with FilePath) that has to be loaded</param>
         internal void SetPath(Path path)
         {
             if (!CanDiscardModifiedPath()) return;
@@ -1843,10 +1775,6 @@ namespace ORTS.TrackViewer
             EditMetaData();
         }
 
-        /// <summary>
-        /// If the path has been modified, ask the user if he really wants to discard it
-        /// </summary>
-        /// <returns>false if there is a modified path that the user does not want to discard.</returns>
         bool CanDiscardModifiedPath()
         {
             if (PathEditor == null) return true;
@@ -1858,32 +1786,19 @@ namespace ORTS.TrackViewer
                         System.Windows.Forms.MessageBoxIcon.Question);
             return (dialogResult == DialogResult.OK);
         }
-
         #endregion
 
         #region Centering methods
-        /// <summary>
-        /// Find a track node, center around it and highlight it
-        /// </summary>
-        /// <param name="trackNumberIndex">Index of the track node</param>
         public void CenterAroundTrackNode(int trackNumberIndex)
         {
             CenterAround(DrawTrackDB.TrackNodeHighlightOverride(trackNumberIndex));
         }
 
-        /// <summary>
-        /// Find a Road track node, center around it and highlight it
-        /// </summary>
-        /// <param name="trackNumberIndex">Index of the track node</param>
         public void CenterAroundTrackNodeRoad(int trackNumberIndex)
         {
             CenterAround(DrawTrackDB.TrackNodeHighlightOverrideRoad(trackNumberIndex));
         }
 
-        /// <summary>
-        /// Find a trackItem and center around it and highlight it
-        /// </summary>
-        /// <param name="trackItemIndex">Index of the track item</param>
         public void CenterAroundTrackItem(int trackItemIndex)
         {
             WorldLocation itemLocation = DrawTrackDB.TrackItemHighlightOverride(trackItemIndex);
@@ -1891,10 +1806,6 @@ namespace ORTS.TrackViewer
             CenterAround(itemLocation);
         }
 
-        /// <summary>
-        /// Find a road trackItem and center around it and highlight it
-        /// </summary>
-        /// <param name="trackItemIndex">Index of the track item</param>
         public void CenterAroundTrackItemRoad(int trackItemIndex)
         {
             WorldLocation itemLocation = DrawTrackDB.TrackItemHighlightOverrideRoad(trackItemIndex);
@@ -1902,11 +1813,6 @@ namespace ORTS.TrackViewer
             CenterAround(itemLocation);
         }
 
-        /// <summary>
-        /// Center around a certain world-location. In particular, outside the normal Draw/Update loop. So it does a draw itself
-        /// To be used from additional windows (like search).
-        /// </summary>
-        /// <param name="centerLocation">Location to center the view window around</param>
         public void CenterAround(WorldLocation centerLocation)
         {
             if (centerLocation == WorldLocation.None) return;
@@ -1916,18 +1822,13 @@ namespace ORTS.TrackViewer
             DrawArea.MouseLocation = centerLocation;
             drawAreaInset.Follow(DrawArea, 10f);
             BeginDraw();
-            skipDrawAmount = 0; // make sure the draw is really done.
+            skipDrawAmount = 0;
             Draw(new GameTime());
             EndDraw();
-
         }
-
         #endregion
 
         #region RestoreBrokenPaths
-        /// <summary>
-        /// Attempt to Auto Restore all broken paths
-        /// </summary>
         public void AutoRestorePaths()
         {
             DialogResult dialogResult = MessageBox.Show(
@@ -1939,7 +1840,6 @@ namespace ORTS.TrackViewer
                         System.Windows.Forms.MessageBoxIcon.Question);
             if (dialogResult != DialogResult.OK) { return; }
 
-            //Close all paths that are drawn.
             if (!CanDiscardModifiedPath()) return;
             PathEditor = null;
             DrawMultiplePaths?.ClearAll();
@@ -1953,27 +1853,10 @@ namespace ORTS.TrackViewer
         #region Debug methods
         void RunDebug()
         {
-            //Properties.Settings.Default.statusShowFPS = true;
-            //ReloadRoute();
-            //SetPath(Paths[21]);
-            //drawPathChart.Open();
-            //NewPath();
-            //menuControl.SetEnableEditing(true);
-            //DrawArea.ZoomToTile();
-            //DrawArea.Zoom(-18);
-            //CenterAroundTrackNode(30);
-            //ReversePath();
-
         }
 
         static void InitLogging()
-        {   // debug only
-            //string logFileName = "C:\\tvlog.txt";
-            //System.IO.File.Delete(logFileName);
-            //Console.SetOut(new FileTeeLogger(logFileName, Console.Out));
-            //// Make Console.Error go to the new Console.Out.
-            //Console.SetError(Console.Out);
-            //Console.WriteLine("started logging");
+        {
         }
 
         void CalculateFPS(GameTime gameTime)
@@ -1981,19 +1864,11 @@ namespace ORTS.TrackViewer
             float elapsedRealTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             FrameRate.Update(elapsedRealTime, 1f / elapsedRealTime);
         }
-
         #endregion
 
         #region Language and localization
-        /// <summary>
-        /// This is the 'catalog' needed for localization of TrackViewer (meaning translating it to different languages)
-        /// </summary>
         public static GettextResourceManager catalog = new GettextResourceManager("Contrib");
 
-        /// <summary>
-        /// Routine to localize (make languague-dependent) a WPF/framework element, like a menu.
-        /// </summary>
-        /// <param name="element">The element that is checked for localizable parameters</param>
         public static void Localize(System.Windows.FrameworkElement element)
         {
             foreach (var child in System.Windows.LogicalTreeHelper.GetChildren(element))
@@ -2017,18 +1892,9 @@ namespace ORTS.TrackViewer
             }
         }
 
-        /// <summary>
-        /// Change/select the language. Store the preference to be used after a restart
-        /// Give message to use that TrackViewer needs to be restarted
-        /// </summary>
-        /// <param name="languageCode">Two-letter code for the new language</param>
         public void SelectLanguage(string languageCode)
         {
             LanguageManager.SelectLanguage(languageCode);
-            //The lines below work from system/english to another language, but not from another language to system/english
-            //languageManager.LoadLanguage();
-            //Localize(menuControl);
-            //Localize(statusBarControl);
         }
         #endregion
     }
