@@ -3790,8 +3790,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SMALL_EJECTOR:
                 case CABViewControlTypes.ORTS_LARGE_EJECTOR:
                 case CABViewControlTypes.FIREHOLE:
-                case CABViewControlTypes.ORTS_WINDOW_LEFT:
-                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
+                case CABViewControlTypes.ORTS_LEFTWINDOW:
+                case CABViewControlTypes.ORTS_RIGHTWINDOW:
                     index = PercentToIndex(data);
                     break;
                 case CABViewControlTypes.THROTTLE:
@@ -4450,7 +4450,7 @@ namespace Orts.Viewer3D.RollingStock
 
             switch (Control.ControlType)
             {
-                case CABViewControlTypes.ORTS_WINDOW_LEFT:
+                case CABViewControlTypes.ORTS_LEFTWINDOW:
                     if (UserInput.IsMouseLeftButtonDown)
                     {
                         float movement = MathHelper.Clamp(NormalizedMouseMovement(), -0.1f, 0.1f);
@@ -4458,7 +4458,7 @@ namespace Orts.Viewer3D.RollingStock
                     }
                     break;
 
-                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
+                case CABViewControlTypes.ORTS_RIGHTWINDOW:
                     if (UserInput.IsMouseLeftButtonDown)
                     {
                         float movement = MathHelper.Clamp(NormalizedMouseMovement(), -0.1f, 0.1f);

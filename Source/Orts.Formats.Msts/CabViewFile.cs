@@ -585,8 +585,8 @@ namespace Orts.Formats.Msts
         PANTOGRAPHS_CURRENT_DC,
         STEAMGENERATOR_TEMP,
         GENERATOR_VOLTAGE,
-        ORTS_WINDOW_LEFT,
-        ORTS_WINDOW_RIGHT,
+        ORTS_LEFTWINDOW,
+        ORTS_RIGHTWINDOW,
         // ORTS
         ORTS_SCREEN_SELECT,
 

@@ -25209,9 +25209,9 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         seconds += 60;
                     data = seconds;
                     break;
-                case CABViewControlTypes.ORTS_WINDOW_LEFT:
+                case CABViewControlTypes.ORTS_LEFTWINDOW:
                     return WindowPosition[LocoStation, 0];
-                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
+                case CABViewControlTypes.ORTS_RIGHTWINDOW:
                     return WindowPosition[LocoStation, 1];
 
                 // Train Control System controls
