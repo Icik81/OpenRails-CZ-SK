@@ -490,6 +490,10 @@ namespace Orts.Simulation.Common
         ShunterTestBrakeSound_CheckBrakeRelease,
         ShunterTestBrakeSound_BrakeDeactivate,
         ShunterTestBrakeSound_HandBrakeRelease,
+        WindowLeftOpen,
+        WindowLeftClose,
+        WindowRightOpen,
+        WindowRightClose,
     }
 
     public static class Events
@@ -994,6 +998,10 @@ namespace Orts.Simulation.Common
                         case 20392: return Event.ShunterTestBrakeSound_CheckBrakeRelease;
                         case 20393: return Event.ShunterTestBrakeSound_BrakeDeactivate;
                         case 20394: return Event.ShunterTestBrakeSound_HandBrakeRelease;
+                        case 20400: return Event.WindowLeftOpen;
+                        case 20401: return Event.WindowLeftClose;
+                        case 20402: return Event.WindowRightOpen;
+                        case 20403: return Event.WindowRightClose;
 
 
                         default: return 0;

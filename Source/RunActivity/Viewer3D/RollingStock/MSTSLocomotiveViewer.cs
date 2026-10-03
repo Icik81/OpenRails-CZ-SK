@@ -3790,6 +3790,8 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SMALL_EJECTOR:
                 case CABViewControlTypes.ORTS_LARGE_EJECTOR:
                 case CABViewControlTypes.FIREHOLE:
+                case CABViewControlTypes.ORTS_WINDOW_LEFT:
+                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
                     index = PercentToIndex(data);
                     break;
                 case CABViewControlTypes.THROTTLE:
@@ -4365,8 +4367,7 @@ namespace Orts.Viewer3D.RollingStock
                 case CABViewControlTypes.SYSTEM_ANNUNCIATOR:
                 case CABViewControlTypes.PANTO_MODE:
                 case CABViewControlTypes.FORCE_INCREASE:
-                case CABViewControlTypes.FORCE_DECREASE:
-
+                case CABViewControlTypes.FORCE_DECREASE:                
 
                     index = (int)data;
                     break;
@@ -4449,7 +4450,21 @@ namespace Orts.Viewer3D.RollingStock
 
             switch (Control.ControlType)
             {
-                // ORTS
+                case CABViewControlTypes.ORTS_WINDOW_LEFT:
+                    if (UserInput.IsMouseLeftButtonDown)
+                    {
+                        float movement = MathHelper.Clamp(NormalizedMouseMovement(), -0.1f, 0.1f);
+                        Locomotive.SetWindowPosition(0, Locomotive.WindowPosition[Locomotive.LocoStation, 0] + movement);
+                    }
+                    break;
+
+                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
+                    if (UserInput.IsMouseLeftButtonDown)
+                    {
+                        float movement = MathHelper.Clamp(NormalizedMouseMovement(), -0.1f, 0.1f);
+                        Locomotive.SetWindowPosition(1, Locomotive.WindowPosition[Locomotive.LocoStation, 1] + movement);
+                    }
+                    break;
                 case CABViewControlTypes.ORTS_SCREEN_SELECT:
                     bool buttonState = ChangedValue(ButtonState ? 1 : 0) > 0;
                     if (((CVCDiscrete)Control).NewScreens != null)

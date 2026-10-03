@@ -1563,21 +1563,36 @@ namespace Orts.Viewer3D
                                 }                                
                             }
                 }
-            }            
-
-            if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
-            {
-                if (SoundSource.Viewer.Camera.AttachedCar == null || ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent == -1)
-                    volume *= Program.Viewer.Settings.ExternalSoundPassThruPercent * 0.01f;
-                else volume *= ((MSTSWagon)SoundSource.Viewer.Camera.AttachedCar).ExternalSoundPassThruPercent * 0.01f;
             }
 
-            // Včetně zvuků v *_in.sms pro kabiny
+            // Zjištění základní propustnosti při zavřeném okně (např. 0.20 až 0.50 dle konfigurace)
+            float basePassThru = 0.5f;
+            var attachedWagon = SoundSource.Viewer.Camera.AttachedCar as MSTSWagon;
+            if (attachedWagon != null && attachedWagon.ExternalSoundPassThruPercent > -1)
+                basePassThru = attachedWagon.ExternalSoundPassThruPercent * 0.01f;
+            else if (Program.Viewer.Settings.ExternalSoundPassThruPercent > -1)
+                basePassThru = Program.Viewer.Settings.ExternalSoundPassThruPercent * 0.01f;
+
+            // Pokud se díváme z kabiny lokomotivy s otevíratelnými okny
+            var attachedLoco = attachedWagon as MSTSLocomotive;
+            if (attachedLoco != null && (SoundSource.Viewer.Camera.Style == Camera.Styles.Cab || SoundSource.Viewer.Camera.Style == Camera.Styles.ThreeDimCab))
+            {
+                float windowOpen = attachedLoco.CurrentMaxWindowOpen; // 0.0 (zavřeno) až 1.0 (plně otevřeno)
+
+                // Lineární interpolace: při zavřeném okně = basePassThru, při plném otevření = 1.0 (100 % hlasitost jako venku)
+                basePassThru = MathHelper.Lerp(basePassThru, 1.0f, windowOpen);
+            }
+
+            // Aplikace na externí zvuky slyšené uvnitř
+            if (SoundSource.IsExternal && SoundSource.Viewer.Camera.Style != Camera.Styles.External && !SoundSource.IsUnattenuated)
+            {
+                volume *= basePassThru;
+            }
+
+            // Aplikace na *_in.sms zvuky tratí / podvozků
             if (!SoundSource.IsExternal && SoundSource.SMSFileName != null && SoundSource.SMSFileName.ToLower().Contains("_in.sms") && SoundSource.Viewer?.Camera?.Style != Camera.Styles.External)
             {
-                var attachedWagon = SoundSource.Viewer?.Camera?.AttachedCar as MSTSWagon;
-                if (attachedWagon != null && attachedWagon.ExternalSoundPassThruPercent > -1)
-                    volume *= attachedWagon.ExternalSoundPassThruPercent * 0.01f;
+                volume *= basePassThru;
             }
 
             // Shodí příznak MSTSStreamSoundOffInit pro aktivní vozidla

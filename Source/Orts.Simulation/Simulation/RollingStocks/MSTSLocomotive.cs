@@ -2211,6 +2211,10 @@ namespace Orts.Simulation.Simulation.RollingStocks
             outf.Write(SteamGeneratorTempC);
             outf.Write(LocomotiveFaulty);
             Shunter.Save(outf);
+            outf.Write(WindowPosition[1, 0]);
+            outf.Write(WindowPosition[1, 1]);
+            outf.Write(WindowPosition[2, 0]);
+            outf.Write(WindowPosition[2, 1]);
             #endregion
 
             base.Save(outf);
@@ -2480,6 +2484,10 @@ namespace Orts.Simulation.Simulation.RollingStocks
             SteamGeneratorTempC = inf.ReadSingle();
             LocomotiveFaulty = inf.ReadBoolean();
             Shunter.Restore(inf);
+            WindowPosition[1, 0] = inf.ReadSingle();
+            WindowPosition[1, 1] = inf.ReadSingle();
+            WindowPosition[2, 0] = inf.ReadSingle();
+            WindowPosition[2, 1] = inf.ReadSingle();
             #endregion
 
             base.Restore(inf);
@@ -13043,7 +13051,38 @@ namespace Orts.Simulation.Simulation.RollingStocks
             if (Wipers3ActivationEnable) return;
             SignalEvent(Event.PantographToggle);
             LocoWiper[LocoStation] = !LocoWiper[LocoStation];
-        }        
+        }
+
+        public float[,] WindowPosition = new float[3, 2];
+        public void SetWindowPosition(int windowIndex, float targetValue)
+        {
+            if (windowIndex < 0 || windowIndex > 1) return;
+
+            float oldVal = WindowPosition[LocoStation, windowIndex];
+            float newVal = MathHelper.Clamp(targetValue, 0.0f, 1.0f);
+
+            if (oldVal == 0.0f && newVal > 0.0f)
+            {
+                // Začátek otevírání
+                SignalEvent(windowIndex == 0 ? Event.WindowLeftOpen : Event.WindowRightOpen);
+            }
+            else if (oldVal > 0.0f && newVal == 0.0f)
+            {
+                // Úplné dovření
+                SignalEvent(windowIndex == 0 ? Event.WindowLeftClose : Event.WindowRightClose);
+            }
+
+            WindowPosition[LocoStation, windowIndex] = newVal;
+        }
+
+        public float CurrentMaxWindowOpen
+        {
+            get
+            {                
+                // Vrátí největší otevření mezi levým (index 0) a pravým (index 1) oknem na daném stanovišti (0.0 až 1.0)
+                return Math.Max(WindowPosition[LocoStation, 0], WindowPosition[LocoStation, 1]);
+            }
+        }
 
         public void SetBailOff(bool bailOff)
         {
@@ -25170,6 +25209,10 @@ namespace Orts.Simulation.Simulation.RollingStocks
                         seconds += 60;
                     data = seconds;
                     break;
+                case CABViewControlTypes.ORTS_WINDOW_LEFT:
+                    return WindowPosition[LocoStation, 0];
+                case CABViewControlTypes.ORTS_WINDOW_RIGHT:
+                    return WindowPosition[LocoStation, 1];
 
                 // Train Control System controls
                 case CABViewControlTypes.ORTS_TCS1:
