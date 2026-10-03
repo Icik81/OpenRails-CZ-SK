@@ -77,6 +77,15 @@ namespace ORTS.TrackViewer.UserInterface
         }
 
         /// <summary>
+        /// Toggle whether the voltage markers are shown
+        /// </summary>
+        public void MenuToggleShowVoltageMarkers()
+        {
+            menuShowVoltageMarkers.IsChecked = !menuShowVoltageMarkers.IsChecked;
+            UpdateMenuSettings();
+        }
+
+        /// <summary>
         /// set the size of the menu control (also after rescaling)
         /// </summary>
         /// <param name="width"></param>
@@ -159,6 +168,8 @@ namespace ORTS.TrackViewer.UserInterface
             UpdateMenuSettings();  // to be sure some other settings are done correctly
 
             menuDoAntiAliasing.IsChecked = Properties.Settings.Default.doAntiAliasing;
+
+            menuShowVoltageMarkers.IsChecked = Properties.Settings.Default.showVoltageMarkers;
         }
 
         /// <summary>
@@ -241,6 +252,8 @@ namespace ORTS.TrackViewer.UserInterface
             Properties.Settings.Default.zoomIsCenteredOnMouse = menuZoomIsCenteredOnMouse.IsChecked;
 
             Properties.Settings.Default.Save();
+
+            Properties.Settings.Default.showVoltageMarkers = menuShowVoltageMarkers.IsChecked;
 
             DrawColors.SetColoursFromOptions(menuColorTracks.IsChecked, menuShowWorldTiles.IsChecked, menuShowTerrain.IsChecked || menuShowDMTerrain.IsChecked);
 
@@ -386,6 +399,34 @@ namespace ORTS.TrackViewer.UserInterface
             CloseOtherPathsWindow();
             trackViewer.ReloadRoute();
             UpdateMenuSettings();
+        }
+
+        private void MenuSaveVoltageMarkers_Click(object sender, RoutedEventArgs e)
+        {
+            if (trackViewer.CurrentRoute == null)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No route loaded!"), "TrackViewer");
+                return;
+            }
+
+            if (trackViewer.VoltagePoints == null || trackViewer.VoltagePoints.Count == 0)
+            {
+                MessageBox.Show(TrackViewer.catalog.GetString("No voltage markers found to save!"), "TrackViewer");
+                return;
+            }
+
+            using (var saveFileDialog = new System.Windows.Forms.SaveFileDialog())
+            {
+                saveFileDialog.InitialDirectory = trackViewer.CurrentRoute.Path;
+                saveFileDialog.FileName = "VoltageChangeMarkers.xml";
+                saveFileDialog.Filter = "XML files (*.xml)|*.xml|All files (*.*)|*.*";
+                saveFileDialog.Title = TrackViewer.catalog.GetString("Save Voltage Change Markers");
+
+                if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                {
+                    trackViewer.SaveVoltageMarkers(saveFileDialog.FileName);
+                }
+            }
         }
 
         /// <summary>

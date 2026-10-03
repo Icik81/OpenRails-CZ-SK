@@ -54,7 +54,7 @@
                 <MenuItem Header="Save current zoom" Name="menuZoomSave" Click="MenuZoomSave_Click"/>
                 <MenuItem Header="Restore saved zoom" Name="menuZoomRestore" Click="MenuZoomRestore_Click"/>
                 <Separator/>
-                <MenuItem Header="Zoom in (=)" Name="menuZoomIn" Click="MenuZoomIn_Click"/> 
+                <MenuItem Header="Zoom in (=)" Name="menuZoomIn" Click="MenuZoomIn_Click"/>
                 <MenuItem Header="Zoom out (-)" Name="menuZoomOut" Click="MenuZoomOut_Click"/>
                 <MenuItem Header="Zoom to tile (Z)" Name="menuZoomToTile" Click="MenuZoomToTile_Click"/>
                 <MenuItem Header="Zoom reset (R)" Name="menuZoomReset" Click="MenuZoomReset_Click"/>
@@ -96,6 +96,10 @@
                     <MenuItem Header="Show car spawners" Name="menuShowCarSpawners" IsCheckable="True" Click="UpdateMenuSettings"/>
                     <MenuItem Header="Show road crossings" Name="menuShowRoadCrossings" IsCheckable="True" Click="UpdateMenuSettings"/>
                 </MenuItem>
+            </MenuItem>
+            <MenuItem Header="_Route Markers" Name="menuRouteMarkers">
+                <MenuItem Header="Show voltage markers" Name="menuShowVoltageMarkers" IsCheckable="True" Click="UpdateMenuSettings"/>
+                <MenuItem Header="Save voltage markers" Name="menuSaveVoltageMarkers" Click="MenuSaveVoltageMarkers_Click"/>
             </MenuItem>
             <MenuItem Header="_Statusbar" Name="menuStatusbar">
                 <MenuItem Header="Show vector section info" Name="menuStatusShowVectorSection" IsCheckable="True" IsChecked="False"

@@ -19,7 +19,9 @@
 using GNU.Gettext;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Orts.Simulation.Common;
 using ORTS.Common;
+using ORTS.Content;
 using ORTS.Menu;
 using ORTS.TrackViewer.Drawing;
 using ORTS.TrackViewer.Drawing.Labels;
@@ -32,13 +34,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reflection;
 using System.Windows.Forms;
-using ORTS.Content;
 using Color = Microsoft.Xna.Framework.Color;
 using MessageBox = System.Windows.Forms.MessageBox;
 
 namespace ORTS.TrackViewer
-{
-
+{    
     /// <summary>
     /// Delegate that can be called by routines such that we can draw it to the screen
     /// </summary>
@@ -459,7 +459,7 @@ namespace ORTS.TrackViewer
             bool otherWindowHasMouse = menuControl.HasMouse() || drawPathChart.IsActived;
             if (!TVUserInput.IsDown(TVUserCommands.EditorTakesMouseClickDrag) && !otherWindowHasMouse)
             {
-                if (TVUserInput.IsMouseMoved() && TVUserInput.IsMouseLeftButtonDown())
+                if (draggedVoltagePoint == null && TVUserInput.IsMouseMoved() && TVUserInput.IsMouseLeftButtonDown())
                 {
                     DrawArea.ShiftArea(TVUserInput.MouseMoveX(), TVUserInput.MouseMoveY());
                 }
@@ -483,6 +483,70 @@ namespace ORTS.TrackViewer
 
 
             DrawArea.Update();
+
+            if (VoltagePoints.Count > 0 && !this.menuControl.HasMouse())
+            {
+                // Pozice kurzoru myši v okně
+                Vector2 mouseScreen = new Vector2(TVUserInput.MouseLocationX, TVUserInput.MouseLocationY);
+
+                // 1. Chycení bodu myší (kliknutí)
+                if (TVUserInput.IsMouseLeftButtonPressed())
+                {
+                    RouteVoltagePoint bestCandidate = null;
+                    float bestDistPixels = 15f; // maximální tolerance v pixelech
+
+                    foreach (var pt in VoltagePoints)
+                    {
+                        float distMeters = (float)Math.Sqrt(WorldLocation.GetDistanceSquared2D(pt.WorldLocation, DrawArea.MouseLocation));
+                        float distPixels = (float)(distMeters * DrawArea.Scale);
+
+                        if (distPixels < bestDistPixels)
+                        {
+                            bestDistPixels = distPixels;
+                            bestCandidate = pt;
+                        }
+                    }
+
+                    if (bestCandidate != null)
+                    {
+                        draggedVoltagePoint = bestCandidate;
+                        // Přesuneme chycený bod na konec seznamu, aby se při dalším kliknutí na stejné místo chytil druhý bod
+                        VoltagePoints.Remove(bestCandidate);
+                        VoltagePoints.Add(bestCandidate);
+                    }
+                }
+
+                // 2. Tažení bodu
+                if (draggedVoltagePoint != null && TVUserInput.IsMouseLeftButtonDown())
+                {
+                    // Přepočet souřadnic myši na WorldLocation
+                    // Zajistíme aktualizaci MouseLocation
+                    DrawArea.Update();
+
+                    draggedVoltagePoint.WorldLocation = DrawArea.MouseLocation;
+
+                    // Přepočet zpět na Latitude / Longitude
+                    double latRad = 0, lonRad = 0;
+                    var wll = new Orts.Simulation.Common.WorldLatLon();
+                    if (wll.ConvertWTC(draggedVoltagePoint.WorldLocation.TileX,
+                                       draggedVoltagePoint.WorldLocation.TileZ,
+                                       draggedVoltagePoint.WorldLocation.Location,
+                                       ref latRad, ref lonRad) == 1)
+                    {
+                        draggedVoltagePoint.Latitude = latRad;
+                        draggedVoltagePoint.Longitude = lonRad;
+                    }
+
+                    skipDrawAmount = 0; // Vynutí okamžité překreslení
+                }
+
+                // 3. Puštění bodu
+                if (TVUserInput.IsMouseLeftButtonReleased() && draggedVoltagePoint != null)
+                {
+                    draggedVoltagePoint = null;
+                }
+            }
+
             drawAreaInset.Update();
             drawAreaInset.Follow(DrawArea, 10f);
 
@@ -577,6 +641,35 @@ namespace ORTS.TrackViewer
             DrawTrackDB.DrawRoadTrackItems(DrawArea);
             DrawTrackDB.DrawTrackItems(DrawArea);
             DrawTrackDB.DrawItemHighlights(DrawArea);
+
+            if (Properties.Settings.Default.showVoltageMarkers && VoltagePoints.Count > 0)
+            {
+                for (int i = 0; i < VoltagePoints.Count; i++)
+                {
+                    var pt = VoltagePoints[i];
+
+                    Color col;
+                    switch (pt.Voltage)
+                    {
+                        case 3000: col = Color.Yellow; break;  // 3 kV DC
+                        case 25000: col = Color.Red; break;    // 25 kV AC
+                        case 15000: col = Color.Cyan; break;   // 15 kV AC
+                        case 0: col = Color.White; break;      // Bez napětí
+                        default: col = Color.Orange; break;
+                    }
+
+                    if (pt == draggedVoltagePoint)
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 10f, 12, 24, Color.Lime);
+                    }
+                    else
+                    {
+                        DrawArea.DrawTexture(pt.WorldLocation, "disc", 6f, 8, 16, col);
+                    }
+
+                    DrawArea.DrawExpandingString(pt.WorldLocation, $"{pt.Voltage} V");
+                }
+            }
 
             CalculateFPS(gameTime);
 
@@ -895,6 +988,9 @@ namespace ORTS.TrackViewer
                 drawLabels = new DrawLabels(fontManager.DefaultFont.Height);
                 CurrentRoute = newRoute;
 
+                // Načtení napěťových bodů tratě
+                LoadVoltageMarkers(newRoute.Path);
+
                 Properties.Settings.Default.defaultRoute = CurrentRoute.Path.Split('\\').Last();
                 if (Properties.Settings.Default.zoomRoutePath != CurrentRoute.Path)
                 {
@@ -946,6 +1042,278 @@ namespace ORTS.TrackViewer
             Assembly assembly = Assembly.GetExecutingAssembly();
             AssemblyTitleAttribute assemblyTitle = assembly.GetCustomAttributes(typeof(AssemblyTitleAttribute), false)[0] as AssemblyTitleAttribute;
             Window.Title = assemblyTitle.Title + ": " + RouteData.RouteName;
+        }
+
+        public void SaveVoltageMarkers(string outputFilePath = null)
+        {
+            if (CurrentRoute == null || VoltagePoints.Count == 0) return;
+
+            if (string.IsNullOrEmpty(outputFilePath))
+            {
+                // Výchozí název souboru do složky trati
+                outputFilePath = System.IO.Path.Combine(CurrentRoute.Path, "VoltageChangeMarkers_new.xml");
+            }
+
+            var sb = new System.Text.StringBuilder();
+            sb.AppendLine("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            sb.AppendLine("<VoltageChangeMarkers>");
+
+            int idCounter = 1;
+            foreach (var pt in VoltagePoints)
+            {
+                sb.AppendLine("  <VoltageChangeMarker>");
+                sb.AppendLine($"    <Id>{(pt.Id > 0 ? pt.Id : idCounter++)}</Id>");
+                // Uložení ve formátu s tečkou, jaký očekává MSTSLocomotive.cs
+                sb.AppendLine($"    <Latitude>{pt.Latitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Latitude>");
+                sb.AppendLine($"    <Longitude>{pt.Longitude.ToString("0.00000000", System.Globalization.CultureInfo.InvariantCulture)}</Longitude>");
+                sb.AppendLine($"    <Voltage>{pt.Voltage}</Voltage>");
+                sb.AppendLine("  </VoltageChangeMarker>");
+            }
+
+            sb.AppendLine("</VoltageChangeMarkers>");
+
+            System.IO.File.WriteAllText(outputFilePath, sb.ToString(), System.Text.Encoding.UTF8);
+            System.Windows.Forms.MessageBox.Show(catalog.GetString($"Voltage Markers were successfully saved to:\n{outputFilePath}"), catalog.GetString("Saved"), System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+        }
+
+        public class RouteVoltagePoint
+        {
+            public int Id { get; set; }
+            public double Latitude { get; set; }
+            public double Longitude { get; set; }
+            public int Voltage { get; set; }
+            public WorldLocation WorldLocation { get; set; }
+        }
+
+        private RouteVoltagePoint draggedVoltagePoint = null;
+
+        WorldLocation LatLonToWorldLocation(double latDeg, double lonDeg)
+        {
+            // Goode homolosine parametry z WorldLatLon.cs
+            const int earthRadius = 6370997;
+            const int tileSize = 2048;
+            const int ul_x = -20015000;
+            const int ul_y = 8673000;
+            const int wt_ew_offset = -16385;
+            const int wt_ns_offset = 16385;
+
+            double lat = MathHelper.ToRadians((float)latDeg);
+            double lon = MathHelper.ToRadians((float)lonDeg);
+
+            // Výběr Goode regionu a centrálního poledníku (pro ČR / Evropu typicky region 3)
+            double lonCenter = 0.523598775598; // 30.0 stupňů
+            double fEast = earthRadius * 0.523598775598;
+
+            if (lat >= 0)
+            {
+                if (lon < -0.698131700798) // < -40 st.
+                {
+                    lonCenter = -1.74532925199; // -100 st.
+                    fEast = earthRadius * -1.74532925199;
+                }
+            }
+
+            double gx, gy;
+            // Standardní rovnice pro Goode (pro lat < 40° 44' 11.8" je to Sinusoidal, pro vyšší šířky Mollweide)
+            if (lat >= 0.710987989993) // >= 40° 44' 11.8" (většina Evropy / ČR)
+            {
+                // Mollweide projekce
+                // Numerické řešení Keplerovy rovnice: 2*theta + sin(2*theta) = PI * sin(lat)
+                double target = Math.PI * Math.Sin(lat);
+                double theta = lat;
+                for (int i = 0; i < 20; i++)
+                {
+                    double diff = 2 * theta + Math.Sin(2 * theta) - target;
+                    if (Math.Abs(diff) < 1e-9) break;
+                    theta -= diff / (2 + 2 * Math.Cos(2 * theta));
+                }
+
+                gy = Math.Sqrt(2) * earthRadius * Math.Sin(theta);
+                gx = (0.900316316158 * earthRadius * (lon - lonCenter) * Math.Cos(theta)) + fEast;
+            }
+            else
+            {
+                // Sinusoidal projekce
+                gy = earthRadius * lat;
+                gx = (earthRadius * (lon - lonCenter) * Math.Cos(lat)) + fEast;
+            }
+
+            // Převod z Goode XY na MSTS World Tile souřadnice
+            double gLine = 1.0 + (ul_y - gy) / tileSize;
+            double gSamp = 1.0 + (gx - ul_x) / tileSize;
+
+            int tileX = (int)Math.Floor(gSamp + wt_ew_offset);
+            int tileZ = (int)Math.Floor(wt_ns_offset - gLine);
+
+            float localX = (float)((gSamp - Math.Floor(gSamp)) * tileSize);
+            float localZ = (float)((gLine - Math.Floor(gLine)) * tileSize);
+
+            // Změna osy a vycentrování v rámci tile (-1024 až +1024)
+            localX -= (tileSize / 2f);
+            localZ = (tileSize / 2f) - localZ;
+
+            return new WorldLocation(tileX, tileZ, localX, 0, localZ);
+        }
+
+        public List<RouteVoltagePoint> VoltagePoints = new List<RouteVoltagePoint>();
+
+        void LoadVoltageMarkers(string routePath)
+        {
+            VoltagePoints.Clear();
+            string filePath = System.IO.Path.Combine(routePath, "VoltageChangeMarkers.xml");
+            if (!System.IO.File.Exists(filePath) || RouteData?.TrackDB?.TrackNodes == null)
+                return;
+
+            var lines = System.IO.File.ReadAllLines(filePath);
+            var rawMarkers = new List<Tuple<double, double, int>>();
+
+            double curLat = 0;
+            double curLon = 0;
+            int curVoltage = 0;
+
+            foreach (var rawLine in lines)
+            {
+                string line = rawLine.Trim();
+
+                if (line.IndexOf("<Latitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Latitude").Replace(',', '.');
+                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLat);
+                }
+                else if (line.IndexOf("<Longitude>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Longitude").Replace(',', '.');
+                    double.TryParse(s, System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out curLon);
+                }
+                else if (line.IndexOf("<Voltage>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    string s = ExtractTagValue(line, "Voltage");
+                    int.TryParse(s, out curVoltage);
+                }
+                else if (line.IndexOf("</VoltageChangeMarker>", StringComparison.OrdinalIgnoreCase) >= 0 ||
+                         line.IndexOf("</Marker>", StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    if (curLat != 0 || curLon != 0)
+                    {
+                        // V MSTSLocomotive.cs se načítá:
+                        // psiLat = MathHelper.ToDegrees((float)vcm.Longitude);
+                        // psiLon = MathHelper.ToDegrees((float)vcm.Latitude);
+                        // Pokud jsou hodnoty v XML v radiánech (hodnota < 4.0), převedeme je na stupně:
+                        double finalLat = curLat;
+                        double finalLon = curLon;
+
+                        if (Math.Abs(curLat) < 4.0 && Math.Abs(curLon) < 4.0)
+                        {
+                            // V XML jsou uloženy radiány
+                            // Dle DistanceToVoltageMarkerM je Longitude v XML ve skutečnosti Latitude!
+                            finalLat = curLon * (180.0 / Math.PI);
+                            finalLon = curLat * (180.0 / Math.PI);
+                        }
+                        else
+                        {
+                            // Pokud jsou hodnoty větší než 4, jsou to již stupně
+                            // V ČR je Lat cca 48-51 a Lon cca 12-19
+                            if (curLat < 30.0 && curLon > 40.0)
+                            {
+                                // Prohozená Lat a Lon
+                                finalLat = curLon;
+                                finalLon = curLat;
+                            }
+                        }
+
+                        rawMarkers.Add(Tuple.Create(finalLat, finalLon, curVoltage));
+                    }
+                    curLat = 0;
+                    curLon = 0;
+                    curVoltage = 0;
+                }
+            }
+
+            if (rawMarkers.Count == 0) return;
+
+            // Připravíme body z kolejové sítě
+            var worldLatLon = new Orts.Simulation.Common.WorldLatLon();
+            var trackPoints = new List<Tuple<WorldLocation, double, double>>();
+
+            foreach (var tn in RouteData.TrackDB.TrackNodes)
+            {
+                if (tn?.TrVectorNode?.TrVectorSections == null) continue;
+
+                for (int i = 0; i < tn.TrVectorNode.TrVectorSections.Length; i++)
+                {
+                    var tvs = tn.TrVectorNode.TrVectorSections[i];
+                    if (tvs == null) continue;
+
+                    var wLoc = DrawTrackDB.TvsLocation(tvs);
+                    double latRad = 0, lonRad = 0;
+                    if (worldLatLon.ConvertWTC(wLoc.TileX, wLoc.TileZ, wLoc.Location, ref latRad, ref lonRad) == 1)
+                    {
+                        trackPoints.Add(Tuple.Create(wLoc, latRad * (180.0 / Math.PI), lonRad * (180.0 / Math.PI)));
+                    }
+                }
+            }
+
+            if (trackPoints.Count == 0) return;
+
+            // Spárování každého markeru s nejbližším bodem tratě
+            foreach (var marker in rawMarkers)
+            {
+                double mLat = marker.Item1;
+                double mLon = marker.Item2;
+                int mVolt = marker.Item3;
+
+                WorldLocation closestLoc = WorldLocation.None;
+                double bestDistSq = double.MaxValue;
+
+                foreach (var tp in trackPoints)
+                {
+                    double dLat = tp.Item2 - mLat;
+                    double dLon = (tp.Item3 - mLon) * 0.65; // cosinus pro stř. Evropu
+                    double distSq = dLat * dLat + dLon * dLon;
+
+                    if (distSq < bestDistSq)
+                    {
+                        bestDistSq = distSq;
+                        closestLoc = tp.Item1;
+                    }
+                }
+
+                if (closestLoc != WorldLocation.None)
+                {
+                    // Pokud na této přesné pozici již jiný bod existuje, mírně jej posuneme
+                    int overlapCount = VoltagePoints.Count(p => WorldLocation.Within(p.WorldLocation, closestLoc, 0.5f));
+                    if (overlapCount > 0)
+                    {
+                        closestLoc = new WorldLocation(
+                            closestLoc.TileX,
+                            closestLoc.TileZ,
+                            closestLoc.Location.X + (overlapCount * 2f),
+                            closestLoc.Location.Y,
+                            closestLoc.Location.Z + (overlapCount * 2f)
+                        );
+                    }
+
+                    VoltagePoints.Add(new RouteVoltagePoint
+                    {
+                        Latitude = mLat,
+                        Longitude = mLon,
+                        Voltage = mVolt,
+                        WorldLocation = closestLoc
+                    });
+                }
+            }
+        }
+
+        string ExtractTagValue(string source, string tag)
+        {
+            int start = source.IndexOf("<" + tag + ">", StringComparison.OrdinalIgnoreCase);
+            int end = source.IndexOf("</" + tag + ">", StringComparison.OrdinalIgnoreCase);
+            if (start >= 0 && end > start)
+            {
+                start += tag.Length + 2;
+                return source.Substring(start, end - start).Trim();
+            }
+            return "";
         }
 
         #endregion
