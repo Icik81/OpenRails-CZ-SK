@@ -525,10 +525,10 @@ namespace ORTS
             LoadStartAtList();
             LoadTimetableSetList();
             ShowDetails();
-            LoadMirelDatabase();
+            //LoadMirelDatabase();
             LoadNames();
-            LoadPowerSupplyStations();
-            LoadPowerSupplyMarkers();
+            //LoadPowerSupplyStations();
+            //LoadPowerSupplyMarkers();
         }
         #endregion
 
